@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Magnum" default="go">
+
+  <loadtasks assembly="..\tools\nantcontrib-0.85\nant.contrib.tasks.dll" />
+  
+  <target name="go" depends="build, clean_the_bin, package_build" />
+	
+	<target name="build">
+		<delete dir=".\bin" failonerror="false" />
+		<delete file=".\Magnum.zip" failonerror="false" />
+		
+		<property name="config" value="Release" />
+		
+		<msbuild project=".\Magnum.sln">
+			<property name="Configuration" value="Release" />
+		</msbuild>
+
+	</target>
+	
+	<target name="package_build">
+    <delete dir="..\build" failonerror="false" />
+    <mkdir dir="..\build" failonerror="false" />
+    
+    <call target="zip" />
+    
+    <copy todir="..\build">
+      <fileset basedir=".">
+        <include name="Magnum.zip" />
+      </fileset>
+    
+    </copy>
+	</target>
+
+	<target name="zip">
+		<zip zipfile="Magnum.zip">
+			<fileset basedir=".\bin">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+
+	<target name="clean_the_bin">
+		<delete failonerror="false">
+			<fileset>
+				<include name=".\bin\*.tests.dll" />
+				<include name=".\bin\*.tests.pdb" />
+			</fileset>
+		</delete>
+	</target>
+</project>
