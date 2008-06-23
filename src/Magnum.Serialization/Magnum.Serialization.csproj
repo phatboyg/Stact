@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bencoder.cs" />
+    <Compile Include="BDecode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializationOptimizer.cs" />
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace Magnum.Serialization
 		public BEncoder()
 		{
 			_stream = new MemoryStream();
-			_writer = new StreamWriter(_stream, Encoding.UTF8);
+			_writer = new StreamWriter(_stream);
 		}
 
 		public void Dispose()
@@ -75,6 +75,11 @@ namespace Magnum.Serialization
 			string s = "i" + value + "e";
 
 			_writer.Write(s);
+		}
+
+		public void AppendNull()
+		{
+			_writer.Write("n");
 		}
 	}
 }
