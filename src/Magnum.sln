@@ -24,6 +24,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization.Tests"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport", "Magnum.Transport\Magnum.Transport.csproj", "{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Tests", "Magnum.Transport.Tests\Magnum.Transport.Tests.csproj", "{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +58,14 @@ Global
 		{C72949DC-DCFC-457B-A7BD-A4D2FB437BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C72949DC-DCFC-457B-A7BD-A4D2FB437BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C72949DC-DCFC-457B-A7BD-A4D2FB437BF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,11 @@ namespace Magnum.Serialization
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.IO;
+	using System.Reflection;
+	using System.Runtime.Serialization;
+	using System.Text;
 	using System.Threading;
 
 	public class BDecode : IDisposable
@@ -39,16 +43,27 @@ namespace Magnum.Serialization
 
 		private void DecoderThread()
 		{
-			_reader = new BinaryReader(_inbound);
-			using (_reader)
+			try
 			{
-				while (_killThread.WaitOne(0, true) == false)
+				_reader = new BinaryReader(_inbound);
+				using (_reader)
 				{
-					object obj = ReadObject();
+					while (_killThread.WaitOne(0, true) == false)
+					{
+						object obj = ReadObject();
 
-					lock (_output)
-						_output.Enqueue(obj);
+						lock (_output)
+							_output.Enqueue(obj);
+
+						_outputLength.Release();
+					}
 				}
+
+				Debug.WriteLine("Exiting Decoder Thread");
+			}
+			catch(Exception ex)
+			{
+				Debug.WriteLine("Decoder Thread Threw an Exception: " + ex.Message);
 			}
 		}
 
@@ -57,6 +72,9 @@ namespace Magnum.Serialization
 			char b = _reader.ReadChar();
 			switch (b)
 			{
+				case 'o':
+					return ReadTypedObject();
+
 				case 'i':
 					return ReadLong();
 
@@ -70,6 +88,7 @@ namespace Magnum.Serialization
 					int digit;
 					if(int.TryParse(b.ToString(), out digit))
 					{
+						// TODO overflow possible
 						string number = b.ToString();
 						while ( int.TryParse((b = _reader.ReadChar()).ToString(), out digit))
 						{
@@ -90,18 +109,56 @@ namespace Magnum.Serialization
 			}
 		}
 
+		private object ReadTypedObject()
+		{
+			string typeName = ReadString();
+
+			Dictionary<object, object> fields = ReadObject() as Dictionary<object, object>;
+
+			_reader.ReadChar(); // get rid of the 'e'
+
+			Type t = Type.GetType(typeName);
+
+			object o = FormatterServices.GetSafeUninitializedObject(t);
+
+			MemberInfo[] memberInfo = FormatterServices.GetSerializableMembers(t);
+
+			List<object> values = new List<object>();
+			foreach (KeyValuePair<object, object> field in fields)
+			{
+				values.Add(field.Value);
+			}
+
+			FormatterServices.PopulateObjectMembers(o, memberInfo, values.ToArray());
+
+			return o;
+		}
+
 		private Dictionary<object,object> ReadDictionary()
 		{
 			Dictionary<object,object> dictionary = new Dictionary<object, object>();
 			while ((_reader.PeekChar()) != 'e')
 			{
-				object key = ReadObject();
+				int c = _reader.PeekChar();
+
+				string key = ReadString();
 				object value = ReadObject();
+				if (value.GetType() == typeof(byte[]))
+					value = Encoding.UTF8.GetString((byte[]) value);
 
 				dictionary.Add(key, value);
 			}
 
+			_reader.ReadChar(); // discard the 'e'
+
 			return dictionary;
+		}
+
+		private string ReadString()
+		{
+			string s = Encoding.UTF8.GetString(ReadObject() as byte[]);
+
+			return s;
 		}
 
 		private List<object> ReadList()
@@ -110,9 +167,9 @@ namespace Magnum.Serialization
 			while ( (_reader.PeekChar()) != 'e')
 			{
 				objects.Add(ReadObject());
-
-				
 			}
+
+			_reader.ReadChar(); // discard the 'e'
 
 			return objects;
 		}
@@ -125,6 +182,8 @@ namespace Magnum.Serialization
 			while ( ( b = _reader.Read() ) != 'e' )
 				number += b;
 
+			_reader.ReadChar(); // discard the 'e'
+
 			return long.Parse(number);
 		}
 
@@ -132,7 +191,6 @@ namespace Magnum.Serialization
 		{
 			_killThread.Set();
 			_thread.Join(TimeSpan.FromSeconds(10));
-			
 		}
 	}
 }
