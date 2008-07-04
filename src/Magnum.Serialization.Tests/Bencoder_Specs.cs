@@ -379,7 +379,7 @@ namespace Magnum.Serialization.Tests
 	public class DerivedObject : SimpleObject, IEquatable<DerivedObject>
 	{
 		private readonly string _title;
-		private readonly SimpleObject _child;
+		//private readonly SimpleObject _child;
 
 		public static int Hits
 		{
@@ -398,7 +398,7 @@ namespace Magnum.Serialization.Tests
 		{
 			_hits++;
 			_title = title;
-			_child = child;
+		//	_child = child;
 		}
 
 		public string Title
@@ -406,18 +406,18 @@ namespace Magnum.Serialization.Tests
 			get { return _title; }
 		}
 
-		public SimpleObject Child
-		{
-			get { return _child; }
-		}
+		//public SimpleObject Child
+	//	{
+		//	get { return _child; }
+		//}
 
 		public bool Equals(DerivedObject derivedObject)
 		{
 			if (derivedObject == null) return false;
 			if (Equals(_title, derivedObject._title) == false)
 				return false;
-			if (Equals(_child, derivedObject._child) == false)
-				return false;
+		//	if (Equals(_child, derivedObject._child) == false)
+		//		return false;
 
 			return base.Equals(derivedObject);
 		}

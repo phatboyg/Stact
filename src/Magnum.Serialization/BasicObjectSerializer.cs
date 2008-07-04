@@ -19,7 +19,6 @@ namespace Magnum.Serialization
 
 			SerializeObject(obj);
 
-
 			_fomatter.Stop();
 		}
 

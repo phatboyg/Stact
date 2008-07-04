@@ -55,23 +55,14 @@ namespace Magnum.Transport.Tests
 			TestObject to = new TestObject("/meta/handshake", "1.0", "12345");
 
 			Assert.That(client, Is.Not.Null);
-			using (client)
-			{
-				Assert.That(server, Is.Not.Null);
+			Assert.That(server, Is.Not.Null);
+			client.Send(to);
 
-				using (server)
-				{
-					client.Send(to);
+			object obj = server.Receive(TimeSpan.FromSeconds(8));
 
-					object obj = server.Receive(TimeSpan.FromSeconds(120));
+			Assert.That(obj, Is.Not.Null);
 
-					Assert.That(obj, Is.Not.Null);
-
-					Assert.That(obj, Is.TypeOf(typeof (TestObject)), "Invalid Type Received");
-
-
-				}
-			}
+			Assert.That(obj, Is.TypeOf(typeof (TestObject)), "Invalid Type Received");
 		}
 
 		[Test]

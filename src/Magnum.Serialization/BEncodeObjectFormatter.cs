@@ -7,20 +7,11 @@ namespace Magnum.Serialization
 
 	public class BEncodeObjectFormatter : IObjectFormatter
 	{
-		private readonly MemoryStream _stream;
-		private readonly TextWriter _writer;
+		private readonly Stream _stream;
 
-		public BEncodeObjectFormatter()
+		public BEncodeObjectFormatter(Stream stream)
 		{
-			_stream = new MemoryStream();
-			_writer = new StreamWriter(_stream);
-		}
-
-		public string GetString()
-		{
-			_writer.Flush();
-
-			return Encoding.UTF8.GetString(_stream.ToArray());
+			_stream = stream;
 		}
 
 		public void Start()
@@ -33,14 +24,18 @@ namespace Magnum.Serialization
 
 		public void StartObject(Type type)
 		{
-			_writer.Write('o');
-			WriteString(type.FullName);
-			_writer.Write('d');
+			_stream.WriteByte((byte) 'o');
+
+			WriteString(type.AssemblyQualifiedName);
+
+			_stream.WriteByte((byte)'d');
 		}
 
 		public void EndObject(Type type)
 		{
-			_writer.Write("ee");
+			_stream.WriteByte((byte)'e');
+			_stream.WriteByte((byte)'e');
+			_stream.Flush();
 		}
 
 		public void WriteField(FieldInfo info, string value)
@@ -65,37 +60,38 @@ namespace Magnum.Serialization
 			WriteString(value);
 		}
 
-		public byte[] ToArray()
-		{
-			_writer.Flush();
-			return _stream.ToArray();
-		}
-
 		public void Dispose()
 		{
-			using(_stream)
-			using (_writer)
-			{
-				_writer.Close();
-				_stream.Close();
-			}
 		}
 
 		private void WriteString(string value)
 		{
 			if (string.IsNullOrEmpty(value))
-				_writer.Write("0:");
+			{
+				_stream.WriteByte((byte)'0');
+				_stream.WriteByte((byte)':');
+			}
 			else
 			{
-				string s = value.Length.ToString() + ':' + value;
-				_writer.Write(s);
+				byte[] content = Encoding.UTF8.GetBytes(value);
+
+				string s = string.Format("{0}:", content.Length);
+				
+				byte[] open = Encoding.ASCII.GetBytes(s);
+
+				_stream.Write(open, 0, open.Length);
+				_stream.Write(content, 0, content.Length);
 			}
 		}
 
 		private void WriteNumber(long value)
 		{
-			string s = "i" + value + "e";
-			_writer.Write(s);
+			_stream.WriteByte((byte)'i');
+
+			byte[] content = Encoding.ASCII.GetBytes(value.ToString());
+			_stream.Write(content, 0, content.Length);
+
+			_stream.WriteByte((byte)'e');
 		}
 	}
 }
