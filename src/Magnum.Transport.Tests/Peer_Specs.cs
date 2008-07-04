@@ -61,8 +61,14 @@ namespace Magnum.Transport.Tests
 			object obj = server.Receive(TimeSpan.FromSeconds(8));
 
 			Assert.That(obj, Is.Not.Null);
-
 			Assert.That(obj, Is.TypeOf(typeof (TestObject)), "Invalid Type Received");
+
+			server.Send(to);
+
+			obj = client.Receive(TimeSpan.FromSeconds(3));
+			Assert.That(obj, Is.Not.Null);
+			Assert.That(obj, Is.TypeOf(typeof(TestObject)), "Invalid Type Received");
+
 		}
 
 		[Test]
