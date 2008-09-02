@@ -55,6 +55,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="RangeBuilder.cs" />
     <Compile Include="RangeEnumerator.cs" />
+    <Compile Include="Repository\IRepository.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="TimeSpanExtensions.cs" />
   </ItemGroup>
