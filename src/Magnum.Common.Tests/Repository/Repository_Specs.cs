@@ -3,7 +3,6 @@ namespace Magnum.Common.Tests.Repository
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Magnum.Common.Repository;
 	using NUnit.Framework;
 	using NUnit.Framework.SyntaxHelpers;
 	using Rhino.Mocks;
@@ -31,7 +30,7 @@ namespace Magnum.Common.Tests.Repository
 		private MockRepository _mocks;
 		private IObjectBuilder _container;
 		private MemberRepository _memberRepository;
-		private Guid _memberId = new Guid("3DAEE114-10A8-4D96-9A51-5E7BFEABC764");
+		private readonly Guid _memberId = new Guid("3DAEE114-10A8-4D96-9A51-5E7BFEABC764");
 
 		[Test]
 		public void The_object_should_be_loaded_without_issues()
@@ -63,15 +62,28 @@ namespace Magnum.Common.Tests.Repository
 
 		public override void Dispose()
 		{
-			base.Dispose();
-
 			_members.Clear();
 			_members = null;
 		}
 
-		public void Save(Member member)
+		public override Member Get(Guid id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override IList<Member> List()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Save(Member member)
 		{
 			_members.Add(member);
+		}
+
+		public override void Delete(Member item)
+		{
+			throw new NotImplementedException();
 		}
 	}
 
