@@ -19,8 +19,7 @@
 	</target>
 	
 	<target name="package_build">
-    <delete dir="..\build" failonerror="false" />
-    <mkdir dir="..\build" failonerror="false" />
+    <delete file="..\build\Magnum.zip" failonerror="false" />
     
     <call target="zip" />
     
