@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="Magnum" default="go">
 
-  <loadtasks assembly="..\tools\nantcontrib-0.85\nant.contrib.tasks.dll" />
-  
-  <target name="go" depends="build, clean_the_bin, package_build" />
+	<property name="nant.settings.currentframework"
+						value="net-3.5" />
+	<target name="go" depends="build, clean_the_bin, package_build" />
 	
-	<target name="build">
+	<target name="build"
+				depends="common.find-svninfo, common.asminfo">
 		<delete dir=".\bin" failonerror="false" />
 		<delete file=".\Magnum.zip" failonerror="false" />
 		
@@ -34,10 +35,70 @@
 	<target name="zip">
 		<zip zipfile="Magnum.zip">
 			<fileset basedir=".\bin">
-				<include name="**/*" />
+				<include name="**/*.dll" />
 			</fileset>
 		</zip>
 	</target>
+
+	<target name="common.find-svninfo"
+					description="Gets the current svn revision number">
+		<!-- For adding SVN revision to builds -->
+		<property name="svn.revision"
+							value="0"
+							overwrite="false" />
+		<!-- try to update the revision -->
+		<!--<exec
+			program="svn"
+			commandline='info "${project::get-base-directory()}" - -xml'
+			output="_revision.xml"
+			failonerror="false"/> -->
+		<exec
+			program="svn"
+			commandline='info http://magnum.googlecode.com/svn/trunk --xml'
+			output="_revision.xml"
+			failonerror="false"/>
+		<xmlpeek
+			file="_revision.xml"
+			xpath="/info/entry/@revision"
+			property="svn.revision"
+			failonerror="false"/>
+		<delete file="_revision.xml"
+						failonerror="false" />
+		<echo message="INFO: Using Subversion revision number: ${svn.revision}"/>
+	</target>
+
+	<target name="common.asminfo"
+					depends="common.find-svninfo"
+					description="Generate asm info">
+
+		<property name="version.rev"
+							value="${svn.revision}"  />
+		<property name="version.build"
+							value="0"
+							overwrite="false" />
+
+		<asminfo output="SolutionVersion.cs"
+						 language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+				<import namespace="System.Runtime.InteropServices" />
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute"
+									 value="false" />
+				<attribute type="CLSCompliantAttribute"
+									 value="true" />
+				<attribute type="AssemblyVersionAttribute"
+									 value="0.1.${version.rev}.${version.build}" />
+				<attribute type="AssemblyCopyrightAttribute"
+									 value="Magnum Project, original author or authors" />
+				<attribute type="AssemblyCompanyAttribute"
+									 value="CFT &amp; ACM" />
+			</attributes>
+		</asminfo>
+	</target>
+
 
 
 	<target name="clean_the_bin">
