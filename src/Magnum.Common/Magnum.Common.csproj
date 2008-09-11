@@ -58,10 +58,13 @@
     <Compile Include="RangeBuilder.cs" />
     <Compile Include="RangeEnumerator.cs" />
     <Compile Include="IRepository.cs" />
+    <Compile Include="Reflection\FastProperty.cs" />
+    <Compile Include="Reflection\ReflectionCache.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="SolutionVersion.cs" />
+    <Compile Include="FunctionTimer.cs" />
     <Compile Include="TimeSpanExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
