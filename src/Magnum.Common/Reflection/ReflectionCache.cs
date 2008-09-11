@@ -53,5 +53,18 @@ namespace Magnum.Common.Reflection
 
 			GetFastProperty(name).SetDelegate(instance, value);
 		}
+
+		public static IList<object> List(T instance)
+		{
+			List<object> values = new List<object>();
+
+			PropertyInfo[] properties = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			foreach (PropertyInfo info in properties)
+			{
+				values.Add(Get(info.Name, instance));
+			}
+
+			return values;
+		}
 	}
 }

@@ -13,6 +13,7 @@
 namespace Magnum.Common.Tests
 {
 	using System;
+	using System.Collections.Generic;
 	using NUnit.Framework;
 	using Reflection;
 
@@ -72,6 +73,14 @@ namespace Magnum.Common.Tests
 			object value = ReflectionCache<SimpleClass>.Get("Count", _data);
 			Assert.IsInstanceOfType(typeof (int), value);
 			Assert.AreEqual(27, value);
+		}
+
+		[Test]
+		public void A_list_of_values_should_match_the_number_of_properties()
+		{
+			IList<object> values = ReflectionCache<SimpleClass>.List(_data);
+
+			Assert.AreEqual(4, values.Count);
 		}
 	}
 }

@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Tests
 {
-	using System;
 	using log4net;
 	using NUnit.Framework;
 
@@ -56,7 +55,7 @@ namespace Magnum.Common.Tests
 		[Test]
 		public void The_output_should_include_property_values()
 		{
-			using (var tracker = new StatisticTracker<MyData>("TEST", VerifyCalled))
+			using (var tracker = new ExtendedFunctionTimer<MyData>("TEST", VerifyCalled))
 			{
 				tracker.Values.QueryCount = 5;
 				tracker.Values.QueryAmount = 123.45m;
@@ -68,24 +67,5 @@ namespace Magnum.Common.Tests
 	{
 		public int QueryCount { get; set; }
 		public decimal QueryAmount { get; set; }
-	}
-
-	public class StatisticTracker<T> :
-		FunctionTimer
-		where T : class, new()
-	{
-		private readonly T _values;
-
-
-		public StatisticTracker(string description, Action<string> action)
-			: base(description, action)
-		{
-			_values = new T();
-		}
-
-		public T Values
-		{
-			get { return _values; }
-		}
 	}
 }

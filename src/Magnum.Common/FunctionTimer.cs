@@ -16,6 +16,7 @@ namespace Magnum.Common
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Text;
+	using Reflection;
 
 	public class FunctionTimer : IDisposable
 	{
@@ -113,6 +114,34 @@ namespace Magnum.Common
 			public void Dispose()
 			{
 				_stopwatch.Stop();
+			}
+		}
+	}
+
+	public class FunctionTimer<T> :
+		FunctionTimer
+		where T : class, new()
+	{
+		private readonly T _values;
+
+		public FunctionTimer(string description, Action<string> action)
+			: base(description, action)
+		{
+			_values = new T();
+		}
+
+		public T Values
+		{
+			get { return _values; }
+		}
+
+		protected override void OutputAdditionalValues(StringBuilder sb)
+		{
+			var items = ReflectionCache<T>.List(_values);
+
+			foreach (object o in items)
+			{
+				sb.Append(' ').Append(o ?? "null");
 			}
 		}
 	}
