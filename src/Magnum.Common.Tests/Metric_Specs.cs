@@ -55,7 +55,7 @@ namespace Magnum.Common.Tests
 		[Test]
 		public void The_output_should_include_property_values()
 		{
-			using (var tracker = new ExtendedFunctionTimer<MyData>("TEST", VerifyCalled))
+			using (var tracker = new FunctionTimer<MyData>("TEST", VerifyCalled))
 			{
 				tracker.Values.QueryCount = 5;
 				tracker.Values.QueryAmount = 123.45m;

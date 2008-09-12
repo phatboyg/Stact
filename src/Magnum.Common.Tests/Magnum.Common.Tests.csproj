@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
-    <Compile Include="ExtendedFunctionTimer.cs" />
     <Compile Include="Metric_Specs.cs" />
     <Compile Include="ObjectExtension_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
