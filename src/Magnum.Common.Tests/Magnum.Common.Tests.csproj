@@ -65,7 +65,9 @@
     <Compile Include="Range_Specs.cs" />
     <Compile Include="Reflection\CodeBuilder_Specs.cs" />
     <Compile Include="Reflection\Customer.cs" />
+    <Compile Include="Reflection\InterOp_Specs.cs" />
     <Compile Include="Reflection\Performance_Specs.cs" />
+    <Compile Include="SerializationSpecificationBase.cs" />
     <Compile Include="Reflection_Specs.cs" />
     <Compile Include="Repository\Repository_Specs.cs" />
     <Compile Include="SpecificationBase.cs" />
