@@ -40,23 +40,38 @@ namespace Magnum.Common.Serialization
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach (PropertyInfo propertyInfo in properties)
 			{
-				var getValue = Expression.Call(instance, propertyInfo.GetGetMethod());
+				var getter = BuildGetterForProperty<T>(instance, propertyInfo);
 
-				Type getterType = typeof (Func<,>).MakeGenericType(type, propertyInfo.PropertyType);
-
-				var getter = Expression.Lambda(getterType, getValue, instance).Compile();
-
+                //TODO: this is where ih is falling down.
+                //TODO: would have to have a method for ever type know to man
+                //TODO: Register types?
 				MethodInfo writerInfo = typeof (ISerializationWriter).GetMethod("Write", new[] {propertyInfo.PropertyType});
+
 				if (writerInfo == null)
 					throw new Exception("Unable to output a property of type " + propertyInfo.PropertyType.FullName);
 
-				Expression<Action<ISerializationWriter, T>> doit = Expression.Lambda<Action<ISerializationWriter, T>>(Expression.Call(writer, writerInfo, new Expression[] {Expression.Invoke(Expression.Constant(getter), new Expression[] {instance})}), new[] {writer, instance});
+                //TODO: What is this
+			    var thing = Expression.Call(writer, writerInfo,
+			                                new Expression[]
+			                                    {Expression.Invoke(Expression.Constant(getter), new Expression[] {instance})});
+
+				Expression<Action<ISerializationWriter, T>> doit = 
+                    Expression.Lambda<Action<ISerializationWriter, T>>(thing, new[] {writer, instance});
 
 				serializer += doit.Compile();
 			}
 
 			return serializer;
 		}
+        private static Delegate BuildGetterForProperty<T>(ParameterExpression instance, PropertyInfo propertyInfo)
+        {
+            var getMethod = Expression.Call(instance, propertyInfo.GetGetMethod());
+            var returnType = propertyInfo.PropertyType;
+
+            Type getterType = typeof(Func<,>).MakeGenericType(typeof(T), returnType);
+
+            return Expression.Lambda(getterType, getMethod, instance).Compile();
+        }
 
 		private static Action<ISerializationReader, T> BuildDeserializer()
 		{
