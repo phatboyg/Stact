@@ -14,6 +14,7 @@ namespace Magnum.Common.Tests
 {
     using System;
     using System.Collections.Generic;
+    using Common.Reflection;
     using NUnit.Framework;
     using Reflection;
 
