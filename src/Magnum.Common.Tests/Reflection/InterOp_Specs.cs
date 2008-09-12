@@ -8,11 +8,16 @@ namespace Magnum.Common.Tests.Reflection
     {
         private readonly Bob _bob = new Bob { Name = "Dru" };
         private readonly Order1 _order = new Order1{FirstName = "Chris", LastName = "Patterson"};
+        private byte[] bytes;
+
+        protected override void Before_each_specification()
+        {
+            
+        }
 
         [Test]
         public void Shouldnt_care_about_namespaces()
         {
-            byte[] bytes;
             bytes = Serialize(_bob);
             var output = Deserialize<Different.Bob>(bytes);
 
@@ -22,7 +27,6 @@ namespace Magnum.Common.Tests.Reflection
         [Test]
         public void Shouldnt_care_about_class_names()
         {
-            byte[] bytes;
             bytes = Serialize(_bob);
             var output = Deserialize<Bill>(bytes);
 
@@ -33,7 +37,6 @@ namespace Magnum.Common.Tests.Reflection
         [Test]
         public void Shouldnt_care_about_casing()
         {
-            byte[] bytes;
             bytes = Serialize(_bob);
             var output = Deserialize<Jack>(bytes);
 
@@ -41,9 +44,8 @@ namespace Magnum.Common.Tests.Reflection
         }
 
         [Test]
-        public void Shouldnt_care_about_order()
+        public void Order_matters()
         {
-            byte[] bytes;
             bytes = Serialize(_order);
             var output = Deserialize<Order2>(bytes);
 
