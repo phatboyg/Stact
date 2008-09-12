@@ -10,33 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Tests.Reflection
+namespace Magnum.Common.Serialization
 {
-	using System.IO;
-
-	public class BinarySerializationWriter :
-		ISerializationWriter
+	public interface ISerializationReader
 	{
-		private readonly BinaryWriter _writer;
-
-		public BinarySerializationWriter(BinaryWriter writer)
-		{
-			_writer = writer;
-		}
-
-		public void Write(string value)
-		{
-			_writer.Write(value);
-		}
-
-		public void Write(int value)
-		{
-			_writer.Write(value);
-		}
-
-		public void Write(decimal value)
-		{
-			_writer.Write(value);
-		}
+		string ReadString();
+		int ReadInt32();
+		decimal ReadDecimal();
 	}
 }

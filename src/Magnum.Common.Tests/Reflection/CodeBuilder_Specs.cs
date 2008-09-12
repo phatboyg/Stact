@@ -13,6 +13,7 @@
 namespace Magnum.Common.Tests.Reflection
 {
 	using NUnit.Framework;
+	using Serialization;
 
 	[TestFixture]
 	public class When_building_a_delegate_using_lambdas :
@@ -42,7 +43,7 @@ namespace Magnum.Common.Tests.Reflection
 
 			using (Playback)
 			{
-				new SerializationUtil<Customer>().Serialize(_writer, _data);
+				SerializationUtil<Customer>.Serialize(_writer, _data);
 			}
 		}
 	}
