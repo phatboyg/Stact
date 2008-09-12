@@ -12,59 +12,68 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Reflection
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Reflection;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
 
-	public static class ReflectionCache<T>
-	{
-		private static readonly Dictionary<string, Func<T, object>> _getters = new Dictionary<string, Func<T, object>>();
-		private static readonly Dictionary<string, Action<T, object>> _setters = new Dictionary<string, Action<T, object>>();
+    public static class ReflectionCache<T>
+    {
+        private static readonly Dictionary<string, Func<T, object>> _getters = new Dictionary<string, Func<T, object>>();
+        private static readonly Dictionary<string, Action<T, object>> _setters = new Dictionary<string, Action<T, object>>();
 
-		public static object Get(string name, T instance)
-		{
-			if (_getters.ContainsKey(name))
-				return _getters[name](instance);
+        public static object Get(string name, T instance)
+        {
+            if (_getters.ContainsKey(name))
+                return _getters[name](instance);
 
-			return GetFastProperty(name).GetDelegate(instance);
-		}
+            return GetFastProperty(name).GetDelegate(instance);
+        }
 
-		private static FastProperty<T> GetFastProperty(string name)
-		{
-			Type objectType = typeof (T);
+        private static FastProperty<T> GetFastProperty(string name)
+        {
+            Type objectType = typeof (T);
 
-			PropertyInfo pi = objectType.GetProperty(name);
+            PropertyInfo pi = objectType.GetProperty(name);
 
-			var fastProperty = new FastProperty<T>(pi);
+            var fastProperty = new FastProperty<T>(pi);
 
-			lock (_getters)
-			{
-				_getters[name] = fastProperty.GetDelegate;
-				_setters[name] = fastProperty.SetDelegate;
-			}
+            lock (_getters)
+            {
+                _getters[name] = fastProperty.GetDelegate;
+                _setters[name] = fastProperty.SetDelegate;
+            }
 
-			return fastProperty;
-		}
+            return fastProperty;
+        }
 
-		public static void Set(string name, T instance, object value)
-		{
-			if (_getters.ContainsKey(name))
-				_setters[name](instance, value);
+        public static void Set(string name, T instance, object value)
+        {
+            if (_getters.ContainsKey(name))
+                _setters[name](instance, value);
 
-			GetFastProperty(name).SetDelegate(instance, value);
-		}
+            GetFastProperty(name).SetDelegate(instance, value);
+        }
 
-		public static IList<object> List(T instance)
-		{
-			List<object> values = new List<object>();
+        public static IList<object> List(T instance)
+        {
+            List<object> values = new List<object>();
 
-			PropertyInfo[] properties = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-			foreach (PropertyInfo info in properties)
-			{
-				values.Add(Get(info.Name, instance));
-			}
+            PropertyInfo[] properties = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo info in properties)
+            {
+                values.Add(Get(info.Name, instance));
+            }
 
-			return values;
-		}
-	}
+            return values;
+        }
+
+        public static IEnumerable<IReflectedObjectContext> GetEnumerator(T instance)
+        {
+            PropertyInfo[] properties = typeof (T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo info in properties)
+            {
+                yield return new ReflectedPropertyContext<T>(info, instance);
+            }
+        }
+    }
 }

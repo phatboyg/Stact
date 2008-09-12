@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionVersion.cs">
+      <Link>SolutionVersion.cs</Link>
+    </Compile>
     <Compile Include="ComparerExtensions.cs" />
     <Compile Include="ComparisonComparer.cs" />
     <Compile Include="DateTimeExtensions.cs" />
@@ -59,11 +62,12 @@
     <Compile Include="RangeEnumerator.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Reflection\FastProperty.cs" />
+    <Compile Include="Reflection\IReflectedObjectContext.cs" />
+    <Compile Include="Reflection\ReflectedPropertyContext.cs" />
     <Compile Include="Reflection\ReflectionCache.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="ReverseComparer.cs" />
-    <Compile Include="SolutionVersion.cs" />
     <Compile Include="FunctionTimer.cs" />
     <Compile Include="TimeSpanExtensions.cs" />
   </ItemGroup>
