@@ -3,53 +3,59 @@ namespace Magnum.Specs.Integration
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using Machine.Specifications;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
 
-    [TestFixture]
+    [Concern("Storage Nodes")]
     public class Given_a_storage_node_When_an_object_is_stored
     {
-        [Test]
-        public void A_list_of_objects_should_be_returned()
-        {
-            Person p = new Person();
+        //TODO: static
+        private static Person _person;
 
-            p.Id = Guid.NewGuid();
-            p.FirstName = "Chris";
-            p.LastName = "Patterson";
+        private Establish context = () =>
+                                        {
+                                            _person = new Person();
+                                        };
 
-            StorageContext context = new StorageContext();
-            context.RegisterClass<Person, Guid>(GetKey);
 
-            context.Save(p);
+        It should_return_objects = () =>
+                                               {
+                                                   _person.Id = Guid.NewGuid();
+                                                   _person.FirstName = "Chris";
+                                                   _person.LastName = "Patterson";
 
-            IList<Person> persons = context.List<Person>();
+                                                   StorageContext scontext = new StorageContext();
+                                                   scontext.RegisterClass<Person, Guid>(GetKey);
 
-            Assert.That(persons, Is.Not.Null);
-            Assert.That(persons.Count, Is.EqualTo(1));
-            Assert.That(persons[0].Id, Is.EqualTo(p.Id));
-        }
+                                                   scontext.Save(_person);
 
-        [Test]
-        public void The_object_should_return_in_a_usable_state()
-        {
-            Person p = new Person();
+                                                   IList<Person> persons = scontext.List<Person>();
 
-            p.Id = Guid.NewGuid();
-            p.FirstName = "Chris";
-            p.LastName = "Patterson";
+                                                   Assert.That(persons, Is.Not.Null);
+                                                   Assert.That(persons.Count, Is.EqualTo(1));
+                                                   Assert.That(persons[0].Id, Is.EqualTo(_person.Id));
 
-            StorageContext context = new StorageContext();
-            context.RegisterClass<Person, Guid>(GetKey);
+                                               };
 
-            context.Save(p);
+        It should_return_the_object_in_a_usable_state = () =>
+                           {
+                               _person.Id = Guid.NewGuid();
+                               _person.FirstName = "Chris";
+                               _person.LastName = "Patterson";
 
-            Person other = context.Get<Person>(p.Id);
+                               StorageContext scontext = new StorageContext();
+                               scontext.RegisterClass<Person, Guid>(GetKey);
 
-            Assert.That(other.Id, Is.EqualTo(p.Id));
-            Assert.That(other.FirstName, Is.EqualTo(p.FirstName));
-            Assert.That(other.LastName, Is.EqualTo(p.LastName));
-        }
+                               scontext.Save(_person);
+
+                               Person other = scontext.Get<Person>(_person.Id);
+
+                               Assert.That(other.Id, Is.EqualTo(_person.Id));
+                               Assert.That(other.FirstName, Is.EqualTo(_person.FirstName));
+                               Assert.That(other.LastName, Is.EqualTo(_person.LastName));
+
+                           };
 
         private static Guid GetKey(Person p)
         {
