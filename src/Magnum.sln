@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "Magnum\Magnum.csproj", "{FAAC0E55-2820-4014-BB54-8A1E72C97A29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "Magnum.Tests\Magnum.Specs.csproj", "{700795B6-AEE6-4623-8E1B-318B9D6CFC12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "Magnum.Specs\Magnum.Specs.csproj", "{700795B6-AEE6-4623-8E1B-318B9D6CFC12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization", "Magnum.Serialization\Magnum.Serialization.csproj", "{A6D8A4A5-D6F9-44DD-BFD4-F721CA9F3E01}"
 EndProject
