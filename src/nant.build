@@ -5,8 +5,9 @@
 	<property name="dirs.build_output" value="${project::get-base-directory()}\build" />
 	<property name="files.zip" value="${project::get-base-directory()}\magnum.zip" />
 	<property name="files.solution" value="${project::get-base-directory()}\Magnum.sln" />
+	<property name="tools.mspec" value="${project::get-base-directory()}\..\lib\mspec\mspec-runner.exe" />
 	
-	<target name="go" depends="build, package_build" />
+	<target name="go" depends="build, run_tests, package_build" />
 	
 	<target name="build" depends="common.find-svninfo, common.asminfo">
 		<delete dir="${dirs.build_output}" failonerror="false" />
@@ -57,6 +58,12 @@
 		<delete file="_revision.xml"
 						failonerror="false" />
 		<echo message="INFO: Using Subversion revision number: ${svn.revision}"/>
+	</target>
+	
+	<target name="run_tests">
+		<exec program="${tools.mspec}"
+			  commandline="${dirs.build_output}\Magnum.Specs.dll --html ${dirs.build_output}\Specifications.html"
+			  />
 	</target>
 
 	<target name="common.asminfo"
