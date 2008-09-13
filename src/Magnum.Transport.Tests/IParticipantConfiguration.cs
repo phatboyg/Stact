@@ -1,7 +1,7 @@
-namespace Magnum.Transport.Tests
+namespace Magnum.Transport.Specs
 {
-	public interface IParticipantConfiguration
-	{
-		MeshAuthorizationKey AuthorizationKey { get; set; }
-	}
+    public interface IParticipantConfiguration
+    {
+        MeshAuthorizationKey AuthorizationKey { get; set; }
+    }
 }

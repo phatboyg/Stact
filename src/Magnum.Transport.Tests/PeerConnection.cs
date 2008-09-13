@@ -1,85 +1,83 @@
-namespace Magnum.Transport.Tests
+namespace Magnum.Transport.Specs
 {
-	using System;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Text;
-	using Serialization;
+    using System;
+    using System.IO;
+    using System.Net;
+    using System.Net.Sockets;
+    using Serialization;
 
-	public class PeerConnection : IConnection
-	{
-		private readonly BDecode _decoder;
-		private readonly Action<PeerConnection> _disposeCallback;
-		private readonly EndPoint _endpoint;
-		private readonly Socket _socket;
-		private readonly NetworkStream _stream;
-		private readonly IObjectFormatter _formatter;
-		private readonly IObjectSerializer _serializer;
+    public class PeerConnection : IConnection
+    {
+        private readonly BDecode _decoder;
+        private readonly Action<PeerConnection> _disposeCallback;
+        private readonly EndPoint _endpoint;
+        private readonly Socket _socket;
+        private readonly NetworkStream _stream;
+        private readonly IObjectFormatter _formatter;
+        private readonly IObjectSerializer _serializer;
 
-		public PeerConnection(Socket socket, EndPoint endpoint, Action<PeerConnection> disposeCallback)
-		{
-			_endpoint = endpoint;
-			_disposeCallback = disposeCallback;
+        public PeerConnection(Socket socket, EndPoint endpoint, Action<PeerConnection> disposeCallback)
+        {
+            _endpoint = endpoint;
+            _disposeCallback = disposeCallback;
 
-			_socket = socket;
-			_stream = new NetworkStream(_socket, FileAccess.ReadWrite, true);
+            _socket = socket;
+            _stream = new NetworkStream(_socket, FileAccess.ReadWrite, true);
 
-			_stream.ReadTimeout = 1200000;
-			_stream.WriteTimeout = 10000;
+            _stream.ReadTimeout = 1200000;
+            _stream.WriteTimeout = 10000;
 
-			_decoder = new BDecode(_stream);
+            _decoder = new BDecode(_stream);
 
-			_formatter = new BEncodeObjectFormatter(_stream);
-			_serializer = new BasicObjectSerializer(_formatter);
-		}
+            _formatter = new BEncodeObjectFormatter(_stream);
+            _serializer = new BasicObjectSerializer(_formatter);
+        }
 
-		public EndPoint Endpoint
-		{
-			get { return _endpoint; }
-		}
+        public EndPoint Endpoint
+        {
+            get { return _endpoint; }
+        }
 
-		void IDisposable.Dispose()
-		{
-			Dispose(true);
-		}
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+        }
 
-		protected void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				GC.SuppressFinalize(this);
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GC.SuppressFinalize(this);
 
-				_serializer.Dispose();
-				_formatter.Dispose();
-				_decoder.Dispose();
-				_stream.Dispose();
+                _serializer.Dispose();
+                _formatter.Dispose();
+                _decoder.Dispose();
+                _stream.Dispose();
 
-				// can't dispose a socket for some reason, so this should handle it
-				using (_socket)
-					_socket.Shutdown(SocketShutdown.Both);
-			}
-			else
-			{
-				Action<PeerConnection> disposeCallback = _disposeCallback;
-				if (disposeCallback != null)
-				{
-					disposeCallback(this);
-				}
-			}
-		}
+                // can't dispose a socket for some reason, so this should handle it
+                using (_socket)
+                    _socket.Shutdown(SocketShutdown.Both);
+            }
+            else
+            {
+                Action<PeerConnection> disposeCallback = _disposeCallback;
+                if (disposeCallback != null)
+                {
+                    disposeCallback(this);
+                }
+            }
+        }
 
-		public void Send<T>(T message) where T : class
-		{
-			_serializer.Serialize(message);
-		}
+        public void Send<T>(T message) where T : class
+        {
+            _serializer.Serialize(message);
+        }
 
-		public object Receive(TimeSpan timeout)
-		{
-			object obj = _decoder.Read(timeout);
+        public object Receive(TimeSpan timeout)
+        {
+            object obj = _decoder.Read(timeout);
 
-			return obj;
-		}
-	}
+            return obj;
+        }
+    }
 }

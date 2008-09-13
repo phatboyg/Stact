@@ -1,31 +1,31 @@
-namespace Magnum.Transport.Tests
+namespace Magnum.Transport.Specs
 {
-	using System;
+    using System;
 
-	public class Participant
-	{
-		private readonly MeshAuthorizationKey _authorizationKey;
-		private readonly Guid _id;
+    public class Participant
+    {
+        private readonly MeshAuthorizationKey _authorizationKey;
+        private readonly Guid _id;
 
-		public Participant()
-		{
-			_id = Guid.NewGuid();
-		}
+        public Participant()
+        {
+            _id = Guid.NewGuid();
+        }
 
-		public Participant(IParticipantConfiguration configuration)
-		{
-			_id = Guid.NewGuid();
-			_authorizationKey = configuration.AuthorizationKey;
-		}
+        public Participant(IParticipantConfiguration configuration)
+        {
+            _id = Guid.NewGuid();
+            _authorizationKey = configuration.AuthorizationKey;
+        }
 
-		public Guid Id
-		{
-			get { return _id; }
-		}
+        public Guid Id
+        {
+            get { return _id; }
+        }
 
-		public MeshAuthorizationKey AuthorizationKey
-		{
-			get { return _authorizationKey; }
-		}
-	}
+        public MeshAuthorizationKey AuthorizationKey
+        {
+            get { return _authorizationKey; }
+        }
+    }
 }

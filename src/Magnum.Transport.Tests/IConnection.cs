@@ -1,8 +1,8 @@
-namespace Magnum.Transport.Tests
+namespace Magnum.Transport.Specs
 {
-	using System;
+    using System;
 
-	public interface IConnection : IDisposable
-	{
-	}
+    public interface IConnection : IDisposable
+    {
+    }
 }
