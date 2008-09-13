@@ -53,6 +53,7 @@
     <Compile Include="ComparisonComparer.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
