@@ -35,6 +35,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -55,6 +56,8 @@
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
+    <Compile Include="rhino-commons\ILocalData.cs" />
+    <Compile Include="rhino-commons\LocalData.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Range.cs" />
