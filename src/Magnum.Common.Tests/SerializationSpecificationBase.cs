@@ -1,4 +1,4 @@
-namespace Magnum.Common.Tests
+namespace Magnum.Common.Specs
 {
     using System.IO;
     using System.Runtime.Serialization;

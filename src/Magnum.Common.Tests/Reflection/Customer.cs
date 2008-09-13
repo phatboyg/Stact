@@ -10,17 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Tests.Reflection
+namespace Magnum.Common.Specs.Reflection
 {
-	using System;
+    using System;
 
-	[Serializable]
-	public class Customer
-	{
-		public string LastName { get; set; }
-		public string FirstName { get; set; }
-		public string Address { get; set; }
-		public int Age { get; set; }
-		public decimal Amount { get; set; }
-	}
+    [Serializable]
+    public class Customer
+    {
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string Address { get; set; }
+        public int Age { get; set; }
+        public decimal Amount { get; set; }
+    }
 }

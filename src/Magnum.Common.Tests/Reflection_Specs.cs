@@ -10,13 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Tests
+namespace Magnum.Common.Specs
 {
     using System;
     using System.Collections.Generic;
     using Common.Reflection;
     using NUnit.Framework;
-    using Reflection;
 
     [TestFixture]
     public class When_using_a_created_delegate_to_retrieve_an_object_value

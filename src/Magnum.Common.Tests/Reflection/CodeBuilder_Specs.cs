@@ -10,41 +10,41 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Tests.Reflection
+namespace Magnum.Common.Specs.Reflection
 {
-	using NUnit.Framework;
-	using Serialization;
+    using NUnit.Framework;
+    using Serialization;
 
-	[TestFixture]
-	public class When_building_a_delegate_using_lambdas :
-		SpecificationBase
-	{
-		private ISerializationWriter _writer;
-		private Customer _data;
+    [TestFixture]
+    public class When_building_a_delegate_using_lambdas :
+        SpecificationBase
+    {
+        private ISerializationWriter _writer;
+        private Customer _data;
 
-		protected override void Before_each_specification()
-		{
-			_writer = Mock<ISerializationWriter>();
+        protected override void Before_each_specification()
+        {
+            _writer = Mock<ISerializationWriter>();
 
-			_data = new Customer {FirstName = "Chris", LastName = "Patterson", Address = "123 American Way", Age = 27, Amount = 123.45m};
-		}
+            _data = new Customer {FirstName = "Chris", LastName = "Patterson", Address = "123 American Way", Age = 27, Amount = 123.45m};
+        }
 
-		[Test]
-		public void Verify_the_the_output_occurrs_in_order_and_properly()
-		{
-			using (Record)
-			{
-				_writer.Write("Chris");
-				_writer.Write("Patterson");
-				_writer.Write("123 American Way");
-				_writer.Write(27);
-				_writer.Write(123.45m);
-			}
+        [Test]
+        public void Verify_the_the_output_occurrs_in_order_and_properly()
+        {
+            using (Record)
+            {
+                _writer.Write("Chris");
+                _writer.Write("Patterson");
+                _writer.Write("123 American Way");
+                _writer.Write(27);
+                _writer.Write(123.45m);
+            }
 
-			using (Playback)
-			{
-				SerializationUtil<Customer>.Serialize(_writer, _data);
-			}
-		}
-	}
+            using (Playback)
+            {
+                SerializationUtil<Customer>.Serialize(_writer, _data);
+            }
+        }
+    }
 }
