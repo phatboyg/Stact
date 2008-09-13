@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization.Specs"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport", "Magnum.Transport\Magnum.Transport.csproj", "{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Specs", "Magnum.Transport.Tests\Magnum.Transport.Specs.csproj", "{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Specs", "Magnum.Transport.Specs\Magnum.Transport.Specs.csproj", "{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core", "Magnum.Core\Magnum.Core.csproj", "{C2DE93CD-C97E-40B6-A356-B753DA04E0AF}"
 EndProject
