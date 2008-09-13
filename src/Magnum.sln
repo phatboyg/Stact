@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Specs", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core", "Magnum.Core\Magnum.Core.csproj", "{C2DE93CD-C97E-40B6-A356-B753DA04E0AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core.Specs", "Magnum.Core.Tests\Magnum.Core.Specs.csproj", "{B7A7FA4C-2E26-477D-9B23-00099C9E7241}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core.Specs", "Magnum.Core.Specs\Magnum.Core.Specs.csproj", "{B7A7FA4C-2E26-477D-9B23-00099C9E7241}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Common", "Magnum.Common\Magnum.Common.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
 EndProject
