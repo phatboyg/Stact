@@ -2,15 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "Magnum\Magnum.csproj", "{FAAC0E55-2820-4014-BB54-8A1E72C97A29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Tests", "Magnum.Tests\Magnum.Tests.csproj", "{700795B6-AEE6-4623-8E1B-318B9D6CFC12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "Magnum.Tests\Magnum.Specs.csproj", "{700795B6-AEE6-4623-8E1B-318B9D6CFC12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization", "Magnum.Serialization\Magnum.Serialization.csproj", "{A6D8A4A5-D6F9-44DD-BFD4-F721CA9F3E01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization.Tests", "Magnum.Serialization.Tests\Magnum.Serialization.Tests.csproj", "{C72949DC-DCFC-457B-A7BD-A4D2FB437BF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Serialization.Specs", "Magnum.Serialization.Tests\Magnum.Serialization.Specs.csproj", "{C72949DC-DCFC-457B-A7BD-A4D2FB437BF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport", "Magnum.Transport\Magnum.Transport.csproj", "{B7BB5B70-1B0E-458B-95F4-678F2AE5C99A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Tests", "Magnum.Transport.Tests\Magnum.Transport.Tests.csproj", "{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Transport.Specs", "Magnum.Transport.Tests\Magnum.Transport.Specs.csproj", "{CE4C6C08-AA9E-45A4-A12E-BB6835DA91D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core", "Magnum.Core\Magnum.Core.csproj", "{C2DE93CD-C97E-40B6-A356-B753DA04E0AF}"
 EndProject
@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Core.Specs", "Magnum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Common", "Magnum.Common\Magnum.Common.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Common.Tests", "Magnum.Common.Tests\Magnum.Common.Tests.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Common.Specs", "Magnum.Common.Specs\Magnum.Common.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Infrastructure", "Magnum.Infrastructure\Magnum.Infrastructure.csproj", "{A3CA2BD8-BA6C-457F-9C56-0809C2739710}"
 EndProject
