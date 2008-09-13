@@ -1,43 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="Magnum" default="go">
 
-	<property name="nant.settings.currentframework"
-						value="net-3.5" />
-	<target name="go" depends="build, clean_the_bin, package_build" />
+	<property name="nant.settings.currentframework" value="net-3.5" />
+	<property name="dirs.build_output" value="${project::get-base-directory()}\build" />
+	<property name="files.zip" value="${project::get-base-directory()}\magnum.zip" />
+	<property name="files.solution" value="${project::get-base-directory()}\Magnum.sln" />
 	
-	<target name="build"
-				depends="common.find-svninfo, common.asminfo">
-		<delete dir=".\bin" failonerror="false" />
-		<delete file=".\Magnum.zip" failonerror="false" />
+	<target name="go" depends="build, package_build" />
+	
+	<target name="build" depends="common.find-svninfo, common.asminfo">
+		<delete dir="${dirs.build_output}" failonerror="false" />
 		
 		<property name="config" value="Release" />
 		
-		<msbuild project=".\Magnum.sln">
+		<msbuild project="${files.solution}">
 			<property name="Configuration" value="Release" />
+			<property name="OutputPath" value="${dirs.build_output}" />
 		</msbuild>
 
 	</target>
 	
 	<target name="package_build">
-    <delete file="..\build\Magnum.zip" failonerror="false" />
-    
-    <call target="zip" />
-    
-    <copy todir="..\build">
-      <fileset basedir=".">
-        <include name="Magnum.zip" />
-      </fileset>
-    
-    </copy>
-	</target>
-
-	<target name="zip">
-		<zip zipfile="Magnum.zip">
-			<fileset basedir=".\bin">
+	    <delete file="${files.zip}" failonerror="false" />
+	    
+		<zip zipfile="${files.zip}">
+			<fileset basedir="${dirs.build_output}">
 				<include name="**/*.dll" />
 			</fileset>
 		</zip>
+	    
 	</target>
+
 
 	<target name="common.find-svninfo"
 					description="Gets the current svn revision number">
@@ -89,23 +82,12 @@
 				<attribute type="CLSCompliantAttribute"
 									 value="true" />
 				<attribute type="AssemblyVersionAttribute"
-									 value="0.1.${version.rev}.${version.build}" />
+									 value="0.1.${version.build}.${version.rev}" />
 				<attribute type="AssemblyCopyrightAttribute"
 									 value="Magnum Project, original author or authors" />
 				<attribute type="AssemblyCompanyAttribute"
 									 value="CFT &amp; ACM" />
 			</attributes>
 		</asminfo>
-	</target>
-
-
-
-	<target name="clean_the_bin">
-		<delete failonerror="false">
-			<fileset>
-				<include name=".\bin\*.tests.dll" />
-				<include name=".\bin\*.tests.pdb" />
-			</fileset>
-		</delete>
 	</target>
 </project>
