@@ -3,84 +3,98 @@ namespace Magnum.Transport.Specs
     using System;
     using System.Net;
     using System.Threading;
+    using Machine.Specifications;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
 
-    [TestFixture]
+    [Concern("Peer")]
     public class As_a_participant_on_the_network
     {
-        [Test]
-        public void I_want_to_connection_to_a_remote_participant()
-        {
-            PeerInitiator pi = new PeerInitiator(_connectionTimeout, _receiveTimeout);
+        private static PeerInitiator _peerInitiator;
+        private static readonly TimeSpan _connectionTimeout = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan _receiveTimeout = TimeSpan.FromMinutes(10);
+        static PeerConnection client;
+        static PeerConnection server;
+        private static object deserializedObject;
 
-            IPEndPoint ip = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7321);
+        private Establish context = () =>
+                                        {
+                                            _peerInitiator = new PeerInitiator(_connectionTimeout, _receiveTimeout);
+                                            var ip = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7321);
 
-            ManualResetEvent _connected = new ManualResetEvent(false);
-            ManualResetEvent _accepted = new ManualResetEvent(false);
-
-            PeerConnection client = null;
-            PeerConnection server = null;
-
-            pi.Connected += delegate(PeerConnection connection)
-                                {
-                                    if (connection.Endpoint == ip)
-                                    {
-                                        client = connection;
-                                        _connected.Set();
-                                    }
-                                    else
-                                    {
-                                        server = connection;
-                                        _accepted.Set();
-                                    }
-                                };
-
-            pi.ConnectFailed += delegate
-                                    {
-                                        _connected.Set();
-                                        Assert.Fail("Failed to connect to the peer");
-                                    };
-
-            pi.Listen(ip);
-
-            pi.Connect(ip);
-
-            Assert.That(_connected.WaitOne(TimeSpan.FromSeconds(5), true), Is.True, "Timeout waiting for connection");
-            Assert.That(_accepted.WaitOne(TimeSpan.FromSeconds(5), true), Is.True, "Timeout waiting for remote connection");
+                                            var _connected = new ManualResetEvent(false);
+                                            var _accepted = new ManualResetEvent(false);
 
 
-            // at this point they are connected
+                                            _peerInitiator.Connected += delegate(PeerConnection connection)
+                                                                {
+                                                                    if (connection.Endpoint == ip)
+                                                                    {
+                                                                        client = connection;
+                                                                        _connected.Set();
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        server = connection;
+                                                                        _accepted.Set();
+                                                                    }
+                                                                };
 
-            TestObject to = new TestObject("/meta/handshake", "1.0", "12345");
+                                            _peerInitiator.ConnectFailed += delegate
+                                                                    {
+                                                                        _connected.Set();
+                                                                        Assert.Fail("Failed to connect to the peer");
+                                                                    };
 
-            Assert.That(client, Is.Not.Null);
-            Assert.That(server, Is.Not.Null);
-            client.Send(to);
+                                            _peerInitiator.Listen(ip);
 
-            object obj = server.Receive(TimeSpan.FromSeconds(8));
+                                            _peerInitiator.Connect(ip);
 
-            Assert.That(obj, Is.Not.Null);
-            Assert.That(obj, Is.TypeOf(typeof (TestObject)), "Invalid Type Received");
+                                            Assert.That(_connected.WaitOne(TimeSpan.FromSeconds(5), true), Is.True,
+                                                        "Timeout waiting for connection");
+                                            Assert.That(_accepted.WaitOne(TimeSpan.FromSeconds(5), true), Is.True,
+                                                        "Timeout waiting for remote connection");
 
-            server.Send(to);
 
-            obj = client.Receive(TimeSpan.FromSeconds(3));
-            Assert.That(obj, Is.Not.Null);
-            Assert.That(obj, Is.TypeOf(typeof(TestObject)), "Invalid Type Received");
+                                            // at this point they are connected
+                                        };
 
-        }
+        private Cleanup after_each = () =>
+                                         {
+                                             _peerInitiator = null;
+                                         };
 
-        [Test]
-        public void I_want_to_have_peers()
-        {
-            Peer p1 = new Peer();
+        private Because of = () =>
+                                 {
+                                     TestObject to = new TestObject("/meta/handshake", "1.0", "12345");
 
-            PeerInitiator pi = new PeerInitiator(_connectionTimeout, _receiveTimeout);
-        }
+                                     client.Send(to);
 
-        private readonly TimeSpan _connectionTimeout = TimeSpan.FromSeconds(10);
-        private readonly TimeSpan _receiveTimeout = TimeSpan.FromMinutes(10);
+                                     deserializedObject = server.Receive(TimeSpan.FromSeconds(8));
+
+                                 };
+
+        private It should_receive_the_sent_object = () =>
+                                                        {
+                                                            Assert.That(deserializedObject, Is.Not.Null);
+                                                            Assert.That(deserializedObject,
+                                                                        Is.TypeOf(typeof(TestObject)),
+                                                                        "Invalid Type Received");
+
+                                                        };
+
+        private It should_be_able_to_send_it_back = () =>
+                                                        {
+                                                            server.Send(deserializedObject);
+
+                                                            object o2 = client.Receive(TimeSpan.FromSeconds(3));
+
+                                                            Assert.That(o2, Is.Not.Null);
+                                                            Assert.That(o2, Is.TypeOf(typeof(TestObject)), "Invalid Type Received");
+                                                        };
+
+
+
     }
 
     [Serializable]
