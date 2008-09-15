@@ -1,57 +1,57 @@
 namespace Magnum.Transport.Specs
 {
     using System.Text;
+    using Machine.Specifications;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
 
-    [TestFixture]
+    [Concern("")]
     public class When_a_service_instance_is_started
     {
-        [Test]
-        public void Each_instance_should_have_a_unique_instance_id()
-        {
-            Participant p = new Participant();
+        private static Participant p;
+        private static Participant q;
+        static MeshAuthorizationKey authorizationKey;
+        static MeshAuthorizationKey authorizationKey2;
 
-            Participant q = new Participant();
 
-            Assert.That(p.Id, Is.Not.EqualTo(q.Id));
-        }
+        Establish context = () =>
+                                        {
+                                            IParticipantConfiguration configuration = new ParticipantConfiguration();
+                                            IParticipantConfiguration configuration2 = new ParticipantConfiguration();
+                                            authorizationKey = new MeshAuthorizationKey("Some Random String of Characters Used To Build An Authorization Key");
 
-        [Test]
-        public void The_authentication_key_for_a_participant_should_be_passed()
-        {
-            MeshAuthorizationKey authorizationKey = new MeshAuthorizationKey("Some Random String of Characters Used To Build An Authorization Key");
+                                            authorizationKey2 = new MeshAuthorizationKey("Another random string of characters");
 
-            IParticipantConfiguration configuration = new ParticipantConfiguration();
-            configuration.AuthorizationKey = authorizationKey;
+                                            configuration.AuthorizationKey = authorizationKey;
+                                            configuration2.AuthorizationKey = authorizationKey2;
+                                            p = new Participant(configuration);
+                                            q = new Participant(configuration2);
 
-            Participant p = new Participant(configuration);
+                                        };
 
-            byte[] phrase = Encoding.UTF8.GetBytes("Hello");
+        Because of = () =>
+                                 {
 
-            Assert.That(p.AuthorizationKey.Challenge(phrase), Is.EqualTo(authorizationKey.Challenge(phrase)));
-        }		
-		
-        [Test]
-        public void The_authentication_key_for_a_participant_should_fail_if_they_dont_match()
-        {
-            MeshAuthorizationKey authorizationKey = new MeshAuthorizationKey("Some Random String of Characters Used To Build An Authorization Key");
+                                 };
 
-            IParticipantConfiguration configuration = new ParticipantConfiguration();
-            configuration.AuthorizationKey = authorizationKey;
+        private It should_have_a_unique_id = () =>
+                                                 {
+                                                     Assert.That(p.Id, Is.Not.EqualTo(q.Id));
 
-            Participant p = new Participant(configuration);
+                                                 };
 
-            authorizationKey = new MeshAuthorizationKey("Another random string of characters");
+        private It should_have_a_passed_auth_key = () =>
+                                                       {
+                                                           byte[] phrase = Encoding.UTF8.GetBytes("Hello");
 
-            configuration = new ParticipantConfiguration();
-            configuration.AuthorizationKey = authorizationKey;
+                                                           Assert.That(p.AuthorizationKey.Challenge(phrase), Is.EqualTo(authorizationKey.Challenge(phrase)));
+                                                       };
 
-            Participant q = new Participant(configuration);
+        private It should_fail_if_keys_dont_match = () =>
+                                                        {
+                                                            byte[] phrase = Encoding.UTF8.GetBytes("Hello");
 
-            byte[] phrase = Encoding.UTF8.GetBytes("Hello");
-
-            Assert.That(p.AuthorizationKey.Challenge(phrase), Is.Not.EqualTo(q.AuthorizationKey.Challenge(phrase)));
-        }
+                                                            Assert.That(p.AuthorizationKey.Challenge(phrase), Is.Not.EqualTo(q.AuthorizationKey.Challenge(phrase)));
+                                                        };
     }
 }
