@@ -4,6 +4,7 @@ namespace Magnum.Common.Specs
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using DateTimeExtensions;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
 

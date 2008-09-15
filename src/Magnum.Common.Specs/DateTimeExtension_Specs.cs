@@ -1,6 +1,7 @@
 namespace Magnum.Common.Specs
 {
     using System;
+    using DateTimeExtensions;
     using NUnit.Framework;
 
     [TestFixture]

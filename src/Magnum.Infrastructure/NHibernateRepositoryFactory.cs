@@ -13,7 +13,7 @@
 namespace Magnum.Infrastructure
 {
 	using System;
-	using Common;
+	using Common.Repository;
 	using NHibernate;
 	using NHibernate.Cfg;
 

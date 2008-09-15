@@ -49,31 +49,30 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="ComparerExtensions.cs" />
+    <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="DateTimeExtensions.cs" />
-    <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="IAggregateRoot.cs" />
-    <Compile Include="IRepositoryFactory.cs" />
+    <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
+    <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="Repository\IAggregateRoot.cs" />
+    <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
     <Compile Include="rhino-commons\Collection.cs" />
     <Compile Include="rhino-commons\Exceptions\ElementNotFoundException.cs" />
     <Compile Include="rhino-commons\Guard.cs" />
     <Compile Include="rhino-commons\ILocalData.cs" />
     <Compile Include="rhino-commons\LocalData.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ObjectExtensions\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="RangeBuilder.cs" />
     <Compile Include="RangeEnumerator.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Reflection\FastProperty.cs" />
     <Compile Include="Reflection\IReflectedObjectContext.cs" />
     <Compile Include="Reflection\ReflectedPropertyContext.cs" />
     <Compile Include="Reflection\ReflectionCache.cs" />
-    <Compile Include="RepositoryBase.cs" />
-    <Compile Include="RepositoryCache.cs" />
+    <Compile Include="Repository\RepositoryBase.cs" />
+    <Compile Include="Repository\RepositoryCache.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="FunctionTimer.cs" />
     <Compile Include="Serialization\BinarySerializationReader.cs" />
@@ -81,7 +80,7 @@
     <Compile Include="Serialization\ISerializationReader.cs" />
     <Compile Include="Serialization\ISerializationWriter.cs" />
     <Compile Include="Serialization\SerializationUtil.cs" />
-    <Compile Include="TimeSpanExtensions.cs" />
+    <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

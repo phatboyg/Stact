@@ -15,7 +15,7 @@ namespace Magnum.Infrastructure
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Common;
+	using Common.Repository;
 	using NHibernate;
 	using NHibernate.Linq;
 

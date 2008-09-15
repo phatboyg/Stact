@@ -10,17 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common
+namespace Magnum.Common.CollectionExtensions
 {
-	using System;
+	using System.Collections.Generic;
 
-	public interface IAggregateRoot<TId>
+	public static class ComparerExtensions
 	{
-		TId Id { get; }
-	}
+		public static IComparer<T> Reverse<T>(this IComparer<T> original)
+		{
+			ReverseComparer<T> originalAsReverse = original as ReverseComparer<T>;
+			if (originalAsReverse != null)
+				return originalAsReverse.OriginalComparer;
 
-	public interface IAggregateRoot :
-		IAggregateRoot<Guid>
-	{
+			return new ReverseComparer<T>(original);
+		}
+
+		public static IComparer<T> ThenBy<T>(this IComparer<T> firstComparer, IComparer<T> secondComparer)
+		{
+			return new LinkedComparer<T>(firstComparer, secondComparer);
+		}
 	}
 }

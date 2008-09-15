@@ -1,3 +1,15 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Common
 {
 	using System;
@@ -9,11 +21,11 @@ namespace Magnum.Common
 	/// <typeparam name="T">The type of range</typeparam>
 	public class Range<T>
 	{
-		private readonly IComparer<T> _comparer;
-		private readonly bool _includeLowerBound;
-		private readonly bool _includeUpperBound;
-		private readonly T _lowerBound;
-		private readonly T _upperBound;
+		readonly IComparer<T> _comparer;
+		readonly bool _includeLowerBound;
+		readonly bool _includeUpperBound;
+		readonly T _lowerBound;
+		readonly T _upperBound;
 
 		/// <summary>
 		/// Initializes a new Range
@@ -35,7 +47,7 @@ namespace Magnum.Common
 		/// <param name="includeLowerBound">If the lower bound should be included</param>
 		/// <param name="includeUpperBound">If the upper bound should be included</param>
 		/// <param name="comparer">The comparison to use for the range elements</param>
-		private Range(T lowerBound, T upperBound, bool includeLowerBound, bool includeUpperBound, IComparer<T> comparer)
+		Range(T lowerBound, T upperBound, bool includeLowerBound, bool includeUpperBound, IComparer<T> comparer)
 		{
 			_comparer = comparer;
 			_lowerBound = lowerBound;

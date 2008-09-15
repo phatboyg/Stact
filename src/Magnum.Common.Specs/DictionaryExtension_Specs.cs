@@ -2,6 +2,7 @@ namespace Magnum.Common.Specs
 {
     using System;
     using System.Collections.Generic;
+    using CollectionExtensions;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
 
