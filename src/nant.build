@@ -2,8 +2,8 @@
 <project name="Magnum" default="go">
 
 	<property name="nant.settings.currentframework" value="net-3.5" />
-	<property name="dirs.build_output" value="${project::get-base-directory()}\build" />
-	<property name="files.zip" value="${project::get-base-directory()}\magnum.zip" />
+	<property name="dirs.build_output" value="${project::get-base-directory()}\..\build" />
+	<property name="files.zip" value="${project::get-base-directory()}\..\magnum.zip" />
 	<property name="files.solution" value="${project::get-base-directory()}\Magnum.sln" />
 	<property name="tools.mspec" value="${project::get-base-directory()}\..\lib\mspec\mspec-runner.exe" />
 	

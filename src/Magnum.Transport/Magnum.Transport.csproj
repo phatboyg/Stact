@@ -87,6 +87,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Magnum.Serialization\Magnum.Serialization.csproj">
+      <Project>{A6D8A4A5-D6F9-44DD-BFD4-F721CA9F3E01}</Project>
+      <Name>Magnum.Serialization</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
