@@ -57,10 +57,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IConnection.cs" />
+    <Compile Include="IParticipantConfiguration.cs" />
+    <Compile Include="MeshAuthorizationKey.cs" />
     <Compile Include="Messages\AnnouncePeer.cs" />
     <Compile Include="Messages\FindNode.cs" />
     <Compile Include="Messages\GetPeers.cs" />
     <Compile Include="Messages\PingNode.cs" />
+    <Compile Include="Participant.cs" />
+    <Compile Include="ParticipantConfiguration.cs" />
+    <Compile Include="PeerConnection.cs" />
+    <Compile Include="PeerInitiator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
