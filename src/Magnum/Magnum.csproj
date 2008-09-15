@@ -39,6 +39,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Build.cs" />
+    <Compile Include="ClassStorageContext.cs" />
+    <Compile Include="IClassStorageContext.cs" />
+    <Compile Include="KeyMap.cs" />
+    <Compile Include="ObjectToKey.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="StorageContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
