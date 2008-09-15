@@ -73,6 +73,7 @@
     <Compile Include="Reflection\InterOp_Specs.cs" />
     <Compile Include="Reflection\Performance_Specs.cs" />
     <Compile Include="Reflection\PropertyType_Specs.cs" />
+    <Compile Include="Reflection\Visibility_Specs.cs" />
     <Compile Include="SerializationSpecificationBase.cs" />
     <Compile Include="Reflection_Specs.cs" />
     <Compile Include="Repository\Repository_Specs.cs" />

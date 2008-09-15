@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common
 {
+	using System;
+
 	public class RangeBuilder<T>
 	{
 		internal bool _includeLowerBound;
@@ -70,9 +72,21 @@ namespace Magnum.Common
 
 	public static class RangeBuilderExt
 	{
-		public static RangeBuilder<T> Through<T>(this T start, T end)
+		public static RangeBuilder<int> Through(this int start, int end)
 		{
-			return new RangeBuilder<T>(start).Through(end);
+			return new RangeBuilder<int>(start).Through(end);
+		}
+		public static RangeBuilder<long> Through(this long start, long end)
+		{
+			return new RangeBuilder<long>(start).Through(end);
+		}
+		public static RangeBuilder<DateTime> Through(this DateTime start, DateTime end)
+		{
+			return new RangeBuilder<DateTime>(start).Through(end);
+		}
+		public static RangeBuilder<char> Through(this char start, char end)
+		{
+			return new RangeBuilder<char>(start).Through(end);
 		}
 	}
 }

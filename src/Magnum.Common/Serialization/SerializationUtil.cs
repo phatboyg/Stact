@@ -21,7 +21,7 @@ namespace Magnum.Common.Serialization
 	{
 		private static readonly Action<ISerializationReader, T> _deserializer;
 		private static readonly Type[] _types = new Type[] {};
-		
+
 		public static readonly Func<T> New;
 		public static readonly Action<ISerializationWriter, T> Serialize;
 
@@ -60,7 +60,7 @@ namespace Magnum.Common.Serialization
 			var writer = Expression.Parameter(typeof (ISerializationWriter), "writer");
 			var instance = Expression.Parameter(type, "instance");
 
-			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			foreach (PropertyInfo propertyInfo in properties)
 			{
 				var getter = BuildGetterForProperty(instance, propertyInfo);
@@ -106,7 +106,7 @@ namespace Magnum.Common.Serialization
 			var reader = Expression.Parameter(typeof (ISerializationReader), "reader");
 			var instance = Expression.Parameter(type, "instance");
 
-			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			foreach (PropertyInfo propertyInfo in properties)
 			{
 				MethodInfo readerInfo = typeof (ISerializationReader).GetMethod("Read" + propertyInfo.PropertyType.Name);
@@ -123,7 +123,24 @@ namespace Magnum.Common.Serialization
 
 				//UnaryExpression valueCast = (!propertyInfo.PropertyType.IsValueType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
 
-				Expression<Action<ISerializationReader, T>> doit = Expression.Lambda<Action<ISerializationReader, T>>(Expression.Call(instance, propertyInfo.GetSetMethod(), new Expression[] {Expression.Invoke(Expression.Constant(readerLambda), new[] {reader})}), new[] {reader, instance});
+				MethodInfo setMethod = propertyInfo.GetSetMethod();
+				if(setMethod==null)
+				{
+					var accessors = propertyInfo.GetAccessors(true);
+					if (accessors != null)
+						foreach (MethodInfo info in accessors)
+						{
+							if(info.ReturnType == typeof(void))
+							{
+								setMethod = info;
+								break;
+							}
+						}
+				}
+				if (setMethod == null)
+					throw new Exception("Unable to write to property due to visibility: " + propertyInfo.Name);
+
+				Expression<Action<ISerializationReader, T>> doit = Expression.Lambda<Action<ISerializationReader, T>>(Expression.Call(instance, setMethod, new Expression[] {Expression.Invoke(Expression.Constant(readerLambda), new[] {reader})}), new[] {reader, instance});
 
 				deserializer += doit.Compile();
 			}
