@@ -58,6 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\ClassStorageContext.cs" />
+    <Compile Include="Integration\IClassStorageContext.cs" />
+    <Compile Include="Integration\KeyMap.cs" />
+    <Compile Include="Integration\ObjectToKey.cs" />
+    <Compile Include="Integration\Person.cs" />
+    <Compile Include="Integration\StorageContext.cs" />
     <Compile Include="Integration\Storage_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
