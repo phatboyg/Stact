@@ -38,7 +38,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Build.cs" />
     <Compile Include="ClassStorageContext.cs" />
     <Compile Include="IClassStorageContext.cs" />
     <Compile Include="KeyMap.cs" />
