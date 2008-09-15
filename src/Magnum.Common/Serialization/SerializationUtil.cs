@@ -18,14 +18,36 @@ namespace Magnum.Common.Serialization
 
 	public static class SerializationUtil<T> where T : new()
 	{
+		private static readonly Action<ISerializationReader, T> _deserializer;
+		private static readonly Type[] _types = new Type[] {};
+		
+		public static readonly Func<T> New;
 		public static readonly Action<ISerializationWriter, T> Serialize;
-		public static readonly Action<ISerializationReader, T> Deserialize;
 
 		static SerializationUtil()
 		{
+			New = BuildNewT();
 			Serialize = BuildSerializer();
 
-			Deserialize = BuildDeserializer();
+			_deserializer = BuildDeserializer();
+		}
+
+		public static T Deserialize(ISerializationReader reader)
+		{
+			T t = New();
+
+			_deserializer(reader, t);
+
+			return t;
+		}
+
+		private static Func<T> BuildNewT()
+		{
+			Type type = typeof (T);
+
+			ConstructorInfo ci = type.GetConstructor(_types);
+
+			return Expression.Lambda<Func<T>>(Expression.New(ci)).Compile();
 		}
 
 		private static Action<ISerializationWriter, T> BuildSerializer()
@@ -40,38 +62,39 @@ namespace Magnum.Common.Serialization
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach (PropertyInfo propertyInfo in properties)
 			{
-				var getter = BuildGetterForProperty<T>(instance, propertyInfo);
+				var getter = BuildGetterForProperty(instance, propertyInfo);
 
-                //TODO: this is where ih is falling down.
-                //TODO: would have to have a method for ever type know to man
-                //TODO: Register types?
+				//TODO: this is where ih is falling down.
+				//TODO: would have to have a method for ever type know to man
+				//TODO: Register types?
 				MethodInfo writerInfo = typeof (ISerializationWriter).GetMethod("Write", new[] {propertyInfo.PropertyType});
 
 				if (writerInfo == null)
 					throw new Exception("Unable to output a property of type " + propertyInfo.PropertyType.FullName);
 
-                //TODO: What is this
-			    var thing = Expression.Call(writer, writerInfo,
-			                                new Expression[]
-			                                    {Expression.Invoke(Expression.Constant(getter), new Expression[] {instance})});
+				//TODO: What is this
+				var thing = Expression.Call(writer, writerInfo,
+				                            new Expression[]
+				                            	{Expression.Invoke(Expression.Constant(getter), new Expression[] {instance})});
 
-				Expression<Action<ISerializationWriter, T>> doit = 
-                    Expression.Lambda<Action<ISerializationWriter, T>>(thing, new[] {writer, instance});
+				Expression<Action<ISerializationWriter, T>> doit =
+					Expression.Lambda<Action<ISerializationWriter, T>>(thing, new[] {writer, instance});
 
 				serializer += doit.Compile();
 			}
 
 			return serializer;
 		}
-        private static Delegate BuildGetterForProperty<T>(ParameterExpression instance, PropertyInfo propertyInfo)
-        {
-            var getMethod = Expression.Call(instance, propertyInfo.GetGetMethod());
-            var returnType = propertyInfo.PropertyType;
 
-            Type getterType = typeof(Func<,>).MakeGenericType(typeof(T), returnType);
+		private static Delegate BuildGetterForProperty(ParameterExpression instance, PropertyInfo propertyInfo)
+		{
+			var getMethod = Expression.Call(instance, propertyInfo.GetGetMethod());
+			var returnType = propertyInfo.PropertyType;
 
-            return Expression.Lambda(getterType, getMethod, instance).Compile();
-        }
+			Type getterType = typeof (Func<,>).MakeGenericType(typeof (T), returnType);
+
+			return Expression.Lambda(getterType, getMethod, instance).Compile();
+		}
 
 		private static Action<ISerializationReader, T> BuildDeserializer()
 		{
@@ -85,13 +108,13 @@ namespace Magnum.Common.Serialization
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach (PropertyInfo propertyInfo in properties)
 			{
-				MethodInfo readerInfo = typeof(ISerializationReader).GetMethod("Read" + propertyInfo.PropertyType.Name);
+				MethodInfo readerInfo = typeof (ISerializationReader).GetMethod("Read" + propertyInfo.PropertyType.Name);
 				if (readerInfo == null)
 					throw new Exception("Unable to read a property of type " + propertyInfo.PropertyType.FullName);
 
-				Type readerType = typeof (Func<,>).MakeGenericType(typeof(ISerializationReader), propertyInfo.PropertyType);
+				Type readerType = typeof (Func<,>).MakeGenericType(typeof (ISerializationReader), propertyInfo.PropertyType);
 
-				var readerLambda = Expression.Lambda(readerType, Expression.Call(reader, readerInfo), new [] { reader } ).Compile();
+				var readerLambda = Expression.Lambda(readerType, Expression.Call(reader, readerInfo), new[] {reader}).Compile();
 
 				//var newT = Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
 
@@ -99,13 +122,12 @@ namespace Magnum.Common.Serialization
 
 				//UnaryExpression valueCast = (!propertyInfo.PropertyType.IsValueType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
 
-				Expression<Action<ISerializationReader, T>> doit = Expression.Lambda<Action<ISerializationReader, T>>(Expression.Call(instance, propertyInfo.GetSetMethod(), new Expression[] { Expression.Invoke(Expression.Constant(readerLambda), new[] { reader}) }), new[] { reader, instance });
+				Expression<Action<ISerializationReader, T>> doit = Expression.Lambda<Action<ISerializationReader, T>>(Expression.Call(instance, propertyInfo.GetSetMethod(), new Expression[] {Expression.Invoke(Expression.Constant(readerLambda), new[] {reader})}), new[] {reader, instance});
 
 				deserializer += doit.Compile();
 			}
 
-			return  deserializer;
+			return deserializer;
 		}
-
 	}
 }

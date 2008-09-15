@@ -12,49 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs
 {
-    using System.IO;
-    using System.Runtime.Serialization;
-    using Serialization;
+	using System.IO;
+	using Serialization;
 
-    public class SerializationSpecificationBase :
-        SpecificationBase
-    {
-        public byte[] Serialize<T>(T obj) where T : new()
-        {
-            byte[] bytes;
-            using (var storage = new MemoryStream())
-            using (var binaryWriter = new BinaryWriter(storage))
-            {
-                var writer = new BinarySerializationWriter(binaryWriter);
+	public class SerializationSpecificationBase :
+		SpecificationBase
+	{
+		public byte[] Serialize<T>(T obj) where T : new()
+		{
+			byte[] bytes;
+			using (var storage = new MemoryStream())
+			using (var binaryWriter = new BinaryWriter(storage))
+			{
+				var writer = new BinarySerializationWriter(binaryWriter);
 
-                SerializationUtil<T>.Serialize(writer, obj);
+				SerializationUtil<T>.Serialize(writer, obj);
 
-                binaryWriter.Flush();
-                binaryWriter.Close();
+				binaryWriter.Flush();
+				binaryWriter.Close();
 
-                storage.Flush();
-                bytes = storage.ToArray();
+				storage.Flush();
+				bytes = storage.ToArray();
 
-                storage.Close();
-            }
-            return bytes;
-        }
+				storage.Close();
+			}
+			return bytes;
+		}
 
-        public T Deserialize<T>(byte[] bytes) where T : class, new()
-        {
-            T obj = null;
+		public T Deserialize<T>(byte[] bytes) where T : class, new()
+		{
+			T obj = null;
 
-            using (var output = new MemoryStream(bytes))
-            using (var binaryReader = new BinaryReader(output))
-            {
-                var writer = new BinarySerializationReader(binaryReader);
-                output.Seek(0, SeekOrigin.Begin);
+			using (var output = new MemoryStream(bytes))
+			using (var binaryReader = new BinaryReader(output))
+			{
+				var writer = new BinarySerializationReader(binaryReader);
+				output.Seek(0, SeekOrigin.Begin);
 
-                obj = (T) FormatterServices.GetUninitializedObject(typeof (T));
-                SerializationUtil<T>.Deserialize(writer, obj);
-            }
+				obj = SerializationUtil<T>.Deserialize(writer);
+			}
 
-            return obj;
-        }
-    }
+			return obj;
+		}
+	}
 }
