@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Serialization
 {
+	using System;
 	using System.IO;
 
 	public class BinarySerializationWriter :
@@ -24,7 +25,42 @@ namespace Magnum.Common.Serialization
 			_writer = writer;
 		}
 
+		public void Write(long value)
+		{
+			_writer.Write(value);
+		}
+
 		public void Write(string value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(float value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(short value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(ushort value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(ulong value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(uint value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(double value)
 		{
 			_writer.Write(value);
 		}
@@ -32,6 +68,16 @@ namespace Magnum.Common.Serialization
 		public void Write(int value)
 		{
 			_writer.Write(value);
+		}
+
+		public void Write(bool value)
+		{
+			_writer.Write(value);
+		}
+
+		public void Write(DateTime value)
+		{
+			_writer.Write(value.ToBinary());
 		}
 
 		public void Write(decimal value)

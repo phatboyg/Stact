@@ -12,10 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Serialization
 {
+	using System;
+
 	public interface ISerializationWriter
 	{
-		void Write(string value);
-		void Write(int value);
+		void Write(bool value);
+		void Write(DateTime value);
 		void Write(decimal value);
+		void Write(double value);
+		void Write(int value);
+		void Write(long value);
+		void Write(string value);
+		void Write(float value);
+		void Write(short value);
+		void Write(ushort value);
+		void Write(ulong value);
+		void Write(uint value);
 	}
 }

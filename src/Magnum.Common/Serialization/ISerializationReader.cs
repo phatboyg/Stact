@@ -12,10 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Serialization
 {
+	using System;
+
 	public interface ISerializationReader
 	{
 		string ReadString();
 		int ReadInt32();
 		decimal ReadDecimal();
+		long ReadInt64();
+		double ReadDouble();
+		DateTime ReadDateTime();
+		bool ReadBoolean();
+		float ReadSingle();
+		short ReadInt16();
+		ushort ReadUInt16();
+		ulong ReadUInt64();
+		uint ReadUInt32();
 	}
 }

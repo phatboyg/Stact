@@ -13,6 +13,7 @@
 namespace Magnum.Common.Serialization
 {
 	using System;
+	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -128,6 +129,38 @@ namespace Magnum.Common.Serialization
 			}
 
 			return deserializer;
+		}
+
+		public static byte[] SerializeToByteArray(T obj)
+		{
+			byte[] bytes;
+			using (var storage = new MemoryStream())
+			using (var binaryWriter = new BinaryWriter(storage))
+			{
+				var writer = new BinarySerializationWriter(binaryWriter);
+
+				Serialize(writer, obj);
+
+				binaryWriter.Flush();
+				binaryWriter.Close();
+
+				storage.Flush();
+				bytes = storage.ToArray();
+
+				storage.Close();
+			}
+			return bytes;
+		}
+
+		public static T DeserializeFromByteArray(byte[] bytes)
+		{
+			using (var output = new MemoryStream(bytes))
+			using (var binaryReader = new BinaryReader(output))
+			{
+				var writer = new BinarySerializationReader(binaryReader);
+
+				return Deserialize(writer);
+			}
 		}
 	}
 }

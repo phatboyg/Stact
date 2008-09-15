@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Serialization
 {
+	using System;
 	using System.IO;
 
 	public class BinarySerializationReader :
@@ -37,6 +38,51 @@ namespace Magnum.Common.Serialization
 		public decimal ReadDecimal()
 		{
 			return _reader.ReadDecimal();
+		}
+
+		public long ReadInt64()
+		{
+			return _reader.ReadInt64();
+		}
+
+		public double ReadDouble()
+		{
+			return _reader.ReadDouble();
+		}
+
+		public DateTime ReadDateTime()
+		{
+			return DateTime.FromBinary(_reader.ReadInt64());
+		}
+
+		public bool ReadBoolean()
+		{
+			return _reader.ReadBoolean();
+		}
+
+		public float ReadSingle()
+		{
+			return _reader.ReadSingle();
+		}
+
+		public short ReadInt16()
+		{
+			return _reader.ReadInt16();
+		}
+
+		public ushort ReadUInt16()
+		{
+			return _reader.ReadUInt16();
+		}
+
+		public ulong ReadUInt64()
+		{
+			return _reader.ReadUInt64();
+		}
+
+		public uint ReadUInt32()
+		{
+			return _reader.ReadUInt32();
 		}
 	}
 }
