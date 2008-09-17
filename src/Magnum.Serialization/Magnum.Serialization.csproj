@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A6D8A4A5-D6F9-44DD-BFD4-F721CA9F3E01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -42,10 +42,13 @@
     <Compile Include="BEncodeObjectFormatter.cs" />
     <Compile Include="Bencoder.cs" />
     <Compile Include="BDecode.cs" />
+    <Compile Include="Cerealizer.cs" />
     <Compile Include="IObjectFormatter.cs" />
     <Compile Include="IObjectSerializer.cs" />
+    <Compile Include="ISerializationFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializationOptimizer.cs" />
+    <Compile Include="XmlFormatter.cs" />
     <Compile Include="XmlObjectFormatter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
