@@ -383,7 +383,7 @@ namespace Magnum.Serialization.Specs
         private readonly string _title;
         //private readonly SimpleObject _child;
 
-        public static int Hits
+    	public static int Hits
         {
             get { return _hits; }
         }
@@ -403,10 +403,9 @@ namespace Magnum.Serialization.Specs
             //	_child = child;
         }
 
-    	private DerivedObject() : 
-			base()
+    	public DerivedObject() :
+    		base()
     	{
-    		throw new NotImplementedException();
     	}
 
     	public string Title

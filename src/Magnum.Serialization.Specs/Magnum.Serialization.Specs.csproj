@@ -58,9 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Another_Sepcs.cs" />
     <Compile Include="Bencoder_Specs.cs" />
-    <Compile Include="Deserializer_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectiveVisitor_Exp.cs" />
     <Compile Include="XmlDeserialization_Specs.cs" />
