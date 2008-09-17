@@ -38,6 +38,11 @@ namespace Magnum.Serialization
 			_stream.Flush();
 		}
 
+		public void Write(IPropertyData data)
+		{
+			throw new System.NotImplementedException();
+		}
+
 		public void WriteField(FieldInfo info, string value)
 		{
 			WriteString(info.Name);

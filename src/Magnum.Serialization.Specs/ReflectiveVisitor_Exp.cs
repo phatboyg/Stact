@@ -23,8 +23,8 @@ namespace Magnum.Serialization.Specs
             using(IObjectFormatter formatter = new BEncodeObjectFormatter(mstream))
             using(IObjectSerializer serializer = new BasicObjectSerializer(formatter))
             {
-                serializer.Serialize(obj);
-                serializer.Serialize(obj2);
+                //serializer.Serialize(mstream, obj);
+                //serializer.Serialize(mstream, obj2);
             }
 
             Debug.WriteLine("DATA: " + Encoding.UTF8.GetString(mstream.ToArray()));

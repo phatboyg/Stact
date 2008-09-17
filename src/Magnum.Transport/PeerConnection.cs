@@ -70,7 +70,7 @@ namespace Magnum.Transport.Specs
 
         public void Send<T>(T message) where T : class
         {
-            _serializer.Serialize(message);
+            //_serializer.Serialize(message);
         }
 
         public object Receive(TimeSpan timeout)

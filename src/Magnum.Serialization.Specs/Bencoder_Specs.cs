@@ -345,7 +345,11 @@ namespace Magnum.Serialization.Specs
             _lastName = lastName;
         }
 
-        public string LastName
+    	protected SimpleObject()
+    	{
+    	}
+
+    	public string LastName
         {
             get { return _lastName; }
         }
@@ -399,7 +403,13 @@ namespace Magnum.Serialization.Specs
             //	_child = child;
         }
 
-        public string Title
+    	private DerivedObject() : 
+			base()
+    	{
+    		throw new NotImplementedException();
+    	}
+
+    	public string Title
         {
             get { return _title; }
         }

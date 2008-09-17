@@ -1,27 +1,53 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization
 {
 	using System;
+	using System.Collections.Generic;
 	using System.IO;
-	using System.Reflection;
 	using System.Text;
 	using System.Xml;
+	using Common.CollectionExtensions;
 
-	public class XmlObjectFormatter : IObjectFormatter
+	public class XmlObjectFormatter :
+		IObjectFormatter
 	{
-		private readonly MemoryStream _stream;
+		private readonly Stream _stream;
 		private readonly XmlWriter _writer;
+		
+		private static readonly Dictionary<Type, Func<object, string>> _converters = new Dictionary<Type, Func<object, string>>();
 
-		public XmlObjectFormatter()
+		static XmlObjectFormatter()
 		{
-			_stream = new MemoryStream();
-			_writer = XmlWriter.Create(_stream);
+			_converters.Add(typeof (object), (x) => x.ToString());
+			_converters.Add(typeof (int), (x) => x.ToString());
+			_converters.Add(typeof (DateTime), (x) => ((DateTime)x).ToString("u"));
 		}
 
-		public string GetString()
-		{
-			_writer.Flush();
 
-			return Encoding.UTF8.GetString(_stream.ToArray());
+		public XmlObjectFormatter(Stream stream)
+		{
+			_stream = stream;
+
+			XmlWriterSettings settings = new XmlWriterSettings
+				{
+					CloseOutput = false,
+					Encoding = new UTF8Encoding(false),
+					NewLineHandling = NewLineHandling.None,
+					NewLineOnAttributes = false,
+				};
+
+			_writer = XmlWriter.Create(_stream, settings);
 		}
 
 		public void Start()
@@ -45,28 +71,21 @@ namespace Magnum.Serialization
 			_writer.WriteEndElement();
 		}
 
-		public void WriteField(FieldInfo info, string value)
+		public void Write(IPropertyData data)
 		{
-			_writer.WriteElementString(info.Name, value);
-		}
+			Func<object, string> converter;
+			if (_converters.TryGetValue(data.Value.GetType(), out converter) == false)
+				converter = _converters[typeof (object)];
 
-		public void WriteString(FieldInfo info, string value)
-		{
-			_writer.WriteElementString("string", value);
-		}
-
-		public byte[] ToArray()
-		{
-			_writer.Flush();
-			return _stream.ToArray();
+			_writer.WriteElementString(data.Name, converter(data.Value));
 		}
 
 		public void Dispose()
 		{
-			if (_stream != null)
-			{
-				_stream.Dispose();
-			}
+			_writer.Flush();
+			_writer.Close();
+
+			_stream.Flush();
 		}
 	}
 }

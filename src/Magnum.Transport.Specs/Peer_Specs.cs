@@ -111,7 +111,11 @@ namespace Magnum.Transport.Specs
             _version = version;
         }
 
-        public string Channel
+    	public TestObject()
+    	{
+    	}
+
+    	public string Channel
         {
             get { return _channel; }
         }

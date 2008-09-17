@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.Reflection
 {
-    using NUnit.Framework;
+	using System;
+	using NUnit.Framework;
     using Serialization;
 
     [TestFixture]
@@ -46,5 +47,17 @@ namespace Magnum.Common.Specs.Reflection
                 SerializationUtil<Customer>.Serialize(_writer, _data);
             }
         }
+
+    	[Test]
+    	public void I_want_to_write_fields_with_expression_trees()
+    	{
+    		Action<FieldClass, string> hitter = (x, y) => x._field = y;
+    		
+    	}
+
+    	public class FieldClass
+    	{
+    		public string _field;
+    	}
     }
 }

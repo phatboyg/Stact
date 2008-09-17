@@ -1,6 +1,7 @@
 namespace Magnum.Serialization
 {
 	using System;
+	using System.IO;
 	using System.Reflection;
 	using System.Runtime.Serialization;
 
@@ -59,18 +60,43 @@ namespace Magnum.Serialization
 		{
 			if (fieldInfo.FieldType == typeof (string))
 			{
-				_fomatter.WriteString(fieldInfo, obj as string);
+				//_fomatter.WriteString(fieldInfo, obj as string);
 			}
 		}
 
 		private void SerializeValueType(FieldInfo fieldInfo, object obj)
 		{
-			_fomatter.WriteField(fieldInfo, obj.ToString());
+			//_fomatter.WriteField(fieldInfo, obj.ToString());
 		}
 
 		public void Dispose()
 		{
 
+		}
+
+		public void Serialize<T>(Stream output, T _data) where T : class, new()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public T Deserialize<T>(Stream input) where T : class, new()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public void Serialize<T>(IObjectFormatter output, T item) where T : class, new()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public T Deserialize<T>(IObjectParser input) where T : class, new()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public T Deserialize<T>(IObjectFormatter input) where T : class, new()
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }
