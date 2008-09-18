@@ -33,7 +33,7 @@ namespace Magnum.Specs.Integration
 				_person.LastName = "Patterson";
 
 				_context = new StorageContext();
-				_context.RegisterClass<Person, Guid>(p => p.Id);
+				_context.RegisterClass<Person, Guid>();
 			};
 
 		Cleanup after_each = () =>

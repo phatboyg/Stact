@@ -58,9 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\ClassStorageContext.cs" />
+    <Compile Include="Integration\StorageContext.cs" />
     <Compile Include="Integration\Storage_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{FAAC0E55-2820-4014-BB54-8A1E72C97A29}</Project>
       <Name>Magnum</Name>

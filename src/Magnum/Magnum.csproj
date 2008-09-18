@@ -7,13 +7,14 @@
     <ProjectGuid>{FAAC0E55-2820-4014-BB54-8A1E72C97A29}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Default</RootNamespace>
-    <AssemblyName>Default</AssemblyName>
+    <RootNamespace>Magnum</RootNamespace>
+    <AssemblyName>Magnum</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -44,6 +48,12 @@
     <Compile Include="ObjectToKey.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="StorageContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
