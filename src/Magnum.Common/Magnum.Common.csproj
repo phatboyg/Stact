@@ -52,6 +52,8 @@
     <Compile Include="Calendar\Holidays\BaseCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />
+    <Compile Include="Calendar\Holidays\ColumbusDayObserved.cs" />
+    <Compile Include="Calendar\Holidays\EasterCheck.cs" />
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
