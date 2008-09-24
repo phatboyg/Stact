@@ -49,6 +49,11 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Calendar\Holidays\BaseCheck.cs" />
+    <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
+    <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />
+    <Compile Include="Calendar\IsHoliday.cs" />
+    <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="ComparisonComparer.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
