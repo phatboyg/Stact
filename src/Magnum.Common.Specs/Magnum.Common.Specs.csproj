@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
     <Compile Include="Metric_Specs.cs" />

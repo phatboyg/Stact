@@ -60,6 +60,9 @@
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="ComparisonComparer.cs" />
+    <Compile Include="Cryptography\EncryptionResult.cs" />
+    <Compile Include="Cryptography\ICryptographyService.cs" />
+    <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="LockFreeQueue.cs" />
