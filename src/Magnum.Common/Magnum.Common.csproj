@@ -54,6 +54,8 @@
     <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />
     <Compile Include="Calendar\Holidays\ColumbusDayObserved.cs" />
     <Compile Include="Calendar\Holidays\EasterCheck.cs" />
+    <Compile Include="Calendar\Holidays\FlagDayCheck.cs" />
+    <Compile Include="Calendar\Holidays\FlagDayObservedCheck.cs" />
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
@@ -61,6 +63,10 @@
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="LockFreeQueue.cs" />
+    <Compile Include="Mail\FileMailServer.cs" />
+    <Compile Include="Mail\IMailServer.cs" />
+    <Compile Include="Mail\NullMailServer.cs" />
+    <Compile Include="Mail\SmtpMailServer.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
