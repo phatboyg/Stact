@@ -60,6 +60,7 @@
     <Compile Include="ComparisonComparer.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="LockFreeQueue.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
