@@ -12,112 +12,131 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Repository
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Common.Repository;
-	using NHibernate;
-	using NHibernate.Linq;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Transactions;
+    using Common.Repository;
+    using NHibernate;
+    using NHibernate.Linq;
 
-	public class NHibernateRepository :
-		IRepository
-	{
-		private readonly ISession _session;
+    public class NHibernateRepository :
+        IRepository
+    {
+        private readonly ISession _session;
 
-		public NHibernateRepository(ISessionFactory sessionFactory)
-		{
-			_session = sessionFactory.OpenSession();
-			_session.FlushMode = FlushMode.Commit;
-		}
+        public NHibernateRepository(ISessionFactory sessionFactory)
+        {
+            _session = sessionFactory.OpenSession();
+            _session.FlushMode = FlushMode.Commit;
+        }
 
-		public void Dispose()
-		{
-			_session.Dispose();
-		}
+        public void Dispose()
+        {
+            _session.Dispose();
+        }
 
-		public T Get<T>(object id) where T : class
-		{
-			return _session.Get<T>(id);
-		}
+        public T Get<T>(object id) where T : class
+        {
+            return _session.Get<T>(id);
+        }
 
-		public IList<T> List<T>() where T : class
-		{
-			return _session.CreateCriteria(typeof (T)).List<T>();
-		}
+        public IList<T> List<T>() where T : class
+        {
+            return _session.CreateCriteria(typeof (T)).List<T>();
+        }
 
-		public void Save<T>(T item) where T : class
-		{
-			_session.WithinTransaction(x => x.SaveOrUpdate(item));
-		}
+        public void Save<T>(T item) where T : class
+        {
+            _session.WithinTransaction(x => x.Save(item));
+        }
 
-		public void Delete<T>(T item) where T : class
-		{
-			_session.WithinTransaction(x => x.Delete(item));
-		}
-	}
+        public void Update<T>(T item) where T : class
+        {
+            _session.WithinTransaction(x => x.Update(item));
+        }
 
-	public static class NHibernateExtensions
-	{
-		public static void WithinTransaction(this ISession session, Action<ISession> action)
-		{
-			ITransaction transaction = session.BeginTransaction();
-			try
-			{
-				action(session);
-				transaction.Commit();
-			}
-			catch (Exception)
-			{
-				transaction.Rollback();
-				throw;
-			}
-			finally
-			{
-				transaction.Dispose();
-			}
-		}
-	}
+        public void Delete<T>(T item) where T : class
+        {
+            _session.WithinTransaction(x => x.Delete(item));
+        }
+    }
 
-	public class NHibernateRepository<T, K> :
-		RepositoryBase<T, K>
-		where T : class, IAggregateRoot<K>
-	{
-		private readonly ISession _session;
+    public static class NHibernateExtensions
+    {
+        public static void WithinTransaction(this ISession session, Action<ISession> action)
+        {
+            if (Transaction.Current != null)
+            {
+                action(session);
+                session.Flush();
+            }
+            else
+            {
+                ITransaction transaction = session.BeginTransaction();
+                try
+                {
+                    action(session);
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    transaction.Dispose();
+                }
+            }
+        }
+    }
 
-		public NHibernateRepository(ISessionFactory sessionFactory)
-		{
-			_session = sessionFactory.OpenSession();
-			_session.FlushMode = FlushMode.Commit;
-		}
+    public class NHibernateRepository<T, K> :
+        RepositoryBase<T, K>
+        where T : class, IAggregateRoot<K>
+    {
+        private readonly ISession _session;
 
-		protected override IQueryable<T> RepositoryQuery
-		{
-			get { return _session.Linq<T>(); }
-		}
+        public NHibernateRepository(ISessionFactory sessionFactory)
+        {
+            _session = sessionFactory.OpenSession();
+            _session.FlushMode = FlushMode.Commit;
+        }
 
-		public override void Dispose()
-		{
-			_session.Dispose();
-		}
+        protected override IQueryable<T> RepositoryQuery
+        {
+            get { return _session.Linq<T>(); }
+        }
 
-		public override T Get(K id)
-		{
-			return _session.Get<T>(id);
-		}
+        public override void Dispose()
+        {
+            _session.Dispose();
+        }
 
-		public override IList<T> List()
-		{
-			return _session.CreateCriteria(typeof (T)).List<T>();
-		}
+        public override T Get(K id)
+        {
+            return _session.Get<T>(id);
+        }
 
-		public override void Save(T item)
-		{
-			_session.WithinTransaction(x => x.SaveOrUpdate(item));
-		}
+        public override IList<T> List()
+        {
+            return _session.CreateCriteria(typeof (T)).List<T>();
+        }
 
-		public override void Delete(T item)
-		{
-			_session.WithinTransaction(x => x.Delete(item));
-		}
-	}
+        public override void Save(T item)
+        {
+            _session.WithinTransaction(x => x.Save(item));
+        }
+
+        public override void Update(T item)
+        {
+            _session.WithinTransaction(x => x.Update(item));
+        }
+
+        public override void Delete(T item)
+        {
+            _session.WithinTransaction(x => x.Delete(item));
+        }
+    }
 }

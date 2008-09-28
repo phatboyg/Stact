@@ -44,7 +44,14 @@ namespace Magnum.Common.Repository
 		/// <param name="item"></param>
 		void Save<T>(T item) where T : class;
 
-		/// <summary>
+        /// <summary>
+        /// Updates an existing object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+	    void Update<T>(T item) where T : class;
+
+	    /// <summary>
 		/// Deletes an object from the repository
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -81,6 +88,12 @@ namespace Magnum.Common.Repository
 		/// <typeparam name="T"></typeparam>
 		/// <param name="item"></param>
 		void Save(T item);
+
+        /// <summary>
+        /// Updates an existing item
+        /// </summary>
+        /// <param name="item"></param>
+	    void Update(T item);
 
 		/// <summary>
 		/// Deletes an object from the repository

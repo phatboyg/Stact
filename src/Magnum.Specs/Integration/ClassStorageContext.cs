@@ -36,6 +36,12 @@ namespace Magnum.Specs.Integration
                 _storage.Add(item.Id, item);
         }
 
+        public override void Update(T item)
+        {
+            _storage[item.Id] = item;
+            
+        }
+
         public override void Delete(T item)
         {
             _storage.Remove(item.Id);

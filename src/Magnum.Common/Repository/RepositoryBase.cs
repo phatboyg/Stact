@@ -55,6 +55,7 @@ namespace Magnum.Common.Repository
 		public abstract T Get(K id);
 		public abstract IList<T> List();
 		public abstract void Save(T item);
+		public abstract void Update(T item);
 		public abstract void Delete(T item);
 	}
 }

@@ -82,6 +82,11 @@ namespace Magnum.Common.Specs.Repository
             _members.Add(member);
         }
 
+        public override void Update(Member item)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void Delete(Member item)
         {
             throw new NotImplementedException();

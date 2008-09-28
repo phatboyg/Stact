@@ -54,7 +54,12 @@ namespace Magnum.Common.Repository
 				_storage.Add(item.Id, item);
 		}
 
-		public override void Delete(T item)
+	    public override void Update(T item)
+	    {
+	        _storage[item.Id] = item;
+	    }
+
+	    public override void Delete(T item)
 		{
 			if (_storage.ContainsKey(item.Id))
 				_storage.Remove(item.Id);
