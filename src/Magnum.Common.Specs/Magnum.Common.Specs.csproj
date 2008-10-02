@@ -64,6 +64,7 @@
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
+    <Compile Include="Mapping_Specs.cs" />
     <Compile Include="Metric_Specs.cs" />
     <Compile Include="ObjectExtension_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

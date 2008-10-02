@@ -70,6 +70,7 @@
     <Compile Include="Mail\IMailServer.cs" />
     <Compile Include="Mail\NullMailServer.cs" />
     <Compile Include="Mail\SmtpMailServer.cs" />
+    <Compile Include="Mapper.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
