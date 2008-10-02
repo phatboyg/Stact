@@ -14,15 +14,18 @@ namespace Magnum.Common
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq.Expressions;
+	using System.Reflection;
+	using ObjectExtensions;
 
 	public class Mapper<TSource, TTarget>
 		where TTarget : new()
 	{
 		private readonly List<IMapAction<TSource, TTarget>> _maps = new List<IMapAction<TSource, TTarget>>();
 
-		public MapAction<TProperty> From<TProperty>(Func<TSource, TProperty> property)
+		public MapAction<TProperty> From<TProperty>(Expression<Func<TSource, TProperty>> expression)
 		{
-			return new MapAction<TProperty>(this, property);
+			return new MapAction<TProperty>(this, expression);
 		}
 
 		private void Add(IMapAction<TSource, TTarget> mapAction)
@@ -55,12 +58,50 @@ namespace Magnum.Common
 		{
 			private readonly Mapper<TSource, TTarget> _mapper;
 			private readonly Func<TSource, TProperty> _property;
+			private readonly string _sourceClass;
+			private readonly string _sourceMember;
 			private Action<TTarget, TProperty> _action;
+			private string _targetClass;
+			private string _targetMember;
 
-			internal MapAction(Mapper<TSource, TTarget> mapper, Func<TSource, TProperty> property)
+			internal MapAction(Mapper<TSource, TTarget> mapper, Expression<Func<TSource, TProperty>> expression)
 			{
+				var body = expression.Body as MemberExpression;
+				body.MustNotBeNull("expression");
+
+				if (body.Member.MemberType != MemberTypes.Property)
+					throw new ArgumentException("Not a property: " + body.Member.Name);
+
+				Type t = body.Member.DeclaringType;
+				PropertyInfo prop = t.GetProperty(body.Member.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+				var instance = Expression.Parameter(typeof (TSource), "instance");
+				_property = Expression.Lambda<Func<TSource, TProperty>>(Expression.Call(instance, prop.GetGetMethod()), instance).Compile();
+
+				_sourceClass = body.Member.DeclaringType.Name;
+				_sourceMember = body.Member.Name;
+
 				_mapper = mapper;
-				_property = property;
+			}
+
+			public string TargetMember
+			{
+				get { return _targetMember; }
+			}
+
+			public string TargetClass
+			{
+				get { return _targetClass; }
+			}
+
+			public string SourceMember
+			{
+				get { return _sourceMember; }
+			}
+
+			public string SourceClass
+			{
+				get { return _sourceClass; }
 			}
 
 			public void Map(TSource source, TTarget target)
@@ -68,11 +109,28 @@ namespace Magnum.Common
 				_action(target, _property(source));
 			}
 
-			public MapAction<TProperty> To(Action<TTarget, TProperty> action)
+			public MapAction<TProperty> To(Expression<Func<TTarget, TProperty>> expression)
 			{
-				_action = action;
+				var body = expression.Body as MemberExpression;
+				body.MustNotBeNull("expression");
+
+				Type t = body.Member.DeclaringType;
+				PropertyInfo prop = t.GetProperty(body.Member.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+				var instance = Expression.Parameter(typeof (TTarget), "instance");
+				var value = Expression.Parameter(typeof (TProperty), "value");
+
+				// value as T is slightly faster than (T)value, so if it's not a value type, use that
+				UnaryExpression instanceCast = (!prop.DeclaringType.IsValueType) ? Expression.TypeAs(instance, prop.DeclaringType) : Expression.Convert(instance, prop.DeclaringType);
+				UnaryExpression valueCast = (!prop.PropertyType.IsValueType) ? Expression.TypeAs(value, prop.PropertyType) : Expression.Convert(value, prop.PropertyType);
+
+				_action = Expression.Lambda<Action<TTarget, TProperty>>(Expression.Call(instanceCast, prop.GetSetMethod(), valueCast), new[] {instance, value}).Compile();
+
+				_targetClass = body.Member.DeclaringType.Name;
+				_targetMember = body.Member.Name;
 
 				_mapper.Add(this);
+
 				return this;
 			}
 		}

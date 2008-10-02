@@ -22,9 +22,9 @@ namespace Magnum.Common.Specs
 		{
 			Mapper<SourceObject, TargetObject> map = new Mapper<SourceObject, TargetObject>();
 
-			map.From(x => x.Id).To((y, x) => y.CustomerId = x);
-			map.From(x => x.Name).To((y, x) => y.DisplayName = x);
-			map.From(x => x.Amount).To((y, x) => y.OrderAmount = x);
+			map.From(x => x.Id).To(y => y.CustomerId);
+			map.From(x => x.Name).To(y => y.DisplayName);
+			map.From(x => x.Amount).To(y => y.OrderAmount);
 
 			SourceObject source = new SourceObject
 				{
