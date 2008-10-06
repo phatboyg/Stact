@@ -48,7 +48,7 @@ namespace Magnum.Infrastructure.Repository
 
 		public static IRepositoryFactory Build()
 		{
-			Configuration configuration = new Configuration();
+			Configuration configuration = new Configuration().Configure();
 
 			configuration.AddAssembly(typeof (NHibernateRepositoryFactory).Assembly);
 
