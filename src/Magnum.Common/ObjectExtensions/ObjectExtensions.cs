@@ -13,8 +13,9 @@
 namespace Magnum.Common.ObjectExtensions
 {
 	using System;
+	using System.Reflection;
 
-	public static class ObjectExt
+    public static class ObjectExt
 	{
 		public static void MustNotBeNull<T>(this T reference) where T : class
 		{
@@ -36,19 +37,19 @@ namespace Magnum.Common.ObjectExtensions
 
 		public static void MustNotBeEmpty(this string value)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (String.IsNullOrEmpty(value))
 				throw new ArgumentException();
 		}
 
 		public static void MustNotBeEmpty(this string value, string name)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (String.IsNullOrEmpty(value))
 				throw new ArgumentException("The argument must not be empty", name);
 		}
 
 		public static void MustNotBeEmpty(this string value, string name, string message)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (String.IsNullOrEmpty(value))
 				throw new ArgumentException(message, name);
 		}
 
@@ -64,5 +65,25 @@ namespace Magnum.Common.ObjectExtensions
 			if (!range.Contains(value))
 				throw new ArgumentException();
 		}
+
+        /// <summary>
+        /// props to Jeremy Miller for these two nice helpers
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+	    public static T GetAttribute<T>(this ICustomAttributeProvider provider) where T : Attribute
+	    {
+	        var attributes = provider.GetCustomAttributes(typeof(T), true);
+	        return attributes.Length > 0 ? attributes[0] as T : null;
+	    }
+
+        public static void ForAttributesOf<T>(this ICustomAttributeProvider provider, Action<T> action) where T : Attribute
+        {
+            foreach (T attribute in provider.GetCustomAttributes(typeof(T), true))
+            {
+                action(attribute);
+            }
+        }
 	}
 }
