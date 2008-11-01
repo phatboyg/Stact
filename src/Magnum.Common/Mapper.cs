@@ -12,127 +12,169 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq.Expressions;
-	using System.Reflection;
-	using ObjectExtensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Text;
+    using ObjectExtensions;
 
-	public class Mapper<TSource, TTarget>
-		where TTarget : new()
-	{
-		private readonly List<IMapAction<TSource, TTarget>> _maps = new List<IMapAction<TSource, TTarget>>();
+    public class Mapper<TSource, TTarget>
+        where TTarget : new()
+    {
+        private readonly List<IMapAction<TSource, TTarget>> _maps = new List<IMapAction<TSource, TTarget>>();
 
-		public MapAction<TProperty> From<TProperty>(Expression<Func<TSource, TProperty>> expression)
-		{
-			return new MapAction<TProperty>(this, expression);
-		}
+        public MapAction<TProperty> From<TProperty>(Expression<Func<TSource, TProperty>> expression)
+        {
+            return new MapAction<TProperty>(this, expression);
+        }
 
-		private void Add(IMapAction<TSource, TTarget> mapAction)
-		{
-			_maps.Add(mapAction);
-		}
+        private void Add(IMapAction<TSource, TTarget> mapAction)
+        {
+            _maps.Add(mapAction);
+        }
 
-		public TTarget Transform(TSource source)
-		{
-			return Transform(source, new TTarget());
-		}
+        public TTarget Transform(TSource source)
+        {
+            return Transform(source, new TTarget());
+        }
 
-		public TTarget Transform(TSource source, TTarget target)
-		{
-			foreach (IMapAction<TSource, TTarget> mapAction in _maps)
-			{
-				mapAction.Map(source, target);
-			}
+        public TTarget Transform(TSource source, TTarget target)
+        {
+            foreach (var mapAction in _maps)
+            {
+                mapAction.Map(source, target);
+            }
 
-			return target;
-		}
+            return target;
+        }
 
-		public interface IMapAction<TS, TT>
-		{
-			void Map(TS source, TT target);
-		}
+        public string WhatAmIDoing()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(string.Format("<transform from=\"{0}\" to=\"{1}\">", typeof (TSource), typeof (TTarget)));
+            foreach (var map in _maps)
+            {
+                sb.AppendFormat("    <map from=\"{0}\" to=\"{1}\" />{2}", map.SourceMember,map.TargetMember, Environment.NewLine);
+            }
+            sb.AppendLine("</transform>");
+            return sb.ToString();
+        }
 
-		public class MapAction<TProperty> :
-			IMapAction<TSource, TTarget>
-		{
-			private readonly Mapper<TSource, TTarget> _mapper;
-			private readonly Func<TSource, TProperty> _property;
-			private readonly string _sourceClass;
-			private readonly string _sourceMember;
-			private Action<TTarget, TProperty> _action;
-			private string _targetClass;
-			private string _targetMember;
+        #region Nested type: IMapAction
 
-			internal MapAction(Mapper<TSource, TTarget> mapper, Expression<Func<TSource, TProperty>> expression)
-			{
-				var body = expression.Body as MemberExpression;
-				body.MustNotBeNull("expression");
+        public interface IMapAction<TS, TT>
+        {
+            string TargetMember { get; }
 
-				if (body.Member.MemberType != MemberTypes.Property)
-					throw new ArgumentException("Not a property: " + body.Member.Name);
+            string TargetClass { get; }
 
-				Type t = body.Member.DeclaringType;
-				PropertyInfo prop = t.GetProperty(body.Member.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            string SourceMember { get; }
 
-				var instance = Expression.Parameter(typeof (TSource), "instance");
-				_property = Expression.Lambda<Func<TSource, TProperty>>(Expression.Call(instance, prop.GetGetMethod()), instance).Compile();
+            string SourceClass { get; }
+            void Map(TS source, TT target);
+        }
 
-				_sourceClass = body.Member.DeclaringType.Name;
-				_sourceMember = body.Member.Name;
+        #endregion
 
-				_mapper = mapper;
-			}
+        #region Nested type: MapAction
 
-			public string TargetMember
-			{
-				get { return _targetMember; }
-			}
+        public class MapAction<TProperty> :
+            IMapAction<TSource, TTarget>
+        {
+            private readonly Mapper<TSource, TTarget> _mapper;
+            private readonly Func<TSource, TProperty> _property;
+            private readonly string _sourceClass;
+            private readonly string _sourceMember;
+            private Action<TTarget, TProperty> _action;
+            private string _targetClass;
+            private string _targetMember;
 
-			public string TargetClass
-			{
-				get { return _targetClass; }
-			}
+            internal MapAction(Mapper<TSource, TTarget> mapper, Expression<Func<TSource, TProperty>> expression)
+            {
+                var body = expression.Body as MemberExpression;
+                body.MustNotBeNull("expression");
 
-			public string SourceMember
-			{
-				get { return _sourceMember; }
-			}
+                if (body.Member.MemberType != MemberTypes.Property)
+                    throw new ArgumentException("Not a property: " + body.Member.Name);
 
-			public string SourceClass
-			{
-				get { return _sourceClass; }
-			}
+                Type t = body.Member.DeclaringType;
+                PropertyInfo prop = t.GetProperty(body.Member.Name,
+                                                  BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-			public void Map(TSource source, TTarget target)
-			{
-				_action(target, _property(source));
-			}
+                ParameterExpression instance = Expression.Parameter(typeof (TSource), "instance");
+                _property =
+                    Expression.Lambda<Func<TSource, TProperty>>(Expression.Call(instance, prop.GetGetMethod()), instance)
+                        .Compile();
 
-			public MapAction<TProperty> To(Expression<Func<TTarget, TProperty>> expression)
-			{
-				var body = expression.Body as MemberExpression;
-				body.MustNotBeNull("expression");
+                _sourceClass = body.Member.DeclaringType.Name;
+                _sourceMember = body.Member.Name;
 
-				Type t = body.Member.DeclaringType;
-				PropertyInfo prop = t.GetProperty(body.Member.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                _mapper = mapper;
+            }
 
-				var instance = Expression.Parameter(typeof (TTarget), "instance");
-				var value = Expression.Parameter(typeof (TProperty), "value");
+            #region IMapAction<TSource,TTarget> Members
 
-				// value as T is slightly faster than (T)value, so if it's not a value type, use that
-				UnaryExpression instanceCast = (!prop.DeclaringType.IsValueType) ? Expression.TypeAs(instance, prop.DeclaringType) : Expression.Convert(instance, prop.DeclaringType);
-				UnaryExpression valueCast = (!prop.PropertyType.IsValueType) ? Expression.TypeAs(value, prop.PropertyType) : Expression.Convert(value, prop.PropertyType);
+            public string TargetMember
+            {
+                get { return _targetMember; }
+            }
 
-				_action = Expression.Lambda<Action<TTarget, TProperty>>(Expression.Call(instanceCast, prop.GetSetMethod(), valueCast), new[] {instance, value}).Compile();
+            public string TargetClass
+            {
+                get { return _targetClass; }
+            }
 
-				_targetClass = body.Member.DeclaringType.Name;
-				_targetMember = body.Member.Name;
+            public string SourceMember
+            {
+                get { return _sourceMember; }
+            }
 
-				_mapper.Add(this);
+            public string SourceClass
+            {
+                get { return _sourceClass; }
+            }
 
-				return this;
-			}
-		}
-	}
+            public void Map(TSource source, TTarget target)
+            {
+                _action(target, _property(source));
+            }
+
+            #endregion
+
+            public MapAction<TProperty> To(Expression<Func<TTarget, TProperty>> expression)
+            {
+                var body = expression.Body as MemberExpression;
+                body.MustNotBeNull("expression");
+
+                Type t = body.Member.DeclaringType;
+                PropertyInfo prop = t.GetProperty(body.Member.Name,
+                                                  BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                ParameterExpression instance = Expression.Parameter(typeof (TTarget), "instance");
+                ParameterExpression value = Expression.Parameter(typeof (TProperty), "value");
+
+                // value as T is slightly faster than (T)value, so if it's not a value type, use that
+                UnaryExpression instanceCast = (!prop.DeclaringType.IsValueType)
+                                                   ? Expression.TypeAs(instance, prop.DeclaringType)
+                                                   : Expression.Convert(instance, prop.DeclaringType);
+                UnaryExpression valueCast = (!prop.PropertyType.IsValueType)
+                                                ? Expression.TypeAs(value, prop.PropertyType)
+                                                : Expression.Convert(value, prop.PropertyType);
+
+                _action =
+                    Expression.Lambda<Action<TTarget, TProperty>>(
+                        Expression.Call(instanceCast, prop.GetSetMethod(), valueCast), new[] {instance, value}).Compile();
+
+                _targetClass = body.Member.DeclaringType.Name;
+                _targetMember = body.Member.Name;
+
+                _mapper.Add(this);
+
+                return this;
+            }
+        }
+
+        #endregion
+    }
 }

@@ -20,7 +20,7 @@ namespace Magnum.Common.Specs
 		[Test]
 		public void It_should_just_work()
 		{
-			Mapper<SourceObject, TargetObject> map = new Mapper<SourceObject, TargetObject>();
+			var map = new Mapper<SourceObject, TargetObject>();
 
 			map.From(x => x.Id).To(y => y.CustomerId);
 			map.From(x => x.Name).To(y => y.DisplayName);
@@ -39,8 +39,52 @@ namespace Magnum.Common.Specs
 			Assert.AreEqual(source.Name, target.DisplayName);
 			Assert.AreEqual(source.Amount, target.OrderAmount);
 		}
+
+	    [Test]
+	    public void It_should_xml()
+	    {
+            var map = new Mapper<SourceObject, TargetObject>();
+
+            map.From(x => x.Id).To(y => y.CustomerId);
+            map.From(x => x.Name).To(y => y.DisplayName);
+            map.From(x => x.Amount).To(y => y.OrderAmount);
+
+	        var xml = map.WhatAmIDoing();
+            Assert.AreEqual("<transform from=\"Magnum.Common.Specs.SourceObject\" to=\"Magnum.Common.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
+	    }
+
+	    [Test]
+	    public void Reusable_mapper()
+	    {
+	        var map = new ReusableMapper();
+
+            SourceObject source = new SourceObject
+            {
+                Id = 27,
+                Name = "Chris",
+                Amount = 234.75m,
+            };
+
+            TargetObject target = map.Transform(source);
+
+            Assert.AreEqual(source.Id, target.CustomerId);
+            Assert.AreEqual(source.Name, target.DisplayName);
+            Assert.AreEqual(source.Amount, target.OrderAmount);
+
+            var xml = map.WhatAmIDoing();
+            Assert.AreEqual("<transform from=\"Magnum.Common.Specs.SourceObject\" to=\"Magnum.Common.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
+	    }
 	}
 
+    internal class ReusableMapper : Mapper<SourceObject, TargetObject>
+    {
+        public ReusableMapper()
+        {
+            From(x => x.Id).To(y => y.CustomerId);
+            From(x => x.Name).To(y => y.DisplayName);
+            From(x => x.Amount).To(y => y.OrderAmount);
+        }
+    }
 	internal class TargetObject
 	{
 		public int CustomerId { get; set; }
