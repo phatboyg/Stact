@@ -20,17 +20,27 @@ namespace Magnum.Common.Specs.Cryptography
 
             string message = "Meet me at noon";
 
-            var encryptor = (RSACryptoServiceProvider)aliceCert.PublicKey.Key;
+            var privateKey = aliceCert.PublicKey.Key.ToXmlString(true);
+            var publicKey = aliceCert.PublicKey.Key.ToXmlString(false);
+
+            //encrypt with the public key
+            //var encryptor = (RSACryptoServiceProvider)aliceCert.PublicKey.Key;
+            var encryptor = new RSACryptoServiceProvider();
+            encryptor.FromXmlString(publicKey);
+
             var plainBytes = Convert.FromBase64String(message);
             var cryptBytes = encryptor.Encrypt(plainBytes, false);
-            
             var cryptString = Convert.ToBase64String(cryptBytes);
             Trace.Write(cryptString);
 
             //decrypt with private key
-            var decryptor = (RSACryptoServiceProvider) aliceCert.PrivateKey;
+            //var decryptor = (RSACryptoServiceProvider) aliceCert.PrivateKey;
+            var decryptor = new RSACryptoServiceProvider();
+            decryptor.FromXmlString(privateKey);
+
             var decryptBytes = decryptor.Decrypt(cryptBytes, false); //TODO: Error Here
             var decryptString = Convert.ToBase64String(decryptBytes);
+            Trace.Write(decryptString);
             
             
             Assert.AreEqual(message, decryptString);
