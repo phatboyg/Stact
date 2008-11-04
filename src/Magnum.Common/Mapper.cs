@@ -55,7 +55,7 @@ namespace Magnum.Common
             sb.AppendLine(string.Format("<transform from=\"{0}\" to=\"{1}\">", typeof (TSource), typeof (TTarget)));
             foreach (var map in _maps)
             {
-                sb.AppendFormat("    <map from=\"{0}\" to=\"{1}\" />{2}", map.SourceMember,map.TargetMember, Environment.NewLine);
+                sb.AppendFormat("    <map from=\"{0}\" to=\"{1}\" />{2}", map.SourceMember, map.TargetMember, Environment.NewLine);
             }
             sb.AppendLine("</transform>");
             return sb.ToString();
@@ -93,22 +93,30 @@ namespace Magnum.Common
             internal MapAction(Mapper<TSource, TTarget> mapper, Expression<Func<TSource, TProperty>> expression)
             {
                 var body = expression.Body as MemberExpression;
-                body.MustNotBeNull("expression");
+                if (body != null)
+                {
+                    if (body.Member.MemberType != MemberTypes.Property)
+                        throw new ArgumentException("Not a property: " + body.Member.Name);
 
-                if (body.Member.MemberType != MemberTypes.Property)
-                    throw new ArgumentException("Not a property: " + body.Member.Name);
+                    Type t = body.Member.DeclaringType;
+                    PropertyInfo prop = t.GetProperty(body.Member.Name,
+                                                      BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-                Type t = body.Member.DeclaringType;
-                PropertyInfo prop = t.GetProperty(body.Member.Name,
-                                                  BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    ParameterExpression instance = Expression.Parameter(typeof (TSource), "instance");
+                    _property =
+                        Expression.Lambda<Func<TSource, TProperty>>(Expression.Call(instance, prop.GetGetMethod()), instance)
+                            .Compile();
 
-                ParameterExpression instance = Expression.Parameter(typeof (TSource), "instance");
-                _property =
-                    Expression.Lambda<Func<TSource, TProperty>>(Expression.Call(instance, prop.GetGetMethod()), instance)
-                        .Compile();
+                    _sourceClass = body.Member.DeclaringType.Name;
+                    _sourceMember = body.Member.Name;
+                }
+                else
+                {
+                    _property = expression.Compile();
+                    _sourceClass = typeof (TSource).Name;
+                    _sourceMember = expression.Body.ToString();
+                }
 
-                _sourceClass = body.Member.DeclaringType.Name;
-                _sourceMember = body.Member.Name;
 
                 _mapper = mapper;
             }
@@ -142,7 +150,7 @@ namespace Magnum.Common
 
             #endregion
 
-            public MapAction<TProperty> To(Expression<Func<TTarget, TProperty>> expression)
+            public MapAction<TProperty> To<TTargetProperty>(Expression<Func<TTarget, TTargetProperty>> expression)
             {
                 var body = expression.Body as MemberExpression;
                 body.MustNotBeNull("expression");

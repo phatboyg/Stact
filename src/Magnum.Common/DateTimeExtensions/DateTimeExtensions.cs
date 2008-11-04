@@ -89,5 +89,13 @@ namespace Magnum.Common.DateTimeExtensions
 		{
 			return new DateTime(value.Year, value.Month, value.Day, hour, minute, second, millisecond);
 		}
+
+        public static DateTime ForceUtc(this DateTime value)
+        {
+            if (value.Kind == DateTimeKind.Utc)
+                return value;
+
+            return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond, DateTimeKind.Utc);
+        }
 	}
 }

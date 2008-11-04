@@ -66,6 +66,11 @@ namespace Magnum.Common.ObjectExtensions
 				throw new ArgumentException();
 		}
 
+        public static bool IsNullOrEmpty(this string value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
+
         /// <summary>
         /// props to Jeremy Miller for these two nice helpers
         /// </summary>
