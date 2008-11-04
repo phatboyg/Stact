@@ -13,10 +13,10 @@
 namespace Magnum.Metrics.Specs
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Collections.Specialized;
 	using System.Diagnostics;
-	using System.IO;
-	using System.Net;
+	using System.Web;
+	using System.Linq;
 	using Common.DateTimeExtensions;
 	using Common.ObjectExtensions;
 	using NUnit.Framework;
@@ -27,6 +27,57 @@ namespace Magnum.Metrics.Specs
 	{
 		private string _filename = "ex" + DateTime.Now.ToString("yyMMdd") + ".log";
 		private const string _baseUrl = "http://192.168.105.125/Web4Logs/";
+
+		[Test]
+		public void The_linq_language_should_be_supported()
+		{
+			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
+			IContentReader reader = new ContentReader(collector);
+			IisLogReader logReader = new IisLogReader(reader);
+
+			var matches = logReader.Where(x => x.UriStem.Contains("CFR.asp")).Count();
+
+			Trace.WriteLine("Matches = " + matches);
+		}
+
+		[Test]
+		public void A_remote_log_file_should_be_loaded_into_the_IIS_reader()
+		{
+			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
+			IContentReader reader = new ContentReader(collector);
+			IisLogReader logReader = new IisLogReader(reader);
+
+			int count = 0;
+			foreach (IisLogEntry line in logReader)
+			{
+				count++;
+
+//				CookieDictionary cookies = line.Cookies;
+//				foreach (KeyValuePair<string, string> pair in cookies)
+//				{
+//					Trace.WriteLine(string.Format("Cookie ({0}) = {1}", pair.Key, pair.Value));
+//				}
+
+				string queryString = line.UriQuery;
+				if (!queryString.IsNullOrEmpty())
+				{
+					NameValueCollection values = HttpUtility.ParseQueryString(queryString);
+					foreach (string value in values)
+					{
+						Trace.WriteLine(value + ": " + values[value]);
+					}
+				}
+			}
+
+			foreach (IisLogEntry line in logReader)
+			{
+				count++;
+			}
+
+			Trace.WriteLine("Lines Read: " + count);
+
+			Assert.That(count, Is.GreaterThan(0));
+		}
 
 		[Test]
 		public void A_segment_of_the_log_should_be_returned()
@@ -60,35 +111,6 @@ namespace Magnum.Metrics.Specs
 			Trace.WriteLine("Length: " + length);
 
 			Assert.That(length, Is.GreaterThan(0));
-		}
-
-		[Test]
-		public void A_remote_log_file_should_be_loaded_into_the_IIS_reader()
-		{
-			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
-			IContentReader reader = new ContentReader(collector);
-			IisLogReader logReader = new IisLogReader(reader);
-
-			int count = 0;
-			foreach (IisLogEntry line in logReader)
-			{
-				count++;
-
-//				CookieDictionary cookies = line.Cookies;
-//				foreach (KeyValuePair<string, string> pair in cookies)
-//				{
-//					Trace.WriteLine(string.Format("Cookie ({0}) = {1}", pair.Key, pair.Value));
-//				}
-			}
-
-			foreach (IisLogEntry line in logReader)
-			{
-				count++;
-			}
-
-			Trace.WriteLine("Lines Read: " + count);
-
-			Assert.That(count, Is.GreaterThan(0));
 		}
 	}
 }

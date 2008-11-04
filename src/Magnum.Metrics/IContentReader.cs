@@ -10,14 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Metrics.Specs
+namespace Magnum.Metrics
 {
-	using System;
-
-	public interface IContentCollector
+	public interface IContentReader :
+		ILineReader
 	{
-		DateTime GetLastModified();
-		long GetContentLength();
-		ArraySegment<byte> GetContentSegment(int offset, int length);
 	}
 }
