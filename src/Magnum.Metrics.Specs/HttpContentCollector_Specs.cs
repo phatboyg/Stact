@@ -15,10 +15,13 @@ namespace Magnum.Metrics.Specs
 	using System;
 	using System.Collections.Specialized;
 	using System.Diagnostics;
+	using System.IO;
+	using System.IO.Compression;
 	using System.Web;
 	using System.Linq;
 	using Common.DateTimeExtensions;
 	using Common.ObjectExtensions;
+	using Common.Serialization;
 	using NUnit.Framework;
 	using NUnit.Framework.SyntaxHelpers;
 
@@ -111,6 +114,60 @@ namespace Magnum.Metrics.Specs
 			Trace.WriteLine("Length: " + length);
 
 			Assert.That(length, Is.GreaterThan(0));
+		}
+
+		[Test]
+		public void Reading_the_logs_and_writing_to_a_binary_cache_should_be_fast_and_furious()
+		{
+			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
+			IContentReader reader = new BlockContentReader(collector);
+			WebServerLogReader logReader = new WebServerLogReader(reader);
+
+			int entriesRead = 0;
+
+			using (var storage = File.Open(_filename + ".cache", FileMode.Create, FileAccess.Write, FileShare.Read))
+			using (var compression = new GZipStream(storage, CompressionMode.Compress))
+			using (var binaryWriter = new BinaryWriter(compression))
+			{
+				var writer = new BinarySerializationWriter(binaryWriter);
+
+				int lastEntriesRead;
+				do
+				{
+					lastEntriesRead = entriesRead;
+					foreach (WebServerLogEntry entry in logReader)
+					{
+						entriesRead++;
+
+						SerializationUtil<WebServerLogEntry>.Serialize(writer, entry);
+					}
+				} while (lastEntriesRead != entriesRead);
+
+				binaryWriter.Flush();
+				compression.Flush();
+				storage.Flush();
+			}
+
+			Trace.WriteLine("Entries read = " + entriesRead);
+
+			int entriesLoaded = 0;
+			using (var storage = File.Open(_filename + ".cache", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			using (var compression = new GZipStream(storage, CompressionMode.Decompress))
+			using (var binaryReader = new BinaryReader(compression))
+			{
+				var serializationReader = new BinarySerializationReader(binaryReader);
+
+				while ( true )
+				{
+					WebServerLogEntry entry = SerializationUtil<WebServerLogEntry>.Deserialize(serializationReader);
+					if(entry == null)
+						break;
+
+					entriesLoaded++;
+				}
+			}
+
+			Assert.AreEqual(entriesLoaded, entriesRead);
 		}
 	}
 }

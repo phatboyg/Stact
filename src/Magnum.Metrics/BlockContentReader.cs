@@ -15,6 +15,7 @@ namespace Magnum.Metrics
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Text;
 
 	public class BlockContentReader : IContentReader
@@ -54,11 +55,15 @@ namespace Magnum.Metrics
 					yield return line;
 				}
 			}
+
+			Trace.WriteLine("Last offset = " + _offset);
 		}
 
 		private string ReadBlock()
 		{
 			ArraySegment<byte> block = _collector.GetContentSegment(_offset, _blockLength);
+			if (block.Count == 0)
+				return string.Empty;
 
 			string content = Encoding.UTF8.GetString(block.Array, block.Offset, block.Count);
 

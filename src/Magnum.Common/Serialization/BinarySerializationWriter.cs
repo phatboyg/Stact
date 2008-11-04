@@ -32,7 +32,7 @@ namespace Magnum.Common.Serialization
 
 		public void Write(string value)
 		{
-			_writer.Write(value);
+			_writer.Write(value ?? string.Empty);
 		}
 
 		public void Write(float value)

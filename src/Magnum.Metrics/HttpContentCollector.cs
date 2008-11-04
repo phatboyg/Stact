@@ -54,6 +54,9 @@ namespace Magnum.Metrics
 
 		public ArraySegment<byte> GetContentSegment(int offset, int length)
 		{
+			if ( offset >= GetContentLength() )
+				return new ArraySegment<byte>();
+
 			HttpWebRequest request = (HttpWebRequest) WebRequest.Create(_uri);
 			request.Method = "GET";
 			request.AddRange(offset, offset + length - 1);

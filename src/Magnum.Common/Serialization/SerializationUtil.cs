@@ -35,11 +35,18 @@ namespace Magnum.Common.Serialization
 
 		public static T Deserialize(ISerializationReader reader)
 		{
-			T t = New();
+			try
+			{
+				T t = New();
 
-			_deserializer(reader, t);
+				_deserializer(reader, t);
 
-			return t;
+				return t;
+			}
+			catch (EndOfStreamException ex)
+			{
+				return default(T);
+			}
 		}
 
 		private static Func<T> BuildNewT()
@@ -124,13 +131,13 @@ namespace Magnum.Common.Serialization
 				//UnaryExpression valueCast = (!propertyInfo.PropertyType.IsValueType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
 
 				MethodInfo setMethod = propertyInfo.GetSetMethod();
-				if(setMethod==null)
+				if (setMethod == null)
 				{
 					var accessors = propertyInfo.GetAccessors(true);
 					if (accessors != null)
 						foreach (MethodInfo info in accessors)
 						{
-							if(info.ReturnType == typeof(void))
+							if (info.ReturnType == typeof (void))
 							{
 								setMethod = info;
 								break;
