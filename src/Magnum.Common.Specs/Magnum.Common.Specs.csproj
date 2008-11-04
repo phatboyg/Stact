@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache_Specs.cs" />
     <Compile Include="Cryptography\PublicKeyCrypto.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />

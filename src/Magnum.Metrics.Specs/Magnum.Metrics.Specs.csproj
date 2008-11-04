@@ -49,7 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentReader.cs" />
+    <Compile Include="CookieDictionary.cs" />
     <Compile Include="DelimitedContentMapper_Specs.cs" />
+    <Compile Include="HttpContentCollector.cs" />
+    <Compile Include="HttpContentCollector_Specs.cs" />
+    <Compile Include="IContentCollector.cs" />
+    <Compile Include="IContentReader.cs" />
     <Compile Include="IisLogEntry.cs" />
     <Compile Include="IisLogReader.cs" />
     <Compile Include="IisLogReader_Specs.cs" />
