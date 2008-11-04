@@ -17,7 +17,7 @@ namespace Magnum.Metrics
 	using System.Collections.Generic;
 	using System.Text;
 
-	public class ContentReader : IContentReader
+	public class BlockContentReader : IContentReader
 	{
 		private static readonly string[] _separator = new[] {Environment.NewLine};
 		private readonly IContentCollector _collector;
@@ -25,7 +25,7 @@ namespace Magnum.Metrics
 		private int _blockLength;
 		private int _offset;
 
-		public ContentReader(IContentCollector collector)
+		public BlockContentReader(IContentCollector collector)
 		{
 			_collector = collector;
 			_offset = 0;

@@ -32,8 +32,8 @@ namespace Magnum.Metrics.Specs
 		public void The_linq_language_should_be_supported()
 		{
 			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
-			IContentReader reader = new ContentReader(collector);
-			IisLogReader logReader = new IisLogReader(reader);
+			IContentReader reader = new BlockContentReader(collector);
+			WebServerLogReader logReader = new WebServerLogReader(reader);
 
 			var matches = logReader.Where(x => x.UriStem.Contains("CFR.asp")).Count();
 
@@ -44,11 +44,11 @@ namespace Magnum.Metrics.Specs
 		public void A_remote_log_file_should_be_loaded_into_the_IIS_reader()
 		{
 			IContentCollector collector = new HttpContentCollector(_baseUrl + _filename);
-			IContentReader reader = new ContentReader(collector);
-			IisLogReader logReader = new IisLogReader(reader);
+			IContentReader reader = new BlockContentReader(collector);
+			WebServerLogReader logReader = new WebServerLogReader(reader);
 
 			int count = 0;
-			foreach (IisLogEntry line in logReader)
+			foreach (WebServerLogEntry line in logReader)
 			{
 				count++;
 
@@ -69,7 +69,7 @@ namespace Magnum.Metrics.Specs
 				}
 			}
 
-			foreach (IisLogEntry line in logReader)
+			foreach (WebServerLogEntry line in logReader)
 			{
 				count++;
 			}

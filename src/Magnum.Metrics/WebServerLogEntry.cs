@@ -17,10 +17,8 @@ namespace Magnum.Metrics
 	using System.Web;
 	using Common.ObjectExtensions;
 
-	public class IisLogEntry
+	public class WebServerLogEntry
 	{
-		private NameValueCollection _cookieValues;
-
 		public DateTime Date { get; set; }
 		public string SiteName { get; set; }
 		public string ComputerName { get; set; }
@@ -43,56 +41,38 @@ namespace Magnum.Metrics
 		public int BytesReceived { get; set; }
 		public int TimeTaken { get; set; }
 
-		public NameValueCollection Cookies
+		public NameValueCollection ParseCookies()
 		{
-			get
-			{
-				if (_cookieValues != null)
-					return _cookieValues;
+			NameValueCollection values = new NameValueCollection();
 
-				ParseCookieValues();
-
-				return _cookieValues;
-			}
-		}
-
-		public NameValueCollection QueryStringArguments
-		{
-			get
-			{
-				if (UriQuery.IsNullOrEmpty())
-					return new NameValueCollection();
-
-				NameValueCollection values = HttpUtility.ParseQueryString(UriQuery);
-
-				return values;
-			}
-		}
-
-		private void ParseCookieValues()
-		{
 			if (Cookie.IsNullOrEmpty())
-				_cookieValues = new NameValueCollection();
-			else
+				return values;
+
+			string[] cookies = Cookie.Split(new[] {";+"}, 100, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (string match in cookies)
 			{
-				NameValueCollection values = new NameValueCollection();
+				string[] item = match.Split('=');
+				if (item.Length != 2)
+					continue;
 
-				string[] cookies = Cookie.Split(new[] {";+"}, 100, StringSplitOptions.RemoveEmptyEntries);
+				string key = item[0];
+				string value = DecodeCookieValue(item[1]);
 
-				foreach (string match in cookies)
-				{
-					string[] item = match.Split('=');
-					if (item.Length != 2)
-						continue;
-
-					string key = item[0];
-					string value = DecodeCookieValue(item[1]);
-
-					values.Add(key, value);
-				}
-
-				_cookieValues = values;
+				values.Add(key, value);
 			}
+
+			return values;
+		}
+
+		public NameValueCollection ParseQueryString()
+		{
+			if (UriQuery.IsNullOrEmpty())
+				return new NameValueCollection();
+
+			NameValueCollection values = HttpUtility.ParseQueryString(UriQuery);
+
+			return values;
 		}
 
 		private static string DecodeCookieValue(string value)

@@ -19,34 +19,34 @@ namespace Magnum.Metrics
 	using Common.DateTimeExtensions;
 	using Common.ObjectExtensions;
 
-	public class IisLogReader :
-		IEnumerable<IisLogEntry>
+	public class WebServerLogReader :
+		IEnumerable<WebServerLogEntry>
 	{
-		private static Dictionary<string, Action<Mapper<string[], IisLogEntry>, int>> _fieldMaps;
-		private readonly ILineReader _reader;
-		private Mapper<string[], IisLogEntry> _map;
+		private static Dictionary<string, Action<Mapper<string[], WebServerLogEntry>, int>> _fieldMaps;
+		private readonly IContentReader _reader;
+		private Mapper<string[], WebServerLogEntry> _map;
 		private string[] _mappedFields = new string[] {};
 
-		static IisLogReader()
+		static WebServerLogReader()
 		{
 			SetupFieldMap();
 		}
 
-		public IisLogReader(ILineReader reader, string[] mappedFields)
+		public WebServerLogReader(IContentReader reader, string[] mappedFields)
 		{
 			_reader = reader;
 
 			RebuildMap(mappedFields);
 		}
 
-		public IisLogReader(ILineReader reader)
+		public WebServerLogReader(IContentReader reader)
 		{
 			_reader = reader;
 
 			CreateDefaultMap();
 		}
 
-		public IEnumerator<IisLogEntry> GetEnumerator()
+		public IEnumerator<WebServerLogEntry> GetEnumerator()
 		{
 			foreach (string line in _reader)
 			{
@@ -78,7 +78,7 @@ namespace Magnum.Metrics
 
 		private void CreateDefaultMap()
 		{
-			_map = new Mapper<string[], IisLogEntry>();
+			_map = new Mapper<string[], WebServerLogEntry>();
 			_map.From(x => DateTime.Parse(string.Join(" ", x, 0, 2)).ForceUtc()).To(y => y.Date);
 		}
 
@@ -90,7 +90,7 @@ namespace Magnum.Metrics
 
 			for (int index = 2; index < fields.Length; index++)
 			{
-				Action<Mapper<string[], IisLogEntry>, int> fieldMap;
+				Action<Mapper<string[], WebServerLogEntry>, int> fieldMap;
 				if (_fieldMaps.TryGetValue(fields[index], out fieldMap) == false)
 					throw new ArgumentException("Unexpected log column: " + fields[index]);
 
@@ -100,9 +100,9 @@ namespace Magnum.Metrics
 
 		private static void SetupFieldMap()
 		{
-			Func<string, string> nullIfDash = (x) => x == "-" ? null : x;
+			Func<string, string> nullIfDash = x => x == "-" ? null : x;
 
-			_fieldMaps = new Dictionary<string, Action<Mapper<string[], IisLogEntry>, int>>
+			_fieldMaps = new Dictionary<string, Action<Mapper<string[], WebServerLogEntry>, int>>
 				{
 					{"s-sitename", (m, i) => m.From(x => x[i]).To(y => y.SiteName)},
 					{"s-computername", (m, i) => m.From(x => x[i]).To(y => y.ComputerName)},

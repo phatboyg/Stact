@@ -12,8 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Metrics
 {
+	using System.Collections.Generic;
+
 	public interface IContentReader :
-		ILineReader
+		IEnumerable<string>
 	{
 	}
 }

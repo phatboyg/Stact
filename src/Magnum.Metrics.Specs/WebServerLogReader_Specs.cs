@@ -19,7 +19,7 @@ namespace Magnum.Metrics.Specs
         [Test]
         public void The_number_of_lines_returned_should_be_correct()
         {
-            ILineReader lineReader = new LineReader(data);
+            IContentReader lineReader = new StringContentReader(data);
 
             int lineCount = 0;
             foreach(string line in lineReader)
@@ -33,12 +33,12 @@ namespace Magnum.Metrics.Specs
         [Test]
         public void The_log_reader_should_be_smart()
         {
-            ILineReader lineReader = new LineReader(data);
-            IisLogReader logReader = new IisLogReader(lineReader);
+			IContentReader lineReader = new StringContentReader(data);
+            WebServerLogReader logReader = new WebServerLogReader(lineReader);
 
             DateTime expected = new DateTime(2008, 11, 4, 3, 37, 15);
             int entryCount = 0;
-            foreach (IisLogEntry entry in logReader)
+            foreach (WebServerLogEntry entry in logReader)
             {
                 entryCount++;
 

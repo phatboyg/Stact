@@ -46,14 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentReader.cs" />
+    <Compile Include="BlockContentReader.cs" />
     <Compile Include="HttpContentCollector.cs" />
     <Compile Include="IContentCollector.cs" />
     <Compile Include="IContentReader.cs" />
-    <Compile Include="IisLogEntry.cs" />
-    <Compile Include="IisLogReader.cs" />
-    <Compile Include="ILineReader.cs" />
-    <Compile Include="LineReader.cs" />
+    <Compile Include="WebServerLogEntry.cs" />
+    <Compile Include="WebServerLogReader.cs" />
+    <Compile Include="StringContentReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

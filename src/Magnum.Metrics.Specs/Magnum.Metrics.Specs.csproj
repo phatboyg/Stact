@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="DelimitedContentMapper_Specs.cs" />
     <Compile Include="HttpContentCollector_Specs.cs" />
-    <Compile Include="IisLogReader_Specs.cs" />
+    <Compile Include="WebServerLogReader_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

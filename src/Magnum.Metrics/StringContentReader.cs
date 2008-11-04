@@ -16,12 +16,12 @@ namespace Magnum.Metrics
 	using System.Collections.Generic;
 	using System.IO;
 
-	public class LineReader :
-		ILineReader
+	public class StringContentReader :
+		IContentReader
 	{
 		private readonly string _data;
 
-		public LineReader(string data)
+		public StringContentReader(string data)
 		{
 			_data = data;
 		}
