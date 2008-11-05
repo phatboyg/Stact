@@ -17,6 +17,7 @@ namespace Magnum.Common.Specs
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Runtime.Serialization;
+    using System.Text;
     using NUnit.Framework;
 
     [TestFixture]
@@ -64,7 +65,7 @@ namespace Magnum.Common.Specs
     internal class MessageMap<T>
     {
         private List<FieldMap<T>> _fields = new List<FieldMap<T>>();
-
+        
         protected FieldMap<T> Field<TField>(Expression<Func<T, TField>> expression, int version)
         {
             MemberExpression memberExpression = GetMemberExpression(expression);
@@ -113,12 +114,53 @@ namespace Magnum.Common.Specs
                 field.Validate();
             }
         }
+
+        public string GenerateProtoFile()
+        {
+            StringBuilder sb=new StringBuilder();
+            sb.AppendFormat("message {0} {{{1}", typeof(T).Name, Environment.NewLine);
+            int i = 0;
+            foreach (FieldMap<T> map in _fields)
+            {
+                sb.AppendFormat("    {0}{1}", GenerateRules(map, ++i), Environment.NewLine);
+            }
+            sb.AppendLine("}");
+
+            return sb.ToString();
+        }
+        private string GenerateRules(FieldMap<T> map, int numberTag)
+        {
+            StringBuilder sb = new StringBuilder();
+            if(map.IsRequired)
+            {
+                sb.Append("required ");
+            }
+            else
+            {
+                sb.Append("optional ");
+            }
+
+            sb.Append("type ");
+            sb.Append("name ");
+            sb.AppendFormat("= {0} ", numberTag);
+            
+            if(map.DefaultValue != null)
+            {
+                sb.AppendFormat("[default = {0}]", map.DefaultValue);
+            }
+
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
     }
 
     internal class FieldMap<T>
     {
         private readonly MemberExpression _expression;
-        private bool _required;
+        private bool _isRequired;
+        private bool _isRepeated;
+        private string _defaultValue;
 
         public FieldMap(MemberExpression expression, int version)
         {
@@ -127,8 +169,28 @@ namespace Magnum.Common.Specs
 
         public FieldMap<T> Required()
         {
-            _required = true;
+            _isRequired = true;
             return this;
+        }
+        public FieldMap<T> SetDefaultValue(string value)
+        {
+            _defaultValue = value;
+            return this;
+        }
+
+        public bool IsRequired
+        {
+            get { return _isRequired; }
+        }
+
+        public bool IsRepeated
+        {
+            get { return _isRepeated; }
+        }
+
+        public string DefaultValue
+        {
+            get { return _defaultValue; }
         }
 
         public void Validate()
@@ -137,7 +199,7 @@ namespace Magnum.Common.Specs
 
             if (propertyType.IsValueType)
             {
-                if (_required == false)
+                if (_isRequired == false)
                 {
                     if (!propertyType.IsGenericType || propertyType.GetGenericTypeDefinition() != typeof (Nullable<>))
                     {
