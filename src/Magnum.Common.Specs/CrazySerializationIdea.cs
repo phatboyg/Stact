@@ -58,7 +58,7 @@ namespace Magnum.Common.Specs
 
             // new things are added with version 2
 
-            Field(x => x.Birthdate, 2);
+            Field(x => x.Birthdate, 2).Order(7);
         }
     }
 
@@ -70,7 +70,7 @@ namespace Magnum.Common.Specs
         {
             MemberExpression memberExpression = GetMemberExpression(expression);
 
-            FieldMap<T> fieldMap = new FieldMap<T>(memberExpression, version);
+            FieldMap<T> fieldMap = new FieldMap<T>(this, memberExpression, version, _fields.Count + 1);
 
             _fields.Add(fieldMap);
 
@@ -157,14 +157,18 @@ namespace Magnum.Common.Specs
 
     internal class FieldMap<T>
     {
+        private readonly MessageMap<T> _map;
         private readonly MemberExpression _expression;
         private bool _isRequired;
         private bool _isRepeated;
         private string _defaultValue;
+        private int _order;
 
-        public FieldMap(MemberExpression expression, int version)
+        public FieldMap(MessageMap<T> map, MemberExpression expression, int version, int order)
         {
+            _map = map;
             _expression = expression;
+            _order = order;
         }
 
         public FieldMap<T> Required()
@@ -207,6 +211,12 @@ namespace Magnum.Common.Specs
                     }
                 }
             }
+        }
+
+        public FieldMap<T> Order(int order)
+        {
+            _order = order;
+            return this;
         }
     }
 
