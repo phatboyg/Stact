@@ -58,36 +58,28 @@ namespace Magnum.Common.Specs
 
             // new things are added with version 2
 
-            Field(x => x.Birthdate, 2).Order(7);
+        	SetVersion(2);
+
+            Field(x => x.Birthdate).Number(7);
         }
     }
 
     internal class MessageMap<T>
     {
         private List<FieldMap<T>> _fields = new List<FieldMap<T>>();
-        
-        protected FieldMap<T> Field<TField>(Expression<Func<T, TField>> expression, int version)
+    	private int _version = 1;
+
+    	protected FieldMap<T> Field<TField>(Expression<Func<T, TField>> expression)
         {
             MemberExpression memberExpression = GetMemberExpression(expression);
 
-            FieldMap<T> fieldMap = new FieldMap<T>(this, memberExpression, version, _fields.Count + 1);
+            FieldMap<T> fieldMap = new FieldMap<T>(this, memberExpression, _version, _fields.Count + 1);
 
             _fields.Add(fieldMap);
 
             return fieldMap;
         }
-
-        /// <summary>
-        /// Maps a field as part of the message body and defaults to version 1
-        /// </summary>
-        /// <typeparam name="TField"></typeparam>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        protected FieldMap<T> Field<TField>(Expression<Func<T, TField>> expression)
-        {
-            return Field(expression, 1);
-        }
-
+        
         private static MemberExpression GetMemberExpression<TX, VX>(Expression<Func<TX, VX>> expression)
         {
             MemberExpression memberExpression = null;
@@ -114,6 +106,19 @@ namespace Magnum.Common.Specs
                 field.Validate();
             }
         }
+
+    	protected int Version
+    	{
+			get { return _version; }
+    	}
+
+		protected void SetVersion(int version)
+		{
+			if (version < _version)
+				throw new ArgumentException("Versions must be incremental");
+
+			_version = version;
+		}
 
         public string GenerateProtoFile()
         {
@@ -162,13 +167,13 @@ namespace Magnum.Common.Specs
         private bool _isRequired;
         private bool _isRepeated;
         private string _defaultValue;
-        private int _order;
+        private int _number;
 
-        public FieldMap(MessageMap<T> map, MemberExpression expression, int version, int order)
+        public FieldMap(MessageMap<T> map, MemberExpression expression, int version, int number)
         {
             _map = map;
             _expression = expression;
-            _order = order;
+            _number = number;
         }
 
         public FieldMap<T> Required()
@@ -213,9 +218,9 @@ namespace Magnum.Common.Specs
             }
         }
 
-        public FieldMap<T> Order(int order)
+        public FieldMap<T> Number(int number)
         {
-            _order = order;
+            _number = number;
             return this;
         }
     }
