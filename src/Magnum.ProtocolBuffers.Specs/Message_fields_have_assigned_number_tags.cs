@@ -13,7 +13,7 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             Expression<Func<TestMessage, string>> function = m => m.Name;
 
-            var fieldMapping = new FieldMapping<TestMessage>(function, 1);
+            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
 
             Assert.AreEqual(1, fieldMapping.NumberTag);
         }

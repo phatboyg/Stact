@@ -12,7 +12,7 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Mappings_are_optional_by_default()
         {
-            var fieldMapping = new FieldMapping<TestMessage>(function, 1);
+            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
 
             Assert.AreEqual(FieldRules.Optional, fieldMapping.Rules);
         }
@@ -20,7 +20,7 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Mappings_can_be_made_required()
         {
-            var fieldMapping = new FieldMapping<TestMessage>(function, 1);
+            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
             fieldMapping.MakeRequired();
 
             Assert.AreEqual(FieldRules.Required, fieldMapping.Rules);
@@ -29,7 +29,7 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Mappings_can_be_made_repeated()
         {
-            var fieldMapping = new FieldMapping<TestMessage>(function, 1);
+            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
             fieldMapping.MakeRepeated();
 
             Assert.AreEqual(FieldRules.Repeated, fieldMapping.Rules);
