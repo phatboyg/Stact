@@ -45,6 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages_have_names.cs" />
+    <Compile Include="Message_fields_can_have_default_values.cs" />
     <Compile Include="Message_fields_have_different_rules.cs" />
     <Compile Include="Message_fields_have_assigned_number_tags.cs" />
     <Compile Include="Message_fields_have_different_types.cs" />

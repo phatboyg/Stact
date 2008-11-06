@@ -7,19 +7,31 @@ namespace Magnum.ProtocolBuffers
     public class FieldMapping<TMessage, TPropertyValue>
     {
         private FieldRules _rules;
-        private Type _propertyType;
+        private Type _fieldType;
         private readonly string _fieldName;
+        private TPropertyValue _defaultValue;
+        private bool _hasDefaultValue;
 
         public FieldMapping(Expression<Func<TMessage, TPropertyValue>> expression, int numberTag)
         {
             NumberTag = numberTag;
             _rules = FieldRules.Optional;
-            _propertyType = typeof(TPropertyValue);
+
+
+            PopulateFieldSettings();
             
             SetConventionalFieldRules();
 
             var body = (MemberExpression)expression.Body;
             _fieldName = body.Member.Name;
+        }
+
+        private void PopulateFieldSettings()
+        {
+            _fieldType = typeof(TPropertyValue);
+
+            if(_fieldType.IsEnum)
+                throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
         }
 
 
@@ -45,6 +57,21 @@ namespace Magnum.ProtocolBuffers
             _rules = FieldRules.Repeated;
         }
 
+        public Type FieldType
+        {
+            get { return _fieldType; }
+        }
+
+        public TPropertyValue DefaultValue
+        {
+            get { return _defaultValue; }
+        }
+
+        public bool HasDefaultValue
+        {
+            get { return _hasDefaultValue; }
+        }
+
         private void SetConventionalFieldRules()
         {
             if(typeof(TPropertyValue).IsCollection())
@@ -56,6 +83,12 @@ namespace Magnum.ProtocolBuffers
             {
                 MakeRequired();
             }
+        }
+
+        public void SetDefaultValue(TPropertyValue value)
+        {
+            _defaultValue = value;
+            _hasDefaultValue = true;
         }
     }
 
