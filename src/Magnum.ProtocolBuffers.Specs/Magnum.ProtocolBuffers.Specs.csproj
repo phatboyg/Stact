@@ -48,6 +48,7 @@
     <Compile Include="Message_fields_have_different_rules.cs" />
     <Compile Include="Message_fields_have_assigned_number_tags.cs" />
     <Compile Include="Message_fields_have_different_types.cs" />
+    <Compile Include="Message_fields_have_names.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestMessage.cs" />
