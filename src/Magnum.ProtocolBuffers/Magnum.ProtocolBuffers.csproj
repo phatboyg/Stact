@@ -48,6 +48,8 @@
     <Compile Include="ProtoMappingException.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
+    <Compile Include="ScalarValueTypes\Double.cs" />
+    <Compile Include="ScalarValueTypes\ScalarBase.cs" />
     <Compile Include="TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
