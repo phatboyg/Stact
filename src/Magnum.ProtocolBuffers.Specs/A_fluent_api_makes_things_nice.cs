@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers.Specs
 {
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class A_fluent_api_makes_things_nice :

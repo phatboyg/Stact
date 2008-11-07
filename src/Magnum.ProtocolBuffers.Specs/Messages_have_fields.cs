@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers.Specs
 {
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class Messages_have_fields

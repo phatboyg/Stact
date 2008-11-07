@@ -2,6 +2,7 @@ namespace Magnum.ProtocolBuffers.Specs
 {
     using Common;
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class Messages_can_set_aside_numbers_for_extensions :

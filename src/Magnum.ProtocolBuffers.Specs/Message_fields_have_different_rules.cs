@@ -3,6 +3,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using System;
     using System.Linq.Expressions;
     using NUnit.Framework;
+    using TestMessages;
 
     public class Message_fields_have_different_rules :
         Specification

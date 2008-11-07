@@ -5,6 +5,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using System.Linq.Expressions;
     using System.Reflection;
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class Message_fields_have_different_types :

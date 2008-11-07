@@ -4,6 +4,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class Message_fields_have_names

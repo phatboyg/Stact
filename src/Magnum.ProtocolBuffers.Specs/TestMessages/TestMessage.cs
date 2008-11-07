@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.TestMessages
 {
     using System;
     using System.Collections.Generic;

@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers.Specs
 {
     using NUnit.Framework;
+    using TestMessages;
 
     [TestFixture]
     public class Message_fields_can_have_default_values :
