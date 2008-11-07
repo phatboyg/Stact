@@ -9,7 +9,7 @@ namespace Magnum.ProtocolBuffers
     {
         private readonly Type _messageType;
         private readonly IList<FieldMap> _fields;
-        private int _nextNumberTag = 0;
+        private int _currentNumberTag = 0;
 
         public MessageMap()
         {
@@ -51,15 +51,27 @@ namespace Magnum.ProtocolBuffers
         }
         public FieldMap Field(Expression<Func<TMessage, object>> field, int numberTag)
         {
+            RecalibrateNumberTagIfNecessary(numberTag);
+
             var prop = ReflectionHelper.GetProperty(field);
             var map = new FieldMap(prop, numberTag);
             AddField(map);
             return map;
         }
 
+        private void RecalibrateNumberTagIfNecessary(int numberTag)
+        {
+            if (!numberTag.Equals(_currentNumberTag)) _currentNumberTag = ++numberTag;
+        }
+
         private int GetNextNumberTag()
         {
-            return ++_nextNumberTag;
+            return ++_currentNumberTag;
+        }
+
+        public int CurrentNumberTag
+        {
+            get { return _currentNumberTag; }
         }
     }
 }

@@ -22,6 +22,15 @@ namespace Magnum.ProtocolBuffers.Specs
             messageMap.AddField(new FieldMap(prop, 2));
             Assert.AreEqual(2, messageMap.FieldCount);
         }
+
+        [Test]
+        public void If_you_add_a_field_with_a_specific_number_tag_it_jumps_the_next_number()
+        {
+            var prop = ReflectionHelper.GetProperty<TestMessage, string>(m => m.Name);
+            var messageMap = new MessageMap<TestMessage>();
+            messageMap.Field(m => m.Age, 5);
+            Assert.AreEqual(6, messageMap.CurrentNumberTag);
+        }
         
     }
 }
