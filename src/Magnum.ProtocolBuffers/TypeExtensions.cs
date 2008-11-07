@@ -34,8 +34,8 @@ namespace Magnum.ProtocolBuffers
         {
             if (typeof(int).Equals(type)) return "int32";
             if (typeof(int?).Equals(type)) return "int32";
-
-            return "string";
+            if (typeof(string).Equals(type)) return "string";
+            return type.Name;
         }
     }
 

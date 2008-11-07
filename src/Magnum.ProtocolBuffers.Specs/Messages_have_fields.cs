@@ -29,6 +29,15 @@ namespace Magnum.ProtocolBuffers.Specs
             messageMap.Field(m => m.Age, 5);
             Assert.AreEqual(6, messageMap.CurrentNumberTag);
         }
+
+        [Test]
+        [ExpectedException(typeof(ProtoMappingException))]
+        public void You_cant_add_two_fields_with_the_same_number_tag()
+        {
+            var messageMap = new MessageMap<TestMessage>();
+            messageMap.Field(m => m.Age, 1);
+            messageMap.Field(m => m.Name, 1);
+        }
         
     }
 }

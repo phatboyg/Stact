@@ -1,10 +1,7 @@
 namespace Magnum.ProtocolBuffers.Internal
 {
-    using System;
-
-    public interface IMapping
+    public interface IMappingPart
     {
         void Visit(IMappingVisitor visitor);
-        Type TypeMapped { get; }
     }
 }

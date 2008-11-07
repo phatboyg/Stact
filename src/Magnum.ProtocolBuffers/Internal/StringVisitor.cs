@@ -1,8 +1,7 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Internal
 {
     using System;
     using System.Text;
-    using Internal;
 
     public class StringVisitor : 
         IMappingVisitor

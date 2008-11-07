@@ -8,7 +8,12 @@ namespace Magnum.ProtocolBuffers
 
     public class CommunicationModel
     {
-        private IList<IMapping> _mappings = new List<IMapping>();
+        private IDictionary<Type, IMapping> _mappings = new Dictionary<Type, IMapping>();
+
+        public int NumberOfMessagesMapped
+        {
+            get { return _mappings.Count; }
+        }
 
         public void AddMappingsFromAssembly(Assembly assembly)
         {
@@ -31,7 +36,15 @@ namespace Magnum.ProtocolBuffers
 
         private void AddMapping(IMapping mapping)
         {
-            _mappings.Add(mapping);
+            if(_mappings.ContainsKey(mapping.TypeMapped))
+                throw new ProtoMappingException(string.Format("You have already added the type {0} to the communication model", mapping.TypeMapped));
+
+            _mappings.Add(mapping.TypeMapped, mapping);
+        }
+
+        public void Validate()
+        {
+            
         }
     }
 }

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="A_fluent_api_makes_things_nice.cs" />
+    <Compile Include="Communication_model_makes_life_easy.cs" />
     <Compile Include="Messages_can_set_aside_numbers_for_extensions.cs" />
     <Compile Include="Messages_have_fields.cs" />
     <Compile Include="Messages_have_names.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Message_fields_have_different_types.cs" />
     <Compile Include="Message_fields_have_names.cs" />
     <Compile Include="String_mapping.cs" />
+    <Compile Include="TestMappings\SearchRequestMapping.cs" />
     <Compile Include="TestMessages\SearchRequest.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

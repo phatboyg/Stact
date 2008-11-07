@@ -16,7 +16,7 @@ namespace Magnum.ProtocolBuffers.Specs
             map.Field(m=>m.ResultPerPage).SetDefaultValue(10);
 
             IMapping mm =  map;
-            StringVisitor v = new StringVisitor();
+            var v = new StringVisitor();
             mm.Visit(v);
 
             string proto = @"message SearchRequest {

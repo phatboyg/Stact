@@ -7,7 +7,7 @@ namespace Magnum.ProtocolBuffers
     using Specs;
 
     public class FieldMap :
-        IMapping
+        IMappingPart
     {
         private static readonly Range<int> _googlesFieldNumbers = new Range<int>(19000, 19999, true, true);
         private readonly string _name;
@@ -97,7 +97,7 @@ namespace Magnum.ProtocolBuffers
             _hasDefaultValue = true;
         }
 
-        void IMapping.Visit(IMappingVisitor visitor)
+        void IMappingPart.Visit(IMappingVisitor visitor)
         {
             string content = string.Format("  {0} {1} {2} = {3}", this.Rules.ToString().ToLower(), this._fieldType.ToGoogleTypeName() , Name.ToBoxCuttingCase(), NumberTag);
             if (HasDefaultValue) content = string.Format("{0} [default = {1}]", content, DefaultValue);

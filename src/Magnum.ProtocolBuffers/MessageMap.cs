@@ -3,7 +3,6 @@ namespace Magnum.ProtocolBuffers
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
-    using System.Text;
     using Common;
     using Internal;
 
@@ -11,7 +10,8 @@ namespace Magnum.ProtocolBuffers
         IMapping
     {
         private readonly Type _messageType;
-        private readonly IList<FieldMap> _fields;
+        private readonly List<FieldMap> _fields;
+        private readonly HashSet<int> _tagsUsed;
         private int _currentNumberTag = 0;
 
         public MessageMap()
@@ -19,6 +19,7 @@ namespace Magnum.ProtocolBuffers
             ExtensionRange = new Range<int>(0,0,false,false);
 
             _fields = new List<FieldMap>();
+            _tagsUsed = new HashSet<int>();
             _messageType = typeof (TMessage);
             Name = _messageType.Name;
         }
@@ -66,7 +67,8 @@ namespace Magnum.ProtocolBuffers
 
         private void RecalibrateNumberTagIfNecessary(int numberTag)
         {
-            if (!numberTag.Equals(_currentNumberTag)) _currentNumberTag = ++numberTag;
+            if (!numberTag.Equals(_currentNumberTag))
+                _currentNumberTag = ++numberTag;
         }
 
         private void AddField(FieldMap map)
@@ -74,6 +76,10 @@ namespace Magnum.ProtocolBuffers
             if (ExtensionRange.Contains(map.NumberTag))
                 throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
 
+            if(_tagsUsed.Contains(map.NumberTag))
+                throw new ProtoMappingException(string.Format("NumberTag {0} is already assigned to {1}", map.NumberTag, _fields.Find(o=>o.NumberTag == map.NumberTag).Name));
+
+            _tagsUsed.Add(map.NumberTag);
             _fields.Add(map);
         }
 
@@ -83,12 +89,17 @@ namespace Magnum.ProtocolBuffers
             
             visitor.AddMap(string.Format("message {0} {{", this.Name));
             
-            foreach (IMapping map in _fields)
+            foreach (IMappingPart map in _fields)
             {
                 map.Visit(visitor);
             }
 
             visitor.AddMap("}");
+        }
+
+        Type IMapping.TypeMapped
+        {
+            get { return typeof (TMessage); }
         }
     }
 }
