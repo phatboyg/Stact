@@ -99,6 +99,9 @@
     <Compile Include="Serialization\ISerializationWriter.cs" />
     <Compile Include="Serialization\SerializationUtil.cs" />
     <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
+    <Compile Include="Threading\ILockedObject.cs" />
+    <Compile Include="Threading\ReaderWriterLockContext.cs" />
+    <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
