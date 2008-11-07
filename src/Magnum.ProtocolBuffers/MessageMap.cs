@@ -2,15 +2,19 @@ namespace Magnum.ProtocolBuffers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using Common;
 
     public class MessageMap<TMessage>
     {
         private readonly Type _messageType;
         private readonly IList<FieldMap> _fields;
+        private int _nextNumberTag = 0;
 
         public MessageMap()
         {
+            ExtensionRange = new Range<int>(0,0,false,false);
+
             _fields = new List<FieldMap>();
             _messageType = typeof (TMessage);
             Name = _messageType.Name;
@@ -39,6 +43,23 @@ namespace Magnum.ProtocolBuffers
         public void SetAsideExtensions(int lower, int upper)
         {
             ExtensionRange = new Range<int>(lower, upper, true,true);
+        }
+
+        public FieldMap Field(Expression<Func<TMessage, object>> field)
+        {
+            return Field(field, GetNextNumberTag());
+        }
+        public FieldMap Field(Expression<Func<TMessage, object>> field, int numberTag)
+        {
+            var prop = ReflectionHelper.GetProperty(field);
+            var map = new FieldMap(prop, numberTag);
+            AddField(map);
+            return map;
+        }
+
+        private int GetNextNumberTag()
+        {
+            return ++_nextNumberTag;
         }
     }
 }
