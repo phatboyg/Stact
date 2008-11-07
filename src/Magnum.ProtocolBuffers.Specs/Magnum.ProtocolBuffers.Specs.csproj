@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A_fluent_api_makes_things_nice.cs" />
     <Compile Include="Messages_can_set_aside_numbers_for_extensions.cs" />
     <Compile Include="Messages_have_fields.cs" />
     <Compile Include="Messages_have_names.cs" />
