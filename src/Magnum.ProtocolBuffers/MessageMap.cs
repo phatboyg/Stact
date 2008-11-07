@@ -3,9 +3,12 @@ namespace Magnum.ProtocolBuffers
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Text;
     using Common;
+    using Internal;
 
-    public class MessageMap<TMessage>
+    public class MessageMap<TMessage> :
+        IMapping
     {
         private readonly Type _messageType;
         private readonly IList<FieldMap> _fields;
@@ -72,6 +75,20 @@ namespace Magnum.ProtocolBuffers
                 throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
 
             _fields.Add(map);
+        }
+
+        void IMapping.Visit(IMappingVisitor visitor)
+        {
+            visitor.CurrentType = typeof (TMessage);
+            
+            visitor.AddMap(string.Format("message {0} {{", this.Name));
+            
+            foreach (IMapping map in _fields)
+            {
+                map.Visit(visitor);
+            }
+
+            visitor.AddMap("}");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Magnum.ProtocolBuffers.Specs
             Expression<Func<TestMessage, string>> expression = m => m.Name;
             var propInfo = ReflectionHelper.GetProperty(expression);
             var mapping = new FieldMap(propInfo, 1);
-            Assert.AreEqual("Name", mapping.FieldName);
+            Assert.AreEqual("Name", mapping.Name);
         }
     }
 }

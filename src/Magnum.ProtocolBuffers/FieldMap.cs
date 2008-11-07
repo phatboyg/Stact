@@ -3,12 +3,14 @@ namespace Magnum.ProtocolBuffers
     using System;
     using System.Reflection;
     using Common;
+    using Internal;
     using Specs;
 
-    public class FieldMap
+    public class FieldMap :
+        IMapping
     {
         private static readonly Range<int> _googlesFieldNumbers = new Range<int>(19000, 19999, true, true);
-        private readonly string _fieldName;
+        private readonly string _name;
         private object _defaultValue;
         private Type _fieldType;
         private bool _hasDefaultValue;
@@ -27,13 +29,13 @@ namespace Magnum.ProtocolBuffers
 
             SetConventionalFieldRules();
 
-            _fieldName = propertyInfo.Name;
+            _name = propertyInfo.Name;
         }
 
 
-        public string FieldName
+        public string Name
         {
-            get { return _fieldName; }
+            get { return _name; }
         }
 
         public int NumberTag { get; private set; }
@@ -93,6 +95,14 @@ namespace Magnum.ProtocolBuffers
         {
             _defaultValue = value;
             _hasDefaultValue = true;
+        }
+
+        void IMapping.Visit(IMappingVisitor visitor)
+        {
+            string content = string.Format("  {0} {1} {2} = {3}", this.Rules.ToString().ToLower(), this._fieldType.ToGoogleTypeName() , Name.ToBoxCuttingCase(), NumberTag);
+            if (HasDefaultValue) content = string.Format("{0} [default = {1}]", content, DefaultValue);
+            content = string.Format("{0};", content);
+            visitor.AddMap(content);
         }
     }
 }

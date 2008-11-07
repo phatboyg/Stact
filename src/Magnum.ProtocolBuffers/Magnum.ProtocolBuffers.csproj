@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="FieldMap.cs" />
     <Compile Include="FieldRules.cs" />
+    <Compile Include="Internal\IMapping.cs" />
+    <Compile Include="Internal\IMappingVisitor.cs" />
     <Compile Include="MessageMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoMappingException.cs" />
