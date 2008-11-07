@@ -23,9 +23,8 @@ namespace Magnum.ProtocolBuffers.Specs
         public void You_cant_add_fields_in_the_extension_range()
         {
             var map = new MessageMap<TestMessage>();
-            var prop = ReflectionHelper.GetProperty<TestMessage>(m => m.Name);
             map.SetAsideExtensions(1,3);
-            map.AddField(new FieldMap(prop,2));
+            map.Field(m=>m.Name,2);
         }
     }
 }

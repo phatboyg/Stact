@@ -22,13 +22,7 @@ namespace Magnum.ProtocolBuffers
 
         public string Name { get; private set; }
 
-        public void AddField(FieldMap map)
-        {
-            if(ExtensionRange.Contains(map.NumberTag))
-                throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}",map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
-
-            _fields.Add(map);
-        }
+        public Range<int> ExtensionRange { get; private set; }
 
         public int FieldCount
         {
@@ -38,7 +32,15 @@ namespace Magnum.ProtocolBuffers
             }
         }
 
-        public Range<int> ExtensionRange { get; private set; }
+        public int CurrentNumberTag
+        {
+            get { return _currentNumberTag; }
+        }
+
+        private int GetNextNumberTag()
+        {
+            return ++_currentNumberTag;
+        }
 
         public void SetAsideExtensions(int lower, int upper)
         {
@@ -64,14 +66,12 @@ namespace Magnum.ProtocolBuffers
             if (!numberTag.Equals(_currentNumberTag)) _currentNumberTag = ++numberTag;
         }
 
-        private int GetNextNumberTag()
+        private void AddField(FieldMap map)
         {
-            return ++_currentNumberTag;
-        }
+            if (ExtensionRange.Contains(map.NumberTag))
+                throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
 
-        public int CurrentNumberTag
-        {
-            get { return _currentNumberTag; }
+            _fields.Add(map);
         }
     }
 }
