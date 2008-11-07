@@ -11,16 +11,23 @@ namespace Magnum.ProtocolBuffers.Specs
         public void Arrays_are_collections()
         {
             Type type = typeof (string[]);
-            Assert.IsTrue(type.IsCollection());
+            Assert.IsTrue(type.IsRepeatedType());
 
             type = typeof (IList<int>);
-            Assert.IsTrue(type.IsCollection(), "Closed Generic");
+            Assert.IsTrue(type.IsRepeatedType(), "Closed Generic");
 
             type = typeof (IList<>);
-            Assert.IsTrue(type.IsCollection(), "Open generic");
+            Assert.IsTrue(type.IsRepeatedType(), "Open generic");
 
             type = typeof (IList);
-            Assert.IsTrue(type.IsCollection(), "Non-Generic");
+            Assert.IsTrue(type.IsRepeatedType(), "Non-Generic");
+        }
+
+        [Test]
+        public void Is_required_type()
+        {
+            Type type = typeof (int);
+            Assert.IsTrue(type.IsRequiredType());
         }
     }
 }

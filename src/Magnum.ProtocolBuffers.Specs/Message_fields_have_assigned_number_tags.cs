@@ -12,8 +12,9 @@ namespace Magnum.ProtocolBuffers.Specs
         public void Mappings_need_number_tags()
         {
             Expression<Func<TestMessage, string>> function = m => m.Name;
+            var prop = ReflectionHelper.GetProperty(function);
 
-            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
+            var fieldMapping = new FieldMap(prop, 1);
 
             Assert.AreEqual(1, fieldMapping.NumberTag);
         }

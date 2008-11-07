@@ -6,7 +6,7 @@ namespace Magnum.ProtocolBuffers
 
     public static class TypeExtensions
     {
-        public static bool IsCollection(this Type type)
+        public static bool IsRepeatedType(this Type type)
         {
             if (type.IsArray) return true;
             if (typeof(IList).IsAssignableFrom(type)) return true;
@@ -18,6 +18,11 @@ namespace Magnum.ProtocolBuffers
                 return genList.IsAssignableFrom(type);
             }
             return false;
+        }
+
+        public static bool IsRequiredType(this Type type)
+        {
+            return type.IsValueType && !type.IsGenericType;
         }
         public static bool IsDictionary(this Type type)
         {

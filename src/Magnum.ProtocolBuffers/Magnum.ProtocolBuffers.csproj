@@ -37,7 +37,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldMapping.cs" />
+    <Compile Include="FieldMap.cs" />
     <Compile Include="FieldRules.cs" />
     <Compile Include="MessageMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

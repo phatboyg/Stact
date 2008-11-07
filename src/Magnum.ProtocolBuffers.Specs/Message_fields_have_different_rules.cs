@@ -8,31 +8,33 @@ namespace Magnum.ProtocolBuffers.Specs
         Specification
     {
         private Expression<Func<TestMessage, string>> function = m => m.Name;
+        private FieldMap _fieldMap;
 
+        protected override void Before_each()
+        {
+            var prop = ReflectionHelper.GetProperty(function);
+            _fieldMap = new FieldMap(prop, 1);
+        }
         [Test]
         public void Mappings_are_optional_by_default()
         {
-            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
-
-            Assert.AreEqual(FieldRules.Optional, fieldMapping.Rules);
+            Assert.AreEqual(FieldRules.Optional, _fieldMap.Rules);
         }
 
         [Test]
         public void Mappings_can_be_made_required()
         {
-            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
-            fieldMapping.MakeRequired();
+            _fieldMap.MakeRequired();
 
-            Assert.AreEqual(FieldRules.Required, fieldMapping.Rules);
+            Assert.AreEqual(FieldRules.Required, _fieldMap.Rules);
         }
 
         [Test]
         public void Mappings_can_be_made_repeated()
         {
-            var fieldMapping = new FieldMapping<TestMessage, string>(function, 1);
-            fieldMapping.MakeRepeated();
+            _fieldMap.MakeRepeated();
 
-            Assert.AreEqual(FieldRules.Repeated, fieldMapping.Rules);
+            Assert.AreEqual(FieldRules.Repeated, _fieldMap.Rules);
         }
     }
 }

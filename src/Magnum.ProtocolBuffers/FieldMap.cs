@@ -2,33 +2,33 @@ namespace Magnum.ProtocolBuffers
 {
     using System;
     using System.Linq.Expressions;
+    using System.Reflection;
     using Specs;
 
-    public class FieldMapping<TMessage, TPropertyValue>
+    public class FieldMap
     {
         private FieldRules _rules;
         private Type _fieldType;
         private readonly string _fieldName;
-        private TPropertyValue _defaultValue;
+        private object _defaultValue;
         private bool _hasDefaultValue;
 
-        public FieldMapping(Expression<Func<TMessage, TPropertyValue>> expression, int numberTag)
+        public FieldMap(PropertyInfo propertyInfo, int numberTag)
         {
             NumberTag = numberTag;
             _rules = FieldRules.Optional;
 
 
-            PopulateFieldSettings();
+            PopulateFieldSettings(propertyInfo);
             
             SetConventionalFieldRules();
 
-            var body = (MemberExpression)expression.Body;
-            _fieldName = body.Member.Name;
+            _fieldName = propertyInfo.Name;
         }
 
-        private void PopulateFieldSettings()
+        private void PopulateFieldSettings(PropertyInfo info)
         {
-            _fieldType = typeof(TPropertyValue);
+            _fieldType = info.PropertyType;
 
             if(_fieldType.IsEnum)
                 throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
@@ -62,7 +62,7 @@ namespace Magnum.ProtocolBuffers
             get { return _fieldType; }
         }
 
-        public TPropertyValue DefaultValue
+        public object DefaultValue
         {
             get { return _defaultValue; }
         }
@@ -74,18 +74,18 @@ namespace Magnum.ProtocolBuffers
 
         private void SetConventionalFieldRules()
         {
-            if(typeof(TPropertyValue).IsCollection())
+            if(_fieldType.IsRepeatedType())
             {
                 MakeRepeated();
             }
 
-            if(typeof(TPropertyValue).IsValueType && !typeof(TPropertyValue).IsGenericType)
+            if(_fieldType.IsRequiredType())
             {
                 MakeRequired();
             }
         }
 
-        public void SetDefaultValue(TPropertyValue value)
+        public void SetDefaultValue(object value)
         {
             _defaultValue = value;
             _hasDefaultValue = true;
