@@ -44,7 +44,7 @@ namespace Magnum.Common.Threading
 
 		public void ReadLock(Action<ReaderWriterLockContext> action)
 		{
-			if (_disposed) throw new ObjectDisposedException("LambdaReadWriteLock");
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
 
 			_lock.EnterReadLock();
 			try
@@ -57,11 +57,11 @@ namespace Magnum.Common.Threading
 			}
 		}
 
-		public bool ReadLock(TimeSpan span, Action<ReaderWriterLockContext> action)
+		public bool ReadLock(TimeSpan timeout, Action<ReaderWriterLockContext> action)
 		{
-			if (_disposed) throw new ObjectDisposedException("LambdaReadWriteLock");
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
 
-			if (_lock.TryEnterReadLock(span) == false)
+			if (_lock.TryEnterReadLock(timeout) == false)
 				return false;
 
 			try
@@ -76,9 +76,43 @@ namespace Magnum.Common.Threading
 			return true;
 		}
 
+		public void UpgradeableReadLock(Action<ReaderWriterLockContext> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
+
+			_lock.EnterUpgradeableReadLock();
+			try
+			{
+				action(this);
+			}
+			finally
+			{
+				_lock.ExitUpgradeableReadLock();
+			}
+		}
+
+		public bool UpgradeableReadLock(TimeSpan timeout, Action<ReaderWriterLockContext> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
+
+			if (_lock.TryEnterUpgradeableReadLock(timeout) == false)
+				return false;
+
+			try
+			{
+				action(this);
+			}
+			finally
+			{
+				_lock.ExitUpgradeableReadLock();
+			}
+
+			return true;
+		}
+
 		public void WriteLock(Action<ReaderWriterLockContext> action)
 		{
-			if (_disposed) throw new ObjectDisposedException("LambdaReadWriteLock");
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
 
 			_lock.EnterWriteLock();
 			try
@@ -91,11 +125,11 @@ namespace Magnum.Common.Threading
 			}
 		}
 
-		public bool WriteLock(TimeSpan span, Action<ReaderWriterLockContext> action)
+		public bool WriteLock(TimeSpan timeout, Action<ReaderWriterLockContext> action)
 		{
-			if (_disposed) throw new ObjectDisposedException("LambdaReadWriteLock");
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
 
-			if (_lock.TryEnterWriteLock(span) == false)
+			if (_lock.TryEnterWriteLock(timeout) == false)
 				return false;
 
 			try

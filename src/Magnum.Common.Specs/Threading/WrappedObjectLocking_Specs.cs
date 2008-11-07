@@ -68,6 +68,18 @@ namespace Magnum.Common.Specs.Threading
 		}
 
 		[Test]
+		public void An_upgradable_lock_with_a_timeout_should_work()
+		{
+			string value = string.Empty;
+
+			bool locked = _value.UpgradeableReadLock(1.Seconds(), x => {value = x;});
+
+			Assert.That(locked, Is.True, "Unable to obtain lock");
+
+			Assert.That(value, Is.EqualTo(_initialValue));
+		}
+
+		[Test]
 		public void A_separate_thread_trying_read_a_read_locked_object_should_succeed()
 		{
 			string threadValue = string.Empty;
@@ -148,6 +160,21 @@ namespace Magnum.Common.Specs.Threading
 			_value.ReadUnlocked(x => value = x);
 
 			Assert.That(value, Is.EqualTo(_initialValue));
+		}
+
+		[Test]
+		public void An_upgradeable_read_lock_should_be_possible()
+		{
+			string value = string.Empty;
+			_value.UpgradeableReadLock(x =>
+			{
+				value = x;
+
+				_value.WriteLock(y => _finalValue);
+			});
+
+			Assert.That(value, Is.EqualTo(_initialValue));
+			_value.ReadUnlocked(y => Assert.That(y, Is.EqualTo(_finalValue)));
 		}
 	}
 }

@@ -144,5 +144,24 @@ namespace Magnum.Common.Specs.Threading
 
 			Assert.That(_value, Is.EqualTo(_finalValue));
 		}
+
+		[Test]
+		public void An_upgradeable_read_lock_should_be_possible()
+		{
+			string value = string.Empty;
+			_lockContext.UpgradeableReadLock(x =>
+				{
+					value = _value;
+
+					x.WriteLock(y =>
+						{
+							_value = _finalValue;
+
+						});
+				});
+
+			Assert.That(value, Is.EqualTo(_initialValue));
+			Assert.That(_value, Is.EqualTo(_finalValue));
+		}
 	}
 }
