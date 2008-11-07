@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages_can_set_aside_numbers_for_extensions.cs" />
     <Compile Include="Messages_have_fields.cs" />
     <Compile Include="Messages_have_names.cs" />
     <Compile Include="Message_fields_can_have_default_values.cs" />
@@ -58,6 +59,10 @@
     <Compile Include="TypeExtension_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum.ProtocolBuffers\Magnum.ProtocolBuffers.csproj">
       <Project>{F4F363D4-0ED1-4DE2-B96D-7883215D816B}</Project>
       <Name>Magnum.ProtocolBuffers</Name>

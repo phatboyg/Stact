@@ -19,7 +19,7 @@ namespace Magnum.Common
 	/// Represents a range of enumerable items
 	/// </summary>
 	/// <typeparam name="T">The type of range</typeparam>
-	public class Range<T>
+	public class Range<T> : IEquatable<Range<T>>
 	{
 		readonly IComparer<T> _comparer;
 		readonly bool _includeLowerBound;
@@ -121,6 +121,45 @@ namespace Magnum.Common
 		public RangeEnumerator<T> Forward(Func<T, T> step)
 		{
 			return new RangeEnumerator<T>(this, step);
-		}
-	}
+        }
+
+        #region Equality Stuff
+        public bool Equals(Range<T> obj)
+	    {
+	        if (ReferenceEquals(null, obj)) return false;
+	        if (ReferenceEquals(this, obj)) return true;
+	        return obj._includeLowerBound.Equals(_includeLowerBound) && obj._includeUpperBound.Equals(_includeUpperBound) && Equals(obj._lowerBound, _lowerBound) && Equals(obj._upperBound, _upperBound);
+	    }
+
+	    public override bool Equals(object obj)
+	    {
+	        if (ReferenceEquals(null, obj)) return false;
+	        if (ReferenceEquals(this, obj)) return true;
+	        if (obj.GetType() != typeof (Range<T>)) return false;
+	        return Equals((Range<T>) obj);
+	    }
+
+	    public override int GetHashCode()
+	    {
+	        unchecked
+	        {
+	            int result = _includeLowerBound.GetHashCode();
+	            result = (result*397) ^ _includeUpperBound.GetHashCode();
+	            result = (result*397) ^ _lowerBound.GetHashCode();
+	            result = (result*397) ^ _upperBound.GetHashCode();
+	            return result;
+	        }
+	    }
+
+	    public static bool operator ==(Range<T> left, Range<T> right)
+	    {
+	        return Equals(left, right);
+	    }
+
+	    public static bool operator !=(Range<T> left, Range<T> right)
+	    {
+	        return !Equals(left, right);
+        }
+        #endregion
+    }
 }

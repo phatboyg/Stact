@@ -1,37 +1,33 @@
 namespace Magnum.ProtocolBuffers
 {
     using System;
-    using System.Linq.Expressions;
     using System.Reflection;
+    using Common;
     using Specs;
 
     public class FieldMap
     {
-        private FieldRules _rules;
-        private Type _fieldType;
+        private static readonly Range<int> _googlesFieldNumbers = new Range<int>(19000, 19999, true, true);
         private readonly string _fieldName;
         private object _defaultValue;
+        private Type _fieldType;
         private bool _hasDefaultValue;
+        private FieldRules _rules;
 
         public FieldMap(PropertyInfo propertyInfo, int numberTag)
         {
+            if (_googlesFieldNumbers.Contains(numberTag))
+                throw new ProtoMappingException(string.Format("A field mapping cannot have a numberTag between 19000 and 19999. Its owned by google!"));
+
             NumberTag = numberTag;
             _rules = FieldRules.Optional;
 
 
             PopulateFieldSettings(propertyInfo);
-            
+
             SetConventionalFieldRules();
 
             _fieldName = propertyInfo.Name;
-        }
-
-        private void PopulateFieldSettings(PropertyInfo info)
-        {
-            _fieldType = info.PropertyType;
-
-            if(_fieldType.IsEnum)
-                throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
         }
 
 
@@ -45,16 +41,6 @@ namespace Magnum.ProtocolBuffers
         public FieldRules Rules
         {
             get { return _rules; }
-        }
-
-        public void MakeRequired()
-        {
-            _rules = FieldRules.Required;
-        }
-
-        public void MakeRepeated()
-        {
-            _rules = FieldRules.Repeated;
         }
 
         public Type FieldType
@@ -72,14 +58,32 @@ namespace Magnum.ProtocolBuffers
             get { return _hasDefaultValue; }
         }
 
+        private void PopulateFieldSettings(PropertyInfo info)
+        {
+            _fieldType = info.PropertyType;
+
+            if (_fieldType.IsEnum)
+                throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
+        }
+
+        public void MakeRequired()
+        {
+            _rules = FieldRules.Required;
+        }
+
+        public void MakeRepeated()
+        {
+            _rules = FieldRules.Repeated;
+        }
+
         private void SetConventionalFieldRules()
         {
-            if(_fieldType.IsRepeatedType())
+            if (_fieldType.IsRepeatedType())
             {
                 MakeRepeated();
             }
 
-            if(_fieldType.IsRequiredType())
+            if (_fieldType.IsRequiredType())
             {
                 MakeRequired();
             }
@@ -91,6 +95,4 @@ namespace Magnum.ProtocolBuffers
             _hasDefaultValue = true;
         }
     }
-
-    
 }

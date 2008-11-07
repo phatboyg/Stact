@@ -18,5 +18,26 @@ namespace Magnum.ProtocolBuffers.Specs
 
             Assert.AreEqual(1, fieldMapping.NumberTag);
         }
+
+        [Test]
+        [ExpectedException(typeof(ProtoMappingException))]
+        public void You_cant_use_19000()
+        {
+            new FieldMap(null, 19000);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ProtoMappingException))]
+        public void You_cant_use_19999()
+        {
+            new FieldMap(null, 19999);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ProtoMappingException))]
+        public void Or_anything_between()
+        {
+            new FieldMap(null, 19500);
+        }
     }
 }

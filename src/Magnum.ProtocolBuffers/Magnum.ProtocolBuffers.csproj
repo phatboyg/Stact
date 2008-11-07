@@ -41,7 +41,14 @@
     <Compile Include="FieldRules.cs" />
     <Compile Include="MessageMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtoMappingException.cs" />
     <Compile Include="TypeExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
