@@ -37,6 +37,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClrMessages\GuidMessage.cs" />
     <Compile Include="CommunicationModel.cs" />
     <Compile Include="FieldMap.cs" />
     <Compile Include="FieldRules.cs" />
@@ -48,8 +49,6 @@
     <Compile Include="ProtoMappingException.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
-    <Compile Include="ScalarValueTypes\Double.cs" />
-    <Compile Include="ScalarValueTypes\ScalarBase.cs" />
     <Compile Include="Serialization\CodedOutputStream.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
