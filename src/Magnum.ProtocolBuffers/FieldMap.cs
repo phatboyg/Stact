@@ -68,9 +68,11 @@ namespace Magnum.ProtocolBuffers
                 throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
         }
 
-        public void MakeRequired()
+        public FieldMap MakeRequired()
         {
             _rules = FieldRules.Required;
+
+            return this;
         }
 
         public void MakeRepeated()

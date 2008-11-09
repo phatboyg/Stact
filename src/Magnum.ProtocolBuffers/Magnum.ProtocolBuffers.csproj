@@ -50,6 +50,10 @@
     <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="ScalarValueTypes\Double.cs" />
     <Compile Include="ScalarValueTypes\ScalarBase.cs" />
+    <Compile Include="Serialization\CodedOutputStream.cs" />
+    <Compile Include="Serialization\MessageDescriptor.cs" />
+    <Compile Include="Serialization\WireFormat.cs" />
+    <Compile Include="Serialization\WireType.cs" />
     <Compile Include="TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
