@@ -51,6 +51,7 @@
     <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="Serialization\CodedOutputStream.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
+    <Compile Include="Serialization\MessageDescriptorFactory.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
     <Compile Include="Serialization\WireType.cs" />
     <Compile Include="TypeExtensions.cs" />

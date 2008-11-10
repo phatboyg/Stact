@@ -12,27 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
-
     public class MessageDescriptor<T>
     {
-        private SortedList<int, Expression<Func<T, object>>> _lambdas = new SortedList<int, Expression<Func<T, object>>>();
-
+        
         public void Serialize(CodedOutputStream outputStream, T message)
         {
-            foreach (var pair in _lambdas)
-            {
-                var exp = pair.Value;
-            }
-        }
-
-        public void AddLambda(int tag, Expression<Func<T, object>> lambda)
-        {
-            //ordered list? on serialization
-            //this would build up a keyed list of lambdas?
-            _lambdas.Add(tag, lambda);
+            
         }
     }
 }

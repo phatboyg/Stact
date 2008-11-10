@@ -5,6 +5,7 @@ namespace Magnum.ProtocolBuffers
     using System.Reflection;
     using Common;
     using Internal;
+    using Serialization;
     using Specs;
 
     public class FieldMap<TMessage> :
@@ -14,6 +15,7 @@ namespace Magnum.ProtocolBuffers
         private readonly string _name;
         private object _defaultValue;
         private Type _fieldType;
+        private WireType _wireType;
         private bool _hasDefaultValue;
         private FieldRules _rules;
         private Expression<Func<TMessage, object>> _func;
@@ -48,6 +50,11 @@ namespace Magnum.ProtocolBuffers
         public FieldRules Rules
         {
             get { return _rules; }
+        }
+
+        public WireType WireType
+        {
+            get { return _wireType; }
         }
 
         public Type FieldType

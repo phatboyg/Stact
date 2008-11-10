@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using Common;
@@ -100,6 +101,11 @@ namespace Magnum.ProtocolBuffers
         Type IMapping.TypeMapped
         {
             get { return typeof (TMessage); }
+        }
+
+        public IList<FieldMap<TMessage>> Fields
+        {
+            get { return _fields; }
         }
     }
 }
