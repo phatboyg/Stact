@@ -11,49 +11,43 @@ namespace Magnum.ProtocolBuffers.Specs
     public class Message_fields_have_different_types :
         Specification
     {
-        private readonly Expression<Func<TestMessage, string>> basicField = m => m.Name;
-        private readonly Expression<Func<TestMessage, int>> valueTypeField = m => m.Age;
-        private readonly Expression<Func<TestMessage, IList<int>>> repeatedField = m => m.Numbers;
-        private readonly Expression<Func<TestMessage, int?>> nullableField = m => m.NumberOfPets;
+        private readonly Expression<Func<TestMessage, object>> basicField = m => m.Name;
+        private readonly Expression<Func<TestMessage, object>> valueTypeField = m => m.Age;
+        private readonly Expression<Func<TestMessage, object>> repeatedField = m => m.Numbers;
+        private readonly Expression<Func<TestMessage, object>> nullableField = m => m.NumberOfPets;
 
         
 
         [Test]
         public void Fields_should_be_optional_by_default()
         {
-            var prop = ReflectionHelper.GetProperty(basicField);
-            var mapping = new FieldMap(prop,1);
+            var mapping = new FieldMap<TestMessage>( 1, basicField);
             Assert.AreEqual(FieldRules.Optional, mapping.Rules);
         }
         [Test]
         public void Field_should_self_set_repeated()
         {
-            var prop = ReflectionHelper.GetProperty(repeatedField);
-            var mapping = new FieldMap(prop, 1);
+            var mapping = new FieldMap<TestMessage>(1, repeatedField);
             Assert.AreEqual(FieldRules.Repeated, mapping.Rules);
         }
 
         [Test]
         public void Field_should_self_set_required()
         {
-            var prop = ReflectionHelper.GetProperty(valueTypeField);
-            var mapping = new FieldMap(prop, 1);
+            var mapping = new FieldMap<TestMessage>(1, valueTypeField);
             Assert.AreEqual(FieldRules.Required, mapping.Rules);
 
-            var prop2 = ReflectionHelper.GetProperty<TestMessage, DateTime>(m=>m.BirthDay);
-            var mapping2 = new FieldMap(prop2, 1);
+            var mapping2 = new FieldMap<TestMessage>(1, m=>m.BirthDay);
             Assert.AreEqual(FieldRules.Required, mapping2.Rules);
         }
 
         [Test]
         public void Nullable_fields_should_be_optional_by_default()
         {
-            var prop = ReflectionHelper.GetProperty(nullableField);
-            var mapping = new FieldMap(prop,1);
+            var mapping = new FieldMap<TestMessage>(1, nullableField);
             Assert.AreEqual(FieldRules.Optional, mapping.Rules);
 
-            var prop2 = ReflectionHelper.GetProperty<TestMessage, DateTime?>(m => m.DeadDay);
-            var mapping2 = new FieldMap(prop2, 1);
+            var mapping2 = new FieldMap<TestMessage>(1, m=>m.DeadDay);
             Assert.AreEqual(FieldRules.Optional, mapping2.Rules);
         }
     }

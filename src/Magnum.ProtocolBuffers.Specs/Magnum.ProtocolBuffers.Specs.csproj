@@ -51,8 +51,8 @@
     <Compile Include="Mapping\Messages_have_fields.cs" />
     <Compile Include="Mapping\Messages_have_names.cs" />
     <Compile Include="Mapping\Message_fields_can_have_default_values.cs" />
-    <Compile Include="Mapping\Message_fields_have_different_rules.cs" />
     <Compile Include="Mapping\Message_fields_have_assigned_number_tags.cs" />
+    <Compile Include="Mapping\Message_fields_have_different_rules.cs" />
     <Compile Include="Mapping\Message_fields_have_different_types.cs" />
     <Compile Include="Mapping\Message_fields_have_names.cs" />
     <Compile Include="Serialization\CodedOutputStream_Specs.cs" />

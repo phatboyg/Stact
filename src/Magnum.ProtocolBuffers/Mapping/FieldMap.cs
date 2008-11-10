@@ -1,12 +1,13 @@
 namespace Magnum.ProtocolBuffers
 {
     using System;
+    using System.Linq.Expressions;
     using System.Reflection;
     using Common;
     using Internal;
     using Specs;
 
-    public class FieldMap :
+    public class FieldMap<TMessage> :
         IMappingPart
     {
         private static readonly Range<int> _googlesFieldNumbers = new Range<int>(19000, 19999, true, true);
@@ -15,11 +16,15 @@ namespace Magnum.ProtocolBuffers
         private Type _fieldType;
         private bool _hasDefaultValue;
         private FieldRules _rules;
+        private Expression<Func<TMessage, object>> _func;
 
-        public FieldMap(PropertyInfo propertyInfo, int numberTag)
+        public FieldMap(int numberTag, Expression<Func<TMessage, object>> func)
         {
             if (_googlesFieldNumbers.Contains(numberTag))
                 throw new ProtoMappingException(string.Format("A field mapping cannot have a numberTag between 19000 and 19999. Its owned by google!"));
+
+            _func = func;
+            var propertyInfo = ReflectionHelper.GetProperty(func);
 
             NumberTag = numberTag;
             _rules = FieldRules.Optional;
@@ -60,6 +65,14 @@ namespace Magnum.ProtocolBuffers
             get { return _hasDefaultValue; }
         }
 
+        public Expression<Func<TMessage, object>> Lambda
+        {
+            get
+            {
+                return _func;
+            }
+        }
+
         private void PopulateFieldSettings(PropertyInfo info)
         {
             _fieldType = info.PropertyType;
@@ -68,7 +81,7 @@ namespace Magnum.ProtocolBuffers
                 throw new NotSupportedException("Fluent Proto Buffers does not yet support enumerations");
         }
 
-        public FieldMap MakeRequired()
+        public FieldMap<TMessage> MakeRequired()
         {
             _rules = FieldRules.Required;
 

@@ -10,7 +10,7 @@ namespace Magnum.ProtocolBuffers
         IMapping
     {
         private readonly Type _messageType;
-        private readonly List<FieldMap> _fields;
+        private readonly List<FieldMap<TMessage>> _fields;
         private readonly HashSet<int> _tagsUsed;
         private int _currentNumberTag = 0;
 
@@ -18,7 +18,7 @@ namespace Magnum.ProtocolBuffers
         {
             ExtensionRange = new Range<int>(0,0,false,false);
 
-            _fields = new List<FieldMap>();
+            _fields = new List<FieldMap<TMessage>>();
             _tagsUsed = new HashSet<int>();
             _messageType = typeof (TMessage);
             Name = _messageType.Name;
@@ -51,16 +51,15 @@ namespace Magnum.ProtocolBuffers
             ExtensionRange = new Range<int>(lower, upper, true,true);
         }
 
-        public FieldMap Field(Expression<Func<TMessage, object>> field)
+        public FieldMap<TMessage> Field(Expression<Func<TMessage, object>> field)
         {
             return Field(field, GetNextNumberTag());
         }
-        public FieldMap Field(Expression<Func<TMessage, object>> field, int numberTag)
+        public FieldMap<TMessage> Field(Expression<Func<TMessage, object>> field, int numberTag)
         {
             RecalibrateNumberTagIfNecessary(numberTag);
 
-            var prop = ReflectionHelper.GetProperty(field);
-            var map = new FieldMap(prop, numberTag);
+            var map = new FieldMap<TMessage>(numberTag, field);
             AddField(map);
             return map;
         }
@@ -71,7 +70,7 @@ namespace Magnum.ProtocolBuffers
                 _currentNumberTag = ++numberTag;
         }
 
-        private void AddField(FieldMap map)
+        private void AddField(FieldMap<TMessage> map)
         {
             if (ExtensionRange.Contains(map.NumberTag))
                 throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
@@ -100,6 +99,11 @@ namespace Magnum.ProtocolBuffers
         Type IMapping.TypeMapped
         {
             get { return typeof (TMessage); }
+        }
+
+        public IList<FieldMap<TMessage>> Fields
+        {
+            get { return _fields; }
         }
     }
 }
