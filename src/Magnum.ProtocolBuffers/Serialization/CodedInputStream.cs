@@ -10,7 +10,6 @@ namespace Magnum.ProtocolBuffers.Serialization
     {
         private volatile bool _disposed;
         private MemoryStream _stream;
-        private static byte _msbMask = 0x80;
 
         public CodedInputStream(byte[] input)
         {
@@ -57,10 +56,10 @@ namespace Magnum.ProtocolBuffers.Serialization
             while (!foundMSB)
             {
                 byte current = (byte) stream.ReadByte();
-                if ((current & _msbMask) == 0)
-                {
+
+                if (!current.HasMostSignificantBitSet())
                     foundMSB = true;
-                }
+                
                 bytes.Add(current);
             }
             return bytes.ToArray();
