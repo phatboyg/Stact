@@ -16,13 +16,15 @@ namespace Magnum.ProtocolBuffers
         private Type _fieldType;
         private bool _hasDefaultValue;
         private FieldRules _rules;
+        private Expression<Func<TMessage, object>> _func;
 
         public FieldMap(int numberTag, Expression<Func<TMessage, object>> func)
         {
-            var propertyInfo = ReflectionHelper.GetProperty(func);
-
             if (_googlesFieldNumbers.Contains(numberTag))
                 throw new ProtoMappingException(string.Format("A field mapping cannot have a numberTag between 19000 and 19999. Its owned by google!"));
+
+            _func = func;
+            var propertyInfo = ReflectionHelper.GetProperty(func);
 
             NumberTag = numberTag;
             _rules = FieldRules.Optional;
@@ -67,7 +69,7 @@ namespace Magnum.ProtocolBuffers
         {
             get
             {
-                return null;
+                return _func;
             }
         }
 
