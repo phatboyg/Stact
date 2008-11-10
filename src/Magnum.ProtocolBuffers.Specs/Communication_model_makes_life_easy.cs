@@ -9,8 +9,8 @@ namespace Magnum.ProtocolBuffers.Specs
         public void By_auto_registering_maps()
         {
             var model = new CommunicationModel();
-            model.AddMappingsFromAssembly(this.GetType().Assembly);
-            Assert.AreEqual(1, model.NumberOfMessagesMapped);
+            model.AddMappingsFromAssembly(GetType().Assembly);
+            Assert.AreEqual(3, model.NumberOfMessagesMapped);
         }
         
     }

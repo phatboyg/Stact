@@ -22,13 +22,13 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         [Test]
         public void An_Int32_should_be_stored()
         {
-            CodedOutputStream outputStream = new CodedOutputStream();
+            var outputStream = new CodedOutputStream();
 
-            Int32Message message = new Int32Message(150);
+            var message = new Int32Message(150);
 
-            Int32MessageMap map = new Int32MessageMap();
+            var map = new Int32MessageMap();
 
-            MessageDescriptor<Int32Message> descriptor = new MessageDescriptor<Int32Message>(map);
+            var descriptor = new MessageDescriptor<Int32Message>();
 
             descriptor.Serialize(outputStream, message);
 
@@ -47,7 +47,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         [Test]
         public void A_string_should_be_properly_encoded()
         {
-            CodedOutputStream outputStream = new CodedOutputStream();
+            var outputStream = new CodedOutputStream();
 
             string value = "testing";
 
@@ -70,6 +70,16 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         }
     }
 
+    public class Test3Map :
+        MessageMap<Test3>
+    {
+        public Test3Map()
+        {
+            Field(m => m.I);
+        }
+    }
+
+    //test1
     public class Int32Message
     {
         public Int32Message(Int32 value)
@@ -78,5 +88,10 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         }
 
         public int Value { get; set; }
+    }
+
+    public class Test3
+    {
+        public Int32Message I { get; set; }
     }
 }
