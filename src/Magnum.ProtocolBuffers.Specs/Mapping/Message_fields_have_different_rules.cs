@@ -8,13 +8,13 @@ namespace Magnum.ProtocolBuffers.Specs
     public class Message_fields_have_different_rules :
         Specification
     {
-        private Expression<Func<TestMessage, object>> function = m => m.Name;
-        private FieldMap<TestMessage> _fieldMap;
+        private Expression<Func<TestMessage, string>> function = m => m.Name;
+        private FieldMap _fieldMap;
 
         protected override void Before_each()
         {
             var prop = ReflectionHelper.GetProperty(function);
-            _fieldMap = new FieldMap<TestMessage>(1, function);
+            _fieldMap = new FieldMap(prop, 1);
         }
         [Test]
         public void Mappings_are_optional_by_default()

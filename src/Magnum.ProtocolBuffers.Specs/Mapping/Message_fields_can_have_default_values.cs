@@ -7,11 +7,12 @@ namespace Magnum.ProtocolBuffers.Specs
     public class Message_fields_can_have_default_values :
         Specification
     {
-        private FieldMap<TestMessage> _mapping;
+        private FieldMap _mapping;
 
         protected override void Before_each()
         {
-            _mapping = new FieldMap<TestMessage>(1, m=>m.Name);
+            var prop = ReflectionHelper.GetProperty<TestMessage, string>(m => m.Name);
+            _mapping = new FieldMap(prop, 1);
         }
         [Test]
         public void Should_be_settable()

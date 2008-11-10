@@ -12,8 +12,9 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Name_should_be_set_automatically()
         {
-            Expression<Func<TestMessage, object>> expression = m => m.Name;
-            var mapping = new FieldMap<TestMessage>(1, expression);
+            Expression<Func<TestMessage, string>> expression = m => m.Name;
+            var propInfo = ReflectionHelper.GetProperty(expression);
+            var mapping = new FieldMap(propInfo, 1);
             Assert.AreEqual("Name", mapping.Name);
         }
     }

@@ -45,16 +45,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="A_fluent_api_makes_things_nice.cs" />
-    <Compile Include="Communication_model_makes_life_easy.cs" />
-    <Compile Include="Messages_can_set_aside_numbers_for_extensions.cs" />
-    <Compile Include="Messages_have_fields.cs" />
-    <Compile Include="Messages_have_names.cs" />
-    <Compile Include="Message_fields_can_have_default_values.cs" />
-    <Compile Include="Message_fields_have_different_rules.cs" />
-    <Compile Include="Message_fields_have_assigned_number_tags.cs" />
-    <Compile Include="Message_fields_have_different_types.cs" />
-    <Compile Include="Message_fields_have_names.cs" />
+    <Compile Include="Mapping\A_fluent_api_makes_things_nice.cs" />
+    <Compile Include="Mapping\Communication_model_makes_life_easy.cs" />
+    <Compile Include="Mapping\Messages_can_set_aside_numbers_for_extensions.cs" />
+    <Compile Include="Mapping\Messages_have_fields.cs" />
+    <Compile Include="Mapping\Messages_have_names.cs" />
+    <Compile Include="Mapping\Message_fields_can_have_default_values.cs" />
+    <Compile Include="Mapping\Message_fields_have_different_rules.cs" />
+    <Compile Include="Mapping\Message_fields_have_assigned_number_tags.cs" />
+    <Compile Include="Mapping\Message_fields_have_different_types.cs" />
+    <Compile Include="Mapping\Message_fields_have_names.cs" />
     <Compile Include="Serialization\CodedOutputStream_Specs.cs" />
     <Compile Include="Serialization\CodedInputStream_Specs.cs" />
     <Compile Include="String_mapping.cs" />

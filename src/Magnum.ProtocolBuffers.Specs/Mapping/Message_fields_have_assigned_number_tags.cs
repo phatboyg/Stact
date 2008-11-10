@@ -12,7 +12,10 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Mappings_need_number_tags()
         {
-            var fieldMapping = new FieldMap<TestMessage>(1, m=>m.Name);
+            Expression<Func<TestMessage, string>> function = m => m.Name;
+            var prop = ReflectionHelper.GetProperty(function);
+
+            var fieldMapping = new FieldMap(prop, 1);
 
             Assert.AreEqual(1, fieldMapping.NumberTag);
         }
@@ -21,21 +24,21 @@ namespace Magnum.ProtocolBuffers.Specs
         [ExpectedException(typeof(ProtoMappingException))]
         public void You_cant_use_19000()
         {
-            new FieldMap<TestMessage>(19000,m=>m.DeadDay);
+            new FieldMap(null, 19000);
         }
 
         [Test]
         [ExpectedException(typeof(ProtoMappingException))]
         public void You_cant_use_19999()
         {
-            new FieldMap<TestMessage>(19999,m=>m.DeadDay);
+            new FieldMap(null, 19999);
         }
 
         [Test]
         [ExpectedException(typeof(ProtoMappingException))]
         public void Or_anything_between()
         {
-            new FieldMap<TestMessage>(19500, m=>m.DeadDay);
+            new FieldMap(null, 19500);
         }
     }
 }
