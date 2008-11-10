@@ -56,6 +56,7 @@
     <Compile Include="Message_fields_have_different_types.cs" />
     <Compile Include="Message_fields_have_names.cs" />
     <Compile Include="Serialization\CodedOutputStream_Specs.cs" />
+    <Compile Include="Serialization\CodedInputStream_Specs.cs" />
     <Compile Include="String_mapping.cs" />
     <Compile Include="TestMappings\SearchRequestMapping.cs" />
     <Compile Include="TestMessages\SearchRequest.cs" />
