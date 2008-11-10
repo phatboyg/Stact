@@ -12,12 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
+    using System;
+
     public enum WireType
     {
         Varint = 0,
         Fixed64 = 1,
         LengthDelimited = 2,
+        [Obsolete]
         StartGroup = 3,
+        [Obsolete]
         EndGroup = 4,
         Fixed32 = 5,
     } ;

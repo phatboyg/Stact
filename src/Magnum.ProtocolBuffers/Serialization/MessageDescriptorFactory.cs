@@ -8,12 +8,25 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             foreach (var field in map.Fields)
             {
-                var tag = field.NumberTag;
                 var wireType = DetermineWireType(field.FieldType);
+                if(wireType.Equals(WireType.LengthDelimited))
+                {
+                    Recurse(field);
+                }
+                else
+                {
+                    
+                }
+                var tag = field.NumberTag;
                 var func = field.Lambda.Compile();
             }
 
             return new MessageDescriptor<TMessage>();
+        }
+
+        private void Recurse<TMessage>(FieldMap<TMessage> field)
+        {
+            
         }
 
         private WireType DetermineWireType(Type type)
