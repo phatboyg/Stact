@@ -39,15 +39,15 @@
   <ItemGroup>
     <Compile Include="ClrMessages\GuidMessage.cs" />
     <Compile Include="CommunicationModel.cs" />
-    <Compile Include="FieldMap.cs" />
-    <Compile Include="FieldRules.cs" />
+    <Compile Include="Mapping\FieldMap.cs" />
+    <Compile Include="Mapping\FieldRules.cs" />
     <Compile Include="Internal\IMapping.cs" />
     <Compile Include="Internal\IMappingPart.cs" />
     <Compile Include="Internal\IMappingVisitor.cs" />
-    <Compile Include="MessageMap.cs" />
+    <Compile Include="Mapping\MessageMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtoMappingException.cs" />
-    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Mapping\ProtoMappingException.cs" />
+    <Compile Include="Mapping\ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="Serialization\CodedInputStream.cs" />
     <Compile Include="Serialization\CodedOutputStream.cs" />
@@ -57,7 +57,7 @@
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
     <Compile Include="Serialization\WireType.cs" />
-    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="Mapping\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
