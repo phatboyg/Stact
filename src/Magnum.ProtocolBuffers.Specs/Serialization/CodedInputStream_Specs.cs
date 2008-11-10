@@ -17,14 +17,14 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
     using ProtocolBuffers.Serialization;
 
     [TestFixture]
-    public class When_writing_to_a_CodedOutputStream
+    public class When_reading_from_a_CodedInputStream
     {
         [Test]
         public void An_Int32_should_be_stored()
         {
             var outputStream = new CodedOutputStream();
 
-            var message = new Int32Message(150);
+            var message = new Int32Message{Value = 150};
 
             var map = new Int32MessageMap();
 
@@ -47,51 +47,20 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         [Test]
         public void A_string_should_be_properly_encoded()
         {
-            var outputStream = new CodedOutputStream();
+            byte[] input = new byte[] { 0x12, 0x07, 0x74, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67 };
+            var inputStream = new CodedInputStream(input);
 
             string value = "testing";
 
-            outputStream.WriteString(2, value);
+            var tagNumber = 2;
+            var wireType = 2;
+            var msg = inputStream.ReadNextMessage();
 
-            byte[] block = outputStream.GetBytes();
+            //byte[] block = inputStream.GetBytes();
 
-            byte[] expected = new byte[] { 0x12, 0x07, 0x74, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67 };
+            //byte[] expected = new byte[] { 0x12, 0x07, 0x74, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67 };
 
-            Assert.AreEqual(expected, block);
+            //Assert.AreEqual(expected, block);
         }
-    }
-
-    public class Int32MessageMap :
-        MessageMap<Int32Message>
-    {
-        public Int32MessageMap()
-        {
-            Field(x => x.Value).MakeRequired();
-        }
-    }
-
-    public class Test3Map :
-        MessageMap<Test3>
-    {
-        public Test3Map()
-        {
-            Field(m => m.I);
-        }
-    }
-
-    //test1
-    public class Int32Message
-    {
-        public Int32Message(Int32 value)
-        {
-            Value = value;
-        }
-
-        public int Value { get; set; }
-    }
-
-    public class Test3
-    {
-        public Int32Message I { get; set; }
     }
 }

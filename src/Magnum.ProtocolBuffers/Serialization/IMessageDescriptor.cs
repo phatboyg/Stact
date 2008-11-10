@@ -1,9 +1,10 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
-    public interface IMessageDescriptor<TMessage>
+    public interface IMessageDescriptor<TMessage> :
+        IMessageDescriptor where TMessage : class, new()
     {
         void Serialize(CodedOutputStream outputStream, TMessage message);
-        TMessage Deserialize(CodedInputStream inputStream);
+        new TMessage Deserialize(CodedInputStream inputStream);
     }
 
     public interface IMessageDescriptor

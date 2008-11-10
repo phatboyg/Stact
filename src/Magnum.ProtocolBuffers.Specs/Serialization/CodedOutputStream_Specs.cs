@@ -24,7 +24,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         {
             var outputStream = new CodedOutputStream();
 
-            var message = new Int32Message(150);
+            var message = new Int32Message{Value=150};
 
             var map = new Int32MessageMap();
 
@@ -82,11 +82,6 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
     //test1
     public class Int32Message
     {
-        public Int32Message(Int32 value)
-        {
-            Value = value;
-        }
-
         public int Value { get; set; }
     }
 

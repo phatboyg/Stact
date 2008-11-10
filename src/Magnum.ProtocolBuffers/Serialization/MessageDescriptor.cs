@@ -13,12 +13,26 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     public class MessageDescriptor<TMessage> :
-        IMessageDescriptor
+        IMessageDescriptor<TMessage> where TMessage : class, new()
     {
-        
+        public void Serialize(CodedOutputStream outputStream, object message)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        object IMessageDescriptor.Deserialize(CodedInputStream inputStream)
+        {
+            return Deserialize(inputStream);
+        }
+
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            
+            throw new System.NotImplementedException();
+        }
+
+        public TMessage Deserialize(CodedInputStream inputStream)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

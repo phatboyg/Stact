@@ -5,12 +5,12 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public class MessageDescriptorFactory
     {
-        private Dictionary<Type, MessageDescriptor<string>> _things;
+        private Dictionary<Type, IMessageDescriptor> _things;
 
-        public MessageDescriptor<TMessage> Build<TMessage>(MessageMap<TMessage> map)
+        public IMessageDescriptor<TMessage> Build<TMessage>(MessageMap<TMessage> map) where TMessage : class, new()
         {
             if (_things.ContainsKey(typeof(TMessage)))
-                return _things[typeof (TMessage)];
+                return (IMessageDescriptor<TMessage>)_things[typeof(TMessage)];
 
             var desc = new MessageDescriptor<TMessage>();
 
@@ -22,7 +22,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
                 if(wireType.Equals(WireType.LengthDelimited))
                 {
-                    Build(null); //field.Map?
+                    //Build(null); //field.Map?
                 }
             }
 
