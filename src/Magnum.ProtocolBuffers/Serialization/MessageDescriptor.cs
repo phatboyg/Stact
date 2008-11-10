@@ -12,10 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
-    public class MessageDescriptor<T>
+    public class MessageDescriptor<TMessage> :
+        IMessageDescriptor
     {
         
-        public void Serialize(CodedOutputStream outputStream, T message)
+        public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
             
         }

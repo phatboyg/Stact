@@ -50,6 +50,7 @@
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="Serialization\CodedOutputStream.cs" />
+    <Compile Include="Serialization\IMessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
