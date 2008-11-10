@@ -1,12 +1,10 @@
 namespace Magnum.ProtocolBuffers
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using Common;
     using Internal;
-    using Serialization;
 
     public class MessageMap<TMessage> :
         IMapping
