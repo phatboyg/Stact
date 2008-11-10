@@ -1,13 +1,16 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     public class CodedInputStream :
         IDisposable
     {
         private volatile bool _disposed;
         private MemoryStream _stream;
+        private static byte _msbMask = 0x80;
 
         public CodedInputStream(byte[] input)
         {
@@ -33,14 +36,41 @@ namespace Magnum.ProtocolBuffers.Serialization
                 int length = _stream.ReadByte();
                 byte[] dataBuffer = new byte[length];
                 _stream.Read(dataBuffer, 0, length);
-                int i = dataBuffer.Length;
+                return Encoding.UTF8.GetString(dataBuffer);
+            }
+            else if(wireType.Equals(WireType.Varint))
+            {
+
+                byte[] data = CollectBytes(_stream);
+                return CalculateNumber(data);
+
             }
             
             return tag;
         }
 
 
+        private byte[] CollectBytes(MemoryStream stream)
+        {
+            bool foundMSB = false;
+            List<byte> bytes = new List<byte>();
+            while (!foundMSB)
+            {
+                byte current = (byte) stream.ReadByte();
+                if ((current & _msbMask) == 0)
+                {
+                    foundMSB = true;
+                }
+                bytes.Add(current);
+            }
+            return bytes.ToArray();
+        }
 
+        private int CalculateNumber(byte[] bytes)
+        {
+            //reverse
+            return 0;
+        }
 
 
         public void Dispose()
