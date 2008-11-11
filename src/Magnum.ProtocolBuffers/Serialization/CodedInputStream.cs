@@ -32,29 +32,63 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             if(wireType.Equals(WireType.LengthDelimited))
             {
+                //this could be a message or a string
                 int length = _stream.ReadByte();
                 byte[] dataBuffer = new byte[length];
                 _stream.Read(dataBuffer, 0, length);
                 return Encoding.UTF8.GetString(dataBuffer);
             }
-
+            if(wireType.Equals(WireType.Fixed64))
+            {
+                return ReadFixedInt64();
+            }
+            if(wireType.Equals(WireType.Fixed32))
+            {
+                return ReadFixedInt32();
+            }
             if(wireType.Equals(WireType.Varint))
             {
-                int offset = 0;
-                int b;
-                UInt64 value = 0;
-
-                while((b = _stream.ReadByte()) >= 0)
-                {
-                    value |= b.RemoveMsb().Shift(offset);
-                    offset += 7;
-                }
-                return value;
+                return ReadVarint();
             }
 
             return tag;
         }
 
+        private Int32 ReadFixedInt32()
+        {
+            Int32 working = _stream.ReadByte();
+            working |= _stream.ReadByte() << 8;
+            working |= _stream.ReadByte() << 16;
+            working |= _stream.ReadByte() << 24;
+
+            return working;
+        }
+        private Int64 ReadFixedInt64()
+        {
+            Int64 working = _stream.ReadByte();
+            working |= ((Int64)_stream.ReadByte()) << 8;
+            working |= ((Int64)_stream.ReadByte()) << 16;
+            working |= ((Int64)_stream.ReadByte()) << 24;
+            working |= ((Int64)_stream.ReadByte()) << 32;
+            working |= ((Int64)_stream.ReadByte()) << 40;
+            working |= ((Int64)_stream.ReadByte()) << 48;
+            working |= ((Int64)_stream.ReadByte()) << 56;
+
+            return working;
+        }
+        private UInt64 ReadVarint()
+        {
+            int offset = 0;
+            int b;
+            UInt64 value = 0;
+
+            while ((b = _stream.ReadByte()) >= 0)
+            {
+                value |= b.RemoveMsb().Shift(offset);
+                offset += 7;
+            }
+            return value;
+        }
 
         private byte[] CollectAndReverseBytes(MemoryStream stream)
         {

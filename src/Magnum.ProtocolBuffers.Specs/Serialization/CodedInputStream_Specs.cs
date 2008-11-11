@@ -29,7 +29,30 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
             var msg = (UInt64)inputStream.ReadNextMessage();
 
             Assert.AreEqual(value, msg); 
-            
+        }
+
+        [Test]
+        public void FixedInt32_Test()
+        {
+            byte[] input = new byte[] { 0x15, 0x13, 0x00, 0x00, 0x0 };
+            var inputStream = new CodedInputStream(input);
+            int value = 19;
+
+            var msg = (Int32)inputStream.ReadNextMessage();
+
+            Assert.AreEqual(value, msg); 
+        }
+
+        [Test]
+        public void FixedInt64_Test()
+        {
+            byte[] input = new byte[] { 0x09, 0x46, 0xE3, 0xB7, 0xD3, 0x9E, 0x74, 0x04, 0x00 };
+            var inputStream = new CodedInputStream(input);
+            Int64 value = 1254125412541254;
+
+            var msg = (Int64)inputStream.ReadNextMessage();
+
+            Assert.AreEqual(value, msg); 
         }
 
         [Test]
@@ -46,7 +69,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         }
 
         [Test]
-        public void Remove_Msb()
+        public void Learning()
         {
             //1010 1100 0000 0010
             byte least = 0xAC;   //1010 1100
