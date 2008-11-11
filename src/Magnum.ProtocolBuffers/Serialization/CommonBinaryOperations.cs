@@ -18,9 +18,14 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             return (byte)(data & 0x7f);
         }
-        public static byte RemoveMsb(this int data)
+        public static UInt64 RemoveMsb(this int data)
         {
             return (byte)(data & 0x7f);
+        }
+
+        public static UInt64 Shift(this UInt64 value, int offset)
+        {
+            return value << offset;
         }
     }
 }

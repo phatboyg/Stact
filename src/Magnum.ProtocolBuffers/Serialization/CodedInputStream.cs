@@ -37,7 +37,8 @@ namespace Magnum.ProtocolBuffers.Serialization
                 _stream.Read(dataBuffer, 0, length);
                 return Encoding.UTF8.GetString(dataBuffer);
             }
-            else if(wireType.Equals(WireType.Varint))
+
+            if(wireType.Equals(WireType.Varint))
             {
                 int offset = 0;
                 int b;
@@ -45,12 +46,12 @@ namespace Magnum.ProtocolBuffers.Serialization
 
                 while((b = _stream.ReadByte()) >= 0)
                 {
-                    value |= ((UInt64)b.RemoveMsb() << offset);
+                    value |= b.RemoveMsb().Shift(offset);
                     offset += 7;
                 }
                 return value;
             }
-            
+
             return tag;
         }
 
