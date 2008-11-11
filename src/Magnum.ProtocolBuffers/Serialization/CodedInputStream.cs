@@ -39,35 +39,40 @@ namespace Magnum.ProtocolBuffers.Serialization
             }
             else if(wireType.Equals(WireType.Varint))
             {
+                int offset = 0;
+                int b;
+                UInt64 value = 0;
 
-                byte[] data = CollectBytes(_stream);
-                return CalculateNumber(data);
-
+                while((b = _stream.ReadByte()) >= 0)
+                {
+                    value |= ((UInt64)b.RemoveMsb() << offset);
+                    offset += 7;
+                }
+                return value;
             }
             
             return tag;
         }
 
 
-        private byte[] CollectBytes(MemoryStream stream)
+        private byte[] CollectAndReverseBytes(MemoryStream stream)
         {
             bool foundMSB = false;
-            List<byte> bytes = new List<byte>();
+            Stack<byte> bytes = new Stack<byte>();
             while (!foundMSB)
             {
                 byte current = (byte) stream.ReadByte();
 
-                if (!current.HasMostSignificantBitSet())
+                if (current.IsMsbUnset())
                     foundMSB = true;
                 
-                bytes.Add(current);
+                bytes.Push(current);
             }
             return bytes.ToArray();
         }
 
         private int CalculateNumber(byte[] bytes)
         {
-            //reverse
             return 0;
         }
 

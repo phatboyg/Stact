@@ -26,7 +26,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
             var inputStream = new CodedInputStream(input);
             int value = 150;
 
-            var msg = (int)inputStream.ReadNextMessage();
+            var msg = (UInt64)inputStream.ReadNextMessage();
 
             Assert.AreEqual(value, msg); 
             
@@ -43,6 +43,32 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
             var msg = (string)inputStream.ReadNextMessage();
 
             Assert.AreEqual(value, msg);   
+        }
+
+        [Test]
+        public void Remove_Msb()
+        {
+            //1010 1100 0000 0010
+            byte least = 0xAC;   //1010 1100
+            byte most = 0x02; //0000 0010
+
+            //strip MSB
+            byte smallest = least.RemoveMsb(); //0010 1100
+            byte biggest = most.RemoveMsb();   //0000 0010
+
+            //combine and reverse
+            byte[] b3 = new byte[2];
+            b3[0] = (byte)((biggest << 7) | smallest);
+            b3[1] = (byte)(biggest >>1);
+            uint shifted = (uint)(b3[1] << 8);
+            Assert.AreEqual(300, shifted + b3[0]);
+
+
+            byte ae = 0x40; //0100 0000
+            byte ac = 0x01; //0000 0001
+            //i want to get one byte 1100 0000
+            ae = (byte)((ac << 7) | ae);
+            Assert.AreEqual(0xC0, ae);
         }
     }
 }
