@@ -59,6 +59,17 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
 
             Assert.AreEqual(expected, block);
         }
+
+        [Test]
+        public void An_UInt64_should_be_stored()
+        {
+            var outputStream = new CodedOutputStream();
+            UInt64 value = 11936128518282651045;
+            outputStream.WriteVarint(1, value);
+            byte[] block = outputStream.GetBytes();
+            byte[] expected = new byte[] {8,165,203,150,173,218,180,233,210,165,1};
+            Assert.AreEqual(expected, block);
+        }
     }
 
     public class Int32MessageMap :

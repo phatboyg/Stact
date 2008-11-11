@@ -35,9 +35,9 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         [Test]
         public void Varint64()
         {
-            byte[] input = new byte[] {0x08, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5 };
+            byte[] input = new byte[] {8,165,203,150,173,218,180,233,210,165,1 };
             var inputStream = new CodedInputStream(input);
-            UInt64 value = 0xA5A5A5A5A5A5A5A5;
+            UInt64 value = 11936128518282651045;
 
             inputStream.ReadTag();
             var msg = inputStream.ReadVarint();

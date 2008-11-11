@@ -165,5 +165,11 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             Dispose(false);
         }
+
+        public bool WriteVarint(int fieldNumber, UInt64 value)
+        {
+            return WriteTag(fieldNumber, WireType.Varint) &&
+                   WriteVarint64(value);
+        }
     }
 }
