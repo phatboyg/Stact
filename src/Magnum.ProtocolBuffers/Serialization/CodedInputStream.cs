@@ -22,39 +22,18 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
 
 
-
-        public object ReadNextMessage()
+        public TagData ReadTag()
         {
-            //the first byte contains the tag and type
-            byte tag = (byte)_stream.ReadByte();
-            var fieldNumber = WireFormat.GetFieldNumber(tag);
-            var wireType = WireFormat.GetWireType(tag);
+            var tagData = (byte)_stream.ReadByte();
 
-            if(wireType.Equals(WireType.LengthDelimited))
-            {
-                //this could be a message or a string
-                int length = _stream.ReadByte();
-                byte[] dataBuffer = new byte[length];
-                _stream.Read(dataBuffer, 0, length);
-                return Encoding.UTF8.GetString(dataBuffer);
-            }
-            if(wireType.Equals(WireType.Fixed64))
-            {
-                return ReadFixedInt64();
-            }
-            if(wireType.Equals(WireType.Fixed32))
-            {
-                return ReadFixedInt32();
-            }
-            if(wireType.Equals(WireType.Varint))
-            {
-                return ReadVarint();
-            }
-
-            return tag;
+            return new TagData
+                       {
+                           NumberTag = WireFormat.GetFieldNumber(tagData),
+                           WireType = WireFormat.GetWireType(tagData)
+                       };
         }
 
-        private Int32 ReadFixedInt32()
+        public Int32 ReadFixedInt32()
         {
             Int32 working = _stream.ReadByte();
             working |= _stream.ReadByte() << 8;
@@ -63,7 +42,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             return working;
         }
-        private Int64 ReadFixedInt64()
+        public Int64 ReadFixedInt64()
         {
             Int64 working = _stream.ReadByte();
             working |= ((Int64)_stream.ReadByte()) << 8;
@@ -76,7 +55,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             return working;
         }
-        private UInt64 ReadVarint()
+        public UInt64 ReadVarint()
         {
             int offset = 0;
             int b;
@@ -89,6 +68,14 @@ namespace Magnum.ProtocolBuffers.Serialization
             }
             return value;
         }
+        public string ReadString()
+        {
+            int length = _stream.ReadByte();
+            var stringData = new byte[length];
+            _stream.Read(stringData, 0, length);
+            return Encoding.UTF8.GetString(stringData);
+        }
+
 
         private byte[] CollectAndReverseBytes(MemoryStream stream)
         {
