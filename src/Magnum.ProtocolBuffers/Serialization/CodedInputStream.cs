@@ -22,14 +22,19 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
 
 
+		/// <summary>
+		/// Reads the next tag in the stream
+		/// </summary>
+		/// <returns></returns>
         public TagData ReadTag()
         {
-            var tagData = (byte)_stream.ReadByte();
+			// a tag is stored as an unsigned varint
+			uint tag = ReadVarintU32();
 
             return new TagData
                        {
-                           NumberTag = WireFormat.GetFieldNumber(tagData),
-                           WireType = WireFormat.GetWireType(tagData)
+                           NumberTag = WireFormat.GetFieldNumber(tag),
+                           WireType = WireFormat.GetWireType(tag)
                        };
         }
 
@@ -64,8 +69,6 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             while ((b = _stream.ReadByte()) >= 0)
             {
-                // TODO i realize you like this, but i'm not a big fan at all -CP
-                // value |= b.RemoveMsb().ShiftLeft(offset);
 
                 if(offset == 63) // we're at the end of our rope for this one, any more and we overflow
                 {
@@ -84,16 +87,21 @@ namespace Magnum.ProtocolBuffers.Serialization
                     return value;
                 }
 
+                // TODO i realize you like this, but i'm not a big fan at all -CP
+                // value |= b.RemoveMsb().ShiftLeft(offset);
                 value |= ((UInt64)(b & 0x7F)) << offset;
 
                 offset += 7;
+
+				// if no MSB is set, we exit this loop
+				if ((b & 0x80) == 0)
+					break;
             }
             return value;
         }
 
         public string ReadString()
         {
-
             int length = ReadVarint32();
 
             var stringData = new byte[length];
@@ -103,12 +111,19 @@ namespace Magnum.ProtocolBuffers.Serialization
             return Encoding.UTF8.GetString(stringData);
         }
 
-        private int ReadVarint32()
+        private Int32 ReadVarint32()
         {
             UInt64 value = ReadVarint();
 
-            return (int) value;
+			return (int)value;
         }
+
+		private UInt32 ReadVarintU32()
+		{
+			UInt64 value = ReadVarint();
+
+			return (uint) value;
+		}
 
         private byte[] CollectAndReverseBytes(MemoryStream stream)
         {
