@@ -22,10 +22,5 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             return (byte)(data & 0x7f);
         }
-
-        public static UInt64 ShiftLeft(this UInt64 value, int offset)
-        {
-            return value << offset;
-        }
     }
 }

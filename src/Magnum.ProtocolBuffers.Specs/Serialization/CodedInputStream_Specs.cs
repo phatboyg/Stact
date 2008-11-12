@@ -100,5 +100,19 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
 
             Assert.AreEqual(value, msg);   
         }
+
+        [Test]
+        public void String_DiffLength()
+        {
+            byte[] input = new byte[] { 0x12, 0x06, 0x74, 0x65, 0x73, 0x74, 0x69, 0x6e };
+            var inputStream = new CodedInputStream(input);
+
+            string value = "testin";
+
+            inputStream.ReadTag();
+            var msg = inputStream.ReadString();
+
+            Assert.AreEqual(value, msg);
+        }
     }
 }
