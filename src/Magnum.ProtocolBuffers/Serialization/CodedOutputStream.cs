@@ -62,19 +62,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         private bool WriteVarint32(UInt32 value)
         {
-            do
-            {
-                if (value < 0x80)
-                {
-                    _stream.WriteByte((byte) value);
-                    return true;
-                }
-
-                _stream.WriteByte((byte) ((value & 0x7F) | 0x80));
-                value >>= 7;
-            } while (value != 0);
-
-            return true;
+            return WriteVarint64(value);
         }
 
         public bool WriteFixedInt32(int value)
@@ -108,6 +96,8 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         private bool WriteTag(UInt32 value)
         {
+            // TODO why not just write Varint32 ??
+
             if (value < (1 << 7))
             {
                 _stream.WriteByte((byte) value);
@@ -126,7 +116,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         private bool WriteVarint32Fallback(UInt32 value)
         {
-            throw new NotImplementedException();
+            return WriteVarint64(value);
         }
 
         public bool WriteInt32(int fieldNumber, Int32 value)

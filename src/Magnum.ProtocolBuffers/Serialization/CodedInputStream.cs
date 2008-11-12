@@ -55,6 +55,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             return working;
         }
+
         public UInt64 ReadVarint()
         {
             int offset = 0;
@@ -63,19 +64,32 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             while ((b = _stream.ReadByte()) >= 0)
             {
-                value |= b.RemoveMsb().Shift(offset);
+                // TODO i realize you like this, but i'm not a big fan at all -CP
+
+                value |= b.RemoveMsb().ShiftLeft(offset);
                 offset += 7;
             }
             return value;
         }
+
         public string ReadString()
         {
-            int length = _stream.ReadByte();
+
+            int length = ReadVarint32();
+
             var stringData = new byte[length];
+
             _stream.Read(stringData, 0, length);
+
             return Encoding.UTF8.GetString(stringData);
         }
 
+        private int ReadVarint32()
+        {
+            UInt64 value = ReadVarint();
+
+            return (int) value;
+        }
 
         private byte[] CollectAndReverseBytes(MemoryStream stream)
         {
