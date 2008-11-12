@@ -65,8 +65,27 @@ namespace Magnum.ProtocolBuffers.Serialization
             while ((b = _stream.ReadByte()) >= 0)
             {
                 // TODO i realize you like this, but i'm not a big fan at all -CP
+                // value |= b.RemoveMsb().ShiftLeft(offset);
 
-                value |= b.RemoveMsb().ShiftLeft(offset);
+                if(offset == 63) // we're at the end of our rope for this one, any more and we overflow
+                {
+                    if((b & 0xFE) > 0 )
+                    {
+                        // well, at this point, we're overflowing a 64-bit value and need to explode
+                        throw new ArgumentOutOfRangeException("The varint would overflow the 64-bit range of values");
+                    }
+
+                    if((b & 0x01) > 0)
+                    {
+                        value |= 1UL << 63;
+                        return value;
+                    }
+
+                    return value;
+                }
+
+                value |= ((UInt64)(b & 0x7F)) << offset;
+
                 offset += 7;
             }
             return value;

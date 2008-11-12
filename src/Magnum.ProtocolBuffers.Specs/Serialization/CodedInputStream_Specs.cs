@@ -46,6 +46,21 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         }
 
         [Test]
+        public void A_fully_loaded_Uint64()
+        {
+            byte[] input = new byte[] { 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01 };
+
+            var inputStream = new CodedInputStream(input);
+            
+            const ulong value = 0xFFFFFFFFFFFFFFFFUL;
+
+            inputStream.ReadTag();
+            var msg = inputStream.ReadVarint();
+
+            Assert.AreEqual(value, msg);
+        }
+
+        [Test]
         public void FixedInt32()
         {
             byte[] input = new byte[] { 0x15, 0x13, 0x00, 0x00, 0x0 };
