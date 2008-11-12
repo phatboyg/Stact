@@ -82,7 +82,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
             Int64 value = 1254125412541254;
 
             inputStream.ReadTag();
-            var msg = (Int64)inputStream.ReadFixedInt64();
+            var msg = inputStream.ReadFixedInt64();
 
             Assert.AreEqual(value, msg); 
         }
