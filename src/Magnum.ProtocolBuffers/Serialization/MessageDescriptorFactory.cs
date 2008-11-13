@@ -68,9 +68,19 @@ namespace Magnum.ProtocolBuffers.Serialization
                                               BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             ParameterExpression instance = Expression.Parameter(typeof(T), "instance");
+            ParameterExpression value = Expression.Parameter(typeof(TProperty), "value");
+
+            // value as T is slightly faster than (T)value, so if it's not a value type, use that
+            UnaryExpression instanceCast = (!prop.DeclaringType.IsValueType)
+                                               ? Expression.TypeAs(instance, prop.DeclaringType)
+                                               : Expression.Convert(instance, prop.DeclaringType);
+            UnaryExpression valueCast = (!prop.PropertyType.IsValueType)
+                                            ? Expression.TypeAs(value, prop.PropertyType)
+                                            : Expression.Convert(value, prop.PropertyType);
+
             var property =
-                Expression.Lambda<Action<T, TProperty>>(Expression.Call(instance, prop.GetSetMethod()), instance)
-                    .Compile();
+                Expression.Lambda<Action<T, TProperty>>(
+                        Expression.Call(instanceCast, prop.GetSetMethod(), valueCast), new[] { instance, value }).Compile();
 
             
 

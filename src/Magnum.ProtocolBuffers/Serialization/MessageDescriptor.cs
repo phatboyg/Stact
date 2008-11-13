@@ -39,7 +39,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             throw new System.NotImplementedException();
         }
 
-        public void AddWriter(int tag, WireType type, Func<TMessage, object> func)
+        public void AddWriter(int tag, WireType type, Action<TMessage, object> func)
         {
             
         }
