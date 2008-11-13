@@ -7,9 +7,9 @@ namespace Magnum.ProtocolBuffers.Specs.TestMappings
     {
         public SearchRequestMapping()
         {
-            Field(m=>m.Query).MakeRequired();
+            Field(m => m.Query).MakeRequired();
             Field(m => m.PageNumber);
-            Field(m=>m.ResultPerPage).SetDefaultValue(10);
+            Field(m => m.ResultPerPage).SetDefaultValue(10);
         }
     }
 }
