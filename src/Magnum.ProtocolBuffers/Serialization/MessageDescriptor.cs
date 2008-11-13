@@ -12,9 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
+    using System;
+
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor<TMessage> where TMessage : class, new()
     {
+        //how to build this up. the factory
+
         public void Serialize(CodedOutputStream outputStream, object message)
         {
             throw new System.NotImplementedException();
@@ -33,6 +37,16 @@ namespace Magnum.ProtocolBuffers.Serialization
         public TMessage Deserialize(CodedInputStream inputStream)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void AddWriter(int tag, WireType type, Func<TMessage, object> func)
+        {
+            
+        }
+
+        public void AddReader(int tag, WireType type, Func<TMessage, object> func)
+        {
+            
         }
     }
 }

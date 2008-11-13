@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestMessages\TestMessage.cs" />
     <Compile Include="TypeExtension_Specs.cs" />
+    <Compile Include="Whole_Simple_Message_Received.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">

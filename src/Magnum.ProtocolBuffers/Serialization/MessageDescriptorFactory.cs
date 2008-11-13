@@ -5,7 +5,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public class MessageDescriptorFactory
     {
-        private Dictionary<Type, IMessageDescriptor> _things;
+        private Dictionary<Type, IMessageDescriptor> _things = new Dictionary<Type, IMessageDescriptor>();
 
         public IMessageDescriptor<TMessage> Build<TMessage>(MessageMap<TMessage> map) where TMessage : class, new()
         {
@@ -18,21 +18,15 @@ namespace Magnum.ProtocolBuffers.Serialization
             {
                 var wireType = DetermineWireType(field.FieldType);
                 var tag = field.NumberTag;
-                var func = field.Lambda.Compile();
+                var readFunc = field.Lambda.Compile();
+                var writeFunc = field.Lambda.Compile();
 
-                if(wireType.Equals(WireType.LengthDelimited))
-                {
-                    //Build(null); //field.Map?
-                }
+                desc.AddWriter(tag, wireType, writeFunc);
+                desc.AddReader(tag, wireType, readFunc);
             }
 
             _things.Add(typeof(TMessage), desc);
             return desc;
-        }
-
-        private void Recurse<TMessage>(FieldMap<TMessage> field)
-        {
-            
         }
 
         private WireType DetermineWireType(Type type)
