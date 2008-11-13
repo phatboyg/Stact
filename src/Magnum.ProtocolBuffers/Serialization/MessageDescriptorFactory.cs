@@ -36,7 +36,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             return WireType.Varint;
         }
 
-        private Func<T, TProperty> GetReader<T, TProperty>(Expression<Func<T, TProperty>> expression)
+        private static Func<T, TProperty> GetReader<T, TProperty>(Expression<Func<T, TProperty>> expression)
         {
             var body = expression.Body as MemberExpression;
 
@@ -56,7 +56,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             return property;
         }
 
-        private Action<T, TProperty> GetWriter<T, TProperty>(Expression<Func<T, TProperty>> expression)
+        private static Action<T, TProperty> GetWriter<T, TProperty>(Expression<Func<T, TProperty>> expression)
         {
             var body = expression.Body as MemberExpression;
 
