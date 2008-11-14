@@ -33,7 +33,21 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         private WireType DetermineWireType(Type type)
         {
-            return WireType.Varint;
+            if (type.IsEnum)
+                return WireType.Varint;
+
+            if (typeof(DateTime).Equals(type)) //uint64
+                return WireType.Varint;
+
+            if (typeof(Guid).Equals(type)) //two uint64
+                return WireType.Varint;
+
+            if (typeof(int).Equals(type))
+                return WireType.Varint;
+
+            
+
+            return WireType.LengthDelimited;
         }
 
         private static Func<T, TProperty> GetReader<T, TProperty>(Expression<Func<T, TProperty>> expression)
