@@ -19,8 +19,8 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor<TMessage> where TMessage : class, new()
     {
-        readonly List<FastProperty<TMessage>> _serializeProps = new List<FastProperty<TMessage>>();
-        readonly Dictionary<int, FastProperty<TMessage>> _deserializeProps = new Dictionary<int, FastProperty<TMessage>>();
+        readonly List<FieldDescriptor<TMessage>> _serializeProps = new List<FieldDescriptor<TMessage>>();
+        readonly Dictionary<int, FieldDescriptor<TMessage>> _deserializeProps = new Dictionary<int, FieldDescriptor<TMessage>>();
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -34,11 +34,11 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            foreach (FastProperty<TMessage> prop in _serializeProps)
+            foreach (FieldDescriptor<TMessage> prop in _serializeProps)
             {
-                var value = prop.Get(message);
-                //write tag
-                //write value
+                outputStream.WriteTag(prop.FieldTag, prop.WireType);
+                var value = prop.Func.Get(message);
+                //outputStream.WriteString(value);
             }
         }
 
@@ -49,8 +49,21 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         public void AddProperty(int tag, WireType type, FastProperty<TMessage> fp)
         {
-            _serializeProps.Add(fp);
-            _deserializeProps.Add(tag, fp);
+            var fd = new FieldDescriptor<TMessage>()
+                         {
+                             FieldTag = tag,
+                             WireType = type,
+                             Func = fp
+                         };
+            _serializeProps.Add(fd);
+            _deserializeProps.Add(tag, fd);
         }
+    }
+
+    public class FieldDescriptor<TMessage>
+    {
+        public int FieldTag { get; set; }
+        public FastProperty<TMessage> Func { get; set; }
+        public WireType WireType { get; set; }
     }
 }

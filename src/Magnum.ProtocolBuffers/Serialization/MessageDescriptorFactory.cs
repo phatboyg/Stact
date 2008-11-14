@@ -40,13 +40,13 @@ namespace Magnum.ProtocolBuffers.Serialization
                 return WireType.Varint;
 
             if (typeof(Guid).Equals(type)) //two uint64
-                return WireType.Varint;
+                return WireType.LengthDelimited;
 
-            if (typeof(int).Equals(type))
+            if (typeof(int).Equals(type) || typeof(long).Equals(type))
                 return WireType.Varint;
 
             
-
+            //string, classes
             return WireType.LengthDelimited;
         }
 
