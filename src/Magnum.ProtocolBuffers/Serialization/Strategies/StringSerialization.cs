@@ -10,27 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.ProtocolBuffers.Serialization
+namespace Magnum.ProtocolBuffers.Serialization.Strategies
 {
     using System;
 
-    public class NullableIntSerialization :
+    public class StringSerialization :
         ISerializationStrategy
     {
         public bool CanHandle(Type type)
         {
-            return typeof(int?).Equals(type);
+            return typeof(string).Equals(type);
         }
 
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
-            int? v = (int?) value;
-            stream.WriteVarint(fieldNumber, (uint)value);
+            stream.WriteString(fieldNumber, (string)value);
         }
 
         public object Deserialize(CodedInputStream stream)
         {
-            return stream.ReadVarint();
+            return stream.ReadString();
         }
     }
 }

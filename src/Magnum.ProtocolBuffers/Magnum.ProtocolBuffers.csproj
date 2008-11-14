@@ -54,12 +54,12 @@
     <Compile Include="Serialization\CommonBinaryOperations.cs" />
     <Compile Include="Serialization\FieldDescriptor.cs" />
     <Compile Include="Serialization\IMessageDescriptor.cs" />
-    <Compile Include="Serialization\IntSerialization.cs" />
+    <Compile Include="Serialization\Strategies\IntSerialization.cs" />
     <Compile Include="Serialization\ISerializationStrategy.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
-    <Compile Include="Serialization\NullableIntSerialization.cs" />
-    <Compile Include="Serialization\StringSerialization.cs" />
+    <Compile Include="Serialization\Strategies\NullableIntSerialization.cs" />
+    <Compile Include="Serialization\Strategies\StringSerialization.cs" />
     <Compile Include="Serialization\TagData.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
     <Compile Include="Serialization\WireType.cs" />
@@ -70,9 +70,6 @@
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serialization\Strategies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
