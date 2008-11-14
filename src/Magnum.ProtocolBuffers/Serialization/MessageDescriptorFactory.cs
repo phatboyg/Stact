@@ -4,6 +4,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Reflection;
+    using Common.Reflection;
 
     public class MessageDescriptorFactory
     {
@@ -20,11 +21,10 @@ namespace Magnum.ProtocolBuffers.Serialization
             {
                 var wireType = DetermineWireType(field.FieldType);
                 var tag = field.NumberTag;
-                var readFunc = GetReader(field.Lambda);
-                var writeFunc = GetWriter(field.Lambda);
 
-                desc.AddWriter(tag, wireType, writeFunc);
-                desc.AddReader(tag, wireType, readFunc);
+                var fp = new FastProperty<TMessage>(field.PropertyInfo);
+
+                desc.AddProperty(tag, wireType, fp);
             }
 
             _things.Add(typeof(TMessage), desc);

@@ -13,11 +13,14 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
+    using System.Collections.Generic;
+    using Common.Reflection;
 
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor<TMessage> where TMessage : class, new()
     {
-        //how to build this up. the factory
+        readonly List<FastProperty<TMessage>> _serializeProps = new List<FastProperty<TMessage>>();
+        readonly Dictionary<int, FastProperty<TMessage>> _deserializeProps = new Dictionary<int, FastProperty<TMessage>>();
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -31,22 +34,23 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            throw new System.NotImplementedException();
+            foreach (FastProperty<TMessage> prop in _serializeProps)
+            {
+                var value = prop.Get(message);
+                //write tag
+                //write value
+            }
         }
 
         public TMessage Deserialize(CodedInputStream inputStream)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException("aoeu");
         }
 
-        public void AddWriter(int tag, WireType type, Action<TMessage, object> func)
+        public void AddProperty(int tag, WireType type, FastProperty<TMessage> fp)
         {
-            
-        }
-
-        public void AddReader(int tag, WireType type, Func<TMessage, object> func)
-        {
-            
+            _serializeProps.Add(fp);
+            _deserializeProps.Add(tag, fp);
         }
     }
 }
