@@ -38,6 +38,9 @@ namespace Magnum.ProtocolBuffers.Serialization
             {
                 outputStream.WriteTag(prop.FieldTag, prop.WireType);
                 var value = prop.Func.Get(message);
+                // need a strategy to determine which write method to use
+                // it should be based on the type of the return value 
+                // 
                 //outputStream.WriteString(value);
             }
         }
@@ -60,10 +63,23 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
     }
 
-    public class FieldDescriptor<TMessage>
+    public interface ISerializationStrategy
     {
-        public int FieldTag { get; set; }
-        public FastProperty<TMessage> Func { get; set; }
-        public WireType WireType { get; set; }
+        void Serialize(CodedOutputStream stream, int fieldNumber, object value);
+        object Deserialize(CodedInputStream stream);
+    }
+
+    public class IntSerialization :
+        ISerializationStrategy
+    {
+        public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
+        {
+            stream.WriteVarint(fieldNumber, (uint)value);
+        }
+
+        public object Deserialize(CodedInputStream stream)
+        {
+            return stream.ReadString();
+        }
     }
 }
