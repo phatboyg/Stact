@@ -62,30 +62,4 @@ namespace Magnum.ProtocolBuffers.Serialization
             _deserializeProps.Add(tag, fd);
         }
     }
-
-    public interface ISerializationStrategy
-    {
-        bool CanHandle(Type type);
-        void Serialize(CodedOutputStream stream, int fieldNumber, object value);
-        object Deserialize(CodedInputStream stream);
-    }
-
-    public class IntSerialization :
-        ISerializationStrategy
-    {
-        public bool CanHandle(Type type)
-        {
-            return typeof(int).Equals(type);
-        }
-
-        public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
-        {
-            stream.WriteVarint(fieldNumber, (uint)value);
-        }
-
-        public object Deserialize(CodedInputStream stream)
-        {
-            return stream.ReadString();
-        }
-    }
 }
