@@ -26,15 +26,14 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
             var valueToSerialize = (Guid) value;
-
-            var binaryData = valueToSerialize.ToByteArray();
-            stream.WriteString(fieldNumber, Encoding.UTF8.GetString(binaryData));
+          
+            stream.WriteString(fieldNumber, valueToSerialize.ToString());
         }
 
         public object Deserialize(CodedInputStream stream)
         {
             string binaryData = stream.ReadString();
-            return new Guid(Encoding.UTF8.GetBytes(binaryData));
+            return new Guid(binaryData);
         }
     }
 }

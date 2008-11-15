@@ -15,7 +15,7 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
             var valueToSerialize = (DateTime) value;
 
             long binaryDate = valueToSerialize.ToBinary();
-            stream.WriteVarint(fieldNumber, (uint)binaryDate);
+            stream.WriteVarint(fieldNumber, (ulong)binaryDate);
         }
 
         public object Deserialize(CodedInputStream stream)

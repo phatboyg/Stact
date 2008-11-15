@@ -12,5 +12,6 @@ namespace Magnum.ProtocolBuffers.Specs.TestMessages
         public int? NumberOfPets { get; set; }
         public DateTime BirthDay { get; set; }
         public DateTime? DeadDay { get; set; }
+        public Guid FederalIdNumber { get; set; }
     }
 }
