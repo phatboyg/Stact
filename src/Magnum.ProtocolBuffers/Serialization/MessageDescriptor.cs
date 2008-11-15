@@ -20,20 +20,22 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor<TMessage> where TMessage : class, new()
     {
-        readonly List<FieldDescriptor<TMessage>> _serializeProps = new List<FieldDescriptor<TMessage>>();
+        
+        readonly SortedList<int, FieldDescriptor<TMessage>> _serializeProps = new SortedList<int, FieldDescriptor<TMessage>>();
         readonly Dictionary<int, FieldDescriptor<TMessage>> _deserializeProps = new Dictionary<int, FieldDescriptor<TMessage>>();
-        private readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
+        static readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
 
-        public MessageDescriptor()
+        static MessageDescriptor()
         {
             _serializers.Add(new StringSerialization());
             _serializers.Add(new IntSerialization());
             _serializers.Add(new NullableIntSerialization());
+            _serializers.Add(new DateTimeSerialization());
         }
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
-            throw new System.NotImplementedException();
+            Serialize(outputStream, (TMessage)message);
         }
 
         object IMessageDescriptor.Deserialize(CodedInputStream inputStream)
@@ -43,41 +45,63 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            foreach (FieldDescriptor<TMessage> prop in _serializeProps)
+            foreach (FieldDescriptor<TMessage> prop in _serializeProps.Values)
             {
                 FieldDescriptor<TMessage> prop1 = prop;
-                var s = _serializers.Find((o) => o.CanHandle(prop1.NetType));
-                var value = prop.Func.Get(message);
-                s.Serialize(outputStream, prop1.FieldTag, value);
+                var serializer = _serializers.Find(o => o.CanHandle(prop1.NetType));
+                var valueToSerialize = prop.Func.Get(message);
+                serializer.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
             }
         }
 
         public TMessage Deserialize(CodedInputStream inputStream)
         {
-            TMessage result = new TMessage();
+            var result = new TMessage();
             var length = inputStream.Length;
+
             while (inputStream.Position < length)
             {
-                TagData data = inputStream.ReadTag();
-                var netType = _deserializeProps[data.NumberTag].NetType;
-                var s = _serializers.Find(o => o.CanHandle(netType));
-                var value = s.Deserialize(inputStream);
-                _deserializeProps[data.NumberTag].Func.Set(result, value);
+                TagData tagData = inputStream.ReadTag();
+                var netType = _deserializeProps[tagData.NumberTag].NetType;
+                var serializer = _serializers.Find(o => o.CanHandle(netType));
+                var deserializedValue = serializer.Deserialize(inputStream);
+                _deserializeProps[tagData.NumberTag].Func.Set(result, deserializedValue);
             }
+            
             return result;
         }
 
-        public void AddProperty(int tag, WireType type, FastProperty<TMessage> fp, Type netType)
+        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType)
         {
-            var fd = new FieldDescriptor<TMessage>()
+            var fd = new FieldDescriptor<TMessage>
                          {
                              FieldTag = tag,
-                             WireType = type,
+                             WireType = DetermineWireType(netType),
                              Func = fp,
                              NetType = netType
                          };
-            _serializeProps.Add(fd);
+            _serializeProps.Add(tag, fd);
             _deserializeProps.Add(tag, fd);
+        }
+
+
+        private static WireType DetermineWireType(Type type)
+        {
+            if (type.IsEnum)
+                return WireType.Varint;
+
+            if (typeof(DateTime).Equals(type)) //uint64
+                return WireType.Varint;
+
+            if (typeof(Guid).Equals(type)) //two uint64
+                return WireType.LengthDelimited;
+
+            if (typeof(int).Equals(type) || typeof(long).Equals(type))
+                return WireType.Varint;
+
+
+            //string, classes
+            return WireType.LengthDelimited;
         }
     }
 }
