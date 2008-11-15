@@ -55,10 +55,12 @@
     <Compile Include="Serialization\FieldDescriptor.cs" />
     <Compile Include="Serialization\IMessageDescriptor.cs" />
     <Compile Include="Serialization\Strategies\DateTimeSerialization.cs" />
+    <Compile Include="Serialization\Strategies\GuidSerialization.cs" />
     <Compile Include="Serialization\Strategies\IntSerialization.cs" />
     <Compile Include="Serialization\ISerializationStrategy.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
+    <Compile Include="Serialization\Strategies\NullableDateTimeSerialization.cs" />
     <Compile Include="Serialization\Strategies\NullableIntSerialization.cs" />
     <Compile Include="Serialization\Strategies\StringSerialization.cs" />
     <Compile Include="Serialization\TagData.cs" />

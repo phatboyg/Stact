@@ -31,6 +31,8 @@ namespace Magnum.ProtocolBuffers.Serialization
             _serializers.Add(new IntSerialization());
             _serializers.Add(new NullableIntSerialization());
             _serializers.Add(new DateTimeSerialization());
+            _serializers.Add(new NullableDateTimeSerialization());
+            _serializers.Add(new GuidSerialization());
         }
 
         public void Serialize(CodedOutputStream outputStream, object message)
