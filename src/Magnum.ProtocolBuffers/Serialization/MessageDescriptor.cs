@@ -15,12 +15,21 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System;
     using System.Collections.Generic;
     using Common.Reflection;
+    using Strategies;
 
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor<TMessage> where TMessage : class, new()
     {
         readonly List<FieldDescriptor<TMessage>> _serializeProps = new List<FieldDescriptor<TMessage>>();
         readonly Dictionary<int, FieldDescriptor<TMessage>> _deserializeProps = new Dictionary<int, FieldDescriptor<TMessage>>();
+        private readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
+
+        public MessageDescriptor()
+        {
+            _serializers.Add(new StringSerialization());
+            _serializers.Add(new IntSerialization());
+            _serializers.Add(new NullableIntSerialization());
+        }
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -36,27 +45,36 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             foreach (FieldDescriptor<TMessage> prop in _serializeProps)
             {
-                outputStream.WriteTag(prop.FieldTag, prop.WireType);
+                FieldDescriptor<TMessage> prop1 = prop;
+                var s = _serializers.Find((o) => o.CanHandle(prop1.NetType));
                 var value = prop.Func.Get(message);
-                // need a strategy to determine which write method to use
-                // it should be based on the type of the return value 
-                // 
-                //outputStream.WriteString(value);
+                s.Serialize(outputStream, prop1.FieldTag, value);
             }
         }
 
         public TMessage Deserialize(CodedInputStream inputStream)
         {
-            throw new NotImplementedException("aoeu");
+            TMessage result = new TMessage();
+            var length = inputStream.Length;
+            while (inputStream.Position < length)
+            {
+                TagData data = inputStream.ReadTag();
+                var netType = _deserializeProps[data.NumberTag].NetType;
+                var s = _serializers.Find(o => o.CanHandle(netType));
+                var value = s.Deserialize(inputStream);
+                _deserializeProps[data.NumberTag].Func.Set(result, value);
+            }
+            return result;
         }
 
-        public void AddProperty(int tag, WireType type, FastProperty<TMessage> fp)
+        public void AddProperty(int tag, WireType type, FastProperty<TMessage> fp, Type netType)
         {
             var fd = new FieldDescriptor<TMessage>()
                          {
                              FieldTag = tag,
                              WireType = type,
-                             Func = fp
+                             Func = fp,
+                             NetType = netType
                          };
             _serializeProps.Add(fd);
             _deserializeProps.Add(tag, fd);

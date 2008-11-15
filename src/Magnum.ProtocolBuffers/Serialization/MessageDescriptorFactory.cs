@@ -24,7 +24,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
                 var fp = new FastProperty<TMessage>(field.PropertyInfo);
 
-                desc.AddProperty(tag, wireType, fp);
+                desc.AddProperty(tag, wireType, fp, field.FieldType);
             }
 
             _things.Add(typeof(TMessage), desc);

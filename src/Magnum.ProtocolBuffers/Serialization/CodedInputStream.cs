@@ -21,8 +21,13 @@ namespace Magnum.ProtocolBuffers.Serialization
             get { return (int)_stream.Length; }
         }
 
+        public int Position
+        {
+            get { return (int)_stream.Position; }
+        }
 
-		/// <summary>
+
+        /// <summary>
 		/// Reads the next tag in the stream
 		/// </summary>
 		/// <returns></returns>

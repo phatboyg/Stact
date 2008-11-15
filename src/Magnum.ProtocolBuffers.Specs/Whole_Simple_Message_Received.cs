@@ -24,7 +24,14 @@ namespace Magnum.ProtocolBuffers.Specs
 
             desc.Serialize(stream, sr);
             
-            Assert.AreEqual(3, stream.Length);
+            Assert.AreEqual(12, stream.Length);
+
+            var codedStream = new CodedInputStream(stream.GetBytes());
+            var sr2 = desc.Deserialize(codedStream);
+
+            Assert.AreEqual(sr.PageNumber, sr2.PageNumber);
+            Assert.AreEqual(sr.ResultPerPage, sr2.ResultPerPage);
+            Assert.AreEqual(sr.Query, sr2.Query);
         }
         
     }

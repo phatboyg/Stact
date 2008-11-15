@@ -25,12 +25,13 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
             int? v = (int?) value;
-            stream.WriteVarint(fieldNumber, (uint)value);
+            if(v.HasValue)
+                stream.WriteVarint(fieldNumber, (uint)v.Value);
         }
 
         public object Deserialize(CodedInputStream stream)
         {
-            return stream.ReadVarint();
+            return (int?)stream.ReadVarint();
         }
     }
 }
