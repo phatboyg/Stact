@@ -15,6 +15,8 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
     using System;
     using NUnit.Framework;
     using ProtocolBuffers.Serialization;
+    using TestMappings;
+    using TestMessages;
 
     [TestFixture]
     public class When_writing_to_a_CodedOutputStream
@@ -70,34 +72,5 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
             byte[] expected = new byte[] {8,165,203,150,173,218,180,233,210,165,1};
             Assert.AreEqual(expected, block);
         }
-    }
-
-    public class Int32MessageMap :
-        MessageMap<Int32Message>
-    {
-        public Int32MessageMap()
-        {
-            Field(x => x.Value).MakeRequired();
-        }
-    }
-
-    public class Test3Map :
-        MessageMap<Test3>
-    {
-        public Test3Map()
-        {
-            Field(m => m.I);
-        }
-    }
-
-    //test1
-    public class Int32Message
-    {
-        public int Value { get; set; }
-    }
-
-    public class Test3
-    {
-        public Int32Message I { get; set; }
     }
 }

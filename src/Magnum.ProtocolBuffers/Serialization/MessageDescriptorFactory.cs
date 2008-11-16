@@ -39,6 +39,5 @@ namespace Magnum.ProtocolBuffers.Serialization
             _things.Add(typeof(TMessage), desc);
             return desc;
         }
-
     }
 }

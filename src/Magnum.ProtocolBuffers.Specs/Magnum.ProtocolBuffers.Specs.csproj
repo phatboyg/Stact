@@ -57,6 +57,10 @@
     <Compile Include="Mapping\Message_fields_have_names.cs" />
     <Compile Include="Serialization\CodedOutputStream_Specs.cs" />
     <Compile Include="Serialization\CodedInputStream_Specs.cs" />
+    <Compile Include="TestMessages\Int32Message.cs" />
+    <Compile Include="TestMappings\Int32MessageMap.cs" />
+    <Compile Include="TestMessages\Test3.cs" />
+    <Compile Include="TestMappings\Test3Map.cs" />
     <Compile Include="String_mapping.cs" />
     <Compile Include="TestMappings\SearchRequestMapping.cs" />
     <Compile Include="TestMessages\SearchRequest.cs" />
