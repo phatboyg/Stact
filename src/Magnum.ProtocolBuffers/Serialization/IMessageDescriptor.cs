@@ -1,5 +1,7 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
+    using System;
+
     public interface IMessageDescriptor<TMessage> :
         IMessageDescriptor where TMessage : class, new()
     {
@@ -11,5 +13,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     {
         void Serialize(CodedOutputStream outputStream, object message);
         object Deserialize(CodedInputStream inputStream);
+        bool CanHandle(Type type);
+        Type MessageType { get; }
     }
 }

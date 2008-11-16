@@ -39,12 +39,10 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             Serialize(outputStream, (TMessage)message);
         }
-
         object IMessageDescriptor.Deserialize(CodedInputStream inputStream)
         {
             return Deserialize(inputStream);
         }
-
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
             foreach (FieldDescriptor<TMessage> prop in _serializeProps.Values)
@@ -55,7 +53,6 @@ namespace Magnum.ProtocolBuffers.Serialization
                 serializer.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
             }
         }
-
         public TMessage Deserialize(CodedInputStream inputStream)
         {
             var result = new TMessage();
@@ -73,6 +70,19 @@ namespace Magnum.ProtocolBuffers.Serialization
             return result;
         }
 
+        public bool CanHandle(Type type)
+        {
+            return typeof (TMessage).Equals(type);
+        }
+
+        public Type MessageType
+        {
+            get
+            {
+                return typeof (TMessage);
+            }
+        }
+
         public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType)
         {
             var fd = new FieldDescriptor<TMessage>
@@ -85,8 +95,6 @@ namespace Magnum.ProtocolBuffers.Serialization
             _serializeProps.Add(tag, fd);
             _deserializeProps.Add(tag, fd);
         }
-
-
         private static WireType DetermineWireType(Type type)
         {
             if (type.IsEnum)

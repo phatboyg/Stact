@@ -60,6 +60,7 @@
     <Compile Include="Serialization\ISerializationStrategy.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
+    <Compile Include="Serialization\Strategies\MessageSerialization.cs" />
     <Compile Include="Serialization\Strategies\NullableDateTimeSerialization.cs" />
     <Compile Include="Serialization\Strategies\NullableIntSerialization.cs" />
     <Compile Include="Serialization\Strategies\StringSerialization.cs" />
