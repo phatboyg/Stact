@@ -7,7 +7,7 @@ namespace Magnum.ProtocolBuffers
     using Internal;
 
     public class MessageMap<TMessage> :
-        IMapping
+        IMap<TMessage>
     {
         private readonly Type _messageType;
         private readonly List<FieldMap<TMessage>> _fields;
@@ -25,9 +25,7 @@ namespace Magnum.ProtocolBuffers
         }
 
         public string Name { get; private set; }
-
         public Range<int> ExtensionRange { get; private set; }
-
         public int FieldCount
         {
             get
@@ -35,16 +33,11 @@ namespace Magnum.ProtocolBuffers
                 return _fields.Count;
             }
         }
-
         public int CurrentNumberTag
         {
             get { return _currentNumberTag; }
         }
 
-        private int GetNextNumberTag()
-        {
-            return ++_currentNumberTag;
-        }
 
         public void SetAsideExtensions(int lower, int upper)
         {
@@ -64,25 +57,8 @@ namespace Magnum.ProtocolBuffers
             return map;
         }
 
-        private void RecalibrateNumberTagIfNecessary(int numberTag)
-        {
-            if (!numberTag.Equals(_currentNumberTag))
-                _currentNumberTag = ++numberTag;
-        }
 
-        private void AddField(FieldMap<TMessage> map)
-        {
-            if (ExtensionRange.Contains(map.NumberTag))
-                throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
-
-            if(_tagsUsed.Contains(map.NumberTag))
-                throw new ProtoMappingException(string.Format("NumberTag {0} is already assigned to {1}", map.NumberTag, _fields.Find(o=>o.NumberTag == map.NumberTag).Name));
-
-            _tagsUsed.Add(map.NumberTag);
-            _fields.Add(map);
-        }
-
-        void IMapping.Visit(IMappingVisitor visitor)
+        void IMap.Visit(IMappingVisitor visitor)
         {
             visitor.CurrentType = typeof (TMessage);
             
@@ -96,7 +72,7 @@ namespace Magnum.ProtocolBuffers
             visitor.AddMap("}");
         }
 
-        Type IMapping.TypeMapped
+        Type IMap.TypeMapped
         {
             get { return typeof (TMessage); }
         }
@@ -104,6 +80,27 @@ namespace Magnum.ProtocolBuffers
         public IList<FieldMap<TMessage>> Fields
         {
             get { return _fields; }
+        }
+
+        private int GetNextNumberTag()
+        {
+            return ++_currentNumberTag;
+        }
+        private void RecalibrateNumberTagIfNecessary(int numberTag)
+        {
+            if (!numberTag.Equals(_currentNumberTag))
+                _currentNumberTag = ++numberTag;
+        }
+        private void AddField(FieldMap<TMessage> map)
+        {
+            if (ExtensionRange.Contains(map.NumberTag))
+                throw new ProtoMappingException(string.Format("You have tried to map a field with a number tag of {0} in the extention range {1} to {2}", map.NumberTag, ExtensionRange.LowerBound, ExtensionRange.UpperBound));
+
+            if(_tagsUsed.Contains(map.NumberTag))
+                throw new ProtoMappingException(string.Format("NumberTag {0} is already assigned to {1}", map.NumberTag, _fields.Find(o=>o.NumberTag == map.NumberTag).Name));
+
+            _tagsUsed.Add(map.NumberTag);
+            _fields.Add(map);
         }
     }
 }

@@ -30,9 +30,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             _serializers.Add(new StringSerialization());
             _serializers.Add(new IntSerialization());
             _serializers.Add(new NullableIntSerialization());
-            _serializers.Add(new DateTimeSerialization());
-            _serializers.Add(new NullableDateTimeSerialization());
-            _serializers.Add(new GuidSerialization());
+            _serializers.Add(new BooleanStrategy());
         }
 
         public void Serialize(CodedOutputStream outputStream, object message)
@@ -61,10 +59,11 @@ namespace Magnum.ProtocolBuffers.Serialization
             while (inputStream.Position < length)
             {
                 TagData tagData = inputStream.ReadTag();
-                var netType = _deserializeProps[tagData.NumberTag].NetType;
+                var field = _deserializeProps[tagData.NumberTag];
+                var netType = field.NetType;
                 var serializer = _serializers.Find(o => o.CanHandle(netType));
                 var deserializedValue = serializer.Deserialize(inputStream);
-                _deserializeProps[tagData.NumberTag].Func.Set(result, deserializedValue);
+                field.Func.Set(result, deserializedValue);
             }
             
             return result;

@@ -15,7 +15,7 @@ namespace Magnum.ProtocolBuffers.Specs
             map.Field(m => m.PageNumber);
             map.Field(m=>m.ResultPerPage).SetDefaultValue(10);
 
-            IMapping mm =  map;
+            IMap mm =  map;
             var v = new StringVisitor();
             mm.Visit(v);
 

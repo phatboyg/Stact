@@ -41,7 +41,7 @@
     <Compile Include="CommunicationModel.cs" />
     <Compile Include="Mapping\FieldMap.cs" />
     <Compile Include="Mapping\FieldRules.cs" />
-    <Compile Include="Internal\IMapping.cs" />
+    <Compile Include="Internal\IMap.cs" />
     <Compile Include="Internal\IMappingPart.cs" />
     <Compile Include="Internal\IMappingVisitor.cs" />
     <Compile Include="Mapping\MessageMap.cs" />
@@ -54,14 +54,12 @@
     <Compile Include="Serialization\CommonBinaryOperations.cs" />
     <Compile Include="Serialization\FieldDescriptor.cs" />
     <Compile Include="Serialization\IMessageDescriptor.cs" />
-    <Compile Include="Serialization\Strategies\DateTimeSerialization.cs" />
-    <Compile Include="Serialization\Strategies\GuidSerialization.cs" />
+    <Compile Include="Serialization\Strategies\BooleanStrategy.cs" />
     <Compile Include="Serialization\Strategies\IntSerialization.cs" />
     <Compile Include="Serialization\ISerializationStrategy.cs" />
     <Compile Include="Serialization\MessageDescriptor.cs" />
     <Compile Include="Serialization\MessageDescriptorFactory.cs" />
     <Compile Include="Serialization\Strategies\MessageSerialization.cs" />
-    <Compile Include="Serialization\Strategies\NullableDateTimeSerialization.cs" />
     <Compile Include="Serialization\Strategies\NullableIntSerialization.cs" />
     <Compile Include="Serialization\Strategies\StringSerialization.cs" />
     <Compile Include="Serialization\TagData.cs" />

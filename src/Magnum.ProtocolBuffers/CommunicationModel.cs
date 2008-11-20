@@ -9,9 +9,9 @@ namespace Magnum.ProtocolBuffers
 
     public class CommunicationModel
     {
-        private IDictionary<Type, IMapping> _mappings = new Dictionary<Type, IMapping>();
-        private MessageDescriptorFactory _factory = new MessageDescriptorFactory();
-        private List<IMessageDescriptor> _descriptors;
+        private readonly IDictionary<Type, IMap> _mappings = new Dictionary<Type, IMap>();
+        private readonly MessageDescriptorFactory _factory = new MessageDescriptorFactory();
+        private readonly List<IMessageDescriptor> _descriptors = new List<IMessageDescriptor>();
 
         public int NumberOfMessagesMapped
         {
@@ -22,32 +22,37 @@ namespace Magnum.ProtocolBuffers
         {
             foreach (Type type in assembly.GetExportedTypes())
             {
-                if (!type.IsGenericType && typeof(IMapping).IsAssignableFrom(type))
+                if(!type.IsGenericType && typeof(IMap).IsAssignableFrom(type))
                 {
-                    IMapping mapping = (IMapping)Activator.CreateInstance(type);
-                    AddMapping(mapping);
+                    var map = (IMap)Activator.CreateInstance(type);
+                    AddMapping(map);
                 }
             }
         }
 
         public void WriteMappingsTo(string directory)
         {
-            if(!Directory.Exists(directory)) throw new DirectoryNotFoundException("Didn't find " + directory);
+            if(!Directory.Exists(directory))
+                throw new DirectoryNotFoundException("Didn't find " + directory);
 
 
         }
 
-        private void AddMapping(IMapping map)
+        private void AddMapping(IMap map)
         {
-            
-        }
-        private void AddMapping<TMessage>(IMapping<TMessage> mapping)
-        {
-            if(_mappings.ContainsKey(mapping.TypeMapped))
-                throw new ProtoMappingException(string.Format("You have already added the type {0} to the communication model", mapping.TypeMapped));
+            if (_mappings.ContainsKey(map.TypeMapped))
+                throw new ProtoMappingException(string.Format("You have already added the type {0} to the communication model", map.TypeMapped));
 
-            _mappings.Add(mapping.TypeMapped, mapping);
-            _descriptors.Add(_factory.Build(mapping));
+            _mappings.Add(map.TypeMapped, map);
+            //_descriptors.Add(_factory.Build(map));
+        }
+        private void AddMapping<TMessage>(IMap<TMessage> map) where TMessage : class, new()
+        {
+            if(_mappings.ContainsKey(map.TypeMapped))
+                throw new ProtoMappingException(string.Format("You have already added the type {0} to the communication model", map.TypeMapped));
+
+            _mappings.Add(map.TypeMapped, map);
+            _descriptors.Add(_factory.Build(map));
         }
 
         public void Validate()

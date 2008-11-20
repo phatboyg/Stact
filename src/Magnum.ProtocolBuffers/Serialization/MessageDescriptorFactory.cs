@@ -16,17 +16,18 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System;
     using System.Collections.Generic;
     using Common.Reflection;
+    using Internal;
 
     public class MessageDescriptorFactory
     {
-        private readonly Dictionary<Type, IMessageDescriptor> _things = new Dictionary<Type, IMessageDescriptor>();
+        private readonly Dictionary<Type, IMessageDescriptor> _descriptors = new Dictionary<Type, IMessageDescriptor>();
 
-        public IMessageDescriptor<TMessage> Build<TMessage>(MessageMap<TMessage> map) where TMessage : class, new()
+        public IMessageDescriptor Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()
         {
-            if (_things.ContainsKey(typeof(TMessage)))
-                return (IMessageDescriptor<TMessage>)_things[typeof(TMessage)];
+            if (_descriptors.ContainsKey(typeof(TMessage)))
+                return _descriptors[typeof(TMessage)];
 
-            var desc = new MessageDescriptor<TMessage>();
+            IMessageDescriptor<TMessage> desc = new MessageDescriptor<TMessage>();
 
             foreach (var field in map.Fields)
             {
@@ -36,7 +37,7 @@ namespace Magnum.ProtocolBuffers.Serialization
                 desc.AddProperty(tag, fp, field.FieldType);
             }
 
-            _things.Add(typeof(TMessage), desc);
+            _descriptors.Add(typeof(TMessage), desc);
             return desc;
         }
     }
