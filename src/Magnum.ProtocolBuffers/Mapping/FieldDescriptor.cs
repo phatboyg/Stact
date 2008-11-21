@@ -3,55 +3,44 @@ namespace Magnum.ProtocolBuffers.Mapping
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
+    using Common.Reflection;
     using Specs;
 
     public class FieldDescriptor<TMessage>
     {
-        private readonly string _name;
-        private object _defaultValue;
-        private Type _fieldType;
-        private bool _hasDefaultValue;
-        private FieldRules _rules;
-        private Expression<Func<TMessage, object>> _func;
-        private PropertyInfo _propertyInfo;
+        private readonly FastProperty<TMessage> _fastProp;
 
-        public string Name
+        public FieldDescriptor(string name, int numberTag, Expression<Func<TMessage, object>> func, FieldRules rules)
         {
-            get { return _name; }
+            Name = name;
+            Rules = rules;
+            NumberTag = numberTag;
+            PropertyInfo = ReflectionHelper.GetProperty(func);
+            FieldType = PropertyInfo.PropertyType;
+            _fastProp = new FastProperty<TMessage>(PropertyInfo);
+        }
+        public FieldDescriptor(string name, int numberTag, Expression<Func<TMessage, object>> func, FieldRules rules, object defaultValue) :
+            this(name, numberTag, func, rules)
+        {
+            DefaultValue = defaultValue;
+            HasDefaultValue = true;
         }
 
+        public string Name { get; private set; }
         public int NumberTag { get; private set; }
+        public FieldRules Rules { get; private set; }
+        public Type FieldType { get; private set; }
+        public object DefaultValue { get; private set; }
+        public bool HasDefaultValue { get; private set; }
+        public PropertyInfo PropertyInfo { get; private set; }
 
-        public FieldRules Rules
+        public void SetFieldOnInstance(TMessage instance, object value)
         {
-            get { return _rules; }
+            _fastProp.Set(instance, value);
         }
-
-        public Type FieldType
+        public object GetFieldOnInstance(TMessage instance)
         {
-            get { return _fieldType; }
-        }
-
-        public object DefaultValue
-        {
-            get { return _defaultValue; }
-        }
-
-        public bool HasDefaultValue
-        {
-            get { return _hasDefaultValue; }
-        }
-        public Expression<Func<TMessage, object>> Lambda
-        {
-            get
-            {
-                return _func;
-            }
-        }
-
-        public PropertyInfo PropertyInfo
-        {
-            get { return _propertyInfo; }
+            return _fastProp.Get(instance);
         }
     }
 }

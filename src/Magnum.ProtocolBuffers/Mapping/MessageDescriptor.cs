@@ -44,7 +44,7 @@ namespace Magnum.ProtocolBuffers.Mapping
                 throw new ProtoMappingException(string.Format("NumberTag {0} is already assigned to {1}", map.NumberTag, _fields.Find(o => o.NumberTag == map.NumberTag).Name));
 
             _numberTagsUsed.Add(map.NumberTag);
-            FieldDescriptor<TMessage> desc = new FieldDescriptor<TMessage>();
+            FieldDescriptor<TMessage> desc = new FieldDescriptor<TMessage>(map.Name, map.NumberTag, map.Lambda, map.Rules, map.DefaultValue);
             Fields.Add(desc);
         }
 

@@ -61,7 +61,6 @@
     <Compile Include="TestMappings\Int32MessageMap.cs" />
     <Compile Include="TestMessages\Test3.cs" />
     <Compile Include="TestMappings\Test3Map.cs" />
-    <Compile Include="A_map_can_output_a_proto_file.cs" />
     <Compile Include="TestMappings\SearchRequestMapping.cs" />
     <Compile Include="TestMessages\SearchRequest.cs" />
     <Compile Include="Specification.cs" />

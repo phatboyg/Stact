@@ -29,7 +29,8 @@ namespace Magnum.ProtocolBuffers
                 {
                     Type messageType = type.BaseType.GetGenericArguments()[0];
                     var genericArguments = new[] {messageType};
-                    var parameter = Expression.Parameter(type.GetInterfaces()[0], "map");
+                    var inter = type.GetInterfaces()[0];
+                    var parameter = Expression.Parameter(inter, "map");
                     var call = Expression.Call(Expression.Parameter(typeof (CommunicationModel), "who_cares"),
                                                "AddMapping", genericArguments, parameter);
 

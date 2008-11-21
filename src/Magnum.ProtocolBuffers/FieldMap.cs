@@ -68,10 +68,7 @@ namespace Magnum.ProtocolBuffers
 
         public Expression<Func<TMessage, object>> Lambda
         {
-            get
-            {
-                return _func;
-            }
+            get { return _func; }
         }
 
         public PropertyInfo PropertyInfo
