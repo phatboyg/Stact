@@ -32,9 +32,9 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            foreach (FieldDescriptor prop in _descriptors.GetAll())
+            foreach (FieldSerializer prop in _descriptors.GetAll())
             {
-                FieldDescriptor prop1 = prop;
+                FieldSerializer prop1 = prop;
                 var valueToSerialize = prop.Func.Get(message);
                 prop.Strategy.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
             }
@@ -68,7 +68,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
         {
-            var fd = new FieldDescriptor
+            var fd = new FieldSerializer
                          {
                              FieldTag = tag,
                              WireType = DetermineWireType(netType),

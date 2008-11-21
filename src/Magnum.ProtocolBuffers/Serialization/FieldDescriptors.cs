@@ -4,22 +4,22 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public class FieldDescriptors
     {
-        readonly SortedList<int, FieldDescriptor> _serializeProps = new SortedList<int, FieldDescriptor>();
-        readonly Dictionary<int, FieldDescriptor> _deserializeProps = new Dictionary<int, FieldDescriptor>();
+        readonly SortedList<int, FieldSerializer> _serializeProps = new SortedList<int, FieldSerializer>();
+        readonly Dictionary<int, FieldSerializer> _deserializeProps = new Dictionary<int, FieldSerializer>();
 
-        public void Add(FieldDescriptor descriptor)
+        public void Add(FieldSerializer serializer)
         {
-            _serializeProps.Add(descriptor.FieldTag, descriptor);
-            _deserializeProps.Add(descriptor.FieldTag, descriptor);
+            _serializeProps.Add(serializer.FieldTag, serializer);
+            _deserializeProps.Add(serializer.FieldTag, serializer);
         }
 
 
-        public IEnumerable<FieldDescriptor> GetAll()
+        public IEnumerable<FieldSerializer> GetAll()
         {
             return _serializeProps.Values;
         }
 
-        public FieldDescriptor this[int numberTag]
+        public FieldSerializer this[int numberTag]
         {
             get { return _deserializeProps[numberTag]; }
         }

@@ -88,20 +88,4 @@ namespace Magnum.ProtocolBuffers.Serialization
             messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, _serializers.Find(x => x.CanHandle(netType)));
         }
     }
-
-    public class FieldSerializer
-    {
-        
-    }
-
-    public class RepeatedFieldSerializer
-    {
-        
-    }
-
-    //this is the last one to be added?
-    public class MessageFieldSerializer
-    {
-      
-    }
 }

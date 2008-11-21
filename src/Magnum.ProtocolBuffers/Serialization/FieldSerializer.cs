@@ -4,7 +4,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Common.Reflection;
     using Specs;
 
-    public class FieldDescriptor
+    public class FieldSerializer
     {
         public FieldRules Rules { get; set;}
         public int FieldTag { get; set; }
