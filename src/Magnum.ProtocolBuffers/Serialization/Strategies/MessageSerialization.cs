@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers.Serialization.Strategies
 {
     using System;
+    using Streams;
 
     public class MessageSerialization :
         ISerializationStrategy

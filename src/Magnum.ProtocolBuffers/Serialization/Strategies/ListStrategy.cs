@@ -2,6 +2,7 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
 {
     using System;
     using System.Collections;
+    using Streams;
 
     public class ListStrategy :
         ISerializationStrategy

@@ -3,6 +3,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System;
     using Common.Reflection;
     using Specs;
+    using Streams;
 
     public interface IMessageSerializer<TMessage> :
         IMessageSerializer where TMessage : class, new()

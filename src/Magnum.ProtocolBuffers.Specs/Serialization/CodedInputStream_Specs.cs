@@ -14,7 +14,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
 {
     using System;
     using NUnit.Framework;
-    using ProtocolBuffers.Serialization;
+    using ProtocolBuffers.Serialization.Streams;
 
     [TestFixture]
     public class When_reading_from_a_CodedInputStream

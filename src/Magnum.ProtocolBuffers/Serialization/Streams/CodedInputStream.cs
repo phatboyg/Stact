@@ -1,4 +1,16 @@
-namespace Magnum.ProtocolBuffers.Serialization
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+namespace Magnum.ProtocolBuffers.Serialization.Streams
 {
     using System;
     using System.Collections.Generic;
@@ -28,13 +40,13 @@ namespace Magnum.ProtocolBuffers.Serialization
 
 
         /// <summary>
-		/// Reads the next tag in the stream
-		/// </summary>
-		/// <returns></returns>
+        /// Reads the next tag in the stream
+        /// </summary>
+        /// <returns></returns>
         public TagData ReadTag()
         {
-			// a tag is stored as an unsigned varint
-			uint tag = ReadVarintU32();
+            // a tag is stored as an unsigned varint
+            uint tag = ReadVarintU32();
 
             return new TagData
                        {
@@ -98,9 +110,9 @@ namespace Magnum.ProtocolBuffers.Serialization
 
                 offset += 7;
 
-				// if no MSB is set, we exit this loop
-				if ((b & 0x80) == 0)
-					break;
+                // if no MSB is set, we exit this loop
+                if ((b & 0x80) == 0)
+                    break;
             }
             return value;
         }
@@ -120,15 +132,15 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             UInt64 value = ReadVarint();
 
-			return (int)value;
+            return (int)value;
         }
 
-		private UInt32 ReadVarintU32()
-		{
-			UInt64 value = ReadVarint();
+        private UInt32 ReadVarintU32()
+        {
+            UInt64 value = ReadVarint();
 
-			return (uint) value;
-		}
+            return (uint) value;
+        }
 
         private byte[] CollectAndReverseBytes(MemoryStream stream)
         {

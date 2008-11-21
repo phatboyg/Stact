@@ -10,15 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.ProtocolBuffers.Serialization
+namespace Magnum.ProtocolBuffers.Serialization.Streams
 {
     using System;
-    using Streams;
 
-    public interface ISerializationStrategy
+    public static class CommonBinaryOperations
     {
-        bool CanHandle(Type type);
-        void Serialize(CodedOutputStream stream, int fieldNumber, object value);
-        object Deserialize(CodedInputStream stream);
+        public static bool IsMsbUnset(this byte data)
+        {
+            return (data & 0x80) == 0x80;
+        }
+
+        public static bool IsMsbUnset(this int data)
+        {
+            return (data & 0x80) == 0x80;
+        }
+
+        public static byte RemoveMsb(this byte data)
+        {
+            return (byte)(data & 0x7f);
+        }
+        public static UInt64 RemoveMsb(this int data)
+        {
+            return (byte)(data & 0x7f);
+        }
     }
 }

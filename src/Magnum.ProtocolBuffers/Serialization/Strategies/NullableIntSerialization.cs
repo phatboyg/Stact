@@ -13,6 +13,7 @@
 namespace Magnum.ProtocolBuffers.Serialization.Strategies
 {
     using System;
+    using Streams;
 
     public class NullableIntSerialization :
         ISerializationStrategy

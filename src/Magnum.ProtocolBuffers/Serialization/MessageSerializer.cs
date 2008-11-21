@@ -16,6 +16,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System.Collections.Generic;
     using Common.Reflection;
     using Specs;
+    using Streams;
 
     public class MessageSerializer<TMessage> :
         IMessageSerializer<TMessage> where TMessage : class, new()
