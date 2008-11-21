@@ -52,6 +52,7 @@
     <Compile Include="Mapping\ProtoMappingException.cs" />
     <Compile Include="Mapping\ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
+    <Compile Include="Serialization\FieldDescriptors.cs" />
     <Compile Include="Serialization\Streams\CodedInputStream.cs" />
     <Compile Include="Serialization\Streams\CodedOutputStream.cs" />
     <Compile Include="Serialization\Streams\CommonBinaryOperations.cs" />

@@ -13,7 +13,6 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
-    using System.Collections.Generic;
     using Common.Reflection;
     using Specs;
     using Streams;
@@ -21,9 +20,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageSerializer<TMessage> :
         IMessageSerializer<TMessage> where TMessage : class, new()
     {
-        
-        readonly SortedList<int, FieldDescriptor<TMessage>> _serializeProps = new SortedList<int, FieldDescriptor<TMessage>>();
-        readonly Dictionary<int, FieldDescriptor<TMessage>> _deserializeProps = new Dictionary<int, FieldDescriptor<TMessage>>();
+        private readonly FieldDescriptors<TMessage> _descriptors = new FieldDescriptors<TMessage>();
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -35,7 +32,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            foreach (FieldDescriptor<TMessage> prop in _serializeProps.Values)
+            foreach (FieldDescriptor<TMessage> prop in _descriptors.GetAll())
             {
                 FieldDescriptor<TMessage> prop1 = prop;
                 var valueToSerialize = prop.Func.Get(message);
@@ -50,7 +47,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             while (inputStream.Position < length)
             {
                 TagData tagData = inputStream.ReadTag();
-                var field = _deserializeProps[tagData.NumberTag];
+                var field = _descriptors[tagData.NumberTag];
                 var deserializedValue = field.Strategy.Deserialize(inputStream);
                 field.Func.Set(result, deserializedValue);
             }
@@ -60,17 +57,15 @@ namespace Magnum.ProtocolBuffers.Serialization
 
         public bool CanHandle(Type type)
         {
-            return typeof (TMessage).Equals(type);
+            return MappedType.Equals(type);
         }
-
-        public Type MessageType
+        public Type MappedType
         {
             get
             {
                 return typeof (TMessage);
             }
         }
-
         public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
         {
             var fd = new FieldDescriptor<TMessage>
@@ -82,9 +77,10 @@ namespace Magnum.ProtocolBuffers.Serialization
                              Rules = rules,
                              Strategy = strategy
                          };
-            _serializeProps.Add(tag, fd);
-            _deserializeProps.Add(tag, fd);
+            _descriptors.Add(fd);
         }
+
+        //todo: this is nasty
         private static WireType DetermineWireType(Type type)
         {
             if (type.IsEnum)
