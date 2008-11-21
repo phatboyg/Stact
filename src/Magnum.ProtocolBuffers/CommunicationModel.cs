@@ -12,7 +12,7 @@ namespace Magnum.ProtocolBuffers
     {
         private readonly IDictionary<Type, IMap> _mappings = new Dictionary<Type, IMap>();
         private readonly MessageDescriptorFactory _factory = new MessageDescriptorFactory();
-        private readonly List<IMessageDescriptor> _descriptors = new List<IMessageDescriptor>();
+        private readonly List<IMessageSerializer> _descriptors = new List<IMessageSerializer>();
 
         
         public int NumberOfMessagesMapped

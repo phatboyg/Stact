@@ -20,14 +20,14 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public class MessageDescriptorFactory
     {
-        private readonly Dictionary<Type, IMessageDescriptor> _descriptors = new Dictionary<Type, IMessageDescriptor>();
+        private readonly Dictionary<Type, IMessageSerializer> _descriptors = new Dictionary<Type, IMessageSerializer>();
 
-        public IMessageDescriptor Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()
+        public IMessageSerializer Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()
         {
             if (_descriptors.ContainsKey(typeof(TMessage)))
                 return _descriptors[typeof(TMessage)];
 
-            IMessageDescriptor<TMessage> desc = new MessageDescriptor<TMessage>();
+            IMessageSerializer<TMessage> desc = new MessageDescriptor<TMessage>();
 
             foreach (var field in map.Fields)
             {

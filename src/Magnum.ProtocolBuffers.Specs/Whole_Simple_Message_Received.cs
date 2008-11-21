@@ -112,7 +112,6 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Serialize_a_repeated_field()
         {
-            var fedId = new Guid("90D8E35F-463C-4997-948B-A098ECC80854");
             var map = new MessageMap<TestMessage>();
             map.Field(m => m.Numbers);
 

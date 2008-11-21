@@ -4,15 +4,15 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Common.Reflection;
     using Specs;
 
-    public interface IMessageDescriptor<TMessage> :
-        IMessageDescriptor where TMessage : class, new()
+    public interface IMessageSerializer<TMessage> :
+        IMessageSerializer where TMessage : class, new()
     {
         void Serialize(CodedOutputStream outputStream, TMessage message);
         new TMessage Deserialize(CodedInputStream inputStream);
         void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules);
     }
 
-    public interface IMessageDescriptor
+    public interface IMessageSerializer
     {
         void Serialize(CodedOutputStream outputStream, object message);
         object Deserialize(CodedInputStream inputStream);

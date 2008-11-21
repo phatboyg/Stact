@@ -5,16 +5,16 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     public class MessageSerialization :
         ISerializationStrategy
     {
-        private IMessageDescriptor _descriptor;
+        private IMessageSerializer _serializer;
 
-        public MessageSerialization(IMessageDescriptor descriptor)
+        public MessageSerialization(IMessageSerializer serializer)
         {
-            _descriptor = descriptor;
+            _serializer = serializer;
         }
 
         public bool CanHandle(Type type)
         {
-            return _descriptor.CanHandle(type);
+            return _serializer.CanHandle(type);
         }
 
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)

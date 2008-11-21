@@ -53,7 +53,7 @@
     <Compile Include="Serialization\CodedOutputStream.cs" />
     <Compile Include="Serialization\CommonBinaryOperations.cs" />
     <Compile Include="Serialization\FieldDescriptor.cs" />
-    <Compile Include="Serialization\IMessageDescriptor.cs" />
+    <Compile Include="Serialization\IMessageSerializer.cs" />
     <Compile Include="Serialization\RepeatedFieldDescriptor.cs" />
     <Compile Include="Serialization\Strategies\BooleanStrategy.cs" />
     <Compile Include="Serialization\Strategies\IntSerialization.cs" />

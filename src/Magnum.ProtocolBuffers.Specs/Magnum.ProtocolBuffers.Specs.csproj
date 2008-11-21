@@ -45,8 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mapping\A_fluent_api_makes_things_nice.cs" />
-    <Compile Include="Mapping\Communication_model_makes_life_easy.cs" />
+    <Compile Include="Mapping\A_fluent_mapping_api_is_nice.cs" />
+    <Compile Include="Communication_model_makes_life_easy.cs" />
     <Compile Include="Mapping\Messages_can_set_aside_numbers_for_extensions.cs" />
     <Compile Include="Mapping\Messages_have_fields.cs" />
     <Compile Include="Mapping\Messages_have_names.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="TestMappings\Int32MessageMap.cs" />
     <Compile Include="TestMessages\Test3.cs" />
     <Compile Include="TestMappings\Test3Map.cs" />
-    <Compile Include="String_mapping.cs" />
+    <Compile Include="A_map_can_output_a_proto_file.cs" />
     <Compile Include="TestMappings\SearchRequestMapping.cs" />
     <Compile Include="TestMessages\SearchRequest.cs" />
     <Compile Include="Specification.cs" />

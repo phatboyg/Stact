@@ -19,7 +19,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Strategies;
 
     public class MessageDescriptor<TMessage> :
-        IMessageDescriptor<TMessage> where TMessage : class, new()
+        IMessageSerializer<TMessage> where TMessage : class, new()
     {
         
         readonly SortedList<int, FieldDescriptor<TMessage>> _serializeProps = new SortedList<int, FieldDescriptor<TMessage>>();
@@ -38,7 +38,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             Serialize(outputStream, (TMessage)message);
         }
-        object IMessageDescriptor.Deserialize(CodedInputStream inputStream)
+        object IMessageSerializer.Deserialize(CodedInputStream inputStream)
         {
             return Deserialize(inputStream);
         }
