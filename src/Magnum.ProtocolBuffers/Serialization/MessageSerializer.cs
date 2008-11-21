@@ -20,7 +20,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageSerializer<TMessage> :
         IMessageSerializer<TMessage> where TMessage : class, new()
     {
-        private readonly FieldDescriptors<TMessage> _descriptors = new FieldDescriptors<TMessage>();
+        private readonly FieldDescriptors _descriptors = new FieldDescriptors();
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -32,9 +32,9 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
-            foreach (FieldDescriptor<TMessage> prop in _descriptors.GetAll())
+            foreach (FieldDescriptor prop in _descriptors.GetAll())
             {
-                FieldDescriptor<TMessage> prop1 = prop;
+                FieldDescriptor prop1 = prop;
                 var valueToSerialize = prop.Func.Get(message);
                 prop.Strategy.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
             }
@@ -66,9 +66,9 @@ namespace Magnum.ProtocolBuffers.Serialization
                 return typeof (TMessage);
             }
         }
-        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
+        public void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
         {
-            var fd = new FieldDescriptor<TMessage>
+            var fd = new FieldDescriptor
                          {
                              FieldTag = tag,
                              WireType = DetermineWireType(netType),
