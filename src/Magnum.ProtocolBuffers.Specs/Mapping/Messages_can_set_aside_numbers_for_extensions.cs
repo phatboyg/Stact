@@ -2,7 +2,6 @@ namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using Common;
     using NUnit.Framework;
-    using ProtocolBuffers.Mapping;
     using TestMessages;
 
     [TestFixture]
