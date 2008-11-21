@@ -19,17 +19,17 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Internal;
     using Strategies;
 
-    public class MessageDescriptorFactory
+    public class MessageSerializerFactory
     {
         private readonly Dictionary<Type, IMessageSerializer> _descriptors = new Dictionary<Type, IMessageSerializer>();
         readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
 
-        public MessageDescriptorFactory()
+        public MessageSerializerFactory()
         {
 
-            _serializers.Add(new StringSerialization());
-            _serializers.Add(new IntSerialization());
-            _serializers.Add(new NullableIntSerialization());
+            _serializers.Add(new StringStrategy());
+            _serializers.Add(new IntStrategy());
+            _serializers.Add(new NullableIntStrategy());
             _serializers.Add(new BooleanStrategy());
         }
         public IMessageSerializer Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()

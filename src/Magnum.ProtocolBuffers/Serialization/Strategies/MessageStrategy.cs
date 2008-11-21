@@ -3,12 +3,12 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     using System;
     using Streams;
 
-    public class MessageSerialization :
+    public class MessageStrategy :
         ISerializationStrategy
     {
         private IMessageSerializer _serializer;
 
-        public MessageSerialization(IMessageSerializer serializer)
+        public MessageStrategy(IMessageSerializer serializer)
         {
             _serializer = serializer;
         }

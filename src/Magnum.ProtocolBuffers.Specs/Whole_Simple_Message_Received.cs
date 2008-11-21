@@ -21,7 +21,7 @@ namespace Magnum.ProtocolBuffers.Specs
                              ResultPerPage = 2
                          };
             var map = new SearchRequestMapping();
-            var desc = new MessageDescriptorFactory().Build(map);
+            var desc = new MessageSerializerFactory().Build(map);
             var stream = new CodedOutputStream();
 
                 desc.Serialize(stream, sr);
@@ -47,7 +47,7 @@ namespace Magnum.ProtocolBuffers.Specs
                 ResultPerPage = 2
             };
             var map = new SearchRequestMapping();
-            var desc = new MessageDescriptorFactory().Build(map);
+            var desc = new MessageSerializerFactory().Build(map);
             var stream = new CodedOutputStream();
 
             for (int i = 0; i < 100000; i++)
@@ -67,7 +67,7 @@ namespace Magnum.ProtocolBuffers.Specs
                 ResultPerPage = 2
             };
             var map = new SearchRequestMapping();
-            var desc = new MessageDescriptorFactory().Build(map);
+            var desc = new MessageSerializerFactory().Build(map);
             var stream = new CodedOutputStream();
 
                 desc.Serialize(stream, sr);
@@ -96,7 +96,7 @@ namespace Magnum.ProtocolBuffers.Specs
                               IsCool = true
                           };
 
-            var desc = new MessageDescriptorFactory().Build(map);
+            var desc = new MessageSerializerFactory().Build(map);
             var outStream = new CodedOutputStream();
 
             desc.Serialize(outStream, msg);
@@ -121,7 +121,7 @@ namespace Magnum.ProtocolBuffers.Specs
                 Numbers = {1,2}
             };
 
-            var desc = new MessageDescriptorFactory().Build(map);
+            var desc = new MessageSerializerFactory().Build(map);
             var outStream = new CodedOutputStream();
 
             desc.Serialize(outStream, msg);

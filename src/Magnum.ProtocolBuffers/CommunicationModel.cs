@@ -11,7 +11,7 @@ namespace Magnum.ProtocolBuffers
     public class CommunicationModel
     {
         private readonly IDictionary<Type, IMap> _mappings = new Dictionary<Type, IMap>();
-        private readonly MessageDescriptorFactory _factory = new MessageDescriptorFactory();
+        private readonly MessageSerializerFactory _factory = new MessageSerializerFactory();
         private readonly List<IMessageSerializer> _descriptors = new List<IMessageSerializer>();
 
         

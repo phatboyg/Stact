@@ -15,17 +15,17 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     using System;
     using Streams;
 
-    public class StringSerialization :
+    public class IntStrategy :
         ISerializationStrategy
     {
         public bool CanHandle(Type type)
         {
-            return typeof(string).Equals(type);
+            return typeof(int).Equals(type);
         }
 
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
-            stream.WriteString(fieldNumber, (string)value);
+            stream.WriteVarint(fieldNumber, (uint)value);
         }
 
         public object Deserialize(CodedInputStream stream)
