@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using System;
     using System.Linq.Expressions;
@@ -8,18 +8,18 @@ namespace Magnum.ProtocolBuffers.Specs
     public class Message_fields_have_different_rules :
         Specification
     {
-        private Expression<Func<TestMessage, object>> function = m => m.Name;
+        private readonly Expression<Func<TestMessage, object>> function = m => m.Name;
         private FieldMap<TestMessage> _fieldMap;
 
         protected override void Before_each()
         {
-            var prop = ReflectionHelper.GetProperty(function);
             _fieldMap = new FieldMap<TestMessage>(1, function);
         }
         [Test]
         public void Mappings_are_optional_by_default()
         {
-            Assert.AreEqual(FieldRules.Optional, _fieldMap.Rules);
+            _fieldMap.Rules
+                .ShouldEqual(FieldRules.Optional);
         }
 
         [Test]
@@ -27,7 +27,9 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             _fieldMap.MakeRequired();
 
-            Assert.AreEqual(FieldRules.Required, _fieldMap.Rules);
+
+            _fieldMap.Rules
+                .ShouldEqual(FieldRules.Required);
         }
 
         [Test]
@@ -35,7 +37,8 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             _fieldMap.MakeRepeated();
 
-            Assert.AreEqual(FieldRules.Repeated, _fieldMap.Rules);
+            _fieldMap.Rules
+                .ShouldEqual(FieldRules.Repeated);
         }
     }
 }

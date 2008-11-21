@@ -1,6 +1,7 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using NUnit.Framework;
+    using ProtocolBuffers.Mapping;
     using TestMessages;
 
     [TestFixture]
@@ -10,7 +11,17 @@ namespace Magnum.ProtocolBuffers.Specs
         public void Name_should_be_set_to_class_name()
         {
             var messageMapping = new MessageMap<TestMessage>();
-            Assert.AreEqual("TestMessage", messageMapping.Name);
+            messageMapping.Name
+                .ShouldEqual("TestMessage");
+        }
+
+        [Test]
+        public void Name_should_be_overridable()
+        {
+            var messageMapping = new MessageMap<TestMessage>();
+            messageMapping.Name = "dru";
+            messageMapping.Name
+                .ShouldEqual("dru");
         }
         
     }

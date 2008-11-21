@@ -1,9 +1,7 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq.Expressions;
-    using System.Reflection;
     using NUnit.Framework;
     using TestMessages;
 

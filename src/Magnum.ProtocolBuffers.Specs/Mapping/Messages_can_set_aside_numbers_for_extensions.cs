@@ -1,7 +1,8 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using Common;
     using NUnit.Framework;
+    using ProtocolBuffers.Mapping;
     using TestMessages;
 
     [TestFixture]
@@ -16,7 +17,8 @@ namespace Magnum.ProtocolBuffers.Specs
 
             Range<int> ext = new Range<int>(50,100, true, true);
 
-            Assert.AreEqual(ext, map.ExtensionRange);
+            map.ExtensionRange
+                .ShouldEqual(ext);
         }
 
         [Test]

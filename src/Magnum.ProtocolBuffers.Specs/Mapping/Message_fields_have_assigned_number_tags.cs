@@ -1,7 +1,5 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
-    using System;
-    using System.Linq.Expressions;
     using NUnit.Framework;
     using TestMessages;
 
@@ -13,8 +11,8 @@ namespace Magnum.ProtocolBuffers.Specs
         public void Mappings_need_number_tags()
         {
             var fieldMapping = new FieldMap<TestMessage>(1, m=>m.Name);
-
-            Assert.AreEqual(1, fieldMapping.NumberTag);
+            fieldMapping.NumberTag
+                .ShouldEqual(1);
         }
 
         [Test]

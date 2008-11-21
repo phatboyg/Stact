@@ -40,4 +40,31 @@
             return MockRepository.GenerateStub<TStub>();
         }
     }
+
+    public static class SpecExtensions
+    {
+        public static void ShouldEqual(this int actual, int expected)
+        {
+            Assert.AreEqual(expected, actual);
+        }
+        public static void ShouldBeTrue(this bool actual)
+        {
+            Assert.IsTrue(actual);
+        }
+        public static void ShouldBeFalse(this bool actual)
+        {
+            Assert.IsFalse(actual);
+        }
+
+        public static void ShouldEqual(this string actual, string expected)
+        {
+            Assert.AreEqual(expected, actual);
+        }
+
+        public static void ShouldEqual(this object actual, object expected)
+        {
+            Assert.AreEqual(expected, actual);
+        }
+        
+    }
 }

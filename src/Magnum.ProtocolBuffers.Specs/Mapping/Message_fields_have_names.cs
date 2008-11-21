@@ -1,7 +1,6 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq.Expressions;
     using NUnit.Framework;
     using TestMessages;
@@ -14,7 +13,9 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             Expression<Func<TestMessage, object>> expression = m => m.Name;
             var mapping = new FieldMap<TestMessage>(1, expression);
-            Assert.AreEqual("Name", mapping.Name);
+
+            mapping.Name
+                .ShouldEqual("Name");
         }
     }
 }

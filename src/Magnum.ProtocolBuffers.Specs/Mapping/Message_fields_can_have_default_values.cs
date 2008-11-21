@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using NUnit.Framework;
     using TestMessages;
@@ -16,17 +16,20 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Should_be_settable()
         {
-            
             _mapping.SetDefaultValue("chris");
 
-            Assert.IsTrue(_mapping.HasDefaultValue);
-            Assert.AreEqual("chris", _mapping.DefaultValue);
+            _mapping.HasDefaultValue
+                .ShouldBeTrue();
+            
+            _mapping.DefaultValue
+                .ShouldEqual("chris");
         }
 
         [Test]
         public void By_default_there_should_be_no_default_value()
         {
-            Assert.IsFalse(_mapping.HasDefaultValue);
+            _mapping.HasDefaultValue
+                .ShouldBeFalse();
         }
     }
 }

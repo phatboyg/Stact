@@ -1,6 +1,7 @@
 namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using NUnit.Framework;
+    using ProtocolBuffers.Mapping;
     using TestMessages;
 
     [TestFixture]
@@ -15,7 +16,8 @@ namespace Magnum.ProtocolBuffers.Specs.Mapping
             map.Field(m => m.PageNumber);
             map.Field(m => m.ResultPerPage).SetDefaultValue(10);
             
-            Assert.AreEqual(3, map.FieldCount);
+            map.FieldCount
+                .ShouldEqual(3);
         }
     }
 }

@@ -1,6 +1,7 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using NUnit.Framework;
+    using ProtocolBuffers.Mapping;
     using TestMessages;
 
     [TestFixture]
@@ -19,7 +20,9 @@ namespace Magnum.ProtocolBuffers.Specs
             var messageMap = new MessageMap<TestMessage>();
             messageMap.Field(m => m.Name);
             messageMap.Field(m => m.Numbers);
-            Assert.AreEqual(2, messageMap.FieldCount);
+
+            messageMap.FieldCount
+                .ShouldEqual(2);
         }
 
         [Test]
@@ -27,7 +30,9 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             var messageMap = new MessageMap<TestMessage>();
             messageMap.Field(m => m.Age, 5);
-            Assert.AreEqual(6, messageMap.CurrentNumberTag);
+
+            messageMap.CurrentNumberTag
+                .ShouldEqual(6);
         }
 
         [Test]

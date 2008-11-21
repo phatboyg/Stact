@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers
+namespace Magnum.ProtocolBuffers.Mapping
 {
     using System;
     using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace Magnum.ProtocolBuffers
             Name = _messageType.Name;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public Range<int> ExtensionRange { get; private set; }
         public int FieldCount
         {
