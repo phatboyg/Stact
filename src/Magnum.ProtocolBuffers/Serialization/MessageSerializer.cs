@@ -16,23 +16,13 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System.Collections.Generic;
     using Common.Reflection;
     using Specs;
-    using Strategies;
 
-    public class MessageDescriptor<TMessage> :
+    public class MessageSerializer<TMessage> :
         IMessageSerializer<TMessage> where TMessage : class, new()
     {
         
         readonly SortedList<int, FieldDescriptor<TMessage>> _serializeProps = new SortedList<int, FieldDescriptor<TMessage>>();
         readonly Dictionary<int, FieldDescriptor<TMessage>> _deserializeProps = new Dictionary<int, FieldDescriptor<TMessage>>();
-        static readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
-
-        static MessageDescriptor()
-        {
-            _serializers.Add(new StringSerialization());
-            _serializers.Add(new IntSerialization());
-            _serializers.Add(new NullableIntSerialization());
-            _serializers.Add(new BooleanStrategy());
-        }
 
         public void Serialize(CodedOutputStream outputStream, object message)
         {
@@ -47,9 +37,8 @@ namespace Magnum.ProtocolBuffers.Serialization
             foreach (FieldDescriptor<TMessage> prop in _serializeProps.Values)
             {
                 FieldDescriptor<TMessage> prop1 = prop;
-                var serializer = _serializers.Find(o => o.CanHandle(prop1.NetType));
                 var valueToSerialize = prop.Func.Get(message);
-                serializer.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
+                prop.Strategy.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
             }
         }
         public TMessage Deserialize(CodedInputStream inputStream)
@@ -61,9 +50,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             {
                 TagData tagData = inputStream.ReadTag();
                 var field = _deserializeProps[tagData.NumberTag];
-                var netType = field.NetType;
-                var serializer = _serializers.Find(o => o.CanHandle(netType));
-                var deserializedValue = serializer.Deserialize(inputStream);
+                var deserializedValue = field.Strategy.Deserialize(inputStream);
                 field.Func.Set(result, deserializedValue);
             }
             
@@ -83,7 +70,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             }
         }
 
-        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules)
+        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
         {
             var fd = new FieldDescriptor<TMessage>
                          {
@@ -91,7 +78,8 @@ namespace Magnum.ProtocolBuffers.Serialization
                              WireType = DetermineWireType(netType),
                              Func = fp,
                              NetType = netType,
-                             Rules = rules
+                             Rules = rules,
+                             Strategy = strategy
                          };
             _serializeProps.Add(tag, fd);
             _deserializeProps.Add(tag, fd);

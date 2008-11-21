@@ -11,5 +11,6 @@ namespace Magnum.ProtocolBuffers.Serialization
         public FastProperty<TMessage> Func { get; set; }
         public WireType WireType { get; set; }
         public Type NetType { get; set; }
+        public ISerializationStrategy Strategy { get; set; }
     }
 }

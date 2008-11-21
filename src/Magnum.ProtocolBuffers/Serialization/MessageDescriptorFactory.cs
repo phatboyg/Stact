@@ -17,23 +17,34 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System.Collections.Generic;
     using Common.Reflection;
     using Internal;
+    using Strategies;
 
     public class MessageDescriptorFactory
     {
         private readonly Dictionary<Type, IMessageSerializer> _descriptors = new Dictionary<Type, IMessageSerializer>();
+        readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
 
+        public MessageDescriptorFactory()
+        {
+
+            _serializers.Add(new StringSerialization());
+            _serializers.Add(new IntSerialization());
+            _serializers.Add(new NullableIntSerialization());
+            _serializers.Add(new BooleanStrategy());
+        }
         public IMessageSerializer Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()
         {
             if (_descriptors.ContainsKey(typeof(TMessage)))
                 return _descriptors[typeof(TMessage)];
 
-            IMessageSerializer<TMessage> desc = new MessageDescriptor<TMessage>();
+            IMessageSerializer<TMessage> desc = new MessageSerializer<TMessage>();
 
             foreach (var field in map.Fields)
             {
                 var tag = field.NumberTag;
                 var fp = new FastProperty<TMessage>(field.PropertyInfo);
-                desc.AddProperty(tag, fp, field.FieldType, field.Rules);
+                var netType = field.FieldType;
+                desc.AddProperty(tag, fp, field.FieldType, field.Rules, _serializers.Find(x=>x.CanHandle(netType)));
             }
 
             _descriptors.Add(typeof(TMessage), desc);

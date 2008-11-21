@@ -30,7 +30,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
 
             var map = new Int32MessageMap();
 
-            var descriptor = new MessageDescriptor<Int32Message>();
+            var descriptor = new MessageSerializer<Int32Message>();
 
             descriptor.Serialize(outputStream, message);
 

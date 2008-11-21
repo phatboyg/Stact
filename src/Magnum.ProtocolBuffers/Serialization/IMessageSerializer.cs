@@ -9,7 +9,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     {
         void Serialize(CodedOutputStream outputStream, TMessage message);
         new TMessage Deserialize(CodedInputStream inputStream);
-        void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules);
+        void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules, ISerializationStrategy strategy);
     }
 
     public interface IMessageSerializer
