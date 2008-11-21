@@ -5,7 +5,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using TestMessages;
 
     [TestFixture]
-    public class String_mapping
+    public class A_map_can_output_a_proto_file
     {
         [Test]
         public void Does_it_match()

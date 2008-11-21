@@ -92,7 +92,7 @@ namespace Magnum.ProtocolBuffers.Specs
                               BirthDay = new DateTime(1979,2,26),
                               FederalIdNumber = fedId,
                               Name = "dru",
-            IsCool = true
+                              IsCool = true
                           };
 
             var desc = new MessageDescriptorFactory().Build(map);
@@ -107,6 +107,32 @@ namespace Magnum.ProtocolBuffers.Specs
 
             Assert.AreEqual(msg.IsCool, msg2.IsCool);
             
+        }
+
+        [Test]
+        public void Serialize_a_repeated_field()
+        {
+            var fedId = new Guid("90D8E35F-463C-4997-948B-A098ECC80854");
+            var map = new MessageMap<TestMessage>();
+            map.Field(m => m.Numbers);
+
+            var msg = new TestMessage
+            {
+                Numbers = {1,2}
+            };
+
+            var desc = new MessageDescriptorFactory().Build(map);
+            var outStream = new CodedOutputStream();
+
+            desc.Serialize(outStream, msg);
+
+            Assert.AreEqual(6, outStream.Length);
+
+            //var inStream = new CodedInputStream(outStream.GetBytes());
+            //var msg2 = (TestMessage)desc.Deserialize(inStream);
+
+            //Assert.AreEqual(msg.IsCool, msg2.IsCool);
+
         }
         
     }

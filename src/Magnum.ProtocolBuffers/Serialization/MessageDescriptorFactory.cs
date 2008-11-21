@@ -33,8 +33,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             {
                 var tag = field.NumberTag;
                 var fp = new FastProperty<TMessage>(field.PropertyInfo);
-
-                desc.AddProperty(tag, fp, field.FieldType);
+                desc.AddProperty(tag, fp, field.FieldType, field.Rules);
             }
 
             _descriptors.Add(typeof(TMessage), desc);

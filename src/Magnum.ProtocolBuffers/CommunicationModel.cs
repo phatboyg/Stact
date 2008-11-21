@@ -14,7 +14,7 @@ namespace Magnum.ProtocolBuffers
         private readonly MessageDescriptorFactory _factory = new MessageDescriptorFactory();
         private readonly List<IMessageDescriptor> _descriptors = new List<IMessageDescriptor>();
 
-
+        
         public int NumberOfMessagesMapped
         {
             get { return _mappings.Count; }
@@ -27,12 +27,14 @@ namespace Magnum.ProtocolBuffers
                 if(!type.IsGenericType && typeof(IMap).IsAssignableFrom(type))
                 {
                     Type messageType = type.BaseType.GetGenericArguments()[0];
-                    var arg = Expression.Parameter(type.GetInterfaces()[0], "map");
+                    var genericArguments = new[] {messageType};
+                    var parameter = Expression.Parameter(type.GetInterfaces()[0], "map");
                     var call = Expression.Call(Expression.Parameter(typeof (CommunicationModel), "who_cares"),
-                                               "AddMapping", new[] {messageType}, arg);
+                                               "AddMapping", genericArguments, parameter);
 
-                    var map = Activator.CreateInstance(type);
-                    call.Method.Invoke(this, new []{map});
+                    var mapInstance = Activator.CreateInstance(type);
+                    
+                    call.Method.Invoke(this, new []{mapInstance});
                 }
             }
         }
@@ -59,8 +61,6 @@ namespace Magnum.ProtocolBuffers
         {
             if(!Directory.Exists(directory))
                 throw new DirectoryNotFoundException("Didn't find " + directory);
-
-
         }
 
 

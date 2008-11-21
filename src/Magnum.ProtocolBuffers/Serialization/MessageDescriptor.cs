@@ -15,6 +15,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System;
     using System.Collections.Generic;
     using Common.Reflection;
+    using Specs;
     using Strategies;
 
     public class MessageDescriptor<TMessage> :
@@ -82,14 +83,15 @@ namespace Magnum.ProtocolBuffers.Serialization
             }
         }
 
-        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType)
+        public void AddProperty(int tag, FastProperty<TMessage> fp, Type netType, FieldRules rules)
         {
             var fd = new FieldDescriptor<TMessage>
                          {
                              FieldTag = tag,
                              WireType = DetermineWireType(netType),
                              Func = fp,
-                             NetType = netType
+                             NetType = netType,
+                             Rules = rules
                          };
             _serializeProps.Add(tag, fd);
             _deserializeProps.Add(tag, fd);

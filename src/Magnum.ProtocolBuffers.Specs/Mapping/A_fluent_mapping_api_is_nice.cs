@@ -1,10 +1,10 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using NUnit.Framework;
     using TestMessages;
 
     [TestFixture]
-    public class A_fluent_api_makes_things_nice :
+    public class A_fluent_mapping_api_is_nice :
         Specification
     {
         [Test]

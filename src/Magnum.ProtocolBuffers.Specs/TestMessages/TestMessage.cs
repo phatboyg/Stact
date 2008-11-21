@@ -5,6 +5,11 @@ namespace Magnum.ProtocolBuffers.Specs.TestMessages
 
     public class TestMessage
     {
+        public TestMessage()
+        {
+            Numbers = new List<int>();
+        }
+
         public string Name { get; set; }
         public IList<int> Numbers { get; set; }
 
