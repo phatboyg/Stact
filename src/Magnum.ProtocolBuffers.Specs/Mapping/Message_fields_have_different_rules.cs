@@ -1,20 +1,18 @@
 namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
-    using System;
-    using System.Linq.Expressions;
     using NUnit.Framework;
     using TestMessages;
 
     public class Message_fields_have_different_rules :
         Specification
     {
-        private readonly Expression<Func<TestMessage, object>> function = m => m.Name;
         private FieldMap<TestMessage> _fieldMap;
 
         protected override void Before_each()
         {
-            _fieldMap = new FieldMap<TestMessage>(1, function);
+            _fieldMap = new FieldMap<TestMessage>(1, m=>m.Name);
         }
+
         [Test]
         public void Mappings_are_optional_by_default()
         {

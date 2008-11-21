@@ -16,7 +16,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     using System;
     using System.Collections.Generic;
     using Common.Reflection;
-    using Internal;
+    using Mapping;
     using Strategies;
 
     public class MessageSerializerFactory
@@ -32,7 +32,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             _serializers.Add(new NullableIntStrategy());
             _serializers.Add(new BooleanStrategy());
         }
-        public IMessageSerializer Build<TMessage>(IMap<TMessage> map) where TMessage : class, new()
+        public IMessageSerializer Build<TMessage>(IMessageDescriptor<TMessage> map) where TMessage : class, new()
         {
             if (_descriptors.ContainsKey(typeof(TMessage)))
                 return _descriptors[typeof(TMessage)];

@@ -18,7 +18,7 @@ namespace Magnum.ProtocolBuffers.Specs
 
             IMap mm =  map;
             var v = new StringVisitor();
-            mm.Visit(v);
+            //mm.Visit(v);
 
             string proto = @"message SearchRequest {
   required string query = 1;

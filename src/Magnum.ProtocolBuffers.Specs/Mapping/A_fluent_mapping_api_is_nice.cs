@@ -15,9 +15,6 @@ namespace Magnum.ProtocolBuffers.Specs.Mapping
             map.Field(m => m.Query).MakeRequired();
             map.Field(m => m.PageNumber);
             map.Field(m => m.ResultPerPage).SetDefaultValue(10);
-            
-            map.FieldCount
-                .ShouldEqual(3);
         }
     }
 }

@@ -6,13 +6,14 @@ namespace Magnum.ProtocolBuffers
     using System.Linq.Expressions;
     using System.Reflection;
     using Internal;
+    using Mapping;
     using Serialization;
 
     public class CommunicationModel
     {
-        private readonly IDictionary<Type, IMap> _mappings = new Dictionary<Type, IMap>();
+        private readonly IDictionary<Type, IMessageDescriptor> _mappings = new Dictionary<Type, IMessageDescriptor>();
         private readonly MessageSerializerFactory _factory = new MessageSerializerFactory();
-        private readonly List<IMessageSerializer> _descriptors = new List<IMessageSerializer>();
+        private readonly List<IMessageSerializer> _serializers = new List<IMessageSerializer>();
 
         
         public int NumberOfMessagesMapped
@@ -42,31 +43,19 @@ namespace Magnum.ProtocolBuffers
 
         public void AddMapping<TMessage>(IMap<TMessage> map) where TMessage : class, new()
         {
-            if(_mappings.ContainsKey(map.TypeMapped))
+            IMessageDescriptor <TMessage> descriptor = map.GetDescriptor();
+            if(_mappings.ContainsKey(descriptor.TypeMapped))
                 throw new ProtoMappingException(string.Format("You have already added the type {0} to the communication model", map.TypeMapped));
 
-            _mappings.Add(map.TypeMapped, map);
-            _descriptors.Add(_factory.Build(map));
+            _mappings.Add(descriptor.TypeMapped, descriptor);
+            _serializers.Add(_factory.Build(descriptor));
         }
-
-
-
-
-
-
-
 
 
         public void WriteMappingsTo(string directory)
         {
             if(!Directory.Exists(directory))
                 throw new DirectoryNotFoundException("Didn't find " + directory);
-        }
-
-
-        public void Validate()
-        {
-            
         }
     }
 }
