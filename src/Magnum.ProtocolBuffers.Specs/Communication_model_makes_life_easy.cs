@@ -9,7 +9,10 @@ namespace Magnum.ProtocolBuffers.Specs
         public void By_auto_registering_maps()
         {
             var model = new CommunicationModel();
-            model.AddMappingsFromAssembly(GetType().Assembly);
+            model.Initialize(builder=>
+                    builder.AddMappingsFromAssembly(GetType().Assembly)
+                );
+            
             model.NumberOfMessagesMapped
                 .ShouldEqual(3);
         }

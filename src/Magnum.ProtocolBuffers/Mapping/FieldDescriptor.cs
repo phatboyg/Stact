@@ -6,20 +6,20 @@ namespace Magnum.ProtocolBuffers.Mapping
     using Common.Reflection;
     using Specs;
 
-    public class FieldDescriptor<TMessage>
+    public class FieldDescriptor
     {
-        private readonly FastProperty<TMessage> _fastProp;
+        private readonly FastProperty _fastProp;
 
-        public FieldDescriptor(string name, int numberTag, Expression<Func<TMessage, object>> func, FieldRules rules)
+        public FieldDescriptor(string name, int numberTag, PropertyInfo func, FieldRules rules)
         {
             Name = name;
             Rules = rules;
             NumberTag = numberTag;
-            PropertyInfo = ReflectionHelper.GetProperty(func);
+            PropertyInfo = func;
             FieldType = PropertyInfo.PropertyType;
-            _fastProp = new FastProperty<TMessage>(PropertyInfo);
+            _fastProp = new FastProperty(PropertyInfo);
         }
-        public FieldDescriptor(string name, int numberTag, Expression<Func<TMessage, object>> func, FieldRules rules, object defaultValue) :
+        public FieldDescriptor(string name, int numberTag, PropertyInfo func, FieldRules rules, object defaultValue) :
             this(name, numberTag, func, rules)
         {
             DefaultValue = defaultValue;
@@ -34,11 +34,11 @@ namespace Magnum.ProtocolBuffers.Mapping
         public bool HasDefaultValue { get; private set; }
         public PropertyInfo PropertyInfo { get; private set; }
 
-        public void SetFieldOnInstance(TMessage instance, object value)
+        public void SetFieldOnInstance(object instance, object value)
         {
             _fastProp.Set(instance, value);
         }
-        public object GetFieldOnInstance(TMessage instance)
+        public object GetFieldOnInstance(object instance)
         {
             return _fastProp.Get(instance);
         }

@@ -6,11 +6,7 @@ namespace Magnum.ProtocolBuffers.Mapping
     public interface IMessageDescriptor
     {
         Type TypeMapped { get; }
-    }
 
-    public interface IMessageDescriptor<TMessage> :
-        IMessageDescriptor
-    {
-        IList<FieldDescriptor<TMessage>> Fields { get; }
+        IList<FieldDescriptor> Fields { get; }
     }
 }

@@ -3,7 +3,7 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     using System;
     using Streams;
 
-    public class BooleanStrategy :
+    public class BooleanSerialization :
         ISerializationStrategy
     {
         public bool CanHandle(Type type)

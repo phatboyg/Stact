@@ -17,29 +17,47 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Specs;
     using Streams;
 
-    public class MessageSerializer<TMessage> :
-        IMessageSerializer<TMessage> where TMessage : class, new()
+    public class MessageSerializer :
+        IMessageSerializer
     {
         private readonly FieldDescriptors _descriptors = new FieldDescriptors();
 
+        public MessageSerializer(Type mappedType)
+        {
+            MappedType = mappedType;
+        }
+
+
         public void Serialize(CodedOutputStream outputStream, object message)
-        {
-            Serialize(outputStream, (TMessage)message);
-        }
-        object IMessageSerializer.Deserialize(CodedInputStream inputStream)
-        {
-            return Deserialize(inputStream);
-        }
-        public void Serialize(CodedOutputStream outputStream, TMessage message)
         {
             foreach (FieldSerializer prop in _descriptors.GetAll())
             {
-                FieldSerializer prop1 = prop;
                 var valueToSerialize = prop.Func.Get(message);
-                prop.Strategy.Serialize(outputStream, prop1.FieldTag, valueToSerialize);
+                prop.Strategy.Serialize(outputStream, prop.FieldTag, valueToSerialize);
             }
         }
-        public TMessage Deserialize(CodedInputStream inputStream)
+        public void Serialize<TMessage>(CodedOutputStream outputStream, TMessage message) where TMessage : class
+        {
+            Serialize(outputStream, (object)message);
+        }
+
+        object ISerializer.Deserialize(CodedInputStream inputStream)
+        {
+            object result = Activator.CreateInstance(MappedType);
+            var length = inputStream.Length;
+
+            while (inputStream.Position < length)
+            {
+                TagData tagData = inputStream.ReadTag();
+                var field = _descriptors[tagData.NumberTag];
+                var deserializedValue = field.Strategy.Deserialize(inputStream);
+                field.Func.Set(result, deserializedValue);
+            }
+
+            return result;
+        }
+
+        public TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new()
         {
             var result = new TMessage();
             var length = inputStream.Length;
@@ -61,10 +79,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public Type MappedType
         {
-            get
-            {
-                return typeof (TMessage);
-            }
+            get; private set;
         }
         public void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy)
         {
@@ -78,6 +93,11 @@ namespace Magnum.ProtocolBuffers.Serialization
                              Strategy = strategy
                          };
             _descriptors.Add(fd);
+        }
+
+        public void AddSubSerializer(ISerializer serializer)
+        {
+            //todo: do stuff
         }
 
         //todo: this is nasty

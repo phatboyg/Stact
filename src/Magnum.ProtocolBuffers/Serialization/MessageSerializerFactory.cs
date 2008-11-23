@@ -13,79 +13,78 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
-    using System;
-    using System.Collections.Generic;
     using Common.Reflection;
     using Mapping;
+    using Specs;
     using Strategies;
 
     public class MessageSerializerFactory
     {
-        private readonly Dictionary<Type, IMessageSerializer> _descriptors = new Dictionary<Type, IMessageSerializer>();
-        readonly List<ISerializationStrategy> _serializers = new List<ISerializationStrategy>();
+        private readonly CommunicationModel _model;
 
-        public MessageSerializerFactory()
+        public MessageSerializerFactory(CommunicationModel model)
         {
-
-            _serializers.Add(new StringStrategy());
-            _serializers.Add(new IntStrategy());
-            _serializers.Add(new NullableIntStrategy());
-            _serializers.Add(new BooleanStrategy());
+            _model = model;
         }
-        public IMessageSerializer Build<TMessage>(IMessageDescriptor<TMessage> map) where TMessage : class, new()
-        {
-            if (_descriptors.ContainsKey(typeof(TMessage)))
-                return _descriptors[typeof(TMessage)];
 
-            IMessageSerializer<TMessage> messageSerializer = new MessageSerializer<TMessage>();
+        public ISerializer Build(IMessageDescriptor map)
+        {
+            if (_model.HasSerializer(map.TypeMapped))
+                return _model.GetSerializer(map.TypeMapped);
+
+            IMessageSerializer messageSerializer = new MessageSerializer(map.TypeMapped);
 
             foreach (var field in map.Fields)
             {
-                //if repeated
-                //use repeated strategy
-
-                //if message
-                //use message strategy
-                //add to serializers
-
-                //else use non-repeated
-
-                StandardProperty(ref messageSerializer, field);
-
-
+                if(field.Rules.Equals(FieldRules.Repeated))
+                {
+                    ISerializer repeatedSerializer = null;
+                    messageSerializer.AddSubSerializer(repeatedSerializer);
+                }
+                else if(field.FieldType.Equals(typeof(string)))
+                {
+                    ISerializer subMessageSerializer = null;
+                    messageSerializer.AddSubSerializer(subMessageSerializer);
+                }
+                else
+                {
+                    ISerializer defaultSerializer = null;
+                    messageSerializer.AddSubSerializer(defaultSerializer);
+                }
                 //does this need some recursion?
             }
 
-            _descriptors.Add(typeof(TMessage), messageSerializer);
+            _model.AddSerializer(messageSerializer);
+
             return messageSerializer;
         }
 
-        public void MessageProperty<TMessage>(ref IMessageSerializer<TMessage> messageSerializer, Mapping.FieldDescriptor<TMessage> field) where TMessage : class, new()
+
+        //to be deleted
+        public void MessageProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
             var netType = field.FieldType;
 
-            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, new MessageStrategy(_descriptors[netType]));
+            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, new MessageStrategy(_model.GetSerializer(netType)));
         }
-
-        public void RepeatableProperty<TMessage>(ref IMessageSerializer<TMessage> messageSerializer, Mapping.FieldDescriptor<TMessage> field) where TMessage : class, new()
+        public void RepeatableProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
             var netType = field.FieldType;
             var repeatedType = netType.GetGenericArguments()[0];
-            var serializer = _serializers.Find(x => x.CanHandle(repeatedType));
+            var serializer = _model.GetFieldSerializer(repeatedType);
 
             messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, new ListStrategy(serializer) );
         }
-
-        public void StandardProperty<TMessage>(ref IMessageSerializer<TMessage> messageSerializer, Mapping.FieldDescriptor<TMessage> field) where TMessage : class, new()
+        public void StandardProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
             var netType = field.FieldType;
-            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, _serializers.Find(x => x.CanHandle(netType)));
+            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, _model.GetFieldSerializer(netType));
         }
     }
 }

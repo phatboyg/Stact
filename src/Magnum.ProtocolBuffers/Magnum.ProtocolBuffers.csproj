@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="ClrMessages\GuidMessage.cs" />
     <Compile Include="CommunicationModel.cs" />
+    <Compile Include="CommunicationModelBuilder.cs" />
     <Compile Include="Mapping\FieldDescriptor.cs" />
     <Compile Include="FieldMap.cs" />
     <Compile Include="Mapping\FieldRules.cs" />
@@ -58,7 +59,7 @@
     <Compile Include="Serialization\Streams\CommonBinaryOperations.cs" />
     <Compile Include="Serialization\FieldSerializer.cs" />
     <Compile Include="Serialization\IMessageSerializer.cs" />
-    <Compile Include="Serialization\Strategies\BooleanStrategy.cs" />
+    <Compile Include="Serialization\Strategies\BooleanSerialization.cs" />
     <Compile Include="Serialization\Strategies\IntStrategy.cs" />
     <Compile Include="Serialization\ISerializationStrategy.cs" />
     <Compile Include="Serialization\MessageSerializer.cs" />

@@ -6,9 +6,9 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     public class MessageStrategy :
         ISerializationStrategy
     {
-        private IMessageSerializer _serializer;
+        private ISerializer _serializer;
 
-        public MessageStrategy(IMessageSerializer serializer)
+        public MessageStrategy(ISerializer serializer)
         {
             _serializer = serializer;
         }

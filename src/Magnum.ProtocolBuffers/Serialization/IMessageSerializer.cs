@@ -5,19 +5,22 @@ namespace Magnum.ProtocolBuffers.Serialization
     using Specs;
     using Streams;
 
-    public interface IMessageSerializer<TMessage> :
-        IMessageSerializer where TMessage : class, new()
+    public interface IMessageSerializer : ISerializer
     {
-        void Serialize(CodedOutputStream outputStream, TMessage message);
-        new TMessage Deserialize(CodedInputStream inputStream);
+
+        
+        void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy);
     }
 
-    public interface IMessageSerializer
+    public interface ISerializer
     {
-        void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy);
         void Serialize(CodedOutputStream outputStream, object message);
+        void Serialize<TMessage>(CodedOutputStream outputStream, TMessage message) where TMessage : class;
         object Deserialize(CodedInputStream inputStream);
+        TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new();
+
         bool CanHandle(Type type);
-        Type MappedType { get; }
+
+        void AddSubSerializer(ISerializer serializer);
     }
 }

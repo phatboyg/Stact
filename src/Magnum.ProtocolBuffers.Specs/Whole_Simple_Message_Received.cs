@@ -2,7 +2,6 @@ namespace Magnum.ProtocolBuffers.Specs
 {
     using System;
     using NUnit.Framework;
-    using ProtocolBuffers.Serialization;
     using ProtocolBuffers.Serialization.Streams;
     using TestMappings;
     using TestMessages;
@@ -11,43 +10,60 @@ namespace Magnum.ProtocolBuffers.Specs
     public class Whole_Simple_Message_Received :
         Specification
     {
+        CommunicationModel _model;
+
+        protected override void Before_each()
+        {
+            _model = new CommunicationModel();
+        }
+
         [Test]
         public void Serialize_Simple_message()
         {
-            var sr = new SearchRequest()
+            var sr = new SearchRequest
                          {
                              PageNumber = 2,
                              Query = "from q",
                              ResultPerPage = 2
                          };
             var map = new SearchRequestMapping();
-            var desc = new MessageSerializerFactory().Build(map.GetDescriptor());
+            _model.Initialize(builder=>
+                builder.AddMapping(map)
+            );
+            var serializer = _model.GetSerializer(typeof (SearchRequest));
             var stream = new CodedOutputStream();
 
-                desc.Serialize(stream, sr);
+            serializer.Serialize(stream, sr);
 
 
             //Assert.AreEqual(12, stream.Length);
 
             var codedStream = new CodedInputStream(stream.GetBytes());
-            SearchRequest sr2 = (SearchRequest) desc.Deserialize(codedStream);
+            SearchRequest sr2 = serializer.Deserialize<SearchRequest>(codedStream);
 
-            Assert.AreEqual(sr.PageNumber, sr2.PageNumber);
-            Assert.AreEqual(sr.ResultPerPage, sr2.ResultPerPage);
-            Assert.AreEqual(sr.Query, sr2.Query);
+            sr2.PageNumber
+                .ShouldEqual(sr.PageNumber);
+            sr2.ResultPerPage
+                .ShouldEqual(sr.ResultPerPage);
+            sr2.Query
+                .ShouldEqual(sr.Query);
         }
 
         [Test]
         public  void Serialize_Perf()
         {
-            var sr = new SearchRequest()
+            CommunicationModel model = new CommunicationModel();
+            var sr = new SearchRequest
             {
                 PageNumber = 2,
                 Query = "from q",
                 ResultPerPage = 2
             };
             var map = new SearchRequestMapping();
-            var desc = new MessageSerializerFactory().Build(map.GetDescriptor());
+            model.Initialize(builder =>
+                builder.AddMapping(map)
+            );
+            var desc = _model.GetSerializer(sr.GetType());
             var stream = new CodedOutputStream();
 
             for (int i = 0; i < 100000; i++)
@@ -60,14 +76,18 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Deserialize_Perf()
         {
-            var sr = new SearchRequest()
+            CommunicationModel model = new CommunicationModel();
+            var sr = new SearchRequest
             {
                 PageNumber = 2,
                 Query = "from q",
                 ResultPerPage = 2
             };
             var map = new SearchRequestMapping();
-            var desc = new MessageSerializerFactory().Build(map.GetDescriptor());
+            model.Initialize(builder =>
+                builder.AddMapping(map)
+            );
+            var desc = _model.GetSerializer(sr.GetType());
             var stream = new CodedOutputStream();
 
                 desc.Serialize(stream, sr);
@@ -96,7 +116,9 @@ namespace Magnum.ProtocolBuffers.Specs
                               IsCool = true
                           };
 
-            var desc = new MessageSerializerFactory().Build(map.GetDescriptor());
+            _model.Initialize(builder=>
+                builder.AddMapping(map));
+            var desc = _model.GetSerializer(typeof(TestMessage));
             var outStream = new CodedOutputStream();
 
             desc.Serialize(outStream, msg);
@@ -121,7 +143,9 @@ namespace Magnum.ProtocolBuffers.Specs
                 Numbers = {1,2}
             };
 
-            var desc = new MessageSerializerFactory().Build(map.GetDescriptor());
+            _model.Initialize(builder =>
+                builder.AddMapping(map));
+            var desc = _model.GetSerializer(msg.GetType());
             var outStream = new CodedOutputStream();
 
             desc.Serialize(outStream, msg);

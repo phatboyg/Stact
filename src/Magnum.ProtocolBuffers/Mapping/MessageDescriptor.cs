@@ -5,15 +5,15 @@ namespace Magnum.ProtocolBuffers.Mapping
     using Common;
 
     public class MessageDescriptor<TMessage> :
-        IMessageDescriptor<TMessage>
+        IMessageDescriptor
     {
         private readonly HashSet<int> _numberTagsUsed = new HashSet<int>();
-        private readonly List<FieldDescriptor<TMessage>> _fields;
+        private readonly List<FieldDescriptor> _fields;
 
         public MessageDescriptor()
         {
             Name = typeof (TMessage).Name;
-            _fields =  new List<FieldDescriptor<TMessage>>();
+            _fields =  new List<FieldDescriptor>();
             ExtensionRange = new Range<int>(0, 0, false, false);
         }
 
@@ -22,7 +22,7 @@ namespace Magnum.ProtocolBuffers.Mapping
         {
             ExtensionRange = new Range<int>(lower, upper, true, true);
         }
-        public IList<FieldDescriptor<TMessage>> Fields
+        public IList<FieldDescriptor> Fields
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Magnum.ProtocolBuffers.Mapping
                 throw new ProtoMappingException(string.Format("NumberTag {0} is already assigned to {1}", map.NumberTag, _fields.Find(o => o.NumberTag == map.NumberTag).Name));
 
             _numberTagsUsed.Add(map.NumberTag);
-            FieldDescriptor<TMessage> desc = new FieldDescriptor<TMessage>(map.Name, map.NumberTag, map.Lambda, map.Rules, map.DefaultValue);
+            FieldDescriptor desc = new FieldDescriptor(map.Name, map.NumberTag, map.PropertyInfo, map.Rules, map.DefaultValue);
             Fields.Add(desc);
         }
 

@@ -66,11 +66,6 @@ namespace Magnum.ProtocolBuffers
             get { return _hasDefaultValue; }
         }
 
-        public Expression<Func<TMessage, object>> Lambda
-        {
-            get { return _func; }
-        }
-
         public PropertyInfo PropertyInfo
         {
             get { return _propertyInfo; }

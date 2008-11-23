@@ -12,5 +12,6 @@ namespace Magnum.ProtocolBuffers.Serialization
         public WireType WireType { get; set; }
         public Type NetType { get; set; }
         public ISerializationStrategy Strategy { get; set; }
+
     }
 }
