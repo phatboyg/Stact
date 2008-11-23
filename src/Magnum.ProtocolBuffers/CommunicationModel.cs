@@ -15,27 +15,27 @@ namespace Magnum.ProtocolBuffers
         private readonly IDictionary<Type, IMessageDescriptor> _descriptors = new Dictionary<Type, IMessageDescriptor>();
         private readonly List<ISerializer> _messageSerializers = new List<ISerializer>();
         private readonly List<ISerializationStrategy> _valueTypeSerializers = new List<ISerializationStrategy>();
-        private readonly Dictionary<Type,ISerializationStrategy> _nonMessageTypes = new Dictionary<Type, ISerializationStrategy>();
 
         public CommunicationModel()
         {
-            //default .net types
             AddFieldSerializer(new StringStrategy());
+            
             AddFieldSerializer(new SignedInt32Strategy());
-            AddFieldSerializer(new NullableIntStrategy());
+            AddFieldSerializer(new UnsignedInt32Strategy());
+            AddFieldSerializer(new NullableSignedInt32Strategy());
+            
+            AddFieldSerializer(new SignedInt64Strategy());
+            AddFieldSerializer(new UnsignedInt64Strategy());
+            AddFieldSerializer(new NullableSignedInt64Strategy());
+
             AddFieldSerializer(new BooleanSerialization());
 
+            AddFieldSerializer(new ByteStrategy());
+            AddFieldSerializer(new ByteArrayStrategy());
 
-            _nonMessageTypes.Add(typeof(Int32), new SignedInt32Strategy());
-            _nonMessageTypes.Add(typeof(UInt32), new UnsignedInt32Strategy());
-            _nonMessageTypes.Add(typeof(Int64), new SignedInt64Strategy());
-            _nonMessageTypes.Add(typeof(UInt64), new UnsignedInt64Strategy());
-            _nonMessageTypes.Add(typeof(Single), null);
-            _nonMessageTypes.Add(typeof(Double), null);
-            _nonMessageTypes.Add(typeof(Boolean), new BooleanSerialization());
-            _nonMessageTypes.Add(typeof(String), new StringStrategy());
-            _nonMessageTypes.Add(typeof(Byte), new ByteStrategy());
-            _nonMessageTypes.Add(typeof(Byte[]), new ByteArrayStrategy());
+            AddFieldSerializer(new SingleStrategy());
+            AddFieldSerializer(new DoubleStrategy());
+            
 
             _factory = new MessageSerializerFactory(this);
         }
@@ -109,12 +109,6 @@ namespace Magnum.ProtocolBuffers
         public bool HasSerializer(Type mapped)
         {
             return _messageSerializers.Exists(s => s.CanHandle(mapped));
-        }
-
-        public bool IsMessageType(Type type)
-        {
-            //this wont work
-            return _nonMessageTypes.Keys.Equals(type);
         }
     }
 }
