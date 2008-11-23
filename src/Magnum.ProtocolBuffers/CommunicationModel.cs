@@ -28,7 +28,7 @@ namespace Magnum.ProtocolBuffers
             AddFieldSerializer(new UnsignedInt64Strategy());
             AddFieldSerializer(new NullableSignedInt64Strategy());
 
-            AddFieldSerializer(new BooleanSerialization());
+            AddFieldSerializer(new BooleanStrategy());
 
             AddFieldSerializer(new ByteStrategy());
             AddFieldSerializer(new ByteArrayStrategy());
@@ -79,7 +79,7 @@ namespace Magnum.ProtocolBuffers
         {
             return _descriptors[descriptorType];
         }
-        internal void AddSerializer(ISerializer serializer)
+        internal void AddMessageSerializer(ISerializer serializer)
         {
             _messageSerializers.Add(serializer);
         }
@@ -98,7 +98,7 @@ namespace Magnum.ProtocolBuffers
         {
             foreach (var pair in _descriptors)
             {
-                AddSerializer(_factory.Build(pair.Value));
+                AddMessageSerializer(_factory.Build(pair.Value));
             }
         }
 

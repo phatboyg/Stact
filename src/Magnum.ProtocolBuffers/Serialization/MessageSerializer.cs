@@ -86,38 +86,12 @@ namespace Magnum.ProtocolBuffers.Serialization
             var fd = new FieldSerializer
                          {
                              FieldTag = tag,
-                             WireType = DetermineWireType(netType),
                              Func = fp,
                              NetType = netType,
                              Rules = rules,
                              Strategy = strategy
                          };
             _descriptors.Add(fd);
-        }
-
-        public void AddSubSerializer(ISerializer serializer)
-        {
-            //todo: do stuff
-        }
-
-        //todo: this is nasty
-        private static WireType DetermineWireType(Type type)
-        {
-            if (type.IsEnum)
-                return WireType.Varint;
-
-            if (typeof(DateTime).Equals(type)) //uint64
-                return WireType.Varint;
-
-            if (typeof(Guid).Equals(type)) //two uint64
-                return WireType.LengthDelimited;
-
-            if (typeof(int).Equals(type) || typeof(long).Equals(type))
-                return WireType.Varint;
-
-
-            //string, classes
-            return WireType.LengthDelimited;
         }
     }
 }

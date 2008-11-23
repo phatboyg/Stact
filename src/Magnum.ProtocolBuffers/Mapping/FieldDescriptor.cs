@@ -48,12 +48,6 @@ namespace Magnum.ProtocolBuffers.Mapping
                 netType = NetType.GetTypeEnumerated();
                 strategy = new ListStrategy(new MessageStrategy(null));
             }
-                
-
-
-            
-
-            WireType wireType = WireType.Varint;
 
             return new FieldSerializer()
                        {
@@ -62,7 +56,6 @@ namespace Magnum.ProtocolBuffers.Mapping
                            NetType = netType,
                            Rules = Rules,
                            Strategy = strategy,
-                           WireType = wireType
                        };
         }
         

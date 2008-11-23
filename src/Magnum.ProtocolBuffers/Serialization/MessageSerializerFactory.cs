@@ -41,56 +41,12 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             foreach (var field in map.Fields)
             {
-                
-                if(field.Rules.Equals(FieldRules.Repeated))
-                {
-                    ISerializer repeatedSerializer = null;
-                    messageSerializer.AddSubSerializer(repeatedSerializer);
-                }
-                else if(field.NetType.Equals(typeof(string)))
-                {
-                    ISerializer subMessageSerializer = null;
-                    messageSerializer.AddSubSerializer(subMessageSerializer);
-                }
-                else
-                {
-                    ISerializer defaultSerializer = null;
-                    messageSerializer.AddSubSerializer(defaultSerializer);
-                }
-                //does this need some recursion?
+                messageSerializer.AddProperty(field.NumberTag, null, field.NetType, field.Rules, _model.GetFieldSerializer(field.NetType));
             }
 
-            _model.AddSerializer(messageSerializer);
+            _model.AddMessageSerializer(messageSerializer);
 
             return messageSerializer;
-        }
-
-
-        //to be deleted
-        public void MessageProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
-        {
-            var tag = field.NumberTag;
-            var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.NetType;
-
-            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, new MessageStrategy(_model.GetSerializer(netType)));
-        }
-        public void RepeatableProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
-        {
-            var tag = field.NumberTag;
-            var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.NetType;
-            var repeatedType = netType.GetGenericArguments()[0];
-            var serializer = _model.GetFieldSerializer(repeatedType);
-
-            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, new ListStrategy(serializer) );
-        }
-        public void StandardProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
-        {
-            var tag = field.NumberTag;
-            var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.NetType;
-            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, _model.GetFieldSerializer(netType));
         }
     }
 }

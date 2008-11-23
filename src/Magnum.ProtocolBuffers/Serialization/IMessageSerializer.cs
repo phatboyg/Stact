@@ -7,8 +7,6 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public interface IMessageSerializer : ISerializer
     {
-
-        
         void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy);
     }
 
@@ -20,7 +18,5 @@ namespace Magnum.ProtocolBuffers.Serialization
         TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new();
 
         bool CanHandle(Type type);
-
-        void AddSubSerializer(ISerializer serializer);
     }
 }
