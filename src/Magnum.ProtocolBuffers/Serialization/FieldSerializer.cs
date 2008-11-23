@@ -9,7 +9,6 @@ namespace Magnum.ProtocolBuffers.Serialization
         public FieldRules Rules { get; set;}
         public int FieldTag { get; set; }
         public FastProperty Func { get; set; }
-        public WireType WireType { get; set; }
         public Type NetType { get; set; }
         public ISerializationStrategy Strategy { get; set; }
 
