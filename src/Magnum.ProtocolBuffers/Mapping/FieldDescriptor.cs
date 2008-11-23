@@ -38,7 +38,7 @@ namespace Magnum.ProtocolBuffers.Mapping
             get { return Rules.Equals(FieldRules.Repeated); }
         }
 
-        public FieldSerializer GenerateFieldSerializer()
+        public FieldSerializer GenerateFieldSerializer(CommunicationModel model)
         {
             ISerializationStrategy strategy = null;
             
@@ -47,17 +47,15 @@ namespace Magnum.ProtocolBuffers.Mapping
             if (IsRepeated)
             {
                 netType = NetType.GetTypeEnumerated();
-                strategy = new ListStrategy(new MessageStrategy(null));
+                strategy = new ListStrategy(model.GetFieldSerializer(netType));
             }
+            else
+            {
+                strategy = model.GetFieldSerializer(netType);    
+            }
+            
 
-            return new FieldSerializer()
-                       {
-                           FieldTag = NumberTag,
-                           Func = new FastProperty(PropertyInfo),
-                           NetType = netType,
-                           Rules = Rules,
-                           Strategy = strategy,
-                       };
+            return new FieldSerializer(Rules, NumberTag, new FastProperty(this.PropertyInfo), netType, strategy);
         }
         
     }

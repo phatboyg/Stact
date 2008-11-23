@@ -16,6 +16,10 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             _model = new CommunicationModel();
         }
+        protected override void After_each()
+        {
+            _model = null;
+        }
 
         [Test]
         public void Serialize_Simple_message()
@@ -39,7 +43,7 @@ namespace Magnum.ProtocolBuffers.Specs
             //Assert.AreEqual(12, stream.Length);
 
             var codedStream = new CodedInputStream(stream.GetBytes());
-            SearchRequest sr2 = serializer.Deserialize<SearchRequest>(codedStream);
+            SearchRequest sr2 = (SearchRequest)serializer.Deserialize(codedStream);
 
             sr2.PageNumber
                 .ShouldEqual(sr.PageNumber);
@@ -103,21 +107,22 @@ namespace Magnum.ProtocolBuffers.Specs
         [Test]
         public void Serialize_a_bigger_message()
         {
-            var fedId = new Guid("90D8E35F-463C-4997-948B-A098ECC80854");
             var map = new MessageMap<TestMessage>();
             map.Field(m => m.IsCool);
+            map.Field(m => m.Age);
+            map.Field(m => m.Name);
 
             var msg = new TestMessage
                           {
                               Age = 1,
-                              BirthDay = new DateTime(1979,2,26),
-                              FederalIdNumber = fedId,
                               Name = "dru",
                               IsCool = true
                           };
 
             _model.Initialize(builder=>
-                builder.AddMapping(map));
+                builder.AddMapping(map)
+                );
+
             var desc = _model.GetSerializer(typeof(TestMessage));
             var outStream = new CodedOutputStream();
 
@@ -128,8 +133,12 @@ namespace Magnum.ProtocolBuffers.Specs
             var inStream = new CodedInputStream(outStream.GetBytes());
             var msg2 = (TestMessage)desc.Deserialize(inStream);
 
-            Assert.AreEqual(msg.IsCool, msg2.IsCool);
-            
+            msg2.IsCool
+                .ShouldBeTrue();
+            msg2.Name
+                .ShouldEqual("dru");
+            msg2.Age
+                .ShouldEqual(1);
         }
 
         [Test]
@@ -144,19 +153,22 @@ namespace Magnum.ProtocolBuffers.Specs
             };
 
             _model.Initialize(builder =>
-                builder.AddMapping(map));
+                builder.AddMapping(map)
+                );
             var desc = _model.GetSerializer(msg.GetType());
             var outStream = new CodedOutputStream();
 
             desc.Serialize(outStream, msg);
 
-            Assert.AreEqual(6, outStream.Length);
+            Assert.AreEqual(4, outStream.Length);
 
-            //var inStream = new CodedInputStream(outStream.GetBytes());
-            //var msg2 = (TestMessage)desc.Deserialize(inStream);
+            var inStream = new CodedInputStream(outStream.GetBytes());
+            var msg2 = (TestMessage)desc.Deserialize(inStream);
 
-            //Assert.AreEqual(msg.IsCool, msg2.IsCool);
-
+            msg2.Numbers.Contains(1)
+                .ShouldBeTrue();
+            msg2.Numbers.Contains(2)
+                .ShouldBeTrue();
         }
         
     }

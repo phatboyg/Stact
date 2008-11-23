@@ -21,21 +21,17 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
 
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
-            stream.WriteTag(fieldNumber, WireType.Varint);
-            IEnumerable repeatedStuff = (IEnumerable) value;
+            IEnumerable collectionItems = (IEnumerable) value;
 
-            foreach (var o in repeatedStuff)
+            foreach (var individualItem in collectionItems)
             {
-                //get a serilaization strategy for type of o
+                _subStrategy.Serialize(stream, fieldNumber, individualItem);
             }
         }
 
         public object Deserialize(CodedInputStream stream)
         {
-            //this one is a bit odd
-            //need to get the deserialization strategy
-            //and call it
-            return stream.ReadString();
+            return _subStrategy.Deserialize(stream);
         }
 
         public WireType WireType

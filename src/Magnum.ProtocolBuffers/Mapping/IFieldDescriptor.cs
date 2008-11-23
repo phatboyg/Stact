@@ -15,6 +15,6 @@ namespace Magnum.ProtocolBuffers.Mapping
         bool HasDefaultValue { get; }
         PropertyInfo PropertyInfo { get; }
         bool IsRepeated { get; }
-        FieldSerializer GenerateFieldSerializer();
+        FieldSerializer GenerateFieldSerializer(CommunicationModel model);
     }
 }

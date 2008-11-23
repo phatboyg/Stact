@@ -25,12 +25,12 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
 
         public void Serialize(CodedOutputStream stream, int fieldNumber, object value)
         {
-            stream.WriteVarint(fieldNumber, (uint)value);
+            stream.WriteVarint(fieldNumber, (uint)(int)value);
         }
 
         public object Deserialize(CodedInputStream stream)
         {
-            return stream.ReadString();
+            return (int)stream.ReadVarint();
         }
 
         public WireType WireType

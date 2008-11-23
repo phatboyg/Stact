@@ -13,23 +13,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
-    using System.Collections.Generic;
-    using Common.Reflection;
     using Mapping;
-    using Specs;
-    using Strategies;
 
     public class MessageSerializerFactory
     {
         private readonly CommunicationModel _model;
-        private readonly Dictionary<FieldRules, object> _strategies = new Dictionary<FieldRules, object>();
 
         public MessageSerializerFactory(CommunicationModel model)
         {
             _model = model;
-            _strategies.Add(FieldRules.Repeated, null);
-            _strategies.Add(FieldRules.Optional, null);
-            _strategies.Add(FieldRules.Required, null);
         }
 
         public ISerializer Build(IMessageDescriptor map)
@@ -41,7 +33,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             foreach (var field in map.Fields)
             {
-                messageSerializer.AddProperty(field.NumberTag, null, field.NetType, field.Rules, _model.GetFieldSerializer(field.NetType));
+                messageSerializer.AddField(field.GenerateFieldSerializer(_model));
             }
 
             _model.AddMessageSerializer(messageSerializer);

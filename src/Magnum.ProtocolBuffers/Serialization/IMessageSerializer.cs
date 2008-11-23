@@ -1,21 +1,21 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
-    using Common.Reflection;
-    using Specs;
     using Streams;
 
     public interface IMessageSerializer : ISerializer
     {
-        void AddProperty(int tag, FastProperty fp, Type netType, FieldRules rules, ISerializationStrategy strategy);
+        void AddField(FieldSerializer fieldSerializer);
+
     }
 
     public interface ISerializer
     {
-        void Serialize(CodedOutputStream outputStream, object message);
-        void Serialize<TMessage>(CodedOutputStream outputStream, TMessage message) where TMessage : class;
+        void Serialize(CodedOutputStream outputStream, object value);
         object Deserialize(CodedInputStream inputStream);
-        TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new();
+
+        //void Serialize<TValue>(CodedOutputStream outputStream, TValue value);
+        //TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new();
 
         bool CanHandle(Type type);
     }
