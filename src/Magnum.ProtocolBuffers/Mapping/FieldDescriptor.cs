@@ -1,14 +1,13 @@
 namespace Magnum.ProtocolBuffers.Mapping
 {
     using System;
-    using System.Linq.Expressions;
     using System.Reflection;
     using Common.Reflection;
+    using Serialization;
     using Specs;
 
     public class FieldDescriptor
     {
-        private readonly FastProperty _fastProp;
 
         public FieldDescriptor(string name, int numberTag, PropertyInfo func, FieldRules rules)
         {
@@ -16,8 +15,7 @@ namespace Magnum.ProtocolBuffers.Mapping
             Rules = rules;
             NumberTag = numberTag;
             PropertyInfo = func;
-            FieldType = PropertyInfo.PropertyType;
-            _fastProp = new FastProperty(PropertyInfo);
+            NetType = PropertyInfo.PropertyType;
         }
         public FieldDescriptor(string name, int numberTag, PropertyInfo func, FieldRules rules, object defaultValue) :
             this(name, numberTag, func, rules)
@@ -29,18 +27,33 @@ namespace Magnum.ProtocolBuffers.Mapping
         public string Name { get; private set; }
         public int NumberTag { get; private set; }
         public FieldRules Rules { get; private set; }
-        public Type FieldType { get; private set; }
+        public Type NetType { get; private set; }
         public object DefaultValue { get; private set; }
         public bool HasDefaultValue { get; private set; }
         public PropertyInfo PropertyInfo { get; private set; }
-
-        public void SetFieldOnInstance(object instance, object value)
+        public bool IsRepeated
         {
-            _fastProp.Set(instance, value);
+            get { return Rules.Equals(FieldRules.Repeated); }
         }
-        public object GetFieldOnInstance(object instance)
+
+        public FieldSerializer GenerateFieldSerializer()
         {
-            return _fastProp.Get(instance);
+            ISerializationStrategy strategy = null;
+            WireType wireType = WireType.Varint;
+
+            return new FieldSerializer()
+                       {
+                           FieldTag = NumberTag,
+                           Func = new FastProperty(PropertyInfo),
+                           NetType = NetType,
+                           Rules = Rules,
+                           Strategy = strategy,
+                           WireType = wireType
+                       };
+        }
+        private Type IfItsAListWhatIsItAListOf()
+        {
+            return null;
         }
     }
 }

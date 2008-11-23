@@ -14,7 +14,8 @@ namespace Magnum.ProtocolBuffers
 
         private readonly IDictionary<Type, IMessageDescriptor> _descriptors = new Dictionary<Type, IMessageDescriptor>();
         private readonly List<ISerializer> _messageSerializers = new List<ISerializer>();
-        readonly List<ISerializationStrategy> _valueTypeSerializers = new List<ISerializationStrategy>();
+        private readonly List<ISerializationStrategy> _valueTypeSerializers = new List<ISerializationStrategy>();
+        private readonly HashSet<Type> _nonMessageTypes = new HashSet<Type>();
 
         public CommunicationModel()
         {
@@ -23,6 +24,12 @@ namespace Magnum.ProtocolBuffers
             AddFieldSerializer(new IntStrategy());
             AddFieldSerializer(new NullableIntStrategy());
             AddFieldSerializer(new BooleanSerialization());
+
+            _nonMessageTypes.Add(typeof(int));
+            _nonMessageTypes.Add(typeof(uint));
+            _nonMessageTypes.Add(typeof(double));
+            _nonMessageTypes.Add(typeof(long));
+            _nonMessageTypes.Add(typeof(ulong));
 
             _factory = new MessageSerializerFactory(this);
         }
@@ -96,6 +103,11 @@ namespace Magnum.ProtocolBuffers
         public bool HasSerializer(Type mapped)
         {
             return _messageSerializers.Exists(s => s.CanHandle(mapped));
+        }
+
+        public bool IsMessageType(Type type)
+        {
+            return _nonMessageTypes.Contains(type);
         }
     }
 }

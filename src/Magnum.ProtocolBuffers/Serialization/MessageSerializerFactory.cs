@@ -13,6 +13,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.ProtocolBuffers.Serialization
 {
+    using System.Collections.Generic;
     using Common.Reflection;
     using Mapping;
     using Specs;
@@ -21,10 +22,14 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageSerializerFactory
     {
         private readonly CommunicationModel _model;
+        private readonly Dictionary<FieldRules, object> _strategies = new Dictionary<FieldRules, object>();
 
         public MessageSerializerFactory(CommunicationModel model)
         {
             _model = model;
+            _strategies.Add(FieldRules.Repeated, null);
+            _strategies.Add(FieldRules.Optional, null);
+            _strategies.Add(FieldRules.Required, null);
         }
 
         public ISerializer Build(IMessageDescriptor map)
@@ -36,12 +41,13 @@ namespace Magnum.ProtocolBuffers.Serialization
 
             foreach (var field in map.Fields)
             {
+                
                 if(field.Rules.Equals(FieldRules.Repeated))
                 {
                     ISerializer repeatedSerializer = null;
                     messageSerializer.AddSubSerializer(repeatedSerializer);
                 }
-                else if(field.FieldType.Equals(typeof(string)))
+                else if(field.NetType.Equals(typeof(string)))
                 {
                     ISerializer subMessageSerializer = null;
                     messageSerializer.AddSubSerializer(subMessageSerializer);
@@ -65,26 +71,26 @@ namespace Magnum.ProtocolBuffers.Serialization
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.FieldType;
+            var netType = field.NetType;
 
-            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, new MessageStrategy(_model.GetSerializer(netType)));
+            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, new MessageStrategy(_model.GetSerializer(netType)));
         }
         public void RepeatableProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.FieldType;
+            var netType = field.NetType;
             var repeatedType = netType.GetGenericArguments()[0];
             var serializer = _model.GetFieldSerializer(repeatedType);
 
-            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, new ListStrategy(serializer) );
+            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, new ListStrategy(serializer) );
         }
         public void StandardProperty(ref IMessageSerializer messageSerializer, Mapping.FieldDescriptor field)
         {
             var tag = field.NumberTag;
             var fp = new FastProperty(field.PropertyInfo);
-            var netType = field.FieldType;
-            messageSerializer.AddProperty(tag, fp, field.FieldType, field.Rules, _model.GetFieldSerializer(netType));
+            var netType = field.NetType;
+            messageSerializer.AddProperty(tag, fp, field.NetType, field.Rules, _model.GetFieldSerializer(netType));
         }
     }
 }
