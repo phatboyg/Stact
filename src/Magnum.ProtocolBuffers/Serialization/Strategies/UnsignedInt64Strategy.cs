@@ -20,5 +20,10 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
         {
             throw new System.NotImplementedException();
         }
+
+        public WireType WireType
+        {
+            get { return WireType.Varint; }
+        }
     }
 }

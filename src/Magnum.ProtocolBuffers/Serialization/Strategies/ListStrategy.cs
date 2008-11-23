@@ -7,7 +7,7 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     public class ListStrategy :
         ISerializationStrategy
     {
-        private ISerializationStrategy _subStrategy;
+        private readonly ISerializationStrategy _subStrategy;
 
         public ListStrategy(ISerializationStrategy subStrategy)
         {
@@ -36,6 +36,11 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
             //need to get the deserialization strategy
             //and call it
             return stream.ReadString();
+        }
+
+        public WireType WireType
+        {
+            get { return _subStrategy.WireType; }
         }
     }
 }

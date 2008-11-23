@@ -27,5 +27,10 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
         {
             return null;
         }
+
+        public WireType WireType
+        {
+            get { return WireType.LengthDelimited; }
+        }
     }
 }

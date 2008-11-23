@@ -32,5 +32,10 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
         {
             return stream.ReadString();
         }
+
+        public WireType WireType
+        {
+            get { return WireType.Varint; }
+        }
     }
 }

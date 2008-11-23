@@ -18,6 +18,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     public interface ISerializationStrategy
     {
         bool CanHandle(Type type);
+        WireType WireType { get; }
         void Serialize(CodedOutputStream stream, int fieldNumber, object value);
         object Deserialize(CodedInputStream stream);
     }
