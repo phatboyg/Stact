@@ -5,6 +5,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using System.Collections.Generic;
     using NUnit.Framework;
 
+    [TestFixture]
     public class TypeExtension_Specs
     {
         [Test]
@@ -28,6 +29,39 @@ namespace Magnum.ProtocolBuffers.Specs
         {
             Type type = typeof (int);
             Assert.IsTrue(type.IsRequiredType());
+        }
+
+        [Test]
+        public void Generic_List()
+        {
+            Type t = typeof (IList<int>);
+
+            Type lt = t.GetTypeEnumerated();
+
+            lt
+                .ShouldEqual(typeof(int));
+        }
+
+        [Test]
+        public void Array_List()
+        {
+            Type t = typeof(IList);
+
+            Type lt = t.GetTypeEnumerated();
+
+            lt
+                .ShouldEqual(typeof(object));
+        }
+
+        [Test]
+        public void Arrays()
+        {
+            Type t = typeof(int[]);
+
+            Type lt = t.GetTypeEnumerated();
+
+            lt
+                .ShouldEqual(typeof(int));
         }
     }
 }

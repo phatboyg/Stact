@@ -4,6 +4,7 @@ namespace Magnum.ProtocolBuffers.Mapping
     using System.Reflection;
     using Common.Reflection;
     using Serialization;
+    using Serialization.Strategies;
     using Specs;
 
     public class FieldDescriptor
@@ -39,21 +40,31 @@ namespace Magnum.ProtocolBuffers.Mapping
         public FieldSerializer GenerateFieldSerializer()
         {
             ISerializationStrategy strategy = null;
+            
+            Type netType = NetType;
+            
+            if (IsRepeated)
+            {
+                netType = NetType.GetTypeEnumerated();
+                strategy = new ListStrategy(new MessageStrategy(null));
+            }
+                
+
+
+            
+
             WireType wireType = WireType.Varint;
 
             return new FieldSerializer()
                        {
                            FieldTag = NumberTag,
                            Func = new FastProperty(PropertyInfo),
-                           NetType = NetType,
+                           NetType = netType,
                            Rules = Rules,
                            Strategy = strategy,
                            WireType = wireType
                        };
         }
-        private Type IfItsAListWhatIsItAListOf()
-        {
-            return null;
-        }
+        
     }
 }

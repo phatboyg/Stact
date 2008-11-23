@@ -15,7 +15,7 @@ namespace Magnum.ProtocolBuffers.Serialization.Strategies
     using System;
     using Streams;
 
-    public class IntStrategy :
+    public class SignedInt32Strategy :
         ISerializationStrategy
     {
         public bool CanHandle(Type type)

@@ -15,21 +15,27 @@ namespace Magnum.ProtocolBuffers
         private readonly IDictionary<Type, IMessageDescriptor> _descriptors = new Dictionary<Type, IMessageDescriptor>();
         private readonly List<ISerializer> _messageSerializers = new List<ISerializer>();
         private readonly List<ISerializationStrategy> _valueTypeSerializers = new List<ISerializationStrategy>();
-        private readonly HashSet<Type> _nonMessageTypes = new HashSet<Type>();
+        private readonly Dictionary<Type,ISerializationStrategy> _nonMessageTypes = new Dictionary<Type, ISerializationStrategy>();
 
         public CommunicationModel()
         {
             //default .net types
             AddFieldSerializer(new StringStrategy());
-            AddFieldSerializer(new IntStrategy());
+            AddFieldSerializer(new SignedInt32Strategy());
             AddFieldSerializer(new NullableIntStrategy());
             AddFieldSerializer(new BooleanSerialization());
 
-            _nonMessageTypes.Add(typeof(int));
-            _nonMessageTypes.Add(typeof(uint));
-            _nonMessageTypes.Add(typeof(double));
-            _nonMessageTypes.Add(typeof(long));
-            _nonMessageTypes.Add(typeof(ulong));
+
+            _nonMessageTypes.Add(typeof(Int32), new SignedInt32Strategy());
+            _nonMessageTypes.Add(typeof(UInt32), new UnsignedInt32Strategy());
+            _nonMessageTypes.Add(typeof(Int64), new SignedInt64Strategy());
+            _nonMessageTypes.Add(typeof(UInt64), new UnsignedInt64Strategy());
+            _nonMessageTypes.Add(typeof(Single), null);
+            _nonMessageTypes.Add(typeof(Double), null);
+            _nonMessageTypes.Add(typeof(Boolean), new BooleanSerialization());
+            _nonMessageTypes.Add(typeof(String), new StringStrategy());
+            _nonMessageTypes.Add(typeof(Byte), new ByteStrategy());
+            _nonMessageTypes.Add(typeof(Byte[]), new ByteArrayStrategy());
 
             _factory = new MessageSerializerFactory(this);
         }
@@ -107,7 +113,8 @@ namespace Magnum.ProtocolBuffers
 
         public bool IsMessageType(Type type)
         {
-            return _nonMessageTypes.Contains(type);
+            //this wont work
+            return _nonMessageTypes.Keys.Equals(type);
         }
     }
 }

@@ -37,6 +37,26 @@ namespace Magnum.ProtocolBuffers
             if (typeof(string).Equals(type)) return "string";
             return type.Name;
         }
+
+
+
+        public static Type GetTypeEnumerated(this Type type)
+        {
+            Type result = typeof (object);
+
+            if (type.IsArray)
+                result = type.GetElementType();
+
+            if (type.IsGenericType)
+            {
+                if(typeof(IList<>).MakeGenericType(type.GetGenericArguments()[0]).IsAssignableFrom(type))
+                {
+                    result = type.GetGenericArguments()[0];
+                }
+            }
+
+            return result;
+        }
     }
 
     public static class StringExtensions
