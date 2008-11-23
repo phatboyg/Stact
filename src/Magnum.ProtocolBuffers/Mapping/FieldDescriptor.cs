@@ -7,7 +7,8 @@ namespace Magnum.ProtocolBuffers.Mapping
     using Serialization.Strategies;
     using Specs;
 
-    public class FieldDescriptor
+    public class FieldDescriptor : 
+        IFieldDescriptor
     {
 
         public FieldDescriptor(string name, int numberTag, PropertyInfo func, FieldRules rules)

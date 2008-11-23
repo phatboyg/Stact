@@ -46,6 +46,7 @@
     <Compile Include="Internal\IMap.cs" />
     <Compile Include="Internal\IMappingPart.cs" />
     <Compile Include="Internal\IMappingVisitor.cs" />
+    <Compile Include="Mapping\IFieldDescriptor.cs" />
     <Compile Include="Mapping\IMessageDescriptor.cs" />
     <Compile Include="Mapping\MessageDescriptor.cs" />
     <Compile Include="MessageMap.cs" />
