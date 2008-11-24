@@ -1,6 +1,5 @@
 namespace Magnum.ProtocolBuffers.Specs
 {
-    using System;
     using NUnit.Framework;
     using ProtocolBuffers.Serialization.Streams;
     using TestMappings;
