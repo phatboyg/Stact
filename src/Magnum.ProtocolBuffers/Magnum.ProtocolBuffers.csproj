@@ -44,8 +44,6 @@
     <Compile Include="FieldMap.cs" />
     <Compile Include="Mapping\FieldRules.cs" />
     <Compile Include="Internal\IMap.cs" />
-    <Compile Include="Internal\IMappingPart.cs" />
-    <Compile Include="Internal\IMappingVisitor.cs" />
     <Compile Include="Mapping\IFieldDescriptor.cs" />
     <Compile Include="Mapping\IMessageDescriptor.cs" />
     <Compile Include="Mapping\MessageDescriptor.cs" />
@@ -53,7 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mapping\ProtoMappingException.cs" />
     <Compile Include="Mapping\ReflectionHelper.cs" />
-    <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="Serialization\FieldDescriptors.cs" />
     <Compile Include="Serialization\FieldManipulationStrategies\ArrayManipulationStrategy.cs" />
     <Compile Include="Serialization\FieldManipulationStrategies\GenericListStrategy.cs" />

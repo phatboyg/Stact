@@ -4,11 +4,9 @@ namespace Magnum.ProtocolBuffers
     using System.Linq.Expressions;
     using System.Reflection;
     using Common;
-    using Internal;
     using Specs;
 
-    public class FieldMap<TMessage> :
-        IMappingPart
+    public class FieldMap<TMessage>
     {
         private static readonly Range<int> _googlesFieldNumbers = new Range<int>(19000, 19999, true, true);
         private readonly string _name;
@@ -108,14 +106,6 @@ namespace Magnum.ProtocolBuffers
         {
             _defaultValue = value;
             _hasDefaultValue = true;
-        }
-
-        void IMappingPart.Visit(IMappingVisitor visitor)
-        {
-            string content = string.Format("  {0} {1} {2} = {3}", this.Rules.ToString().ToLower(), this._fieldType.ToGoogleTypeName() , Name.ToBoxCuttingCase(), NumberTag);
-            if (HasDefaultValue) content = string.Format("{0} [default = {1}]", content, DefaultValue);
-            content = string.Format("{0};", content);
-            visitor.AddMap(content);
         }
     }
 }
