@@ -3,7 +3,6 @@ namespace Magnum.ProtocolBuffers
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Internal;
     using Mapping;
     using Serialization;
     using Serialization.Strategies;

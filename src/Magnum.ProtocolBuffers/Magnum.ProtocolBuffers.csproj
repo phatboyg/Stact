@@ -43,7 +43,7 @@
     <Compile Include="Mapping\FieldDescriptor.cs" />
     <Compile Include="FieldMap.cs" />
     <Compile Include="Mapping\FieldRules.cs" />
-    <Compile Include="Internal\IMap.cs" />
+    <Compile Include="IMap.cs" />
     <Compile Include="Mapping\IFieldDescriptor.cs" />
     <Compile Include="Mapping\IMessageDescriptor.cs" />
     <Compile Include="Mapping\MessageDescriptor.cs" />
@@ -87,6 +87,9 @@
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Internal\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

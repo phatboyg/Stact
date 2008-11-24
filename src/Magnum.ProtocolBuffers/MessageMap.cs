@@ -2,7 +2,6 @@ namespace Magnum.ProtocolBuffers
 {
     using System;
     using System.Linq.Expressions;
-    using Internal;
     using Mapping;
 
     public class MessageMap<TMessage> :

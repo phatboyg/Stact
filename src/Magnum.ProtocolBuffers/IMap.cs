@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers.Internal
+namespace Magnum.ProtocolBuffers
 {
     using System;
     using Mapping;

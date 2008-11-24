@@ -3,7 +3,6 @@ namespace Magnum.ProtocolBuffers
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Internal;
     using Mapping;
 
     public class CommunicationModelBuilder
