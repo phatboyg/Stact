@@ -55,6 +55,9 @@
     <Compile Include="Mapping\ReflectionHelper.cs" />
     <Compile Include="Internal\StringVisitor.cs" />
     <Compile Include="Serialization\FieldDescriptors.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\ArrayManipulationStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\GenericListStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\InstanceManipulationStrategy.cs" />
     <Compile Include="Serialization\Strategies\ByteStrategy.cs" />
     <Compile Include="Serialization\Strategies\ByteArrayStrategy.cs" />
     <Compile Include="Serialization\Strategies\SingleStrategy.cs" />
