@@ -18,7 +18,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageSerializer :
         IMessageSerializer
     {
-        private readonly FieldDescriptors _descriptors = new FieldDescriptors();
+        private readonly FieldDescriptors _fieldDescriptors = new FieldDescriptors();
 
         public MessageSerializer(Type mappedType)
         {
@@ -26,50 +26,29 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
 
 
-        public void Serialize(CodedOutputStream outputStream, object value)
+        public void Serialize(CodedOutputStream outputStream, object instance)
         {
-            foreach (FieldSerializer prop in _descriptors.GetAll())
+            foreach (FieldSerializer field in _fieldDescriptors.GetAll())
             {
-                var valueToSerialize = prop.GetFieldValue(value);
-                prop.Strategy.Serialize(outputStream, prop.FieldTag, valueToSerialize);
+                field.Serialize(outputStream, instance);
             }
         }
-        //public void Serialize<TMessage>(CodedOutputStream outputStream, TMessage message)
-        //{
-        //    Serialize(outputStream, (object)message);
-        //}
 
         public object Deserialize(CodedInputStream inputStream)
         {
-            object result = Activator.CreateInstance(MappedType);
-            var length = inputStream.Length;
+            object instanceToReturn = Activator.CreateInstance(MappedType);
 
+            var length = inputStream.Length;
             while (inputStream.Position < length)
             {
                 TagData tagData = inputStream.ReadTag();
-                var field = _descriptors[tagData.NumberTag];
-                var deserializedValue = field.Strategy.Deserialize(inputStream);
-                field.SetField(result, deserializedValue);
+                var field = _fieldDescriptors[tagData.NumberTag];
+
+                field.Deserialize(inputStream, ref instanceToReturn);
             }
 
-            return result;
+            return instanceToReturn;
         }
-
-        //public TMessage Deserialize<TMessage>(CodedInputStream inputStream) where TMessage : class, new()
-        //{
-        //    var result = new TMessage();
-        //    var length = inputStream.Length;
-
-        //    while (inputStream.Position < length)
-        //    {
-        //        TagData tagData = inputStream.ReadTag();
-        //        var field = _descriptors[tagData.NumberTag];
-        //        var deserializedValue = field.Strategy.Deserialize(inputStream);
-        //        field.Func.Set(result, deserializedValue);
-        //    }
-            
-        //    return result;
-        //}
 
         public bool CanHandle(Type type)
         {
@@ -81,7 +60,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void AddField(FieldSerializer fd)
         {
-            _descriptors.Add(fd);
+            _fieldDescriptors.Add(fd);
         }
     }
 }
