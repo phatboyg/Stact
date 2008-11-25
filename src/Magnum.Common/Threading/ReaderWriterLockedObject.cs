@@ -84,11 +84,25 @@ namespace Magnum.Common.Threading
 			_lockContext.WriteLock(x => _value = action(_value));
 		}
 
+		public void WriteLock(Action<T> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
+
+			_lockContext.WriteLock(x => action(_value));
+		}
+
 		public bool WriteLock(TimeSpan timeout, Func<T, T> action)
 		{
 			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
 
 			return _lockContext.WriteLock(timeout, x => _value = action(_value));
+		}
+
+		public void WriteLock(TimeSpan timeout, Action<T> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
+
+			_lockContext.WriteLock(timeout, x => action(_value));
 		}
 
 		protected virtual void Dispose(bool disposing)
