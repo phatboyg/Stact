@@ -103,6 +103,7 @@
     <Compile Include="Threading\ReaderWriterLockContext.cs" />
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
+    <Compile Include="Tuple.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
