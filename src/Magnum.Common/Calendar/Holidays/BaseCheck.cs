@@ -35,7 +35,7 @@ namespace Magnum.Common.Calendar.Holidays
 
         public bool CheckMonth(DateTime dateToCheck, Months month)
         {
-            return dateToCheck.Month.Equals(month);
+            return dateToCheck.Month.Equals((int)month);
         }
 
         public int GetWeekNumberInYear(DateTime dateToCheck)

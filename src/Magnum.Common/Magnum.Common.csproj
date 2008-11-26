@@ -53,11 +53,15 @@
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />
     <Compile Include="Calendar\Holidays\ColumbusDayObserved.cs" />
+    <Compile Include="Calendar\Holidays\DateTimeExtensions.cs" />
     <Compile Include="Calendar\Holidays\IndependenceDayCheck.cs" />
     <Compile Include="Calendar\Holidays\IndependenceDayObservedCheck.cs" />
     <Compile Include="Calendar\Holidays\EasterCheck.cs" />
     <Compile Include="Calendar\Holidays\FlagDayCheck.cs" />
     <Compile Include="Calendar\Holidays\FlagDayObservedCheck.cs" />
+    <Compile Include="Calendar\Holidays\LaborDayCheck.cs" />
+    <Compile Include="Calendar\Holidays\MartinLutherKingDayCheck.cs" />
+    <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />

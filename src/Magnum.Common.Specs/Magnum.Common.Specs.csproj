@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache_Specs.cs" />
+    <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="CrazySerializationIdea.cs" />
     <Compile Include="Cryptography\PublicKeyCrypto.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
