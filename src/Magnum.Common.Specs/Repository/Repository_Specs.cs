@@ -4,8 +4,7 @@ namespace Magnum.Common.Specs.Repository
     using System.Collections.Generic;
     using System.Linq;
     using Common.Repository;
-    using NUnit.Framework;
-    using NUnit.Framework.SyntaxHelpers;
+    using MbUnit.Framework;
     using Rhino.Mocks;
 
     [TestFixture]
@@ -42,9 +41,11 @@ namespace Magnum.Common.Specs.Repository
 
                 Member member = query.FirstOrDefault();
 
-                Assert.That(member, Is.Not.Null);
+                Assert.IsNotNull(member);
+                //Assert.That(member, Is.Not.Null);
 
-                Assert.That(member.Id, Is.EqualTo(_memberId));
+                Assert.AreEqual(_memberId, member.Id);
+                //Assert.That(member.Id, Is.EqualTo(_memberId));
             }
         }
     }

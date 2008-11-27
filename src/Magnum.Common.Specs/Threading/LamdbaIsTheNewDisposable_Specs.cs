@@ -15,8 +15,7 @@ namespace Magnum.Common.Specs.Threading
 	using System.Threading;
 	using Common.Threading;
 	using DateTimeExtensions;
-	using NUnit.Framework;
-	using NUnit.Framework.SyntaxHelpers;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class LamdbaIsTheNewDisposable_Specs
@@ -53,7 +52,8 @@ namespace Magnum.Common.Specs.Threading
 			string value = string.Empty;
 			_lockContext.ReadLock(x => {value = _value;});
 
-			Assert.That(value, Is.EqualTo(_initialValue));
+            Assert.AreEqual(_initialValue, value);
+			//Assert.That(value, Is.EqualTo(_initialValue));
 		}
 
 		[Test]
@@ -63,9 +63,11 @@ namespace Magnum.Common.Specs.Threading
 
 			bool locked = _lockContext.ReadLock(1.Seconds(), x => {value = _value;});
 
-			Assert.That(locked, Is.True, "Unable to obtain lock");
+            Assert.IsTrue(locked, "Unable to obtain lock");
+			//Assert.That(locked, Is.True, "Unable to obtain lock");
 
-			Assert.That(value, Is.EqualTo(_initialValue));
+            Assert.AreEqual(value, _initialValue);
+			//Assert.That(value, Is.EqualTo(_initialValue));
 		}
 
 		[Test]
@@ -92,10 +94,14 @@ namespace Magnum.Common.Specs.Threading
 
 			lockThread.Join();
 
-			Assert.That(locked, Is.True);
+            Assert.IsTrue(locked);
+			//Assert.That(locked, Is.True);
 
-			Assert.That(value, Is.EqualTo(_initialValue));
-			Assert.That(threadValue, Is.EqualTo(_initialValue));
+            Assert.AreEqual(_initialValue, value);
+			//Assert.That(value, Is.EqualTo(_initialValue));
+
+            Assert.AreEqual(_initialValue, threadValue);
+			//Assert.That(threadValue, Is.EqualTo(_initialValue));
 		}
 
 		[Test]
@@ -112,9 +118,11 @@ namespace Magnum.Common.Specs.Threading
 
 			lockThread.Join();
 
-			Assert.That(locked, Is.False);
+            Assert.IsTrue(locked);
+			//Assert.That(locked, Is.False);
 
-			Assert.That(value, Is.EqualTo(string.Empty));
+            Assert.AreEqual(string.Empty, value);
+			//Assert.That(value, Is.EqualTo(string.Empty));
 		}
 
 		[Test]
@@ -122,9 +130,11 @@ namespace Magnum.Common.Specs.Threading
 		{
 			bool locked = _lockContext.WriteLock(1.Seconds(), x => {_value = _finalValue;});
 
-			Assert.That(locked, Is.True);
+            Assert.IsTrue(locked);
+			//Assert.That(locked, Is.True);
 
-			Assert.That(_value, Is.EqualTo(_finalValue));
+            Assert.AreEqual(_finalValue, _value);
+			//Assert.That(_value, Is.EqualTo(_finalValue));
 		}
 
 		[Test]
@@ -134,7 +144,8 @@ namespace Magnum.Common.Specs.Threading
 
 			_lockContext.ReadUnlocked(x => {value = _value;});
 
-			Assert.That(value, Is.EqualTo(_initialValue));
+            Assert.AreEqual(_initialValue, value);
+			//Assert.That(value, Is.EqualTo(_initialValue));
 		}
 
 		[Test]
@@ -142,7 +153,8 @@ namespace Magnum.Common.Specs.Threading
 		{
 			_lockContext.WriteLock(x => {_value = _finalValue;});
 
-			Assert.That(_value, Is.EqualTo(_finalValue));
+            Assert.AreEqual(_finalValue, _value);
+			//Assert.That(_value, Is.EqualTo(_finalValue));
 		}
 
 		[Test]
@@ -160,8 +172,11 @@ namespace Magnum.Common.Specs.Threading
 						});
 				});
 
-			Assert.That(value, Is.EqualTo(_initialValue));
-			Assert.That(_value, Is.EqualTo(_finalValue));
+
+            Assert.AreEqual(_initialValue, value);
+            Assert.AreEqual(_finalValue, _value);
+			//Assert.That(value, Is.EqualTo(_initialValue));
+			//Assert.That(_value, Is.EqualTo(_finalValue));
 		}
 	}
 }

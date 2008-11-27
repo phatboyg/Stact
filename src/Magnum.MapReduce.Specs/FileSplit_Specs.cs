@@ -14,7 +14,7 @@ namespace Magnum.MapReduce.Specs
 {
 	using System;
 	using System.Collections.Generic;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class FileSplit_Specs

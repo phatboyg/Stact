@@ -5,8 +5,7 @@ namespace Magnum.Common.Specs
     using System.Diagnostics;
     using System.Linq;
     using DateTimeExtensions;
-    using NUnit.Framework;
-    using NUnit.Framework.SyntaxHelpers;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class When_a_range_is_specified
@@ -16,8 +15,10 @@ namespace Magnum.Common.Specs
         {
             Range<int> range = 1.Through(10);
 
-            Assert.That(range.LowerBound, Is.EqualTo(1));
-            Assert.That(range.UpperBound, Is.EqualTo(10));
+            Assert.AreEqual(1, range.LowerBound);
+            Assert.AreEqual(10, range.UpperBound);
+            //Assert.That(range.LowerBound, Is.EqualTo(1));
+            //Assert.That(range.UpperBound, Is.EqualTo(10));
         }
 
         [Test]
@@ -27,7 +28,8 @@ namespace Magnum.Common.Specs
 
             List<int> values = new List<int>(range.Forward(step => step + 1));
 
-            Assert.That(values.Count, Is.EqualTo(3));
+            Assert.AreEqual(3, values.Count);
+            //Assert.That(values.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -35,7 +37,8 @@ namespace Magnum.Common.Specs
         {
             Range<int> range = 1.Through(7);
 
-            Assert.That(range.Contains(1));
+            Assert.IsTrue(range.Contains(1));
+            //Assert.That(range.Contains(1));
         }
 
         [Test]
@@ -43,7 +46,8 @@ namespace Magnum.Common.Specs
         {
             Range<int> range = 1.Through(7);
 
-            Assert.That(range.Contains(7));
+            Assert.IsTrue(range.Contains(7));
+            //Assert.That(range.Contains(7));
         }
 
         [Test]
@@ -53,14 +57,16 @@ namespace Magnum.Common.Specs
 
             Range<int> exclude = 5.Through(7);
 
-            Assert.That(range.Forward(step => step + 1).Count(), Is.EqualTo(10));
+            Assert.AreEqual(10, range.Forward(step => step + 1).Count());
+            //Assert.That(range.Forward(step => step + 1).Count(), Is.EqualTo(10));
 
             foreach (int value in range.Forward(step => step + 1))
             {
                 Debug.WriteLine(value.ToString());
             }
 
-            Assert.That(exclude.Forward(step => step + 1).Count(), Is.EqualTo(3));
+            Assert.AreEqual(3, exclude.Forward(step => step + 1).Count());
+            //Assert.That(exclude.Forward(step => step + 1).Count(), Is.EqualTo(3));
 
             foreach (var value in exclude.Forward(step => step + 1))
             {
@@ -73,7 +79,8 @@ namespace Magnum.Common.Specs
 				
             }
 
-            Assert.That(range.Forward(step => step + 1).Where(x => !exclude.Contains(x)).Count(), Is.EqualTo(7));
+            Assert.AreEqual(7, range.Forward(step => step + 1).Where(x => !exclude.Contains(x)).Count());
+            //Assert.That(range.Forward(step => step + 1).Where(x => !exclude.Contains(x)).Count(), Is.EqualTo(7));
         }
 
         [Test]
@@ -81,7 +88,8 @@ namespace Magnum.Common.Specs
         {
             Range<DateTime> range = DateTime.Now.Through(5.Days().FromNow());
 
-            Assert.That(range.Forward(step => step + 1.Days()).Count(), Is.EqualTo(6));
+            Assert.AreEqual(6, range.Forward(step => step + 1.Days()).Count());
+            //Assert.That(range.Forward(step => step + 1.Days()).Count(), Is.EqualTo(6));
         }
 
         [Test]
@@ -89,7 +97,8 @@ namespace Magnum.Common.Specs
         {
             Range<DateTime> range = DateTime.Now.Through(5.Days().FromNow());
 
-            Assert.That(range.Contains(DateTime.Now.Next(DayOfWeek.Friday)));
+            Assert.IsTrue(range.Contains(DateTime.Now.Next(DayOfWeek.Friday)));
+            //Assert.That(range.Contains(DateTime.Now.Next(DayOfWeek.Friday)));
         }
     }
 }

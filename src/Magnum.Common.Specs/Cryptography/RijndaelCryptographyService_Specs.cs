@@ -1,5 +1,5 @@
 using Magnum.Common.Cryptography;
-using NUnit.Framework;
+using MbUnit.Framework;
 
 namespace Magnum.Common.Specs.Cryptography
 {

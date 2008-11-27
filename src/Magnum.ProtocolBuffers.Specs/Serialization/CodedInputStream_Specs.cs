@@ -13,7 +13,7 @@
 namespace Magnum.ProtocolBuffers.Specs.Serialization
 {
     using System;
-    using NUnit.Framework;
+    using MbUnit.Framework;
     using ProtocolBuffers.Serialization.Streams;
 
     [TestFixture]
@@ -24,7 +24,7 @@ namespace Magnum.ProtocolBuffers.Specs.Serialization
         {
             byte[] input = new byte[] { 0x08, 0x96, 0x01 };
             var inputStream = new CodedInputStream(input);
-            int value = 150;
+            UInt64 value = 150;
 
             inputStream.ReadTag();
             var msg = inputStream.ReadVarint();

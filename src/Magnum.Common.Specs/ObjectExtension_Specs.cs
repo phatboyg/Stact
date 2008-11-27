@@ -2,7 +2,7 @@ namespace Magnum.Common.Specs
 {
     using System;
     using System.Collections.Generic;
-    using NUnit.Framework;
+    using MbUnit.Framework;
     using ObjectExtensions;
 
 	[TestFixture]

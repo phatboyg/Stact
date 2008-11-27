@@ -2,7 +2,7 @@ namespace Magnum.Common.Specs
 {
     using System;
     using DateTimeExtensions;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class DateExtensionSpecifications

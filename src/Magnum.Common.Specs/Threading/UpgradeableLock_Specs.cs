@@ -1,7 +1,7 @@
 namespace Magnum.Common.Specs.Threading
 {
     using Common.Threading;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class UpgradeableLock_Specs

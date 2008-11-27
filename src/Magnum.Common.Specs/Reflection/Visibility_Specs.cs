@@ -15,7 +15,7 @@ namespace Magnum.Common.Specs.Reflection
 	using System;
 	using System.Linq.Expressions;
 	using Machine.Specifications;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 	using Serialization;
 
 	public class SecretObject

@@ -13,7 +13,7 @@
 namespace Magnum.Common.Specs
 {
     using log4net;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class When_tracking_metrics_on_a_function

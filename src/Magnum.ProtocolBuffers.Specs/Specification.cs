@@ -1,6 +1,6 @@
 ﻿namespace Magnum.ProtocolBuffers.Specs
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
     using Rhino.Mocks;
 
     [TestFixture]

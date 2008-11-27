@@ -1,7 +1,7 @@
 namespace Magnum.MapReduce.Specs
 {
 	using Formats;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class TextInputFormat_Specs

@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs
 {
-	using NUnit.Framework;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class When_mapping_an_object_to_an_object

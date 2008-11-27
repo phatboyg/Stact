@@ -3,8 +3,7 @@ namespace Magnum.Common.Specs
     using System;
     using System.Collections.Generic;
     using CollectionExtensions;
-    using NUnit.Framework;
-    using NUnit.Framework.SyntaxHelpers;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class When_retrieving_an_item_from_the_dictionary
@@ -41,9 +40,11 @@ namespace Magnum.Common.Specs
         {
             string value = _items.Retrieve(3, "Three");
 
-            Assert.That(value, Is.EqualTo("Three"), "The default item was not returned");
+            Assert.AreEqual("Three", value);
+            //Assert.That(value, Is.EqualTo("Three"), "The default item was not returned");
 
-            Assert.That(_items[3], Is.EqualTo("Three"), "The default item was not added to the dictionary");
+            Assert.AreEqual("Three", _items[3]);
+            //Assert.That(_items[3], Is.EqualTo("Three"), "The default item was not added to the dictionary");
         }
     }
 }

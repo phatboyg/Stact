@@ -3,7 +3,7 @@ namespace Magnum.ProtocolBuffers.Specs
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class TypeExtension_Specs

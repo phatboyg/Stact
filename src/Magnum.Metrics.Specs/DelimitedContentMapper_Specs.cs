@@ -2,7 +2,7 @@ namespace Magnum.Metrics.Specs
 {
     using System;
     using Common;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class DelimitedContentMapper_Specs

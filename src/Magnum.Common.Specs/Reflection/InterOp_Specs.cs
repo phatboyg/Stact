@@ -1,6 +1,6 @@
 namespace Magnum.Common.Specs.Reflection
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class When_transmogrifying_an_object :
@@ -85,7 +85,7 @@ namespace Magnum.Common.Specs.Reflection
 
 namespace Magnum.Common.Tests.Reflection
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     namespace Different
     {

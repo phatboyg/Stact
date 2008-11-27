@@ -39,6 +39,7 @@ namespace Magnum.ProtocolBuffers
             _factory = new MessageSerializerFactory(this);
         }
 
+        
         public int NumberOfMessagesMapped
         {
             get { return _descriptors.Count; }

@@ -1,7 +1,7 @@
 namespace Magnum.Metrics.Specs
 {
     using System;
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class IisLogReader_Specs

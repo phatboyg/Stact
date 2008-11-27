@@ -4,7 +4,7 @@ namespace Magnum.MapReduce.Specs
 	using System.Collections.Generic;
 	using Common;
 	using Mappers;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 	using Readers;
 	using Types;
 

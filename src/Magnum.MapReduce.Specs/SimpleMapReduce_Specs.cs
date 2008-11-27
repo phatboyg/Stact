@@ -2,7 +2,7 @@ namespace Magnum.MapReduce.Specs
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class When_mapping_an_array_to_another_array

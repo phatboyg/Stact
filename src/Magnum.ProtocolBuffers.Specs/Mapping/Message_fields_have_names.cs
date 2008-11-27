@@ -2,7 +2,7 @@ namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
     using System;
     using System.Linq.Expressions;
-    using NUnit.Framework;
+    using MbUnit.Framework;
     using TestMessages;
 
     [TestFixture]

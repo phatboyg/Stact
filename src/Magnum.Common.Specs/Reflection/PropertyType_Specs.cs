@@ -14,7 +14,7 @@ namespace Magnum.Common.Specs.Reflection
 {
 	using System;
 	using Machine.Specifications;
-	using NUnit.Framework;
+	using MbUnit.Framework;
 	using Serialization;
 
 	[Concern("SerializationUtil")]

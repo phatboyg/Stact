@@ -1,6 +1,6 @@
 namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
     using TestMessages;
 
     public class Message_fields_have_different_rules :

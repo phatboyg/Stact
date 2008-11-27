@@ -1,6 +1,6 @@
 namespace Magnum.ProtocolBuffers.Specs
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class Communication_model_makes_life_easy

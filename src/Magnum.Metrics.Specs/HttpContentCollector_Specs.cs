@@ -22,8 +22,7 @@ namespace Magnum.Metrics.Specs
 	using Common.DateTimeExtensions;
 	using Common.ObjectExtensions;
 	using Common.Serialization;
-	using NUnit.Framework;
-	using NUnit.Framework.SyntaxHelpers;
+	using MbUnit.Framework;
 
 	[TestFixture]
 	public class When_pulling_information_about_the_remote_file
@@ -79,7 +78,8 @@ namespace Magnum.Metrics.Specs
 
 			Trace.WriteLine("Lines Read: " + count);
 
-			Assert.That(count, Is.GreaterThan(0));
+            Assert.GreaterThan(count, 0);
+			//Assert.That(count, Is.GreaterThan(0));
 		}
 
 		[Test]
@@ -89,7 +89,8 @@ namespace Magnum.Metrics.Specs
 
 			ArraySegment<byte> segment = collector.GetContentSegment(0, 10000);
 
-			Assert.That(segment.Count, Is.LessThanOrEqualTo(10000));
+            Assert.GreaterThanOrEqualTo(segment.Count, 10000);
+			//Assert.That(segment.Count, Is.LessThanOrEqualTo(10000));
 		}
 
 		[Test]
@@ -101,7 +102,8 @@ namespace Magnum.Metrics.Specs
 
 			Trace.WriteLine("Last Modified: " + lastModified);
 
-			Assert.That(lastModified, Is.GreaterThanOrEqualTo(DateTime.Now.Midnight()));
+            Assert.GreaterThanOrEqualTo(lastModified, DateTime.Now.Midnight());
+			//Assert.That(lastModified, Is.GreaterThanOrEqualTo(DateTime.Now.Midnight()));
 		}
 
 		[Test]
@@ -113,7 +115,8 @@ namespace Magnum.Metrics.Specs
 
 			Trace.WriteLine("Length: " + length);
 
-			Assert.That(length, Is.GreaterThan(0));
+            Assert.GreaterThan(length, 0);
+			//Assert.That(length, Is.GreaterThan(0));
 		}
 
 		[Test]

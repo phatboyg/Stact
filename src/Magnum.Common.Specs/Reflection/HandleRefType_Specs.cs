@@ -1,6 +1,6 @@
 namespace Magnum.Common.Specs.Reflection
 {
-    using NUnit.Framework;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class HandleRefType_Specs :
