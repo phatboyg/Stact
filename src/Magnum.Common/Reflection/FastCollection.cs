@@ -1,6 +1,7 @@
 namespace Magnum.Common.Reflection
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -15,12 +16,13 @@ namespace Magnum.Common.Reflection
         public Action<TClass, object> AddDelegate;
     }
 
-    public class FastCollection<TClass, TCollection, TElement>
+    public class FastCollection<TClass, TCollection, TElement> where TCollection : ICollection<TElement>
     {
         public FastProperty<TClass, TCollection> FastProperty { get; set; }
         public PropertyInfo Property { get; set; }
         public Type CollectionType { get; set; }
         public Action<TCollection, TElement> AddDelegate { get; set;}
+        public Action<TCollection, TElement> RemoveDelegate { get; set; }
 
         public FastCollection(PropertyInfo property)
         {
@@ -38,16 +40,20 @@ namespace Magnum.Common.Reflection
 
         private void InitializeAdd()
         {
-            var addMethod = CollectionType.GetMethod("Add", BindingFlags.Public);
+            var addMethod = typeof(ICollection<TElement>).GetMethod("Add");
 
-            var instance = Expression.Parameter(typeof(TCollection), "instance");
+            var instance = Expression.Parameter(typeof(ICollection<TElement>), "instance");
             var value = Expression.Parameter(typeof(TElement), "item");
             AddDelegate = Expression.Lambda<Action<TCollection, TElement>>(Expression.Call(instance, addMethod, value), new[] { instance, value }).Compile();
 
         }
         private void InitializeRemove()
         {
-            var removeMethod = CollectionType.GetMethod("Remove");
+            var removeMethod = typeof(ICollection<TElement>).GetMethod("Remove");
+
+            var instance = Expression.Parameter(typeof(ICollection<TElement>), "instance");
+            var value = Expression.Parameter(typeof(TElement), "item");
+            RemoveDelegate = Expression.Lambda<Action<TCollection, TElement>>(Expression.Call(instance, removeMethod, value), new[] { instance, value }).Compile();
         }
     }
 }

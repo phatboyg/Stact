@@ -9,7 +9,7 @@ namespace Magnum.Common.Specs.Reflection
     public class FastCollection_Specs
     {
         [Test]
-        public void NAME()
+        public void Add()
         {
             IList<int> b = new List<int>();
             
@@ -19,6 +19,23 @@ namespace Magnum.Common.Specs.Reflection
             fc.AddDelegate(b, 2);
 
             Assert.AreEqual(1, b.Count);
+        }
+
+        [Test]
+        public void Remove()
+        {
+            IList<int> b = new List<int>();
+
+            PropertyInfo pi = typeof(TestClass).GetProperty("Numbers");
+            FastCollection<TestClass, IList<int>, int> fc = new FastCollection<TestClass, IList<int>, int>(pi);
+
+            fc.AddDelegate(b, 2);
+
+            Assert.AreEqual(1, b.Count);
+
+            fc.RemoveDelegate(b, 2);
+
+            Assert.AreEqual(0, b.Count);
         }
         
         public class TestClass
