@@ -1,7 +1,7 @@
 namespace Magnum.Common.Specs.Reflection
 {
+    using System.Collections;
     using System.Collections.Generic;
-    using System.Reflection;
     using Common.Reflection;
     using MbUnit.Framework;
 
@@ -9,14 +9,41 @@ namespace Magnum.Common.Specs.Reflection
     public class FastCollection_Specs
     {
         [Test]
-        public void Add()
+        public void Generic_Add()
         {
             IList<int> b = new List<int>();
-            
-            PropertyInfo pi = typeof (TestClass).GetProperty("Numbers");
-            FastCollection<TestClass, IList<int>, int> fc = new FastCollection<TestClass, IList<int>, int>(pi);
 
-            fc.AddDelegate(b, 2);
+            var fc = new FastCollection<IList<int>, int>();
+
+            fc.Add(b, 2);
+
+            Assert.AreEqual(1, b.Count);
+        }
+
+        [Test]
+        public void Generic_Remove()
+        {
+            IList<int> b = new List<int>();
+
+            var fc = new FastCollection<IList<int>, int>();
+
+            fc.Add(b, 2);
+
+            Assert.AreEqual(1, b.Count);
+
+            fc.Remove(b, 2);
+
+            Assert.AreEqual(0, b.Count);
+        }
+
+        [Test]
+        public void Add()
+        {
+            IList b = new List<int>();
+
+            var fc = new FastCollection<IList>();
+
+            fc.Add(b, 2);
 
             Assert.AreEqual(1, b.Count);
         }
@@ -24,30 +51,17 @@ namespace Magnum.Common.Specs.Reflection
         [Test]
         public void Remove()
         {
-            IList<int> b = new List<int>();
+            IList b = new List<int>();
 
-            PropertyInfo pi = typeof(TestClass).GetProperty("Numbers");
-            FastCollection<TestClass, IList<int>, int> fc = new FastCollection<TestClass, IList<int>, int>(pi);
+            var fc = new FastCollection<IList>();
 
-            fc.AddDelegate(b, 2);
+            fc.Add(b, 2);
 
             Assert.AreEqual(1, b.Count);
 
-            fc.RemoveDelegate(b, 2);
+            fc.Remove(b, 2);
 
             Assert.AreEqual(0, b.Count);
         }
-        
-        public class TestClass
-        {
-            public IList<int> Numbers { get; set; }
-
-            public TestClass()
-            {
-                Numbers = new List<int>();
-            }
-        }
     }
-
-    
 }
