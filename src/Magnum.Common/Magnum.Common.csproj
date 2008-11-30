@@ -78,6 +78,7 @@
     <Compile Include="Mail\SmtpMailServer.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
+    <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
