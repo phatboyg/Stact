@@ -57,6 +57,21 @@ namespace Magnum.Common.Threading
 			}
 		}
 
+		public V ReadLock<V>(Func<ReaderWriterLockContext, V> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
+
+			_lock.EnterReadLock();
+			try
+			{
+				return action(this);
+			}
+			finally
+			{
+				_lock.ExitReadLock();
+			}
+		}
+
 		public bool ReadLock(TimeSpan timeout, Action<ReaderWriterLockContext> action)
 		{
 			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
@@ -118,6 +133,21 @@ namespace Magnum.Common.Threading
 			try
 			{
 				action(this);
+			}
+			finally
+			{
+				_lock.ExitWriteLock();
+			}
+		}
+
+		public V WriteLock<V>(Func<ReaderWriterLockContext, V> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockContext");
+
+			_lock.EnterWriteLock();
+			try
+			{
+				return action(this);
 			}
 			finally
 			{

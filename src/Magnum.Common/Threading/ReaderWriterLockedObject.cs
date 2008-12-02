@@ -56,6 +56,13 @@ namespace Magnum.Common.Threading
 			_lockContext.ReadLock(x => action(_value));
 		}
 
+		public V ReadLock<V>(Func<T, V> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
+
+			return _lockContext.ReadLock(x => action(_value));
+		}
+
 		public bool ReadLock(TimeSpan timeout, Action<T> action)
 		{
 			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
@@ -89,6 +96,13 @@ namespace Magnum.Common.Threading
 			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
 
 			_lockContext.WriteLock(x => action(_value));
+		}
+
+		public V WriteLock<V>(Func<T, V> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
+
+			return _lockContext.WriteLock(x => action(_value));
 		}
 
 		public bool WriteLock(TimeSpan timeout, Func<T, T> action)
