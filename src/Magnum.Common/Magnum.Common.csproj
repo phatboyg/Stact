@@ -77,6 +77,8 @@
     <Compile Include="Mail\NullMailServer.cs" />
     <Compile Include="Mail\SmtpMailServer.cs" />
     <Compile Include="Mapper.cs" />
+    <Compile Include="Metrics\Counter.cs" />
+    <Compile Include="Metrics\Timer.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
