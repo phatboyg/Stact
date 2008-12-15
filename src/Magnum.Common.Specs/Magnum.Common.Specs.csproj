@@ -93,6 +93,7 @@
     <Compile Include="Reflection_Specs.cs" />
     <Compile Include="Repository\Repository_Specs.cs" />
     <Compile Include="SpecificationBase.cs" />
+    <Compile Include="Threading\DeferFor_Specs.cs" />
     <Compile Include="Threading\ErlangInfluencedStyle_Specs.cs" />
     <Compile Include="Threading\LamdbaIsTheNewDisposable_Specs.cs" />
     <Compile Include="Threading\UpgradeableLock_Specs.cs" />
