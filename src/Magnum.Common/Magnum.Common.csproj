@@ -81,6 +81,11 @@
     <Compile Include="Metrics\Timer.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
+    <Compile Include="StateMachine\Activity.cs" />
+    <Compile Include="StateMachine\Event.cs" />
+    <Compile Include="StateMachine\State.cs" />
+    <Compile Include="StateMachine\StateEventAction.cs" />
+    <Compile Include="StateMachine\StateMachine.cs" />
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
