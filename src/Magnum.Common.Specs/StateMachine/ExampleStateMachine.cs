@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.StateMachine
 {
-	using System.Diagnostics;
 	using Common.StateMachine;
 
 	public class ExampleStateMachine :
@@ -22,53 +21,64 @@ namespace Magnum.Common.Specs.StateMachine
 		{
 			Define(() =>
 				{
-					SetInitialState(Idle);
+					// eliminated, ceremony, just use the default states with the right names
+					// SetInitialState(Initial);
+					// SetCompletedState(Completed);
 
-					When(Idle,
-					     OnEvent(Idle.Enter, x => x.EnteredIdleState()),
-						 OnEvent(Idle.Leave, x => x.LeaveIdleState()));
+					During(Initial,
+						When(OrderSubmitted, machine =>
+							{
+								// send request for payment
+								// send barista the cup/order
+								machine.TransitionTo(WaitingForPayment);
+							}),
+						When(OrderCanceled, machine =>
+							{
+								// nothing has happened yet so we just complete 
+								machine.TransitionTo(Completed);
+							}));
 
-					When(Idle,
-					     OnEvent(CustomerEntered, (x,y) => x.InitiatedByEvent(y)),
-					     OnEvent(CustomerCancelled, x => x.CancelTransaction()));
+					During(WaitingForPayment,
+						When(PaymentSubmitted, machine =>
+							{
+								// send payment data for approval
+								machine.TransitionTo(WaitingForPaymentApproval);
+							}),
+						When(OrderCanceled, machine =>
+							{
+								// notify barista that order was cancelled
+								machine.TransitionTo(Completed);
+							}));
 
-					When(TakingOrder,
-						OnEvent(CustomerCancelled, x => x.CancelTransaction()));
+					During(WaitingForPaymentApproval,
+						When(PaymentApproved, machine =>
+							{
+								// since this machine only deals with the cashier, it is over
+								machine.TransitionTo(Completed);
+							}),
+						When(PaymentDenied, machine =>
+							{
+								// request payment again
+								machine.TransitionTo(WaitingForPayment);
+							}));
+
+					During(Completed,
+						When(Completed.Enter, machine =>
+							{
+								// complete the transaction if required
+							}));
 				});
 		}
 
+		public static State Initial { get; set; }
+		public static State WaitingForPayment { get; set; }
+		public static State WaitingForPaymentApproval { get; set; }
+		public static State Completed { get; set; }
 
-		public static State Idle { get; set; }
-		public static State TakingOrder { get; set; }
-
-		public static Event CustomerEntered { get; set; }
-		public static Event CustomerCancelled { get; set; }
-
-		public void EnteredIdleState()
-		{
-			Trace.WriteLine("Entered idle state " + Current);
-		}
-
-		public void InitiatedByEvent(Event eevent)
-		{
-			Trace.WriteLine("Initiated by event " + eevent);
-
-			TransitionTo(TakingOrder);
-		}
-
-		private void CancelTransaction()
-		{
-			Trace.WriteLine("Transaction cancelled while " + Current);
-		}
-
-		public void LeaveIdleState()
-		{
-			Trace.WriteLine("Left idle state " + Current);
-		}
-
-		public void Consume(ExampleOrder order)
-		{
-			RaiseEvent(CustomerEntered, order);
-		}
+		public static Event OrderSubmitted { get; set; }
+		public static Event PaymentSubmitted { get; set; }
+		public static Event PaymentApproved { get; set; }
+		public static Event PaymentDenied { get; set; }
+		public static Event OrderCanceled { get; set; }
 	}
 }

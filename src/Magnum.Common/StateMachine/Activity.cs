@@ -21,4 +21,21 @@ namespace Magnum.Common.StateMachine
 	public interface Activity
 	{
 	}
+
+
+	/*
+	 * 
+	 * Activites to think about
+	 * 
+	 * Terminate
+	 * Exit the state machine immediately
+	 * 
+	 * Abort/Rollback/Cancel
+	 * Exit the state machine in a way that reverts any previously committed activities
+	 * 
+	 * MessageConsumerActivity
+	 * Called as a message consumer to do something to the state machine
+	 * 
+	 * 
+	 * */
 }

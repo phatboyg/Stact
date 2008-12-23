@@ -21,9 +21,13 @@ namespace Magnum.Common.StateMachine
 		StateMachine
 		where T : StateMachine<T>
 	{
-		private static readonly HashSet<State<T>> _states = new HashSet<State<T>>();
+		private const string CompletedStateName = "Completed";
+		private const string InitialStateName = "Initial";
 		private static readonly HashSet<Event<T>> _events = new HashSet<Event<T>>();
+		private static readonly HashSet<State<T>> _states = new HashSet<State<T>>();
+		private static State<T> _completedState;
 		private static State<T> _initialState;
+		private State<T> _current;
 
 		static StateMachine()
 		{
@@ -35,15 +39,52 @@ namespace Magnum.Common.StateMachine
 		{
 			VerifyStateMachineConfiguration();
 
+			EnterState(_initialState);
+		}
+
+		private void EnterState(State<T> state)
+		{
 			_current = _initialState;
 			_current.EnterState(this as T);
 		}
 
-		private State<T> _current;
+		private void LeaveCurrentState()
+		{
+			if(_current != null)
+			{
+				_current.LeaveState(this as T);
+				_current = null;
+			}
+		}
+
+
+		protected static IEnumerable<Event<T>> Events
+		{
+			get { return _events; }
+		}
+
+		protected static IEnumerable<State<T>> States
+		{
+			get { return _states; }
+		}
 
 		public State Current
 		{
 			get { return _current; }
+		}
+
+		protected void RaiseEvent<V>(Event raised, V value)
+		{
+			Event<T> eevent = GetEvent(raised);
+
+			_current.RaiseEvent(this as T, eevent);
+		}
+
+		protected void TransitionTo(State state)
+		{
+			LeaveCurrentState();
+
+			EnterState(GetState(state));
 		}
 
 		public static void Define(Action definition)
@@ -51,7 +92,42 @@ namespace Magnum.Common.StateMachine
 			definition();
 		}
 
-		protected static void When(State inputState, params StateEventAction<T>[] actions)
+		public static void SetCompletedState(State completedState)
+		{
+			_completedState = GetState(completedState);
+		}
+
+		public static void SetInitialState(State initialState)
+		{
+			_initialState = GetState(initialState);
+		}
+
+		protected static Action<T, Event<T>> OnEntry(Action<T> action)
+		{
+			Action<T, Event<T>> result = (x, y) => action(x);
+
+			return result;
+		}
+
+		protected static StateEventAction<T> When(Event raised, Action<T, Event<T>> action)
+		{
+			Event<T> raisedEvent = GetEvent(raised);
+
+			var result = new StateEventAction<T> {RaisedEvent = raisedEvent, EventAction = action};
+
+			return result;
+		}
+
+		protected static StateEventAction<T> When(Event raised, Action<T> action)
+		{
+			Event<T> raisedEvent = GetEvent(raised);
+
+			var result = new StateEventAction<T> {RaisedEvent = raisedEvent, EventAction = (x, y) => action(x)};
+
+			return result;
+		}
+
+		protected static void During(State inputState, params StateEventAction<T>[] actions)
 		{
 			State<T> state = GetState(inputState);
 
@@ -59,15 +135,6 @@ namespace Magnum.Common.StateMachine
 			{
 				state.BindEventAction(action.RaisedEvent, action.EventAction);
 			}
-		}
-
-		private static State<T> GetState(State state)
-		{
-			State<T> stateOfT = state as State<T>;
-			if (stateOfT == null)
-				throw new ArgumentException("The state is not valid for this state machine", "state");
-
-			return stateOfT;
 		}
 
 		private static Event<T> GetEvent(Event input)
@@ -79,85 +146,15 @@ namespace Magnum.Common.StateMachine
 			return result;
 		}
 
-
-		protected static StateEventAction<T> OnEvent(Event raised, Action<T, Event<T>> action)
+		private static State<T> GetState(State state)
 		{
-			Event<T> raisedEvent = GetEvent(raised);
+			State<T> stateOfT = state as State<T>;
+			if (stateOfT == null)
+				throw new ArgumentException("The state is not valid for this state machine", "state");
 
-			var result = new StateEventAction<T>{RaisedEvent = raisedEvent, EventAction = action};
-
-			return result;
+			return stateOfT;
 		}
 
-		protected static StateEventAction<T> OnEvent(Event raised, Action<T> action)
-		{
-			Event<T> raisedEvent = GetEvent(raised);
-
-			var result = new StateEventAction<T>{RaisedEvent = raisedEvent, EventAction = (x,y) => action(x)};
-
-			return result;
-		}
-
-		protected static Action<T, Event<T>> OnEntry(Action<T> action)
-		{
-			Action<T, Event<T>> result = (x, y) => action(x);
-
-			return result;
-		}
-
-		public static void SetInitialState(State initialState)
-		{
-			_initialState = GetState(initialState);
-		}
-
-		protected void TransitionTo(State state)
-		{
-			_current.LeaveState(this as T);
-
-			_current = GetState(state);
-
-			_current.EnterState(this as T);
-		}
-
-		protected void RaiseEvent<V>(Event raised, V value)
-		{
-			Event<T> eevent = GetEvent(raised);
-
-			_current.RaiseEvent(this as T, eevent);
-		}
-
-		protected static IEnumerable<State<T>> States
-		{
-			get { return _states; }
-		}
-
-		protected static IEnumerable<Event<T>> Events
-		{
-			get { return _events; }
-		}
-
-		private static void VerifyStateMachineConfiguration()
-		{
-			if (_states.Count == 0)
-				throw new StateMachineException("A state machine must have at least one state to be valid.");
-
-			if (_initialState == null)
-				throw new StateMachineException("No initial state has been defined.");
-		}
-
-		private static void InitializeStates()
-		{
-			Type machineType = typeof (T);
-			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
-			{
-				if (!IsPropertyAState(propertyInfo)) continue;
-
-				State<T> value = SetPropertyValue(propertyInfo, x => new State<T>(x.Name));
-
-				_states.Add(value);
-			}
-		}	
-		
 		private static void InitializeEvents()
 		{
 			Type machineType = typeof (T);
@@ -171,6 +168,39 @@ namespace Magnum.Common.StateMachine
 			}
 		}
 
+		private static void InitializeStates()
+		{
+			Type machineType = typeof (T);
+			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
+			{
+				if (!IsPropertyAState(propertyInfo)) continue;
+
+				State<T> state = SetPropertyValue(propertyInfo, x => new State<T>(x.Name));
+
+				_states.Add(state);
+
+				switch (state.Name)
+				{
+					case InitialStateName:
+						_initialState = state;
+						break;
+					case CompletedStateName:
+						_completedState = state;
+						break;
+				}
+			}
+		}
+
+		private static bool IsPropertyAnEvent(PropertyInfo propertyInfo)
+		{
+			return propertyInfo.PropertyType == typeof (Event<T>) || propertyInfo.PropertyType == typeof (Event);
+		}
+
+		private static bool IsPropertyAState(PropertyInfo propertyInfo)
+		{
+			return propertyInfo.PropertyType == typeof (State<T>) || propertyInfo.PropertyType == typeof (State);
+		}
+
 		private static TValue SetPropertyValue<TValue>(PropertyInfo propertyInfo, Func<PropertyInfo, TValue> getValue)
 		{
 			var value = Expression.Parameter(typeof (TValue), "value");
@@ -182,14 +212,13 @@ namespace Magnum.Common.StateMachine
 			return propertyValue;
 		}
 
-		private static bool IsPropertyAState(PropertyInfo propertyInfo)
+		private static void VerifyStateMachineConfiguration()
 		{
-			return propertyInfo.PropertyType == typeof (State<T>) || propertyInfo.PropertyType == typeof (State);
-		}
+			if (_states.Count == 0)
+				throw new StateMachineException("A state machine must have at least one state to be valid.");
 
-		private static bool IsPropertyAnEvent(PropertyInfo propertyInfo)
-		{
-			return propertyInfo.PropertyType == typeof (Event<T>) || propertyInfo.PropertyType == typeof (Event);
+			if (_initialState == null)
+				throw new StateMachineException("No initial state has been defined.");
 		}
 	}
 
@@ -197,12 +226,9 @@ namespace Magnum.Common.StateMachine
 	{
 		public StateMachineException(string message)
 			: base(message)
-		{
-		}
+		{}
 	}
 
 	public interface StateMachine
-	{
-		
-	}
+	{}
 }
