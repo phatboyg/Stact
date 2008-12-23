@@ -28,56 +28,54 @@ namespace Magnum.Common.Specs.StateMachine
 					// SetCompletedState(Completed);
 
 					During(Initial,
-						When(RequestSubmitted, machine =>
+						When(RequestSubmitted, workflow =>
 							{
-								// machine is your scope, maybe rename to workflow. 
-								// you don't want statics since the instance carries your state
-								// and any other data you capture
-								machine.RequestApprovalFromManager();
-								machine.TransitionTo(WaitingForManagementResponse);
+								// workflow is your scope
+								workflow.RequestApprovalFromManager();
+								workflow.TransitionTo(WaitingForManagementResponse);
 							}),
-						When(RequestCanceled, machine =>
+						When(RequestCanceled, workflow =>
 							{
 								// nothing has happened yet so we just complete 
-								machine.Complete();
+								workflow.Complete();
 							}));
 
 					During(WaitingForManagementResponse,
-						When(ManagementApproves, machine =>
+						When(ManagementApproves, workflow =>
 							{
-								machine.RequestSecurityReview();
-								machine.TransitionTo(WaitingForSecurityResponse);
+								workflow.RequestSecurityReview();
+								workflow.TransitionTo(WaitingForSecurityResponse);
 							}),
-						When(ManagementDeclines, machine =>
+						When(ManagementDeclines, workflow =>
 							{
-								machine.NotifyRequestDeclined();
-								machine.Complete();
+								workflow.NotifyRequestDeclined();
+								workflow.Complete();
 							}),
-						When(RequestCanceled, machine =>
+						When(RequestCanceled, workflow =>
 							{
-								machine.NotifyRequestCancelled();
-								machine.Complete();
+								workflow.NotifyRequestCancelled();
+								workflow.Complete();
 							}));
 
 					During(WaitingForSecurityResponse,
-						When(SecurityApproves, machine =>
+						When(SecurityApproves, workflow =>
 							{
-								machine.NotifyWorkTeams(); //possible fork/join here
-								machine.TransitionTo(WaitingForWorkToComplete);
+								workflow.NotifyWorkTeams(); //possible fork/join here
+								workflow.TransitionTo(WaitingForWorkToComplete);
 							}),
-						When(SecurityDeclines, machine =>
+						When(SecurityDeclines, workflow =>
 							{
-								machine.NotifyRequestDeclined();
-								machine.Complete();
+								workflow.NotifyRequestDeclined();
+								workflow.Complete();
 							}));
 
 					During(WaitingForWorkToComplete,
-						When(WorkComplete, machine =>
+						When(WorkComplete, workflow =>
 							{
 								// do stuff
 							}));
 					During(Completed,
-						When(Completed.Enter, machine =>
+						When(Completed.Enter, workflow =>
 							{
 								// complete the transaction if required
 							}));
@@ -117,27 +115,25 @@ namespace Magnum.Common.Specs.StateMachine
 			RaiseEvent(ManagementApproves);
 		}
 
-		//what are these called
+        // you don't want statics since the instance carries your state
+        // and any other data you capture
+		// what category of thing are these functions?
 		private void NotifyRequestCancelled()
 		{
 			throw new NotImplementedException();
 		}
-
 		private void NotifyWorkTeams()
 		{
 			throw new NotImplementedException();
 		}
-
 		private void NotifyRequestDeclined()
 		{
 			throw new NotImplementedException();
 		}
-
 		private void RequestSecurityReview()
 		{
 			throw new NotImplementedException();
 		}
-
 		private void RequestApprovalFromManager()
 		{
 			throw new NotImplementedException();
