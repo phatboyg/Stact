@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -93,6 +93,7 @@
     <Compile Include="Reflection_Specs.cs" />
     <Compile Include="Repository\Repository_Specs.cs" />
     <Compile Include="SpecificationBase.cs" />
+    <Compile Include="StateMachine\AccountManagementWorkflow.cs" />
     <Compile Include="StateMachine\ExampleWorkflow.cs" />
     <Compile Include="StateMachine\ExampleStateMachine.cs" />
     <Compile Include="StateMachine\StateSerialization_Specs.cs" />
