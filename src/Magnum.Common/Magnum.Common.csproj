@@ -108,6 +108,7 @@
     <Compile Include="Serialization\ISerializationWriter.cs" />
     <Compile Include="Serialization\SerializationUtil.cs" />
     <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
+    <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="Threading\AsyncExecutor.cs" />
     <Compile Include="Threading\AsyncResult.cs" />
     <Compile Include="Threading\IAsyncExecutor.cs" />

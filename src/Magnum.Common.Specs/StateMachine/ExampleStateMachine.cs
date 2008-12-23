@@ -47,7 +47,7 @@ namespace Magnum.Common.Specs.StateMachine
 						When(OrderCanceled, machine =>
 							{
 								// notify barista that order was cancelled
-								machine.TransitionTo(Completed);
+								machine.Complete();
 							}));
 
 					During(WaitingForPaymentApproval,
@@ -80,5 +80,15 @@ namespace Magnum.Common.Specs.StateMachine
 		public static Event PaymentApproved { get; set; }
 		public static Event PaymentDenied { get; set; }
 		public static Event OrderCanceled { get; set; }
+
+		public void SubmitOrder()
+		{
+			RaiseEvent(OrderSubmitted);
+		}
+
+		public void SubmitPayment()
+		{
+			RaiseEvent(PaymentSubmitted);
+		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Magnum.Common.Specs.StateMachine
 		[Test]
 		public void States_should_automatically_be_created_for_the_class()
 		{
-			ExampleStateMachine stateMachine = new ExampleStateMachine();
+			ExampleStateMachine example = new ExampleStateMachine();
 
 			Assert.IsNotNull(ExampleStateMachine.Initial);
 
@@ -30,24 +30,27 @@ namespace Magnum.Common.Specs.StateMachine
 		[Test]
 		public void The_initial_state_should_be_set()
 		{
-			ExampleStateMachine stateMachine = new ExampleStateMachine();
+			ExampleStateMachine example = new ExampleStateMachine();
 
-			Assert.AreEqual(ExampleStateMachine.Initial, stateMachine.Current);
+			Assert.AreEqual(ExampleStateMachine.Initial, example.Current);
 		}
 
 		[Test]
 		public void The_transitions_should_work()
 		{
-			ExampleStateMachine stateMachine = new ExampleStateMachine();
+			ExampleStateMachine example = new ExampleStateMachine();
 
-			//stateMachine.Consume(new ExampleOrder());
+			example.SubmitOrder();
 
-			//Assert.AreEqual(ExampleStateMachine.TakingOrder, stateMachine.Current);
+			Assert.AreEqual(ExampleStateMachine.WaitingForPayment, example.Current);
+
+			example.SubmitPayment();
+
+			Assert.AreEqual(ExampleStateMachine.WaitingForPaymentApproval, example.Current);
+
+
+
 		}
 
-	}
-
-	public class ExampleOrder
-	{
 	}
 }

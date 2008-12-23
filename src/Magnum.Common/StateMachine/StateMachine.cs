@@ -42,22 +42,6 @@ namespace Magnum.Common.StateMachine
 			EnterState(_initialState);
 		}
 
-		private void EnterState(State<T> state)
-		{
-			_current = _initialState;
-			_current.EnterState(this as T);
-		}
-
-		private void LeaveCurrentState()
-		{
-			if(_current != null)
-			{
-				_current.LeaveState(this as T);
-				_current = null;
-			}
-		}
-
-
 		protected static IEnumerable<Event<T>> Events
 		{
 			get { return _events; }
@@ -71,6 +55,13 @@ namespace Magnum.Common.StateMachine
 		public State Current
 		{
 			get { return _current; }
+		}
+
+		protected void RaiseEvent(Event raised)
+		{
+			Event<T> eevent = GetEvent(raised);
+
+			_current.RaiseEvent(this as T, eevent);
 		}
 
 		protected void RaiseEvent<V>(Event raised, V value)
@@ -87,17 +78,36 @@ namespace Magnum.Common.StateMachine
 			EnterState(GetState(state));
 		}
 
-		public static void Define(Action definition)
+		protected void Complete()
+		{
+			TransitionTo(_completedState);
+		}
+
+		private void EnterState(State<T> state)
+		{
+			_current = state;
+			_current.EnterState(this as T);
+		}
+
+		private void LeaveCurrentState()
+		{
+			if (_current == null) return;
+
+			_current.LeaveState(this as T);
+			_current = null;
+		}
+
+		protected static void Define(Action definition)
 		{
 			definition();
 		}
 
-		public static void SetCompletedState(State completedState)
+		protected static void SetCompletedState(State completedState)
 		{
 			_completedState = GetState(completedState);
 		}
 
-		public static void SetInitialState(State initialState)
+		protected static void SetInitialState(State initialState)
 		{
 			_initialState = GetState(initialState);
 		}
@@ -219,16 +229,13 @@ namespace Magnum.Common.StateMachine
 
 			if (_initialState == null)
 				throw new StateMachineException("No initial state has been defined.");
+
+			if (_completedState == null)
+				throw new StateMachineException("No completed state has been defined.");
 		}
 	}
 
-	public class StateMachineException : Exception
-	{
-		public StateMachineException(string message)
-			: base(message)
-		{}
-	}
-
 	public interface StateMachine
-	{}
+	{
+	}
 }
