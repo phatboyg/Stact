@@ -16,6 +16,7 @@ namespace Magnum.Common.Specs.StateMachine
 	using System.Runtime.Serialization;
 	using Common.StateMachine;
 
+	[Serializable]
 	public class AccountManagementWorkflow :
 		StateMachine<AccountManagementWorkflow>
 	{
@@ -73,7 +74,9 @@ namespace Magnum.Common.Specs.StateMachine
 						When(WorkComplete, workflow =>
 							{
 								// do stuff
+								workflow.Complete();
 							}));
+
 					During(Completed,
 						When(Completed.Enter, workflow =>
 							{
