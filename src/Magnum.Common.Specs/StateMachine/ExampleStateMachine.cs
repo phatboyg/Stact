@@ -12,11 +12,25 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.StateMachine
 {
+	using System;
+	using System.Runtime.Serialization;
 	using Common.StateMachine;
 
+	/// <summary>
+	/// An example showing the the StateMachine can be used to define the states, events, and 
+	/// conditions for state transitions (along with behavior when the state changes).
+	/// 
+	/// These must be marked as serializable and have the default and serialization constructor
+	/// if you want to be able to persist the state of the machine using the binary formatter.
+	/// </summary>
+	[Serializable]
 	public class ExampleStateMachine :
 		StateMachine<ExampleStateMachine>
 	{
+		/// <summary>
+		/// The static initializer is used to define the state machine. This is called once
+		/// for the state machine (for performance reasons).
+		/// </summary>
 		static ExampleStateMachine()
 		{
 			Define(() =>
@@ -25,7 +39,7 @@ namespace Magnum.Common.Specs.StateMachine
 					// SetInitialState(Initial);
 					// SetCompletedState(Completed);
 
-					During(Initial,
+					Initially(
 						When(OrderSubmitted, machine =>
 							{
 								// send request for payment
@@ -70,6 +84,15 @@ namespace Magnum.Common.Specs.StateMachine
 				});
 		}
 
+		public ExampleStateMachine()
+		{
+		}
+
+		public ExampleStateMachine(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
 		public static State Initial { get; set; }
 		public static State WaitingForPayment { get; set; }
 		public static State WaitingForPaymentApproval { get; set; }
@@ -89,6 +112,11 @@ namespace Magnum.Common.Specs.StateMachine
 		public void SubmitPayment()
 		{
 			RaiseEvent(PaymentSubmitted);
+		}
+
+		public void ApprovePayment()
+		{
+			RaiseEvent(PaymentApproved);
 		}
 	}
 }

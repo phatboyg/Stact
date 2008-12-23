@@ -16,15 +16,17 @@ namespace Magnum.Common.StateMachine
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using System.Runtime.Serialization;
 
 	public class StateMachine<T> :
-		StateMachine
+		StateMachine,
+		ISerializable
 		where T : StateMachine<T>
 	{
 		private const string CompletedStateName = "Completed";
 		private const string InitialStateName = "Initial";
-		private static readonly HashSet<Event<T>> _events = new HashSet<Event<T>>();
-		private static readonly HashSet<State<T>> _states = new HashSet<State<T>>();
+		private static readonly Dictionary<string, Event<T>> _events = new Dictionary<string, Event<T>>();
+		private static readonly Dictionary<string, State<T>> _states = new Dictionary<string, State<T>>();
 		private static State<T> _completedState;
 		private static State<T> _initialState;
 		private State<T> _current;
@@ -42,16 +44,6 @@ namespace Magnum.Common.StateMachine
 			EnterState(_initialState);
 		}
 
-		protected static IEnumerable<Event<T>> Events
-		{
-			get { return _events; }
-		}
-
-		protected static IEnumerable<State<T>> States
-		{
-			get { return _states; }
-		}
-
 		public State Current
 		{
 			get { return _current; }
@@ -59,14 +51,14 @@ namespace Magnum.Common.StateMachine
 
 		protected void RaiseEvent(Event raised)
 		{
-			Event<T> eevent = GetEvent(raised);
+			Event<T> eevent = Event<T>.GetEvent(raised);
 
 			_current.RaiseEvent(this as T, eevent);
 		}
 
 		protected void RaiseEvent<V>(Event raised, V value)
 		{
-			Event<T> eevent = GetEvent(raised);
+			Event<T> eevent = Event<T>.GetEvent(raised);
 
 			_current.RaiseEvent(this as T, eevent);
 		}
@@ -75,7 +67,7 @@ namespace Magnum.Common.StateMachine
 		{
 			LeaveCurrentState();
 
-			EnterState(GetState(state));
+			EnterState(State<T>.GetState(state));
 		}
 
 		protected void Complete()
@@ -104,12 +96,12 @@ namespace Magnum.Common.StateMachine
 
 		protected static void SetCompletedState(State completedState)
 		{
-			_completedState = GetState(completedState);
+			_completedState = State<T>.GetState(completedState);
 		}
 
 		protected static void SetInitialState(State initialState)
 		{
-			_initialState = GetState(initialState);
+			_initialState = State<T>.GetState(initialState);
 		}
 
 		protected static Action<T, Event<T>> OnEntry(Action<T> action)
@@ -121,25 +113,30 @@ namespace Magnum.Common.StateMachine
 
 		protected static StateEventAction<T> When(Event raised, Action<T, Event<T>> action)
 		{
-			Event<T> raisedEvent = GetEvent(raised);
+			Event<T> raisedEvent = Event<T>.GetEvent(raised);
 
-			var result = new StateEventAction<T> {RaisedEvent = raisedEvent, EventAction = action};
+			var result = new StateEventAction<T> { RaisedEvent = raisedEvent, EventAction = action };
 
 			return result;
 		}
 
 		protected static StateEventAction<T> When(Event raised, Action<T> action)
 		{
-			Event<T> raisedEvent = GetEvent(raised);
+			Event<T> raisedEvent = Event<T>.GetEvent(raised);
 
-			var result = new StateEventAction<T> {RaisedEvent = raisedEvent, EventAction = (x, y) => action(x)};
+			var result = new StateEventAction<T> { RaisedEvent = raisedEvent, EventAction = (x, y) => action(x) };
 
 			return result;
 		}
 
+		protected static void Initially(params StateEventAction<T>[] actions)
+		{
+			During(_initialState, actions);
+		}
+
 		protected static void During(State inputState, params StateEventAction<T>[] actions)
 		{
-			State<T> state = GetState(inputState);
+			State<T> state = State<T>.GetState(inputState);
 
 			foreach (StateEventAction<T> action in actions)
 			{
@@ -147,47 +144,29 @@ namespace Magnum.Common.StateMachine
 			}
 		}
 
-		private static Event<T> GetEvent(Event input)
-		{
-			Event<T> result = input as Event<T>;
-			if (result == null)
-				throw new ArgumentException("The state is not valid for this state machine", "input");
-
-			return result;
-		}
-
-		private static State<T> GetState(State state)
-		{
-			State<T> stateOfT = state as State<T>;
-			if (stateOfT == null)
-				throw new ArgumentException("The state is not valid for this state machine", "state");
-
-			return stateOfT;
-		}
-
 		private static void InitializeEvents()
 		{
-			Type machineType = typeof (T);
+			Type machineType = typeof(T);
 			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
 			{
 				if (!IsPropertyAnEvent(propertyInfo)) continue;
 
 				Event<T> value = SetPropertyValue(propertyInfo, x => new Event<T>(x.Name));
 
-				_events.Add(value);
+				_events.Add(value.Name, value);
 			}
 		}
 
 		private static void InitializeStates()
 		{
-			Type machineType = typeof (T);
+			Type machineType = typeof(T);
 			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
 			{
 				if (!IsPropertyAState(propertyInfo)) continue;
 
 				State<T> state = SetPropertyValue(propertyInfo, x => new State<T>(x.Name));
 
-				_states.Add(state);
+				_states.Add(state.Name, state);
 
 				switch (state.Name)
 				{
@@ -203,18 +182,18 @@ namespace Magnum.Common.StateMachine
 
 		private static bool IsPropertyAnEvent(PropertyInfo propertyInfo)
 		{
-			return propertyInfo.PropertyType == typeof (Event<T>) || propertyInfo.PropertyType == typeof (Event);
+			return propertyInfo.PropertyType == typeof(Event<T>) || propertyInfo.PropertyType == typeof(Event);
 		}
 
 		private static bool IsPropertyAState(PropertyInfo propertyInfo)
 		{
-			return propertyInfo.PropertyType == typeof (State<T>) || propertyInfo.PropertyType == typeof (State);
+			return propertyInfo.PropertyType == typeof(State<T>) || propertyInfo.PropertyType == typeof(State);
 		}
 
 		private static TValue SetPropertyValue<TValue>(PropertyInfo propertyInfo, Func<PropertyInfo, TValue> getValue)
 		{
-			var value = Expression.Parameter(typeof (TValue), "value");
-			var action = Expression.Lambda<Action<TValue>>(Expression.Call(propertyInfo.GetSetMethod(), value), new[] {value}).Compile();
+			var value = Expression.Parameter(typeof(TValue), "value");
+			var action = Expression.Lambda<Action<TValue>>(Expression.Call(propertyInfo.GetSetMethod(), value), new[] { value }).Compile();
 
 			TValue propertyValue = getValue(propertyInfo);
 			action(propertyValue);
@@ -232,6 +211,26 @@ namespace Magnum.Common.StateMachine
 
 			if (_completedState == null)
 				throw new StateMachineException("No completed state has been defined.");
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("Current", Current.Name);
+		}
+
+		public StateMachine(SerializationInfo info, StreamingContext context)
+		{
+			string currentStateName = info.GetString("Current");
+
+			_current = GetState(currentStateName);
+			if (_current == null)
+				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
+		}
+
+		private static State<T> GetState(string name)
+		{
+			State<T> state;
+			return _states.TryGetValue(name, out state) ? state : null;
 		}
 	}
 

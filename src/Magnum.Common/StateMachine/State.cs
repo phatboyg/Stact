@@ -80,6 +80,15 @@ namespace Magnum.Common.StateMachine
 
 			_actions.Add(eevent, action);
 		}
+
+		public static State<T> GetState(State input)
+		{
+			State<T> result = input as State<T>;
+			if (result == null)
+				throw new ArgumentException("The state is not valid for this state machine", "input");
+
+			return result;
+		}
 	}
 
 	public interface State

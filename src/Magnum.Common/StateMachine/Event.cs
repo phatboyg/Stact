@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.StateMachine
 {
+	using System;
+
 	public class Event<T> : 
 		Event
 		where T : StateMachine<T>
@@ -31,6 +33,15 @@ namespace Magnum.Common.StateMachine
 		public override string ToString()
 		{
 			return _name;
+		}
+
+		public static Event<T> GetEvent(Event input)
+		{
+			Event<T> result = input as Event<T>;
+			if (result == null)
+				throw new ArgumentException("The state is not valid for this state machine", "input");
+
+			return result;
 		}
 	}
 

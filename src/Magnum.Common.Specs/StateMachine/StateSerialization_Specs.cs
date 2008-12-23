@@ -12,46 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.StateMachine
 {
+	using System.IO;
+	using System.Runtime.Serialization.Formatters.Binary;
 	using MbUnit.Framework;
 
 	[TestFixture]
-	public class State_Specs
+	public class StateSerialization_Specs
 	{
-		[Test]
-		public void States_should_automatically_be_created_for_the_class()
+		private BinaryFormatter _formatter;
+
+		[SetUp]
+		public void Setup()
 		{
-			ExampleStateMachine example = new ExampleStateMachine();
+			_formatter = new BinaryFormatter();
+		}
 
-			Assert.IsNotNull(ExampleStateMachine.Initial);
-
-			Assert.AreEqual(ExampleStateMachine.Initial.Name, "Initial");
+		[TearDown]
+		public void Teardown()
+		{
+			_formatter = null;
 		}
 
 		[Test]
-		public void The_initial_state_should_be_set()
-		{
-			ExampleStateMachine example = new ExampleStateMachine();
-
-			Assert.AreEqual(ExampleStateMachine.Initial, example.Current);
-		}
-
-		[Test]
-		public void The_transitions_should_work()
+		public void Serializing_a_state_machine_should_restore_properly()
 		{
 			ExampleStateMachine example = new ExampleStateMachine();
 
 			example.SubmitOrder();
 
-			Assert.AreEqual(ExampleStateMachine.WaitingForPayment, example.Current);
+			byte[] data;
+			using (MemoryStream output = new MemoryStream())
+			{
+				_formatter.Serialize(output, example);
+				data = output.ToArray();
+			}
 
-			example.SubmitPayment();
+			using (MemoryStream input = new MemoryStream(data))
+			{
+				var copied = (ExampleStateMachine) _formatter.Deserialize(input);
 
-			Assert.AreEqual(ExampleStateMachine.WaitingForPaymentApproval, example.Current);
-
-			example.ApprovePayment();
-
-			Assert.AreEqual(ExampleStateMachine.Completed, example.Current);
+				Assert.AreEqual(ExampleStateMachine.WaitingForPayment, copied.Current);
+			}
 		}
-
 	}
 }
