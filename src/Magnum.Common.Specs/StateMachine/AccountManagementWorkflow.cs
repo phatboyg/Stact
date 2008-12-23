@@ -12,12 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.StateMachine
 {
-    using Common.StateMachine;
+	using System;
+	using System.Runtime.Serialization;
+	using Common.StateMachine;
 
-    public class AccountManagementWorkflow :
-        StateMachine<AccountManagementWorkflow>
-    {
-        static AccountManagementWorkflow()
+	public class AccountManagementWorkflow :
+		StateMachine<AccountManagementWorkflow>
+	{
+		static AccountManagementWorkflow()
 		{
 			Define(() =>
 				{
@@ -28,7 +30,10 @@ namespace Magnum.Common.Specs.StateMachine
 					During(Initial,
 						When(RequestSubmitted, machine =>
 							{
-                                RequestApprovalFromManager();
+								// machine is your scope, maybe rename to workflow. 
+								// you don't want statics since the instance carries your state
+								// and any other data you capture
+								machine.RequestApprovalFromManager();
 								machine.TransitionTo(WaitingForManagementResponse);
 							}),
 						When(RequestCanceled, machine =>
@@ -40,48 +45,58 @@ namespace Magnum.Common.Specs.StateMachine
 					During(WaitingForManagementResponse,
 						When(ManagementApproves, machine =>
 							{
-                                RequestSecurityReview();
+								machine.RequestSecurityReview();
 								machine.TransitionTo(WaitingForSecurityResponse);
 							}),
-                            When(ManagementDeclines, machine =>
-                            {
-                                NotifyRequestDeclined();
-                                machine.Complete();
-                            }),
+						When(ManagementDeclines, machine =>
+							{
+								machine.NotifyRequestDeclined();
+								machine.Complete();
+							}),
 						When(RequestCanceled, machine =>
 							{
-                                NotifyRequestCancelled();
+								machine.NotifyRequestCancelled();
 								machine.Complete();
 							}));
 
 					During(WaitingForSecurityResponse,
 						When(SecurityApproves, machine =>
 							{
-							    NotifyWorkTeams(); //possible fork/join here
+								machine.NotifyWorkTeams(); //possible fork/join here
 								machine.TransitionTo(WaitingForWorkToComplete);
 							}),
 						When(SecurityDeclines, machine =>
 							{
-							    NotifyRequestDeclined();
+								machine.NotifyRequestDeclined();
 								machine.Complete();
 							}));
-				    During(WaitingForWorkToComplete, 
-                        When(WorkComplete, machine =>
-                        {
-                            // do stuff
-                        }));
+
+					During(WaitingForWorkToComplete,
+						When(WorkComplete, machine =>
+							{
+								// do stuff
+							}));
 					During(Completed,
 						When(Completed.Enter, machine =>
-						{
-						    // complete the transaction if required
-						}));
+							{
+								// complete the transaction if required
+							}));
 				});
 		}
 
-        public static State Initial { get; set; }
+		public AccountManagementWorkflow()
+		{
+		}
+
+		public AccountManagementWorkflow(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		public static State Initial { get; set; }
 		public static State WaitingForManagementResponse { get; set; }
 		public static State WaitingForSecurityResponse { get; set; }
-        public static State WaitingForWorkToComplete { get; set; }
+		public static State WaitingForWorkToComplete { get; set; }
 		public static State Completed { get; set; }
 
 		public static Event RequestSubmitted { get; set; }
@@ -102,26 +117,30 @@ namespace Magnum.Common.Specs.StateMachine
 			RaiseEvent(ManagementApproves);
 		}
 
-        //what are these called
-        private static void NotifyRequestCancelled()
-        {
-            throw new System.NotImplementedException();
-        }
-        private static void NotifyWorkTeams()
-        {
-            throw new System.NotImplementedException();
-        }
-        private static void NotifyRequestDeclined()
-        {
-            throw new System.NotImplementedException();
-        }
-        private static void RequestSecurityReview()
-        {
-            throw new System.NotImplementedException();
-        }
-        private static void RequestApprovalFromManager()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
+		//what are these called
+		private void NotifyRequestCancelled()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void NotifyWorkTeams()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void NotifyRequestDeclined()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RequestSecurityReview()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void RequestApprovalFromManager()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
