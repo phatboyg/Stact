@@ -77,6 +77,13 @@ namespace Magnum.Common.Threading
 			_lockContext.UpgradeableReadLock(x => action(_value));
 		}
 
+		public V UpgradeableReadLock<V>(Func<T, V> action)
+		{
+			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
+
+			return _lockContext.UpgradeableReadLock(x => action(_value));
+		}
+
 		public bool UpgradeableReadLock(TimeSpan timeout, Action<T> action)
 		{
 			if (_disposed) throw new ObjectDisposedException("ReaderWriterLockedObject");
