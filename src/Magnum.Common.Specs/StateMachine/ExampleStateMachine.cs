@@ -29,8 +29,11 @@ namespace Magnum.Common.Specs.StateMachine
 						 OnEvent(Idle.Leave, x => x.LeaveIdleState()));
 
 					When(Idle,
-					     OnEvent(Initiated, (x,y) => x.InitiatedByEvent(y)),
-					     OnEvent(Cancelled, x => x.CancelTransaction()));
+					     OnEvent(CustomerEntered, (x,y) => x.InitiatedByEvent(y)),
+					     OnEvent(CustomerCancelled, x => x.CancelTransaction()));
+
+					When(TakingOrder,
+						OnEvent(CustomerCancelled, x => x.CancelTransaction()));
 				});
 		}
 
@@ -38,8 +41,8 @@ namespace Magnum.Common.Specs.StateMachine
 		public static State Idle { get; set; }
 		public static State TakingOrder { get; set; }
 
-		public static Event Initiated { get; set; }
-		public static Event Cancelled { get; set; }
+		public static Event CustomerEntered { get; set; }
+		public static Event CustomerCancelled { get; set; }
 
 		public void EnteredIdleState()
 		{
@@ -65,7 +68,7 @@ namespace Magnum.Common.Specs.StateMachine
 
 		public void Consume(ExampleOrder order)
 		{
-			RaiseEvent(Initiated, order);
+			RaiseEvent(CustomerEntered, order);
 		}
 	}
 }
