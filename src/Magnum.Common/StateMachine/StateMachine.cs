@@ -25,7 +25,7 @@ namespace Magnum.Common.StateMachine
 	{
 		private const string CompletedStateName = "Completed";
 		private const string InitialStateName = "Initial";
-		private static readonly Dictionary<string, Event<T>> _events = new Dictionary<string, Event<T>>();
+		private static readonly Dictionary<string, BasicEvent<T>> _events = new Dictionary<string, BasicEvent<T>>();
 		private static readonly Dictionary<string, State<T>> _states = new Dictionary<string, State<T>>();
 		private static State<T> _completedState;
 		private static State<T> _initialState;
@@ -44,23 +44,37 @@ namespace Magnum.Common.StateMachine
 			EnterState(_initialState);
 		}
 
+		public StateMachine(SerializationInfo info, StreamingContext context)
+		{
+			string currentStateName = info.GetString("Current");
+
+			_current = GetState(currentStateName);
+			if (_current == null)
+				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
+		}
+
 		public State Current
 		{
 			get { return _current; }
 		}
 
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("Current", Current.Name);
+		}
+
 		protected void RaiseEvent(Event raised)
 		{
-			Event<T> eevent = Event<T>.GetEvent(raised);
+			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			_current.RaiseEvent(this as T, eevent);
+			_current.RaiseEvent(this as T, eevent, null);
 		}
 
 		protected void RaiseEvent<V>(Event raised, V value)
 		{
-			Event<T> eevent = Event<T>.GetEvent(raised);
+			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
 
-			_current.RaiseEvent(this as T, eevent);
+			_current.RaiseEvent(this as T, eevent, value);
 		}
 
 		protected void TransitionTo(State state)
@@ -104,27 +118,42 @@ namespace Magnum.Common.StateMachine
 			_initialState = State<T>.GetState(initialState);
 		}
 
-		protected static Action<T, Event<T>> OnEntry(Action<T> action)
-		{
-			Action<T, Event<T>> result = (x, y) => action(x);
-
-			return result;
-		}
-
-		protected static StateEventAction<T> When(Event raised, Action<T, Event<T>> action)
-		{
-			Event<T> raisedEvent = Event<T>.GetEvent(raised);
-
-			var result = new StateEventAction<T> { RaisedEvent = raisedEvent, EventAction = action };
-
-			return result;
-		}
-
 		protected static StateEventAction<T> When(Event raised, Action<T> action)
 		{
-			Event<T> raisedEvent = Event<T>.GetEvent(raised);
+			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			var result = new StateEventAction<T> { RaisedEvent = raisedEvent, EventAction = (x, y) => action(x) };
+			var result = new StateEventAction<T>
+			{
+				RaisedEvent = eevent,
+				EventAction = (t, e, v) => action(t)
+			};
+
+			return result;
+		}
+
+		protected static StateEventAction<T> When(Event raised, Action<T, BasicEvent<T>> action)
+		{
+			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
+
+			var result = new StateEventAction<T>
+			{
+				RaisedEvent = eevent,
+				EventAction = (t, e, v) => action(t, e as BasicEvent<T>)
+			};
+
+			return result;
+		}
+
+		protected static StateEventAction<T> When<V>(Event<V> raised, Action<T, DataEvent<T,V>, V> action) 
+			where V : class
+		{
+			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
+
+			var result = new StateEventAction<T>
+				{
+					RaisedEvent = eevent,
+					EventAction = (t, e, v) => action(t, e as DataEvent<T, V>, v as V)
+				};
 
 			return result;
 		}
@@ -146,20 +175,35 @@ namespace Magnum.Common.StateMachine
 
 		private static void InitializeEvents()
 		{
-			Type machineType = typeof(T);
+			Type machineType = typeof (T);
 			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
 			{
-				if (!IsPropertyAnEvent(propertyInfo)) continue;
+				if (IsPropertyABasicEvent(propertyInfo))
+				{
+					BasicEvent<T> value = SetPropertyValue(propertyInfo, x => new BasicEvent<T>(x.Name));
 
-				Event<T> value = SetPropertyValue(propertyInfo, x => new Event<T>(x.Name));
+					_events.Add(value.Name, value);
+				}
+				else if (IsPropertyATypedEvent(propertyInfo))
+				{
+					Type eventType = typeof (DataEvent<,>).MakeGenericType(typeof (T), propertyInfo.PropertyType.GetGenericArguments()[0]);
 
-				_events.Add(value.Name, value);
+					ConstructorInfo ctor = eventType.GetConstructors()[0];
+					var name = Expression.Parameter(typeof (string), "name");
+					var newExp = Expression.New(ctor, name);
+
+					Func<string, object> creator = Expression.Lambda<Func<string, object>>(newExp, new[]{name}).Compile();
+
+					PropertyInfo eventProperty = propertyInfo;
+
+					SetPropertyValue(propertyInfo, x => creator(eventProperty.Name));
+				}
 			}
 		}
 
 		private static void InitializeStates()
 		{
-			Type machineType = typeof(T);
+			Type machineType = typeof (T);
 			foreach (PropertyInfo propertyInfo in machineType.GetProperties(BindingFlags.Static | BindingFlags.Public))
 			{
 				if (!IsPropertyAState(propertyInfo)) continue;
@@ -180,20 +224,42 @@ namespace Magnum.Common.StateMachine
 			}
 		}
 
-		private static bool IsPropertyAnEvent(PropertyInfo propertyInfo)
+		private static bool IsPropertyABasicEvent(PropertyInfo propertyInfo)
 		{
-			return propertyInfo.PropertyType == typeof(Event<T>) || propertyInfo.PropertyType == typeof(Event);
+			return propertyInfo.PropertyType == typeof (BasicEvent<T>) || propertyInfo.PropertyType == typeof (Event);
 		}
+
+		private static bool IsPropertyATypedEvent(PropertyInfo propertyInfo)
+		{
+			return propertyInfo.PropertyType.IsGenericType &&
+			       propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof (Event<>);
+		}
+
 
 		private static bool IsPropertyAState(PropertyInfo propertyInfo)
 		{
-			return propertyInfo.PropertyType == typeof(State<T>) || propertyInfo.PropertyType == typeof(State);
+			return propertyInfo.PropertyType == typeof (State<T>) || propertyInfo.PropertyType == typeof (State);
+		}
+
+		private static object SetPropertyValue(PropertyInfo propertyInfo, Func<PropertyInfo, object> getValue)
+		{
+			var value = Expression.Parameter(typeof (object), "value");
+			var valueCast = propertyInfo.PropertyType.IsValueType
+			                	? Expression.TypeAs(value, propertyInfo.PropertyType)
+			                	: Expression.Convert(value, propertyInfo.PropertyType);
+
+			var action = Expression.Lambda<Action<object>>(Expression.Call(propertyInfo.GetSetMethod(), valueCast), new[] {value}).Compile();
+
+			object propertyValue = getValue(propertyInfo);
+			action(propertyValue);
+
+			return propertyValue;
 		}
 
 		private static TValue SetPropertyValue<TValue>(PropertyInfo propertyInfo, Func<PropertyInfo, TValue> getValue)
 		{
-			var value = Expression.Parameter(typeof(TValue), "value");
-			var action = Expression.Lambda<Action<TValue>>(Expression.Call(propertyInfo.GetSetMethod(), value), new[] { value }).Compile();
+			var value = Expression.Parameter(typeof (TValue), "value");
+			var action = Expression.Lambda<Action<TValue>>(Expression.Call(propertyInfo.GetSetMethod(), value), new[] {value}).Compile();
 
 			TValue propertyValue = getValue(propertyInfo);
 			action(propertyValue);
@@ -211,20 +277,6 @@ namespace Magnum.Common.StateMachine
 
 			if (_completedState == null)
 				throw new StateMachineException("No completed state has been defined.");
-		}
-
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("Current", Current.Name);
-		}
-
-		public StateMachine(SerializationInfo info, StreamingContext context)
-		{
-			string currentStateName = info.GetString("Current");
-
-			_current = GetState(currentStateName);
-			if (_current == null)
-				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
 		}
 
 		private static State<T> GetState(string name)

@@ -53,5 +53,25 @@ namespace Magnum.Common.Specs.StateMachine
 			Assert.AreEqual(ExampleStateMachine.Completed, example.Current);
 		}
 
+		[Test]
+		public void Typed_events_should_carry_their_data_to_the_expression()
+		{
+			ExampleStateMachine example = new ExampleStateMachine();
+
+			example.SubmitCommentCard(new CommentCard { IsComplaint = true });
+
+			Assert.AreEqual(ExampleStateMachine.WaitingForManager, example.Current);
+		}
+
+		[Test]
+		public void Typed_events_should_carry_their_data_to_the_expression_other()
+		{
+			ExampleStateMachine example = new ExampleStateMachine();
+
+			example.SubmitCommentCard(new CommentCard { IsComplaint = false });
+
+			Assert.AreEqual(ExampleStateMachine.Completed, example.Current);
+		}
+
 	}
 }

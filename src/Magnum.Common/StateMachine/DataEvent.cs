@@ -12,20 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Common.StateMachine
 {
-	/// <summary>
-	/// A basic event
-	/// </summary>
-	public interface Event
-	{
-		string Name { get; }
-	}
+	using System;
 
 	/// <summary>
-	/// An event with associated data
+	/// An event that has a typed data structure associated with it
 	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="V"></typeparam>
-	public interface Event<V> :
-		Event
+	public class DataEvent<T, V> :
+		BasicEvent<T>,
+		Event<V>
+		where T : StateMachine<T>
 	{
+		public DataEvent(string name)
+			: base(name)
+		{
+		}
+
+		public new static DataEvent<T, V> GetEvent(Event input)
+		{
+			DataEvent<T, V> result = input as DataEvent<T, V>;
+			if (result == null)
+				throw new ArgumentException("The event is not valid for this state machine " + input.Name);
+
+			return result;
+		}
 	}
 }

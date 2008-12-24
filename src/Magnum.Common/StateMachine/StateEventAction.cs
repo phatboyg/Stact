@@ -17,7 +17,8 @@ namespace Magnum.Common.StateMachine
 	public class StateEventAction<T>
 		where T : StateMachine<T>
 	{
-		public Event<T> RaisedEvent { get; set; }
-		public Action<T, Event<T>> EventAction { get; set; }
+		public Event RaisedEvent { get; set; }
+
+		public Action<T, Event, object> EventAction { get; set; }
 	}
 }

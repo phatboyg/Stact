@@ -19,19 +19,19 @@ namespace Magnum.Common.StateMachine
 		State
 		where T : StateMachine<T>
 	{
-		private readonly Event<T> _enter;
-		private readonly Event<T> _leave;
-		private Dictionary<Event<T>, Action<T, Event<T>>> _actions;
+		private readonly BasicEvent<T> _enter;
+		private readonly BasicEvent<T> _leave;
+		private readonly Dictionary<Event, Action<T, Event, object>> _actions;
 		private readonly string _name;
 
 		public State(string name)
 		{
 			_name = name;
 
-			_enter = new Event<T>(string.Format("{0}:Enter", Name));
-			_leave = new Event<T>(string.Format("{0}:Leave", Name));
+			_enter = new BasicEvent<T>(string.Format("{0}:Enter", Name));
+			_leave = new BasicEvent<T>(string.Format("{0}:Leave", Name));
 
-			_actions = new Dictionary<Event<T>, Action<T, Event<T>>>();
+			_actions = new Dictionary<Event, Action<T, Event, object>>();
 		}
 
 		public Event Enter
@@ -49,23 +49,23 @@ namespace Magnum.Common.StateMachine
 			get { return _name; }
 		}
 
-		public void RaiseEvent(T instance, Event<T> eevent)
+		public void RaiseEvent(T instance, BasicEvent<T> eevent, object value)
 		{
-			Action<T, Event<T>> action;
+			Action<T, Event, object> action;
 			if(_actions.TryGetValue(eevent, out action))
 			{
-				action(instance, eevent);
+				action(instance, eevent, value);
 			}
 		}
 
 		public void EnterState(T instance)
 		{
-			RaiseEvent(instance, _enter);
+			RaiseEvent(instance, _enter, null);
 		}
 
 		public void LeaveState(T instance)
 		{
-			RaiseEvent(instance, _leave);
+			RaiseEvent(instance, _leave, null);
 		}
 
 		public override string ToString()
@@ -73,7 +73,7 @@ namespace Magnum.Common.StateMachine
 			return string.Format("{0} (State)", _name);
 		}
 
-		public void BindEventAction(Event<T> eevent, Action<T, Event<T>> action)
+		public void BindEventAction(Event eevent, Action<T, Event, object> action)
 		{
 			if (_actions.ContainsKey(eevent))
 				throw new StateMachineException(string.Format("The {0} event has already been added to the {1} state", eevent, _name));

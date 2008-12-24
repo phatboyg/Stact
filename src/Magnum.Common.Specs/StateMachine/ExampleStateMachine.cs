@@ -40,6 +40,13 @@ namespace Magnum.Common.Specs.StateMachine
 					// SetCompletedState(Completed);
 
 					Initially(
+						When(CommentCardReceived, (workflow, @event, message) =>
+							{
+								if (message.IsComplaint)
+									workflow.TransitionTo(WaitingForManager);
+								else
+									workflow.TransitionTo(Completed);
+							}),
 						When(OrderSubmitted, machine =>
 							{
 								// send request for payment
@@ -97,12 +104,15 @@ namespace Magnum.Common.Specs.StateMachine
 		public static State WaitingForPayment { get; set; }
 		public static State WaitingForPaymentApproval { get; set; }
 		public static State Completed { get; set; }
+		public static State WaitingForManager { get; set; }
 
 		public static Event OrderSubmitted { get; set; }
 		public static Event PaymentSubmitted { get; set; }
 		public static Event PaymentApproved { get; set; }
 		public static Event PaymentDenied { get; set; }
 		public static Event OrderCanceled { get; set; }
+
+		public static Event<CommentCard> CommentCardReceived { get; set; }
 
 		public void SubmitOrder()
 		{
@@ -118,5 +128,15 @@ namespace Magnum.Common.Specs.StateMachine
 		{
 			RaiseEvent(PaymentApproved);
 		}
+
+		public void SubmitCommentCard(CommentCard card)
+		{
+			RaiseEvent(CommentCardReceived, card);
+		}
+	}
+
+	public class CommentCard
+	{
+		public bool IsComplaint { get; set; }
 	}
 }
