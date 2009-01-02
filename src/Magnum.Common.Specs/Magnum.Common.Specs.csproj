@@ -98,6 +98,7 @@
     <Compile Include="StateMachine\ExampleStateMachine.cs" />
     <Compile Include="StateMachine\StateSerialization_Specs.cs" />
     <Compile Include="StateMachine\State_Specs.cs" />
+    <Compile Include="Threading\Continuation_Specs.cs" />
     <Compile Include="Threading\DeferFor_Specs.cs" />
     <Compile Include="Threading\ErlangInfluencedStyle_Specs.cs" />
     <Compile Include="Threading\LamdbaIsTheNewDisposable_Specs.cs" />
