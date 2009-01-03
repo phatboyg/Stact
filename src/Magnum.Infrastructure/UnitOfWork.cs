@@ -20,29 +20,43 @@ namespace Magnum.Infrastructure
 	/// Scopes a unit of work around an NHibernate session
 	/// </summary>
 	public class UnitOfWork :
-		IDisposable
+		IUnitOfWork
 	{
 		public const string SessionKey = "NHibernateSession";
 
-		private readonly ITransaction _transaction;
+		private volatile bool _disposed;
+		private bool _ownSession;
+		private ITransaction _transaction;
 
 		public UnitOfWork()
 		{
 			var session = LocalContext.Current.Retrieve<ISession>(SessionKey);
+			if (session == null)
+				throw new ApplicationException("There is no session active for the unit of work to use");
 
 			_transaction = session.BeginTransaction();
 		}
 
 		public UnitOfWork(ISessionFactory sessionFactory)
 		{
-			var session = LocalContext.Current.Retrieve(SessionKey, () => sessionFactory.OpenSession());
+			var session = LocalContext.Current.Retrieve(SessionKey, () =>
+				{
+					ISession s = sessionFactory.OpenSession();
+
+					s.FlushMode = FlushMode.Commit;
+
+					_ownSession = true;
+
+					return s;
+				});
 
 			_transaction = session.BeginTransaction();
 		}
 
 		public void Dispose()
 		{
-			_transaction.Dispose();
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		public void Complete()
@@ -53,6 +67,31 @@ namespace Magnum.Infrastructure
 		public void Fail()
 		{
 			_transaction.Rollback();
+		}
+
+		public void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
+			{
+				_transaction.Dispose();
+				_transaction = null;
+
+				if (_ownSession)
+				{
+					var session = LocalContext.Current.Retrieve<ISession>(SessionKey);
+
+					LocalContext.Current.Remove(SessionKey);
+
+					session.Dispose();
+				}
+			}
+			_disposed = true;
+		}
+
+		~UnitOfWork()
+		{
+			Dispose(false);
 		}
 	}
 }

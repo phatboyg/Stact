@@ -10,19 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common
+namespace Magnum.Infrastructure
 {
 	using System;
 
-	public interface ILocalContext
+	public interface IUnitOfWork :
+		IDisposable
 	{
-		object this[object key] { get; set; }
-
-		void Clear();
-
-		TValue Retrieve<TValue>(object key);
-		TValue Retrieve<TValue>(object key, Func<TValue> valueProvider);
-
-		void Remove(object key);
+		void Complete();
+		void Fail();
 	}
 }

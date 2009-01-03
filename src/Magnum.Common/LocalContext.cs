@@ -21,8 +21,8 @@ namespace Magnum.Common
 	/// </summary>
 	public static class LocalContext
 	{
-		private static readonly object _localContextHashtableKey = new object();
 		private static readonly ILocalContext _current = new LocalContextStorage();
+		private static readonly object _localContextHashtableKey = new object();
 
 		/// <summary>
 		/// Gets the current data
@@ -76,7 +76,7 @@ namespace Magnum.Common
 			{
 				object existing = ThreadLocalHashtable[key];
 
-				TValue value = (TValue)existing;
+				TValue value = (TValue) existing;
 
 				return value;
 			}
@@ -97,6 +97,12 @@ namespace Magnum.Common
 				}
 
 				return value;
+			}
+
+			public void Remove(object key)
+			{
+				if (ThreadLocalHashtable.ContainsKey(key))
+					ThreadLocalHashtable.Remove(key);
 			}
 
 			public void Clear()
