@@ -19,7 +19,7 @@ namespace Magnum.Infrastructure
 	/// <summary>
 	/// Scopes a unit of work around an NHibernate session
 	/// </summary>
-	public class UnitOfWork :
+	public class UnitOfWork : 
 		IUnitOfWork
 	{
 		public const string SessionKey = "NHibernateSession";

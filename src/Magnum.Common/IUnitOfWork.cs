@@ -10,10 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure
+namespace Magnum.Common
 {
 	using System;
 
+	/// <summary>
+	/// An interface to resolve from the container to encapsulate a unit of work
+	/// </summary>
 	public interface IUnitOfWork :
 		IDisposable
 	{

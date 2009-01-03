@@ -77,7 +77,6 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Repository\NHibernateRepository.cs" />
     <Compile Include="Repository\NHibernateRepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

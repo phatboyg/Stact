@@ -66,6 +66,7 @@
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="ILocalContext.cs" />
+    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="LocalContext.cs" />
     <Compile Include="LockFreeQueue.cs" />
     <Compile Include="Mail\FileMailServer.cs" />
