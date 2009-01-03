@@ -235,7 +235,6 @@ namespace Magnum.Common.StateMachine
 			       propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof (Event<>);
 		}
 
-
 		private static bool IsPropertyAState(PropertyInfo propertyInfo)
 		{
 			return propertyInfo.PropertyType == typeof (State<T>) || propertyInfo.PropertyType == typeof (State);
@@ -279,7 +278,7 @@ namespace Magnum.Common.StateMachine
 				throw new StateMachineException("No completed state has been defined.");
 		}
 
-		private static State<T> GetState(string name)
+		public static State<T> GetState(string name)
 		{
 			State<T> state;
 			return _states.TryGetValue(name, out state) ? state : null;
