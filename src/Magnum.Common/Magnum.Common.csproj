@@ -65,6 +65,8 @@
     <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="ILocalContext.cs" />
+    <Compile Include="LocalContext.cs" />
     <Compile Include="LockFreeQueue.cs" />
     <Compile Include="Mail\FileMailServer.cs" />
     <Compile Include="Mail\IMailServer.cs" />
@@ -120,6 +122,7 @@
     <Compile Include="Threading\IAsyncExecutor.cs" />
     <Compile Include="Threading\ILockedObject.cs" />
     <Compile Include="Threading\ReaderWriterLockContext.cs" />
+    <Compile Include="Threading\ReaderWriterLockedDictionary.cs" />
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
     <Compile Include="Tuple.cs" />

@@ -1,3 +1,15 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Common.Specs.Threading
 {
 	using System;
@@ -22,8 +34,8 @@ namespace Magnum.Common.Specs.Threading
 			Assert.AreEqual(11, r.Value);
 
 			var t = from x in 5.ToIdentity()
-			from y in 6.ToIdentity()
-			select x + y;
+			        from y in 6.ToIdentity()
+			        select x + y;
 
 			Assert.AreEqual(11, t.Value);
 		}
@@ -40,17 +52,17 @@ namespace Magnum.Common.Specs.Threading
 		public void Lets_pull_some_magic_juice()
 		{
 			var requests = new[]
-			               	{
-			               		WebRequest.Create("http://www.google.com/"),
-			               		WebRequest.Create("http://www.yahoo.com/"),
-			               		WebRequest.Create("http://channel9.msdn.com/")
-			               	};
+				{
+					WebRequest.Create("http://www.google.com/"),
+					WebRequest.Create("http://www.yahoo.com/"),
+					WebRequest.Create("http://channel9.msdn.com/")
+				};
 			var pages = from request in requests
-			select
-				from response in request.GetResponseAsync()
-				let stream = response.GetResponseStream()
-				from html in stream.ReadToEndAsync()
-				select new {html, response};
+			            select
+			            	from response in AsyncExtensionsForStuff.GetResponseAsync(request)
+			            	let stream = response.GetResponseStream()
+			            	from html in stream.ReadToEndAsync()
+			            	select new {html, response};
 
 			foreach (var page in pages)
 			{
@@ -67,18 +79,15 @@ namespace Magnum.Common.Specs.Threading
 		}
 
 
-
 		[Test]
 		public void Something_special_this_way_comes()
 		{
-
-			var r = from request in new[]{new MyRequestMessage()}
-			select
-				from response in request.MakeRequest()
-				let responseMessage = response.GetResponse<MyResponseMessage>()
-				let otherResponse = response.GetResponse<OtherResponseMessage>()
-				select new { Response = response, Message = responseMessage, OtherMessage = otherResponse};
-
+			var r = from request in new[] {new MyRequestMessage()}
+			        select
+			        	from response in request.MakeRequest()
+			        	let responseMessage = response.GetResponse<MyResponseMessage>()
+			        	let otherResponse = response.GetResponse<OtherResponseMessage>()
+			        	select new {Response = response, Message = responseMessage, OtherMessage = otherResponse};
 
 
 			foreach (var reply in r)
@@ -88,25 +97,14 @@ namespace Magnum.Common.Specs.Threading
 // so this gets called when the response is received I supppose
 					});
 			}
-
-
-
 		}
-
-
-
-
-
-
 	}
 
 	internal class OtherResponseMessage
-	{
-	}
+	{}
 
 	internal class MyResponseMessage
-	{
-	}
+	{}
 
 	public class MyRequestMessage
 	{
@@ -129,13 +127,11 @@ namespace Magnum.Common.Specs.Threading
 		public static K<RRScope> MakeRequest(this MyRequestMessage request)
 		{
 			return respond => request.BeginGetResponse(result =>
-			{
-				var response = request.EndGetResponse(result);
-				respond(response);
-			}, null);
+				{
+					var response = request.EndGetResponse(result);
+					respond(response);
+				}, null);
 		}
-
-		
 	}
 
 	public class RRScope
@@ -143,7 +139,6 @@ namespace Magnum.Common.Specs.Threading
 		public T GetResponse<T>()
 		{
 			return default(T);
-			
 		}
 	}
 
@@ -154,8 +149,6 @@ namespace Magnum.Common.Specs.Threading
 	// this would make it slick and retain our thread management rules
 
 	// me likey monads~
-
-
 
 
 	public static class AsyncExtensionsForStuff

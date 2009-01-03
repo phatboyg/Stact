@@ -51,7 +51,7 @@ namespace Magnum.Common.Specs.StateMachine
 			{
 				var copied = (ExampleStateMachine) _formatter.Deserialize(input);
 
-				Assert.AreEqual(ExampleStateMachine.WaitingForPayment, copied.Current);
+				Assert.AreEqual(ExampleStateMachine.WaitingForPayment, copied.CurrentState);
 			}
 		}
 	}

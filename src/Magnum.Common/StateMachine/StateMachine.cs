@@ -53,16 +53,23 @@ namespace Magnum.Common.StateMachine
 				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
 		}
 
-		public State Current
+		/// <summary>
+		/// Returns the current state of the StateMachine
+		/// </summary>
+		public State CurrentState
 		{
 			get { return _current; }
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("Current", Current.Name);
+			info.AddValue("Current", CurrentState.Name);
 		}
 
+		/// <summary>
+		/// Raise an event within the current state
+		/// </summary>
+		/// <param name="raised">The event to raise</param>
 		protected void RaiseEvent(Event raised)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
@@ -70,6 +77,12 @@ namespace Magnum.Common.StateMachine
 			_current.RaiseEvent(this as T, eevent, null);
 		}
 
+		/// <summary>
+		/// Raise an event within the current state passing the data associated with the event
+		/// </summary>
+		/// <typeparam name="V">The type of data, must match the data type expected by the event</typeparam>
+		/// <param name="raised">The event to raise</param>
+		/// <param name="value">The data to associate with the event</param>
 		protected void RaiseEvent<V>(Event raised, V value)
 		{
 			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
@@ -103,21 +116,43 @@ namespace Magnum.Common.StateMachine
 			_current = null;
 		}
 
+		/// <summary>
+		/// This must be called from the static constructor to define the states, events, and transitions
+		/// 
+		/// This is performed as an expression because the base static class needs to perform setup
+		/// before actually defining the state machine and derived classes don't call static base class 
+		/// constructors
+		/// </summary>
+		/// <param name="definition">An expression to invoke to setup the state machine</param>
 		protected static void Define(Action definition)
 		{
 			definition();
 		}
 
+		/// <summary>
+		/// Sets the state to use for a completed state machine. By default, the state named "Completed" is used.
+		/// </summary>
+		/// <param name="completedState"></param>
 		protected static void SetCompletedState(State completedState)
 		{
 			_completedState = State<T>.GetState(completedState);
 		}
 
+		/// <summary>
+		/// Sets the state to use for a newly created state machine. By default, the state named "Initial" is used.
+		/// </summary>
+		/// <param name="initialState"></param>
 		protected static void SetInitialState(State initialState)
 		{
 			_initialState = State<T>.GetState(initialState);
 		}
 
+		/// <summary>
+		/// Defines an actions to take when an event is raised within a state
+		/// </summary>
+		/// <param name="raised"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		protected static StateEventAction<T> When(Event raised, Action<T> action)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
@@ -131,6 +166,12 @@ namespace Magnum.Common.StateMachine
 			return result;
 		}
 
+		/// <summary>
+		/// Defines an action to take when an event is raised within a state
+		/// </summary>
+		/// <param name="raised"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		protected static StateEventAction<T> When(Event raised, Action<T, BasicEvent<T>> action)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
@@ -144,6 +185,13 @@ namespace Magnum.Common.StateMachine
 			return result;
 		}
 
+		/// <summary>
+		/// Defines an action to take when an event is raised within a state
+		/// </summary>
+		/// <typeparam name="V"></typeparam>
+		/// <param name="raised"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		protected static StateEventAction<T> When<V>(Event<V> raised, Action<T, DataEvent<T,V>, V> action) 
 			where V : class
 		{
@@ -158,11 +206,20 @@ namespace Magnum.Common.StateMachine
 			return result;
 		}
 
+		/// <summary>
+		/// Opens the definition of the event actions for the initial state (shortcut for During(Initial))
+		/// </summary>
+		/// <param name="actions"></param>
 		protected static void Initially(params StateEventAction<T>[] actions)
 		{
 			During(_initialState, actions);
 		}
 
+		/// <summary>
+		/// Opens the definition of the event actions for the specified state
+		/// </summary>
+		/// <param name="inputState"></param>
+		/// <param name="actions"></param>
 		protected static void During(State inputState, params StateEventAction<T>[] actions)
 		{
 			State<T> state = State<T>.GetState(inputState);
@@ -287,5 +344,6 @@ namespace Magnum.Common.StateMachine
 
 	public interface StateMachine
 	{
+
 	}
 }

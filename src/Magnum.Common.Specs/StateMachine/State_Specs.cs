@@ -32,7 +32,7 @@ namespace Magnum.Common.Specs.StateMachine
 		{
 			ExampleStateMachine example = new ExampleStateMachine();
 
-			Assert.AreEqual(ExampleStateMachine.Initial, example.Current);
+			Assert.AreEqual(ExampleStateMachine.Initial, example.CurrentState);
 		}
 
 		[Test]
@@ -42,15 +42,15 @@ namespace Magnum.Common.Specs.StateMachine
 
 			example.SubmitOrder();
 
-			Assert.AreEqual(ExampleStateMachine.WaitingForPayment, example.Current);
+			Assert.AreEqual(ExampleStateMachine.WaitingForPayment, example.CurrentState);
 
 			example.SubmitPayment();
 
-			Assert.AreEqual(ExampleStateMachine.WaitingForPaymentApproval, example.Current);
+			Assert.AreEqual(ExampleStateMachine.WaitingForPaymentApproval, example.CurrentState);
 
 			example.ApprovePayment();
 
-			Assert.AreEqual(ExampleStateMachine.Completed, example.Current);
+			Assert.AreEqual(ExampleStateMachine.Completed, example.CurrentState);
 		}
 
 		[Test]
@@ -60,7 +60,7 @@ namespace Magnum.Common.Specs.StateMachine
 
 			example.SubmitCommentCard(new CommentCard { IsComplaint = true });
 
-			Assert.AreEqual(ExampleStateMachine.WaitingForManager, example.Current);
+			Assert.AreEqual(ExampleStateMachine.WaitingForManager, example.CurrentState);
 		}
 
 		[Test]
@@ -70,7 +70,7 @@ namespace Magnum.Common.Specs.StateMachine
 
 			example.SubmitCommentCard(new CommentCard { IsComplaint = false });
 
-			Assert.AreEqual(ExampleStateMachine.Completed, example.Current);
+			Assert.AreEqual(ExampleStateMachine.Completed, example.CurrentState);
 		}
 
 	}

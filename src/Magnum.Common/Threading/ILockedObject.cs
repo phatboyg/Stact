@@ -33,6 +33,8 @@ namespace Magnum.Common.Threading
 		/// <param name="action"></param>
 		void ReadLock(Action<T> action);
 
+		V ReadLock<V>(Func<T, V> action);
+
 		/// <summary>
 		/// Access the contained object within a read lock if possible before the timeout expires
 		/// </summary>
@@ -42,17 +44,26 @@ namespace Magnum.Common.Threading
 		bool ReadLock(TimeSpan timeout, Action<T> action);
 
 		/// <summary>
+		/// Access the contained object within an upgradeable read lock
+		/// </summary>
+		/// <param name="action"></param>
+		void UpgradeableReadLock(Action<T> action);
+
+		V UpgradeableReadLock<V>(Func<T, V> action);
+		
+		bool UpgradeableReadLock(TimeSpan timeout, Action<T> action);
+
+		/// <summary>
 		/// Access the contained object within a write lock
 		/// </summary>
 		/// <param name="action"></param>
 		void WriteLock(Func<T, T> action);
+	
+		void WriteLock(Action<T> action);
 
-		/// <summary>
-		/// Access the contained object within a write lock if possible before the timeout expires
-		/// </summary>
-		/// <param name="timeout">Time to wait for a lock before returning false</param>
-		/// <param name="action"></param>
-		/// <returns>True if the lock was obtained and the function called, otherwise false</returns>
+		V WriteLock<V>(Func<T, V> action);
+		
 		bool WriteLock(TimeSpan timeout, Func<T, T> action);
+		void WriteLock(TimeSpan timeout, Action<T> action);
 	}
 }
