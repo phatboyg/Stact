@@ -29,7 +29,7 @@ namespace Magnum.Common.StateMachine
 		private static readonly Dictionary<string, State<T>> _states = new Dictionary<string, State<T>>();
 		private static State<T> _completedState;
 		private static State<T> _initialState;
-		private State<T> _current;
+		private State<T> _currentState;
 
 		static StateMachine()
 		{
@@ -48,8 +48,8 @@ namespace Magnum.Common.StateMachine
 		{
 			string currentStateName = info.GetString("Current");
 
-			_current = GetState(currentStateName);
-			if (_current == null)
+			_currentState = GetState(currentStateName);
+			if (_currentState == null)
 				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
 		}
 
@@ -58,7 +58,7 @@ namespace Magnum.Common.StateMachine
 		/// </summary>
 		public State CurrentState
 		{
-			get { return _current; }
+			get { return _currentState; }
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -74,7 +74,7 @@ namespace Magnum.Common.StateMachine
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			_current.RaiseEvent(this as T, eevent, null);
+			_currentState.RaiseEvent(this as T, eevent, null);
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace Magnum.Common.StateMachine
 		{
 			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
 
-			_current.RaiseEvent(this as T, eevent, value);
+			_currentState.RaiseEvent(this as T, eevent, value);
 		}
 
 		protected void TransitionTo(State state)
@@ -104,16 +104,16 @@ namespace Magnum.Common.StateMachine
 
 		private void EnterState(State<T> state)
 		{
-			_current = state;
-			_current.EnterState(this as T);
+			_currentState = state;
+			_currentState.EnterState(this as T);
 		}
 
 		private void LeaveCurrentState()
 		{
-			if (_current == null) return;
+			if (_currentState == null) return;
 
-			_current.LeaveState(this as T);
-			_current = null;
+			_currentState.LeaveState(this as T);
+			_currentState = null;
 		}
 
 		/// <summary>
