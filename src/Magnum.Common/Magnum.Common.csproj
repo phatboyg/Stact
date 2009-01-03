@@ -91,11 +91,6 @@
     <Compile Include="Repository\IAggregateRoot.cs" />
     <Compile Include="Repository\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
-    <Compile Include="rhino-commons\Collection.cs" />
-    <Compile Include="rhino-commons\Exceptions\ElementNotFoundException.cs" />
-    <Compile Include="rhino-commons\Guard.cs" />
-    <Compile Include="rhino-commons\ILocalData.cs" />
-    <Compile Include="rhino-commons\LocalData.cs" />
     <Compile Include="ObjectExtensions\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Range.cs" />

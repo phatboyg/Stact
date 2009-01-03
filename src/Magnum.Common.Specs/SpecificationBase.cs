@@ -16,7 +16,7 @@ namespace Magnum.Common.Specs
     using MbUnit.Framework;
     using Rhino.Mocks;
 
-    [TestFixture]
+	[TestFixture]
     public class SpecificationBase
     {
         #region Setup/Teardown

@@ -20,6 +20,7 @@ namespace Magnum.Common
 
 		void Clear();
 
+		TValue Retrieve<TValue>(object key);
 		TValue Retrieve<TValue>(object key, Func<TValue> valueProvider);
 	}
 }

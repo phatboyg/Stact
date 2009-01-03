@@ -7,7 +7,7 @@ namespace Magnum.Common.Specs.Repository
     using MbUnit.Framework;
     using Rhino.Mocks;
 
-    [TestFixture]
+	[TestFixture]
     public class When_loading_a_value_from_a_repository
     {
         #region Setup/Teardown

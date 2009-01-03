@@ -3,7 +3,7 @@
     using MbUnit.Framework;
     using Rhino.Mocks;
 
-    [TestFixture]
+	[TestFixture]
     public class Specification
     {
         #region Setup/Teardown

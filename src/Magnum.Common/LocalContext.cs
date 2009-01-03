@@ -72,6 +72,15 @@ namespace Magnum.Common
 				set { ThreadLocalHashtable[key] = value; }
 			}
 
+			public TValue Retrieve<TValue>(object key)
+			{
+				object existing = ThreadLocalHashtable[key];
+
+				TValue value = (TValue)existing;
+
+				return value;
+			}
+
 			public TValue Retrieve<TValue>(object key, Func<TValue> valueProvider)
 			{
 				object existing = ThreadLocalHashtable[key];
