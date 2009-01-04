@@ -92,13 +92,11 @@ namespace Magnum.Common.Specs.StateMachine
 		}
 
 		public ExampleStateMachine()
-		{
-		}
+		{}
 
 		public ExampleStateMachine(SerializationInfo info, StreamingContext context)
 			: base(info, context)
-		{
-		}
+		{}
 
 		public static State Initial { get; set; }
 		public static State WaitingForPayment { get; set; }
@@ -113,6 +111,8 @@ namespace Magnum.Common.Specs.StateMachine
 		public static Event OrderCanceled { get; set; }
 
 		public static Event<CommentCard> CommentCardReceived { get; set; }
+
+		public Guid TransactionId { get; set; }
 
 		public void SubmitOrder()
 		{

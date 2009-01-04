@@ -72,6 +72,11 @@ namespace Magnum.Common
 				set { ThreadLocalHashtable[key] = value; }
 			}
 
+			public TValue Retrieve<TValue>()
+			{
+				return ThreadLocalHashtable.Retrieve<TValue>();
+			}
+
 			public TValue Retrieve<TValue>(object key)
 			{
 				object existing = ThreadLocalHashtable[key];
@@ -103,6 +108,21 @@ namespace Magnum.Common
 			{
 				if (ThreadLocalHashtable.ContainsKey(key))
 					ThreadLocalHashtable.Remove(key);
+			}
+
+			public bool Contains(object key)
+			{
+				return ThreadLocalHashtable.ContainsKey(key);
+			}
+
+			public void Store<T>(object key, T value)
+			{
+				ThreadLocalHashtable[key] = value;
+			}
+
+			public void Store<T>(T value)
+			{
+				ThreadLocalHashtable.Store(value);
 			}
 
 			public void Clear()

@@ -77,11 +77,12 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Repository\NHibernateRepository.cs" />
-    <Compile Include="Repository\NHibernateRepositoryFactory.cs" />
+    <Compile Include="Data\NHibernateTransaction.cs" />
+    <Compile Include="Data\NHibernateUnitOfWork.cs" />
+    <Compile Include="Data\NHibernateRepository.cs" />
+    <Compile Include="Data\NHibernateRepositoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine\StateMachineUserType.cs" />
-    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">

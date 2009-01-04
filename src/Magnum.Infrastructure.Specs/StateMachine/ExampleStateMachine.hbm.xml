@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="Magnum.Common.Specs"
+                   assembly="Magnum.Common.Specs"
+                   default-access="property"
+                   default-lazy="false"
+                   default-cascade="none" >
+  <class name="Magnum.Common.Specs.StateMachine.ExampleStateMachine, Magnum.Common.Specs">
+    <id name="TransactionId" column="Id" type="System.Guid">
+      <generator class="guid.comb" />
+    </id>
+
+    <property name="CurrentState" access="field.camelcase-underscore" type="Magnum.Infrastructure.StateMachine.StateMachineUserType, Magnum.Infrastructure" />
+
+  </class>
+</hibernate-mapping>

@@ -10,10 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Repository
+namespace Magnum.Infrastructure.Data
 {
 	using System;
-	using Common.Repository;
+	using Common.Data;
 	using NHibernate;
 	using NHibernate.Cfg;
 
@@ -33,24 +33,26 @@ namespace Magnum.Infrastructure.Repository
 
 		public IRepository GetRepository()
 		{
-			return new NHibernateRepository(_sessionFactory);
+			return new NHibernateRepository(_sessionFactory.OpenSession());
 		}
 
 		public IRepository<T, Guid> GetRepository<T>() where T : class, IAggregateRoot
 		{
-			return new NHibernateRepository<T, Guid>(_sessionFactory);
+			return new NHibernateRepository<T, Guid>(_sessionFactory.OpenSession());
 		}
 
 		public IRepository<T, K> GetRepository<T, K>() where T : class, IAggregateRoot<K>
 		{
-			return new NHibernateRepository<T, K>(_sessionFactory);
+			return new NHibernateRepository<T, K>(_sessionFactory.OpenSession());
 		}
 
-		public static IRepositoryFactory Build()
+		public static IRepositoryFactory Configure(Action<Configuration> configure)
 		{
 			Configuration configuration = new Configuration().Configure();
 
 			configuration.AddAssembly(typeof (NHibernateRepositoryFactory).Assembly);
+
+			configure(configuration);
 
 			return new NHibernateRepositoryFactory(configuration.BuildSessionFactory());
 		}

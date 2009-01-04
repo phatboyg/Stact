@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Repository
+namespace Magnum.Common.Data
 {
 	using System;
 	using System.Collections.Generic;
@@ -44,14 +44,14 @@ namespace Magnum.Common.Repository
 		/// <param name="item"></param>
 		void Save<T>(T item) where T : class;
 
-        /// <summary>
-        /// Updates an existing object
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-	    void Update<T>(T item) where T : class;
+		/// <summary>
+		/// Updates an existing object
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="item"></param>
+		void Update<T>(T item) where T : class;
 
-	    /// <summary>
+		/// <summary>
 		/// Deletes an object from the repository
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -89,11 +89,11 @@ namespace Magnum.Common.Repository
 		/// <param name="item"></param>
 		void Save(T item);
 
-        /// <summary>
-        /// Updates an existing item
-        /// </summary>
-        /// <param name="item"></param>
-	    void Update(T item);
+		/// <summary>
+		/// Updates an existing item
+		/// </summary>
+		/// <param name="item"></param>
+		void Update(T item);
 
 		/// <summary>
 		/// Deletes an object from the repository

@@ -10,17 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Repository
+namespace Magnum.Common.Specs
 {
-	using System;
+	using System.Collections;
+	using MbUnit.Framework;
 
-	public interface IAggregateRoot<TId>
+	[TestFixture]
+	public class TypedKey_Specs
 	{
-		TId Id { get; }
-	}
+		[Test]
+		public void FIRST_TEST_NAME()
+		{
+			Hashtable items = new Hashtable();
 
-	public interface IAggregateRoot :
-		IAggregateRoot<Guid>
-	{
+			Range<int> through = 1.Through(5);
+			items.Store(through);
+
+			var value = items.Retrieve<Range<int>>();
+
+			value.ShouldEqual(through);
+		}
 	}
 }
