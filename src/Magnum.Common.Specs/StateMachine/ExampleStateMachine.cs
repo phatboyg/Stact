@@ -56,7 +56,7 @@ namespace Magnum.Common.Specs.StateMachine
 						When(OrderCanceled, machine =>
 							{
 								// nothing has happened yet so we just complete 
-								machine.TransitionTo(Completed);
+                                machine.Complete();
 							}));
 
 					During(WaitingForPayment,
@@ -75,7 +75,7 @@ namespace Magnum.Common.Specs.StateMachine
 						When(PaymentApproved, machine =>
 							{
 								// since this machine only deals with the cashier, it is over
-								machine.TransitionTo(Completed);
+							    machine.Complete();
 							}),
 						When(PaymentDenied, machine =>
 							{
