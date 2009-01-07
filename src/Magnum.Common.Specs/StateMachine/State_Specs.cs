@@ -64,6 +64,20 @@ namespace Magnum.Common.Specs.StateMachine
 		}
 
 		[Test]
+		public void Multiple_expressions_per_event_should_run_in_order()
+		{
+			ExampleStateMachine example = new ExampleStateMachine();
+
+			example.SubmitCommentCard(new CommentCard { IsComplaint = true });
+
+			Assert.AreEqual(ExampleStateMachine.WaitingForManager, example.CurrentState);
+
+			example.BurnCommentCard();
+
+			Assert.AreEqual(ExampleStateMachine.Completed, example.CurrentState);
+		}
+
+		[Test]
 		public void Typed_events_should_carry_their_data_to_the_expression_other()
 		{
 			ExampleStateMachine example = new ExampleStateMachine();

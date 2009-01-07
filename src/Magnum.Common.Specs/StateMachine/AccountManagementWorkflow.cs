@@ -29,56 +29,57 @@ namespace Magnum.Common.Specs.StateMachine
 					// SetCompletedState(Completed);
 
 					During(Initial,
-						When(RequestSubmitted, workflow =>
+						When(RequestSubmitted)
+							.Then(workflow =>
 							{
 								// workflow is your scope
 								workflow.RequestApprovalFromManager();
-								workflow.TransitionTo(WaitingForManagementResponse);
-							}),
-						When(RequestCanceled, workflow =>
+							}).TransitionTo(WaitingForManagementResponse),
+						When(RequestCanceled)
+							.Then(workflow =>
 							{
 								// nothing has happened yet so we just complete 
-								workflow.Complete();
-							}));
+							}).Complete());
 
 					During(WaitingForManagementResponse,
-						When(ManagementApproves, workflow =>
+						When(ManagementApproves)
+							.Then(workflow =>
 							{
 								workflow.RequestSecurityReview();
-								workflow.TransitionTo(WaitingForSecurityResponse);
-							}),
-						When(ManagementDeclines, workflow =>
+							}).TransitionTo(WaitingForSecurityResponse),
+						When(ManagementDeclines)
+							.Then(workflow =>
 							{
 								workflow.NotifyRequestDeclined();
-								workflow.Complete();
-							}),
-						When(RequestCanceled, workflow =>
+							}).Complete(),
+						When(RequestCanceled)
+							.Then(workflow =>
 							{
 								workflow.NotifyRequestCancelled();
-								workflow.Complete();
-							}));
+							}).Complete());
 
 					During(WaitingForSecurityResponse,
-						When(SecurityApproves, workflow =>
+						When(SecurityApproves)
+							.Then(workflow =>
 							{
 								workflow.NotifyWorkTeams(); //possible fork/join here
-								workflow.TransitionTo(WaitingForWorkToComplete);
-							}),
-						When(SecurityDeclines, workflow =>
+							}).TransitionTo(WaitingForWorkToComplete),
+						When(SecurityDeclines)
+							.Then(workflow =>
 							{
 								workflow.NotifyRequestDeclined();
-								workflow.Complete();
-							}));
+							}).Complete());
 
 					During(WaitingForWorkToComplete,
-						When(WorkComplete, workflow =>
+						When(WorkComplete)
+							.Then(workflow =>
 							{
 								// do stuff
-								workflow.Complete();
-							}));
+							}).Complete());
 
 					During(Completed,
-						When(Completed.Enter, workflow =>
+						When(Completed.Enter)
+							.Then(workflow =>
 							{
 								// complete the transaction if required
 							}));

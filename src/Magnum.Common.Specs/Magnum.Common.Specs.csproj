@@ -76,6 +76,7 @@
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
+    <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="TypedKey_Specs.cs" />
     <Compile Include="Mapping_Specs.cs" />
     <Compile Include="Metric_Specs.cs" />

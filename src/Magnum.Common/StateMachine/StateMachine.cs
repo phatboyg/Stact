@@ -90,17 +90,17 @@ namespace Magnum.Common.StateMachine
 			_currentState.RaiseEvent(this as T, eevent, value);
 		}
 
-		protected void TransitionTo(State state)
-		{
-			LeaveCurrentState();
-
-			EnterState(State<T>.GetState(state));
-		}
-
-		protected void Complete()
-		{
-			TransitionTo(_completedState);
-		}
+//		protected void TransitionTo(State state)
+//		{
+//			LeaveCurrentState();
+//
+//			EnterState(State<T>.GetState(state));
+//		}
+//
+//		protected void Complete()
+//		{
+//			TransitionTo(_completedState);
+//		}
 
 		private void EnterState(State<T> state)
 		{
@@ -114,6 +114,12 @@ namespace Magnum.Common.StateMachine
 
 			_currentState.LeaveState(this as T);
 			_currentState = null;
+		}
+
+		public static State<T> GetState(string name)
+		{
+			State<T> state;
+			return _states.TryGetValue(name, out state) ? state : null;
 		}
 
 		/// <summary>
@@ -151,57 +157,26 @@ namespace Magnum.Common.StateMachine
 		/// Defines an actions to take when an event is raised within a state
 		/// </summary>
 		/// <param name="raised"></param>
-		/// <param name="action"></param>
 		/// <returns></returns>
-		protected static StateEventAction<T> When(Event raised, Action<T> action)
+		protected static StateEventAction<T> When(Event raised)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			var result = new StateEventAction<T>
-			{
-				RaisedEvent = eevent,
-				EventAction = (t, e, v) => action(t)
-			};
+			var result = new StateEventAction<T>(eevent);
 
 			return result;
 		}
 
 		/// <summary>
-		/// Defines an action to take when an event is raised within a state
+		/// Starts the definition of actions to take when an event occurs
 		/// </summary>
-		/// <param name="raised"></param>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		protected static StateEventAction<T> When(Event raised, Action<T, BasicEvent<T>> action)
-		{
-			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
-
-			var result = new StateEventAction<T>
-			{
-				RaisedEvent = eevent,
-				EventAction = (t, e, v) => action(t, e as BasicEvent<T>)
-			};
-
-			return result;
-		}
-
-		/// <summary>
-		/// Defines an action to take when an event is raised within a state
-		/// </summary>
-		/// <typeparam name="V"></typeparam>
-		/// <param name="raised"></param>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		protected static StateEventAction<T> When<V>(Event<V> raised, Action<T, DataEvent<T,V>, V> action) 
+		/// <param name="raised">The event that would be raised</param>
+		protected static StateEventAction<T, V> When<V>(Event<V> raised)
 			where V : class
 		{
 			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
 
-			var result = new StateEventAction<T>
-				{
-					RaisedEvent = eevent,
-					EventAction = (t, e, v) => action(t, e as DataEvent<T, V>, v as V)
-				};
+			var result = new StateEventAction<T, V>(eevent);
 
 			return result;
 		}
@@ -226,8 +201,15 @@ namespace Magnum.Common.StateMachine
 
 			foreach (StateEventAction<T> action in actions)
 			{
-				state.BindEventAction(action.RaisedEvent, action.EventAction);
+				state.BindEventAction(action);
 			}
+		}
+
+		internal void ChangeCurrentState(State newState)
+		{
+			LeaveCurrentState();
+
+			EnterState(State<T>.GetState(newState));
 		}
 
 		private static void InitializeEvents()
@@ -249,7 +231,7 @@ namespace Magnum.Common.StateMachine
 					var name = Expression.Parameter(typeof (string), "name");
 					var newExp = Expression.New(ctor, name);
 
-					Func<string, object> creator = Expression.Lambda<Func<string, object>>(newExp, new[]{name}).Compile();
+					Func<string, object> creator = Expression.Lambda<Func<string, object>>(newExp, new[] {name}).Compile();
 
 					PropertyInfo eventProperty = propertyInfo;
 
@@ -335,15 +317,19 @@ namespace Magnum.Common.StateMachine
 				throw new StateMachineException("No completed state has been defined.");
 		}
 
-		public static State<T> GetState(string name)
+		internal static State GetCompletedState()
 		{
-			State<T> state;
-			return _states.TryGetValue(name, out state) ? state : null;
+			return _completedState;
 		}
 	}
 
 	public interface StateMachine
 	{
+	}
+
+	public static class ExtensionsToStateMachine
+	{
+
 
 	}
 }

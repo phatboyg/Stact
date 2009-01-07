@@ -40,63 +40,77 @@ namespace Magnum.Common.Specs.StateMachine
 					// SetCompletedState(Completed);
 
 					Initially(
-						When(CommentCardReceived, (workflow, @event, message) =>
-							{
-								if (message.IsComplaint)
-									workflow.TransitionTo(WaitingForManager);
-								else
-									workflow.TransitionTo(Completed);
-							}),
-						When(OrderSubmitted, machine =>
-							{
-								// send request for payment
-								// send barista the cup/order
-								machine.TransitionTo(WaitingForPayment);
-							}),
-						When(OrderCanceled, machine =>
-							{
-								// nothing has happened yet so we just complete 
-                                machine.Complete();
-							}));
+						When(CommentCardReceived)
+							.And(card => card.IsComplaint)
+							.Then((workflow, message) =>
+								{
+									// send e-mail to manager about complaint
+								})
+							.TransitionTo(WaitingForManager),
+						When(CommentCardReceived)
+							.And(card => !card.IsComplaint)
+							.TransitionTo(Completed),
+						When(OrderSubmitted)
+							.Then(workflow =>
+								{
+									// send request for payment
+									// send barista the cup/order
+								})
+							.TransitionTo(WaitingForPayment),
+						When(OrderCanceled)
+							.Then(machine =>
+								{
+									// nothing has happened yet so we just complete 
+								})
+							.Complete());
+
+					During(WaitingForManager,
+						When(CommentCardDiscarded)
+							.TransitionTo(Initial),
+						When(CommentCardDiscarded)
+							.TransitionTo(Completed));
 
 					During(WaitingForPayment,
-						When(PaymentSubmitted, machine =>
-							{
-								// send payment data for approval
-								machine.TransitionTo(WaitingForPaymentApproval);
-							}),
-						When(OrderCanceled, machine =>
-							{
-								// notify barista that order was cancelled
-								machine.Complete();
-							}));
+						When(PaymentSubmitted)
+							.Then(machine =>
+								{
+									// send payment data for approval
+								}).TransitionTo(WaitingForPaymentApproval),
+						When(OrderCanceled)
+							.Then(machine =>
+								{
+									// notify barista that order was cancelled
+								}).Complete());
 
 					During(WaitingForPaymentApproval,
-						When(PaymentApproved, machine =>
-							{
-								// since this machine only deals with the cashier, it is over
-							    machine.Complete();
-							}),
-						When(PaymentDenied, machine =>
-							{
-								// request payment again
-								machine.TransitionTo(WaitingForPayment);
-							}));
+						When(PaymentApproved)
+							.Then(machine =>
+								{
+									// since this machine only deals with the cashier, it is over
+								}).Complete(),
+						When(PaymentDenied)
+							.Then(machine =>
+								{
+									// request payment again
+								}).TransitionTo(WaitingForPayment));
 
 					During(Completed,
-						When(Completed.Enter, machine =>
-							{
-								// complete the transaction if required
-							}));
+						When(Completed.Enter)
+							.Then(machine =>
+								{
+									// complete the transaction if required
+								}));
 				});
 		}
 
 		public ExampleStateMachine()
-		{}
+		{
+		}
 
 		public ExampleStateMachine(SerializationInfo info, StreamingContext context)
 			: base(info, context)
-		{}
+		{
+		}
 
 		public static State Initial { get; set; }
 		public static State WaitingForPayment { get; set; }
@@ -111,6 +125,7 @@ namespace Magnum.Common.Specs.StateMachine
 		public static Event OrderCanceled { get; set; }
 
 		public static Event<CommentCard> CommentCardReceived { get; set; }
+		public static Event CommentCardDiscarded { get; set; }
 
 		public Guid TransactionId { get; set; }
 
@@ -132,6 +147,11 @@ namespace Magnum.Common.Specs.StateMachine
 		public void SubmitCommentCard(CommentCard card)
 		{
 			RaiseEvent(CommentCardReceived, card);
+		}
+
+		public void BurnCommentCard()
+		{
+			RaiseEvent(CommentCardDiscarded);
 		}
 	}
 

@@ -21,7 +21,7 @@ namespace Magnum.Common.StateMachine
 	{
 		private readonly BasicEvent<T> _enter;
 		private readonly BasicEvent<T> _leave;
-		private readonly Dictionary<Event, Action<T, Event, object>> _actions;
+		private readonly Dictionary<Event, List<StateEventAction<T>>> _actions;
 		private readonly string _name;
 
 		public State(string name)
@@ -31,7 +31,7 @@ namespace Magnum.Common.StateMachine
 			_enter = new BasicEvent<T>(string.Format("{0}:Enter", Name));
 			_leave = new BasicEvent<T>(string.Format("{0}:Leave", Name));
 
-			_actions = new Dictionary<Event, Action<T, Event, object>>();
+			_actions = new Dictionary<Event, List<StateEventAction<T>>>();
 		}
 
 		public Event Enter
@@ -51,10 +51,13 @@ namespace Magnum.Common.StateMachine
 
 		public void RaiseEvent(T instance, BasicEvent<T> eevent, object value)
 		{
-			Action<T, Event, object> action;
-			if(_actions.TryGetValue(eevent, out action))
+			List<StateEventAction<T>> eventActions;
+			if (_actions.TryGetValue(eevent, out eventActions))
 			{
-				action(instance, eevent, value);
+				foreach (var action in eventActions)
+				{
+					action.Execute(instance, eevent, value);
+				}
 			}
 		}
 
@@ -73,12 +76,19 @@ namespace Magnum.Common.StateMachine
 			return string.Format("{0} (State)", _name);
 		}
 
-		public void BindEventAction(Event eevent, Action<T, Event, object> action)
+		public void BindEventAction(StateEventAction<T> action)
 		{
-			if (_actions.ContainsKey(eevent))
-				throw new StateMachineException(string.Format("The {0} event has already been added to the {1} state", eevent, _name));
+			List<StateEventAction<T>> eventActions;
+			if(_actions.TryGetValue(action.RaisedEvent, out eventActions) == false)
+			{
+				eventActions = new List<StateEventAction<T>> { action };
 
-			_actions.Add(eevent, action);
+				_actions.Add(action.RaisedEvent, eventActions);
+			}
+			else
+			{
+				eventActions.Add(action);
+			}
 		}
 
 		public static State<T> GetState(State input)
