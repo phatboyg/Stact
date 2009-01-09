@@ -84,6 +84,7 @@
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
+    <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\DataEvent.cs" />
