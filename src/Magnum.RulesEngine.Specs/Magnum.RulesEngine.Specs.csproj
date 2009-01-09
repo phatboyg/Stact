@@ -31,6 +31,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gallio, Version=3.0.5.546, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MbUnit\Gallio.dll</HintPath>
+    </Reference>
+    <Reference Include="MbUnit, Version=3.0.5.546, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MbUnit\MbUnit.dll</HintPath>
+    </Reference>
+    <Reference Include="MbUnit35, Version=3.0.5.546, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MbUnit\MbUnit35.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.5.0.2, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -45,7 +61,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Condition.cs" />
+    <Compile Include="ICondition.cs" />
+    <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\Claim.cs" />
+    <Compile Include="Model\InstitutionalClaim.cs" />
+    <Compile Include="Model\Member.cs" />
+    <Compile Include="Model\Participant.cs" />
+    <Compile Include="Model\Party.cs" />
+    <Compile Include="Model\Payer.cs" />
+    <Compile Include="Model\Person.cs" />
+    <Compile Include="Model\ProfessionalClaim.cs" />
+    <Compile Include="Model\Professional\ServiceLine.cs" />
+    <Compile Include="Model\ServiceLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rule.cs" />
+    <Compile Include="RuleDefinition.cs" />
+    <Compile Include="RuleSet.cs" />
+    <Compile Include="RuleSet_Specs.cs" />
+    <Compile Include="SimpleRule_Specs.cs" />
+    <Compile Include="When_listing_objects_from_the_working_memory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">
+      <Project>{0A39AEF0-BBF8-4183-8D8E-A9DEED8A43F3}</Project>
+      <Name>Magnum.RulesEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\Institutional\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
