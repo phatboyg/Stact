@@ -57,6 +57,13 @@ namespace Magnum.Common.Data
 		/// <typeparam name="T"></typeparam>
 		/// <param name="item"></param>
 		void Delete<T>(T item) where T : class;
+
+        /// <summary>
+        /// Finds an object using linq
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+	    IQueryable<T> FindBy<T>() where T : class;
 	}
 
 	/// <summary>

@@ -22,31 +22,16 @@ namespace Magnum.Infrastructure.Data
 	public class NHibernateRepository :
 		IRepository
 	{
-		private readonly ISession _session;
+		private readonly Func<ISession> _session;
 
 		public NHibernateRepository()
 		{
-			_session = NHibernateUnitOfWork.Current.Session;
+			_session = () => NHibernateUnitOfWork.Current.Session;
 		}
 
 		public NHibernateRepository(ISession session)
 		{
-			_session = session;
-		}
-
-		private static NHibernateUnitOfWork CurrentUnitOfWork
-		{
-			get
-			{
-				if (!UnitOfWork.IsActive)
-					throw new InvalidOperationException("No unit of work has been started, start one before creating a repository");
-
-				NHibernateUnitOfWork current = UnitOfWork.Current as NHibernateUnitOfWork;
-				if (current == null)
-					throw new InvalidOperationException("A current UnitOfWork must be established with the NHibernateUnitOfWork provider");
-
-				return current;
-			}
+			_session = () => session;
 		}
 
 		public void Dispose()
@@ -54,28 +39,33 @@ namespace Magnum.Infrastructure.Data
 
 		public T Get<T>(object id) where T : class
 		{
-			return _session.Get<T>(id);
+			return _session().Get<T>(id);
 		}
 
 		public IList<T> List<T>() where T : class
 		{
-			return _session.CreateCriteria(typeof (T)).List<T>();
+			return _session().CreateCriteria(typeof (T)).List<T>();
 		}
 
 		public void Save<T>(T item) where T : class
 		{
-			_session.Save(item);
+			_session().Save(item);
 		}
 
 		public void Update<T>(T item) where T : class
 		{
-			_session.Update(item);
+			_session().Update(item);
 		}
 
 		public void Delete<T>(T item) where T : class
 		{
-			_session.Delete(item);
+			_session().Delete(item);
 		}
+
+        public IQueryable<T> FindBy<T>() where T : class
+        {
+            return _session().Linq<T>();
+        }
 	}
 
 	public class NHibernateRepository<T, K> :
