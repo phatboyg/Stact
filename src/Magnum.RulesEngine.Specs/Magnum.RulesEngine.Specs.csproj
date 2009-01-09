@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Condition.cs" />
+    <Compile Include="Expression_Specs.cs" />
     <Compile Include="ICondition.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\Claim.cs" />
