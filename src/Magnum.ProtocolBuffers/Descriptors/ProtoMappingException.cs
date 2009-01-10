@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers
+namespace Magnum.ProtocolBuffers.Mapping
 {
     using System;
     using System.Runtime.Serialization;

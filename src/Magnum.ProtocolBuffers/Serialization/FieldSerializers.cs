@@ -2,7 +2,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 {
     using System.Collections.Generic;
 
-    public class FieldDescriptors
+    public class FieldSerializers
     {
         readonly SortedList<int, FieldSerializer> _serializeProps = new SortedList<int, FieldSerializer>();
         readonly Dictionary<int, FieldSerializer> _deserializeProps = new Dictionary<int, FieldSerializer>();

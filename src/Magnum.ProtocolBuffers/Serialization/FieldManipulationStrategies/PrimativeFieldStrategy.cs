@@ -1,7 +1,6 @@
 namespace Magnum.ProtocolBuffers.Serialization.FieldManipulationStrategies
 {
-    public class ArrayManipulationStrategy
+    internal class PrimativeFieldStrategy : IFieldStrategy
     {
-        
     }
 }

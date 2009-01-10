@@ -11,7 +11,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 
     public interface ISerializer
     {
-        void Serialize(CodedOutputStream outputStream, object instance);
+        void Serialize(object instance, CodedOutputStream outputStream);
         object Deserialize(CodedInputStream inputStream);
 
         //void Serialize<TValue>(CodedOutputStream outputStream, TValue value);

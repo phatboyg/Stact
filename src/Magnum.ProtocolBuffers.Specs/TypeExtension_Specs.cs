@@ -32,6 +32,15 @@ namespace Magnum.ProtocolBuffers.Specs
         }
 
         [Test]
+        public void Is_primitive()
+        {
+            typeof(string).IsMessagePrimative()
+                .ShouldBeTrue();
+            typeof(int).IsMessagePrimative()
+                .ShouldBeTrue();
+        }
+
+        [Test]
         public void Generic_List()
         {
             Type t = typeof (IList<int>);

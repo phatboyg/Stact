@@ -9,16 +9,7 @@ namespace Magnum.ProtocolBuffers
     {
         public static bool IsRepeatedType(this Type type)
         {
-            if (type.IsArray) return true;
-            if (typeof(IList).IsAssignableFrom(type)) return true;
-
-            if (type.IsGenericType)
-            {
-                var genArgs = type.GetGenericArguments();
-                var genList = typeof(IList<>).MakeGenericType(genArgs);
-                return genList.IsAssignableFrom(type);
-            }
-            return false;
+            return typeof (IEnumerable).IsAssignableFrom(type);
         }
 
         public static bool IsRequiredType(this Type type)
@@ -28,6 +19,11 @@ namespace Magnum.ProtocolBuffers
         public static bool IsDictionary(this Type type)
         {
             return typeof(IDictionary<,>).IsAssignableFrom(type);
+        }
+
+        public static bool IsMessagePrimative(this Type type)
+        {
+            return type.IsPrimitive || typeof(string).IsAssignableFrom(type);
         }
 
         public static string ToGoogleTypeName(this Type type)

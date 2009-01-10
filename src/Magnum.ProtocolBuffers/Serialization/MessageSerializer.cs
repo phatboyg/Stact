@@ -18,7 +18,7 @@ namespace Magnum.ProtocolBuffers.Serialization
     public class MessageSerializer :
         IMessageSerializer
     {
-        private readonly FieldDescriptors _fieldDescriptors = new FieldDescriptors();
+        private readonly FieldSerializers _fieldSerializers = new FieldSerializers();
 
         public MessageSerializer(Type mappedType)
         {
@@ -26,9 +26,9 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
 
 
-        public void Serialize(CodedOutputStream outputStream, object instance)
+        public void Serialize(object instance, CodedOutputStream outputStream)
         {
-            foreach (FieldSerializer field in _fieldDescriptors.GetAll())
+            foreach (FieldSerializer field in _fieldSerializers.GetAll())
             {
                 field.Serialize(outputStream, instance);
             }
@@ -42,7 +42,7 @@ namespace Magnum.ProtocolBuffers.Serialization
             while (inputStream.Position < length)
             {
                 TagData tagData = inputStream.ReadTag();
-                var field = _fieldDescriptors[tagData.NumberTag];
+                var field = _fieldSerializers[tagData.NumberTag];
 
                 field.Deserialize(inputStream, ref instanceToReturn);
             }
@@ -60,7 +60,7 @@ namespace Magnum.ProtocolBuffers.Serialization
         }
         public void AddField(FieldSerializer fd)
         {
-            _fieldDescriptors.Add(fd);
+            _fieldSerializers.Add(fd);
         }
     }
 }

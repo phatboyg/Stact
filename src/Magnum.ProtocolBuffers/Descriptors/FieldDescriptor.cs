@@ -5,7 +5,6 @@ namespace Magnum.ProtocolBuffers.Mapping
     using Common.Reflection;
     using Serialization;
     using Serialization.Strategies;
-    using Specs;
 
     public class FieldDescriptor : 
         IFieldDescriptor

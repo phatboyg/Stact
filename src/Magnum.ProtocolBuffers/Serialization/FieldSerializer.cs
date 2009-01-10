@@ -2,7 +2,7 @@ namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
     using Common.Reflection;
-    using Specs;
+    using Mapping;
     using Streams;
 
     public class FieldSerializer

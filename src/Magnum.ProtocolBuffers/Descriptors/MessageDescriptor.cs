@@ -16,7 +16,6 @@ namespace Magnum.ProtocolBuffers.Mapping
             _fields =  new List<FieldDescriptor>();
             ExtensionRange = new Range<int>(0, 0, false, false);
         }
-
         public Range<int> ExtensionRange { get; private set; }
         public void SetAsideExtensions(int lower, int upper)
         {
@@ -29,12 +28,10 @@ namespace Magnum.ProtocolBuffers.Mapping
                 return _fields;
             }
         }
-
         public int FieldCount
         {
             get { return Fields.Count; }
         }
-
         public  void AddField(FieldMap<TMessage> map)
         {
             if (ExtensionRange.Contains(map.NumberTag))
@@ -47,12 +44,10 @@ namespace Magnum.ProtocolBuffers.Mapping
             FieldDescriptor desc = new FieldDescriptor(map.Name, map.NumberTag, map.PropertyInfo, map.Rules, map.DefaultValue);
             Fields.Add(desc);
         }
-
         public string Name
         {
             get; set;
         }
-
         public Type TypeMapped
         {
             get { return typeof(TMessage); }

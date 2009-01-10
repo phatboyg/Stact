@@ -29,20 +29,19 @@ namespace Magnum.ProtocolBuffers.Specs
                              Query = "from q",
                              ResultPerPage = 2
                          };
-            var map = new SearchRequestMapping();
+            
             _model.Initialize(builder=>
-                builder.AddMapping(map)
+                builder.AddMapping(new SearchRequestMapping())
             );
+
             var serializer = _model.GetSerializer(typeof (SearchRequest));
-            var stream = new CodedOutputStream();
+            var outgoingStream = new CodedOutputStream();
 
-            serializer.Serialize(stream, sr);
+            serializer.Serialize(sr, outgoingStream);
 
 
-            //Assert.AreEqual(12, stream.Length);
-
-            var codedStream = new CodedInputStream(stream.GetBytes());
-            SearchRequest sr2 = (SearchRequest)serializer.Deserialize(codedStream);
+            var incomingStream = new CodedInputStream(outgoingStream.GetBytes());
+            var sr2 = (SearchRequest)serializer.Deserialize(incomingStream);
 
             sr2.PageNumber
                 .ShouldEqual(sr.PageNumber);
@@ -71,7 +70,7 @@ namespace Magnum.ProtocolBuffers.Specs
 
             for (int i = 0; i < 100000; i++)
             {
-                desc.Serialize(stream, sr);
+                desc.Serialize(sr, stream);
                 
             }
         }
@@ -93,7 +92,7 @@ namespace Magnum.ProtocolBuffers.Specs
             var desc = _model.GetSerializer(sr.GetType());
             var stream = new CodedOutputStream();
 
-                desc.Serialize(stream, sr);
+                desc.Serialize(sr, stream);
             byte[] bytes = stream.GetBytes();
 
             for (int i = 0; i < 100000; i++)
@@ -125,7 +124,7 @@ namespace Magnum.ProtocolBuffers.Specs
             var desc = _model.GetSerializer(typeof(TestMessage));
             var outStream = new CodedOutputStream();
 
-            desc.Serialize(outStream, msg);
+            desc.Serialize(msg, outStream);
 
             //Assert.AreEqual(48, outStream.Length);
 
@@ -157,7 +156,7 @@ namespace Magnum.ProtocolBuffers.Specs
             var desc = _model.GetSerializer(msg.GetType());
             var outStream = new CodedOutputStream();
 
-            desc.Serialize(outStream, msg);
+            desc.Serialize(msg, outStream);
 
             Assert.AreEqual(4, outStream.Length);
 

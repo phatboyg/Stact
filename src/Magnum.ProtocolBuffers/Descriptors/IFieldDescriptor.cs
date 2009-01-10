@@ -3,7 +3,6 @@ namespace Magnum.ProtocolBuffers.Mapping
     using System;
     using System.Reflection;
     using Serialization;
-    using Specs;
 
     public interface IFieldDescriptor
     {

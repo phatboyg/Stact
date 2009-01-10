@@ -1,4 +1,4 @@
-namespace Magnum.ProtocolBuffers.Specs
+namespace Magnum.ProtocolBuffers.Mapping
 {
     public enum FieldRules
     {

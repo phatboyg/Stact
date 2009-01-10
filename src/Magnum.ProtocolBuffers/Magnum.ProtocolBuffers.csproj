@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F4F363D4-0ED1-4DE2-B96D-7883215D816B}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -40,21 +40,24 @@
     <Compile Include="ClrMessages\GuidMessage.cs" />
     <Compile Include="CommunicationModel.cs" />
     <Compile Include="CommunicationModelBuilder.cs" />
-    <Compile Include="Mapping\FieldDescriptor.cs" />
+    <Compile Include="Descriptors\FieldDescriptor.cs" />
     <Compile Include="FieldMap.cs" />
-    <Compile Include="Mapping\FieldRules.cs" />
+    <Compile Include="Descriptors\FieldRules.cs" />
     <Compile Include="IMap.cs" />
-    <Compile Include="Mapping\IFieldDescriptor.cs" />
-    <Compile Include="Mapping\IMessageDescriptor.cs" />
-    <Compile Include="Mapping\MessageDescriptor.cs" />
+    <Compile Include="Descriptors\IFieldDescriptor.cs" />
+    <Compile Include="Descriptors\IMessageDescriptor.cs" />
+    <Compile Include="Descriptors\MessageDescriptor.cs" />
     <Compile Include="MessageMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Mapping\ProtoMappingException.cs" />
-    <Compile Include="Mapping\ReflectionHelper.cs" />
-    <Compile Include="Serialization\FieldDescriptors.cs" />
-    <Compile Include="Serialization\FieldManipulationStrategies\ArrayManipulationStrategy.cs" />
-    <Compile Include="Serialization\FieldManipulationStrategies\GenericListStrategy.cs" />
-    <Compile Include="Serialization\FieldManipulationStrategies\InstanceManipulationStrategy.cs" />
+    <Compile Include="Descriptors\ProtoMappingException.cs" />
+    <Compile Include="Descriptors\ReflectionHelper.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\IFieldStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\InstanceFieldStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\PrimativeFieldStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\RepeatableFieldStrategy.cs" />
+    <Compile Include="Serialization\FieldManipulationStrategies\StrategyFor.cs" />
+    <Compile Include="Serialization\FieldSerializers.cs" />
+    <Compile Include="Serialization\SerializerFor.cs" />
     <Compile Include="Serialization\Strategies\ByteStrategy.cs" />
     <Compile Include="Serialization\Strategies\ByteArrayStrategy.cs" />
     <Compile Include="Serialization\Strategies\SingleStrategy.cs" />
@@ -80,7 +83,7 @@
     <Compile Include="Serialization\TagData.cs" />
     <Compile Include="Serialization\WireFormat.cs" />
     <Compile Include="Serialization\WireType.cs" />
-    <Compile Include="Mapping\TypeExtensions.cs" />
+    <Compile Include="Descriptors\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
