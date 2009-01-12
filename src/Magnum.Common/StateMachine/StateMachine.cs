@@ -20,7 +20,8 @@ namespace Magnum.Common.StateMachine
 
 	public class StateMachine<T> :
 		StateMachine,
-		ISerializable
+		ISerializable,
+		IStateMachineInspectorSite
 		where T : StateMachine<T>
 	{
 		private const string CompletedStateName = "Completed";
@@ -315,6 +316,22 @@ namespace Magnum.Common.StateMachine
 
 			if (_completedState == null)
 				throw new StateMachineException("No completed state has been defined.");
+		}
+
+		public void Inspect(IStateMachineInspector inspector)
+		{
+			inspector.Inspect(this, () =>
+				{
+					_initialState.Inspect(inspector);
+
+					foreach (var state in _states.Values)
+					{
+						if ( state != _initialState && state != _completedState)
+							state.Inspect(inspector);
+					}
+
+					_completedState.Inspect(inspector);
+				});
 		}
 
 		internal static State GetCompletedState()
