@@ -3,6 +3,7 @@ namespace Magnum.Common.Specs.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Data;
     using Data;
     using MbUnit.Framework;
     using Rhino.Mocks;

@@ -10,28 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Data
+namespace Magnum.Common.Specs.Data
 {
-	public class NullTransaction :
-		ITransaction
+	using System.Data;
+	using Common.Data;
+	using MbUnit.Framework;
+
+	[TestFixture]
+	public class UnitOfWork_Specs
 	{
-		private static readonly NullTransaction _null = new NullTransaction();
-
-		public static NullTransaction Null
+		[Test]
+		public void A_default_provider_should_silently_behave_properly()
 		{
-			get { return _null; }
-		}
+			using (var unitOfWork = UnitOfWork.Start())
+			using (var transaction = unitOfWork.BeginTransaction(IsolationLevel.Serializable))
+			{
+				// I'm not doing anything here, just testing the syntax.
 
-		public void Dispose()
-		{
-		}
-
-		public void Commit()
-		{
-		}
-
-		public void Rollback()
-		{
+				transaction.Commit();
+			}
+			UnitOfWork.Finish();
 		}
 	}
 }
