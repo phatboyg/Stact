@@ -21,7 +21,7 @@ namespace Magnum.Common.Data
 	{
 		public const string CurrentUnitOfWorkKey = "UnitOfWork.Current.Key";
 
-		private static Func<IUnitOfWork> _createUnitOfWork = () => { throw new InvalidOperationException("No provider was setup"); };
+		private static Func<IUnitOfWork> _createUnitOfWork = NullUnitOfWork.Null;
 
 		public static void SetUnitOfWorkProvider(Func<IUnitOfWork> provider)
 		{

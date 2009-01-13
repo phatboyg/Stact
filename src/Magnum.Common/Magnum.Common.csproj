@@ -63,6 +63,8 @@
     <Compile Include="Cryptography\EncryptionResult.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
+    <Compile Include="Data\NullTransaction.cs" />
+    <Compile Include="Data\NullUnitOfWork.cs" />
     <Compile Include="Data\ITransaction.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
