@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -77,6 +77,9 @@
     <Compile Include="Data\UnitOfWork_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
+    <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
+    <Compile Include="Linq\FileRepository.cs" />
+    <Compile Include="Linq\FlattenedObject_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
     <Compile Include="TypedKey_Specs.cs" />
