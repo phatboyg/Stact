@@ -1,1 +1,1 @@
-.\tools\nant-0.85\nant.exe /f:.\src\nant.build
+.\tools\nant-0.85\nant.exe /f:.\tools\BuildScripts\magnum.build
