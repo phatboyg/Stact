@@ -56,7 +56,7 @@ namespace Magnum.Common.Security
 			var context = sender as HttpApplication;
 			if (context == null) return;
 
-			WithSessionCookie(context.Request.Cookies, cookie => { VerifySessionCookieHash(context, context.Request, cookie); });
+			WithSessionCookie(context.Request.Cookies, cookie => { VerifySessionCookieHash(context.Request, cookie); });
 		}
 
 		private void OnEndRequest(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace Magnum.Common.Security
 				});
 		}
 
-		private void VerifySessionCookieHash(HttpApplication context, HttpRequest request, HttpCookie cookie)
+		private void VerifySessionCookieHash(HttpRequest request, HttpCookie cookie)
 		{
 			try
 			{
