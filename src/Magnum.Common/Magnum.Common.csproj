@@ -85,6 +85,7 @@
     <Compile Include="Metrics\Monitor\FlowMonitor.cs" />
     <Compile Include="Metrics\Monitor\MonitorBase.cs" />
     <Compile Include="Metrics\Monitor\ProcessMonitor.cs" />
+    <Compile Include="Metrics\Monitor\SuccessRateMonitor.cs" />
     <Compile Include="Monads\Continuations.cs" />
     <Compile Include="Monads\Identity.cs" />
     <Compile Include="Monads\List.cs" />
