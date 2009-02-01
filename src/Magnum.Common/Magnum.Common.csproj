@@ -79,8 +79,12 @@
     <Compile Include="Mail\NullMailServer.cs" />
     <Compile Include="Mail\SmtpMailServer.cs" />
     <Compile Include="Mapper.cs" />
-    <Compile Include="Metrics\Counter.cs" />
-    <Compile Include="Metrics\Timer.cs" />
+    <Compile Include="Metrics\IMonitor.cs" />
+    <Compile Include="Metrics\Monitor\CountMonitor.cs" />
+    <Compile Include="Metrics\Monitor\ExecutionMonitor.cs" />
+    <Compile Include="Metrics\Monitor\FlowMonitor.cs" />
+    <Compile Include="Metrics\Monitor\MonitorBase.cs" />
+    <Compile Include="Metrics\Monitor\ProcessMonitor.cs" />
     <Compile Include="Monads\Continuations.cs" />
     <Compile Include="Monads\Identity.cs" />
     <Compile Include="Monads\List.cs" />

@@ -90,6 +90,7 @@
     <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
     <Compile Include="Linq\FileRepository.cs" />
     <Compile Include="Linq\FlattenedObject_Specs.cs" />
+    <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
     <Compile Include="TypedKey_Specs.cs" />
