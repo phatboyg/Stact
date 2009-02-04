@@ -7,7 +7,9 @@ namespace Magnum.Specs.CommandLine
         private string[] _soloCommand = new []{"test"};
         private string[] _commandAndOnePositionalArgument = new[] {"test","magnum"};
         private string[] _commandAndTwoPositionalArguments = new[] {"test", "magnum", "local"};
-        private string[] _commandAndOneNamedArgument = new[] {"test","--Location:local"};
+        private string[] _commandAndOneLongNamedArgument = new[] {"test","--Location:local"};
+        private string[] _commandAndOneShortNamedArgument = new[] {"test","-l:local"};
+        private string[] _commandAndOnePostionalAndOneShortNamedArgument = new[] {"test","magnum","-l:local"};
 
         [Test]
         public void Should_Parse_Just_Command()
@@ -47,13 +49,35 @@ namespace Magnum.Specs.CommandLine
         }
 
         [Test]
-        public void Should_Parse_Command_And_One_Named_Args()
+        public void Should_Parse_Command_And_One_Long_Named_Args()
         {
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
 
-            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneNamedArgument);
+            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneLongNamedArgument);
             two.Args.Name.ShouldBeNull();
+            two.Args.Location.ShouldEqual("local");
+        }
+
+        [Test]
+        public void Should_Parse_Command_And_One_Short_Named_Args()
+        {
+            CommandLineParser p = new CommandLineParser();
+            p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
+
+            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneShortNamedArgument);
+            two.Args.Name.ShouldBeNull();
+            two.Args.Location.ShouldEqual("local");
+        }
+
+        [Test]
+        public void Should_Parse_positional_and_Named_args()
+        {
+            CommandLineParser p = new CommandLineParser();
+            p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
+
+            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOnePostionalAndOneShortNamedArgument);
+            two.Args.Name.ShouldEqual("magnum");
             two.Args.Location.ShouldEqual("local");
         }
     }

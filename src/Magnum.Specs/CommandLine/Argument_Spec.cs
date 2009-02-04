@@ -33,12 +33,12 @@ namespace Magnum.Specs.CommandLine
         }
 
         [Test]
-        public void ANother_Test()
+        public void Short_Form()
         {
-            Argument arg = new Argument("-Location:local");
+            Argument arg = new Argument("-l:local");
             arg.IsPostional.ShouldBeFalse();
             arg.IsShortForm.ShouldBeTrue();
-            arg.Name.ShouldEqual("Location");
+            arg.Name.ShouldEqual("l");
             arg.Value.ShouldEqual("local");
         }
 
