@@ -10,20 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Specs.StateMachine
+namespace Magnum.Specs.StateMachine
 {
-	using Common.StateMachine;
-	using MbUnit.Framework;
+    using Common.StateMachine;
+    using MbUnit.Framework;
 
-	[TestFixture]
-	public class StateVisualizer_Specs
-	{
-		[Test]
-		public void I_want_to_see_what_you_see()
-		{
-			ExampleStateMachine machine = new ExampleStateMachine();
+    [TestFixture]
+    public class StateVisualizer_Specs
+    {
+        [Test]
+        public void I_want_to_see_what_you_see()
+        {
+            ExampleStateMachine machine = new ExampleStateMachine();
 
-			StateMachineInspector.Trace(machine);
-		}
-	}
+            StateMachineInspector.Trace(machine);
+        }
+    }
 }

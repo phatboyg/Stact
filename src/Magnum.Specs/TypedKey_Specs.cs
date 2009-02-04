@@ -10,25 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Specs
+namespace Magnum.Specs
 {
-	using System.Collections;
-	using MbUnit.Framework;
+    using System.Collections;
+    using Common;
+    using MbUnit.Framework;
 
-	[TestFixture]
-	public class TypedKey_Specs
-	{
-		[Test]
-		public void FIRST_TEST_NAME()
-		{
-			Hashtable items = new Hashtable();
+    [TestFixture]
+    public class TypedKey_Specs
+    {
+        [Test]
+        public void FIRST_TEST_NAME()
+        {
+            Hashtable items = new Hashtable();
 
-			Range<int> through = 1.Through(5);
-			items.Store(through);
+            Range<int> through = 1.Through(5);
+            items.Store(through);
 
-			var value = items.Retrieve<Range<int>>();
+            var value = items.Retrieve<Range<int>>();
 
-			value.ShouldEqual(through);
-		}
-	}
+            value.ShouldEqual(through);
+        }
+    }
 }

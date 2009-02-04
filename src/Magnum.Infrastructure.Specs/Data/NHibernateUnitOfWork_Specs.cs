@@ -14,8 +14,8 @@ namespace Magnum.Infrastructure.Specs.Data
 {
 	using System;
 	using System.Data;
-	using Common.Specs;
 	using Infrastructure.Data;
+	using Magnum.Specs;
 	using MbUnit.Framework;
 	using NHibernate;
 	using Rhino.Mocks;

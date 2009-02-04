@@ -10,11 +10,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Specs.Reflection
+namespace Magnum.Specs.Reflection
 {
-	using System;
-	using MbUnit.Framework;
-    using Serialization;
+    using System;
+    using Common.Serialization;
+    using MbUnit.Framework;
 
     [TestFixture]
     public class When_building_a_delegate_using_lambdas :
@@ -48,16 +48,16 @@ namespace Magnum.Common.Specs.Reflection
             }
         }
 
-    	[Test]
-    	public void I_want_to_write_fields_with_expression_trees()
-    	{
-    		Action<FieldClass, string> hitter = (x, y) => x._field = y;
+        [Test]
+        public void I_want_to_write_fields_with_expression_trees()
+        {
+            Action<FieldClass, string> hitter = (x, y) => x._field = y;
     		
-    	}
+        }
 
-    	public class FieldClass
-    	{
-    		public string _field;
-    	}
+        public class FieldClass
+        {
+            public string _field;
+        }
     }
 }

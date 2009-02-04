@@ -8,8 +8,8 @@
     <ProjectGuid>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Magnum.Common</RootNamespace>
-    <AssemblyName>Magnum.Common</AssemblyName>
+    <RootNamespace>Magnum</RootNamespace>
+    <AssemblyName>Magnum</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

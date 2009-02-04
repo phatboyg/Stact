@@ -8,8 +8,8 @@
     <ProjectGuid>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Magnum.Common.Specs</RootNamespace>
-    <AssemblyName>Magnum.Common.Specs</AssemblyName>
+    <RootNamespace>Magnum.Specs</RootNamespace>
+    <AssemblyName>Magnum.Specs</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

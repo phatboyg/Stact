@@ -10,26 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Specs.Data
+namespace Magnum.Specs.Data
 {
-	using System.Data;
-	using Common.Data;
-	using MbUnit.Framework;
+    using System.Data;
+    using Common.Data;
+    using MbUnit.Framework;
 
-	[TestFixture]
-	public class UnitOfWork_Specs
-	{
-		[Test]
-		public void A_default_provider_should_silently_behave_properly()
-		{
-			using (var unitOfWork = UnitOfWork.Start())
-			using (var transaction = unitOfWork.BeginTransaction(IsolationLevel.Serializable))
-			{
-				// I'm not doing anything here, just testing the syntax.
+    [TestFixture]
+    public class UnitOfWork_Specs
+    {
+        [Test]
+        public void A_default_provider_should_silently_behave_properly()
+        {
+            using (var unitOfWork = UnitOfWork.Start())
+            using (var transaction = unitOfWork.BeginTransaction(IsolationLevel.Serializable))
+            {
+                // I'm not doing anything here, just testing the syntax.
 
-				transaction.Commit();
-			}
-			UnitOfWork.Finish();
-		}
-	}
+                transaction.Commit();
+            }
+            UnitOfWork.Finish();
+        }
+    }
 }

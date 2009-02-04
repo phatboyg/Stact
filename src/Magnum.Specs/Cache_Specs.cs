@@ -18,8 +18,9 @@ namespace Magnum.Common.Specs
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Machine.Specifications;
+	using Magnum.Specs;
 
-	[Concern("Caching")]
+    [Concern("Caching")]
 	public class when_a_cache_is_defined
 	{
 		private static UserCache _userCache;
@@ -33,7 +34,7 @@ namespace Magnum.Common.Specs
 
 		private Because of = () => {};
 
-		private It the_items_in_the_cache_should_exist = () => {_userCache.Exists(27).ShouldBeTrue();};
+		private It the_items_in_the_cache_should_exist = () => {SpecExtensions.ShouldBeTrue(_userCache.Exists(27));};
 	}
 
 	internal class UserCache : CacheBase<User>

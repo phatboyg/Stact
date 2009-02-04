@@ -16,8 +16,8 @@ namespace Magnum.Infrastructure.Specs.StateMachine
 	using System.Data;
 	using Common;
 	using Common.Data;
-	using Common.Specs.StateMachine;
 	using Infrastructure.Data;
+	using Magnum.Specs.StateMachine;
 	using MbUnit.Framework;
 	using NHibernate;
 	using NHibernate.Cfg;
