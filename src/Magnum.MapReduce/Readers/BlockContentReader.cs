@@ -17,7 +17,6 @@ namespace Magnum.MapReduce.Readers
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Text;
-	using Common;
 
 	public class BlockContentReader : IContentReader
 	{

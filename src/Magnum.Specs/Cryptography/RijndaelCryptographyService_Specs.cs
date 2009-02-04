@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Cryptography
 {
-    using Common.Cryptography;
+    using Magnum.Cryptography;
     using MbUnit.Framework;
 
     [TestFixture]

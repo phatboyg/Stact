@@ -4,7 +4,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Text;
 
-namespace Magnum.Common.Mail
+namespace Magnum.Mail
 {
     public class FileMailServer :
         IMailServer

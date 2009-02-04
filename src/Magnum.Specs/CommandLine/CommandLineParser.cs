@@ -13,7 +13,7 @@
 namespace Magnum.Specs.CommandLine
 {
     using System.Collections.Generic;
-    using Common.Reflection;
+    using Magnum.Reflection;
 
     public class CommandLineParser
     {

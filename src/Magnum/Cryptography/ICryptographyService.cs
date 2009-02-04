@@ -1,6 +1,6 @@
 using System;
 
-namespace Magnum.Common.Cryptography
+namespace Magnum.Cryptography
 {
     public interface ICryptographyService :
         IDisposable

@@ -1,4 +1,4 @@
-namespace Magnum.Common.Threading
+namespace Magnum.Threading
 {
     using System;
     using System.Threading;

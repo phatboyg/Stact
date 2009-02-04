@@ -13,9 +13,9 @@
 namespace Magnum.Infrastructure.Data
 {
 	using System;
-	using Common.Data;
+	using Magnum.Data;
 
-	public class NHibernateTransaction :
+    public class NHibernateTransaction :
 		ITransaction
 	{
 		private readonly Action<NHibernateTransaction> _committed;

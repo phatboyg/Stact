@@ -1,4 +1,4 @@
-namespace Magnum.Common.Calendar.Holidays
+namespace Magnum.Calendar.Holidays
 {
     using System;
 

@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
-    using Common.Specs;
     using MbUnit.Framework;
 
     [TestFixture]
@@ -32,7 +31,7 @@ namespace Magnum.Specs.Reflection
         public void Shouldnt_care_about_namespaces()
         {
             bytes = Serialize(_bob);
-            var output = Deserialize<Tests.Reflection.Different.Bob>(bytes);
+            var output = Deserialize<Bob>(bytes);
 
             Assert.AreEqual(_bob.Name, output.Name);
         }

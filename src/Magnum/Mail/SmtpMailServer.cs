@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 
-namespace Magnum.Common.Mail
+namespace Magnum.Mail
 {
     public class SmtpMailServer :
         IMailServer

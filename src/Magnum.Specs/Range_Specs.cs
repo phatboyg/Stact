@@ -17,7 +17,7 @@ namespace Magnum.Specs
     using System.Diagnostics;
     using System.Linq;
     using Common;
-    using Common.DateTimeExtensions;
+    using Magnum.DateTimeExtensions;
     using MbUnit.Framework;
 
     [TestFixture]

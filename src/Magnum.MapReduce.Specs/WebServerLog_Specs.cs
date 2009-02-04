@@ -2,11 +2,9 @@ namespace Magnum.MapReduce.Specs
 {
 	using System;
 	using System.Collections.Generic;
-	using Common;
 	using Mappers;
 	using MbUnit.Framework;
 	using Readers;
-	using Types;
 
 	[TestFixture]
 	public class WebServerLog_Specs

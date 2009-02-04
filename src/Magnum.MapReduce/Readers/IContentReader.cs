@@ -13,7 +13,6 @@
 namespace Magnum.MapReduce.Readers
 {
 	using System.Collections.Generic;
-	using Common;
 
 	public interface IContentReader :
 		IEnumerable<KeyValuePair<long, string>>

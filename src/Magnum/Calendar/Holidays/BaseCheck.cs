@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace Magnum.Common.Calendar.Holidays
+namespace Magnum.Calendar.Holidays
 {
     public abstract class BaseCheck :
         IHolidayCheck

@@ -1,4 +1,4 @@
-namespace Magnum.Common.Reflection
+namespace Magnum.Reflection
 {
     using System.Collections;
     using System.Collections.Generic;

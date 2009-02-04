@@ -1,4 +1,4 @@
-namespace Magnum.Common.Cryptography
+namespace Magnum.Cryptography
 {
     public class EncryptionResult
     {

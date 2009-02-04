@@ -14,15 +14,13 @@ namespace Magnum.Infrastructure.Specs.StateMachine
 {
 	using System;
 	using System.Data;
-	using Common;
-	using Common.Data;
 	using Infrastructure.Data;
+	using Magnum.Data;
 	using Magnum.Specs.StateMachine;
 	using MbUnit.Framework;
 	using NHibernate;
 	using NHibernate.Cfg;
 	using NHibernate.Tool.hbm2ddl;
-	using Rhino.Mocks;
 
 	[TestFixture]
 	public class StateMachineStorage_Specs

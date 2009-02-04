@@ -19,12 +19,12 @@ namespace Magnum.Metrics.Specs
 	using System.IO.Compression;
 	using System.Web;
 	using System.Linq;
-	using Common.DateTimeExtensions;
-	using Common.ObjectExtensions;
-	using Common.Serialization;
+	using DateTimeExtensions;
 	using MbUnit.Framework;
+    using Magnum.ObjectExtensions;
+	using Serialization;
 
-	[TestFixture]
+    [TestFixture]
 	public class When_pulling_information_about_the_remote_file
 	{
 		private string _filename = "ex" + DateTime.Now.ToString("yyMMdd") + ".log";

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Magnum.Common.Calendar
+namespace Magnum.Calendar
 {
     public class IsHoliday
     {

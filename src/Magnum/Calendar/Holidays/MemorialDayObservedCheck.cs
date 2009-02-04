@@ -1,7 +1,7 @@
-namespace Magnum.Common.Calendar.Holidays
+namespace Magnum.Calendar.Holidays
 {
     using System;
-    using Common.DateTimeExtensions;
+    using Magnum.DateTimeExtensions;
 
     public class MemorialDayObservedCheck :
         BaseCheck

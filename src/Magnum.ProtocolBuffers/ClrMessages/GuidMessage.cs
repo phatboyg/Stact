@@ -1,7 +1,6 @@
 namespace Magnum.ProtocolBuffers.ClrMessages
 {
     using System;
-    using Common;
 
     public class GuidMessageMap :
         MessageMap<GuidMessage>

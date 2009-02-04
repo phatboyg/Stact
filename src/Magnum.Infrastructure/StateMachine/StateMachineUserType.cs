@@ -16,13 +16,13 @@ namespace Magnum.Infrastructure.StateMachine
 	using System.Data;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Common.StateMachine;
-	using Common.Threading;
+	using Magnum.StateMachine;
 	using NHibernate;
 	using NHibernate.SqlTypes;
 	using NHibernate.UserTypes;
+	using Threading;
 
-	/// <summary>
+    /// <summary>
 	/// An NHibernate user type for persisting state machines current state
 	/// </summary>
 	public class StateMachineUserType :

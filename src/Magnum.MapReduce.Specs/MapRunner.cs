@@ -13,7 +13,6 @@
 namespace Magnum.MapReduce.Specs
 {
 	using System.Collections.Generic;
-	using Common;
 
 	internal class MapRunner<KInput, VInput, KOutput, VOutput>
 	{

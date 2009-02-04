@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Magnum.Common.Cryptography
+namespace Magnum.Cryptography
 {
     //http://www.developerfusion.co.uk/show/4647/4/
 

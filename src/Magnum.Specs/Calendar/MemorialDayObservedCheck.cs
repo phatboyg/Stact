@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Calendar
 {
     using System;
-    using Common.Calendar.Holidays;
+    using Magnum.Calendar.Holidays;
     using MbUnit.Framework;
 
     [TestFixture]

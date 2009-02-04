@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
-    using Common.Specs;
+    using Magnum.Specs;
     using MbUnit.Framework;
 
     [TestFixture]

@@ -14,9 +14,8 @@ namespace Magnum.MapReduce.Mappers
 {
 	using System;
 	using System.Collections.Generic;
-	using Common;
-	using Common.DateTimeExtensions;
-	using Common.ObjectExtensions;
+	using Magnum.DateTimeExtensions;
+	using Magnum.ObjectExtensions;
 
 	public class WebServerLogMapper :
 		IMapper<long, string, long, WebServerLogEntry>

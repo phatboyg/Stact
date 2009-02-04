@@ -19,9 +19,9 @@ namespace Magnum.Specs.Threading
     using System.Net;
     using System.Text;
     using System.Threading;
-    using Common.DateTimeExtensions;
-    using Common.Monads;
+    using DateTimeExtensions;
     using MbUnit.Framework;
+    using Monads;
 
     [TestFixture]
     public class Continuation_Specs

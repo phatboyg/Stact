@@ -1,6 +1,5 @@
 namespace Magnum.ProtocolBuffers.Specs.Mapping
 {
-    using Common;
     using MbUnit.Framework;
     using ProtocolBuffers.Mapping;
     using TestMessages;

@@ -14,7 +14,7 @@ namespace Magnum.Specs
 {
     using System;
     using System.Collections.Generic;
-    using Common.CollectionExtensions;
+    using Magnum.CollectionExtensions;
     using MbUnit.Framework;
 
     [TestFixture]

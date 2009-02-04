@@ -17,7 +17,7 @@ namespace Magnum.Specs.Linq
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using Common.Reflection;
+    using Magnum.Reflection;
 
     public class FileRepository<T> : 
         IOrderedQueryable<T>,

@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Threading
 {
-    using Common.Threading;
+    using Magnum.Threading;
     using MbUnit.Framework;
 
     [TestFixture]

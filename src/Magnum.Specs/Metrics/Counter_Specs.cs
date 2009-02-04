@@ -14,7 +14,7 @@ namespace Magnum.Specs.Metrics
 {
     using System;
     using System.Diagnostics;
-    using Common.Metrics.Monitor;
+    using Magnum.Metrics.Monitor;
     using MbUnit.Framework;
 
     [TestFixture]

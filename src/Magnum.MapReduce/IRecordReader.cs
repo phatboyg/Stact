@@ -14,8 +14,6 @@ namespace Magnum.MapReduce
 {
 	using System;
 	using System.Collections.Generic;
-	using Common;
-	using Types;
 
 	public interface IRecordReader<K, V> :
 		IDisposable

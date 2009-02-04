@@ -2,7 +2,6 @@ namespace Magnum.ProtocolBuffers.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using Common;
 
     public class MessageDescriptor<TMessage> :
         IMessageDescriptor

@@ -2,7 +2,7 @@ namespace Magnum.ProtocolBuffers.Mapping
 {
     using System;
     using System.Reflection;
-    using Common.Reflection;
+    using Reflection;
     using Serialization;
     using Serialization.Strategies;
 

@@ -19,7 +19,7 @@ namespace Magnum.Specs.Reflection
     using System.Reflection;
     using System.Runtime.Serialization.Formatters.Binary;
     using Common;
-    using Common.Serialization;
+    using Magnum.Serialization;
     using MbUnit.Framework;
 
     [TestFixture]

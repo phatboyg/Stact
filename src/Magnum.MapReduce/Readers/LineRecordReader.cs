@@ -14,8 +14,6 @@ namespace Magnum.MapReduce.Readers
 {
 	using System;
 	using System.Collections.Generic;
-	using Common;
-	using Types;
 
 	public class LineRecordReader :
 		IRecordReader<long, string>

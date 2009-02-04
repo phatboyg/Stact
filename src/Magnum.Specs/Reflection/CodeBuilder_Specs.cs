@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Reflection
 {
     using System;
-    using Common.Serialization;
+    using Magnum.Serialization;
     using MbUnit.Framework;
 
     [TestFixture]

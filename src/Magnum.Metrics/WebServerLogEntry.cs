@@ -15,7 +15,7 @@ namespace Magnum.Metrics
 	using System;
 	using System.Collections.Specialized;
 	using System.Web;
-	using Common.ObjectExtensions;
+	using Magnum.ObjectExtensions;
 
 	public class WebServerLogEntry
 	{

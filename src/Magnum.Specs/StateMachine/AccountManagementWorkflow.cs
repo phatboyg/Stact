@@ -14,7 +14,7 @@ namespace Magnum.Specs.StateMachine
 {
     using System;
     using System.Runtime.Serialization;
-    using Common.StateMachine;
+    using Magnum.StateMachine;
 
     [Serializable]
     public class AccountManagementWorkflow :

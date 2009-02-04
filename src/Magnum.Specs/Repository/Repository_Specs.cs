@@ -15,7 +15,7 @@ namespace Magnum.Specs.Repository
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Common.Data;
+    using Magnum.Data;
     using MbUnit.Framework;
     using Rhino.Mocks;
 

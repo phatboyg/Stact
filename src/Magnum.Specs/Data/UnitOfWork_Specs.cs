@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Data
 {
     using System.Data;
-    using Common.Data;
+    using Magnum.Data;
     using MbUnit.Framework;
 
     [TestFixture]

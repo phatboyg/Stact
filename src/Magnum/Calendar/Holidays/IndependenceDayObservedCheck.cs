@@ -1,6 +1,6 @@
 using System;
 
-namespace Magnum.Common.Calendar.Holidays
+namespace Magnum.Calendar.Holidays
 {
     public class IndependenceDayObservedCheck :
         BaseCheck

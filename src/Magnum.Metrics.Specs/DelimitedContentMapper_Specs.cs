@@ -1,7 +1,6 @@
 namespace Magnum.Metrics.Specs
 {
     using System;
-    using Common;
     using MbUnit.Framework;
 
     [TestFixture]

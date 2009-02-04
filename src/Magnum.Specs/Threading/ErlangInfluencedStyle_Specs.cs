@@ -18,8 +18,8 @@ namespace Magnum.Specs.Threading
     using System.IO;
     using System.Net;
     using System.Threading;
-    using Common.DateTimeExtensions;
-    using Common.Threading;
+    using Magnum.DateTimeExtensions;
+    using Magnum.Threading;
     using MbUnit.Framework;
 
     [TestFixture]

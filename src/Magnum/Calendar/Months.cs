@@ -1,4 +1,4 @@
-namespace Magnum.Common.Calendar
+namespace Magnum.Calendar
 {
     public enum Months
     {

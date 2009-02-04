@@ -15,9 +15,8 @@ namespace Magnum.Metrics
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using Common;
-	using Common.DateTimeExtensions;
-	using Common.ObjectExtensions;
+	using Magnum.DateTimeExtensions;
+	using Magnum.ObjectExtensions;
 
 	public class WebServerLogReader :
 		IEnumerable<WebServerLogEntry>

@@ -14,7 +14,7 @@ namespace Magnum.Specs.Threading
 {
     using System;
     using System.Threading;
-    using Common.DateTimeExtensions;
+    using Magnum.DateTimeExtensions;
     using MbUnit.Framework;
 
     [TestFixture]

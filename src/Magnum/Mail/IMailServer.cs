@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net.Mail;
 
-namespace Magnum.Common.Mail
+namespace Magnum.Mail
 {
     public interface IMailServer
     {

@@ -14,7 +14,7 @@ namespace Magnum.Specs.StateMachine
 {
     using System;
     using System.Runtime.Serialization;
-    using Common.StateMachine;
+    using Magnum.StateMachine;
 
     /// <summary>
     /// An example showing the the StateMachine can be used to define the states, events, and 

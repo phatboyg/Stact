@@ -1,8 +1,8 @@
 namespace Magnum.ProtocolBuffers.Serialization
 {
     using System;
-    using Common.Reflection;
     using Mapping;
+    using Reflection;
     using Streams;
 
     public class FieldSerializer

@@ -14,9 +14,9 @@ namespace Magnum.Infrastructure.Data
 {
 	using System;
 	using System.Data;
-	using Common.Data;
+	using Magnum.Data;
 	using NHibernate;
-	using ITransaction=Magnum.Common.Data.ITransaction;
+	using ITransaction=Magnum.Data.ITransaction;
 
 	public class NHibernateUnitOfWork :
 		IUnitOfWork
