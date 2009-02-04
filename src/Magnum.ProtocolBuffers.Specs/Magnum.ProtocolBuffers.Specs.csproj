@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FF3DD7A0-1418-4D56-848F-C1450A18BEF4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -78,7 +78,7 @@
     <Compile Include="Whole_Simple_Message_Received.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+    <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum.Common</Name>
     </ProjectReference>

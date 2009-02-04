@@ -124,7 +124,7 @@
     <Compile Include="Threading\WrappedObjectLocking_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+    <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum.Common</Name>
     </ProjectReference>
