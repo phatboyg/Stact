@@ -6,6 +6,7 @@ namespace Magnum.Specs.CommandLine
     public class Output_Specs
     {
         [Test]
+        [Repeat(300)] //5.04
         public void NAME()
         {
             OutputV2 o = new OutputV2();
@@ -18,6 +19,24 @@ namespace Magnum.Specs.CommandLine
             o.Execute();
 
             TestCommand<NullArgs>.WasExecuted.ShouldBeTrue();
+            TestCommand<NullArgs>.WasExecuted = false;
+        }
+
+        [Test]
+        [Repeat(300)] //4.98
+        public void V1()
+        {
+            ParsedCommandLineOutput<NullArgs> a = new ParsedCommandLineOutput<NullArgs>();
+            a.CommandName = "test";
+            a.Command = new TestCommand<NullArgs>();
+            a.Args = new NullArgs();
+
+            TestCommand<NullArgs>.WasExecuted.ShouldBeFalse();
+
+            a.Execute();
+
+            TestCommand<NullArgs>.WasExecuted.ShouldBeTrue();
+            TestCommand<NullArgs>.WasExecuted = false;
         }
     }
 }
