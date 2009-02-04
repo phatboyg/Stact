@@ -2,7 +2,7 @@ namespace Magnum.CommandLine
 {
     using System;
 
-    public interface INamingConvention
+    public interface ICommandNamingConvention
     {
         string GetName<T>();
         string GetName(Type t);

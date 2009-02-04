@@ -2,7 +2,8 @@ namespace Magnum.CommandLine
 {
     using System.Reflection;
 
-    public class ShortFormConvention
+    public class Argument_short_form_is_first_letter_lowercase : 
+        IArgumentNameConvention
     {
         public string Convert(PropertyInfo prop)
         {

@@ -3,7 +3,8 @@ namespace Magnum.CommandLine
     using System;
     using System.Collections.Generic;
 
-    public class ArgumentOrderPolicy
+    public class Arguments_must_be_positional_then_named :
+        IArgumentOrderPolicy
     {
         public void Verify(string[] arguments)
         {
@@ -22,5 +23,10 @@ namespace Magnum.CommandLine
                     throw new Exception("You can't have a positional argument after a named argument"); 
             }
         }
+    }
+
+    public interface IArgumentOrderPolicy
+    {
+        void Verify(string[] arguments);
     }
 }

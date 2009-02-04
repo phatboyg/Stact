@@ -13,20 +13,20 @@ namespace Magnum.Specs.CommandLine
         [Test]
         public void You_can_have_just_one()
         {
-            new ArgumentOrderPolicy().Verify(_good_just_positional);
+            new Arguments_must_be_positional_then_named().Verify(_good_just_positional);
         }
 
         [Test]
         public void Positional_then_named()
         {
-            new ArgumentOrderPolicy().Verify(_good_positional_then_named);
+            new Arguments_must_be_positional_then_named().Verify(_good_positional_then_named);
         }
 
         [Test]
         [ExpectedException(typeof(Exception))]
         public void You_cant_have_named_before_positional()
         {
-            new ArgumentOrderPolicy().Verify(_bad_named_before_positional);
+            new Arguments_must_be_positional_then_named().Verify(_bad_named_before_positional);
         }
     }
 }

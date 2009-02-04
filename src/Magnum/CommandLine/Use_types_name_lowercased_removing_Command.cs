@@ -3,8 +3,8 @@ namespace Magnum.CommandLine
     using System;
     using System.Text.RegularExpressions;
 
-    public class UseTypeName :
-        INamingConvention
+    public class Use_types_name_lowercased_removing_Command :
+        ICommandNamingConvention
     {
         public string GetName<T>()
         {

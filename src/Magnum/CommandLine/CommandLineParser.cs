@@ -5,6 +5,7 @@ namespace Magnum.CommandLine
     public class CommandLineParser
     {
         private Dictionary<string, ICommand> _commands = new Dictionary<string, ICommand>();
+        private IArgumentOrderPolicy _policy = new Arguments_must_be_positional_then_named();
 
 
         public object Parse(string[] commandLine)
@@ -14,7 +15,7 @@ namespace Magnum.CommandLine
 
             object command = _commands[commandName];
 
-            new ArgumentOrderPolicy().Verify(remainder);
+            new Arguments_must_be_positional_then_named().Verify(remainder);
 
             return null;
         }
@@ -25,7 +26,7 @@ namespace Magnum.CommandLine
             result.Command = (IArgCommand<ARGS>)_commands[result.CommandName];
             string[] remainder = commandLine.Tail();
 
-            new ArgumentOrderPolicy().Verify(remainder);
+            _policy.Verify(remainder);
 
             result.Args = new ArgumentParsingInstructions<ARGS>().Build(remainder);
             return result;
@@ -34,7 +35,7 @@ namespace Magnum.CommandLine
 
         public void AddCommand<COMMAND, ARGS>() where COMMAND : IArgCommand<ARGS>, new() where ARGS : new()
         {
-            string key = new UseTypeName().GetName<COMMAND>();
+            string key = new Use_types_name_lowercased_removing_Command().GetName<COMMAND>();
             var api = new ArgumentParsingInstructions<ARGS>();
             _commands.Add(key, new COMMAND());
         }
