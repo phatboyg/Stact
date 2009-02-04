@@ -9,8 +9,8 @@ namespace Magnum.Specs.CommandLine
         public void NAME()
         {
             CommandLineParser clp = new CommandLineParser();
-            clp.AddCommand<TestCommand<NullArgs>,NullArgs>();
-            clp.AddCommand<Test2Command<NullArgs>,NullArgs>();
+            clp.AddCommand<TestCommand<NullArgs>>();
+            clp.AddCommand<Test2Command<NullArgs>>();
 
             TestCommand<NullArgs>.WasExecuted.ShouldBeFalse();
             Test2Command<NullArgs>.WasExecuted.ShouldBeFalse();
@@ -26,8 +26,8 @@ namespace Magnum.Specs.CommandLine
         public void NAME2()
         {
             CommandLineParser clp = new CommandLineParser();
-            clp.AddCommand<TestCommand<NullArgs>, NullArgs>();
-            clp.AddCommand<Test2Command<NullArgs>, NullArgs>();
+            clp.AddCommand<TestCommand<NullArgs>>();
+            clp.AddCommand<Test2Command<NullArgs>>();
 
             TestCommand<NullArgs>.WasExecuted.ShouldBeFalse();
             Test2Command<NullArgs>.WasExecuted.ShouldBeFalse();
