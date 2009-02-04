@@ -72,7 +72,7 @@
     <Compile Include="CommandLine\ICommandNamingConvention.cs" />
     <Compile Include="CommandLine\Argument_long_form_is_full_property_name_lowercased.cs" />
     <Compile Include="CommandLine\NullArgs.cs" />
-    <Compile Include="CommandLine\Output.cs" />
+    <Compile Include="CommandLine\ParsedCommandLineOutput.cs" />
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Command.cs" />
     <Compile Include="ComparisonComparer.cs" />

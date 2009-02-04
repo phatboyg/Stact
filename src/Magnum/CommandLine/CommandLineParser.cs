@@ -19,9 +19,9 @@ namespace Magnum.CommandLine
 
             return null;
         }
-        public Output<ARGS> Parse<ARGS>(string[] commandLine) where ARGS : new()
+        public ParsedCommandLineOutput<ARGS> Parse<ARGS>(string[] commandLine) where ARGS : new()
         {
-            Output<ARGS> result = new Output<ARGS>();
+            ParsedCommandLineOutput<ARGS> result = new ParsedCommandLineOutput<ARGS>();
             result.CommandName = commandLine.Head();
             result.Command = (IArgCommand<ARGS>)_commands[result.CommandName];
             string[] remainder = commandLine.Tail();

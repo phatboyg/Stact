@@ -76,6 +76,7 @@
     <Compile Include="CommandLine\Argument_Spec.cs" />
     <Compile Include="CommandLine\CommandLineParsing_Specs.cs" />
     <Compile Include="CommandLine\OneArgument.cs" />
+    <Compile Include="CommandLine\Output_Specs.cs" />
     <Compile Include="CommandLine\TestCommand.cs" />
     <Compile Include="CommandLine\TwoArguments.cs" />
     <Compile Include="CrazySerializationIdea.cs" />

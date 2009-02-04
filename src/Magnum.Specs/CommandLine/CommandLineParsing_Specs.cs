@@ -18,7 +18,7 @@ namespace Magnum.Specs.CommandLine
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<NullArgs>, NullArgs>();
 
-            Output<NullArgs> o = p.Parse<NullArgs>(_soloCommand);
+            ParsedCommandLineOutput<NullArgs> o = p.Parse<NullArgs>(_soloCommand);
             o.CommandName.ShouldEqual("test");
             o.Command.ShouldBeType<TestCommand<NullArgs>>();
 
@@ -34,7 +34,7 @@ namespace Magnum.Specs.CommandLine
         {
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<OneArgument>, OneArgument>();
-            Output<OneArgument> o = p.Parse<OneArgument>(_commandAndOnePositionalArgument);
+            ParsedCommandLineOutput<OneArgument> o = p.Parse<OneArgument>(_commandAndOnePositionalArgument);
             o.CommandName.ShouldEqual("test");
             o.Args.Name.ShouldEqual("magnum");
         }
@@ -44,7 +44,7 @@ namespace Magnum.Specs.CommandLine
         {
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
-            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndTwoPositionalArguments);
+            ParsedCommandLineOutput<TwoArguments> two = p.Parse<TwoArguments>(_commandAndTwoPositionalArguments);
             two.Args.Name.ShouldEqual("magnum");
             two.Args.Location.ShouldEqual("local");
         }
@@ -55,7 +55,7 @@ namespace Magnum.Specs.CommandLine
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
 
-            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneLongNamedArgument);
+            ParsedCommandLineOutput<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneLongNamedArgument);
             two.Args.Name.ShouldBeNull();
             two.Args.Location.ShouldEqual("local");
         }
@@ -66,7 +66,7 @@ namespace Magnum.Specs.CommandLine
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
 
-            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneShortNamedArgument);
+            ParsedCommandLineOutput<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOneShortNamedArgument);
             two.Args.Name.ShouldBeNull();
             two.Args.Location.ShouldEqual("local");
         }
@@ -77,7 +77,7 @@ namespace Magnum.Specs.CommandLine
             CommandLineParser p = new CommandLineParser();
             p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
 
-            Output<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOnePostionalAndOneShortNamedArgument);
+            ParsedCommandLineOutput<TwoArguments> two = p.Parse<TwoArguments>(_commandAndOnePostionalAndOneShortNamedArgument);
             two.Args.Name.ShouldEqual("magnum");
             two.Args.Location.ShouldEqual("local");
         }
