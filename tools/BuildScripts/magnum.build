@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="magnum" default="go">
 	<property name="nant.settings.currentframework" value="net-3.5" />
-	<property name="svn.path" value="http://magnum.googlecode.com/svn/trunk" overwrite="false" />
+	<property name="svn.path" value="http://magnum.googlecode.com/svn" overwrite="false" />
 	<property name="msbuild.configuration" value="Release" overwrite="false" />
 	
 	
