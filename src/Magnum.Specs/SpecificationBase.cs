@@ -93,5 +93,19 @@ namespace Magnum.Specs
             Assert.AreEqual(expected, actual);
         }
 
+        public static void ShouldBeType<Expected>(this object actual)
+        {
+            Assert.IsAssignableFrom(typeof(Expected), actual);
+        }
+
+        public static void ShouldBeNull(this object actual)
+        {
+            Assert.IsNull(actual);
+        }
+
+        public static void ShouldNotBeNull(this object actual)
+        {
+            Assert.IsNotNull(actual);
+        }
     }
 }
