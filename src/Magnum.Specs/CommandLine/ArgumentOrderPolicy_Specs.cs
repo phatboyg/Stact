@@ -1,6 +1,7 @@
 namespace Magnum.Specs.CommandLine
 {
     using System;
+    using Magnum.CommandLine;
     using MbUnit.Framework;
 
     public class ArgumentOrderPolicy_Specs

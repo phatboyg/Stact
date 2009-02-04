@@ -1,8 +1,8 @@
-namespace Magnum.Specs.CommandLine
+namespace Magnum.CommandLine
 {
     using System;
     using System.Collections.Generic;
-    using Magnum.Reflection;
+    using Reflection;
 
     public class ArgumentParsingInstructions<ARGS> where ARGS : new()
     {

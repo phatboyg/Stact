@@ -1,5 +1,6 @@
 namespace Magnum.Specs.CommandLine
 {
+    using Magnum.CommandLine;
     using MbUnit.Framework;
 
     public class Argument_Spec

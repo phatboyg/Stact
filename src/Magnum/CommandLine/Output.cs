@@ -1,4 +1,4 @@
-namespace Magnum.Specs.CommandLine
+namespace Magnum.CommandLine
 {
     public class Output<ARGS> where ARGS : new()
     {
