@@ -4,40 +4,38 @@ namespace Magnum.CommandLine
 
     public class CommandLineParser
     {
-        private readonly Dictionary<string, ICommand> _commands = new Dictionary<string, ICommand>();
+        private readonly Dictionary<string, Thing> _commands = new Dictionary<string, Thing>();
         private readonly IArgumentOrderPolicy _policy = new Arguments_must_be_positional_then_named();
         private readonly ICommandNamingConvention _commandNamingConvention = new Use_types_name_lowercased_removing_Command();
 
 
-        public object Parse(string[] commandLine)
+        public ParsedCommandLineOutput Parse(string[] commandLine)
         {
             var commandName = commandLine.Head();
             string[] remainder = commandLine.Tail();
 
-            object command = _commands[commandName];
-
-            new Arguments_must_be_positional_then_named().Verify(remainder);
-
-            return null;
-        }
-        public ParsedCommandLineOutput<ARGS> Parse<ARGS>(string[] commandLine) where ARGS : new()
-        {
-            ParsedCommandLineOutput<ARGS> result = new ParsedCommandLineOutput<ARGS>();
-            result.CommandName = commandLine.Head();
-            result.Command = (IArgCommand<ARGS>)_commands[result.CommandName];
-            string[] remainder = commandLine.Tail();
+            ICommand command = _commands[commandName].Command;
 
             _policy.Verify(remainder);
+            object args = _commands[commandName].ParsingInstructions.Build(remainder);
 
-            result.Args = new ArgumentParsingInstructions<ARGS>().Build(remainder);
-            return result;
+            return new ParsedCommandLineOutput(){Command = command, CommandName = commandName, ParsedArguments = args};
         }
 
 
-        public void AddCommand<COMMAND>() where COMMAND : ICommand, new()
+        public void AddCommand<CommandType, ArgsType>() where CommandType : IArgCommand<ArgsType>, new() where ArgsType : new()
         {
-            string key = _commandNamingConvention.GetName<COMMAND>();
-            _commands.Add(key, new COMMAND());
+            string key = _commandNamingConvention.GetName<CommandType>();
+            var argType = typeof (ArgsType);
+            IArgumentParsingInstructions api = new ArgumentParsingInstructions(argType);
+            var thing = new Thing {Command = new CommandType(), ParsingInstructions = api};
+            _commands.Add(key, thing);
         }
+    }
+
+    public class Thing
+    {
+        public IArgumentParsingInstructions ParsingInstructions { get; set; }
+        public ICommand Command { get; set; }
     }
 }

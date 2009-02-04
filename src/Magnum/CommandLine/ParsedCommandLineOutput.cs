@@ -3,19 +3,7 @@ namespace Magnum.CommandLine
     using System;
     using System.Reflection;
 
-    public class ParsedCommandLineOutput<ARGS> where ARGS : new()
-    {
-        public string CommandName { get; set; }
-        public IArgCommand<ARGS> Command { get; set; }
-        public ARGS Args { get; set; }
-
-        public void Execute()
-        {
-            Command.Execute(Args);
-        }
-    }
-
-    public class OutputV2
+    public class ParsedCommandLineOutput
     {
         public string CommandName { get; set; }
         public ICommand Command { get; set; }

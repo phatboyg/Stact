@@ -4,26 +4,28 @@ namespace Magnum.CommandLine
     using System.Collections.Generic;
     using Reflection;
 
-    public class ArgumentParsingInstructions<ARGS> :
-        IArgumentParsingInstructions where ARGS : new()
+    public class ArgumentParsingInstructions :
+        IArgumentParsingInstructions
     {
-        private List<FastProperty<ARGS>> _positionalArguments;
-        private Dictionary<string, FastProperty<ARGS>> _shortFormArguments;
-        private Dictionary<string, FastProperty<ARGS>> _longFormArguments;
+        private List<FastProperty> _positionalArguments;
+        private Dictionary<string, FastProperty> _shortFormArguments;
+        private Dictionary<string, FastProperty> _longFormArguments;
 
         private int _numberOfAguments = 0;
         private readonly IArgumentNameConvention _shortFormConvention = new Argument_short_form_is_first_letter_lowercase();
         private readonly IArgumentNameConvention _longFormConvention = new Argument_long_form_is_full_property_name_lowercased();
+        private Type _argumentType;
 
-        public ArgumentParsingInstructions()
+        public ArgumentParsingInstructions(Type argumentType)
         {
-            _positionalArguments = new List<FastProperty<ARGS>>();
-            _shortFormArguments = new Dictionary<string, FastProperty<ARGS>>(StringComparer.InvariantCultureIgnoreCase);
-            _longFormArguments = new Dictionary<string, FastProperty<ARGS>>(StringComparer.InvariantCultureIgnoreCase);
+            _argumentType = argumentType;
+            _positionalArguments = new List<FastProperty>();
+            _shortFormArguments = new Dictionary<string, FastProperty>(StringComparer.InvariantCultureIgnoreCase);
+            _longFormArguments = new Dictionary<string, FastProperty>(StringComparer.InvariantCultureIgnoreCase);
 
-            foreach (var info in typeof(ARGS).GetProperties())
+            foreach (var info in _argumentType.GetProperties())
             {
-                var fp = new FastProperty<ARGS>(info);
+                var fp = new FastProperty(info);
                 _positionalArguments.Add(fp);
                 _shortFormArguments.Add(_shortFormConvention.Convert(info), fp);
                 _longFormArguments.Add(_longFormConvention.Convert(info), fp);
@@ -32,9 +34,10 @@ namespace Magnum.CommandLine
             }
         }
 
-        public ARGS Build(string[] arguments)
+        public object Build(string[] arguments)
         {
-            var result = new ARGS();
+            var result = Activator.CreateInstance(_argumentType);
+
             int i = 0;
             foreach (var s in arguments)
             {
@@ -43,8 +46,8 @@ namespace Magnum.CommandLine
                 var a = new Argument(s);
                 if (a.IsPostional)
                     _positionalArguments[i].Set(result, a.Value);
-                else 
-                    if(a.IsShortForm)
+                else
+                    if (a.IsShortForm)
                         _shortFormArguments[a.Name].Set(result, a.Value);
                     else
                         _longFormArguments[a.Name].Set(result, a.Value);
