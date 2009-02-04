@@ -4,6 +4,6 @@ namespace Magnum.CommandLine
         ICommand where Args : new()
 
     {
-        void Excute(Args args);
+        void Execute(Args args);
     }
 }

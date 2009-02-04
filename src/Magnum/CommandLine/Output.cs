@@ -8,7 +8,7 @@ namespace Magnum.CommandLine
 
         public void Execute()
         {
-            Command.Excute(Args);
+            Command.Execute(Args);
         }
     }
 }

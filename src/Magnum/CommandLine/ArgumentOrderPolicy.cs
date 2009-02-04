@@ -3,7 +3,7 @@ namespace Magnum.CommandLine
     using System;
     using System.Collections.Generic;
 
-    public class ArgumentOrderPolicy<ARGS> where ARGS : new()
+    public class ArgumentOrderPolicy
     {
         public void Verify(string[] arguments)
         {
