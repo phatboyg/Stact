@@ -1,7 +1,8 @@
 namespace Magnum.Common.Specs.CommandLine
 {
+    using System.Collections;
     using System.Collections.Generic;
-    using Common.Reflection;
+    using System.Reflection;
 
     public class CommandLineParser
     {
@@ -11,30 +12,22 @@ namespace Magnum.Common.Specs.CommandLine
         public Output<ARGS> Parse<ARGS>(string[] commandLine) where ARGS : new()
         {
             Output<ARGS> result = new Output<ARGS>();
-            result.Args = new ARGS();
             result.CommandName = commandLine.Head();
+            result.Command = (IArgCommand<ARGS>)_commands[result.CommandName];
             string[] remainder = commandLine.Tail();
 
-            //populate args here
-            Populate(result.Args, remainder);
+            new ArgumentOrderPolicy<ARGS>().Verify(remainder);
+
+            result.Args = new ArgumentParsingInstructions<ARGS>().Build(remainder);
             return result;
         }
 
-        private static void Populate<ARGS>(ARGS args, string[] remainder)
-        {
-            var props = typeof (ARGS).GetProperties();
-            int i = 0;
-            foreach (var prop in props)
-            {
-                FastProperty<ARGS, string> fp = new FastProperty<ARGS, string>(prop);
-                fp.Set(args, remainder[i]);
-                i++;
-            }
-        }
 
         public void AddCommand<COMMAND, ARGS>() where COMMAND : IArgCommand<ARGS>, new() where ARGS : new()
         {
-            _commands.Add(typeof (COMMAND).Name.Replace("Command", ""), new COMMAND());
+            string key = new UseTypeName().GetName<COMMAND>();
+            var api = new ArgumentParsingInstructions<ARGS>();
+            _commands.Add(key, new COMMAND());
         }
     }
 } 

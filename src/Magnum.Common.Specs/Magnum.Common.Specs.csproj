@@ -71,16 +71,24 @@
   <ItemGroup>
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
+    <Compile Include="CommandLine\Argument.cs" />
+    <Compile Include="CommandLine\ArgumentOrderPolicy.cs" />
+    <Compile Include="CommandLine\ArgumentParsingInstructions.cs" />
+    <Compile Include="CommandLine\Argument_Spec.cs" />
     <Compile Include="CommandLine\ArrayExtensions.cs" />
     <Compile Include="CommandLine\CommandLineParser.cs" />
     <Compile Include="CommandLine\CommandLineParsing_Specs.cs" />
     <Compile Include="CommandLine\IArgCommand.cs" />
     <Compile Include="CommandLine\ICommand.cs" />
+    <Compile Include="CommandLine\INamingConvention.cs" />
+    <Compile Include="CommandLine\LongFormConvention.cs" />
     <Compile Include="CommandLine\NullArgs.cs" />
     <Compile Include="CommandLine\OneArgument.cs" />
     <Compile Include="CommandLine\Output.cs" />
+    <Compile Include="CommandLine\ShortFormConvention.cs" />
     <Compile Include="CommandLine\TestCommand.cs" />
     <Compile Include="CommandLine\TwoArguments.cs" />
+    <Compile Include="CommandLine\UseTypeName.cs" />
     <Compile Include="CrazySerializationIdea.cs" />
     <Compile Include="Cryptography\PublicKeyCrypto.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
