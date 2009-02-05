@@ -71,13 +71,10 @@
   <ItemGroup>
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
-    <Compile Include="CommandLine\AddingCommands_Specs.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
     <Compile Include="CommandLine\Argument_Spec.cs" />
     <Compile Include="CommandLine\CommandLineParsing_Specs.cs" />
     <Compile Include="CommandLine\OneArgument.cs" />
-    <Compile Include="CommandLine\Output_Specs.cs" />
-    <Compile Include="CommandLine\TestCommand.cs" />
     <Compile Include="CommandLine\TwoArguments.cs" />
     <Compile Include="CrazySerializationIdea.cs" />
     <Compile Include="Cryptography\PublicKeyCrypto.cs" />

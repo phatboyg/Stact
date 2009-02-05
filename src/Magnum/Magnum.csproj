@@ -65,16 +65,12 @@
     <Compile Include="CommandLine\ArgumentParsingInstructions.cs" />
     <Compile Include="CommandLine\ArrayExtensions.cs" />
     <Compile Include="CommandLine\CommandLineParser.cs" />
-    <Compile Include="CommandLine\IArgCommand.cs" />
     <Compile Include="CommandLine\IArgumentNameConvention.cs" />
     <Compile Include="CommandLine\IArgumentParsingInstructions.cs" />
-    <Compile Include="CommandLine\ICommand.cs" />
-    <Compile Include="CommandLine\ICommandNamingConvention.cs" />
     <Compile Include="CommandLine\Argument_long_form_is_full_property_name_lowercased.cs" />
     <Compile Include="CommandLine\NullArgs.cs" />
     <Compile Include="CommandLine\ParsedCommandLineOutput.cs" />
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
-    <Compile Include="CommandLine\Use_types_name_lowercased_removing_Command.cs" />
     <Compile Include="ComparisonComparer.cs" />
     <Compile Include="Cryptography\EncryptionResult.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />

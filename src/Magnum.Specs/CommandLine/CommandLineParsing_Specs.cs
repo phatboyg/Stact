@@ -16,11 +16,11 @@ namespace Magnum.Specs.CommandLine
         public void Should_Parse_Just_Command()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<NullArgs>, NullArgs>();
+            p.RegisterArgumentsForCommand<NullArgs>("test");
 
             ParsedCommandLineOutput o = p.Parse(_soloCommand);
             o.CommandName.ShouldEqual("test");
-            o.Command.ShouldBeType<TestCommand<NullArgs>>();
+            o.ParsedArguments.ShouldBeType<NullArgs>();
 
             o = p.Parse(_commandAndOnePositionalArgument);
             o.CommandName.ShouldEqual("test");
@@ -33,7 +33,7 @@ namespace Magnum.Specs.CommandLine
         public void Should_Parse_Command_and_Postional_Args()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<OneArgument>, OneArgument>();
+            p.RegisterArgumentsForCommand<OneArgument>("test");
             ParsedCommandLineOutput o = p.Parse(_commandAndOnePositionalArgument);
             o.CommandName.ShouldEqual("test");
             ((OneArgument)o.ParsedArguments).Name.ShouldEqual("magnum");
@@ -43,7 +43,7 @@ namespace Magnum.Specs.CommandLine
         public void Should_parse_command_and_2_postional_arguments()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<TwoArguments>,TwoArguments>();
+            p.RegisterArgumentsForCommand<TwoArguments>("test");
 
             ParsedCommandLineOutput two = p.Parse(_commandAndTwoPositionalArguments);
             ((TwoArguments)two.ParsedArguments).Name.ShouldEqual("magnum");
@@ -54,7 +54,7 @@ namespace Magnum.Specs.CommandLine
         public void Should_Parse_Command_And_One_Long_Named_Args()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
+            p.RegisterArgumentsForCommand<TwoArguments>("test");
 
             ParsedCommandLineOutput two = p.Parse(_commandAndOneLongNamedArgument);
             ((TwoArguments)two.ParsedArguments).Name.ShouldBeNull();
@@ -65,7 +65,7 @@ namespace Magnum.Specs.CommandLine
         public void Should_Parse_Command_And_One_Short_Named_Args()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
+            p.RegisterArgumentsForCommand<TwoArguments>("test");
 
             ParsedCommandLineOutput two = p.Parse(_commandAndOneShortNamedArgument);
             ((TwoArguments)two.ParsedArguments).Name.ShouldBeNull();
@@ -76,7 +76,7 @@ namespace Magnum.Specs.CommandLine
         public void Should_Parse_positional_and_Named_args()
         {
             CommandLineParser p = new CommandLineParser();
-            p.AddCommand<TestCommand<TwoArguments>, TwoArguments>();
+            p.RegisterArgumentsForCommand<TwoArguments>("test");
 
             ParsedCommandLineOutput two = p.Parse(_commandAndOnePostionalAndOneShortNamedArgument);
             ((TwoArguments)two.ParsedArguments).Name.ShouldEqual("magnum");
