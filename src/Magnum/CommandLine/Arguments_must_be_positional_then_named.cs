@@ -1,6 +1,5 @@
 namespace Magnum.CommandLine
 {
-    using System;
     using System.Collections.Generic;
 
     public class Arguments_must_be_positional_then_named :
@@ -20,13 +19,8 @@ namespace Magnum.CommandLine
                     foundNamedArgument = true;
                 
                 if(foundNamedArgument && argument.IsPostional)
-                    throw new Exception("You can't have a positional argument after a named argument"); 
+                    throw new ArgumentOrderException("You can't have a positional argument after a named argument"); 
             }
         }
-    }
-
-    public interface IArgumentOrderPolicy
-    {
-        void Verify(string[] arguments);
     }
 }

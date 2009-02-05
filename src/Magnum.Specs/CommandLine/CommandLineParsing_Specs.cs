@@ -8,6 +8,7 @@ namespace Magnum.Specs.CommandLine
         private string[] _soloCommand = new []{"test"};
         private string[] _commandAndOnePositionalArgument = new[] {"test","magnum"};
         private string[] _commandAndTwoPositionalArguments = new[] {"test", "magnum", "local"};
+        private string[] _commandTwoAndTwoPositionalArguments = new[] {"two", "magnum", "local"};
         private string[] _commandAndOneLongNamedArgument = new[] {"test","--Location:local"};
         private string[] _commandAndOneShortNamedArgument = new[] {"test","-l:local"};
         private string[] _commandAndOnePostionalAndOneShortNamedArgument = new[] {"test","magnum","-l:local"};
@@ -27,6 +28,17 @@ namespace Magnum.Specs.CommandLine
 
             o = p.Parse(_commandAndTwoPositionalArguments);
             o.CommandName.ShouldEqual("test");
+        }
+
+        [Test]
+        public void AutoNaming()
+        {
+            CommandLineParser p = new CommandLineParser();
+            p.RegisterArguments<TwoArguments>();
+
+            var o = p.Parse(_commandTwoAndTwoPositionalArguments);
+            o.CommandName.ShouldEqual("two");
+            o.ParsedArguments.ShouldBeType<TwoArguments>();
         }
 
         [Test]
