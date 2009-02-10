@@ -10,7 +10,7 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void Should_return_false_if_there_are_no_subscribers()
 		{
-			Channel<UserUpdate> channel = new Channel<UserUpdate>();
+			Channel<UserUpdate> channel = new ChannelImpl<UserUpdate>();
 
 			UserUpdate update = new UserUpdate();
 

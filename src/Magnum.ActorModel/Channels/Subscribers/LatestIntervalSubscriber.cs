@@ -1,18 +1,18 @@
-namespace Magnum.ActorModel.Channels
+namespace Magnum.ActorModel.Channels.Subscribers
 {
 	using System;
 
-	public class MostRecentIntervalSubscriber<T> :
-		SubscriptionBase<T>
+	public class LatestIntervalSubscriber<T> :
+		SubscriberBase<T>
 	{
 		private readonly Action<T> _consume;
 		private readonly int _interval;
 		private readonly object _lock = new object();
-		private readonly IActionScheduler _scheduler;
+		private readonly Scheduler _scheduler;
 		private bool _flushScheduled;
 		private T _pending;
 
-		public MostRecentIntervalSubscriber(Action<T> consume, int interval, IActionScheduler scheduler)
+		public LatestIntervalSubscriber(Action<T> consume, int interval, Scheduler scheduler)
 		{
 			_consume = consume;
 			_interval = interval;

@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\StructureMap\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -44,12 +48,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel_Specs.cs" />
+    <Compile Include="Demos\Scoreboard\Messages\UpdateHighScore.cs" />
+    <Compile Include="Demos\Scoreboard\ScoreboardRegistry.cs" />
+    <Compile Include="Demos\Scoreboard\Scoreboard_Demo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.ActorModel\Magnum.ActorModel.csproj">
       <Project>{5593B543-D830-4315-8DAD-8BA6A5950470}</Project>
       <Name>Magnum.ActorModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Magnum\Magnum.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

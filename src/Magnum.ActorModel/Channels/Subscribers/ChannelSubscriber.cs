@@ -1,14 +1,14 @@
-namespace Magnum.ActorModel.Channels
+namespace Magnum.ActorModel.Channels.Subscribers
 {
 	using System;
 
-	public class ChannelSubscription<T> :
-		SubscriptionBase<T>
+	public class ChannelSubscriber<T> :
+		SubscriberBase<T>
 	{
-		private readonly IActor _actor;
+		private readonly CommandQueue _actor;
 		private readonly Action<T> _consume;
 
-		public ChannelSubscription(IActor actor, Action<T> consume)
+		public ChannelSubscriber(CommandQueue actor, Action<T> consume)
 		{
 			_actor = actor;
 			_consume = consume;
@@ -19,5 +19,4 @@ namespace Magnum.ActorModel.Channels
 			_actor.Enqueue(() => _consume(message));
 		}
 	}
-
 }

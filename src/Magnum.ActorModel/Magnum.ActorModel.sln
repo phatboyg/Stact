@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.ActorModel", "Magnum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.ActorModel.Specs", "..\Magnum.ActorModel.Specs\Magnum.ActorModel.Specs.csproj", "{1D197500-1A37-4A50-9E49-14FC901259A3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Magnum Core", "Magnum Core", "{59E15962-5356-4FD9-AACD-8FDCF3B54C0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "..\Magnum\Magnum.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,8 +23,15 @@ Global
 		{1D197500-1A37-4A50-9E49-14FC901259A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D197500-1A37-4A50-9E49-14FC901259A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D197500-1A37-4A50-9E49-14FC901259A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3650C32-0850-48B4-BE71-ECE9FACBD356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3650C32-0850-48B4-BE71-ECE9FACBD356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3650C32-0850-48B4-BE71-ECE9FACBD356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3650C32-0850-48B4-BE71-ECE9FACBD356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3650C32-0850-48B4-BE71-ECE9FACBD356} = {59E15962-5356-4FD9-AACD-8FDCF3B54C0C}
 	EndGlobalSection
 EndGlobal

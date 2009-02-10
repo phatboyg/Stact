@@ -3,21 +3,23 @@ namespace Magnum.ActorModel
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
+	using Exceptions;
 
-	public abstract class ActorBase : IActor
+	public class AsyncCommandQueue :
+		CommandQueue
 	{
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly int _commandLimit;
-		private readonly int _commandWaitTime;
-		private readonly ICommandExecutor _executor;
+		private readonly int _enqueueWaitTime;
+		private readonly CommandExecutor _executor;
 		private readonly object _lock = new object();
 		private bool _enabled = true;
 
-		protected ActorBase(int commandLimit, int commandWaitTime, ICommandExecutor executor)
+		public AsyncCommandQueue(int limit, int waitTime, CommandExecutor executor)
 		{
-			_commandLimit = commandLimit;
+			_commandLimit = limit;
 			_executor = executor;
-			_commandWaitTime = commandWaitTime;
+			_enqueueWaitTime = waitTime;
 		}
 
 		public int CommandLimit
@@ -25,9 +27,9 @@ namespace Magnum.ActorModel
 			get { return _commandLimit; }
 		}
 
-		public int CommandWaitTime
+		public int EnqueueWaitTime
 		{
-			get { return _commandWaitTime; }
+			get { return _enqueueWaitTime; }
 		}
 
 		public void Enqueue(Action action)
@@ -90,6 +92,7 @@ namespace Magnum.ActorModel
 		{
 			lock (_lock)
 			{
+				_executor.Disable();
 				_enabled = false;
 				Monitor.PulseAll(_lock);
 			}
@@ -102,14 +105,14 @@ namespace Magnum.ActorModel
 			if (_commandLimit <= 0 || _actions.Count + needed <= _commandLimit)
 				return true;
 
-			if (_commandWaitTime <= 0)
-				throw new ActorBusyException(_actions.Count);
+			if (_enqueueWaitTime <= 0)
+				throw new QueueFullException(_actions.Count);
 
-			Monitor.Wait(_lock, _commandWaitTime);
+			Monitor.Wait(_lock, _enqueueWaitTime);
 			if (!_enabled) return false;
 
 			if (_commandLimit > 0 && _actions.Count + needed > _commandLimit)
-				throw new ActorBusyException(_actions.Count);
+				throw new QueueFullException(_actions.Count);
 
 			return true;
 		}

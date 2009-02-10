@@ -1,16 +1,16 @@
-namespace Magnum.ActorModel.Channels
+namespace Magnum.ActorModel.Channels.Subscribers
 {
 	public delegate bool Filter<T>(T message);
 
-	public abstract class SubscriptionBase<T>
+	public abstract class SubscriberBase<T>
 	{
 		private readonly Filter<T> _filter;
 
-		protected SubscriptionBase()
+		protected SubscriberBase()
 		{
 		}
 
-		protected SubscriptionBase(Filter<T> filter)
+		protected SubscriberBase(Filter<T> filter)
 		{
 			_filter = filter;
 		}

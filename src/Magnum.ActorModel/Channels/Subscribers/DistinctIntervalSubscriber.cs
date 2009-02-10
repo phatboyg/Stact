@@ -1,19 +1,19 @@
-namespace Magnum.ActorModel.Channels
+namespace Magnum.ActorModel.Channels.Subscribers
 {
 	using System;
 	using System.Collections.Generic;
 
-	public class UniqueIntervalSubscriber<K,T> :
-		SubscriptionBase<T>
+	public class DistinctIntervalSubscriber<K,T> :
+		SubscriberBase<T>
 	{
 		private readonly Action<IDictionary<K,T>> _consume;
 		private readonly int _interval;
 		private readonly Converter<T, K> _converter;
-		private readonly IActionScheduler _scheduler;
+		private readonly Scheduler _scheduler;
 		private readonly object _lock = new object();
 		private Dictionary<K,T> _pending;
 
-		public UniqueIntervalSubscriber(Action<IDictionary<K,T>> consume, int interval, Converter<T,K> converter, IActionScheduler scheduler)
+		public DistinctIntervalSubscriber(Action<IDictionary<K,T>> consume, int interval, Converter<T,K> converter, Scheduler scheduler)
 		{
 			_consume = consume;
 			_interval = interval;
