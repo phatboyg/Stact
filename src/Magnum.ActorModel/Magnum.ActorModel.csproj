@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="AsyncCommandQueue.cs" />
     <Compile Include="Channels\Extensions.cs" />
+    <Compile Include="Channels\Subscribers\FilteredSubscriber.cs" />
     <Compile Include="Exceptions\QueueFullException.cs" />
     <Compile Include="Channels\Subscribers\IntervalSubscriber.cs" />
     <Compile Include="Channels\ChannelImpl.cs" />
@@ -56,13 +57,14 @@
     <Compile Include="Channels\Subscribers\LatestIntervalSubscriber.cs" />
     <Compile Include="Channels\Subscribers\SubscriberBase.cs" />
     <Compile Include="Channels\Subscribers\DistinctIntervalSubscriber.cs" />
+    <Compile Include="SynchronousCommandQueue.cs" />
     <Compile Include="SynchronousCommandExecutor.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduledEvent.cs" />
     <Compile Include="SingleEvent.cs" />
-    <Compile Include="SingleThreadedCommandQueue.cs" />
+    <Compile Include="ThreadCommandContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

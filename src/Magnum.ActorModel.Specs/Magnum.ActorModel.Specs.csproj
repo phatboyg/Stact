@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel_Specs.cs" />
+    <Compile Include="Demos\Scoreboard\HighScoreBoard.cs" />
+    <Compile Include="Demos\Scoreboard\HighScoreBoard_Specs.cs" />
     <Compile Include="Demos\Scoreboard\Messages\UpdateHighScore.cs" />
     <Compile Include="Demos\Scoreboard\ScoreboardRegistry.cs" />
     <Compile Include="Demos\Scoreboard\Scoreboard_Demo.cs" />

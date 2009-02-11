@@ -17,6 +17,12 @@ namespace Magnum.ActorModel.Channels
 			return channel.Subscribe(subscriber.Consume);
 		}
 
+		public static Unsubscribe Subscribe<T>(this Channel<T> channel, CommandQueue queue, Action<T> consume, Filter<T> filter)
+		{
+			var subscriber = new FilteredSubscriber<T>(queue, consume, filter);
+			return channel.Subscribe(subscriber.Consume);
+		}
+
 		public static Unsubscribe Subscribe<T>(this Channel<T> channel, Action<IList<T>> consume, int interval, Scheduler scheduler)
 		{
 			var subscriber = new IntervalSubscriber<T>(consume, interval, scheduler);

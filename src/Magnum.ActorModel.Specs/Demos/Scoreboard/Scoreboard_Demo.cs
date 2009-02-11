@@ -2,7 +2,6 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 {
 	using System;
 	using System.Diagnostics;
-	using System.Linq;
 	using System.Threading;
 	using Channels;
 	using Messages;
@@ -12,77 +11,91 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 	[TestFixture]
 	public class Scoreboard_Demo
 	{
+		#region Setup/Teardown
+
+		[SetUp]
+		public void Setup()
+		{
+			ObjectFactory.Initialize(x => x.AddRegistry(new ScoreboardRegistry()));
+		}
+
+		[TearDown]
+		public void Teardown()
+		{
+			ObjectFactory.ResetDefaults();
+		}
+
+		#endregion
+
+		public static void WithEach<T>(Action<T> action)
+		{
+			foreach (var configuration in ObjectFactory.Model.PluginTypes)
+			{
+				if (!configuration.Implements<T>()) continue;
+
+				var instance = (T) ObjectFactory.GetInstance(configuration.PluginType);
+
+				action(instance);
+			}
+		}
+
 		[Category("Demo")]
 		[Explicit]
 		[Test]
 		public void Demonstrate_a_series_of_players_updating_their_high_scores()
 		{
-			var container = new Container(new ScoreboardRegistry());
-
 			Trace.WriteLine("Getting startable things");
 
-			var query = container.Model.PluginTypes
-				.Where(p => p.IsStartable())
-				.Select(x => x.ToStartable());
-			foreach (IStartable startable in query)
-			{
-				Trace.WriteLine("Starting");
-				startable.Start();
-			}
+			WithEach<IStartable>(x => x.Start());
 
-
-		
 			Player playerA = new Player();
 
+			var channel = ObjectFactory.GetInstance<Channel<UpdateHighScore>>();
 
-			UpdateHighScore update = new UpdateHighScore
-				{
-					PlayerId = playerA.Id,
-                    DateAchieved = DateTime.Now,
-                    Score = 10923,
-				};
+			channel.Publish(new UpdateHighScore
+			                	{
+			                		PlayerId = playerA.Id,
+			                		DateAchieved = DateTime.Now,
+			                		Score = 10923,
+			                	});
 
-			container.GetInstance<Channel<UpdateHighScore>>().Publish(update);
+			Thread.Sleep(500);
+
+			channel.Publish(new UpdateHighScore
+			                	{
+			                		PlayerId = playerA.Id,
+			                		DateAchieved = DateTime.Now,
+			                		Score = 89498,
+			                	});
 
 
 			Thread.Sleep(5000);
-			
 		}
 	}
 
 	public static class TypeExtensions
 	{
-		public static bool IsStartable(this PluginTypeConfiguration configuration)
+		public static bool Implements<T>(this PluginTypeConfiguration configuration)
 		{
-			return typeof(IStartable).IsAssignableFrom(configuration.PluginType);
+			return configuration.PluginType.Implements<T>();
 		}
 
-		public static IStartable ToStartable(this PluginTypeConfiguration configuration)
+		public static bool Implements<T>(this Type type)
 		{
-			return (IStartable)ObjectFactory.GetInstance(configuration.PluginType);
-		}
-	}
-
-	public class HighScoreBoard :
-		IStartable
-	{
-		private readonly Channel<UpdateHighScore> _uhs;
-
-		public HighScoreBoard(CommandQueue queue, Channel<UpdateHighScore> uhs) 
-		{
-			_uhs = uhs;
-
-			_uhs.Subscribe(queue, Consume);
+			return typeof (T).IsAssignableFrom(type);
 		}
 
-		public void Consume(UpdateHighScore message)
-		{
-			Trace.WriteLine("High score received for " + message.Score);
-		}
 
-		public void Start()
+		public static void WithEach<T>(this Container container, Action<T> action)
 		{
-			Trace.WriteLine("Start Called");
+			foreach (var configuration in container.Model.PluginTypes)
+			{
+				if (!configuration.Implements<T>()) continue;
+
+				var instance = (T) container.GetInstance(configuration.PluginType);
+
+				action(instance);
+			}
 		}
 	}
 

@@ -3,19 +3,25 @@ namespace Magnum.ActorModel
 	using System;
 	using System.Threading;
 
-	public class SingleThreadedCommandQueue :
+	public interface CommandContext :
+		CommandQueue
+	{
+		void Start();
+	}
+
+	public class ThreadCommandContext :
 		IDisposable,
 		IStartable,
-		CommandQueue
+		CommandContext
 	{
 		private readonly CommandQueue _queue;
 		private readonly Thread _thread;
 
-		public SingleThreadedCommandQueue(CommandQueue queue)
+		public ThreadCommandContext(CommandQueue queue)
 		{
 			_queue = queue;
 			_thread = new Thread(RunThread);
-			_thread.Name = string.Format("SingleThreadedCommandQueue-{0}", _thread.ManagedThreadId);
+			_thread.Name = string.Format("ThreadCommandContext-{0}", _thread.ManagedThreadId);
 			_thread.IsBackground = false;
 			_thread.Priority = ThreadPriority.Normal;
 		}
