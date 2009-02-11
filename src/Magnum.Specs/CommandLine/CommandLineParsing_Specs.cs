@@ -94,5 +94,19 @@ namespace Magnum.Specs.CommandLine
             ((TwoArguments)two.ParsedArguments).Name.ShouldEqual("magnum");
             ((TwoArguments)two.ParsedArguments).Location.ShouldEqual("local");
         }
+
+        [Test]
+        public void Should_be_able_handle_args_with_same_first_letter()
+        {
+            var args = new[] {"test", "-n:bob","-nu:bill"};
+            CommandLineParser p = new CommandLineParser();
+            p.RegisterArgumentsForCommand<ArgumentWithSameFirstLetter>("test");
+
+            ParsedCommandLineOutput o = p.Parse(args);
+            ((ArgumentWithSameFirstLetter)o.ParsedArguments).Name.ShouldEqual("bob");
+            ((ArgumentWithSameFirstLetter)o.ParsedArguments).Number.ShouldEqual("bill");
+        }
+
+        //partial longform?
     }
 }

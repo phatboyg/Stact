@@ -1,6 +1,8 @@
 namespace Magnum.CommandLine
 {
+    using System;
     using System.Collections.Generic;
+    using System.Text;
 
     public class CommandLineParser
     {
@@ -31,6 +33,20 @@ namespace Magnum.CommandLine
             var argType = typeof (ArgsType);
             IArgumentParsingInstructions api = new ArgumentParsingInstructions(argType);
             _commands.Add(commandName, api);
+        }
+
+        public string WhatsRegistered()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Commands:");
+            foreach (var pair in _commands)
+            {
+                sb.AppendFormat("{0}{1}", pair.Key, Environment.NewLine);
+                sb.AppendFormat(pair.Value.WhatAreTheOptions());
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
 }

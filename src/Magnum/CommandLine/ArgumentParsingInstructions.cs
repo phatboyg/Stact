@@ -27,8 +27,9 @@ namespace Magnum.CommandLine
             {
                 var fp = new FastProperty(info);
                 _positionalArguments.Add(fp);
-                _shortFormArguments.Add(_shortFormConvention.Convert(info), fp);
-                _longFormArguments.Add(_longFormConvention.Convert(info), fp);
+
+                _shortFormConvention.Append(info, _shortFormArguments, fp);
+                _longFormConvention.Append(info, _longFormArguments, fp);
 
                 _numberOfAguments++;
             }
@@ -55,6 +56,15 @@ namespace Magnum.CommandLine
                 i++;
             }
             return result;
+        }
+
+        public string WhatAreTheOptions()
+        {
+            //foreach argument display
+            // long form, short form, type
+            // how to link long and short form?
+
+            return "";
         }
     }
 }

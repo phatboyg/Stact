@@ -105,6 +105,7 @@
     <Compile Include="Monads\Identity.cs" />
     <Compile Include="Monads\List.cs" />
     <Compile Include="Monads\Maybe.cs" />
+    <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Reflection\ExpressionVisitor.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
