@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.5.0.2, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\StructureMap\StructureMap.dll</HintPath>
@@ -47,13 +51,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionTimer_Specs.cs" />
     <Compile Include="Channel_Specs.cs" />
+    <Compile Include="CommandQueue_Specs.cs" />
     <Compile Include="Demos\Scoreboard\HighScoreBoard.cs" />
     <Compile Include="Demos\Scoreboard\HighScoreBoard_Specs.cs" />
     <Compile Include="Demos\Scoreboard\Messages\UpdateHighScore.cs" />
     <Compile Include="Demos\Scoreboard\ScoreboardRegistry.cs" />
     <Compile Include="Demos\Scoreboard\Scoreboard_Demo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadActionScheduler_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.ActorModel\Magnum.ActorModel.csproj">

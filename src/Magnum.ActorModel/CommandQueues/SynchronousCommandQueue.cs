@@ -1,7 +1,11 @@
-namespace Magnum.ActorModel
+namespace Magnum.ActorModel.CommandQueues
 {
 	using System;
 
+	/// <summary>
+	/// Implements a command queues that calls actions immediately on the callers thread
+	/// as they are queued. This should only be used for testing and not in production.
+	/// </summary>
 	public class SynchronousCommandQueue :
 		CommandQueue
 	{

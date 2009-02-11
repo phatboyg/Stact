@@ -3,6 +3,7 @@ namespace Magnum.ActorModel.Specs
 	using System;
 	using System.Threading;
 	using Channels;
+	using CommandQueues;
 	using DateTimeExtensions;
 	using NUnit.Framework;
 

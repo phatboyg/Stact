@@ -44,8 +44,6 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 		[Test]
 		public void Demonstrate_a_series_of_players_updating_their_high_scores()
 		{
-			Trace.WriteLine("Getting startable things");
-
 			WithEach<IStartable>(x => x.Start());
 
 			Player playerA = new Player();

@@ -1,4 +1,4 @@
-namespace Magnum.ActorModel
+namespace Magnum.ActorModel.CommandQueues
 {
 	using System;
 	using System.Collections.Generic;
@@ -54,7 +54,24 @@ namespace Magnum.ActorModel
 			}
 		}
 
-		public Action[] DequeueAll()
+		public void Run()
+		{
+			while (ExecuteAvailableActions())
+			{
+			}
+		}
+
+		public void Disable()
+		{
+			lock (_lock)
+			{
+				_executor.Disable();
+				_enabled = false;
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		private Action[] DequeueAll()
 		{
 			lock (_lock)
 			{
@@ -71,31 +88,24 @@ namespace Magnum.ActorModel
 			}
 		}
 
+		public bool ActionsAvailable()
+		{
+			while (_actions.Count == 0 && _enabled)
+			{
+				Monitor.Wait(_lock);
+			}
+
+			return _enabled;
+		}
+
 		public bool ExecuteAvailableActions()
 		{
-			Action[] toExecute = DequeueAll();
-			if (toExecute == null)
+			Action[] actions = DequeueAll();
+			if (actions == null)
 				return false;
 
-			_executor.ExecuteAll(toExecute);
+			_executor.ExecuteAll(actions);
 			return true;
-		}
-
-		public void Run()
-		{
-			while (ExecuteAvailableActions())
-			{
-			}
-		}
-
-		public void Disable()
-		{
-			lock (_lock)
-			{
-				_executor.Disable();
-				_enabled = false;
-				Monitor.PulseAll(_lock);
-			}
 		}
 
 		private bool SpaceAvailable(int needed)
@@ -115,16 +125,6 @@ namespace Magnum.ActorModel
 				throw new QueueFullException(_actions.Count);
 
 			return true;
-		}
-
-		private bool ActionsAvailable()
-		{
-			while (_actions.Count == 0 && _enabled)
-			{
-				Monitor.Wait(_lock);
-			}
-
-			return _enabled;
 		}
 	}
 }

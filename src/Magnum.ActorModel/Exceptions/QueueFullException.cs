@@ -5,13 +5,16 @@ namespace Magnum.ActorModel.Exceptions
 
 	public class QueueFullException : Exception
 	{
+		private readonly int _queueDepth;
+
 		public QueueFullException()
 		{
 		}
 
 		public QueueFullException(int queueDepth)
-			: this("This actor is too busy to accept new commands (" + queueDepth + ")")
+			: this("The queue is full and cannot accept new commands (" + queueDepth + ")")
 		{
+			_queueDepth = queueDepth;
 		}
 
 		public QueueFullException(string message) :
@@ -27,6 +30,11 @@ namespace Magnum.ActorModel.Exceptions
 		protected QueueFullException(SerializationInfo info, StreamingContext context) :
 			base(info, context)
 		{
+		}
+
+		public int Depth
+		{
+			get { return _queueDepth; }
 		}
 	}
 }

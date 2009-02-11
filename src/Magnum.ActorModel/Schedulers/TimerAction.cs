@@ -1,17 +1,18 @@
-namespace Magnum.ActorModel
+namespace Magnum.ActorModel.Schedulers
 {
 	using System;
 	using System.Threading;
 
-	public class TimerAction : 
+	public class TimerAction :
 		IDisposable
 	{
 		private readonly Action _action;
 		private readonly long _initialInterval;
 		private readonly long _periodicInterval;
 
-		private Timer _timer;
+		private bool _disposed;
 		private bool _enabled = true;
+		private Timer _timer;
 
 		public TimerAction(long initialInterval, long periodicInterval, Action action)
 		{
@@ -20,8 +21,17 @@ namespace Magnum.ActorModel
 			_periodicInterval = periodicInterval;
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 		public void Schedule(SchedulerControl control)
 		{
+			if (_timer != null)
+				throw new InvalidOperationException("An action is already scheduled for this TimerAction");
+
 			TimerCallback callback = delegate { TimerIntervalCallback(control); };
 			_timer = new Timer(callback, null, _initialInterval, _periodicInterval);
 		}
@@ -57,13 +67,23 @@ namespace Magnum.ActorModel
 			_enabled = false;
 		}
 
-		public void Dispose()
+		~TimerAction()
 		{
-			if(_timer != null)
+			Dispose(false);
+		}
+
+		public void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
 			{
-				_timer.Dispose();
-				_timer = null;
+				if (_timer != null)
+				{
+					_timer.Dispose();
+					_timer = null;
+				}
 			}
+			_disposed = true;
 		}
 	}
 }

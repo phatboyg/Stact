@@ -1,10 +1,8 @@
 namespace Magnum.ActorModel
 {
-	using System;
-
 	public interface CommandContext :
 		CommandQueue,
-		IDisposable
+		Scheduler
 	{
 		void Start();
 	}

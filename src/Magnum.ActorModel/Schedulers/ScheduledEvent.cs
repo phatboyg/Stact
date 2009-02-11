@@ -1,4 +1,4 @@
-namespace Magnum.ActorModel
+namespace Magnum.ActorModel.Schedulers
 {
 	public interface ScheduledEvent
 	{

@@ -1,6 +1,7 @@
 namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 {
 	using Channels;
+	using CommandQueues;
 	using Messages;
 	using StructureMap.Attributes;
 	using StructureMap.Configuration.DSL;
