@@ -2,8 +2,8 @@ namespace Magnum.ActorModel
 {
 	public interface ScheduledEvent
 	{
-		long ScheduledTime { get; }
 		ScheduledEvent Execute(long now);
+		long ScheduledTime { get; }
 		void Cancel();
 	}
 }

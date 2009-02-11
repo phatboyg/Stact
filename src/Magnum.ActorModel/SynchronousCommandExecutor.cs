@@ -12,19 +12,19 @@ namespace Magnum.ActorModel
 			get { return _enabled; }
 		}
 
-		public void ExecuteAll(Action[] toExecute)
-		{
-			foreach (var action in toExecute)
-			{
-				Execute(action);
-			}
-		}
-
 		public void Execute(Action toExecute)
 		{
 			if (_enabled)
 			{
 				toExecute();
+			}
+		}
+
+		public void ExecuteAll(Action[] toExecute)
+		{
+			foreach (var action in toExecute)
+			{
+				Execute(action);
 			}
 		}
 

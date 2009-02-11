@@ -2,20 +2,16 @@ namespace Magnum.ActorModel
 {
 	using System;
 	using System.Threading;
-
-	public interface CommandContext :
-		CommandQueue
-	{
-		void Start();
-	}
+	using Schedulers;
 
 	public class ThreadCommandContext :
-		IDisposable,
+		Scheduler,
 		IStartable,
 		CommandContext
 	{
 		private readonly CommandQueue _queue;
 		private readonly Thread _thread;
+		private ActionScheduler _scheduler;
 
 		public ThreadCommandContext(CommandQueue queue)
 		{
@@ -24,6 +20,8 @@ namespace Magnum.ActorModel
 			_thread.Name = string.Format("ThreadCommandContext-{0}", _thread.ManagedThreadId);
 			_thread.IsBackground = false;
 			_thread.Priority = ThreadPriority.Normal;
+
+			_scheduler = new ActionScheduler(this);
 		}
 
 		public Thread Thread
@@ -70,11 +68,22 @@ namespace Magnum.ActorModel
 
 		public void Run()
 		{
+			throw new NotImplementedException();
 		}
 
 		public void Start()
 		{
 			_thread.Start();
+		}
+
+		public Unschedule Schedule(int interval, Action action)
+		{
+			return _scheduler.Schedule(interval, action);
+		}
+
+		public Unschedule Schedule(int initialInterval, int periodicInterval, Action action)
+		{
+			return _scheduler.Schedule(initialInterval, periodicInterval, action);
 		}
 	}
 

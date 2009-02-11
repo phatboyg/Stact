@@ -45,18 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Schedulers\ActionScheduler.cs" />
     <Compile Include="AsyncCommandQueue.cs" />
     <Compile Include="Channels\Extensions.cs" />
     <Compile Include="Channels\Subscribers\FilteredSubscriber.cs" />
+    <Compile Include="CommandContext.cs" />
     <Compile Include="Exceptions\QueueFullException.cs" />
     <Compile Include="Channels\Subscribers\IntervalSubscriber.cs" />
     <Compile Include="Channels\ChannelImpl.cs" />
     <Compile Include="Channels\Subscribers\ChannelSubscriber.cs" />
-    <Compile Include="Channels\Scheduler.cs" />
+    <Compile Include="Schedulers\PendingAction.cs" />
+    <Compile Include="Scheduler.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Subscribers\LatestIntervalSubscriber.cs" />
     <Compile Include="Channels\Subscribers\SubscriberBase.cs" />
     <Compile Include="Channels\Subscribers\DistinctIntervalSubscriber.cs" />
+    <Compile Include="Future.cs" />
+    <Compile Include="Schedulers\SchedulerControl.cs" />
     <Compile Include="SynchronousCommandQueue.cs" />
     <Compile Include="SynchronousCommandExecutor.cs" />
     <Compile Include="CommandQueue.cs" />
@@ -65,6 +70,7 @@
     <Compile Include="ScheduledEvent.cs" />
     <Compile Include="SingleEvent.cs" />
     <Compile Include="ThreadCommandContext.cs" />
+    <Compile Include="Schedulers\TimerAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

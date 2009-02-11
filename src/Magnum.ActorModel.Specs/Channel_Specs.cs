@@ -30,17 +30,38 @@ namespace Magnum.ActorModel.Specs
 
 			CommandQueue queue = new SynchronousCommandQueue();
 
-			bool consumed = false;
+			var future = new Future<UserUpdate>();
 
-			channel.Subscribe(queue, message => consumed = true, message => message.LastActivity > DateTime.Now);
+			channel.Subscribe(queue, future.Complete, message => message.LastActivity > DateTime.Now);
 
 			var result = channel.Publish(update);
-
 			Assert.IsTrue(result);
 
-			Thread.Sleep(1000);
+			Assert.IsFalse(future.IsAvailable(1.Seconds()));
+		}
 
-			Assert.IsFalse(consumed);
+		[Test]
+		public void Should_schedule_events()
+		{
+			Channel<UserUpdate> channel = new ChannelImpl<UserUpdate>();
+
+			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
+
+			CommandQueue queue = new SynchronousCommandQueue();
+
+			var context = new ThreadCommandContext(queue);
+
+			var future = new Future<UserUpdate>();
+
+			channel.Subscribe(queue, future.Complete);
+
+			context.Schedule(1000, () => channel.Publish(update));
+
+			Thread.Sleep(500);
+
+			Assert.IsFalse(future.IsAvailable(0.Seconds()));
+
+			Assert.IsTrue(future.IsAvailable(1.Seconds()));
 		}
 	}
 
