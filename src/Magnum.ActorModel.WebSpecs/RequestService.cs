@@ -1,6 +1,5 @@
 namespace Magnum.ActorModel.WebSpecs
 {
-	using System.Diagnostics;
 	using System.Threading;
 	using Channels;
 
@@ -23,18 +22,15 @@ namespace Magnum.ActorModel.WebSpecs
 			_requestChannel.Subscribe(_queue, Consume);
 
 			_queue.Start();
-			Trace.WriteLine("Started Request Service");
 		}
 
 		public void Consume(SimpleRequest message)
 		{
-			Trace.WriteLine("Request Received");
-
 			var response = new SimpleResponse
-			               	{
-			               		CorrelationId = message.CorrelationId,
-			               		Message = "Created on Thread ID: " + Thread.CurrentThread.ManagedThreadId,
-			               	};
+				{
+					CorrelationId = message.CorrelationId,
+					Message = "Response created on thread: " + Thread.CurrentThread.ManagedThreadId,
+				};
 
 			_responseChannel.Publish(response);
 		}

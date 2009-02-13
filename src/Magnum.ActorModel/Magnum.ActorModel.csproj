@@ -68,6 +68,7 @@
     <Compile Include="Schedulers\SchedulerControl.cs" />
     <Compile Include="CommandQueues\SynchronousCommandQueue.cs" />
     <Compile Include="Schedulers\ThreadActionScheduler.cs" />
+    <Compile Include="StateDrivenActor.cs" />
     <Compile Include="SynchronousCommandExecutor.cs" />
     <Compile Include="CommandQueue.cs" />
     <Compile Include="CommandExecutor.cs" />
