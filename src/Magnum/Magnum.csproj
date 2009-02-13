@@ -60,6 +60,7 @@
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
+    <Compile Include="CombGuid.cs" />
     <Compile Include="CommandLine\Argument.cs" />
     <Compile Include="CommandLine\ArgumentOrderException.cs" />
     <Compile Include="CommandLine\Arguments_must_be_positional_then_named.cs" />

@@ -2,30 +2,20 @@ namespace Magnum.ActorModel
 {
 	using System;
 	using System.Threading;
+	using Exceptions;
 	using Schedulers;
 
-	public class ThreadCommandContext :
+	public class PooledCommandContext :
 		CommandContext,
 		IStartable
 	{
 		private readonly CommandQueue _queue;
-		private readonly Thread _thread;
 		private ActionScheduler _scheduler;
 
-		public ThreadCommandContext(CommandQueue queue)
+		public PooledCommandContext(CommandQueue queue)
 		{
 			_queue = queue;
-			_thread = new Thread(RunThread);
-			_thread.Name = string.Format("ThreadCommandContext-{0}", _thread.ManagedThreadId);
-			_thread.IsBackground = false;
-			_thread.Priority = ThreadPriority.Normal;
-
 			_scheduler = new ActionScheduler(this);
-		}
-
-		public Thread Thread
-		{
-			get { return _thread; }
 		}
 
 		public void Enqueue(Action action)
@@ -50,7 +40,6 @@ namespace Magnum.ActorModel
 
 		public void Start()
 		{
-			_thread.Start();
 		}
 
 		public void Dispose()
@@ -68,27 +57,22 @@ namespace Magnum.ActorModel
 		{
 			return _scheduler.Schedule(initialInterval, periodicInterval, action);
 		}
-
-		private void RunThread()
-		{
-			try
-			{
-				_queue.Run();
-			}
-			catch (Exception)
-			{
-				//TODO
-			}
-		}
-
-		public void Join()
-		{
-			_thread.Join();
-		}
 	}
 
-	public interface IStartable
+	public interface IThreadPool
 	{
-		void Start();
+		void Queue(WaitCallback callback);
+	}
+
+	public class DefaultThreadPool :
+		IThreadPool
+	{
+		public void Queue(WaitCallback callback)
+		{
+			if (!ThreadPool.QueueUserWorkItem(callback))
+			{
+				throw new QueueFullException("Unable to add item to pool: " + callback.Target);
+			}
+		}
 	}
 }

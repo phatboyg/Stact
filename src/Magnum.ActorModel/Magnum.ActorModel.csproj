@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandQueues\ThreadPoolCommandQueue.cs" />
+    <Compile Include="PooledCommandContext.cs" />
     <Compile Include="Schedulers\EventBase.cs" />
     <Compile Include="Schedulers\RecurringEvent.cs" />
     <Compile Include="Schedulers\ActionScheduler.cs" />
