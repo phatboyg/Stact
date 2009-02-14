@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorBase.cs" />
+    <Compile Include="AsyncActor.cs" />
+    <Compile Include="ChannelFactory.cs" />
     <Compile Include="CommandQueues\ThreadPoolCommandQueue.cs" />
     <Compile Include="PooledCommandContext.cs" />
     <Compile Include="Schedulers\EventBase.cs" />

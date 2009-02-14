@@ -56,6 +56,9 @@ namespace Magnum.ActorModel.WebSpecs
 					x.ForRequestedType<ThreadPoolCommandQueue>()
 						.TheDefault.Is.OfConcreteType<ThreadPoolCommandQueue>();
 
+					x.ForRequestedType<ChannelFactory>()
+						.TheDefault.Is.OfConcreteType<StructureMapChannelFactory>();
+
 					x.InstanceOf<RequestService>()
 						.Is.OfConcreteType<RequestService>();
 				});

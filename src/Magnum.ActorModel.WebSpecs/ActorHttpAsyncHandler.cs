@@ -1,12 +1,21 @@
-﻿namespace Magnum.ActorModel.WebSpecs
+namespace Magnum.ActorModel.WebSpecs
 {
 	using System;
 	using System.Web;
+	using CommandQueues;
 	using StructureMap;
 
-	public class StateMachineAsyncHandler :
+	public class ActorHttpAsyncHandler<T> :
 		IHttpAsyncHandler
+		where T : AsyncActor
 	{
+		private readonly CommandQueue _queue;
+
+		public ActorHttpAsyncHandler()
+		{
+			_queue = ObjectFactory.GetInstance<ThreadPoolCommandQueue>();
+		}
+
 		public void ProcessRequest(HttpContext context)
 		{
 			throw new InvalidOperationException("This should not be called since we are an asynchronous handler");
@@ -19,10 +28,7 @@
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
-			var actor = ObjectFactory.With(context).GetInstance<SimpleRequestActor>();
-
-			//var actor = new SimpleRequestActor(context, _requestChannel, _responseChannel, _queue);
-
+			var actor = ObjectFactory.With(context).With(_queue).GetInstance<T>();
 
 			return actor.Begin(cb, extraData);
 		}
