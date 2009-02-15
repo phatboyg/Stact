@@ -1,8 +1,2 @@
-﻿<%@ WebHandler Language="C#" Class="StateMachineAsyncHandler" %>
+﻿<%@ WebHandler  Class="Magnum.ActorModel.WebSpecs.ActorHttpAsyncHandler`1[[Magnum.ActorModel.WebSpecs.SimpleRequestActor,Magnum.ActorModel.WebSpecs]],Magnum.ActorModel.WebSpecs" %>
 
-using Magnum.ActorModel.WebSpecs;
-
-public class StateMachineAsyncHandler :
-	ActorHttpAsyncHandler<SimpleRequestActor>
-{
-}

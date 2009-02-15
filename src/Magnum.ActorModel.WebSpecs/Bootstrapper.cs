@@ -1,6 +1,10 @@
 namespace Magnum.ActorModel.WebSpecs
 {
 	using System;
+	using System.Web;
+	using System.Web.Compilation;
+	using System.Web.Routing;
+	using System.Web.UI;
 	using Channels;
 	using CommandQueues;
 	using StructureMap;
@@ -61,9 +65,69 @@ namespace Magnum.ActorModel.WebSpecs
 
 					x.InstanceOf<RequestService>()
 						.Is.OfConcreteType<RequestService>();
+
+					x.ForRequestedType<ActorHttpAsyncHandler<SimpleRequestActor>>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<ActorHttpAsyncHandler<SimpleRequestActor>>();
 				});
 
 			WithEach<IStartable>(x => x.Start());
+
+			RegisterRoutes();
+		}
+
+		private static void RegisterRoutes()
+		{
+			WithEach<IHttpAsyncHandler>(x =>
+				{
+					Type handlerType = x.GetType();
+					if(!handlerType.IsGenericType ) return;
+
+					Type genericType = handlerType.GetGenericTypeDefinition();
+					if(genericType != typeof(ActorHttpAsyncHandler<>)) return;
+
+					Type actorType = handlerType.GetGenericArguments()[0];
+
+					string routeUrl = actorType.Name;
+					if (routeUrl.IndexOf("Actor") == routeUrl.Length - 5)
+						routeUrl = routeUrl.Substring(0, routeUrl.Length - 5);
+
+					var route = new Route(routeUrl, new ActorRouteHandler(handlerType));
+
+					RouteTable.Routes.Add(route);
+				});
+
+//			Route simpleRequestRoute = new Route("{Actor}", new ActorRouteHandler());
+//			RouteTable.Routes.Add(simpleRequestRoute);
+		}
+
+
+	}
+
+	public class ActorRouteHandler : IRouteHandler
+	{
+		private readonly Type _type;
+
+		public ActorRouteHandler(Type type)
+		{
+			_type = type;
+		}
+
+		public IHttpHandler GetHttpHandler(RequestContext requestContext)
+		{
+			object handler = ObjectFactory.GetInstance(_type);
+
+			return (IHttpAsyncHandler) handler;
+//
+//
+//			string actorName = requestContext.RouteData.GetRequiredString("Actor");
+//
+//			if (actorName.ToLowerInvariant() == "simplerequest")
+//				return new ActorHttpAsyncHandler<SimpleRequestActor>();
+//
+//			string virtualPath = "~/Default.aspx";
+//
+//			return (Page)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(Page));
 		}
 	}
 }
