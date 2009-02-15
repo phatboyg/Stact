@@ -1,4 +1,4 @@
-namespace Magnum.ActorModel.WebSpecs
+namespace Magnum.ActorModel.WebSpecs.Simple
 {
 	using System;
 	using System.Text;

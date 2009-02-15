@@ -7,10 +7,11 @@
     <title></title>
 </head>
 <body>
-    <form id="form1" runat="server">
-    <div>
-    
-    </div>
-    </form>
+
+<ul>
+    <li><a href="/SimpleRequest">SimpleRequest</a> - A simple request/response service</li>
+    <li><a href="/GetWebPage">GetWebPage</a> - Gets the google homepage and displays the service details</li>
+</ul>
+
 </body>
 </html>

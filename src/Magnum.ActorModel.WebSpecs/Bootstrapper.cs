@@ -2,13 +2,13 @@ namespace Magnum.ActorModel.WebSpecs
 {
 	using System;
 	using System.Web;
-	using System.Web.Compilation;
 	using System.Web.Routing;
-	using System.Web.UI;
 	using Channels;
 	using CommandQueues;
+	using Simple;
 	using StructureMap;
 	using StructureMap.Attributes;
+	using WebPage;
 
 	public static class Bootstrapper
 	{
@@ -46,6 +46,14 @@ namespace Magnum.ActorModel.WebSpecs
 						.CacheBy(InstanceScope.Singleton)
 						.TheDefault.Is.OfConcreteType<ChannelImpl<SimpleResponse>>();
 
+					x.ForRequestedType<Channel<GetWebPage>>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<ChannelImpl<GetWebPage>>();
+
+					x.ForRequestedType<Channel<WebPageContent>>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<ChannelImpl<WebPageContent>>();
+
 					x.ForRequestedType<CommandExecutor>()
 						.TheDefault.Is.OfConcreteType<SynchronousCommandExecutor>();
 
@@ -63,12 +71,21 @@ namespace Magnum.ActorModel.WebSpecs
 					x.ForRequestedType<ChannelFactory>()
 						.TheDefault.Is.OfConcreteType<StructureMapChannelFactory>();
 
-					x.InstanceOf<RequestService>()
-						.Is.OfConcreteType<RequestService>();
+					x.ForRequestedType<RequestService>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<RequestService>();
+
+					x.ForRequestedType<WebPageRetrievalService>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<WebPageRetrievalService>();
 
 					x.ForRequestedType<ActorHttpAsyncHandler<SimpleRequestActor>>()
 						.CacheBy(InstanceScope.Singleton)
 						.TheDefault.Is.OfConcreteType<ActorHttpAsyncHandler<SimpleRequestActor>>();
+
+					x.ForRequestedType<ActorHttpAsyncHandler<GetWebPageActor>>()
+						.CacheBy(InstanceScope.Singleton)
+						.TheDefault.Is.OfConcreteType<ActorHttpAsyncHandler<GetWebPageActor>>();
 				});
 
 			WithEach<IStartable>(x => x.Start());
@@ -81,10 +98,10 @@ namespace Magnum.ActorModel.WebSpecs
 			WithEach<IHttpAsyncHandler>(x =>
 				{
 					Type handlerType = x.GetType();
-					if(!handlerType.IsGenericType ) return;
+					if (!handlerType.IsGenericType) return;
 
 					Type genericType = handlerType.GetGenericTypeDefinition();
-					if(genericType != typeof(ActorHttpAsyncHandler<>)) return;
+					if (genericType != typeof (ActorHttpAsyncHandler<>)) return;
 
 					Type actorType = handlerType.GetGenericArguments()[0];
 
@@ -99,35 +116,6 @@ namespace Magnum.ActorModel.WebSpecs
 
 //			Route simpleRequestRoute = new Route("{Actor}", new ActorRouteHandler());
 //			RouteTable.Routes.Add(simpleRequestRoute);
-		}
-
-
-	}
-
-	public class ActorRouteHandler : IRouteHandler
-	{
-		private readonly Type _type;
-
-		public ActorRouteHandler(Type type)
-		{
-			_type = type;
-		}
-
-		public IHttpHandler GetHttpHandler(RequestContext requestContext)
-		{
-			object handler = ObjectFactory.GetInstance(_type);
-
-			return (IHttpAsyncHandler) handler;
-//
-//
-//			string actorName = requestContext.RouteData.GetRequiredString("Actor");
-//
-//			if (actorName.ToLowerInvariant() == "simplerequest")
-//				return new ActorHttpAsyncHandler<SimpleRequestActor>();
-//
-//			string virtualPath = "~/Default.aspx";
-//
-//			return (Page)BuildManager.CreateInstanceFromVirtualPath(virtualPath, typeof(Page));
 		}
 	}
 }

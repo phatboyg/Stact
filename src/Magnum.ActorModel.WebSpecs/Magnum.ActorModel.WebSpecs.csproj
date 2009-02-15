@@ -52,9 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorHttpAsyncHandler.cs" />
-    <Compile Include="BasicAsyncHandler.ashx.cs">
-      <DependentUpon>BasicAsyncHandler.ashx</DependentUpon>
-    </Compile>
+    <Compile Include="ActorRouteHandler.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Default.aspx.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -63,16 +61,20 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionsForWebStuff.cs" />
+    <Compile Include="WebPage\GetWebPage.cs" />
+    <Compile Include="WebPage\GetWebPageActor.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HttpHandlerAsyncResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestService.cs" />
-    <Compile Include="SimpleRequestActor.cs" />
-    <Compile Include="SimpleRequest.cs" />
-    <Compile Include="SimpleResponse.cs" />
+    <Compile Include="Simple\RequestService.cs" />
+    <Compile Include="Simple\SimpleRequestActor.cs" />
+    <Compile Include="Simple\SimpleRequest.cs" />
+    <Compile Include="Simple\SimpleResponse.cs" />
     <Compile Include="StructureMapChannelFactory.cs" />
+    <Compile Include="WebPage\WebPageContent.cs" />
+    <Compile Include="WebPage\WebPageRetrievalService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.ActorModel\Magnum.ActorModel.csproj">
@@ -85,11 +87,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BasicAsyncHandler.ashx" />
     <Content Include="Global.asax" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="StateMachineAsyncHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

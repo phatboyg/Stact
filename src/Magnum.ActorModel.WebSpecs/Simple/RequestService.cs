@@ -1,4 +1,4 @@
-namespace Magnum.ActorModel.WebSpecs
+namespace Magnum.ActorModel.WebSpecs.Simple
 {
 	using System.Threading;
 	using Channels;
@@ -27,10 +27,10 @@ namespace Magnum.ActorModel.WebSpecs
 		public void Consume(SimpleRequest message)
 		{
 			var response = new SimpleResponse
-				{
-					CorrelationId = message.CorrelationId,
-					Message = "Response created on thread: " + Thread.CurrentThread.ManagedThreadId,
-				};
+			               	{
+			               		CorrelationId = message.CorrelationId,
+			               		Message = "Response created on thread: " + Thread.CurrentThread.ManagedThreadId,
+			               	};
 
 			_responseChannel.Publish(response);
 		}
