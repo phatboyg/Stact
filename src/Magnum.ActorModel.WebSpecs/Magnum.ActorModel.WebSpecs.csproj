@@ -61,6 +61,8 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ExampleActor.cs" />
+    <Compile Include="ExampleRequest.cs" />
     <Compile Include="ExtensionsForWebStuff.cs" />
     <Compile Include="WebPage\GetWebPage.cs" />
     <Compile Include="WebPage\GetWebPageActor.cs" />

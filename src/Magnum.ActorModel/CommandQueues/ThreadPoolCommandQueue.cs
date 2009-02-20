@@ -9,15 +9,9 @@ namespace Magnum.ActorModel.CommandQueues
 		CommandQueue
 	{
 		private readonly List<Action> _actions = new List<Action>();
-		private readonly CommandExecutor _executor;
 		private readonly object _lock = new object();
 		private bool _enabled = true;
 		private bool _flushPending;
-
-		public ThreadPoolCommandQueue(CommandExecutor executor)
-		{
-			_executor = executor;
-		}
 
 		public void Enqueue(Action action)
 		{
@@ -51,7 +45,6 @@ namespace Magnum.ActorModel.CommandQueues
 		{
 			lock (_lock)
 			{
-				_executor.Disable();
 				_enabled = false;
 			}
 		}
@@ -61,7 +54,13 @@ namespace Magnum.ActorModel.CommandQueues
 			Action[] actions = DequeueAll();
 			if (actions == null) return;
 
-			_executor.ExecuteAll(actions);
+			foreach (var action in actions)
+			{
+				if(_enabled == false)
+					break;
+
+				action();
+			}
 
 			lock (_lock)
 			{

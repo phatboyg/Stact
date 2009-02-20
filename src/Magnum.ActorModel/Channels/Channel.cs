@@ -6,6 +6,10 @@ namespace Magnum.ActorModel.Channels
 
 	public interface Channel
 	{
+		/// <summary>
+		/// Remove all subscriptions to the channel
+		/// </summary>
+		void UnsubscribeAll();
 	}
 
 	public interface Channel<T> :
@@ -23,10 +27,5 @@ namespace Magnum.ActorModel.Channels
 		/// </summary>
 		/// <returns></returns>
 		Unsubscribe Subscribe(Action<T> consumer);
-
-		/// <summary>
-		/// Remove all subscriptions to the channel
-		/// </summary>
-		void UnsubscribeAll();
 	}
 }
