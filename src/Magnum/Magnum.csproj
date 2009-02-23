@@ -44,6 +44,33 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\AsyncActor.cs" />
+    <Compile Include="Actors\AsyncHttpActor.cs" />
+    <Compile Include="Actors\ChannelFactory.cs" />
+    <Compile Include="Actors\Channels\Channel.cs" />
+    <Compile Include="Actors\Channels\Extensions.cs" />
+    <Compile Include="Actors\Channels\Subscribers\ChannelSubscriber.cs" />
+    <Compile Include="Actors\Channels\Subscribers\DistinctIntervalSubscriber.cs" />
+    <Compile Include="Actors\Channels\Subscribers\FilteredSubscriber.cs" />
+    <Compile Include="Actors\Channels\Subscribers\IntervalSubscriber.cs" />
+    <Compile Include="Actors\Channels\Subscribers\LatestIntervalSubscriber.cs" />
+    <Compile Include="Actors\Channels\Subscribers\SubscriberBase.cs" />
+    <Compile Include="Actors\Channels\SynchronousChannel.cs" />
+    <Compile Include="Actors\CommandQueue.cs" />
+    <Compile Include="Actors\CommandQueues\AsyncCommandQueue.cs" />
+    <Compile Include="Actors\CommandQueues\SynchronousCommandQueue.cs" />
+    <Compile Include="Actors\CommandQueues\ThreadCommandQueue.cs" />
+    <Compile Include="Actors\CommandQueues\ThreadPoolCommandQueue.cs" />
+    <Compile Include="Actors\Exceptions\QueueFullException.cs" />
+    <Compile Include="Actors\Future.cs" />
+    <Compile Include="Actors\Scheduler.cs" />
+    <Compile Include="Actors\Schedulers\EventBase.cs" />
+    <Compile Include="Actors\Schedulers\RecurringEvent.cs" />
+    <Compile Include="Actors\Schedulers\ScheduledEvent.cs" />
+    <Compile Include="Actors\Schedulers\SingleEvent.cs" />
+    <Compile Include="Actors\Schedulers\ThreadPoolScheduler.cs" />
+    <Compile Include="Actors\Startable.cs" />
     <Compile Include="Calendar\Holidays\BaseCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />

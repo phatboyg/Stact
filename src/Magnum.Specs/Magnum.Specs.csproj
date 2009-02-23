@@ -69,6 +69,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\Calculator_Example.cs" />
+    <Compile Include="Actors\Channel_Specs.cs" />
+    <Compile Include="Actors\CommandQueue_Specs.cs" />
+    <Compile Include="Actors\PingPongDemo\Ping.cs" />
+    <Compile Include="Actors\PingPongDemo\PingActor.cs" />
+    <Compile Include="Actors\PingPongDemo\PingPong_Demo.cs" />
+    <Compile Include="Actors\PingPongDemo\Pong.cs" />
+    <Compile Include="Actors\PingPongDemo\PongActor.cs" />
+    <Compile Include="Actors\PingPong_Example.cs" />
+    <Compile Include="Actors\ThreadActionScheduler_Specs.cs" />
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
