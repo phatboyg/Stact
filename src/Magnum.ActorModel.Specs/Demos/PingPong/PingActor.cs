@@ -51,8 +51,4 @@ namespace Magnum.ActorModel.Specs.Demos.PingPong
 			pong.Ping(this);
 		}
 	}
-
-	public interface Actor
-	{
-	}
 }

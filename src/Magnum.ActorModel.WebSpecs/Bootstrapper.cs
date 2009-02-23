@@ -1,7 +1,6 @@
 namespace Magnum.ActorModel.WebSpecs
 {
 	using System;
-	using System.Web;
 	using System.Web.Routing;
 	using Channels;
 	using CommandQueues;
@@ -60,21 +59,19 @@ namespace Magnum.ActorModel.WebSpecs
 					x.ForRequestedType<ChannelFactory>()
 						.TheDefault.Is.OfConcreteType<StructureMapChannelFactory>();
 
-					x.ForRequestedType<RequestService>()
-						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<RequestService>();
-
-					x.ForRequestedType<WebPageRetrievalService>()
+					x.ForRequestedType<WebPageRetrieval>()
 						.CacheBy(InstanceScope.Singleton)
 						.TheDefault.Is.OfConcreteType<WebPageRetrievalService>();
 
-					x.ForRequestedType<ActorHttpAsyncHandler<SimpleRequestActor>>()
+					x.ForRequestedType<IRequestService>()
 						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ActorHttpAsyncHandler<SimpleRequestActor>>();
+						.TheDefault.Is.OfConcreteType<RequestService>();
 
-					x.ForRequestedType<ActorHttpAsyncHandler<GetWebPageActor>>()
-						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ActorHttpAsyncHandler<GetWebPageActor>>();
+					x.ForRequestedType<SimpleRequestActor>()
+						.TheDefault.Is.OfConcreteType<SimpleRequestActor>();
+
+					x.ForRequestedType<GetWebPageActor>()
+						.TheDefault.Is.OfConcreteType<GetWebPageActor>();
 				});
 
 			WithEach<IStartable>(x => x.Start());
@@ -84,17 +81,11 @@ namespace Magnum.ActorModel.WebSpecs
 
 		private static void RegisterRoutes()
 		{
-			WithEach<IHttpAsyncHandler>(x =>
+			WithEach<AsyncHttpActor>(x =>
 				{
 					Type handlerType = x.GetType();
-					if (!handlerType.IsGenericType) return;
 
-					Type genericType = handlerType.GetGenericTypeDefinition();
-					if (genericType != typeof (ActorHttpAsyncHandler<>)) return;
-
-					Type actorType = handlerType.GetGenericArguments()[0];
-
-					string routeUrl = actorType.Name;
+					string routeUrl = handlerType.Name;
 					if (routeUrl.IndexOf("Actor") == routeUrl.Length - 5)
 						routeUrl = routeUrl.Substring(0, routeUrl.Length - 5);
 

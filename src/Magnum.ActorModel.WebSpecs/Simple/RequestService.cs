@@ -1,36 +1,40 @@
 namespace Magnum.ActorModel.WebSpecs.Simple
 {
 	using System.Threading;
-	using Channels;
+
+	public interface IRequestService
+	{
+		void SimpleRequest(SimpleRequest request);
+	}
 
 	public class RequestService :
+		IRequestService,
 		IStartable
 	{
 		private readonly CommandQueue _queue;
-		private readonly Channel<SimpleRequest> _requestChannel;
-		private readonly Channel<SimpleResponse> _responseChannel;
 
-		public RequestService(CommandQueue queue, Channel<SimpleRequest> requestChannel, Channel<SimpleResponse> responseChannel)
+		public RequestService(CommandQueue queue)
 		{
 			_queue = queue;
-			_responseChannel = responseChannel;
-			_requestChannel = requestChannel;
+		}
+
+		public void SimpleRequest(SimpleRequest request)
+		{
+			_queue.Enqueue(() => Consume(request));
 		}
 
 		public void Start()
 		{
-			_requestChannel.Subscribe(_queue, Consume);
 		}
 
 		public void Consume(SimpleRequest message)
 		{
 			var response = new SimpleResponse
-			               	{
-			               		CorrelationId = message.CorrelationId,
-			               		Message = "Response created on thread: " + Thread.CurrentThread.ManagedThreadId,
-			               	};
+				{
+					Message = "Response created on thread: " + Thread.CurrentThread.ManagedThreadId,
+				};
 
-			_responseChannel.Publish(response);
+			message.Reply(response);
 		}
 	}
 }

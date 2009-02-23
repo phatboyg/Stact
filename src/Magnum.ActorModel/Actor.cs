@@ -1,6 +1,6 @@
 namespace Magnum.ActorModel
 {
-	public interface AsyncActor
+	public interface Actor
 	{
 	}
 }

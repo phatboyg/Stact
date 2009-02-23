@@ -9,7 +9,6 @@ namespace Magnum.ActorModel.WebSpecs.Simple
 			Created = DateTime.Now;
 		}
 
-		public Guid CorrelationId { get; set; }
 		public string Message { get; set; }
 		public DateTime Created { get; set; }
 	}

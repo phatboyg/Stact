@@ -35,6 +35,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -45,8 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActorBase.cs" />
+    <Compile Include="Actor.cs" />
     <Compile Include="AsyncActor.cs" />
+    <Compile Include="AsyncHttpActor.cs" />
     <Compile Include="ChannelFactory.cs" />
     <Compile Include="CommandQueues\ThreadCommandQueue.cs" />
     <Compile Include="CommandQueues\ThreadPoolCommandQueue.cs" />

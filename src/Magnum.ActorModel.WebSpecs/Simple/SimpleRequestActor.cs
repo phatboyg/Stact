@@ -7,50 +7,56 @@ namespace Magnum.ActorModel.WebSpecs.Simple
 	using Threading;
 
 	public class SimpleRequestActor :
-		ActorBase,
-		AsyncActor
+		AsyncHttpActor
 	{
 		private static int _requestCount;
 		private static int _responseCount;
-		private readonly HttpContext _context;
+		protected readonly CommandQueue _queue;
+		private readonly IRequestService _requestService;
 		private AsyncResult _asyncResult;
 
 		private StringBuilder _body = new StringBuilder();
+		private HttpContext _context;
 
-		public SimpleRequestActor(HttpContext context, CommandQueue queue, ChannelFactory channelFactory)
-			: base(queue, channelFactory)
+		public SimpleRequestActor(CommandQueue queue, IRequestService requestService)
 		{
-			_context = context;
+			_queue = queue;
+			_requestService = requestService;
+
 			_body.AppendLine("Actor created on thread: " + Thread.CurrentThread.ManagedThreadId);
 		}
 
-		public IAsyncResult Begin(AsyncCallback callback, object state)
+		public IAsyncResult BeginAction(HttpContext context, AsyncCallback callback, object state)
 		{
+			_context = context;
 			_asyncResult = new AsyncResult(callback, state);
 
 			_body.AppendLine("Begin called on thread: " + Thread.CurrentThread.ManagedThreadId);
 
-			When<SimpleResponse>(filter => filter.CorrelationId == TransactionId, response =>
+			var message = new SimpleRequest
 				{
-					Interlocked.Increment(ref _responseCount);
-
-					_body.AppendLine("Response created at: " + response.Created);
-					_body.AppendLine(response.Message);
-					_body.AppendLine("Callback executed on thread: " + Thread.CurrentThread.ManagedThreadId);
-					_body.AppendLine("Request Count: " + _requestCount + " Response Count: " + _responseCount);
-
-					_context.Response.ContentType = "text/plain";
-					_context.Response.Write(_body.ToString());
-
-					_asyncResult.SetAsCompleted();
-				});
-
-			var message = new SimpleRequest {CorrelationId = TransactionId};
+					Reply = response => _queue.Enqueue(() => Consume(response))
+				};
 
 			Interlocked.Increment(ref _requestCount);
-			Publish(message);
+			_requestService.SimpleRequest(message);
 
 			return _asyncResult;
+		}
+
+		private void Consume(SimpleResponse response)
+		{
+			Interlocked.Increment(ref _responseCount);
+
+			_body.AppendLine("Response created at: " + response.Created);
+			_body.AppendLine(response.Message);
+			_body.AppendLine("Callback executed on thread: " + Thread.CurrentThread.ManagedThreadId);
+			_body.AppendLine("Request Count: " + _requestCount + " Response Count: " + _responseCount);
+
+			_context.Response.ContentType = "text/plain";
+			_context.Response.Write(_body.ToString());
+
+			_asyncResult.SetAsCompleted();
 		}
 	}
 }

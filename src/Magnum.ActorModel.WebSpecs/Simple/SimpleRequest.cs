@@ -4,11 +4,6 @@ namespace Magnum.ActorModel.WebSpecs.Simple
 
 	public class SimpleRequest
 	{
-		public SimpleRequest()
-		{
-			CorrelationId = CombGuid.Generate();
-		}
-
-		public Guid CorrelationId { get; set; }
+		public Action<SimpleResponse> Reply { get; set; }
 	}
 }

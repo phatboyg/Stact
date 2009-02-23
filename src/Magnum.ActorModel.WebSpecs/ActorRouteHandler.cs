@@ -17,9 +17,11 @@ namespace Magnum.ActorModel.WebSpecs
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
-			object handler = ObjectFactory.GetInstance(_type);
+			var handler = ObjectFactory
+				.With<Func<AsyncHttpActor>>(() => (AsyncHttpActor)ObjectFactory.GetInstance(_type))
+				.GetInstance<HttpAsyncActorHandler>();
 
-			return (IHttpAsyncHandler) handler;
+			return handler;
 		}
 	}
 }

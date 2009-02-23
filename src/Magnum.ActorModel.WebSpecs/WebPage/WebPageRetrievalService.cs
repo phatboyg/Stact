@@ -2,36 +2,38 @@ namespace Magnum.ActorModel.WebSpecs.WebPage
 {
 	using System.Net;
 	using System.Threading;
-	using Channels;
+
+	public interface WebPageRetrieval
+	{
+		void GetWebPage(GetWebPage getWebPage);
+	}
 
 	public class WebPageRetrievalService :
+		WebPageRetrieval,
 		IStartable
 	{
 		private readonly CommandQueue _queue;
-		private readonly Channel<GetWebPage> _requestChannel;
-		private readonly Channel<WebPageContent> _responseChannel;
 
-		public WebPageRetrievalService(CommandQueue queue,
-		                               Channel<GetWebPage> requestChannel,
-		                               Channel<WebPageContent> responseChannel)
+		public WebPageRetrievalService(CommandQueue queue)
 		{
 			_queue = queue;
-			_responseChannel = responseChannel;
-			_requestChannel = requestChannel;
 		}
 
 		public void Start()
 		{
-			_requestChannel.Subscribe(_queue, Consume);
+		}
+
+		public void GetWebPage(GetWebPage getWebPage)
+		{
+			_queue.Enqueue(() => Consume(getWebPage));
 		}
 
 		public void Consume(GetWebPage message)
 		{
 			var content = new WebPageContent
-			              	{
-			              		CorrelationId = message.CorrelationId,
-			              		RequestStarted = "Request initiated on thread: " + Thread.CurrentThread.ManagedThreadId,
-			              	};
+				{
+					RequestStarted = "Request initiated on thread: " + Thread.CurrentThread.ManagedThreadId,
+				};
 
 			var request = WebRequest.Create(message.Url);
 
@@ -41,7 +43,7 @@ namespace Magnum.ActorModel.WebSpecs.WebPage
 					content.ContentType = response.ContentType;
 					content.RequestCompleted = "Request completed on thread: " + Thread.CurrentThread.ManagedThreadId;
 
-					_responseChannel.Publish(content);
+					message.Reply(content);
 				}));
 		}
 	}
