@@ -24,7 +24,7 @@ namespace Magnum.ActorModel.Specs
 					reset.Set();
 				};
 
-			using (var thread = new ThreadActionScheduler())
+			using (var thread = new ThreadPoolScheduler())
 			{
 				thread.Schedule(50, () => queue.Enqueue(three));
 				thread.Schedule(1, () => queue.Enqueue(one));
@@ -50,7 +50,7 @@ namespace Magnum.ActorModel.Specs
 					}
 				};
 
-			using (var thread = new ThreadActionScheduler())
+			using (var thread = new ThreadPoolScheduler())
 			{
 				for (var i = 0; i < 1000; i++)
 				{
@@ -66,7 +66,7 @@ namespace Magnum.ActorModel.Specs
 			var queue = new SynchronousCommandQueue();
 			queue.Run();
 			Action action = () => Assert.Fail("Should not execute");
-			using (var timer = new ThreadActionScheduler())
+			using (var timer = new ThreadPoolScheduler())
 			{
 				long now = 0;
 				long span = 0;
@@ -83,7 +83,7 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void TimeTilNextNothingQueued()
 		{
-			using (var timer = new ThreadActionScheduler())
+			using (var timer = new ThreadPoolScheduler())
 			{
 				long result = 0;
 				Assert.IsFalse(timer.GetNextScheduledTime(ref result, 100));

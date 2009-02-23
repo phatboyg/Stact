@@ -6,11 +6,11 @@ namespace Magnum.ActorModel.WebSpecs.Simple
 	public class RequestService :
 		IStartable
 	{
-		private readonly CommandContext _queue;
+		private readonly CommandQueue _queue;
 		private readonly Channel<SimpleRequest> _requestChannel;
 		private readonly Channel<SimpleResponse> _responseChannel;
 
-		public RequestService(CommandContext queue, Channel<SimpleRequest> requestChannel, Channel<SimpleResponse> responseChannel)
+		public RequestService(CommandQueue queue, Channel<SimpleRequest> requestChannel, Channel<SimpleResponse> responseChannel)
 		{
 			_queue = queue;
 			_responseChannel = responseChannel;
@@ -20,8 +20,6 @@ namespace Magnum.ActorModel.WebSpecs.Simple
 		public void Start()
 		{
 			_requestChannel.Subscribe(_queue, Consume);
-
-			_queue.Start();
 		}
 
 		public void Consume(SimpleRequest message)

@@ -40,32 +40,21 @@ namespace Magnum.ActorModel.WebSpecs
 				{
 					x.ForRequestedType<Channel<SimpleRequest>>()
 						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ChannelImpl<SimpleRequest>>();
+						.TheDefault.Is.OfConcreteType<SynchronousChannel<SimpleRequest>>();
 
 					x.ForRequestedType<Channel<SimpleResponse>>()
 						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ChannelImpl<SimpleResponse>>();
+						.TheDefault.Is.OfConcreteType<SynchronousChannel<SimpleResponse>>();
 
 					x.ForRequestedType<Channel<GetWebPage>>()
 						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ChannelImpl<GetWebPage>>();
+						.TheDefault.Is.OfConcreteType<SynchronousChannel<GetWebPage>>();
 
 					x.ForRequestedType<Channel<WebPageContent>>()
 						.CacheBy(InstanceScope.Singleton)
-						.TheDefault.Is.OfConcreteType<ChannelImpl<WebPageContent>>();
-
-					x.ForRequestedType<CommandExecutor>()
-						.TheDefault.Is.OfConcreteType<SynchronousCommandExecutor>();
+						.TheDefault.Is.OfConcreteType<SynchronousChannel<WebPageContent>>();
 
 					x.ForRequestedType<CommandQueue>()
-						.TheDefault.Is.OfConcreteType<AsyncCommandQueue>()
-						.WithCtorArg("limit").EqualTo(5000)
-						.WithCtorArg("waitTime").EqualTo(1000);
-
-					x.ForRequestedType<CommandContext>()
-						.TheDefault.Is.OfConcreteType<ThreadCommandContext>();
-
-					x.ForRequestedType<ThreadPoolCommandQueue>()
 						.TheDefault.Is.OfConcreteType<ThreadPoolCommandQueue>();
 
 					x.ForRequestedType<ChannelFactory>()

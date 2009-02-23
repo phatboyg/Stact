@@ -7,10 +7,10 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 	public class HighScoreBoard :
 		IStartable
 	{
-		private readonly CommandContext _queue;
+		private readonly CommandQueue _queue;
 		private readonly Channel<UpdateHighScore> _uhs;
 
-		public HighScoreBoard(CommandContext queue, Channel<UpdateHighScore> uhs) 
+		public HighScoreBoard(CommandQueue queue, Channel<UpdateHighScore> uhs) 
 		{
 			_queue = queue;
 			_uhs = uhs;
@@ -25,7 +25,6 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 		{
 			_uhs.Subscribe(_queue, Consume);
 
-			_queue.Start();
 			Trace.WriteLine("Started High Score Board");
 		}
 	}

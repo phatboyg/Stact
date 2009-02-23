@@ -8,20 +8,20 @@ namespace Magnum.ActorModel.Specs.Demos.PingPong
 	[TestFixture]
 	public class PingPong_Demo
 	{
-		private Ping _ping;
+		private PingActor _ping;
+		private PingActor _ping2;
+		private PingActor _ping3;
+		private PingActor _ping4;
 		private Pong _pong;
-		private Ping _ping2;
-		private Ping _ping3;
-		private Ping _ping4;
 
 		[SetUp]
 		public void Setup()
 		{
-			_ping = new Ping();
-			_ping2 = new Ping();
-			_ping3 = new Ping();
-			_ping4 = new Ping();
-			_pong = new Pong();
+			_ping = new PingActor();
+			_ping2 = new PingActor();
+			_ping3 = new PingActor();
+			_ping4 = new PingActor();
+			_pong = new PongActor();
 		}
 
 		[Test, Explicit, Category("Demo")]
@@ -41,7 +41,7 @@ namespace Magnum.ActorModel.Specs.Demos.PingPong
 		[Test, Explicit, Category("Demo")]
 		public void Timer_Based_Demo()
 		{
-			ThreadActionScheduler scheduler = new ThreadActionScheduler();
+			ThreadPoolScheduler scheduler = new ThreadPoolScheduler();
 			scheduler.Schedule(0, 1000, ()=>
 				{
 					Trace.WriteLine("Starting it up");

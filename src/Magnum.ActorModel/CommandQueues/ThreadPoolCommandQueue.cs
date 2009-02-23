@@ -49,7 +49,7 @@ namespace Magnum.ActorModel.CommandQueues
 			}
 		}
 
-		private void ExecuteOnPooledThread(object state)
+		private void ExecuteActions(object state)
 		{
 			Action[] actions = DequeueAll();
 			if (actions == null) return;
@@ -77,7 +77,7 @@ namespace Magnum.ActorModel.CommandQueues
 
 		private void QueueExecutor()
 		{
-			if (!ThreadPool.QueueUserWorkItem(ExecuteOnPooledThread))
+			if (!ThreadPool.QueueUserWorkItem(ExecuteActions))
 				throw new QueueFullException("Unable to queue executor to thread pool");
 
 			_flushPending = true;

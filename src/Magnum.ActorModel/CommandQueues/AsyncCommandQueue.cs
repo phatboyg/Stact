@@ -11,14 +11,12 @@ namespace Magnum.ActorModel.CommandQueues
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly int _commandLimit;
 		private readonly int _enqueueWaitTime;
-		private readonly CommandExecutor _executor;
 		private readonly object _lock = new object();
 		private bool _enabled = true;
 
-		public AsyncCommandQueue(int limit, int waitTime, CommandExecutor executor)
+		public AsyncCommandQueue(int limit, int waitTime)
 		{
 			_commandLimit = limit;
-			_executor = executor;
 			_enqueueWaitTime = waitTime;
 		}
 
@@ -65,7 +63,6 @@ namespace Magnum.ActorModel.CommandQueues
 		{
 			lock (_lock)
 			{
-				_executor.Disable();
 				_enabled = false;
 				Monitor.PulseAll(_lock);
 			}
@@ -104,7 +101,14 @@ namespace Magnum.ActorModel.CommandQueues
 			if (actions == null)
 				return false;
 
-			_executor.ExecuteAll(actions);
+			foreach (var action in actions)
+			{
+				if (_enabled == false)
+					break;
+
+				action();
+			}
+
 			return true;
 		}
 

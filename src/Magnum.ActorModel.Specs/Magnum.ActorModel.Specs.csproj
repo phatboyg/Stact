@@ -52,13 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionTimer_Specs.cs" />
     <Compile Include="Calculator_Example.cs" />
     <Compile Include="Channel_Specs.cs" />
     <Compile Include="CommandQueue_Specs.cs" />
     <Compile Include="Demos\PingPong\Ping.cs" />
+    <Compile Include="Demos\PingPong\PingActor.cs" />
     <Compile Include="Demos\PingPong\PingPong_Demo.cs" />
     <Compile Include="Demos\PingPong\Pong.cs" />
+    <Compile Include="Demos\PingPong\PongActor.cs" />
     <Compile Include="Demos\Scoreboard\HighScoreBoard.cs" />
     <Compile Include="Demos\Scoreboard\HighScoreBoard_Specs.cs" />
     <Compile Include="Demos\Scoreboard\Messages\UpdateHighScore.cs" />

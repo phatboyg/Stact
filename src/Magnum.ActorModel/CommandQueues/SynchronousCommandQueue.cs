@@ -17,6 +17,9 @@ namespace Magnum.ActorModel.CommandQueues
 
 			foreach (var action in actions)
 			{
+				if (!_enabled)
+					break;
+
 				action();
 			}
 		}

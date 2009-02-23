@@ -5,7 +5,7 @@ namespace Magnum.ActorModel.Schedulers
 	using System.Diagnostics;
 	using System.Threading;
 
-	public class ThreadActionScheduler :
+	public class ThreadPoolScheduler :
 		Scheduler
 	{
 		private static readonly long _freq = Stopwatch.Frequency;

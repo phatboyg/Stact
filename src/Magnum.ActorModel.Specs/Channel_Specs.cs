@@ -6,6 +6,7 @@ namespace Magnum.ActorModel.Specs
 	using CommandQueues;
 	using DateTimeExtensions;
 	using NUnit.Framework;
+	using Schedulers;
 
 	[TestFixture]
 	public class Publishing_a_message_on_a_channel
@@ -13,7 +14,7 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void Should_return_false_if_there_are_no_subscribers()
 		{
-			Channel<UserUpdate> channel = new ChannelImpl<UserUpdate>();
+			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
 
 			UserUpdate update = new UserUpdate();
 
@@ -25,7 +26,7 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void Should_filter_out_unwanted_messages()
 		{
-			Channel<UserUpdate> channel = new ChannelImpl<UserUpdate>();
+			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
 
 			UserUpdate update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
@@ -44,19 +45,19 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void Should_schedule_events()
 		{
-			Channel<UserUpdate> channel = new ChannelImpl<UserUpdate>();
+			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
 
 			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
 			CommandQueue queue = new SynchronousCommandQueue();
 
-			var context = new ThreadCommandContext(queue);
+			var scheduler = new ThreadPoolScheduler();
 
 			var future = new Future<UserUpdate>();
 
 			channel.Subscribe(queue, future.Complete);
 
-			context.Schedule(1000, () => channel.Publish(update));
+			scheduler.Schedule(1000, () => channel.Publish(update));
 
 			Thread.Sleep(500);
 

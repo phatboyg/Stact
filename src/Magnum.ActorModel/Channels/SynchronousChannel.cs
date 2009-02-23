@@ -2,7 +2,7 @@ namespace Magnum.ActorModel.Channels
 {
 	using System;
 
-	public class ChannelImpl<T> :
+	public class SynchronousChannel<T> :
 		Channel<T>
 	{
 		public bool Publish(T message)

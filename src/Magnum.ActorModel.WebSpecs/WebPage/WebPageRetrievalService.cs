@@ -7,11 +7,11 @@ namespace Magnum.ActorModel.WebSpecs.WebPage
 	public class WebPageRetrievalService :
 		IStartable
 	{
-		private readonly CommandContext _queue;
+		private readonly CommandQueue _queue;
 		private readonly Channel<GetWebPage> _requestChannel;
 		private readonly Channel<WebPageContent> _responseChannel;
 
-		public WebPageRetrievalService(CommandContext queue,
+		public WebPageRetrievalService(CommandQueue queue,
 		                               Channel<GetWebPage> requestChannel,
 		                               Channel<WebPageContent> responseChannel)
 		{
@@ -23,8 +23,6 @@ namespace Magnum.ActorModel.WebSpecs.WebPage
 		public void Start()
 		{
 			_requestChannel.Subscribe(_queue, Consume);
-
-			_queue.Start();
 		}
 
 		public void Consume(GetWebPage message)

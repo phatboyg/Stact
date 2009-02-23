@@ -11,11 +11,11 @@ namespace Magnum.ActorModel
 			Define(() => { });
 		}
 
-//		public static State Initial { get; set; }
-//		public static State Completed { get; set; }
-//
-//		public static State Waiting { get; set; }
-//
-//		public static Event Started { get; set; }
+		public static State Initial { get; set; }
+		public static State Completed { get; set; }
+
+		public static State Waiting { get; set; }
+
+		public static Event Started { get; set; }
 	}
 }

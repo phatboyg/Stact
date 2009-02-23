@@ -13,27 +13,21 @@ namespace Magnum.ActorModel.Specs.Demos.Scoreboard
 		{
 			ForRequestedType(typeof (Channel<>))
 				.CacheBy(InstanceScope.Singleton)
-				.TheDefaultIsConcreteType(typeof (ChannelImpl<>));
+				.TheDefaultIsConcreteType(typeof (SynchronousChannel<>));
 
 
 			ForRequestedType<Channel<UpdateHighScore>>()
 				.CacheBy(InstanceScope.Singleton)
-				.TheDefault.Is.OfConcreteType<ChannelImpl<UpdateHighScore>>();
+				.TheDefault.Is.OfConcreteType<SynchronousChannel<UpdateHighScore>>();
 
 			ForRequestedType<Channel<string>>()
 				.CacheBy(InstanceScope.Singleton)
-				.TheDefault.Is.OfConcreteType<ChannelImpl<string>>();
-
-			ForRequestedType<CommandExecutor>()
-				.TheDefault.Is.OfConcreteType<SynchronousCommandExecutor>();
+				.TheDefault.Is.OfConcreteType<SynchronousChannel<string>>();
 
 			ForRequestedType<CommandQueue>()
 				.TheDefault.Is.OfConcreteType<AsyncCommandQueue>()
 				.WithCtorArg("limit").EqualTo(5000)
 				.WithCtorArg("waitTime").EqualTo(1000);
-
-			ForRequestedType<CommandContext>()
-				.TheDefault.Is.OfConcreteType<ThreadCommandContext>();
 
 			InstanceOf<HighScoreBoard>()
 				.Is.OfConcreteType<HighScoreBoard>();

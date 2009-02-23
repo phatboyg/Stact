@@ -13,7 +13,7 @@ namespace Magnum.ActorModel.Specs
 		[Test]
 		public void The_queue_should_throw_an_exception_if_there_is_no_room_for_new_commands()
 		{
-			var queue = new AsyncCommandQueue(2, 0, new SynchronousCommandExecutor());
+			var queue = new AsyncCommandQueue(2, 0);
 			queue.Enqueue(delegate { });
 			queue.Enqueue(delegate { });
 
@@ -37,7 +37,7 @@ namespace Magnum.ActorModel.Specs
 
 			action.Expect(x => x()).Throw(exception);
 
-			var queue = new AsyncCommandQueue(100, 100, new SynchronousCommandExecutor());
+			var queue = new AsyncCommandQueue(100, 100);
 			queue.Enqueue(action);
 
 			try
@@ -61,7 +61,7 @@ namespace Magnum.ActorModel.Specs
 			var second = MockRepository.GenerateMock<Action>();
 			var third = MockRepository.GenerateMock<Action>();
 
-			var queue = new AsyncCommandQueue(100, 100, new SynchronousCommandExecutor());
+			var queue = new AsyncCommandQueue(100, 100);
 			queue.Enqueue(first);
 
 			var run = new Thread(queue.Run) {IsBackground = true};
