@@ -13,14 +13,15 @@
 namespace Magnum.StateMachine
 {
 	using System;
-	using System.Collections.Generic;
+	using Collections;
 
 	public class State<T> :
 		State,
 		IStateMachineInspectorSite
 		where T : StateMachine<T>
 	{
-		private readonly Dictionary<Event, List<StateEventAction<T>>> _actions;
+		private readonly MultiDictionary<Event, StateEventAction<T>> _actions;
+
 		private readonly BasicEvent<T> _enter;
 		private readonly BasicEvent<T> _leave;
 		private readonly string _name;
@@ -29,10 +30,10 @@ namespace Magnum.StateMachine
 		{
 			_name = name;
 
-			_enter = new BasicEvent<T>(string.Format("{0}:Enter", Name));
-			_leave = new BasicEvent<T>(string.Format("{0}:Leave", Name));
+			_enter = new BasicEvent<T>(Name + ":Enter");
+			_leave = new BasicEvent<T>(Name + ":Leave");
 
-			_actions = new Dictionary<Event, List<StateEventAction<T>>>();
+			_actions = new MultiDictionary<Event, StateEventAction<T>>(true);
 		}
 
 		public void Inspect(IStateMachineInspector inspector)
@@ -74,13 +75,12 @@ namespace Magnum.StateMachine
 
 		public void RaiseEvent(T instance, BasicEvent<T> eevent, object value)
 		{
-			List<StateEventAction<T>> eventActions;
-			if (_actions.TryGetValue(eevent, out eventActions))
+			if (!_actions.ContainsKey(eevent))
+				return;
+
+			foreach (var action in _actions[eevent])
 			{
-				foreach (var action in eventActions)
-				{
-					action.Execute(instance, eevent, value);
-				}
+				action.Execute(instance, eevent, value);
 			}
 		}
 
@@ -101,17 +101,7 @@ namespace Magnum.StateMachine
 
 		public void BindEventAction(StateEventAction<T> action)
 		{
-			List<StateEventAction<T>> eventActions;
-			if (_actions.TryGetValue(action.RaisedEvent, out eventActions) == false)
-			{
-				eventActions = new List<StateEventAction<T>> {action};
-
-				_actions.Add(action.RaisedEvent, eventActions);
-			}
-			else
-			{
-				eventActions.Add(action);
-			}
+			_actions.Add(action.RaisedEvent, action);
 		}
 
 		public static State<T> GetState(State input)

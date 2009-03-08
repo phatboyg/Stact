@@ -87,6 +87,31 @@
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
+    <Compile Include="Collections\Algorithms.cs" />
+    <Compile Include="Collections\Bag.cs" />
+    <Compile Include="Collections\BigList.cs" />
+    <Compile Include="Collections\CollectionBase.cs" />
+    <Compile Include="Collections\Comparers.cs" />
+    <Compile Include="Collections\Deque.cs" />
+    <Compile Include="Collections\DictionaryBase.cs" />
+    <Compile Include="Collections\Hash.cs" />
+    <Compile Include="Collections\ListBase.cs" />
+    <Compile Include="Collections\MultiDictionary.cs" />
+    <Compile Include="Collections\MultiDictionaryBase.cs" />
+    <Compile Include="Collections\OrderedBag.cs" />
+    <Compile Include="Collections\OrderedDictionary.cs" />
+    <Compile Include="Collections\OrderedMultiDictionary.cs" />
+    <Compile Include="Collections\OrderedSet.cs" />
+    <Compile Include="Collections\Pair.cs" />
+    <Compile Include="Collections\ReadOnlyCollectionBase.cs" />
+    <Compile Include="Collections\ReadOnlyDictionaryBase.cs" />
+    <Compile Include="Collections\ReadOnlyListBase.cs" />
+    <Compile Include="Collections\ReadOnlyMultiDictionaryBase.cs" />
+    <Compile Include="Collections\RedBlack.cs" />
+    <Compile Include="Collections\Set.cs" />
+    <Compile Include="Collections\Strings.cs" />
+    <Compile Include="Collections\Triple.cs" />
+    <Compile Include="Collections\Util.cs" />
     <Compile Include="CombGuid.cs" />
     <Compile Include="CommandLine\Argument.cs" />
     <Compile Include="CommandLine\ArgumentOrderException.cs" />
@@ -183,6 +208,9 @@
     <Compile Include="Threading\UpgradeableLock.cs" />
     <Compile Include="Tuple.cs" />
     <Compile Include="TypedKey.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Collections\A Note About This Folder.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Linq\" />

@@ -206,6 +206,15 @@ namespace Magnum.StateMachine
 			}
 		}
 
+		/// <summary>
+		/// Starts the definition of actions to take when events occur during any state
+		/// </summary>
+		/// <param name="actions"></param>
+		protected static void Anytime(params StateEventAction<T>[] actions)
+		{
+			
+		}
+
 		internal void ChangeCurrentState(State newState)
 		{
 			LeaveCurrentState();

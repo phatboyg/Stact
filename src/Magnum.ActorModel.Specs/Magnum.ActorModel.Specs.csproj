@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculator_Example.cs" />
+    <Compile Include="Actor_Syntax.cs" />
     <Compile Include="Channel_Specs.cs" />
     <Compile Include="CommandQueue_Specs.cs" />
     <Compile Include="Demos\PingPong\Ping.cs" />
