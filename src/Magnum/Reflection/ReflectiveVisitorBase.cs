@@ -155,6 +155,9 @@ namespace Magnum.Reflection
 					continue;
 
 				Type genericTypeDefinition = objectType.GetGenericTypeDefinition();
+				if (!methodParameters[0].ParameterType.IsGenericType)
+					continue;
+
 				Type typeDefinition = methodParameters[0].ParameterType.GetGenericTypeDefinition();
 
 				if (typeDefinition != genericTypeDefinition)
