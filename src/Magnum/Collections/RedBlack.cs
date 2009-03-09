@@ -1052,7 +1052,6 @@ namespace Magnum.Collections
 			return DeleteItemFromRange(EqualRangeTester(key), deleteFirst, out item);
 		}
 
-#if DEBUG
 		/// <summary>
 		/// Prints out the tree.
 		/// </summary>
@@ -1364,6 +1363,5 @@ namespace Magnum.Collections
 				blackHeight += 1;
 			return ourCount;
 		}
-#endif //DEBUG
 	}
 }

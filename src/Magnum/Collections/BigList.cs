@@ -956,8 +956,6 @@ namespace Magnum.Collections
 		}
 
 
-#if DEBUG
-
 		/// <summary>
 		/// Attempts to validate the internal consistency of the tree.
 		/// </summary>
@@ -1223,7 +1221,6 @@ namespace Magnum.Collections
 				AddNodeToRebalanceArray(rebalanceArray, n.right, shared);
 			}
 		}
-#endif //DEBUG
 
 		/// <summary>
 		/// The base class for the two kinds of nodes in the tree: Concat nodes
@@ -1432,7 +1429,6 @@ namespace Magnum.Collections
 			/// "this".</returns>
 			public abstract Node InsertInPlace(int index, Node node, bool nodeIsUnused);
 
-#if DEBUG
 			/// <summary>
 			/// Validates the node for consistency, as much as possible. Also validates
 			/// child nodes, if any.
@@ -1445,7 +1441,6 @@ namespace Magnum.Collections
 			/// <param name="prefixNode">Prefix to use in front of this node.</param>
 			/// <param name="prefixChildren">Prefixed to use in front of children of this node.</param>
 			public abstract void Print(string prefixNode, string prefixChildren);
-#endif //DEBUG
 
 			/// <summary>
 			/// Prefpend a node before this node. Never changes this node, but returns
@@ -2033,7 +2028,6 @@ namespace Magnum.Collections
 				}
 			}
 
-#if DEBUG
 			/// <summary>
 			/// Validates the node for consistency, as much as possible. Also validates
 			/// child nodes, if any.
@@ -2113,7 +2107,6 @@ namespace Magnum.Collections
 				}
 				return null;
 			}
-#endif //DEBUG
 		}
 
 		/// <summary>
@@ -2528,7 +2521,6 @@ namespace Magnum.Collections
 					return new ConcatNode(leftPart, rightPart);
 			}
 
-#if DEBUG
 			/// <summary>
 			/// Validates the node for consistency, as much as possible. Also validates
 			/// child nodes, if any.
@@ -2622,7 +2614,6 @@ namespace Magnum.Collections
 					depth = (short) (right.Depth + 1);
 				return this;
 			}
-#endif //DEBUG
 		}
 
 		/// <summary>
@@ -2898,14 +2889,12 @@ namespace Magnum.Collections
 				++slot;
 			}
 
-#if DEBUG
 			// The above operations should ensure that everything in the rebalance array is now almost balanced.
 			for (int i = 0; i < rebalanceArray.Length; ++i)
 			{
 				if (rebalanceArray[i] != null)
 					Debug.Assert(rebalanceArray[i].IsAlmostBalanced());
 			}
-#endif //DEBUG
 		}
 	}
 }

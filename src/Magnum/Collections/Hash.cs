@@ -90,8 +90,8 @@ namespace Magnum.Collections
 
 				// Update loadFactor and thresholds.
 				loadFactor = value;
-				thresholdGrow = (int) (totalSlots*loadFactor);
-				thresholdShrink = thresholdGrow/3;
+				thresholdGrow = (int)(totalSlots * loadFactor);
+				thresholdShrink = thresholdGrow / 3;
 				if (thresholdShrink <= MINSIZE)
 					thresholdShrink = 1;
 
@@ -166,7 +166,7 @@ namespace Magnum.Collections
 
 			hash = GetHashValues(item, out bucket, out skip);
 
-			for (;;)
+			for (; ; )
 			{
 				if (table[bucket].Empty)
 				{
@@ -245,7 +245,7 @@ namespace Magnum.Collections
 
 			hash = GetHashValues(item, out bucket, out skip);
 
-			for (;;)
+			for (; ; )
 			{
 				if (table[bucket].HashValue == hash && equalityComparer.Equals(table[bucket].item, item))
 				{
@@ -290,7 +290,7 @@ namespace Magnum.Collections
 
 			hash = GetHashValues(find, out bucket, out skip);
 
-			for (;;)
+			for (; ; )
 			{
 				if (table[bucket].HashValue == hash && equalityComparer.Equals(table[bucket].item, find))
 				{
@@ -330,7 +330,7 @@ namespace Magnum.Collections
 			clone.secondaryShift = this.secondaryShift;
 			if (table != null)
 			{
-				clone.table = (Slot[]) table.Clone();
+				clone.table = (Slot[])table.Clone();
 
 				if (cloneItem != null)
 				{
@@ -379,7 +379,6 @@ namespace Magnum.Collections
 			}
 		}
 
-#if DEBUG
 		/// <summary>
 		/// Print out basic stats about the hash table.
 		/// </summary>
@@ -416,11 +415,11 @@ namespace Magnum.Collections
 			Debug.Assert(count <= totalSlots);
 			Debug.Assert(usedSlots <= totalSlots);
 			Debug.Assert(usedSlots <= thresholdGrow);
-			Debug.Assert((int) (totalSlots*loadFactor) == thresholdGrow);
+			Debug.Assert((int)(totalSlots * loadFactor) == thresholdGrow);
 			if (thresholdShrink > 1)
-				Debug.Assert(thresholdGrow/3 == thresholdShrink);
+				Debug.Assert(thresholdGrow / 3 == thresholdShrink);
 			else
-				Debug.Assert(thresholdGrow/3 <= MINSIZE);
+				Debug.Assert(thresholdGrow / 3 <= MINSIZE);
 			if (totalSlots > 0)
 			{
 				Debug.Assert((totalSlots & (totalSlots - 1)) == 0); // totalSlots is a power of two.
@@ -431,7 +430,8 @@ namespace Magnum.Collections
 
 			// Traverse the table. Make sure that count and usedSlots are right, and that
 			// each slot looks reasonable.
-			int expectedCount = 0, expectedUsed = 0, initialBucket, skip;
+			int expectedCount = 0, expectedUsed = 0;
+			int skip;
 			if (table != null)
 			{
 				for (int i = 0; i < totalSlots; ++i)
@@ -450,6 +450,7 @@ namespace Magnum.Collections
 						++expectedCount;
 						++expectedUsed;
 						Debug.Assert(slot.HashValue != 0);
+						int initialBucket = 0;
 						Debug.Assert(GetHashValues(slot.item, out initialBucket, out skip) == slot.HashValue);
 						if (initialBucket != i)
 							Debug.Assert(table[initialBucket].Collision);
@@ -470,7 +471,7 @@ namespace Magnum.Collections
 		{
 			uint hash;
 
-			hash = (uint) Util.GetHashCode(item, equalityComparer);
+			hash = (uint)Util.GetHashCode(item, equalityComparer);
 
 			// The .NET framework tends to produce pretty bad hash codes.
 			// Scramble them up to be much more random!
@@ -483,7 +484,7 @@ namespace Magnum.Collections
 			hash &= 0x7FFFFFFF;
 			if (hash == 0)
 				hash = 0x7FFFFFFF; // Make sure it isn't zero.
-			return (int) hash;
+			return (int)hash;
 		}
 
 		/// <summary>
@@ -531,7 +532,7 @@ namespace Magnum.Collections
 				int newSize;
 
 				newSize = Math.Max(totalSlots, MINSIZE);
-				while ((int) (newSize*loadFactor) < usedSlots + additionalItems)
+				while ((int)(newSize * loadFactor) < usedSlots + additionalItems)
 				{
 					newSize *= 2;
 					if (newSize <= 0)
@@ -558,7 +559,7 @@ namespace Magnum.Collections
 				if (count > 0)
 				{
 					newSize = MINSIZE;
-					while ((int) (newSize*loadFactor) < count)
+					while ((int)(newSize * loadFactor) < count)
 						newSize *= 2;
 				}
 				else
@@ -583,8 +584,8 @@ namespace Magnum.Collections
 
 			Debug.Assert((newSize & (newSize - 1)) == 0); // Check newSize is a power of two.
 			totalSlots = newSize;
-			thresholdGrow = (int) (totalSlots*loadFactor);
-			thresholdShrink = thresholdGrow/3;
+			thresholdGrow = (int)(totalSlots * loadFactor);
+			thresholdShrink = thresholdGrow / 3;
 			if (thresholdShrink <= MINSIZE)
 				thresholdShrink = 1;
 			hashMask = newSize - 1;
@@ -604,7 +605,7 @@ namespace Magnum.Collections
 					GetHashValuesFromFullHash(hash, out bucket, out skip);
 
 					// Find an empty bucket.
-					while (! table[bucket].Empty)
+					while (!table[bucket].Empty)
 					{
 						// The slot is used, but isn't our item. Set the collision bit and keep looking.
 						table[bucket].Collision = true;
@@ -644,9 +645,9 @@ namespace Magnum.Collections
 				return;
 
 			loadFactor = serializationInfo.GetSingle("loadFactor");
-			equalityComparer = (IEqualityComparer<T>) serializationInfo.GetValue("equalityComparer", typeof (IEqualityComparer<T>));
+			equalityComparer = (IEqualityComparer<T>)serializationInfo.GetValue("equalityComparer", typeof(IEqualityComparer<T>));
 
-			T[] items = (T[]) serializationInfo.GetValue("items", typeof (T[]));
+			T[] items = (T[])serializationInfo.GetValue("items", typeof(T[]));
 			T dummy;
 
 			EnsureEnoughSlots(items.Length);
@@ -664,14 +665,14 @@ namespace Magnum.Collections
 			if (info == null)
 				throw new ArgumentNullException("info");
 
-			info.AddValue("equalityComparer", equalityComparer, typeof (IEqualityComparer<T>));
-			info.AddValue("loadFactor", loadFactor, typeof (float));
+			info.AddValue("equalityComparer", equalityComparer, typeof(IEqualityComparer<T>));
+			info.AddValue("loadFactor", loadFactor, typeof(float));
 			T[] items = new T[count];
 			int i = 0;
 			foreach (Slot slot in table)
-				if (! slot.Empty)
+				if (!slot.Empty)
 					items[i++] = slot.item;
-			info.AddValue("items", items, typeof (T[]));
+			info.AddValue("items", items, typeof(T[]));
 		}
 
 		#endregion Serialization
@@ -694,11 +695,11 @@ namespace Magnum.Collections
 			/// </summary>
 			public int HashValue
 			{
-				get { return (int) (hash_collision & 0x7FFFFFFF); }
+				get { return (int)(hash_collision & 0x7FFFFFFF); }
 				set
 				{
 					Debug.Assert((value & 0x80000000) == 0); // make sure sign bit isn't set.
-					hash_collision = (uint) value | (hash_collision & 0x80000000);
+					hash_collision = (uint)value | (hash_collision & 0x80000000);
 				}
 			}
 
@@ -757,7 +758,5 @@ namespace Magnum.Collections
 
 			return secondaryShift;
 		}
-
-#endif //DEBUG
 	}
 }

@@ -900,7 +900,6 @@ namespace Magnum.Collections
 			return clone;
 		}
 
-#if DEBUG
 		/// <summary>
 		/// Print out the internal state of the Deque for debugging.
 		/// </summary>
@@ -987,6 +986,5 @@ namespace Magnum.Collections
 
 			buffer = newBuffer;
 		}
-#endif // DEBUG
 	}
 }
