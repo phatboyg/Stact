@@ -71,7 +71,7 @@ namespace Magnum.StateMachine
 		/// Raise an event within the current state
 		/// </summary>
 		/// <param name="raised">The event to raise</param>
-		protected void RaiseEvent(Event raised)
+		public void RaiseEvent(Event raised)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
@@ -84,24 +84,12 @@ namespace Magnum.StateMachine
 		/// <typeparam name="V">The type of data, must match the data type expected by the event</typeparam>
 		/// <param name="raised">The event to raise</param>
 		/// <param name="value">The data to associate with the event</param>
-		protected void RaiseEvent<V>(Event raised, V value)
+		public void RaiseEvent<V>(Event raised, V value)
 		{
 			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
 
 			_currentState.RaiseEvent(this as T, eevent, value);
 		}
-
-//		protected void TransitionTo(State state)
-//		{
-//			LeaveCurrentState();
-//
-//			EnterState(State<T>.GetState(state));
-//		}
-//
-//		protected void Complete()
-//		{
-//			TransitionTo(_completedState);
-//		}
 
 		private void EnterState(State<T> state)
 		{
