@@ -20,6 +20,7 @@ namespace Magnum.Specs.Threading
     using System.Text;
     using System.Threading;
     using DateTimeExtensions;
+    using Magnum.Monads;
     using MbUnit.Framework;
     using Monads;
 
