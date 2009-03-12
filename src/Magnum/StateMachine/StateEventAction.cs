@@ -13,6 +13,7 @@
 namespace Magnum.StateMachine
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq.Expressions;
 
 	public class StateEventAction<T>
@@ -20,18 +21,19 @@ namespace Magnum.StateMachine
 	{
 		private State _resultState;
 
+		protected readonly List<Action<T,Event,object>> _actions = new List<Action<T, Event, object>>();
+
 		public StateEventAction(Event raised)
 		{
 			RaisedEvent = raised;
-
-			EventAction = (a, b, c) =>
-				{
-				};
 		}
 
 		public Event RaisedEvent { get; private set; }
 
-		public Action<T, Event, object> EventAction { get; protected set; }
+		public IList<Action<T,Event,object>> Actions
+		{
+			get { return _actions; }
+		}
 
 		public State ResultState
 		{
@@ -47,14 +49,14 @@ namespace Magnum.StateMachine
 
 		public StateEventAction<T> Then(Action<T> action)
 		{
-			EventAction += (t, e, v) => action(t);
+			_actions.Add((t, e, v) => action(t));
 
 			return this;
 		}
 
 		public StateEventAction<T> Then(Action<T, BasicEvent<T>> action)
 		{
-			EventAction += (t, e, v) => action(t, e as BasicEvent<T>);
+			_actions.Add((t, e, v) => action(t, e as BasicEvent<T>));
 
 			return this;
 		}
@@ -75,7 +77,10 @@ namespace Magnum.StateMachine
 
 		public virtual void Execute(T instance, Event eevent, object value)
 		{
-			EventAction(instance, eevent, value);
+			foreach (var action in _actions)
+			{
+				action(instance, eevent, value);
+			}
 
 			if (ResultState != null)
 				instance.ChangeCurrentState(ResultState);
@@ -87,7 +92,7 @@ namespace Magnum.StateMachine
 		where T : StateMachine<T>
 		where V : class
 	{
-		private Func<V, bool> _checkCondition = (x) => true;
+		private Func<V, bool> _checkCondition = x => true;
 
 		public StateEventAction(Event raised)
 			: base(raised)
@@ -107,21 +112,21 @@ namespace Magnum.StateMachine
 
 		public new StateEventAction<T, V> Then(Action<T> action)
 		{
-			EventAction += (t, e, v) => action(t);
+			_actions.Add((t, e, v) => action(t));
 
 			return this;
 		}
 
 		public StateEventAction<T, V> Then(Action<T, V> action)
 		{
-			EventAction += (t, e, v) => action(t, v as V);
+			_actions.Add((t, e, v) => action(t, v as V));
 
 			return this;
 		}
 
 		public StateEventAction<T, V> Then(Action<T, DataEvent<T, V>, V> action)
 		{
-			EventAction += (t, e, v) => action(t, e as DataEvent<T, V>, v as V);
+			_actions.Add((t, e, v) => action(t, e as DataEvent<T, V>, v as V));
 
 			return this;
 		}

@@ -88,8 +88,10 @@ namespace Magnum.StateMachine
 		private void AppendEventAction<T>(StateEventAction<T> eventAction) 
 			where T : StateMachine<T>
 		{
-			if(eventAction.EventAction != null)
+			foreach (var action in eventAction.Actions)
+			{
 				Append(string.Format("(custom action)"));
+			}
 
 			if(eventAction.ResultState != null)
 				Append(string.Format("Transition To {0}", eventAction.ResultState.Name));
