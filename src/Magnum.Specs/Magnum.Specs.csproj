@@ -99,11 +99,9 @@
     <Compile Include="Linq\FlattenedObject_Specs.cs" />
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
+    <Compile Include="Monads\TypeParser_Specs.cs" />
     <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
-    <Compile Include="Reflection\InstanceBuilder.cs" />
-    <Compile Include="Reflection\ObjectBuilder.cs" />
     <Compile Include="Reflection\ObjectBuilder_Specs.cs" />
-    <Compile Include="Reflection\TypeInstanceBuilder.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
     <Compile Include="TypedKey_Specs.cs" />

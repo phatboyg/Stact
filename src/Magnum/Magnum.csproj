@@ -111,6 +111,7 @@
     <Compile Include="Collections\Set.cs" />
     <Compile Include="Collections\Strings.cs" />
     <Compile Include="Collections\Triple.cs" />
+    <Compile Include="Collections\Tuple.cs" />
     <Compile Include="Collections\Util.cs" />
     <Compile Include="CombGuid.cs" />
     <Compile Include="CommandLine\Argument.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
+    <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
     <Compile Include="LocalContext.cs" />
     <Compile Include="LockFreeQueue.cs" />
     <Compile Include="Mail\FileMailServer.cs" />
@@ -159,10 +161,15 @@
     <Compile Include="Monads\List.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
+    <Compile Include="Reflection\ClassFactory.cs" />
     <Compile Include="Reflection\ExpressionVisitor.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
+    <Compile Include="Reflection\Generic.cs" />
+    <Compile Include="Reflection\InstanceFactory.cs" />
+    <Compile Include="Reflection\MethodCache.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
+    <Compile Include="Reflection\TypeInstanceFactory.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
@@ -206,7 +213,6 @@
     <Compile Include="Threading\ReaderWriterLockedDictionary.cs" />
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
-    <Compile Include="Tuple.cs" />
     <Compile Include="TypedKey.cs" />
   </ItemGroup>
   <ItemGroup>

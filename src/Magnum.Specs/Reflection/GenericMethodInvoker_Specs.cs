@@ -13,8 +13,8 @@
 namespace Magnum.Specs.Reflection
 {
 	using System;
-	using System.Linq.Expressions;
-	using System.Reflection;
+	using System.Diagnostics;
+	using Magnum.Reflection;
 	using MbUnit.Framework;
 
 	[TestFixture]
@@ -29,7 +29,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void Invoking_with_an_object_should_not_properly_initialize_T()
 		{
-			object obj = ObjectBuilder.New(typeof (MyClass));
+			object obj = ClassFactory.New(typeof (MyClass));
 
 			MyOtherMethod(obj);
 		}
@@ -37,9 +37,41 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void Invoking_using_the_generic_method_invoker_should_pass_the_appropriate_type()
 		{
-			object obj = ObjectBuilder.New(typeof(MyClass));
+			object obj = ClassFactory.New(typeof(MyClass));
 
-			GenericMethodInvoker.Invoke(x => MyMethod(x), obj);
+			Generic.Call(x => MyMethod(x), obj);
+		}
+
+
+		[Test]
+		public void Invoking_using_the_generic_method_invoker_should_pass_the_appropriate_type_for_value_types()
+		{
+			Generic.Call(x => MyIntMethod(x), 27);
+		}
+
+		[Test, ExpectedException(typeof(InvalidOperationException))]
+		public void Invoking_a_regular_method_should_not_work_too()
+		{
+			object obj = ClassFactory.New(typeof (MyClass));
+
+			Generic.Call(x => RegularMethod(x), obj);
+		}
+
+		[Test]
+		public void Invoking_it_a_lot_should_be_fast()
+		{
+			object obj = ClassFactory.New(typeof(MyClass));
+
+			Generic.Call(x => MyMethod(x), obj);
+
+			Stopwatch count = Stopwatch.StartNew();
+			for (int i = 0; i < 10000; i++)
+			{
+				Generic.Call(x => MyMethod(x), obj);
+			}
+			count.Stop();
+
+			Console.WriteLine("time to run = " + count.ElapsedMilliseconds + "ms");
 		}
 
 		public void MyMethod<T>(T obj)
@@ -48,48 +80,24 @@ namespace Magnum.Specs.Reflection
 			typeof (T).ShouldEqual(typeof (MyClass));
 		}
 
+		public void MyIntMethod<T>(T obj)
+		{
+			obj.GetType().ShouldEqual(typeof (int));
+			typeof (T).ShouldEqual(typeof (int));
+		}
+
 		public void MyOtherMethod<T>(T obj)
 		{
 			obj.GetType().ShouldEqual(typeof (MyClass));
 			typeof (T).ShouldEqual(typeof (object));
 		}
 
-		public class MyClass
+		public void RegularMethod(object obj)
 		{
 		}
-	}
 
-	public static class GenericMethodInvoker
-	{
-		public static void Invoke(Expression<Action<object>> method, object obj)
+		public class MyClass
 		{
-			MethodCallExpression methodCall = method.Body as MethodCallExpression;
-			if(methodCall == null)
-				throw new InvalidOperationException("Must be a method call in the expression");
-
-			MethodInfo genericMethodDefinition = methodCall.Method.GetGenericMethodDefinition();
-			if(genericMethodDefinition != null)
-			{
-				MethodInfo methodInfo = genericMethodDefinition.MakeGenericMethod(obj.GetType());
-
-				ConstantExpression e = methodCall.Object as ConstantExpression;
-
-				ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
-				ParameterExpression input = Expression.Parameter(typeof (object), "input");
-
-				UnaryExpression instanceCast = Expression.TypeAs(instance, e.Value.GetType());
-				UnaryExpression valueCast = Expression.TypeAs(input, obj.GetType());
-
-
-				var call = Expression.Call(instanceCast, methodInfo, valueCast);
-
-				Action<object,object> invoker = Expression.Lambda<Action<object,object>>(call, new[] {instance, input}).Compile();
-
-				invoker(e.Value, obj);
-				return;
-			}
-
-			throw new InvalidOperationException("No idea");
 		}
 	}
 }

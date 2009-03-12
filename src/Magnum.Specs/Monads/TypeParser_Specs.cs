@@ -10,8 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-public interface InstanceBuilder
+namespace Magnum.Specs.Monads
 {
-	object New();
-	object New(params object[] args);
+	using MbUnit.Framework;
+
+	[TestFixture]
+	public class TypeParser_Specs
+	{
+		[Test]
+		public void The_goal_of_what_I_want()
+		{
+
+
+		}
+	}
+
+
+
 }

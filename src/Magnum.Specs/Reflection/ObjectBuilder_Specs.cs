@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
+	using Magnum.Reflection;
 	using MbUnit.Framework;
 
 	[TestFixture]
@@ -20,7 +21,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void It_should_be_able_to_create_objects_with_only_the_default_constructor()
 		{
-			object obj = ObjectBuilder.New(typeof (TestClassWithDefaultConstructor));
+			object obj = ClassFactory.New(typeof (TestClassWithDefaultConstructor));
 
 			obj.ShouldNotBeNull();
 		}
@@ -28,7 +29,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void It_should_be_able_to_create_objects_with_private_constructors()
 		{
-			object obj = ObjectBuilder.New(typeof(TestClassWithPrivateConstructor));
+			object obj = ClassFactory.New(typeof(TestClassWithPrivateConstructor));
 
 			obj.ShouldNotBeNull();
 		}
@@ -36,9 +37,9 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void It_should_be_able_to_create_generic_objects()
 		{
-			object captured = ObjectBuilder.New(typeof (TestClassWithDefaultConstructor));
+			object captured = ClassFactory.New(typeof (TestClassWithDefaultConstructor));
 
-			object obj = ObjectBuilder.New(typeof (TestGenericClass<>), captured);
+			object obj = ClassFactory.New(typeof (TestGenericClass<>), captured);
 
 			obj.ShouldNotBeNull();
 
@@ -56,10 +57,10 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void It_should_be_able_to_create_generic_objects_with_multiple_arguments()
 		{
-			object captured = ObjectBuilder.New(typeof(TestClassWithDefaultConstructor));
+			object captured = ClassFactory.New(typeof(TestClassWithDefaultConstructor));
 
 			int value = 27;
-			object obj = ObjectBuilder.New(typeof(TestGenericClass<>), captured, value);
+			object obj = ClassFactory.New(typeof(TestGenericClass<>), captured, value);
 
 			obj.ShouldNotBeNull();
 
