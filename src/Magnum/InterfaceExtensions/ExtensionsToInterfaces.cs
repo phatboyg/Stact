@@ -157,21 +157,15 @@ namespace Magnum.InterfaceExtensions
 			foreach (var interfaceType in interfaceTypes)
 			{
 				if (!interfaceType.IsGenericType)
-				{
 					continue;
-				}
 
 				if (interfaceType.GetGenericTypeDefinition() == targetType)
-				{
 					return true;
-				}
 			}
 
 			var baseType = type.BaseType;
 			if (baseType == null)
-			{
 				return false;
-			}
 
 			return baseType.IsGenericType
 			       	? baseType.GetGenericTypeDefinition() == targetType

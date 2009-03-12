@@ -94,6 +94,7 @@
     <Compile Include="Data\UnitOfWork_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
     <Compile Include="DictionaryExtension_Specs.cs" />
+    <Compile Include="Extensions\ExtensionsToInterfaces_Specs.cs" />
     <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
     <Compile Include="Linq\FileRepository.cs" />
     <Compile Include="Linq\FlattenedObject_Specs.cs" />
