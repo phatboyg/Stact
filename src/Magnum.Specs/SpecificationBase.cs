@@ -47,7 +47,7 @@ namespace Magnum.Specs
         {
         }
 
-        protected TMock Mock<TMock>()
+        protected TMock Mock<TMock>() where TMock : class
         {
             return _mocks.DynamicMock<TMock>();
         }

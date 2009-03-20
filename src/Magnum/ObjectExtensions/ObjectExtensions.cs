@@ -37,19 +37,25 @@ namespace Magnum.ObjectExtensions
 
 		public static void MustNotBeEmpty(this string value)
 		{
-			if (String.IsNullOrEmpty(value))
+			if (value == null)
+				throw new ArgumentNullException();
+
+			if (string.IsNullOrEmpty(value))
 				throw new ArgumentException();
 		}
 
 		public static void MustNotBeEmpty(this string value, string name)
 		{
-			if (String.IsNullOrEmpty(value))
+			if (value == null)
+				throw new ArgumentNullException(name, "The argument must not be null");
+
+			if (string.IsNullOrEmpty(value))
 				throw new ArgumentException("The argument must not be empty", name);
 		}
 
 		public static void MustNotBeEmpty(this string value, string name, string message)
 		{
-			if (String.IsNullOrEmpty(value))
+			if (string.IsNullOrEmpty(value))
 				throw new ArgumentException(message, name);
 		}
 

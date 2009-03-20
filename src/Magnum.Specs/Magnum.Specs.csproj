@@ -102,6 +102,7 @@
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
     <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
+    <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
     <Compile Include="Reflection\ObjectBuilder_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />

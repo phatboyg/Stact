@@ -30,12 +30,12 @@
         {
         }
 
-        protected TMock GenerateMock<TMock>()
+        protected TMock GenerateMock<TMock>() where TMock : class
         {
             return MockRepository.GenerateMock<TMock>();
         }
 
-        protected TStub GenerateStub<TStub>()
+        protected TStub GenerateStub<TStub>() where TStub : class
         {
             return MockRepository.GenerateStub<TStub>();
         }

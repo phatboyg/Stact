@@ -42,6 +42,30 @@ namespace Magnum.Specs.Reflection
 			Generic.Call(x => MyMethod(x), obj);
 		}
 
+		[Test]
+		public void A_static_method_should_also_be_able_to_be_invoked()
+		{
+			object obj = ClassFactory.New(typeof(MyClass));
+
+			Generic.Call(x => MyStaticMethod(x), obj);
+		}
+
+		[Test]
+		public void The_extension_method_syntax_should_work_the_same()
+		{
+			object obj = ClassFactory.New(typeof(MyClass));
+
+			this.Call("MyMethod", obj);
+		}
+
+		[Test]
+		public void The_extension_method_syntax_should_work_the_same_for_a_static_method()
+		{
+			object obj = ClassFactory.New(typeof(MyClass));
+
+			this.Call("MyStaticMethod", obj);
+		}
+
 
 		[Test]
 		public void Invoking_using_the_generic_method_invoker_should_pass_the_appropriate_type_for_value_types()
@@ -56,6 +80,8 @@ namespace Magnum.Specs.Reflection
 
 			Generic.Call(x => RegularMethod(x), obj);
 		}
+
+
 
 		[Test]
 		public void Invoking_it_a_lot_should_be_fast()
@@ -75,6 +101,12 @@ namespace Magnum.Specs.Reflection
 		}
 
 		public void MyMethod<T>(T obj)
+		{
+			obj.GetType().ShouldEqual(typeof (MyClass));
+			typeof (T).ShouldEqual(typeof (MyClass));
+		}
+
+		public static void MyStaticMethod<T>(T obj)
 		{
 			obj.GetType().ShouldEqual(typeof (MyClass));
 			typeof (T).ShouldEqual(typeof (MyClass));

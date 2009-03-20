@@ -14,9 +14,27 @@ namespace Magnum.Reflection
 {
 	using System;
 	using System.Linq.Expressions;
+	using Collections;
 
 	public static class Generic
 	{
+		public static object Call(this object instance, string methodName)
+		{
+			return _typeCache.Call<object>(instance, methodName, Empty<object>.Array);
+		}
+
+		public static object Call(this object instance, string methodName, params object[] args)
+		{
+			return _typeCache.Call<object>(instance, methodName, args);
+		}
+
+		public static T Call<T>(this object instance, string methodName, params object[] args)
+		{
+			return _typeCache.Call<T>(instance, methodName, args);
+		}
+
+
+		private static readonly MethodCallTypeCache _typeCache = new MethodCallTypeCache();
 		private static readonly MethodCache _methodCache = new MethodCache();
 
 		public static void Call(Expression<Action<object>> method, object obj)
