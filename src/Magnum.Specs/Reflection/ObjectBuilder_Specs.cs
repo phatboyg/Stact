@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
+	using System;
 	using Magnum.Reflection;
 	using MbUnit.Framework;
 
@@ -75,6 +76,19 @@ namespace Magnum.Specs.Reflection
 			typedObj.Value.ShouldEqual(value);
 		}
 
+		[Test]
+		public void A_double_generic_should_be_creatable_()
+		{
+			object correlated = ClassFactory.New(typeof (CorrelatedClass));
+			correlated.ShouldNotBeNull();
+
+			object bing = ClassFactory.New(typeof (CapturedGeneric<,>), correlated);
+			bing.ShouldNotBeNull();
+
+			bing.GetType().ShouldEqual(typeof(CapturedGeneric<CorrelatedClass,Guid>));
+		}
+
+
 
 		public class TestClassWithDefaultConstructor
 		{
@@ -84,6 +98,30 @@ namespace Magnum.Specs.Reflection
 		{
 			private TestClassWithPrivateConstructor()
 			{
+			}
+		}
+
+		public class CapturedGeneric<T,K>
+			where T : CorrelatedBy<K>
+		{
+			public CapturedGeneric(T value)
+			{
+				
+			}
+			
+		}
+
+		public interface CorrelatedBy<T>
+		{
+			T Id { get; }
+		}
+
+		public class CorrelatedClass : 
+			CorrelatedBy<Guid>
+		{
+			public Guid Id
+			{
+				get { throw new NotImplementedException(); }
 			}
 		}
 

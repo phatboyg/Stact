@@ -131,5 +131,7 @@ namespace Magnum.Specs.Reflection
 		public class MyClass
 		{
 		}
+
+
 	}
 }

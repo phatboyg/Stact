@@ -84,15 +84,48 @@ namespace Magnum.Reflection
 				Type[] typeArguments = new Type[arguments.Length];
 				for (int i = 0; i < parameters.Length; i++)
 				{
+					if (typeArgumentCount == arguments.Length)
+						break;
+
 					for (int j = 0; j < arguments.Length; j++)
 					{
 						if (typeArguments[j] != null)
 							continue;
 
 						if (parameters[i].ParameterType == arguments[j])
+						{
 							typeArguments[j] = argTypes[i];
-						typeArgumentCount++;
+							typeArgumentCount++;
+							break;
+						}
+					}
+				}
+
+				for (int i = 0; i < arguments.Length; i++)
+				{
+					if (typeArgumentCount == arguments.Length)
 						break;
+					if (typeArguments[i] != null)
+						continue;
+
+					for (int j = 0; j < arguments.Length; j++)
+					{
+						if (i == j)
+							continue;
+
+						foreach (Type constraint in arguments[j].GetGenericParameterConstraints())
+						{
+							if (constraint.IsGenericType)
+							{
+								foreach (Type argument in constraint.GetGenericArguments())
+								{
+									if(argument == arguments[i])
+									{
+										/// need to pull the type from the argument that matches this position and get its implementation of that interface to get the generic type
+									}
+								}
+							}
+						}
 					}
 				}
 
