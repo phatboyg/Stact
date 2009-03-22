@@ -17,6 +17,7 @@ namespace Magnum.Reflection
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using CollectionExtensions;
+	using InterfaceExtensions;
 
 	public static class ClassFactory
 	{
@@ -112,6 +113,8 @@ namespace Magnum.Reflection
 					{
 						if (i == j)
 							continue;
+						if (typeArguments[j] == null)
+							continue;
 
 						foreach (Type constraint in arguments[j].GetGenericParameterConstraints())
 						{
@@ -121,7 +124,13 @@ namespace Magnum.Reflection
 								{
 									if(argument == arguments[i])
 									{
-										/// need to pull the type from the argument that matches this position and get its implementation of that interface to get the generic type
+										var genericTypes = typeArguments[j].GetDeclaredTypesForGeneric(constraint);
+										foreach (var genericType in genericTypes)
+										{
+											typeArguments[i] = genericType;
+											typeArgumentCount++;
+											break;
+										}
 									}
 								}
 							}

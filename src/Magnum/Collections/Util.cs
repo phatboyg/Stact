@@ -21,6 +21,16 @@ namespace Magnum.Collections
 	/// </summary>
 	internal static class Util
 	{
+
+		internal static void Each<T>(this IEnumerable<T> items, Action<T> action)
+		{
+			foreach (T item in items)
+			{
+				action(item);
+			}
+		}
+
+
 		/// <summary>
 		/// Wrap an enumerable so that clients can't get to the underlying 
 		/// implementation via a down-cast.

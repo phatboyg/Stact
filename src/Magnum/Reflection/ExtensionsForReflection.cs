@@ -16,10 +16,60 @@ namespace Magnum.Reflection
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using Collections;
 	using ObjectExtensions;
+	using InterfaceExtensions;
 
 	public static class ExtensionsForReflection
 	{
+		public static IEnumerable<Type> GetDeclaredGenericArguments(this object obj)
+		{
+			if (obj == null)
+				yield break;
+
+			foreach (var type in obj.GetType().GetDeclaredGenericArguments())
+			{
+				yield return type;
+			}
+		}
+
+		public static IEnumerable<Type> GetDeclaredGenericArguments(this Type type)
+		{
+			bool atLeastOne = false;
+			var baseType = type;
+			while (baseType != null)
+			{
+				if (baseType.IsGenericType)
+				{
+					foreach (var declaredType in baseType.GetGenericArguments())
+					{
+						yield return declaredType;
+
+						atLeastOne = true;
+					}
+				}
+
+				baseType = baseType.BaseType;
+			}
+
+			if (atLeastOne)
+				yield break;
+
+			foreach (var interfaceType in type.GetInterfaces())
+			{
+				if (!interfaceType.IsGenericType)
+					continue;
+
+				foreach (var declaredType in interfaceType.GetGenericArguments())
+				{
+					if (declaredType.IsGenericParameter)
+						continue;
+
+					yield return declaredType;
+				}
+			}
+		}
+
 		public static IEnumerable<MethodInfo> GetMethodCandidates(this Type type, string methodName)
 		{
 			const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
@@ -75,35 +125,43 @@ namespace Magnum.Reflection
 			if (!methodInfo.IsGenericMethod)
 				return methodInfo;
 
-			var genericArguments = methodInfo.GetGenericArguments();
+			Type[] arguments = methodInfo.GetGenericArguments();
 
-			Type[] typeArguments = new Type[genericArguments.Length];
+			var generics = new Dictionary<Type, Type>();
 
-			var parameters = methodInfo.GetParameters();
-			int typeArgumentCount = 0;
-			for (int i = 0; i < parameters.Length; i++)
-			{
-				if (args[i] == null)
-					continue;
-
-				for (int j = 0; j < genericArguments.Length; j++)
+			arguments.Each(argument =>
 				{
-					if (typeArguments[j] != null)
-						continue;
+					methodInfo.GetParameters()
+						.Where(parameter => parameter.ParameterType == argument)
+						.Each(parameter =>
+							{
+								Type parameterType = args[parameter.Position].GetType();
 
-					if (parameters[i].ParameterType == genericArguments[j])
-					{
-						typeArguments[j] = args[i].GetType();
-						typeArgumentCount++;
-						break;
-					}
-				}
-			}
+								generics[argument] = parameterType;
 
-			if (typeArgumentCount != genericArguments.Length)
-				throw new InvalidOperationException("Unable to determine all generic arguments");
+								argument.GetGenericParameterConstraints()
+									.Where(x => x.IsGenericType)
+									.Each(constraint =>
+									{
+										var declared = constraint.GetDeclaredGenericArguments().ToArray();
+										var specified = parameterType
+											.GetDeclaredTypesForGeneric(constraint.GetGenericTypeDefinition()).ToArray();
 
-			return methodInfo.GetGenericMethodDefinition().MakeGenericMethod(typeArguments);
+										if(declared.Length == specified.Length)
+										{
+											for (int i = 0; i < declared.Length; i++)
+											{
+												if(arguments.Contains(declared[i]))
+													generics[declared[i]] = specified[i];
+											}
+										}
+									});
+							});
+				});
+
+			var methodTypes = arguments.Select(x => generics[x]).ToArray();
+
+			return methodInfo.GetGenericMethodDefinition().MakeGenericMethod(methodTypes);
 		}
 
 		/// <returns>0 if the arguments don't match the parameters; a score &gt; 0 otherwise.</returns>
