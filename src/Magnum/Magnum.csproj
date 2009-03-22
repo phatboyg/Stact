@@ -86,6 +86,7 @@
     <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
     <Compile Include="Calendar\IsHoliday.cs" />
     <Compile Include="Calendar\Months.cs" />
+    <Compile Include="Check.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="Collections\Algorithms.cs" />
     <Compile Include="Collections\Bag.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
     <Compile Include="TypedKey.cs" />
+    <Compile Include="WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Collections\A Note About This Folder.txt" />
