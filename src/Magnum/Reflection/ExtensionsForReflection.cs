@@ -113,6 +113,37 @@ namespace Magnum.Reflection
 			return selectedMethod;
 		}
 
+		public static ConstructorInfo FindBestMatch(this IEnumerable<ConstructorInfo> methods, object[] args)
+		{
+			var highestScore = -1;
+			var matchingMethodCount = 0;
+			ConstructorInfo selectedMethod = null;
+
+			foreach (var method in methods)
+			{
+				var methodScore = RateMethodMatch(method.GetParameters(), args);
+				if (methodScore > highestScore)
+				{
+					matchingMethodCount = 1;
+					highestScore = methodScore;
+					selectedMethod = method;
+				}
+				else if (methodScore == highestScore)
+				{
+					// count the number of matches, match count > 1 => ambiguous call
+					matchingMethodCount++;
+				}
+			}
+
+			if (matchingMethodCount > 1)
+				throw new ArgumentException("Ambiguous method invocation");
+
+			if (selectedMethod == null)
+				return null;
+
+			return selectedMethod;
+		}
+
 		public static T InvokeOn<T>(this MethodInfo method, object instance, object[] args)
 		{
 			method.MustNotBeNull("method");
@@ -125,43 +156,50 @@ namespace Magnum.Reflection
 			if (!methodInfo.IsGenericMethod)
 				return methodInfo;
 
-			Type[] arguments = methodInfo.GetGenericArguments();
+			var methodTypes = methodInfo.GetGenericArguments()
+				.GetGenericArgumentTypes(methodInfo.GetParameters(), args).ToArray();
 
+			return methodInfo.GetGenericMethodDefinition().MakeGenericMethod(methodTypes);
+		}
+
+		public static IEnumerable<Type> GetGenericArgumentTypes(this IEnumerable<Type> arguments,
+			IEnumerable<ParameterInfo> parameters,  
+			object[] args)
+		{
 			var generics = new Dictionary<Type, Type>();
 
 			arguments.Each(argument =>
-				{
-					methodInfo.GetParameters()
-						.Where(parameter => parameter.ParameterType == argument)
-						.Each(parameter =>
+			{
+				parameters.Where(parameter => parameter.ParameterType == argument)
+					.Each(parameter =>
+					{
+						Type parameterType = args[parameter.Position].GetType();
+
+						generics[argument] = parameterType;
+
+						argument.GetGenericParameterConstraints()
+							.Where(x => x.IsGenericType)
+							.Each(constraint =>
 							{
-								Type parameterType = args[parameter.Position].GetType();
+								var declared = constraint.GetDeclaredGenericArguments().ToArray();
+								var specified = parameterType
+									.GetDeclaredTypesForGeneric(constraint.GetGenericTypeDefinition()).ToArray();
 
-								generics[argument] = parameterType;
-
-								argument.GetGenericParameterConstraints()
-									.Where(x => x.IsGenericType)
-									.Each(constraint =>
+								if (declared.Length == specified.Length)
+								{
+									for (int i = 0; i < declared.Length; i++)
 									{
-										var declared = constraint.GetDeclaredGenericArguments().ToArray();
-										var specified = parameterType
-											.GetDeclaredTypesForGeneric(constraint.GetGenericTypeDefinition()).ToArray();
-
-										if(declared.Length == specified.Length)
-										{
-											for (int i = 0; i < declared.Length; i++)
-											{
-												if(arguments.Contains(declared[i]))
-													generics[declared[i]] = specified[i];
-											}
-										}
-									});
+										if (arguments.Contains(declared[i]))
+											generics[declared[i]] = specified[i];
+									}
+								}
 							});
-				});
+					});
+			});
 
 			var methodTypes = arguments.Select(x => generics[x]).ToArray();
 
-			return methodInfo.GetGenericMethodDefinition().MakeGenericMethod(methodTypes);
+			return methodTypes;
 		}
 
 		/// <returns>0 if the arguments don't match the parameters; a score &gt; 0 otherwise.</returns>
@@ -217,8 +255,13 @@ namespace Magnum.Reflection
 			if (argType == parameterType)
 			{
 				// perfect match!
-				return 2;
+				return 3;
+			
 			}
+
+			if (parameterType.IsGenericParameter)
+				return 2; // TODO verify generic constraints before accepting
+
 			if (parameterType.IsAssignableFrom(argType))
 			{
 				// at least convertible to parameter type

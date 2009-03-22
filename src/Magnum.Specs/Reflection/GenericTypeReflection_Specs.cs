@@ -247,17 +247,5 @@ namespace Magnum.Specs.Reflection
 		private interface ISingleGeneric<T>
 		{
 		}
-
-		[Test]
-		public void Constructors_are_just_special_methods()
-		{
-				
-			object[] args = new object[] { };
-
-//			typeof(HiddenGeneric)
-//				.GetConstructors(BindingFlags.Public|BindingFlags.NonPublic)
-//				.FindBestMatch(args)
-		}
-
 	}
 }

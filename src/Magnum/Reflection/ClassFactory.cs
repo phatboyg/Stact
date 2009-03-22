@@ -14,6 +14,7 @@ namespace Magnum.Reflection
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using CollectionExtensions;
@@ -61,103 +62,17 @@ namespace Magnum.Reflection
 
 		private static object NewGeneric(Type type, object[] args)
 		{
-			Type[] arguments = type.GetGenericArguments();
+			ConstructorInfo ctor = type.GetConstructors(_bindingFlags)
+				.FindBestMatch(args);
 
+			var argumentTypes = type.GetGenericArguments()
+				.GetGenericArgumentTypes(ctor.GetParameters(), args).ToArray();
 
-			Type[] argTypes = new Type[args.Length];
-			for (int i = 0; i < args.Length; i++)
-			{
-				if (args[i] == null)
-					throw new ArgumentNullException("args[" + i + "]", "Argument cannot be null");
+			Type makeType = type.MakeGenericType(argumentTypes);
 
-				argTypes[i] = args[i].GetType();
-			}
+			InstanceFactory factory = GetInstanceFactory(makeType);
 
-			ConstructorInfo[] constructors = type.GetConstructors(_bindingFlags);
-
-			foreach (var constructor in constructors)
-			{
-				ParameterInfo[] parameters = constructor.GetParameters();
-
-				if (parameters.Length != args.Length) continue;
-
-				int typeArgumentCount = 0;
-				Type[] typeArguments = new Type[arguments.Length];
-				for (int i = 0; i < parameters.Length; i++)
-				{
-					if (typeArgumentCount == arguments.Length)
-						break;
-
-					for (int j = 0; j < arguments.Length; j++)
-					{
-						if (typeArguments[j] != null)
-							continue;
-
-						if (parameters[i].ParameterType == arguments[j])
-						{
-							typeArguments[j] = argTypes[i];
-							typeArgumentCount++;
-							break;
-						}
-					}
-				}
-
-				for (int i = 0; i < arguments.Length; i++)
-				{
-					if (typeArgumentCount == arguments.Length)
-						break;
-					if (typeArguments[i] != null)
-						continue;
-
-					for (int j = 0; j < arguments.Length; j++)
-					{
-						if (i == j)
-							continue;
-						if (typeArguments[j] == null)
-							continue;
-
-						foreach (Type constraint in arguments[j].GetGenericParameterConstraints())
-						{
-							if (constraint.IsGenericType)
-							{
-								foreach (Type argument in constraint.GetGenericArguments())
-								{
-									if(argument == arguments[i])
-									{
-										var genericTypes = typeArguments[j].GetDeclaredTypesForGeneric(constraint);
-										foreach (var genericType in genericTypes)
-										{
-											typeArguments[i] = genericType;
-											typeArgumentCount++;
-											break;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				if(typeArgumentCount == arguments.Length)
-				{
-					Type makeType = type.MakeGenericType(typeArguments);
-
-					InstanceFactory factory = GetInstanceFactory(makeType);
-
-					return factory.New(args);
-
-//					ConstantExpression[] constructorArgs = new ConstantExpression[arguments.Length];
-//					for (int i = 0; i < arguments.Length; i++)
-//					{
-//						constructorArgs[i] = Expression.Constant(typeArguments[i], typeof (Type));
-//					}
-//
-//					var e = Expression.Lambda<Func<InstanceFactory>>(Expression.New(constructor, constructorArgs)).Compile();
-//					return e();
-				}
-			}
-
-			throw new InvalidOperationException("Unable to create the object given the specific arguments");
+			return factory.New(args);
 		}
 
 		private static InstanceFactory GetInstanceFactory(Type type)
@@ -166,18 +81,13 @@ namespace Magnum.Reflection
 				{
 					Type builderType = typeof (TypeInstanceFactory<>).MakeGenericType(type);
 
-					ConstructorInfo[] constructors = builderType.GetConstructors(_bindingFlags);
+					var constructor = builderType.GetConstructors(_bindingFlags)
+						.Where(x => x.GetParameters().Length == 0)
+						.First();
 
-					foreach (var constructor in constructors)
-					{
-						if (constructor.GetParameters().Length != 0) continue;
+					var func = Expression.Lambda<Func<InstanceFactory>>(Expression.New(constructor)).Compile();
 
-						var e = Expression.Lambda<Func<InstanceFactory>>(Expression.New(constructor)).Compile();
-
-						return e();
-					}
-
-					throw new InvalidOperationException("For some reason, the TypeInstanceFactory for the specified type could not be created");
+					return func();
 				});
 		}
 	}
