@@ -75,11 +75,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Magnum.Specs\Magnum.Specs.csproj">
       <Project>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</Project>
-      <Name>Magnum.Common.Specs</Name>
+      <Name>Magnum.Specs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum.Common</Name>
+      <Name>Magnum</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum.Infrastructure\Magnum.Infrastructure.csproj">
       <Project>{A3CA2BD8-BA6C-457F-9C56-0809C2739710}</Project>

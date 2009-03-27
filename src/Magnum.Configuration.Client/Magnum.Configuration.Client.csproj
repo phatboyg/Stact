@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{840ACB6A-A512-4886-8E88-A24D99342090}</ProjectGuid>
+    <ProjectGuid>{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Magnum.Metrics</RootNamespace>
-    <AssemblyName>Magnum.Metrics</AssemblyName>
+    <RootNamespace>Magnum.Configuration.Client</RootNamespace>
+    <AssemblyName>Magnum.Configuration.Client</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,27 +35,21 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockContentReader.cs" />
-    <Compile Include="HttpContentCollector.cs" />
-    <Compile Include="IContentCollector.cs" />
-    <Compile Include="IContentReader.cs" />
-    <Compile Include="WebServerLogEntry.cs" />
-    <Compile Include="WebServerLogReader.cs" />
-    <Compile Include="StringContentReader.cs" />
+    <Compile Include="IReadWriteSettings.cs" />
+    <Compile Include="ISetting.cs" />
+    <Compile Include="IReadOnlySettings.cs" />
+    <Compile Include="SettingEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Magnum.Infrastructure\Magnum.Infrastructure.csproj">
+      <Project>{A3CA2BD8-BA6C-457F-9C56-0809C2739710}</Project>
+      <Name>Magnum.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum</Name>

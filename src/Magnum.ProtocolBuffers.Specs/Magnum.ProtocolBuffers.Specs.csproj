@@ -80,7 +80,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum.Common</Name>
+      <Name>Magnum</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum.ProtocolBuffers\Magnum.ProtocolBuffers.csproj">
       <Project>{F4F363D4-0ED1-4DE2-B96D-7883215D816B}</Project>

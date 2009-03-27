@@ -66,7 +66,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum.Common</Name>
+      <Name>Magnum</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum.Metrics\Magnum.Metrics.csproj">
       <Project>{840ACB6A-A512-4886-8E88-A24D99342090}</Project>

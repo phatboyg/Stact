@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.MapReduce.Specs", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Infrastructure.Specs", "Magnum.Infrastructure.Specs\Magnum.Infrastructure.Specs.csproj", "{00A9A599-4850-46D5-AC94-4D10717A4EB2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{593B2321-9D92-4C3F-83E3-AF2CBB322DF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Configuration.Client", "Magnum.Configuration.Client\Magnum.Configuration.Client.csproj", "{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +72,10 @@ Global
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C24157-23CD-4BD6-8CC4-6F9EFD11B422}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,5 +83,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F4F363D4-0ED1-4DE2-B96D-7883215D816B} = {895DBED7-EA72-4243-AC5F-2CB1E0C357CA}
 		{FF3DD7A0-1418-4D56-848F-C1450A18BEF4} = {895DBED7-EA72-4243-AC5F-2CB1E0C357CA}
+		{06C24157-23CD-4BD6-8CC4-6F9EFD11B422} = {593B2321-9D92-4C3F-83E3-AF2CBB322DF2}
 	EndGlobalSection
 EndGlobal
