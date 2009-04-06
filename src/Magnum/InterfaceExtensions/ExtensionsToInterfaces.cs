@@ -124,7 +124,12 @@ namespace Magnum.InterfaceExtensions
 
 		public static IEnumerable<Type> GetDeclaredTypesForGeneric(this Type type, Type interfaceType)
 		{
-			foreach (var generic in type.GetGenericInterfacesFor(interfaceType))
+			IEnumerable<Type> source = interfaceType.IsInterface
+			                           	?
+			                           		type.GetGenericInterfacesFor(interfaceType) :
+			                           		                                            	type.GetGenericFor(interfaceType);
+
+			foreach (var generic in source)
 			{
 				foreach (var arg in generic.GetGenericArguments())
 				{
@@ -148,6 +153,21 @@ namespace Magnum.InterfaceExtensions
 				{
 					yield return candidate;
 				}
+			}
+		}	
+		
+		private static IEnumerable<Type> GetGenericFor(this Type type, Type targetType)
+		{
+			var baseType = type;
+			while (baseType != null)
+			{
+				if(baseType.IsGenericType)
+				{
+					if (baseType.GetGenericTypeDefinition() == targetType)
+						yield return baseType;
+				}
+
+				baseType = baseType.BaseType;
 			}
 		}
 

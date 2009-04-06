@@ -195,6 +195,24 @@ namespace Magnum.Reflection
 								}
 							});
 					});
+
+				parameters.Where(parameter => parameter.ParameterType != argument && parameter.ParameterType.IsGenericType)
+					.Each(parameter =>
+						{
+							Type parameterType = args[parameter.Position].GetType();
+
+							var declared = parameter.ParameterType.GetDeclaredGenericArguments().ToArray();
+							var specified = parameterType.GetDeclaredTypesForGeneric(parameterType.GetGenericTypeDefinition()).ToArray();
+
+							if (declared.Length == specified.Length)
+							{
+								for (int i = 0; i < declared.Length; i++)
+								{
+									if (arguments.Contains(declared[i]))
+										generics[declared[i]] = specified[i];
+								}
+							}
+						});
 			});
 
 			var methodTypes = arguments.Select(x => generics[x]).ToArray();

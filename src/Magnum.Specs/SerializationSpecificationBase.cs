@@ -13,7 +13,7 @@
 namespace Magnum.Specs
 {
     using System.IO;
-    using Serialization;
+    using Magnum.Serialization;
 
     public class SerializationSpecificationBase :
         SpecificationBase

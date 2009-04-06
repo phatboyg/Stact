@@ -13,6 +13,7 @@
 namespace Magnum.Specs.Reflection
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using Magnum.Reflection;
 	using MbUnit.Framework;
@@ -64,6 +65,17 @@ namespace Magnum.Specs.Reflection
 			object obj = ClassFactory.New(typeof(MyClass));
 
 			this.Call("MyStaticMethod", obj);
+		}
+
+		[Test]
+		public void Okay_now_we_have_a_strange_problem_here()
+		{
+			string key = "Chris";
+			MyClass value = ClassFactory.New<MyClass>();
+
+			var pair = new KeyValuePair<string,MyClass>(key, value);
+
+			this.Call("ComplexMethod", "ignored", pair);
 		}
 
 
@@ -126,6 +138,15 @@ namespace Magnum.Specs.Reflection
 
 		public void RegularMethod(object obj)
 		{
+		}
+
+		public void ComplexMethod<TKey,TValue>(string ignored, KeyValuePair<TKey,TValue> pair)
+		{
+			pair.Key.GetType().ShouldEqual(typeof (string));
+			pair.Value.GetType().ShouldEqual(typeof (MyClass));
+
+			typeof (TKey).ShouldEqual(typeof (string));
+			typeof (TValue).ShouldEqual(typeof (MyClass));
 		}
 
 		public class MyClass
