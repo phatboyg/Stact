@@ -68,9 +68,9 @@ namespace Magnum.Infrastructure.Data
         }
 	}
 
-	public class NHibernateRepository<T, K> :
-		RepositoryBase<T, K>
-		where T : class, IAggregateRoot<K>
+	public class NHibernateRepository<T> :
+		RepositoryBase<T>
+		where T : class
 	{
 		private readonly object _queryLock = new object();
 		private readonly ISession _session;
@@ -98,16 +98,6 @@ namespace Magnum.Infrastructure.Data
 
 		public override void Dispose()
 		{
-		}
-
-		public override T Get(K id)
-		{
-			return _session.Get<T>(id);
-		}
-
-		public override IList<T> List()
-		{
-			return _session.CreateCriteria(typeof (T)).List<T>();
 		}
 
 		public override void Save(T item)

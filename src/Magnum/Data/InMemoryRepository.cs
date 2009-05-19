@@ -12,18 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Data
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using Threading;
 
 	public class InMemoryRepository<T, K> :
-		RepositoryBase<T, K>
-		where T : class, IAggregateRoot<K>
+		RepositoryBase<T>
+		where T : class
 	{
+		private readonly Converter<T, K> _converter;
 		private readonly ReaderWriterLockedObject<Dictionary<K, T>> _storage;
 
-		public InMemoryRepository()
+		public InMemoryRepository(Converter<T, K> converter)
 		{
+			_converter = converter;
 			_storage = new ReaderWriterLockedObject<Dictionary<K, T>>(new Dictionary<K, T>());
 		}
 
@@ -35,40 +38,40 @@ namespace Magnum.Data
 		public override void Dispose()
 		{
 			_storage.WriteLock(x => x.Clear());
-		}
-
-		public override T Get(K id)
-		{
-			return _storage.ReadLock(x => x.ContainsKey(id) ? x[id] : default(T));
-		}
-
-		public override IList<T> List()
-		{
-			return _storage.ReadLock(x => x.Values.ToList());
+			_storage.Dispose();
 		}
 
 		public override void Save(T item)
 		{
 			_storage.WriteLock(x =>
 				{
-					if (x.ContainsKey(item.Id))
-						x[item.Id] = item;
+					var key = _converter(item);
+
+					if (x.ContainsKey(key))
+						x[key] = item;
 					else
-						x.Add(item.Id, item);
+						x.Add(key, item);
 				});
 		}
 
 		public override void Update(T item)
 		{
-			_storage.WriteLock(x => { x[item.Id] = item; });
+			_storage.WriteLock(x =>
+				{
+					var key = _converter(item);
+
+					x[key] = item;
+				});
 		}
 
 		public override void Delete(T item)
 		{
 			_storage.WriteLock(x =>
 				{
-					if (x.ContainsKey(item.Id))
-						x.Remove(item.Id);
+					var key = _converter(item);
+
+					if (x.ContainsKey(key))
+						x.Remove(key);
 				});
 		}
 	}

@@ -36,14 +36,9 @@ namespace Magnum.Infrastructure.Data
 			return new NHibernateRepository(_sessionFactory.OpenSession());
 		}
 
-		public IRepository<T, Guid> GetRepository<T>() where T : class, IAggregateRoot
+		public IRepository<T> GetRepository<T>() where T : class
 		{
-			return new NHibernateRepository<T, Guid>(_sessionFactory.OpenSession());
-		}
-
-		public IRepository<T, K> GetRepository<T, K>() where T : class, IAggregateRoot<K>
-		{
-			return new NHibernateRepository<T, K>(_sessionFactory.OpenSession());
+			return new NHibernateRepository<T>(_sessionFactory.OpenSession());
 		}
 
 		public static IRepositoryFactory Configure(Action<Configuration> configure)

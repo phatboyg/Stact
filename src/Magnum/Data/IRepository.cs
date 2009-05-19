@@ -69,26 +69,11 @@ namespace Magnum.Data
 	/// <summary>
 	/// A repository generalization
 	/// </summary>
-	public interface IRepository<T, K> :
+	public interface IRepository<T> :
 		IQueryable<T>,
 		IDisposable
-		where T : class, IAggregateRoot<K>
+		where T : class
 	{
-		/// <summary>
-		/// Returns the entity for the Id specified.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		T Get(K id);
-
-		/// <summary>
-		/// Returns a list of objects
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		IList<T> List();
-
 		/// <summary>
 		/// Saves an object
 		/// </summary>

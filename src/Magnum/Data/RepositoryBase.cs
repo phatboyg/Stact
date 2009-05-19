@@ -18,9 +18,9 @@ namespace Magnum.Data
 	using System.Linq;
 	using System.Linq.Expressions;
 
-	public abstract class RepositoryBase<T, K> :
-		IRepository<T, K>
-		where T : class, IAggregateRoot<K>
+	public abstract class RepositoryBase<T> :
+		IRepository<T>
+		where T : class
 	{
 		protected abstract IQueryable<T> RepositoryQuery { get; }
 
@@ -52,8 +52,6 @@ namespace Magnum.Data
 
 		public abstract void Dispose();
 
-		public abstract T Get(K id);
-		public abstract IList<T> List();
 		public abstract void Save(T item);
 		public abstract void Update(T item);
 		public abstract void Delete(T item);

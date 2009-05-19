@@ -31,14 +31,6 @@ namespace Magnum.Data
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		IRepository<T, Guid> GetRepository<T>() where T : class, IAggregateRoot;
-
-		/// <summary>
-		/// Returns a typed repository that can be used and queried using LINQ
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="K"></typeparam>
-		/// <returns></returns>
-		IRepository<T, K> GetRepository<T, K>() where T : class, IAggregateRoot<K>;
+		IRepository<T> GetRepository<T>() where T : class;
 	}
 }

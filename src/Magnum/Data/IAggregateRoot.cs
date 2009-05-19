@@ -18,9 +18,4 @@ namespace Magnum.Data
 	{
 		TId Id { get; }
 	}
-
-	public interface IAggregateRoot :
-		IAggregateRoot<Guid>
-	{
-	}
 }

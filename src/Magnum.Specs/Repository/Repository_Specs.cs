@@ -63,10 +63,8 @@ namespace Magnum.Specs.Repository
     }
 
     public class MemberRepository :
-        RepositoryBase<Member, Guid>
+        RepositoryBase<Member>
     {
-        //private readonly IRepository<Member> _repository;
-
         private List<Member> _members = new List<Member>();
 
         protected override IQueryable<Member> RepositoryQuery
@@ -80,16 +78,6 @@ namespace Magnum.Specs.Repository
             _members = null;
         }
 
-        public override Member Get(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override IList<Member> List()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void Save(Member member)
         {
             _members.Add(member);
@@ -97,17 +85,15 @@ namespace Magnum.Specs.Repository
 
         public override void Update(Member item)
         {
-            throw new System.NotImplementedException();
         }
 
         public override void Delete(Member item)
         {
-            throw new NotImplementedException();
+        	_members.Remove(item);
         }
     }
 
-    public class Member :
-        IAggregateRoot
+    public class Member : IAggregateRoot<Guid>
     {
         private readonly Guid _id;
 
