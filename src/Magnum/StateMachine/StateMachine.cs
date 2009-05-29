@@ -57,21 +57,37 @@ namespace Magnum.StateMachine
 		/// <summary>
 		/// Returns the current state of the StateMachine
 		/// </summary>
-		public State CurrentState
+		public virtual State CurrentState
 		{
 			get { return _currentState; }
 		}
 
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("Current", CurrentState.Name);
+		}
+
+		public virtual void Inspect(IStateMachineInspector inspector)
+		{
+			inspector.Inspect(this, () =>
+				{
+					_initialState.Inspect(inspector);
+
+					foreach (var state in _states.Values)
+					{
+						if (state != _initialState && state != _completedState)
+							state.Inspect(inspector);
+					}
+
+					_completedState.Inspect(inspector);
+				});
 		}
 
 		/// <summary>
 		/// Raise an event within the current state
 		/// </summary>
 		/// <param name="raised">The event to raise</param>
-		public void RaiseEvent(Event raised)
+		public virtual void RaiseEvent(Event raised)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
@@ -84,11 +100,18 @@ namespace Magnum.StateMachine
 		/// <typeparam name="V">The type of data, must match the data type expected by the event</typeparam>
 		/// <param name="raised">The event to raise</param>
 		/// <param name="value">The data to associate with the event</param>
-		public void RaiseEvent<V>(Event raised, V value)
+		public virtual void RaiseEvent<V>(Event raised, V value)
 		{
 			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
 
 			_currentState.RaiseEvent(this as T, eevent, value);
+		}
+
+		internal virtual void ChangeCurrentState(State newState)
+		{
+			LeaveCurrentState();
+
+			EnterState(State<T>.GetState(newState));
 		}
 
 		private void EnterState(State<T> state)
@@ -200,14 +223,11 @@ namespace Magnum.StateMachine
 		/// <param name="actions"></param>
 		protected static void Anytime(params StateEventAction<T>[] actions)
 		{
-			
 		}
 
-		internal void ChangeCurrentState(State newState)
+		internal static State GetCompletedState()
 		{
-			LeaveCurrentState();
-
-			EnterState(State<T>.GetState(newState));
+			return _completedState;
 		}
 
 		private static void InitializeEvents()
@@ -314,27 +334,6 @@ namespace Magnum.StateMachine
 			if (_completedState == null)
 				throw new StateMachineException("No completed state has been defined.");
 		}
-
-		public void Inspect(IStateMachineInspector inspector)
-		{
-			inspector.Inspect(this, () =>
-				{
-					_initialState.Inspect(inspector);
-
-					foreach (var state in _states.Values)
-					{
-						if ( state != _initialState && state != _completedState)
-							state.Inspect(inspector);
-					}
-
-					_completedState.Inspect(inspector);
-				});
-		}
-
-		internal static State GetCompletedState()
-		{
-			return _completedState;
-		}
 	}
 
 	public interface StateMachine
@@ -343,7 +342,5 @@ namespace Magnum.StateMachine
 
 	public static class ExtensionsToStateMachine
 	{
-
-
 	}
 }
