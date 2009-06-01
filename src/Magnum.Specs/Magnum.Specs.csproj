@@ -80,6 +80,7 @@
     <Compile Include="Actors\PingPong_Example.cs" />
     <Compile Include="Actors\ThreadActionScheduler_Specs.cs" />
     <Compile Include="Cache_Specs.cs" />
+    <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
     <Compile Include="CommandLine\ArgumentWithSameFirstLetter.cs" />
