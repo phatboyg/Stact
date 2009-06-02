@@ -71,6 +71,7 @@
     <Compile Include="Actors\Schedulers\SingleEvent.cs" />
     <Compile Include="Actors\Schedulers\ThreadPoolScheduler.cs" />
     <Compile Include="Actors\Startable.cs" />
+    <Compile Include="Calendar\CheckResult.cs" />
     <Compile Include="Calendar\Holidays\BaseCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayObserved.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="Calendar\Holidays\LaborDayCheck.cs" />
     <Compile Include="Calendar\Holidays\MartinLutherKingDayCheck.cs" />
     <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
-    <Compile Include="Calendar\IsHoliday.cs" />
+    <Compile Include="Calendar\DefaultCalendar.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />

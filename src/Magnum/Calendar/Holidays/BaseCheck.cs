@@ -3,10 +3,9 @@ using System.Globalization;
 
 namespace Magnum.Calendar.Holidays
 {
-    public abstract class BaseCheck :
-        IHolidayCheck
+    public abstract class BaseCheck
     {
-        #region IHolidayCheck Members
+        #region IDateSpecification Members
 
         public abstract bool Check(DateTime dateToCheck);
         public abstract string HolidayName { get; }
