@@ -103,6 +103,7 @@
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
     <Compile Include="Reflection\ExtensionsToGenericTypes.cs" />
+    <Compile Include="Reflection\FastProperty_Specs.cs" />
     <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
     <Compile Include="Reflection\GenericTypeReflection_Specs.cs" />
     <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />

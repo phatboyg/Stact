@@ -24,34 +24,18 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			InitializeGet();
-			InitializeSet();
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, false);
+		}
+
+		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
+		{
+			Property = property;
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
-
-		private void InitializeSet()
-		{
-			var instance = Expression.Parameter(typeof (object), "instance");
-			var value = Expression.Parameter(typeof (object), "value");
-
-			// value as T is slightly faster than (T)value, so if it's not a value type, use that
-			UnaryExpression instanceCast = (!Property.DeclaringType.IsValueType) ?
-				Expression.TypeAs(instance, Property.DeclaringType) : Expression.Convert(instance, Property.DeclaringType);
-			UnaryExpression valueCast = (!Property.PropertyType.IsValueType) ? 
-				Expression.TypeAs(value, Property.PropertyType) : Expression.Convert(value, Property.PropertyType);
-
-			SetDelegate = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, Property.GetSetMethod(), valueCast), new[] {instance, value}).Compile();
-		}
-
-		private void InitializeGet()
-		{
-			var instance = Expression.Parameter(typeof (object), "instance");
-			UnaryExpression instanceCast = (!Property.DeclaringType.IsValueType) ?
-				Expression.TypeAs(instance, Property.DeclaringType) : Expression.Convert(instance, Property.DeclaringType);
-
-			GetDelegate = Expression.Lambda<Func<object, object>>(Expression.TypeAs(Expression.Call(instanceCast, Property.GetGetMethod()), typeof (object)), instance).Compile();
-		}
 
 		public object Get(object instance)
 		{
@@ -61,6 +45,44 @@ namespace Magnum.Reflection
 		public void Set(object instance, object value)
 		{
 			SetDelegate(instance, value);
+		}
+
+		private static Action<object, object> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		{
+			var instance = Expression.Parameter(typeof (object), "instance");
+			var value = Expression.Parameter(typeof (object), "value");
+
+			// value as T is slightly faster than (T)value, so if it's not a value type, use that
+			UnaryExpression instanceCast;
+			if (property.DeclaringType.IsValueType)
+				instanceCast = Expression.Convert(instance, property.DeclaringType);
+			else
+				instanceCast = Expression.TypeAs(instance, property.DeclaringType);
+			
+			UnaryExpression valueCast;
+			if (property.PropertyType.IsValueType)
+				valueCast = Expression.Convert(value, property.PropertyType);
+			else
+				valueCast = Expression.TypeAs(value, property.PropertyType);
+
+			var call = Expression.Call(instanceCast, property.GetSetMethod(includeNonPublic), valueCast);
+
+			return Expression.Lambda<Action<object, object>>(call, new[] {instance, value}).Compile();
+		}
+
+		private static Func<object, object> InitializeGet(PropertyInfo property)
+		{
+			var instance = Expression.Parameter(typeof (object), "instance");
+			UnaryExpression instanceCast;
+			if (property.DeclaringType.IsValueType)
+				instanceCast = Expression.Convert(instance, property.DeclaringType);
+			else
+				instanceCast = Expression.TypeAs(instance, property.DeclaringType);
+
+			var call = Expression.Call(instanceCast, property.GetGetMethod());
+			var typeAs = Expression.TypeAs(call, typeof (object));
+
+			return Expression.Lambda<Func<object, object>>(typeAs, instance).Compile();
 		}
 	}
 
@@ -72,25 +94,18 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			InitializeGet();
-			InitializeSet();
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, false);
+		}
+
+		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
+		{
+			Property = property;
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
-
-		private void InitializeSet()
-		{
-			var instance = Expression.Parameter(typeof (T), "instance");
-			var value = Expression.Parameter(typeof (object), "value");
-			UnaryExpression valueCast = (!Property.PropertyType.IsValueType) ? Expression.TypeAs(value, Property.PropertyType) : Expression.Convert(value, Property.PropertyType);
-			SetDelegate = Expression.Lambda<Action<T, object>>(Expression.Call(instance, Property.GetSetMethod(), valueCast), new[] {instance, value}).Compile();
-		}
-
-		private void InitializeGet()
-		{
-			var instance = Expression.Parameter(typeof (T), "instance");
-			GetDelegate = Expression.Lambda<Func<T, object>>(Expression.TypeAs(Expression.Call(instance, Property.GetGetMethod()), typeof (object)), instance).Compile();
-		}
 
 		public object Get(T instance)
 		{
@@ -100,6 +115,29 @@ namespace Magnum.Reflection
 		public void Set(T instance, object value)
 		{
 			SetDelegate(instance, value);
+		}
+
+		private static Action<T, object> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		{
+			var instance = Expression.Parameter(typeof (T), "instance");
+			var value = Expression.Parameter(typeof (object), "value");
+			UnaryExpression valueCast;
+			if (property.PropertyType.IsValueType)
+				valueCast = Expression.Convert(value, property.PropertyType);
+			else
+				valueCast = Expression.TypeAs(value, property.PropertyType);
+
+			var call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), valueCast);
+
+			return Expression.Lambda<Action<T, object>>(call, new[] {instance, value}).Compile();
+		}
+
+		private static Func<T, object> InitializeGet(PropertyInfo property)
+		{
+			var instance = Expression.Parameter(typeof (T), "instance");
+			var call = Expression.Call(instance, property.GetGetMethod());
+			var typeAs = Expression.TypeAs(call, typeof (object));
+			return Expression.Lambda<Func<T, object>>(typeAs, instance).Compile();
 		}
 	}
 
@@ -111,28 +149,18 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			InitializeGet();
-			InitializeSet();
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, false);
+		}
+
+		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
+		{
+			Property = property;
+			GetDelegate = InitializeGet(Property);
+			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
-
-		private void InitializeSet()
-		{
-			var instance = Expression.Parameter(typeof (T), "instance");
-			var value = Expression.Parameter(typeof (P), "value");
-			SetDelegate = Expression.Lambda<Action<T, P>>(Expression.Call(instance, Property.GetSetMethod(), value), new[] {instance, value}).Compile();
-
-			// roughly looks like Action<T,P> a = new Action<T,P>((instance,value) => instance.set_Property(value));
-		}
-
-		private void InitializeGet()
-		{
-			var instance = Expression.Parameter(typeof (T), "instance");
-			GetDelegate = Expression.Lambda<Func<T, P>>(Expression.Call(instance, Property.GetGetMethod()), instance).Compile();
-
-			// roughly looks like Func<T,P> getter = instance => return instance.get_Property();
-		}
 
 		public P Get(T instance)
 		{
@@ -142,6 +170,25 @@ namespace Magnum.Reflection
 		public void Set(T instance, P value)
 		{
 			SetDelegate(instance, value);
+		}
+
+		private static Action<T, P> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		{
+			var instance = Expression.Parameter(typeof (T), "instance");
+			var value = Expression.Parameter(typeof (P), "value");
+			var call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), value);
+
+			return Expression.Lambda<Action<T, P>>(call, new[] {instance, value}).Compile();
+
+			// roughly looks like Action<T,P> a = new Action<T,P>((instance,value) => instance.set_Property(value));
+		}
+
+		private static Func<T, P> InitializeGet(PropertyInfo property)
+		{
+			var instance = Expression.Parameter(typeof (T), "instance");
+			return Expression.Lambda<Func<T, P>>(Expression.Call(instance, property.GetGetMethod()), instance).Compile();
+
+			// roughly looks like Func<T,P> getter = instance => return instance.get_Property();
 		}
 	}
 }
