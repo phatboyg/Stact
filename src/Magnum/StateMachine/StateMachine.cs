@@ -14,11 +14,13 @@ namespace Magnum.StateMachine
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Runtime.Serialization;
 	using Collections;
 
+    [DebuggerDisplay("Current State = {CurrentState.Name}")]
 	public class StateMachine<T> :
 		StateMachine,
 		ISerializable,
