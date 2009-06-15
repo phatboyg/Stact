@@ -40,21 +40,13 @@ namespace Magnum.StateMachine
 		{
 			inspector.Inspect(this, () =>
 				{
-					foreach (var item in _actions)
-					{
-						var itemEvent = item.Key;
-						var itemList = item.Value;
-
-						inspector.Inspect(itemEvent, ()=>
-							{
-								foreach (var eventAction in itemList)
+					_actions.Each(item => inspector.Inspect(item.Key, () =>
+						{
+							item.Value.Each(x => inspector.Inspect(x, () =>
 								{
-									var action = eventAction;
-
-									inspector.Inspect(action);
-								}
-							});
-					}
+									x.EventActions.Each(inspector.Inspect);
+								}));
+						}));
 				});
 		}
 
@@ -101,7 +93,7 @@ namespace Magnum.StateMachine
 
 		public void BindEventAction(StateEventAction<T> action)
 		{
-			_actions.Add(action.RaisedEvent, action);
+			_actions.Add(action.DefinedEvent, action);
 		}
 
 		public static State<T> GetState(State input)

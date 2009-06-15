@@ -21,12 +21,17 @@ namespace Magnum.StateMachine
 		ReflectiveVisitorBase<StateMachineInspector>,
 		IStateMachineInspector
 	{
-		private int _depth = 0;
+		private int _depth;
 		private StringBuilder _text = new StringBuilder();
 
 		public StateMachineInspector()
 			: base("Inspect")
 		{
+		}
+
+		public String Text
+		{
+			get { return _text.ToString(); }
 		}
 
 		public void Inspect(object obj)
@@ -43,7 +48,37 @@ namespace Magnum.StateMachine
 				});
 		}
 
-		public bool Inspect<T>(State<T> state) 
+		public bool Inspect<T>(LambdaAction<T> action)
+			where T : StateMachine<T>
+		{
+			Append("Action<" + typeof (T).Name + ">");
+			return true;
+		}
+
+		public bool Inspect<T, TData>(LambdaAction<T, TData> action)
+			where T : StateMachine<T>
+			where TData : class
+		{
+			Append("Action<" + typeof (T).Name + "," + typeof (TData).Name + ">");
+			return true;
+		}
+
+		public bool Inspect<T>(ExpressionAction<T> action)
+			where T : StateMachine<T>
+		{
+			Append("Expression: " + action.Expression);
+			return true;
+		}
+
+		public bool Inspect<T, TData>(ExpressionAction<T, TData> action)
+			where T : StateMachine<T>
+			where TData : class
+		{
+			Append("Expression: " + action.Expression);
+			return true;
+		}
+
+		public bool Inspect<T>(State<T> state)
 			where T : StateMachine<T>
 		{
 			Append(string.Format("During {0}", state.Name));
@@ -59,16 +94,23 @@ namespace Magnum.StateMachine
 			return true;
 		}
 
-		public bool Inspect<T,V>(StateEventAction<T,V> eventAction)
-			where T : StateMachine<T> 
-			where V : class
+		public bool Inspect<T>(TransitionToAction<T> action)
+			where T : StateMachine<T>
 		{
-			if(eventAction.Condition != null)
+			Append("Transition To " + action.NewState.Name);
+			return true;
+		}
+
+		public bool Inspect<T, TData>(DataEventAction<T, TData> eventAction)
+			where T : StateMachine<T>
+			where TData : class
+		{
+			if (eventAction.Condition != null)
 			{
 				StateMachineExpressionInspector expressionInspector = new StateMachineExpressionInspector();
 
 				string result = expressionInspector.Inspect(eventAction.Condition);
-				
+
 				Append(string.Format("If {0}", result));
 			}
 
@@ -77,7 +119,7 @@ namespace Magnum.StateMachine
 			return true;
 		}
 
-		public bool Inspect<T>(StateEventAction<T> eventAction)
+		public bool Inspect<T>(BasicEventAction<T> eventAction)
 			where T : StateMachine<T>
 		{
 			AppendEventAction(eventAction);
@@ -85,22 +127,24 @@ namespace Magnum.StateMachine
 			return true;
 		}
 
-		private void AppendEventAction<T>(StateEventAction<T> eventAction) 
+		private void AppendEventAction<T>(EventAction<T> eventAction)
 			where T : StateMachine<T>
 		{
-			foreach (var action in eventAction.Actions)
-			{
-				Append(string.Format("(custom action)"));
-			}
+//			foreach (var action in eventAction.Actions)
+//			{
+//				Append(string.Format("(custom action)"));
+//			}
+//
+//			if(eventAction.ResultState != null)
+//				Append(string.Format("Transition To {0}", eventAction.ResultState.Name));
 
-			if(eventAction.ResultState != null)
-				Append(string.Format("Transition To {0}", eventAction.ResultState.Name));
+			Append(string.Format("some event action"));
 		}
 
-		public bool Inspect<T,V>(DataEvent<T,V> state)
+		public bool Inspect<T, TData>(DataEvent<T, TData> state)
 			where T : StateMachine<T>
 		{
-			Append(string.Format("When {0} Occurs Containing {1}", state.Name, typeof(V).Name));
+			Append(string.Format("When {0} Occurs Containing {1}", state.Name, typeof (TData).Name));
 
 			return true;
 		}
@@ -125,11 +169,6 @@ namespace Magnum.StateMachine
 			Pad();
 
 			_text.AppendFormat(text).AppendLine();
-		}
-
-		public String Text
-		{
-			get { return _text.ToString(); }
 		}
 
 		public static void Trace(IStateMachineInspectorSite machine)
@@ -163,7 +202,7 @@ namespace Magnum.StateMachine
 
 		protected override Expression Visit(Expression exp)
 		{
-			switch(exp.NodeType)
+			switch (exp.NodeType)
 			{
 				case ExpressionType.MemberAccess:
 				case ExpressionType.Parameter:
@@ -176,6 +215,5 @@ namespace Magnum.StateMachine
 
 			return base.Visit(exp);
 		}
-		
 	}
 }

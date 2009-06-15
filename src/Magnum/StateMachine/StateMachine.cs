@@ -17,6 +17,7 @@ namespace Magnum.StateMachine
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Runtime.Serialization;
+	using Collections;
 
 	public class StateMachine<T> :
 		StateMachine,
@@ -97,12 +98,12 @@ namespace Magnum.StateMachine
 		/// <summary>
 		/// Raise an event within the current state passing the data associated with the event
 		/// </summary>
-		/// <typeparam name="V">The type of data, must match the data type expected by the event</typeparam>
+		/// <typeparam name="TData">The type of data, must match the data type expected by the event</typeparam>
 		/// <param name="raised">The event to raise</param>
 		/// <param name="value">The data to associate with the event</param>
-		public virtual void RaiseEvent<V>(Event raised, V value)
+		public virtual void RaiseEvent<TData>(Event raised, TData value)
 		{
-			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
+			DataEvent<T, TData> eevent = DataEvent<T, TData>.GetEvent(raised);
 
 			_currentState.RaiseEvent(this as T, eevent, value);
 		}
@@ -170,11 +171,11 @@ namespace Magnum.StateMachine
 		/// </summary>
 		/// <param name="raised"></param>
 		/// <returns></returns>
-		protected static StateEventAction<T> When(Event raised)
+		protected static BasicEventAction<T> When(Event raised)
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			var result = new StateEventAction<T>(eevent);
+			var result = new BasicEventAction<T>(eevent);
 
 			return result;
 		}
@@ -183,12 +184,20 @@ namespace Magnum.StateMachine
 		/// Starts the definition of actions to take when an event occurs
 		/// </summary>
 		/// <param name="raised">The event that would be raised</param>
-		protected static StateEventAction<T, V> When<V>(Event<V> raised)
-			where V : class
+		protected static DataEventAction<T, TData> When<TData>(Event<TData> raised)
+			where TData : class
 		{
-			DataEvent<T, V> eevent = DataEvent<T, V>.GetEvent(raised);
+			DataEvent<T, TData> eevent = DataEvent<T, TData>.GetEvent(raised);
 
-			var result = new StateEventAction<T, V>(eevent);
+			var result = new DataEventAction<T, TData>(eevent);
+
+			return result;
+		}
+
+		protected static ExceptionAction<T,TException> InCaseOf<TException>() 
+			where TException : Exception
+		{
+			var result = new ExceptionAction<T, TException>();
 
 			return result;
 		}
@@ -211,10 +220,7 @@ namespace Magnum.StateMachine
 		{
 			State<T> state = State<T>.GetState(inputState);
 
-			foreach (StateEventAction<T> action in actions)
-			{
-				state.BindEventAction(action);
-			}
+			actions.Each(state.BindEventAction);
 		}
 
 		/// <summary>
@@ -223,6 +229,7 @@ namespace Magnum.StateMachine
 		/// <param name="actions"></param>
 		protected static void Anytime(params StateEventAction<T>[] actions)
 		{
+			_states.Values.Each(state => actions.Each(state.BindEventAction));
 		}
 
 		internal static State GetCompletedState()

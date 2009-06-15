@@ -59,12 +59,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -113,6 +107,7 @@
     <Compile Include="Serialization\Result.cs" />
     <Compile Include="Serialization\TestSubjects\PrimitiveClass.cs" />
     <Compile Include="Serialization\XmlParser.cs" />
+    <Compile Include="StateMachine\EventException_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
     <Compile Include="TypedKey_Specs.cs" />

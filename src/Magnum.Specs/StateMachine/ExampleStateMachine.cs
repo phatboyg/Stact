@@ -72,10 +72,8 @@ namespace Magnum.Specs.StateMachine
 
 					During(WaitingForPayment,
 						When(PaymentSubmitted)
-							.Then(machine =>
-								{
-									// send payment data for approval
-								}).TransitionTo(WaitingForPaymentApproval),
+							.Call((machine) => machine.GetPaymentApproval())
+							.TransitionTo(WaitingForPaymentApproval),
 						When(OrderCanceled)
 							.Then(machine =>
 								{
@@ -133,6 +131,10 @@ namespace Magnum.Specs.StateMachine
 		public static Event CommentCardDiscarded { get; set; }
 
 		public Guid TransactionId { get; set; }
+
+		public void GetPaymentApproval()
+		{
+		}
 
 		public void SubmitOrder()
 		{
