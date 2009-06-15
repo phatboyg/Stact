@@ -24,6 +24,8 @@ namespace Magnum.StateMachine
 		private int _depth;
 		private StringBuilder _text = new StringBuilder();
 
+		private State CurrentState { get; set; }
+
 		public StateMachineInspector()
 			: base("Inspect")
 		{
@@ -81,7 +83,7 @@ namespace Magnum.StateMachine
 		public bool Inspect<T>(State<T> state)
 			where T : StateMachine<T>
 		{
-			Append(string.Format("During {0}", state.Name));
+			Append(string.Format("During {0}{1}", state.Name, state == CurrentState ? " (Current)" : ""));
 
 			return true;
 		}
@@ -171,9 +173,13 @@ namespace Magnum.StateMachine
 			_text.AppendFormat(text).AppendLine();
 		}
 
-		public static void Trace(IStateMachineInspectorSite machine)
+		public static void Trace<T>(T machine)
+			where T: StateMachine<T>
 		{
-			StateMachineInspector inspector = new StateMachineInspector();
+			var inspector = new StateMachineInspector
+				{
+					CurrentState = machine.CurrentState,
+				};
 
 			machine.Inspect(inspector);
 
