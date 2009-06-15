@@ -12,23 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.StateMachine
 {
-	using System;
 	using System.Collections.Generic;
 
 	public abstract class EventActionBase<T> :
 		StateEventAction<T>
 		where T : StateMachine<T>
 	{
-		public delegate void EventAction(T stateMachine, Event @event, object parameter);
-
-		public delegate void ExceptionAction(T stateMachine, Event @event, object parameter, Exception ex);
-
-		public delegate void StateMachineAction(T stateMachine);
-
-		public delegate void StateMachineEventAction(T stateMachine, Event @event);
-
-		public delegate void StateMachineEventParameterAction(T stateMachine, Event @event, object parameter);
-
 		protected EventActionBase(Event definedEvent)
 		{
 			DefinedEvent = definedEvent;

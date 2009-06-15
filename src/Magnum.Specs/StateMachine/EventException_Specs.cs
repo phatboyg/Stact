@@ -22,12 +22,17 @@ namespace Magnum.Specs.StateMachine
 		[Test]
 		public void An_exception_during_an_event_handler_should_be_handled()
 		{
+			var machine = new ExceptionalStateMachine();
+
+			machine.RaiseEvent(ExceptionalStateMachine.BadNews);
+
+			machine.CurrentState.ShouldEqual(ExceptionalStateMachine.Failed);
 		}
 	}
 
 
 	public class ExceptionalStateMachine :
-		StateMachine<ExampleStateMachine>
+		StateMachine<ExceptionalStateMachine>
 	{
 		static ExceptionalStateMachine()
 		{
@@ -38,13 +43,13 @@ namespace Magnum.Specs.StateMachine
 							.Then(s =>
 								{
 									// at this point, we need to fail miserably
-									throw new InvalidOperationException();
+									throw new InvalidOperationException("TIME TO DIE!");
 								},
 							      InCaseOf<InvalidOperationException>().TransitionTo(Failed),
-							      InCaseOf<ArgumentNullException>().TransitionTo(Initial)));
+							      InCaseOf<ArgumentNullException>().TransitionTo(Initial))
+							.TransitionTo(Completed));
 				});
 		}
-
 
 		public static State Initial { get; set; }
 		public static State Failed { get; set; }

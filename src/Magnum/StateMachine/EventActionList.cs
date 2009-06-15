@@ -22,11 +22,14 @@ namespace Magnum.StateMachine
 		IEnumerable<EventAction<T>>
 		where T : StateMachine<T>
 	{
-		private readonly List<EventAction<T>> _actions = new List<EventAction<T>>();
+		private readonly List<ActionItem> _actions = new List<ActionItem>();
 
 		public IEnumerator<EventAction<T>> GetEnumerator()
 		{
-			return _actions.GetEnumerator();
+			foreach (ActionItem item in _actions)
+			{
+				yield return item.Action;
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -34,47 +37,88 @@ namespace Magnum.StateMachine
 			return GetEnumerator();
 		}
 
-		public void Add(Action<T> action)
+		public void Add(Action<T> action, params ExceptionAction<T>[] exceptionActions)
 		{
-			_actions.Add(new LambdaAction<T>((x, e) => action(x)));
+			_actions.Add(new ActionItem
+				{
+					Action = new LambdaAction<T>(action),
+					ExceptionHandler = CreateExceptionHandlerForAction(exceptionActions),
+				});
 		}
 
-		public void Add(Action<T, BasicEvent<T>> action)
-		{
-			_actions.Add(new LambdaAction<T>(action));
-		}
-
-		public void Add<TData>(Action<T, TData> action)
+		public void Add<TData>(Action<T, TData> action, params ExceptionAction<T>[] exceptionActions)
 			where TData : class
 		{
-			_actions.Add(new LambdaAction<T, TData>((x, e, d) => action(x, d)));
+			_actions.Add(new ActionItem
+				{
+					Action = new LambdaAction<T, TData>((x, e, d) => action(x, d)),
+					ExceptionHandler = CreateExceptionHandlerForAction(exceptionActions),
+				});
 		}
 
-		public void Add<TData>(Action<T, DataEvent<T, TData>, TData> action)
+		public void Add<TData>(Action<T, DataEvent<T, TData>, TData> action, params ExceptionAction<T>[] exceptionActions)
 			where TData : class
 		{
-			_actions.Add(new LambdaAction<T, TData>(action));
+			_actions.Add(new ActionItem
+				{
+					Action = new LambdaAction<T, TData>(action),
+					ExceptionHandler = CreateExceptionHandlerForAction(exceptionActions),
+				});
 		}
 
-		public void Add(Expression<Action<T>> expression)
+		public void Add(Expression<Action<T>> expression, params ExceptionAction<T>[] exceptionActions)
 		{
-			_actions.Add(new ExpressionAction<T>(expression));
+			_actions.Add(new ActionItem
+				{
+					Action = new ExpressionAction<T>(expression),
+					ExceptionHandler = CreateExceptionHandlerForAction(exceptionActions),
+				});
 		}
 
-		public void Add<TData>(Expression<Action<T, TData>> expression) 
+		public void Add<TData>(Expression<Action<T, TData>> expression, params ExceptionAction<T>[] exceptionActions)
 			where TData : class
 		{
-			_actions.Add(new ExpressionAction<T,TData>(expression));
+			_actions.Add(new ActionItem
+				{
+					Action = new ExpressionAction<T, TData>(expression),
+					ExceptionHandler = CreateExceptionHandlerForAction(exceptionActions),
+				});
 		}
 
 		public void AddStateTransition(State state)
 		{
-			_actions.Add(new TransitionToAction<T>(state));
+			_actions.Add(new ActionItem
+				{
+					Action = new TransitionToAction<T>(state),
+					ExceptionHandler = CreateExceptionHandlerForAction(),
+				});
 		}
 
 		public void Execute(T stateMachine, Event @event, object parameter)
 		{
-			_actions.Each(action => action.Execute(stateMachine, @event, parameter));
+			foreach (ActionItem actionItem in _actions)
+			{
+				try
+				{
+					actionItem.Action.Execute(stateMachine, @event, parameter);
+				}
+				catch (Exception ex)
+				{
+					actionItem.ExceptionHandler.HandleException(stateMachine, @event, parameter, ex);
+					break;
+				}
+			}
+		}
+
+		public IEventActionExceptionHandler<T> CreateExceptionHandlerForAction(params ExceptionAction<T>[] exceptionActions)
+		{
+			return new ExceptionActionDictionary<T> {exceptionActions};
+		}
+
+		private class ActionItem
+		{
+			public EventAction<T> Action { get; set; }
+			public IEventActionExceptionHandler<T> ExceptionHandler { get; set; }
 		}
 	}
 }

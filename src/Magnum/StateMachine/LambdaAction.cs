@@ -18,16 +18,16 @@ namespace Magnum.StateMachine
 		EventAction<T>
 		where T : StateMachine<T>
 	{
-		private readonly Action<T, BasicEvent<T>> _action;
+		private readonly Action<T> _action;
 
-		public LambdaAction(Action<T, BasicEvent<T>> action)
+		public LambdaAction(Action<T> action)
 		{
 			_action = action;
 		}
 
 		public void Execute(T instance, Event @event, object parameter)
 		{
-			_action(instance, @event as BasicEvent<T>);
+			_action(instance);
 		}
 	}
 

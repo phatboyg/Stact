@@ -188,6 +188,7 @@
     <Compile Include="StateMachine\Event.cs" />
     <Compile Include="StateMachine\EventAction.cs" />
     <Compile Include="StateMachine\EventActionList.cs" />
+    <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />

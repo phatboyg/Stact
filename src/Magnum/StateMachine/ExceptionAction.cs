@@ -14,14 +14,35 @@ namespace Magnum.StateMachine
 {
 	using System;
 
+	public interface ExceptionAction<T>
+		where T : StateMachine<T>
+	{
+		Type ExceptionType { get; }
+		void Execute(T instance, Event @event, object parameter, Exception exception);
+	}
+
 	public class ExceptionAction<T, TException> :
-		EventActionBase<T>
+		EventActionBase<T>,
+		ExceptionAction<T>
 		where T : StateMachine<T>
 		where TException : Exception
 	{
 		public ExceptionAction() :
 			base(new DataEvent<T, TException>(typeof (TException).Name))
 		{
+		}
+
+		public void Execute(T instance, Event @event, object parameter, Exception exception)
+		{
+			if (ParameterMeetsCondition(parameter))
+			{
+				Actions.Execute(instance, @event, parameter);
+			}
+		}
+
+		public Type ExceptionType
+		{
+			get { return typeof (TException); }
 		}
 
 		public ExceptionAction<T, TException> Then(Action<T> action, params EventAction<T>[] exceptionActions)

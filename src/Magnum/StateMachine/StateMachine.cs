@@ -177,9 +177,7 @@ namespace Magnum.StateMachine
 		{
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
-			var result = new BasicEventAction<T>(eevent);
-
-			return result;
+			return new BasicEventAction<T>(eevent);
 		}
 
 		/// <summary>
@@ -191,17 +189,13 @@ namespace Magnum.StateMachine
 		{
 			DataEvent<T, TData> eevent = DataEvent<T, TData>.GetEvent(raised);
 
-			var result = new DataEventAction<T, TData>(eevent);
-
-			return result;
+			return new DataEventAction<T, TData>(eevent);
 		}
 
 		protected static ExceptionAction<T,TException> InCaseOf<TException>() 
 			where TException : Exception
 		{
-			var result = new ExceptionAction<T, TException>();
-
-			return result;
+			return new ExceptionAction<T, TException>();
 		}
 
 		/// <summary>

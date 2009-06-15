@@ -38,33 +38,27 @@ namespace Magnum.StateMachine
 			return this;
 		}
 
-		public DataEventAction<T, TData> Then(Action<T> action, params EventAction<T>[] exceptionActions)
+		public DataEventAction<T, TData> Then(Action<T> action, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(action);
+			Actions.Add(action, exceptionActions);
 			return this;
 		}
 
-		public DataEventAction<T, TData> Then(Action<T, TData> action, params EventAction<T>[] exceptionActions)
+		public DataEventAction<T, TData> Then(Action<T, TData> action, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(action);
+			Actions.Add(action, exceptionActions);
 			return this;
 		}
 
-		public DataEventAction<T, TData> Then(Action<T, DataEvent<T, TData>, TData> action, params EventAction<T>[] exceptionActions)
+		public DataEventAction<T, TData> Call(Expression<Action<T>> expression, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(action);
+			Actions.Add(expression, exceptionActions);
 			return this;
 		}
 
-		public DataEventAction<T,TData> Call(Expression<Action<T>> expression, params EventAction<T>[] exceptionActions)
+		public DataEventAction<T, TData> Call(Expression<Action<T, TData>> expression, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(expression);
-			return this;
-		}
-
-		public DataEventAction<T,TData> Call(Expression<Action<T, TData>> expression, params EventAction<T>[] exceptionActions)
-		{
-			Actions.Add(expression);
+			Actions.Add(expression, exceptionActions);
 			return this;
 		}
 

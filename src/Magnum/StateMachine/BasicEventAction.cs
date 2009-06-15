@@ -24,21 +24,21 @@ namespace Magnum.StateMachine
 		{
 		}
 
-		public BasicEventAction<T> Then(Action<T> action, params EventAction<T>[] exceptionActions)
+		public BasicEventAction<T> Then(Action<T> action, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(action);
+			Actions.Add(action, exceptionActions);
 			return this;
 		}
 
-		public BasicEventAction<T> Then(Action<T, BasicEvent<T>> action, params EventAction<T>[] exceptionActions)
+		public BasicEventAction<T> Then(Action<T, BasicEvent<T>> action, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(action);
+			Actions.Add(action, exceptionActions);
 			return this;
 		}
 
-		public BasicEventAction<T> Call(Expression<Action<T>> expression, params EventAction<T>[] exceptionActions)
+		public BasicEventAction<T> Call(Expression<Action<T>> expression, params ExceptionAction<T>[] exceptionActions)
 		{
-			Actions.Add(expression);
+			Actions.Add(expression, exceptionActions);
 			return this;
 		}
 
