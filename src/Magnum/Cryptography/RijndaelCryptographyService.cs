@@ -3,6 +3,9 @@ using System.Text;
 
 namespace Magnum.Cryptography
 {
+    using System;
+    using System.IO;
+
     //http://www.developerfusion.co.uk/show/4647/4/
 
     public class RijndaelCryptographyService :
@@ -44,9 +47,23 @@ namespace Magnum.Cryptography
             _cipher.GenerateIV();
 
             ICryptoTransform t = _cipher.CreateEncryptor();
-            byte[] r = t.TransformFinalBlock(GetBytes(plainText), 0, GetBytes(plainText).Length);
+            var plainBytes = GetBytes(plainText);
+            var r = t.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+            var cipherString = GetCipherString(r);
 
-            return new EncryptionResult(GetString(r), _cipher.IV);
+            return new EncryptionResult(cipherString, _cipher.IV);
+        }
+
+        public EncryptionStreamResult Encrypt(Stream plainStream)
+        {
+            _cipher.GenerateIV();
+
+            ICryptoTransform t = _cipher.CreateEncryptor();
+            var plainBytes = GetBytes(plainStream);
+            var r = t.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+            var cipherStream = GetStream(r);
+
+            return new EncryptionStreamResult(cipherStream, _cipher.IV);
         }
 
         public string Decrypt(EncryptionResult cipherText)
@@ -54,21 +71,51 @@ namespace Magnum.Cryptography
             _cipher.IV = cipherText.Iv;
 
             ICryptoTransform t = _cipher.CreateDecryptor();
-            byte[] cipherBytes = GetBytes(cipherText.CipherText);
+            byte[] cipherBytes = GetCipherBytes(cipherText.CipherText);
             byte[] r = t.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
 
             return GetString(r);
         }
 
-        string GetString(byte[] b)
+        public Stream Decrypt(EncryptionStreamResult cipherStream)
         {
-            return Encoding.Default.GetString(b);
+            _cipher.IV = cipherStream.Iv;
+
+            ICryptoTransform t = _cipher.CreateDecryptor();
+            byte[] cipherBytes = GetBytes(cipherStream.CipherStream);
+            byte[] r = t.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+
+            return GetStream(r);
         }
 
+        string GetString(byte[] b)
+        {
+            return Encoding.UTF8.GetString(b);
+        }
+        string GetCipherString(byte[] b)
+        {
+            return Convert.ToBase64String(b);
+        }
+
+        Stream GetStream(byte[] b)
+        {
+            return new MemoryStream(b);
+        }
 
         byte[] GetBytes(string s)
         {
-            return Encoding.Default.GetBytes(s);
+            return Encoding.UTF8.GetBytes(s);
+        }
+        byte[] GetCipherBytes(string s)
+        {
+            return Convert.FromBase64String(s);
+        }
+
+        byte[] GetBytes(Stream s)
+        {
+            var bytes = new byte[s.Length];
+            s.Read(bytes, 0, bytes.Length);
+            return bytes;
         }
 
         public void Dispose()
