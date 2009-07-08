@@ -10,18 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Cryptography
+namespace Magnum.StreamExtensions
 {
-	using System;
-	using System.IO;
+    using System.IO;
 
-	public interface ICryptographyService :
-		IDisposable
-	{
-		EncryptedText Encrypt(string clearText);
-		string Decrypt(EncryptedText cipherText);
+    public static class ExtensionsToStream
+    {
+        public static byte[] ReadToEnd(this Stream stream)
+        {
+            using (var content = new MemoryStream())
+            {
+                var buffer = new byte[4096];
 
-		EncryptedStream Encrypt(Stream clearStream);
-		Stream Decrypt(EncryptedStream cipherStream);
-	}
+                int read = stream.Read(buffer, 0, 4096);
+                while (read > 0)
+                {
+                    content.Write(buffer, 0, read);
+
+                    read = stream.Read(buffer, 0, 4096);
+                }
+
+                return content.ToArray();
+            }
+        }
+    }
 }

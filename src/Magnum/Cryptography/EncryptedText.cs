@@ -12,16 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Cryptography
 {
-	using System;
-	using System.IO;
+    using System;
 
-	public interface ICryptographyService :
-		IDisposable
-	{
-		EncryptedText Encrypt(string clearText);
-		string Decrypt(EncryptedText cipherText);
+    public class EncryptedText
+    {
+        public EncryptedText(byte[] cipherBytes, byte[] iv)
+        {
+            CipherText = Convert.ToBase64String(cipherBytes);
+            Iv = iv;
+        }
 
-		EncryptedStream Encrypt(Stream clearStream);
-		Stream Decrypt(EncryptedStream cipherStream);
-	}
+        public string CipherText { get; private set; }
+        public byte[] Iv { get; private set; }
+
+        public byte[] GetBytes()
+        {
+            return Convert.FromBase64String(CipherText);
+        }
+    }
 }

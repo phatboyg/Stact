@@ -132,7 +132,8 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="Cryptography\EncryptionResult.cs" />
+    <Compile Include="Cryptography\EncryptedText.cs" />
+    <Compile Include="Cryptography\EncryptedStream.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
     <Compile Include="Data\NullTransaction.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
+    <Compile Include="StreamExtensions\ExtensionsToStream.cs" />
     <Compile Include="Threading\AsyncExecutor.cs" />
     <Compile Include="Threading\AsyncResult.cs" />
     <Compile Include="Threading\IAsyncExecutor.cs" />
