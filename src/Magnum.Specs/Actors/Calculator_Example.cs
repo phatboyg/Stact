@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actors
 {
 	using System.Diagnostics;
 	using Magnum.Actors.CommandQueues;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class Calculator_Example

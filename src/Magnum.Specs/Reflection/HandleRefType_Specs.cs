@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Reflection
 {
     using Magnum.Specs;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class HandleRefType_Specs :

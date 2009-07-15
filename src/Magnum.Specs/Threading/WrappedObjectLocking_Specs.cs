@@ -15,7 +15,7 @@ namespace Magnum.Specs.Threading
     using System.Threading;
     using Magnum.DateTimeExtensions;
     using Magnum.Threading;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class WrappedObjectLocking_Specs

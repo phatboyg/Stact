@@ -2,7 +2,7 @@ namespace Magnum.Specs.Calendar
 {
     using System;
     using Magnum.Calendar;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class IsHoliday_Specs

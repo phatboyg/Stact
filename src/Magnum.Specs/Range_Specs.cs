@@ -16,9 +16,8 @@ namespace Magnum.Specs
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using Common;
-    using Magnum.DateTimeExtensions;
-    using MbUnit.Framework;
+    using DateTimeExtensions;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_a_range_is_specified
@@ -89,7 +88,6 @@ namespace Magnum.Specs
             foreach (int value in range.Forward(step => step + 1).Where(x => !exclude.Contains(x)))
             {
                 Debug.WriteLine(value.ToString());
-				
             }
 
             Assert.AreEqual(7, range.Forward(step => step + 1).Where(x => !exclude.Contains(x)).Count());

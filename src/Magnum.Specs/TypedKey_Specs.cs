@@ -13,8 +13,7 @@
 namespace Magnum.Specs
 {
     using System.Collections;
-    using Common;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class TypedKey_Specs

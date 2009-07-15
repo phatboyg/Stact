@@ -16,7 +16,7 @@ namespace Magnum.Specs.Actors
 	using System.Threading;
 	using Magnum.Actors.CommandQueues;
 	using Magnum.Actors.Schedulers;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class ThreadActionScheduler_Specs

@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Threading
 {
     using Magnum.Threading;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class UpgradeableLock_Specs

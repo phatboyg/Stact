@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Monads
 {
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class TypeParser_Specs

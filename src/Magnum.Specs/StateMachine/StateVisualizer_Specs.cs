@@ -13,7 +13,7 @@
 namespace Magnum.Specs.StateMachine
 {
     using Magnum.StateMachine;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class StateVisualizer_Specs

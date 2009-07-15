@@ -1,7 +1,7 @@
 namespace Magnum.Specs.Extensions
 {
 	using InterfaceExtensions;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class ExtensionsToInterfaces_Specs

@@ -15,7 +15,7 @@ namespace Magnum.Specs.Threading
     using System;
     using System.Threading;
     using Magnum.DateTimeExtensions;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class DeferFor_Specs

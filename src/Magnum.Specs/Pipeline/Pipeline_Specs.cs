@@ -10,9 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace FunctionalBits.Pipeline
+namespace Magnum.Specs.Pipeline
 {
-    using MbUnit.Framework;
+    using FunctionalBits.Pipeline;
+    using NUnit.Framework;
 
     [TestFixture]
     public class Pipeline_Specs
@@ -23,24 +24,20 @@ namespace FunctionalBits.Pipeline
         }
     }
 
-
     public class ClaimModified :
         IDomainEvent
     {
         public string Text { get; set; }
     }
 
-
     public interface IDomainEvent
     {
     }
-
 
     public class RecipientListVisitor<T> :
         PipelineVisitor
     {
     }
-
 
     public static class PipelineExtensionMethods
     {

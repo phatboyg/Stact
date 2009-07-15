@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_transmogrifying_an_object :
@@ -97,7 +97,7 @@ namespace Magnum.Specs.Reflection
 
 namespace Magnum.Common.Tests.Reflection
 {
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     namespace Different
     {

@@ -13,7 +13,7 @@
 namespace Magnum.Specs
 {
     using System;
-    using MbUnit.Framework;
+    using NUnit.Framework;
     using Rhino.Mocks;
 
     [TestFixture]

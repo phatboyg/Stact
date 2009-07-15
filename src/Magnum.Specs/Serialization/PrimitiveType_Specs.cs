@@ -9,7 +9,7 @@ namespace Magnum.Specs.Serialization
 	using System.Xml;
 	using Magnum.Monads;
 	using Magnum.Reflection;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 	using TestSubjects;
 
 	[TestFixture]

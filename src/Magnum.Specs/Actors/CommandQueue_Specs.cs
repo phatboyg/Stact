@@ -16,7 +16,7 @@ namespace Magnum.Specs.Actors
 	using System.Threading;
 	using Magnum.Actors.CommandQueues;
 	using Magnum.Actors.Exceptions;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 	using Rhino.Mocks;
 
 	[TestFixture]

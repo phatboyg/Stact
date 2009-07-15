@@ -15,7 +15,7 @@ namespace Magnum.Specs
     using System;
     using System.Collections.Generic;
     using Magnum.Reflection;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_using_a_created_delegate_to_retrieve_an_object_value

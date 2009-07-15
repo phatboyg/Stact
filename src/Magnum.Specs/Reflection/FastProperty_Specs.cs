@@ -3,7 +3,7 @@ namespace Magnum.Specs.Reflection
 	using System.Linq;
 	using System.Reflection;
 	using Magnum.Reflection;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class FastProperty_Specs

@@ -20,7 +20,7 @@ namespace Magnum.Specs.Reflection
     using System.Runtime.Serialization.Formatters.Binary;
     using Common;
     using Magnum.Serialization;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_serializing_an_object :

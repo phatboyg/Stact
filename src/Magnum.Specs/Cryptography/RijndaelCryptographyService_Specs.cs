@@ -16,7 +16,7 @@ namespace Magnum.Specs.Cryptography
     using System.IO;
     using System.Text;
     using Magnum.Cryptography;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class RijndaelCryptographyService_Specs

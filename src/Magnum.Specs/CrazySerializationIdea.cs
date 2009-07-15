@@ -18,7 +18,7 @@ namespace Magnum.Specs
     using System.Reflection;
     using System.Runtime.Serialization;
     using System.Text;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class CrazySerializationIdea

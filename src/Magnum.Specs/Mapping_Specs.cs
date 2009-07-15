@@ -13,7 +13,7 @@
 namespace Magnum.Specs
 {
     using Common;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_mapping_an_object_to_an_object

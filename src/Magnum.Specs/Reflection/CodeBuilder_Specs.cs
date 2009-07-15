@@ -14,7 +14,7 @@ namespace Magnum.Specs.Reflection
 {
     using System;
     using Magnum.Serialization;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_building_a_delegate_using_lambdas :

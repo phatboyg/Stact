@@ -4,7 +4,7 @@ namespace Magnum.Common.Specs.Cryptography
     using System.Diagnostics;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class PublicKeyCrypto

@@ -14,7 +14,7 @@ namespace Magnum.Specs.Data
 {
     using System.Data;
     using Magnum.Data;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class UnitOfWork_Specs

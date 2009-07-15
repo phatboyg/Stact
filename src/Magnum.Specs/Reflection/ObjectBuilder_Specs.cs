@@ -14,7 +14,7 @@ namespace Magnum.Specs.Reflection
 {
 	using System;
 	using Magnum.Reflection;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class When_creating_an_object_using_the_object_builder

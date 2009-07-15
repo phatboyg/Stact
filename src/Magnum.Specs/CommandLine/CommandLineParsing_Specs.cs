@@ -1,7 +1,7 @@
 namespace Magnum.Specs.CommandLine
 {
     using Magnum.CommandLine;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     public class CommandLineParsing_Specs
     {

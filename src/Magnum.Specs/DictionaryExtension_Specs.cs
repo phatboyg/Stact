@@ -15,7 +15,7 @@ namespace Magnum.Specs
     using System;
     using System.Collections.Generic;
     using Magnum.CollectionExtensions;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_retrieving_an_item_from_the_dictionary

@@ -16,7 +16,7 @@ namespace Magnum.Specs.Reflection
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using Magnum.Reflection;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class When_invoking_a_generic_method

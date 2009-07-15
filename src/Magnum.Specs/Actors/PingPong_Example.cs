@@ -16,7 +16,7 @@ namespace Magnum.Specs.Actors
 	using System.Threading;
 	using Magnum.Actors;
 	using Magnum.Actors.CommandQueues;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class PingPong_Example

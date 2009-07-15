@@ -15,7 +15,7 @@ namespace Magnum.Specs.Reflection
     using System.Collections;
     using System.Collections.Generic;
     using Magnum.Reflection;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class FastCollection_Specs

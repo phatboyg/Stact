@@ -14,7 +14,7 @@ namespace Magnum.Specs
 {
     using System;
     using Magnum.DateTimeExtensions;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class DateExtensionSpecifications

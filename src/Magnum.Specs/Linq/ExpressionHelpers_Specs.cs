@@ -14,7 +14,7 @@ namespace Magnum.Specs.Linq
 {
     using System;
     using System.Linq.Expressions;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class ExpressionHelpers_Specs

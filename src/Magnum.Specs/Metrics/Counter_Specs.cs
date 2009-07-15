@@ -15,7 +15,7 @@ namespace Magnum.Specs.Metrics
     using System;
     using System.Diagnostics;
     using Magnum.Metrics.Monitor;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class Counter_Specs
@@ -67,7 +67,7 @@ namespace Magnum.Specs.Metrics
             Assert.AreEqual(Environment.ProcessorCount, monitor.ProcessorCount);
             //	Assert.AreEqual(Process.GetCurrentProcess().WorkingSet64 >> 20, monitor.MemoryUsed);
             Assert.AreEqual(Process.GetCurrentProcess().Threads.Count, monitor.ThreadCount);
-            Assert.GreaterThanOrEqualTo(Process.GetCurrentProcess().TotalProcessorTime, monitor.ProcessorTimeUsed);
+            Assert.GreaterOrEqual(Process.GetCurrentProcess().TotalProcessorTime, monitor.ProcessorTimeUsed);
         }
 
         [Test]

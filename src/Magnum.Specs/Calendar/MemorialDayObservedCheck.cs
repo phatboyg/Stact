@@ -14,7 +14,7 @@ namespace Magnum.Specs.Calendar
 {
     using System;
     using Magnum.Calendar.Holidays;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class MemorialDayObservedCheckTest

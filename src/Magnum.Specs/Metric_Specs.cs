@@ -14,7 +14,7 @@ namespace Magnum.Specs
 {
     using Common;
     using log4net;
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class When_tracking_metrics_on_a_function

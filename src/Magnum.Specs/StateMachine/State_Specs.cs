@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.StateMachine
 {
-    using MbUnit.Framework;
+    using NUnit.Framework;
 
     [TestFixture]
     public class State_Specs

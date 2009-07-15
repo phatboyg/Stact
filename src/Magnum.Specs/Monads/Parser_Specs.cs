@@ -15,7 +15,7 @@ namespace Magnum.Specs.Monads
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class Parser_Specs

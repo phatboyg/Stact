@@ -21,7 +21,7 @@ namespace Magnum.Specs.Threading
     using System.Threading;
     using DateTimeExtensions;
     using Magnum.Monads;
-    using MbUnit.Framework;
+    using NUnit.Framework;
     using Monads;
 
     [TestFixture]

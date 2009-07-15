@@ -19,7 +19,7 @@ namespace Magnum.Specs.Actors
 	using Magnum.Actors.Channels;
 	using Magnum.Actors.CommandQueues;
 	using Magnum.Actors.Schedulers;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class Publishing_a_message_on_a_channel

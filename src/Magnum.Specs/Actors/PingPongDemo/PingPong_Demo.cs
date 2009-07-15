@@ -15,7 +15,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 	using System.Diagnostics;
 	using System.Threading;
 	using Magnum.Actors.Schedulers;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class PingPong_Demo
