@@ -96,6 +96,8 @@
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
+    <Compile Include="Pipeline\Pipeline_Specs.cs" />
+    <Compile Include="Pipeline\Trace_Specs.cs" />
     <Compile Include="Reflection\ExtensionsToGenericTypes.cs" />
     <Compile Include="Reflection\FastProperty_Specs.cs" />
     <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
