@@ -12,15 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Pipeline
 {
-    using FunctionalBits.Pipeline;
+    using System;
+    using System.Threading;
+    using Magnum.Pipeline.Segments;
+    using Magnum.Pipeline.Visitors;
     using NUnit.Framework;
 
     [TestFixture]
-    public class Pipeline_Specs
+    public class Subscribing_to_the_pipe
     {
         [Test]
-        public void First()
+        public void Should_result_in_an_expression_being_called()
         {
+            ManualResetEvent called = new ManualResetEvent(false);
+
+            var consumer = PipeSegment.Consumer<ClaimModified>(message => { called.Set(); });
+
+            var recipients = new[] {consumer};
+
+            var recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
+
+            new TracePipeVisitor().Trace(recipientList);
+
+            recipientList.Send(new ClaimModified());
+
+            Assert.IsTrue(called.WaitOne(TimeSpan.Zero, false));
         }
     }
 
@@ -35,20 +51,7 @@ namespace Magnum.Specs.Pipeline
     }
 
     public class RecipientListVisitor<T> :
-        PipelineVisitor
+        AbstractPipeVisitor
     {
-    }
-
-    public static class PipelineExtensionMethods
-    {
-        public static IPipeline Subscribe<T>(this IPipeline pipeline, MessageConsumer<T> consumer, out Unsubscriber unsubscriber)
-        {
-            unsubscriber = () => { };
-
-//            new RecipientListVisitor<T>(recipientList => recipientList.Add(consumer));
-
-
-            return pipeline;
-        }
     }
 }

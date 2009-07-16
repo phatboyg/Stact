@@ -10,8 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline
+namespace Magnum
 {
-    public delegate void MessageConsumer<T>(T message)
-        where T : class;
+	using System;
+	using System.Collections.Generic;
+
+	public static class ExtensionMethods
+	{
+		public static IEnumerable<T> Each<T>(this IEnumerable<T> collection, Action<T> callback)
+		{
+			foreach (T item in collection)
+			{
+				callback(item);
+			}
+
+			return collection;
+		}
+	}
 }

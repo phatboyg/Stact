@@ -18,7 +18,6 @@ namespace Magnum.StateMachine
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Runtime.Serialization;
-	using Collections;
 
     [DebuggerDisplay("Current State = {CurrentState.Name}")]
 	public class StateMachine<T> :
@@ -87,7 +86,7 @@ namespace Magnum.StateMachine
 		}
 
 		/// <summary>
-		/// Raise an event within the current state
+		/// Send an event within the current state
 		/// </summary>
 		/// <param name="raised">The event to raise</param>
 		public virtual void RaiseEvent(Event raised)
@@ -98,7 +97,7 @@ namespace Magnum.StateMachine
 		}
 
 		/// <summary>
-		/// Raise an event within the current state passing the data associated with the event
+		/// Send an event within the current state passing the data associated with the event
 		/// </summary>
 		/// <typeparam name="TData">The type of data, must match the data type expected by the event</typeparam>
 		/// <param name="raised">The event to raise</param>

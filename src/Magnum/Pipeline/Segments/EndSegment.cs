@@ -10,8 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline
+namespace Magnum.Pipeline.Segments
 {
-    public delegate void MessageConsumer<T>(T message)
-        where T : class;
+    using System;
+
+    public class EndSegment :
+        PipeSegment
+    {
+        public EndSegment(Type messageType)
+            : base(PipeSegmentType.End, messageType)
+        {
+        }
+    }
 }

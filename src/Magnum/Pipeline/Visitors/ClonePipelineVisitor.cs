@@ -10,8 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline
+namespace Magnum.Pipeline.Visitors
 {
-    public delegate void MessageConsumer<T>(T message)
-        where T : class;
+	public class ClonePipelineVisitor :
+		AbstractPipeVisitor
+	{
+		public Pipe Clone(Pipe pipe)
+		{
+			return base.Visit(pipe);
+		}
+	}
 }

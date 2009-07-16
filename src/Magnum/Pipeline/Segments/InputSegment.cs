@@ -10,8 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline
+namespace Magnum.Pipeline.Segments
 {
-    public delegate void MessageConsumer<T>(T message)
-        where T : class;
+	using System.Collections.Generic;
+
+	public class InputSegment :
+		PipeSegment
+	{
+		public InputSegment(Pipe pipe)
+			: base(PipeSegmentType.Input, pipe.MessageType)
+		{
+			Output = pipe;
+		}
+
+		public Pipe Output { get; private set; }
+
+		public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
+		{
+			return Output.Accept(message);
+		}
+	}
 }

@@ -12,6 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline
 {
-    public delegate void MessageConsumer<T>(T message)
-        where T : class;
+    public delegate void Unsubscriber(Pipe pipe);
 }
