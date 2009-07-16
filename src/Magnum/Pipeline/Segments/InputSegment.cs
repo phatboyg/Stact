@@ -12,22 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline.Segments
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
 
-	public class InputSegment :
-		PipeSegment
-	{
-		public InputSegment(Pipe pipe)
-			: base(PipeSegmentType.Input, pipe.MessageType)
-		{
-			Output = pipe;
-		}
+    public class InputSegment :
+        PipeSegment
+    {
+        public InputSegment(Pipe pipe)
+            : base(PipeSegmentType.Input, pipe.MessageType)
+        {
+            _output = pipe;
+        }
 
-		public Pipe Output { get; private set; }
+        private Pipe _output;
 
-		public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
-		{
-			return Output.Accept(message);
-		}
-	}
+        public Pipe Output
+        {
+            get { return _output; }
+        }
+
+        public void Extend(Pipe original, Pipe replacement)
+        {
+            Interlocked.CompareExchange(ref _output, replacement, original);
+            if (_output != replacement)
+            {
+                throw new InvalidOperationException("The pipeline has been modified since it was last requested");
+            }
+        }
+
+        public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
+        {
+            return _output.Accept(message);
+        }
+    }
 }

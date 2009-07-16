@@ -166,7 +166,12 @@
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
+    <Compile Include="Pipeline\ExtensionMethods.cs" />
+    <Compile Include="Pipeline\ISubscriptionScope.cs" />
+    <Compile Include="Pipeline\RecipientListBinder.cs" />
     <Compile Include="Pipeline\Segments\MessageConsumerSegment.cs" />
+    <Compile Include="Pipeline\SegmentUnbinder.cs" />
+    <Compile Include="Pipeline\SubscriptionScope.cs" />
     <Compile Include="Pipeline\Visitors\ClonePipelineVisitor.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Pipeline\Segments\EndSegment.cs" />

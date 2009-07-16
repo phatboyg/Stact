@@ -73,10 +73,12 @@ namespace Magnum.Pipeline.Visitors
             if (input == null)
                 return null;
 
-            Pipe pipe = Visit(input.Output);
-            if (pipe != input.Output)
+            var output = input.Output;
+
+            Pipe pipe = Visit(output);
+            if (pipe != output)
             {
-                return new InputSegment(pipe);
+                input.Extend(output, pipe);
             }
 
             return input;

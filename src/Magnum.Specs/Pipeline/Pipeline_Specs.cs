@@ -14,6 +14,7 @@ namespace Magnum.Specs.Pipeline
 {
     using System;
     using System.Threading;
+    using Magnum.Pipeline;
     using Magnum.Pipeline.Segments;
     using Magnum.Pipeline.Visitors;
     using NUnit.Framework;
@@ -40,6 +41,49 @@ namespace Magnum.Specs.Pipeline
         }
     }
 
+    [TestFixture]
+    public class Using_a_subscription_context
+    {
+        private Pipe _pipe;
+        private ManualResetEvent _received;
+
+        [SetUp]
+        public void Setup()
+        {
+            _received = new ManualResetEvent(false);
+
+            var recipients = new Pipe[] { };
+            var recipientList = PipeSegment.RecipientList<object>(recipients);
+            _pipe = PipeSegment.Input(recipientList);
+        }
+
+        [Test]
+        public void Should_subscribe_a_MessageConsumer_to_the_pipe()
+        {
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+
+                _pipe.Send(new ClaimModified());
+            }
+
+            Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
+        }
+
+        [Test]
+        public void Should_unsubscribe_a_MessageConsumer_from_the_pipe()
+        {
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+            }
+
+            _pipe.Send(new ClaimModified());
+
+            Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
+        }
+    }
+
     public class ClaimModified :
         IDomainEvent
     {
@@ -47,11 +91,6 @@ namespace Magnum.Specs.Pipeline
     }
 
     public interface IDomainEvent
-    {
-    }
-
-    public class RecipientListVisitor<T> :
-        AbstractPipeVisitor
     {
     }
 }
