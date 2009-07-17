@@ -24,17 +24,25 @@ namespace Magnum.Specs.Pipeline
         public void How_many_messages_can_the_pipe_send_per_second()
         {
             long count = 0;
+            long count2 = 0;
             long limit = 2500000;
 
             Pipe consumer = PipeSegment.Consumer<ClaimModified>(m => { count++; });
+            Pipe consumer2 = PipeSegment.Consumer<ClaimModified>(m => { count2++; });
 
-            var recipients = new[] {consumer};
+            var recipients = new[] {consumer, consumer2};
 
             Pipe recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
             Pipe filter = PipeSegment.Filter<object>(recipientList);
-            Pipe input = PipeSegment.Input(filter);
+            Pipe objectRecipientList = PipeSegment.RecipientList<object>(new[] { filter});
+            Pipe input = PipeSegment.Input(objectRecipientList);
 
             var message = new ClaimModified();
+
+            for (int i = 0; i < 100; i++)
+            {
+                input.Send(message);
+            }
 
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -45,6 +53,7 @@ namespace Magnum.Specs.Pipeline
 
             timer.Stop();
 
+            Trace.WriteLine("Received: " + (count + count2) + ", expected " + limit * 2);
             Trace.WriteLine("Elapsed Time: " + timer.ElapsedMilliseconds + "ms");
             Trace.WriteLine("Messages Per Second: " + limit*1000/timer.ElapsedMilliseconds);
         }

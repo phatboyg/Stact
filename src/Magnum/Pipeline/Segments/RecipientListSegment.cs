@@ -29,9 +29,6 @@ namespace Magnum.Pipeline.Segments
 
         public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
         {
-            if (!MessageType.IsAssignableFrom(typeof (T)))
-                yield break;
-
             for (int i = 0; i < Recipients.Length; i++)
             {
                 foreach (var consumer in Recipients[i].Accept(message))
