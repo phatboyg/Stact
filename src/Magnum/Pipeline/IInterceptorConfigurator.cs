@@ -12,13 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline
 {
-	public enum PipeSegmentType
-	{
-		End,
-		Input,
-		RecipientList,
-		Filter,
-	    MessageConsumer,
-	    Interceptor
-	}
+    using System;
+
+    public interface IInterceptorConfigurator<T>
+        where T : class
+    {
+        void BeforeEachMessage(Action action);
+        void BeforeEachMessage(MessageConsumer<T> action);
+
+        void AfterEachMessage(Action action);
+        void AfterEachMessage(MessageConsumer<T> action);
+    }
 }

@@ -40,6 +40,9 @@ namespace Magnum.Pipeline.Visitors
                 case PipeSegmentType.RecipientList:
                     return VisitRecipientList((RecipientListSegment) pipe);
 
+                    case PipeSegmentType.Interceptor:
+                    return VisitInterceptor((InterceptorSegment) pipe);
+
                 default:
                     throw new ArgumentException("The pipe node is not a known type: " + pipe.SegmentType,
                         "pipeline");
@@ -68,6 +71,20 @@ namespace Magnum.Pipeline.Visitors
             return filter;
         }
 
+        protected virtual InterceptorSegment VisitInterceptor(InterceptorSegment interceptor)
+        {
+            if (interceptor == null)
+                return null;
+
+            Pipe output = Visit(interceptor.Output);
+            if (output != interceptor.Output)
+            {
+                return interceptor.Clone(output);
+            }
+
+            return interceptor;
+        }
+
         protected virtual InputSegment VisitInput(InputSegment input)
         {
             if (input == null)
@@ -78,7 +95,7 @@ namespace Magnum.Pipeline.Visitors
             Pipe pipe = Visit(output);
             if (pipe != output)
             {
-                input.Extend(output, pipe);
+                input.ReplaceOutput(output, pipe);
             }
 
             return input;

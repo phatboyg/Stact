@@ -167,8 +167,12 @@
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
     <Compile Include="Pipeline\ExtensionMethods.cs" />
+    <Compile Include="Pipeline\IInterceptorConfigurator.cs" />
+    <Compile Include="Pipeline\InlineBinder.cs" />
     <Compile Include="Pipeline\ISubscriptionScope.cs" />
     <Compile Include="Pipeline\RecipientListBinder.cs" />
+    <Compile Include="Pipeline\Segments\InterceptorConfigurator.cs" />
+    <Compile Include="Pipeline\Segments\InterceptorSegment.cs" />
     <Compile Include="Pipeline\Segments\MessageConsumerSegment.cs" />
     <Compile Include="Pipeline\SegmentUnbinder.cs" />
     <Compile Include="Pipeline\SubscriptionScope.cs" />

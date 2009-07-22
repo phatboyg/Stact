@@ -46,6 +46,13 @@ namespace Magnum.Pipeline.Visitors
 			return base.VisitFilter(filter);
 		}
 
+        protected override InterceptorSegment VisitInterceptor(InterceptorSegment interceptor)
+        {
+            WriteLine(interceptor);
+
+            return base.VisitInterceptor(interceptor);
+        }
+
         protected override MessageConsumerSegment VisitMessageConsumer(MessageConsumerSegment messageConsumer)
         {
             WriteLine(messageConsumer);

@@ -25,7 +25,7 @@ namespace Magnum.Specs.Pipeline
         [Test]
         public void Should_result_in_an_expression_being_called()
         {
-            ManualResetEvent called = new ManualResetEvent(false);
+            var called = new ManualResetEvent(false);
 
             var consumer = PipeSegment.Consumer<ClaimModified>(message => { called.Set(); });
 
@@ -58,7 +58,7 @@ namespace Magnum.Specs.Pipeline
         }
 
         [Test]
-        public void Should_subscribe_a_MessageConsumer_to_the_pipe()
+        public void Should_subscribe_a_message_consumer_to_the_pipe()
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
@@ -71,7 +71,7 @@ namespace Magnum.Specs.Pipeline
         }
 
         [Test]
-        public void Should_unsubscribe_a_MessageConsumer_from_the_pipe()
+        public void Should_unsubscribe_a_message_consumer_from_the_pipe()
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {

@@ -32,8 +32,11 @@ namespace Magnum.Pipeline.Segments
             get { return _output; }
         }
 
-        public void Extend(Pipe original, Pipe replacement)
+        public void ReplaceOutput(Pipe original, Pipe replacement)
         {
+            if (original.MessageType != replacement.MessageType)
+                throw new ArgumentException("The replacement pipe is not of the same message type");
+
             Interlocked.CompareExchange(ref _output, replacement, original);
             if (_output != replacement)
             {

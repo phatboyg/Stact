@@ -64,5 +64,19 @@ namespace Magnum.Pipeline
 
             _disposables.Add(segment);
         }
+
+        public void Intercept<T>(Action<IInterceptorConfigurator<T>> configureAction)
+            where T : class
+        {
+            var binder = new InlineBinder(typeof (T), x =>
+                {
+                    var interceptor = PipeSegment.Interceptor(x, configureAction);
+                    _disposables.Add(interceptor);
+
+                    return interceptor;
+                });
+
+            binder.Bind(_pipe);
+        }
     }
 }

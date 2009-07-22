@@ -83,5 +83,15 @@ namespace Magnum.Pipeline.Segments
         {
             return new MessageConsumerSegment<T>(consumer);
         }
+
+        public static InterceptorSegment Interceptor<T>(Pipe pipe, Action<IInterceptorConfigurator<T>> configureAction)
+            where T : class
+        {
+            var configurator = new InterceptorConfigurator<T>();
+
+            configureAction(configurator);
+
+            return new InterceptorSegment<T>(pipe, configurator.BeforeEachMessageDelegate, configurator.AfterEachMessageDelegate);
+        }
     }
 }
