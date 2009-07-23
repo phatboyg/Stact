@@ -27,7 +27,7 @@ namespace Magnum.Specs.Pipeline
         {
             var called = new ManualResetEvent(false);
 
-            var consumer = PipeSegment.Consumer<ClaimModified>(message => { called.Set(); });
+            var consumer = PipeSegment.Consumer<ClaimModified>(message => called.Set());
 
             var recipients = new[] {consumer};
 
@@ -62,7 +62,7 @@ namespace Magnum.Specs.Pipeline
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
-                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+                scope.Subscribe<ClaimModified>(message => _received.Set());
 
                 _pipe.Send(new ClaimModified());
             }
@@ -75,7 +75,7 @@ namespace Magnum.Specs.Pipeline
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
-                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+                scope.Subscribe<ClaimModified>(message => _received.Set());
             }
 
             _pipe.Send(new ClaimModified());
@@ -103,7 +103,7 @@ namespace Magnum.Specs.Pipeline
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
-                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+                scope.Subscribe<ClaimModified>(message => _received.Set());
 
                 _pipe.Send(new ClaimModified());
             }
@@ -116,7 +116,7 @@ namespace Magnum.Specs.Pipeline
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
-                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+                scope.Subscribe<ClaimModified>(message => _received.Set());
             }
 
             _pipe.Send(new ClaimModified());
@@ -126,6 +126,12 @@ namespace Magnum.Specs.Pipeline
     }
 
     public class ClaimModified :
+        IDomainEvent
+    {
+        public string Text { get; set; }
+    }
+
+    public class ClaimCreated :
         IDomainEvent
     {
         public string Text { get; set; }

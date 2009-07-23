@@ -19,14 +19,14 @@ namespace Magnum.Pipeline
     /// <summary>
     /// Inserts a segment into the pipeline as an inline filter
     /// </summary>
-    public class InlineBinder :
+    public class InterceptionBinder :
         AbstractPipeVisitor
     {
         private readonly Type _messageType;
         private readonly Func<Pipe, Pipe> _buildSegment;
         private bool _found;
 
-        public InlineBinder(Type messageType, Func<Pipe,Pipe> buildSegment)
+        public InterceptionBinder(Type messageType, Func<Pipe,Pipe> buildSegment)
         {
             _messageType = messageType;
             _buildSegment = buildSegment;

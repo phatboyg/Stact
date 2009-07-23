@@ -1,0 +1,22 @@
+<TemplatesExport family="Live Templates">
+  <Template uid="67d591af-2cfe-42a3-abd9-53916573ac10" shortcut="gm" description="Generate Mock" text="MockRepository.GenerateMock&lt;$INT$&gt;();$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Expression" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="INT" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="d358e449-17c2-4022-8959-edea50795e4c" shortcut="ntest" description="NUnit Test" text="[Test]&#xD;&#xA;public void $NAME$()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+</TemplatesExport>

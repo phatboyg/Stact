@@ -14,18 +14,17 @@ namespace Magnum.Pipeline
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using Segments;
     using Visitors;
 
-    public class RecipientListBinder :
+    public class SubscriptionBinder :
         AbstractPipeVisitor
     {
         private readonly Type _messageType;
         private readonly Pipe _segment;
-        private bool _found;
+        private bool _bound;
 
-        public RecipientListBinder(Pipe segment)
+        public SubscriptionBinder(Pipe segment)
         {
             _messageType = segment.MessageType;
             _segment = segment;
@@ -35,10 +34,8 @@ namespace Magnum.Pipeline
         {
             base.Visit(pipe);
 
-            if (_found == false)
-            {
-                throw new PipelineException("Could not bind pipe: " + pipe.SegmentType + "(" + pipe.MessageType + ")");
-            }
+            if (!_bound)
+                throw new PipelineException("Could not bind pipe: " + _segment.SegmentType + "(" + _segment.MessageType + ")");
         }
 
         protected override Pipe VisitInput(InputSegment input)
@@ -48,17 +45,41 @@ namespace Magnum.Pipeline
             if (pipe != input)
                 throw new InvalidOperationException("The input should never change");
 
-            if (!_found && input.MessageType == typeof (object))
+            if(!_bound && input.MessageType == _messageType)
             {
-                var recipients = input.Output.SegmentType == PipeSegmentType.End ? new Pipe[] {} : new[] {input.Output};
-                Pipe list = PipeSegment.RecipientList(typeof (object), recipients);
+                CreateRecipientList(input, _messageType);
+            }
 
-                Pipe result = Visit(list);
-
-                input.ReplaceOutput(input.Output, result);
+            if (!_bound && input.MessageType == typeof (object))
+            {
+                CreateRecipientList(input, typeof (object));
             }
 
             return input;
+        }
+
+        protected override Pipe VisitEnd(EndSegment end)
+        {
+            if (end == null)
+                return null;
+
+            if(end.MessageType == _messageType)
+            {
+                _bound = true;
+                return _segment;
+            }
+
+            return base.VisitEnd(end);
+        }
+
+        private void CreateRecipientList(InputSegment input, Type messageType)
+        {
+            var recipients = input.Output.SegmentType == PipeSegmentType.End ? new Pipe[] {} : new[] {input.Output};
+
+            Pipe list = PipeSegment.RecipientList(messageType, recipients);
+            Pipe result = Visit(list);
+
+            input.ReplaceOutput(input.Output, result);
         }
 
         protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
@@ -77,7 +98,7 @@ namespace Magnum.Pipeline
             IList<Pipe> recipients = VisitRecipients(recipientList.Recipients);
 
             recipients.Add(_segment);
-            _found = true;
+            _bound = true;
 
             return new RecipientListSegment(recipientList.MessageType, recipients);
         }
@@ -88,7 +109,7 @@ namespace Magnum.Pipeline
             if (result == null)
                 return null;
 
-            if (_found)
+            if (_bound)
                 return result;
 
             Pipe list = PipeSegment.RecipientList(_segment.MessageType, new[] {_segment});
@@ -97,7 +118,7 @@ namespace Magnum.Pipeline
             IList<Pipe> recipients = new List<Pipe>(result.Recipients);
             recipients.Add(filter);
 
-            _found = true;
+            _bound = true;
 
             return new RecipientListSegment(recipientList.MessageType, recipients);
         }

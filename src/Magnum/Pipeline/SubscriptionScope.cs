@@ -59,7 +59,7 @@ namespace Magnum.Pipeline
         {
             Pipe segment = PipeSegment.Consumer(consumer);
 
-            var binder = new RecipientListBinder(segment);
+            var binder = new SubscriptionBinder(segment);
             binder.Bind(_pipe);
 
             _disposables.Add(segment);
@@ -68,7 +68,7 @@ namespace Magnum.Pipeline
         public void Intercept<T>(Action<IInterceptorConfigurator<T>> configureAction)
             where T : class
         {
-            var binder = new InlineBinder(typeof (T), x =>
+            var binder = new InterceptionBinder(typeof (T), x =>
                 {
                     var interceptor = PipeSegment.Interceptor(x, configureAction);
                     _disposables.Add(interceptor);
