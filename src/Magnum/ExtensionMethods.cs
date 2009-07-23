@@ -17,6 +17,13 @@ namespace Magnum
 
 	public static class ExtensionMethods
 	{
+        /// <summary>
+        /// Enumerates a collection, calling the specified action for each entry in the collection
+        /// </summary>
+        /// <typeparam name="T">The type of the enumeration</typeparam>
+        /// <param name="collection">The collection to enumerate</param>
+        /// <param name="callback">The action to call for each entry in the collection</param>
+        /// <returns>The collection that was enumerated</returns>
 		public static IEnumerable<T> Each<T>(this IEnumerable<T> collection, Action<T> callback)
 		{
 			foreach (T item in collection)
@@ -26,5 +33,24 @@ namespace Magnum
 
 			return collection;
 		}
+
+        /// <summary>
+        /// Wraps an object that implements IDisposable in an enumeration to make it safe for use in LINQ expressions
+        /// </summary>
+        /// <typeparam name="T">The type of the object, which must implement IDisposable</typeparam>
+        /// <param name="target">The target to wrap</param>
+        /// <returns>An enumeration with a single entry equal to the target</returns>
+        public static IEnumerable<T> AutoDispose<T>(this T target) 
+            where T : IDisposable
+        {
+            try
+            {
+                yield return target;
+            }
+            finally
+            {
+                target.Dispose();
+            }
+        }
 	}
 }

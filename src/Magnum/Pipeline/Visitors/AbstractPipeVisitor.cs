@@ -40,7 +40,7 @@ namespace Magnum.Pipeline.Visitors
                 case PipeSegmentType.RecipientList:
                     return VisitRecipientList((RecipientListSegment) pipe);
 
-                    case PipeSegmentType.Interceptor:
+                case PipeSegmentType.Interceptor:
                     return VisitInterceptor((InterceptorSegment) pipe);
 
                 default:
@@ -49,7 +49,7 @@ namespace Magnum.Pipeline.Visitors
             }
         }
 
-        protected virtual EndSegment VisitEnd(EndSegment end)
+        protected virtual Pipe VisitEnd(EndSegment end)
         {
             if (end == null)
                 return null;
@@ -57,7 +57,7 @@ namespace Magnum.Pipeline.Visitors
             return end;
         }
 
-        protected virtual FilterSegment VisitFilter(FilterSegment filter)
+        protected virtual Pipe VisitFilter(FilterSegment filter)
         {
             if (filter == null)
                 return null;
@@ -71,7 +71,7 @@ namespace Magnum.Pipeline.Visitors
             return filter;
         }
 
-        protected virtual InterceptorSegment VisitInterceptor(InterceptorSegment interceptor)
+        protected virtual Pipe VisitInterceptor(InterceptorSegment interceptor)
         {
             if (interceptor == null)
                 return null;
@@ -85,7 +85,7 @@ namespace Magnum.Pipeline.Visitors
             return interceptor;
         }
 
-        protected virtual InputSegment VisitInput(InputSegment input)
+        protected virtual Pipe VisitInput(InputSegment input)
         {
             if (input == null)
                 return null;
@@ -101,7 +101,7 @@ namespace Magnum.Pipeline.Visitors
             return input;
         }
 
-        protected virtual MessageConsumerSegment VisitMessageConsumer(MessageConsumerSegment messageConsumer)
+        protected virtual Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
         {
             if (messageConsumer == null)
                 return null;
@@ -109,7 +109,7 @@ namespace Magnum.Pipeline.Visitors
             return messageConsumer;
         }
 
-        protected virtual RecipientListSegment VisitRecipientList(RecipientListSegment recipientList)
+        protected virtual Pipe VisitRecipientList(RecipientListSegment recipientList)
         {
             if (recipientList == null)
                 return null;

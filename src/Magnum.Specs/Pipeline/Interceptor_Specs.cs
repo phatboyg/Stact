@@ -16,15 +16,14 @@ namespace Magnum.Specs.Pipeline
     using System.Threading;
     using Magnum.Pipeline;
     using Magnum.Pipeline.Segments;
-    using Magnum.Pipeline.Visitors;
     using NUnit.Framework;
 
     [TestFixture]
-    public class Interceptor_Specs
+    public class Given_an_empty_pipe
     {
-        private Pipe _pipe;
-        private ManualResetEvent _before;
-        private ManualResetEvent _after;
+        protected Pipe _pipe;
+        protected ManualResetEvent _before;
+        protected ManualResetEvent _after;
 
         [SetUp]
         public void Setup()
@@ -32,10 +31,22 @@ namespace Magnum.Specs.Pipeline
             _pipe = PipeSegment.Input(PipeSegment.End<object>());
             _before = new ManualResetEvent(false);
             _after = new ManualResetEvent(false);
+
+            EstablishContext();
         }
 
-        [Test]
-        public void FirstTestName()
+        protected virtual void EstablishContext()
+        {
+        }
+    }
+
+ 
+
+    [TestFixture]
+    public class Adding_an_interceptor_with_before_and_after_methods :
+        Given_an_empty_pipe
+    {
+        protected override void EstablishContext()
         {
             using (var scope = _pipe.NewSubscriptionScope())
             {
@@ -45,13 +56,99 @@ namespace Magnum.Specs.Pipeline
                         x.AfterEachMessage(message => _after.Set());
                     });
 
-                new TracePipeVisitor().Trace(_pipe);
+                _pipe.Send(new ClaimModified());
+            }
+        }
+
+        [Test]
+        public void Should_call_the_before_method()
+        {
+            Assert.IsTrue(_before.WaitOne(TimeSpan.Zero), "Before handler was not called");
+        }
+
+        [Test]
+        public void Should_call_the_after_method()
+        {
+            Assert.IsTrue(_after.WaitOne(TimeSpan.Zero), "After handler was not called");
+        }
+    }
+
+    [TestFixture]
+    public class Removing_an_interceptor :
+        Given_an_empty_pipe
+    {
+        protected override void EstablishContext()
+        {
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Intercept<object>(x =>
+                    {
+                        x.BeforeEachMessage(() => _before.Set());
+                        x.AfterEachMessage(message => _after.Set());
+                    });
+            }
+
+            _pipe.Send(new ClaimModified());
+        }
+
+        [Test]
+        public void Should_not_call_the_before_method()
+        {
+            Assert.IsFalse(_before.WaitOne(TimeSpan.Zero), "Before handler was not called");
+        }
+
+        [Test]
+        public void Should_not_call_the_after_method()
+        {
+            Assert.IsFalse(_after.WaitOne(TimeSpan.Zero), "After handler was not called");
+        }
+    }
+
+    [TestFixture]
+    public class Removing_an_interceptor_with_nested_scope :
+        Given_an_empty_pipe
+    {
+        protected ManualResetEvent _innerBefore;
+        protected ManualResetEvent _innerAfter;
+
+        protected override void EstablishContext()
+        {
+            _innerBefore = new ManualResetEvent(false);
+            _innerAfter = new ManualResetEvent(false);
+
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Intercept<object>(x =>
+                    {
+                        x.BeforeEachMessage(() => _before.Set());
+                        x.AfterEachMessage(message => _after.Set());
+                    });
+
+                using (var innerScope = _pipe.NewSubscriptionScope())
+                {
+                    innerScope.Intercept<object>(x =>
+                        {
+                            x.BeforeEachMessage(() => _innerBefore.Set());
+                            x.AfterEachMessage(message => _innerAfter.Set());
+                        });
+                }
 
                 _pipe.Send(new ClaimModified());
             }
+        }
 
+        [Test]
+        public void Should_not_call_the_before_method()
+        {
             Assert.IsTrue(_before.WaitOne(TimeSpan.Zero), "Before handler was not called");
+            Assert.IsFalse(_innerBefore.WaitOne(TimeSpan.Zero), "Before handler was not called");
+        }
+
+        [Test]
+        public void Should_not_call_the_after_method()
+        {
             Assert.IsTrue(_after.WaitOne(TimeSpan.Zero), "After handler was not called");
+            Assert.IsFalse(_innerAfter.WaitOne(TimeSpan.Zero), "After handler was not called");
         }
     }
 }

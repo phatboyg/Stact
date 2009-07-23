@@ -86,6 +86,7 @@
     <Compile Include="Monads\TypeParser_Specs.cs" />
     <Compile Include="Pipeline\Filter_Specs.cs" />
     <Compile Include="Pipeline\Interceptor_Specs.cs" />
+    <Compile Include="Pipeline\MoreInterceptor_Specs.cs" />
     <Compile Include="Pipeline\Pipeline_Specs.cs" />
     <Compile Include="Pipeline\Throughput_Specs.cs" />
     <Compile Include="Pipeline\Trace_Specs.cs" />

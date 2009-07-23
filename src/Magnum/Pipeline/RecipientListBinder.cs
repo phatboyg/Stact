@@ -14,6 +14,7 @@ namespace Magnum.Pipeline
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using Segments;
     using Visitors;
 
@@ -33,9 +34,34 @@ namespace Magnum.Pipeline
         public void Bind(Pipe pipe)
         {
             base.Visit(pipe);
+
+            if (_found == false)
+            {
+                throw new PipelineException("Could not bind pipe: " + pipe.SegmentType + "(" + pipe.MessageType + ")");
+            }
         }
 
-        protected override RecipientListSegment VisitRecipientList(RecipientListSegment recipientList)
+        protected override Pipe VisitInput(InputSegment input)
+        {
+            Pipe pipe = base.VisitInput(input);
+
+            if (pipe != input)
+                throw new InvalidOperationException("The input should never change");
+
+            if (!_found && input.MessageType == typeof (object))
+            {
+                var recipients = input.Output.SegmentType == PipeSegmentType.End ? new Pipe[] {} : new[] {input.Output};
+                Pipe list = PipeSegment.RecipientList(typeof (object), recipients);
+
+                Pipe result = Visit(list);
+
+                input.ReplaceOutput(input.Output, result);
+            }
+
+            return input;
+        }
+
+        protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
         {
             if (recipientList == null)
                 return null;
@@ -56,9 +82,12 @@ namespace Magnum.Pipeline
             return new RecipientListSegment(recipientList.MessageType, recipients);
         }
 
-        private RecipientListSegment VisitObjectRecipientList(RecipientListSegment recipientList)
+        private Pipe VisitObjectRecipientList(RecipientListSegment recipientList)
         {
-            var result = base.VisitRecipientList(recipientList);
+            var result = base.VisitRecipientList(recipientList) as RecipientListSegment;
+            if (result == null)
+                return null;
+
             if (_found)
                 return result;
 
@@ -73,7 +102,7 @@ namespace Magnum.Pipeline
             return new RecipientListSegment(recipientList.MessageType, recipients);
         }
 
-        private IList<Pipe> VisitRecipients(Pipe[] recipients)
+        private IList<Pipe> VisitRecipients(IEnumerable<Pipe> recipients)
         {
             IList<Pipe> newRecipients = new List<Pipe>();
 

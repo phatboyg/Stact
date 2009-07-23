@@ -84,6 +84,47 @@ namespace Magnum.Specs.Pipeline
         }
     }
 
+    [TestFixture]
+    public class Starting_with_an_empty_pipeline
+    {
+        private Pipe _pipe;
+        private ManualResetEvent _received;
+
+        [SetUp]
+        public void Setup()
+        {
+            _received = new ManualResetEvent(false);
+
+            _pipe = PipeSegment.Input(PipeSegment.End());
+        }
+
+        [Test]
+        public void Should_subscribe_a_message_consumer_to_the_pipe()
+        {
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+
+                _pipe.Send(new ClaimModified());
+            }
+
+            Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
+        }
+
+        [Test]
+        public void Should_unsubscribe_a_message_consumer_from_the_pipe()
+        {
+            using (var scope = _pipe.NewSubscriptionScope())
+            {
+                scope.Subscribe<ClaimModified>(message => { _received.Set(); });
+            }
+
+            _pipe.Send(new ClaimModified());
+
+            Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
+        }
+    }
+
     public class ClaimModified :
         IDomainEvent
     {

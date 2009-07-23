@@ -4,15 +4,16 @@ namespace Magnum
 
 	public static class CombGuid
 	{
-		public static Guid Generate()
+	    private static readonly DateTime _baseDate = new DateTime(1900, 1, 1);
+
+	    public static Guid Generate()
 		{
 			byte[] guidArray = Guid.NewGuid().ToByteArray();
 
-			DateTime baseDate = new DateTime(1900, 1, 1);
-			DateTime now = DateTime.Now;
+	        DateTime now = DateTime.Now;
 
 			// Get the days and milliseconds which will be used to build the byte string 
-			TimeSpan days = new TimeSpan(now.Ticks - baseDate.Ticks);
+			TimeSpan days = new TimeSpan(now.Ticks - _baseDate.Ticks);
 			TimeSpan msecs = now.TimeOfDay;
 
 			// Convert to a byte array 

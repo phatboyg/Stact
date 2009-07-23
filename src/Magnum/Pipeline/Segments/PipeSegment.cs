@@ -45,6 +45,11 @@ namespace Magnum.Pipeline.Segments
             return new InputSegment(pipe);
         }
 
+        public static EndSegment End()
+        {
+            return End<object>();
+        }
+
         public static EndSegment End<T>()
             where T : class
         {

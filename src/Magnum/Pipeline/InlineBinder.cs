@@ -37,7 +37,7 @@ namespace Magnum.Pipeline
             base.Visit(pipe);
         }
 
-        protected override InputSegment VisitInput(InputSegment input)
+        protected override Pipe VisitInput(InputSegment input)
         {
             if (input == null)
                 return null;

@@ -25,42 +25,42 @@ namespace Magnum.Pipeline.Visitors
 			base.Visit(pipe);
 		}
 
-		protected override InputSegment VisitInput(InputSegment input)
+		protected override Pipe VisitInput(InputSegment input)
 		{
 			WriteLine(input);
 
 			return base.VisitInput(input);
 		}
 
-		protected override EndSegment VisitEnd(EndSegment end)
+		protected override Pipe VisitEnd(EndSegment end)
 		{
 			WriteLine(end);
 
 			return base.VisitEnd(end);
 		}
 
-		protected override FilterSegment VisitFilter(FilterSegment filter)
+		protected override Pipe VisitFilter(FilterSegment filter)
 		{
 			WriteLine(filter, "Allow " + filter.Output.MessageType);
 
 			return base.VisitFilter(filter);
 		}
 
-        protected override InterceptorSegment VisitInterceptor(InterceptorSegment interceptor)
+        protected override Pipe VisitInterceptor(InterceptorSegment interceptor)
         {
             WriteLine(interceptor);
 
             return base.VisitInterceptor(interceptor);
         }
 
-        protected override MessageConsumerSegment VisitMessageConsumer(MessageConsumerSegment messageConsumer)
+        protected override Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
         {
             WriteLine(messageConsumer);
 
             return base.VisitMessageConsumer(messageConsumer);
         }
 
-		protected override RecipientListSegment VisitRecipientList(RecipientListSegment recipientList)
+		protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
 		{
 			WriteLine(recipientList);
 			return Indent(() => { return base.VisitRecipientList(recipientList); });

@@ -26,7 +26,12 @@ namespace Magnum.Pipeline
             _segmentsToUnbind = new HashSet<Pipe>(segmentsToUnbind);
         }
 
-        protected override RecipientListSegment VisitRecipientList(RecipientListSegment recipientList)
+        public void RemoveFrom(Pipe pipe)
+        {
+            base.Visit(pipe);
+        }
+
+        protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
         {
             if (recipientList == null)
                 return null;
@@ -60,9 +65,21 @@ namespace Magnum.Pipeline
             return recipientList;
         }
 
-        public void RemoveFrom(Pipe pipe)
+        protected override Pipe VisitInterceptor(InterceptorSegment interceptor)
         {
-            base.Visit(pipe);
+            if (interceptor == null)
+                return null;
+
+            Pipe output = Visit(interceptor.Output);
+            if (_segmentsToUnbind.Contains(interceptor))
+                return output;
+
+            if (output != interceptor.Output)
+            {
+                return interceptor.Clone(output);
+            }
+
+            return interceptor;
         }
     }
 }
