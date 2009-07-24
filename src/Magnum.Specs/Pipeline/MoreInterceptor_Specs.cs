@@ -64,7 +64,7 @@ namespace Magnum.Specs.Pipeline
         }
 
         [Test]
-        public void Should_call_the_before_method()
+        public void Should_still_result_in_the_consumer_being_called()
         {
             Assert.IsTrue(_called.WaitOne(TimeSpan.Zero), "The message handler was not called");
         }
