@@ -17,6 +17,7 @@ namespace Magnum.Specs.Pipeline
     using Magnum.Pipeline;
     using Magnum.Pipeline.Messages;
     using Magnum.Pipeline.Segments;
+    using Messages;
     using NUnit.Framework;
 
     [TestFixture]

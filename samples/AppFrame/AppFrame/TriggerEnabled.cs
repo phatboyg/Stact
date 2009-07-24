@@ -10,13 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Reflection
+namespace AppFrame
 {
-    using System;
-
-    public interface IMethodCall
+    public class TriggerEnabled :
+        IUiEvent
     {
-        T Call<T>(object instance, string methodName, params object[] args);
-        T Call<T>(object instance, string methodName, Type[] argumentTypes, params object[] args);
     }
 }

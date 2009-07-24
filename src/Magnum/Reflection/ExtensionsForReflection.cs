@@ -79,6 +79,11 @@ namespace Magnum.Reflection
 
 		public static MethodInfo FindBestMatch(this IEnumerable<MethodInfo> methods, object[] args)
 		{
+		    return FindBestMatch(methods, args, null);
+		}
+
+	    public static MethodInfo FindBestMatch(this IEnumerable<MethodInfo> methods, object[] args, Type[] argumentTypes)
+		{
 			var highestScore = -1;
 			var matchingMethodCount = 0;
 			MethodInfo selectedMethod = null;
@@ -107,7 +112,7 @@ namespace Magnum.Reflection
 
 			if (selectedMethod.IsGenericMethod)
 			{
-				return selectedMethod.ToSpecializedMethod(args);
+				return selectedMethod.ToSpecializedMethod(args, argumentTypes);
 			}
 
 			return selectedMethod;
@@ -151,20 +156,21 @@ namespace Magnum.Reflection
 			return (T) method.Invoke(instance, args);
 		}
 
-		private static MethodInfo ToSpecializedMethod(this MethodInfo methodInfo, object[] args)
+		private static MethodInfo ToSpecializedMethod(this MethodInfo methodInfo, object[] args, Type[] argumentTypes)
 		{
 			if (!methodInfo.IsGenericMethod)
 				return methodInfo;
 
 			var methodTypes = methodInfo.GetGenericArguments()
-				.GetGenericArgumentTypes(methodInfo.GetParameters(), args).ToArray();
+				.GetGenericArgumentTypes(methodInfo.GetParameters(), args, argumentTypes).ToArray();
 
 			return methodInfo.GetGenericMethodDefinition().MakeGenericMethod(methodTypes);
 		}
 
 		public static IEnumerable<Type> GetGenericArgumentTypes(this IEnumerable<Type> arguments,
 			IEnumerable<ParameterInfo> parameters,  
-			object[] args)
+			object[] args,
+            Type[] argumentTypes)
 		{
 			var generics = new Dictionary<Type, Type>();
 
@@ -215,9 +221,18 @@ namespace Magnum.Reflection
 						});
 			});
 
-			var methodTypes = arguments.Select(x => generics[x]).ToArray();
+			var methodTypes = arguments.Select(x => generics.ContainsKey(x) ? generics[x] : null).ToArray();
 
-			return methodTypes;
+            if (argumentTypes != null)
+            {
+                for (int i = 0; i < methodTypes.Length && i < argumentTypes.Length; i++)
+                {
+                    if (methodTypes[i] == null)
+                        methodTypes[i] = argumentTypes[i];
+                }
+            }
+
+		    return methodTypes;
 		}
 
 		/// <returns>0 if the arguments don't match the parameters; a score &gt; 0 otherwise.</returns>

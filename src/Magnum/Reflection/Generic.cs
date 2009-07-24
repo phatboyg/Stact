@@ -28,6 +28,11 @@ namespace Magnum.Reflection
 			return _typeCache.Call<object>(instance, methodName, args);
 		}
 
+		public static object Call(this object instance, string methodName, Type[] argumentTypes, params object[] args)
+		{
+			return _typeCache.Call<object>(instance, methodName, argumentTypes, args);
+		}
+
 		public static T Call<T>(this object instance, string methodName, params object[] args)
 		{
 			return _typeCache.Call<T>(instance, methodName, args);

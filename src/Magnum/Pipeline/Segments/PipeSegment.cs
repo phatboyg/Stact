@@ -72,6 +72,12 @@ namespace Magnum.Pipeline.Segments
             return new FilterSegment(pipe, inputType);
         }
 
+        public static FilterSegment Filter<T>(Pipe pipe, Predicate<T> accept)
+            where T : class
+        {
+            return new FilterSegment<T>(pipe, accept);
+        }
+
         public static RecipientListSegment RecipientList<T>(IEnumerable<Pipe> recipients)
             where T : class
         {

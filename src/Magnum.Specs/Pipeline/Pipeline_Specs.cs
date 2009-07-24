@@ -17,6 +17,7 @@ namespace Magnum.Specs.Pipeline
     using Magnum.Pipeline;
     using Magnum.Pipeline.Segments;
     using Magnum.Pipeline.Visitors;
+    using Messages;
     using NUnit.Framework;
 
     [TestFixture]
@@ -123,21 +124,5 @@ namespace Magnum.Specs.Pipeline
 
             Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
         }
-    }
-
-    public class ClaimModified :
-        IDomainEvent
-    {
-        public string Text { get; set; }
-    }
-
-    public class ClaimCreated :
-        IDomainEvent
-    {
-        public string Text { get; set; }
-    }
-
-    public interface IDomainEvent
-    {
     }
 }

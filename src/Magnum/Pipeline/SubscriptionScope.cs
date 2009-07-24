@@ -14,6 +14,8 @@ namespace Magnum.Pipeline
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Reflection;
     using Segments;
 
     public class SubscriptionScope :
@@ -58,6 +60,28 @@ namespace Magnum.Pipeline
             where T : class
         {
             Pipe segment = PipeSegment.Consumer(consumer);
+
+            var binder = new SubscriberBinder(segment);
+            binder.Bind(_pipe);
+
+            _disposables.Add(segment);
+        }
+
+        public void Subscribe<T>(T consumer)
+            where T : class
+        {
+            typeof (T).GetInterfaces()
+                .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IConsume<>))
+                .Each(type => this.Call("SubscribeConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
+        }
+
+        // ReSharper disable UnusedMember.Local
+        private void SubscribeConsumer<TConsumer, TMessage>(TConsumer consumer)
+            // ReSharper restore UnusedMember.Local
+            where TConsumer : IConsume<TMessage>
+            where TMessage : class
+        {
+            Pipe segment = PipeSegment.Consumer<TMessage>(consumer.Consume);
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);

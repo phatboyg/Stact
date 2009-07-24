@@ -23,7 +23,15 @@ namespace Magnum.Reflection
 		{
 			return _instanceType
 				.GetMethodCandidates(methodName)
-				.FindBestMatch(args)
+				.FindBestMatch(args, null)
+				.InvokeOn<T>(instance, args);
+		}
+
+		public T Call<T>(object instance, string methodName, Type[] argumentTypes, params object[] args)
+		{
+			return _instanceType
+				.GetMethodCandidates(methodName)
+				.FindBestMatch(args, argumentTypes)
 				.InvokeOn<T>(instance, args);
 		}
 	}

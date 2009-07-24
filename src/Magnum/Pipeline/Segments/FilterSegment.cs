@@ -12,29 +12,57 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline.Segments
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-	public class FilterSegment :
-		PipeSegment
-	{
-		public FilterSegment(Pipe pipe, Type messageType)
-			: base(PipeSegmentType.Filter, messageType)
-		{
-			Output = pipe;
-		}
+    public class FilterSegment :
+        PipeSegment
+    {
+        public FilterSegment(Pipe pipe, Type messageType)
+            : base(PipeSegmentType.Filter, messageType)
+        {
+            Output = pipe;
+        }
 
-		public Pipe Output { get; private set; }
+        public Pipe Output { get; private set; }
 
-		public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
-		{
-			if (Output.MessageType.IsAssignableFrom(typeof (T)))
-			{
-				foreach (var consumer in Output.Accept(message))
-				{
-					yield return consumer;
-				}
-			}
-		}
-	}
+        public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
+        {
+            if (Output.MessageType.IsAssignableFrom(typeof (T)))
+            {
+                foreach (var consumer in Output.Accept(message))
+                {
+                    yield return consumer;
+                }
+            }
+        }
+    }
+
+    public class FilterSegment<TMessage> :
+        FilterSegment
+        where TMessage : class
+    {
+        private readonly Predicate<TMessage> _accept;
+
+        public FilterSegment(Pipe pipe, Predicate<TMessage> accept)
+            : base(pipe, pipe.MessageType)
+        {
+            _accept = accept;
+        }
+
+        public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
+        {
+            var msg = message as TMessage;
+            if (msg == null)
+                yield break;
+
+            if (!_accept(msg))
+                yield break;
+
+            foreach (var consumer in Output.Accept(message))
+            {
+                yield return consumer;
+            }
+        }
+    }
 }

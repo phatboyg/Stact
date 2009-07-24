@@ -166,6 +166,7 @@
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
+    <Compile Include="Pipeline\IConsume.cs" />
     <Compile Include="Pipeline\ExtensionMethods.cs" />
     <Compile Include="Pipeline\IInterceptorConfigurator.cs" />
     <Compile Include="Pipeline\InterceptionBinder.cs" />

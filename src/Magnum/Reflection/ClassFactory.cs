@@ -66,7 +66,7 @@ namespace Magnum.Reflection
 				.FindBestMatch(args);
 
 			var argumentTypes = type.GetGenericArguments()
-				.GetGenericArgumentTypes(ctor.GetParameters(), args).ToArray();
+				.GetGenericArgumentTypes(ctor.GetParameters(), args, null).ToArray();
 
 			Type makeType = type.MakeGenericType(argumentTypes);
 

@@ -10,13 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Reflection
+namespace AppFrame
 {
-    using System;
+    using Magnum.Pipeline;
+    using Magnum.Pipeline.Segments;
+    using StructureMap.Attributes;
+    using StructureMap.Configuration.DSL;
 
-    public interface IMethodCall
+    public class AppFrameRegistry :
+        Registry
     {
-        T Call<T>(object instance, string methodName, params object[] args);
-        T Call<T>(object instance, string methodName, Type[] argumentTypes, params object[] args);
+        public AppFrameRegistry()
+        {
+            ForRequestedType<Pipe>()
+                .CacheBy(InstanceScope.Singleton)
+                .TheDefault.Is.ConstructedBy(x => PipeSegment.Input(PipeSegment.End()));
+        }
     }
 }

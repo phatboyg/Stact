@@ -10,13 +10,32 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Reflection
+namespace AppFrame
 {
-    using System;
+    using System.Windows.Forms;
+    using Magnum.Pipeline;
 
-    public interface IMethodCall
+    public class TriggerController
     {
-        T Call<T>(object instance, string methodName, params object[] args);
-        T Call<T>(object instance, string methodName, Type[] argumentTypes, params object[] args);
+        private readonly Pipe _eventPipe;
+        private readonly Button _button;
+
+        public TriggerController(Pipe eventPipe, Button button)
+        {
+            _eventPipe = eventPipe;
+            _button = button;
+
+
+        }
+
+        public void Handle(TriggerEnabled message)
+        {
+            _button.Enabled = true;
+        }
+
+        public void Handle(TriggerDisabled message)
+        {
+            _button.Enabled = false;
+        }
     }
 }

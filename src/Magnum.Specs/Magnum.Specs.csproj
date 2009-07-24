@@ -84,10 +84,16 @@
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
+    <Compile Include="Pipeline\Messages\ClaimCreated.cs" />
+    <Compile Include="Pipeline\Messages\IDomainEvent.cs" />
+    <Compile Include="Pipeline\Messages\ClaimModified.cs" />
+    <Compile Include="Pipeline\Consumers\MultipleMessageConsumer.cs" />
     <Compile Include="Pipeline\Filter_Specs.cs" />
     <Compile Include="Pipeline\Interceptor_Specs.cs" />
+    <Compile Include="Pipeline\InterfaceSubscriber_Specs.cs" />
     <Compile Include="Pipeline\MoreInterceptor_Specs.cs" />
     <Compile Include="Pipeline\Pipeline_Specs.cs" />
+    <Compile Include="Pipeline\Consumers\SingleMessageConsumer.cs" />
     <Compile Include="Pipeline\SubscriberAdded_Specs.cs" />
     <Compile Include="Pipeline\Throughput_Specs.cs" />
     <Compile Include="Pipeline\Trace_Specs.cs" />

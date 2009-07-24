@@ -31,6 +31,16 @@ namespace Magnum.Reflection
 			return _typeCache.Retrieve(instanceType).Call<T>(instance, methodName, args);
 		}
 
+		public T Call<T>(object instance, string methodName, Type[] argumentTypes, params object[] args)
+		{
+			instance.MustNotBeNull("instance");
+			methodName.MustNotBeEmpty("methodName");
+
+			Type instanceType = instance.GetType();
+
+			return _typeCache.Retrieve(instanceType).Call<T>(instance, methodName, argumentTypes, args);
+		}
+
 		private static IMethodCall CreateNewValue(Type key)
 		{
 			return (IMethodCall) ClassFactory.New(typeof (MethodCallCache<>).MakeGenericType(key));
