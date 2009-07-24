@@ -10,14 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline.Messages
+namespace Magnum.Pipeline.Roles
 {
     using System;
-    using Roles;
 
-    public class SubscriberAdded :
-        ISubscriberEvent
+    /// <summary>
+    /// A marker interface to define the role of the message (nod to Udi)
+    /// </summary>
+    public interface ISubscriberEvent
     {
-        public Type MessageType { get; set; }
+        Type MessageType { get; }
     }
 }

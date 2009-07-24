@@ -15,7 +15,7 @@ namespace Magnum.Pipeline.Messages
     using System;
     using Roles;
 
-    public class SubscriberAdded :
+    public class SubscriberRemoved :
         ISubscriberEvent
     {
         public Type MessageType { get; set; }
