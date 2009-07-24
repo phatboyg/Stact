@@ -88,6 +88,7 @@
     <Compile Include="Pipeline\Interceptor_Specs.cs" />
     <Compile Include="Pipeline\MoreInterceptor_Specs.cs" />
     <Compile Include="Pipeline\Pipeline_Specs.cs" />
+    <Compile Include="Pipeline\SubscriberAdded_Specs.cs" />
     <Compile Include="Pipeline\Throughput_Specs.cs" />
     <Compile Include="Pipeline\Trace_Specs.cs" />
     <Compile Include="Pipeline\TypedPipeline_Specs.cs" />

@@ -14,17 +14,18 @@ namespace Magnum.Pipeline
 {
     using System;
     using System.Collections.Generic;
+    using Messages;
     using Segments;
     using Visitors;
 
-    public class SubscriptionBinder :
+    public class SubscriberBinder :
         AbstractPipeVisitor
     {
         private readonly Type _messageType;
         private readonly Pipe _segment;
         private bool _bound;
 
-        public SubscriptionBinder(Pipe segment)
+        public SubscriberBinder(Pipe segment)
         {
             _messageType = segment.MessageType;
             _segment = segment;
@@ -36,6 +37,8 @@ namespace Magnum.Pipeline
 
             if (!_bound)
                 throw new PipelineException("Could not bind pipe: " + _segment.SegmentType + "(" + _segment.MessageType + ")");
+
+            pipe.Send(new SubscriberAdded {MessageType = _messageType});
         }
 
         protected override Pipe VisitInput(InputSegment input)
@@ -45,7 +48,7 @@ namespace Magnum.Pipeline
             if (pipe != input)
                 throw new InvalidOperationException("The input should never change");
 
-            if(!_bound && input.MessageType == _messageType)
+            if (!_bound && input.MessageType == _messageType)
             {
                 CreateRecipientList(input, _messageType);
             }
@@ -63,7 +66,7 @@ namespace Magnum.Pipeline
             if (end == null)
                 return null;
 
-            if(end.MessageType == _messageType)
+            if (end.MessageType == _messageType)
             {
                 _bound = true;
                 return _segment;

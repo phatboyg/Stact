@@ -10,31 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Pipeline.Messages
 {
     using System;
-    using System.Threading;
 
-    public class Future<T>
+    /// <summary>
+    /// A marker interface to define the role of the message (nod to Udi)
+    /// </summary>
+    public interface ISubscriberEvent
     {
-        private readonly ManualResetEvent _completed = new ManualResetEvent(false);
+        Type MessageType { get; }
+    }
 
-        public T Value { get; private set; }
+    public class SubscriberAdded :
+        ISubscriberEvent
+    {
+        public Type MessageType { get; set; }
+    }
 
-        public void Complete(T value)
-        {
-            Value = value;
-            _completed.Set();
-        }
-
-        public bool IsAvailable()
-        {
-            return _completed.WaitOne(TimeSpan.Zero);
-        }
-
-        public bool IsAvailable(TimeSpan timeout)
-        {
-            return _completed.WaitOne(timeout, true);
-        }
+    public class SubscriberRemoved :
+        ISubscriberEvent
+    {
+        public Type MessageType { get; set; }
     }
 }

@@ -13,6 +13,7 @@
 namespace Magnum.Pipeline
 {
     using System.Collections.Generic;
+    using Messages;
     using Segments;
     using Visitors;
 
@@ -20,6 +21,7 @@ namespace Magnum.Pipeline
         AbstractPipeVisitor
     {
         private readonly HashSet<Pipe> _segmentsToUnbind;
+        private Pipe _pipe;
 
         public SegmentUnbinder(IEnumerable<Pipe> segmentsToUnbind)
         {
@@ -28,6 +30,7 @@ namespace Magnum.Pipeline
 
         public void RemoveFrom(Pipe pipe)
         {
+            _pipe = pipe;
             base.Visit(pipe);
         }
 
@@ -41,20 +44,26 @@ namespace Magnum.Pipeline
 
             foreach (Pipe recipient in recipientList.Recipients)
             {
-                if (_segmentsToUnbind.Contains(recipient))
+                Pipe result = Visit(recipient);
+                if (result == null)
                 {
                     modified = true;
                     continue;
                 }
 
-                Pipe result = Visit(recipient);
+                if (_segmentsToUnbind.Contains(result))
+                {
+                    modified = true;
+                    _pipe.Send(new SubscriberRemoved {MessageType = result.MessageType});
+                    continue;
+                }
+
                 if (result != recipient)
                 {
                     modified = true;
                 }
 
-                if (result != null)
-                    recipients.Add(result);
+                recipients.Add(result);
             }
 
             if (modified)

@@ -59,7 +59,7 @@ namespace Magnum.Pipeline
         {
             Pipe segment = PipeSegment.Consumer(consumer);
 
-            var binder = new SubscriptionBinder(segment);
+            var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);
 
             _disposables.Add(segment);

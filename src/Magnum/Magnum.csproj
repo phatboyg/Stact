@@ -170,8 +170,9 @@
     <Compile Include="Pipeline\IInterceptorConfigurator.cs" />
     <Compile Include="Pipeline\InterceptionBinder.cs" />
     <Compile Include="Pipeline\ISubscriptionScope.cs" />
+    <Compile Include="Pipeline\Messages\SubscriberAdded.cs" />
     <Compile Include="Pipeline\PipelineException.cs" />
-    <Compile Include="Pipeline\SubscriptionBinder.cs" />
+    <Compile Include="Pipeline\SubscriberBinder.cs" />
     <Compile Include="Pipeline\Segments\InterceptorConfigurator.cs" />
     <Compile Include="Pipeline\Segments\InterceptorSegment.cs" />
     <Compile Include="Pipeline\Segments\MessageConsumerSegment.cs" />
