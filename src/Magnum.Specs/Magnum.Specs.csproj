@@ -84,7 +84,10 @@
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
+    <Compile Include="Pipeline\Examples.cs" />
     <Compile Include="Pipeline\Messages\ClaimCreated.cs" />
+    <Compile Include="Pipeline\Messages\CustomerChanged.cs" />
+    <Compile Include="Pipeline\Messages\CustomerRatingDowngraded.cs" />
     <Compile Include="Pipeline\Messages\IDomainEvent.cs" />
     <Compile Include="Pipeline\Messages\ClaimModified.cs" />
     <Compile Include="Pipeline\Consumers\MultipleMessageConsumer.cs" />
