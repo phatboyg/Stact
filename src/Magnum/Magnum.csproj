@@ -132,6 +132,9 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
+    <Compile Include="Concurrency\ConcurrentQueue.cs" />
+    <Compile Include="Concurrency\ConcurrentStack.cs" />
+    <Compile Include="Concurrency\SingleLinkNode.cs" />
     <Compile Include="Cryptography\EncryptedText.cs" />
     <Compile Include="Cryptography\EncryptedStream.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
