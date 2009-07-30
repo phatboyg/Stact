@@ -41,8 +41,6 @@ namespace Magnum.Specs.Pipeline
         [Test]
         public void A_single_consumer_should_not_create_a_recipient_list()
         {
-            new TracePipeVisitor().Trace(_pipe);
-
             _pipe.Send(new ClaimCreated());
         }
 
@@ -50,8 +48,6 @@ namespace Magnum.Specs.Pipeline
         public void Multiple_consumers_should_create_a_recipient_list()
         {
             _scope.Subscribe<ClaimModified>(x => { });
-
-            new TracePipeVisitor().Trace(_pipe);
 
             _pipe.Send(new ClaimCreated());
         }

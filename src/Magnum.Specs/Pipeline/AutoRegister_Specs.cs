@@ -14,6 +14,7 @@ namespace Magnum.Specs.Pipeline
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using CollectionExtensions;
 	using Consumers;
 	using Magnum.Pipeline.Visitors;
@@ -61,10 +62,12 @@ namespace Magnum.Specs.Pipeline
 		[Test]
 		public void The_long_running_consumer_should_be_called()
 		{
+			Thread.Sleep(650);
 			Assert.IsTrue(_called.ContainsKey(typeof(LongRunningMessageConsumer)));
 		}
 
-		private void SubscribeToScope<T>()
+		private void SubscribeToScope<T>() 
+			where T : class
 		{
 			Scope.Subscribe<T>(GetInstance<T>);
 		}

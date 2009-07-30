@@ -12,21 +12,41 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline.Segments
 {
+	using System;
 	using System.Collections.Generic;
 	using Actors;
 	using Actors.CommandQueues;
 
-	public class AsyncMessageConsumerSegment<TMessage> :
-		MessageConsumerSegment
-		where TMessage : class
+	public abstract class AsyncMessageConsumerSegment :
+		PipeSegment
 	{
-		private readonly MessageConsumer<TMessage> _consumer;
+		protected AsyncMessageConsumerSegment(Type messageType, Type consumerType)
+			: base(PipeSegmentType.AsyncMessageConsumer, messageType)
+		{
+			ConsumerType = consumerType;
+		}
+
+		public Type ConsumerType { get; set; }
+	}
+
+	public class AsyncMessageConsumerSegment<TConsumer, TMessage> :
+		AsyncMessageConsumerSegment
+		where TMessage : class
+		where TConsumer : IAsyncConsumer<TMessage>
+	{
+		private readonly Func<TConsumer> _getConsumer;
 		private readonly CommandQueue _commandQueue = new ThreadPoolCommandQueue();
 
-		public AsyncMessageConsumerSegment(MessageConsumer<TMessage> consumer)
-			: base(typeof (TMessage))
+		public AsyncMessageConsumerSegment(TConsumer consumer)
+			: base(typeof (TMessage), typeof(TConsumer))
 		{
-			_consumer = consumer;
+			_getConsumer = () => consumer;
+		}
+
+		public AsyncMessageConsumerSegment(Func<TConsumer> getConsumer)
+			: base(typeof (TMessage), typeof(TConsumer))
+		{
+			_getConsumer = getConsumer;
 		}
 
 		public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
@@ -34,7 +54,7 @@ namespace Magnum.Pipeline.Segments
 			TMessage msg = message as TMessage;
 			if (msg != null)
 			{
-				yield return x => _commandQueue.Enqueue(() => _consumer(x as TMessage));
+				yield return x => _commandQueue.Enqueue(() => _getConsumer().Consume(x as TMessage));
 			}
 		}
 	}

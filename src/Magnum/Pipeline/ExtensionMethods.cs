@@ -14,7 +14,7 @@ namespace Magnum.Pipeline
 {
     public static class ExtensionMethods
     {
-        public static SubscriptionScope NewSubscriptionScope(this Pipe pipe)
+        public static ISubscriptionScope NewSubscriptionScope(this Pipe pipe)
         {
             return new SubscriptionScope(pipe);
         }

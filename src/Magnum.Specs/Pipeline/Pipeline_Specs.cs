@@ -12,117 +12,114 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Pipeline
 {
-    using System;
-    using System.Threading;
-    using Magnum.Pipeline;
-    using Magnum.Pipeline.Segments;
-    using Magnum.Pipeline.Visitors;
-    using Messages;
-    using NUnit.Framework;
+	using System;
+	using System.Threading;
+	using Magnum.Pipeline;
+	using Magnum.Pipeline.Segments;
+	using Messages;
+	using NUnit.Framework;
 
-    [TestFixture]
-    public class Subscribing_to_the_pipe
-    {
-        [Test]
-        public void Should_result_in_an_expression_being_called()
-        {
-            var called = new ManualResetEvent(false);
+	[TestFixture]
+	public class Subscribing_to_the_pipe
+	{
+		[Test]
+		public void Should_result_in_an_expression_being_called()
+		{
+			var called = new ManualResetEvent(false);
 
-            var consumer = PipeSegment.Consumer<ClaimModified>(message => called.Set());
+			var consumer = PipeSegment.Consumer<ClaimModified>(message => called.Set());
 
-            var recipients = new[] {consumer};
+			var recipients = new[] {consumer};
 
-            var recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
+			var recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
 
-            new TracePipeVisitor().Trace(recipientList);
+			recipientList.Send(new ClaimModified());
 
-            recipientList.Send(new ClaimModified());
+			Assert.IsTrue(called.WaitOne(TimeSpan.Zero, false));
+		}
+	}
 
-            Assert.IsTrue(called.WaitOne(TimeSpan.Zero, false));
-        }
-    }
+	[TestFixture]
+	public class Using_a_subscription_context
+	{
+		private Pipe _pipe;
+		private ManualResetEvent _received;
 
-    [TestFixture]
-    public class Using_a_subscription_context
-    {
-        private Pipe _pipe;
-        private ManualResetEvent _received;
+		[SetUp]
+		public void Setup()
+		{
+			_received = new ManualResetEvent(false);
 
-        [SetUp]
-        public void Setup()
-        {
-            _received = new ManualResetEvent(false);
+			var recipients = new Pipe[] {};
+			var recipientList = PipeSegment.RecipientList<object>(recipients);
+			_pipe = PipeSegment.Input(recipientList);
+		}
 
-            var recipients = new Pipe[] { };
-            var recipientList = PipeSegment.RecipientList<object>(recipients);
-            _pipe = PipeSegment.Input(recipientList);
-        }
+		[Test]
+		public void Should_subscribe_a_message_consumer_to_the_pipe()
+		{
+			using (var scope = _pipe.NewSubscriptionScope())
+			{
+				scope.Subscribe<ClaimModified>(message => _received.Set());
 
-        [Test]
-        public void Should_subscribe_a_message_consumer_to_the_pipe()
-        {
-            using (var scope = _pipe.NewSubscriptionScope())
-            {
-                scope.Subscribe<ClaimModified>(message => _received.Set());
+				_pipe.Send(new ClaimModified());
+			}
 
-                _pipe.Send(new ClaimModified());
-            }
+			Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
+		}
 
-            Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
-        }
+		[Test]
+		public void Should_unsubscribe_a_message_consumer_from_the_pipe()
+		{
+			using (var scope = _pipe.NewSubscriptionScope())
+			{
+				scope.Subscribe<ClaimModified>(message => _received.Set());
+			}
 
-        [Test]
-        public void Should_unsubscribe_a_message_consumer_from_the_pipe()
-        {
-            using (var scope = _pipe.NewSubscriptionScope())
-            {
-                scope.Subscribe<ClaimModified>(message => _received.Set());
-            }
+			_pipe.Send(new ClaimModified());
 
-            _pipe.Send(new ClaimModified());
+			Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
+		}
+	}
 
-            Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
-        }
-    }
+	[TestFixture]
+	public class Starting_with_an_empty_pipeline
+	{
+		private Pipe _pipe;
+		private ManualResetEvent _received;
 
-    [TestFixture]
-    public class Starting_with_an_empty_pipeline
-    {
-        private Pipe _pipe;
-        private ManualResetEvent _received;
+		[SetUp]
+		public void Setup()
+		{
+			_received = new ManualResetEvent(false);
 
-        [SetUp]
-        public void Setup()
-        {
-            _received = new ManualResetEvent(false);
+			_pipe = PipeSegment.Input(PipeSegment.End());
+		}
 
-            _pipe = PipeSegment.Input(PipeSegment.End());
-        }
+		[Test]
+		public void Should_subscribe_a_message_consumer_to_the_pipe()
+		{
+			using (var scope = _pipe.NewSubscriptionScope())
+			{
+				scope.Subscribe<ClaimModified>(message => _received.Set());
 
-        [Test]
-        public void Should_subscribe_a_message_consumer_to_the_pipe()
-        {
-            using (var scope = _pipe.NewSubscriptionScope())
-            {
-                scope.Subscribe<ClaimModified>(message => _received.Set());
+				_pipe.Send(new ClaimModified());
+			}
 
-                _pipe.Send(new ClaimModified());
-            }
+			Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
+		}
 
-            Assert.IsTrue(_received.WaitOne(TimeSpan.Zero, false));
-        }
+		[Test]
+		public void Should_unsubscribe_a_message_consumer_from_the_pipe()
+		{
+			using (var scope = _pipe.NewSubscriptionScope())
+			{
+				scope.Subscribe<ClaimModified>(message => _received.Set());
+			}
 
-        [Test]
-        public void Should_unsubscribe_a_message_consumer_from_the_pipe()
-        {
-            using (var scope = _pipe.NewSubscriptionScope())
-            {
-                scope.Subscribe<ClaimModified>(message => _received.Set());
-            }
+			_pipe.Send(new ClaimModified());
 
-            _pipe.Send(new ClaimModified());
-
-            Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
-        }
-    }
+			Assert.IsFalse(_received.WaitOne(TimeSpan.Zero, false));
+		}
+	}
 }

@@ -19,6 +19,7 @@ namespace Magnum.Pipeline
 		RecipientList,
 		Filter,
 	    MessageConsumer,
-	    Interceptor
+	    Interceptor,
+		AsyncMessageConsumer
 	}
 }

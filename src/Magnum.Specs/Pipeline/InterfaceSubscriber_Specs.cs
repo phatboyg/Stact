@@ -22,7 +22,7 @@ namespace Magnum.Specs.Pipeline
     public class Given_an_established_pipe
     {
         protected Pipe Input { get; set; }
-        protected SubscriptionScope Scope { get; private set; }
+        protected ISubscriptionScope Scope { get; private set; }
 
         [SetUp]
         public void Setup()

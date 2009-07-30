@@ -79,7 +79,8 @@ namespace Magnum.Pipeline
                 .Each(type => this.Call("SubscribeAsyncConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
         }
 
-		public void Subscribe<T>(Func<T> getConsumer)
+		public void Subscribe<T>(Func<T> getConsumer) 
+			where T : class
 		{
 			typeof(T).GetInterfaces()
 				.Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IConsumer<>))
@@ -110,7 +111,7 @@ namespace Magnum.Pipeline
             where TConsumer : IAsyncConsumer<TMessage>
             where TMessage : class
         {
-            Pipe segment = PipeSegment.AsyncConsumer<TMessage>(consumer.Consume);
+            Pipe segment = PipeSegment.AsyncConsumer<TConsumer,TMessage>(consumer);
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);
@@ -138,7 +139,7 @@ namespace Magnum.Pipeline
             where TConsumer : IAsyncConsumer<TMessage>
             where TMessage : class
         {
-			Pipe segment = PipeSegment.AsyncConsumer<TMessage>(x => getConsumer().Consume(x));
+			Pipe segment = PipeSegment.AsyncConsumer<TConsumer,TMessage>(getConsumer);
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);

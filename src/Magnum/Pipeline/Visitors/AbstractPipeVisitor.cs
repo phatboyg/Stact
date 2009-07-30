@@ -34,6 +34,9 @@ namespace Magnum.Pipeline.Visitors
                 case PipeSegmentType.Input:
                     return VisitInput((InputSegment) pipe);
 
+				case PipeSegmentType.AsyncMessageConsumer:
+					return VisitAsyncMessageConsumer((AsyncMessageConsumerSegment)pipe);
+
                 case PipeSegmentType.MessageConsumer:
                     return VisitMessageConsumer((MessageConsumerSegment) pipe);
 
@@ -102,6 +105,14 @@ namespace Magnum.Pipeline.Visitors
         }
 
         protected virtual Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
+        {
+            if (messageConsumer == null)
+                return null;
+
+            return messageConsumer;
+        }
+
+        protected virtual Pipe VisitAsyncMessageConsumer(AsyncMessageConsumerSegment messageConsumer)
         {
             if (messageConsumer == null)
                 return null;
