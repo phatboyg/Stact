@@ -95,6 +95,20 @@ namespace Magnum.Pipeline.Segments
             return new MessageConsumerSegment<T>(consumer);
         }
 
+        public static MessageConsumerSegment Consumer<TConsumer, TMessage>(TConsumer consumer)
+			where TConsumer : IConsumer<TMessage>
+            where TMessage : class
+        {
+            return new MessageConsumerSegment<TMessage>(typeof(TConsumer), consumer);
+        }
+
+        public static MessageConsumerSegment Consumer<TConsumer, TMessage>(Func<TConsumer> getConsumer)
+			where TConsumer : IConsumer<TMessage>
+            where TMessage : class
+        {
+        	return new MessageConsumerSegment<TMessage>(typeof(TConsumer), () => getConsumer());
+        }
+
         public static AsyncMessageConsumerSegment AsyncConsumer<TConsumer, TMessage>(TConsumer consumer)
 			where TConsumer : IAsyncConsumer<TMessage>
             where TMessage : class

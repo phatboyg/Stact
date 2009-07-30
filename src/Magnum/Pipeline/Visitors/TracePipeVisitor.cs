@@ -55,14 +55,14 @@ namespace Magnum.Pipeline.Visitors
 
         protected override Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
         {
-            WriteLine(messageConsumer);
+        	WriteLine(messageConsumer, "Consumer Type = " + messageConsumer.ConsumerType);
 
             return base.VisitMessageConsumer(messageConsumer);
         }
 
 		protected override Pipe VisitAsyncMessageConsumer(AsyncMessageConsumerSegment messageConsumer)
 		{
-			WriteLine(messageConsumer);
+			WriteLine(messageConsumer, "Consumer Type = " + messageConsumer.ConsumerType);
 
 			return base.VisitAsyncMessageConsumer(messageConsumer);
 		}

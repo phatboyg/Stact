@@ -97,7 +97,7 @@ namespace Magnum.Pipeline
             where TConsumer : IConsumer<TMessage>
             where TMessage : class
         {
-            Pipe segment = PipeSegment.Consumer<TMessage>(consumer.Consume);
+            Pipe segment = PipeSegment.Consumer<TConsumer,TMessage>(consumer);
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);
@@ -125,7 +125,7 @@ namespace Magnum.Pipeline
             where TConsumer : IConsumer<TMessage>
             where TMessage : class
         {
-			Pipe segment = PipeSegment.Consumer<TMessage>(x => getConsumer().Consume(x));
+			Pipe segment = PipeSegment.Consumer<TConsumer, TMessage>(getConsumer);
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);
