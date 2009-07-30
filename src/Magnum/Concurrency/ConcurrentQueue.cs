@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Concurrency
 {
-    using System.Threading;
-
     /// <summary>
     /// A concurrent queue with no sychronization locks, locking is performed using
     /// atomic operations to avoid blocking
@@ -47,13 +45,13 @@ namespace Magnum.Concurrency
                 if (_tail == oldTail)
                 {
                     if (oldTailNext == null)
-                        newNodeWasAdded = SyncMethods.CAS(ref _tail.Next, null, newNode);
+                        newNodeWasAdded = SynchronizationMethods.CompareAndSwap(ref _tail.Next, null, newNode);
                     else
-                        SyncMethods.CAS(ref _tail, oldTail, oldTailNext);
+                        SynchronizationMethods.CompareAndSwap(ref _tail, oldTail, oldTailNext);
                 }
             }
 
-            SyncMethods.CAS(ref _tail, oldTail, newNode);
+            SynchronizationMethods.CompareAndSwap(ref _tail, oldTail, newNode);
         }
 
         public bool Dequeue(out T item)
@@ -77,13 +75,13 @@ namespace Magnum.Concurrency
                             return false;
                         }
 
-                        SyncMethods.CAS(ref _tail, oldTail, oldHeadNext);
+                        SynchronizationMethods.CompareAndSwap(ref _tail, oldTail, oldHeadNext);
                     }
 
                     else
                     {
                         item = oldHeadNext.Item;
-                        haveAdvancedHead = SyncMethods.CAS(ref _head, oldHead, oldHeadNext);
+                        haveAdvancedHead = SynchronizationMethods.CompareAndSwap(ref _head, oldHead, oldHeadNext);
                     }
                 }
             }
@@ -95,20 +93,6 @@ namespace Magnum.Concurrency
             T result;
             Dequeue(out result);
             return result;
-        }
-    }
-
-    public static class SyncMethods
-    {
-        public static bool CAS<T>(ref T location, T comparand, T newValue) where T : class
-        {
-            return comparand == Interlocked.CompareExchange(ref location, newValue, comparand);
-        }
-
-        public static bool CompareAndExchange<T>(this ref T location, T comparand, T newValue)
-            where T : class
-        {
-            return comparand == Interlocked.CompareExchange(ref location, newValue, comparand);
         }
     }
 }

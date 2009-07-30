@@ -60,17 +60,5 @@ namespace Magnum
 		{
 			return (T)items[TypedKey<T>.UniqueKey];
 		}
-
-		public static T Retrieve<T>(this IDictionary items, Func<T> valueProvider )
-		{
-			if (items.Exists<T>())
-				return (T) items[TypedKey<T>.UniqueKey];
-
-			var value = valueProvider();
-
-			items[TypedKey<T>.UniqueKey] = value;
-
-			return value;
-		}
 	}
 }

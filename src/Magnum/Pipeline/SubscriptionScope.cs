@@ -71,17 +71,74 @@ namespace Magnum.Pipeline
             where T : class
         {
             typeof (T).GetInterfaces()
-                .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IConsume<>))
+                .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IConsumer<>))
                 .Each(type => this.Call("SubscribeConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
+
+            typeof (T).GetInterfaces()
+                .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IAsyncConsumer<>))
+                .Each(type => this.Call("SubscribeAsyncConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
         }
+
+		public void Subscribe<T>(Func<T> getConsumer)
+		{
+			typeof(T).GetInterfaces()
+				.Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IConsumer<>))
+				.Each(type => this.Call("SubscribeComponent", new[] { null, type.GetGenericArguments()[0] }, getConsumer));
+
+			typeof(T).GetInterfaces()
+				.Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IAsyncConsumer<>))
+				.Each(type => this.Call("SubscribeAsyncComponent", new[] { null, type.GetGenericArguments()[0] }, getConsumer));
+		}
 
         // ReSharper disable UnusedMember.Local
         private void SubscribeConsumer<TConsumer, TMessage>(TConsumer consumer)
             // ReSharper restore UnusedMember.Local
-            where TConsumer : IConsume<TMessage>
+            where TConsumer : IConsumer<TMessage>
             where TMessage : class
         {
             Pipe segment = PipeSegment.Consumer<TMessage>(consumer.Consume);
+
+            var binder = new SubscriberBinder(segment);
+            binder.Bind(_pipe);
+
+            _disposables.Add(segment);
+        }
+
+        // ReSharper disable UnusedMember.Local
+        private void SubscribeAsyncConsumer<TConsumer, TMessage>(TConsumer consumer)
+            // ReSharper restore UnusedMember.Local
+            where TConsumer : IAsyncConsumer<TMessage>
+            where TMessage : class
+        {
+            Pipe segment = PipeSegment.AsyncConsumer<TMessage>(consumer.Consume);
+
+            var binder = new SubscriberBinder(segment);
+            binder.Bind(_pipe);
+
+            _disposables.Add(segment);
+        }
+
+        // ReSharper disable UnusedMember.Local
+        private void SubscribeComponent<TConsumer, TMessage>(Func<TConsumer> getConsumer)
+            // ReSharper restore UnusedMember.Local
+            where TConsumer : IConsumer<TMessage>
+            where TMessage : class
+        {
+			Pipe segment = PipeSegment.Consumer<TMessage>(x => getConsumer().Consume(x));
+
+            var binder = new SubscriberBinder(segment);
+            binder.Bind(_pipe);
+
+            _disposables.Add(segment);
+        }
+
+        // ReSharper disable UnusedMember.Local
+		private void SubscribeAsyncComponent<TConsumer, TMessage>(Func<TConsumer> getConsumer)
+            // ReSharper restore UnusedMember.Local
+            where TConsumer : IAsyncConsumer<TMessage>
+            where TMessage : class
+        {
+			Pipe segment = PipeSegment.AsyncConsumer<TMessage>(x => getConsumer().Consume(x));
 
             var binder = new SubscriberBinder(segment);
             binder.Bind(_pipe);

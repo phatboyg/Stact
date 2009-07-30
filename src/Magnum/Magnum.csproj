@@ -135,6 +135,7 @@
     <Compile Include="Concurrency\ConcurrentQueue.cs" />
     <Compile Include="Concurrency\ConcurrentStack.cs" />
     <Compile Include="Concurrency\SingleLinkNode.cs" />
+    <Compile Include="Concurrency\SynchronizationMethods.cs" />
     <Compile Include="Cryptography\EncryptedText.cs" />
     <Compile Include="Cryptography\EncryptedStream.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
     <Compile Include="LocalContext.cs" />
-    <Compile Include="LockFreeQueue.cs" />
     <Compile Include="Mail\FileMailServer.cs" />
     <Compile Include="Mail\IMailServer.cs" />
     <Compile Include="Mail\NullMailServer.cs" />
@@ -169,7 +169,8 @@
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
-    <Compile Include="Pipeline\IConsume.cs" />
+    <Compile Include="Pipeline\IAsyncConsumer.cs" />
+    <Compile Include="Pipeline\IConsumer.cs" />
     <Compile Include="Pipeline\ExtensionMethods.cs" />
     <Compile Include="Pipeline\IInterceptorConfigurator.cs" />
     <Compile Include="Pipeline\InterceptionBinder.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Pipeline\Messages\SubscriberAdded.cs" />
     <Compile Include="Pipeline\Messages\SubscriberRemoved.cs" />
     <Compile Include="Pipeline\PipelineException.cs" />
+    <Compile Include="Pipeline\Segments\AsyncMessageConsumerSegment.cs" />
     <Compile Include="Pipeline\SubscriberBinder.cs" />
     <Compile Include="Pipeline\Segments\InterceptorConfigurator.cs" />
     <Compile Include="Pipeline\Segments\InterceptorSegment.cs" />

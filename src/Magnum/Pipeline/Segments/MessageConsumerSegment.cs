@@ -28,20 +28,20 @@ namespace Magnum.Pipeline.Segments
         MessageConsumerSegment
         where TMessage : class
     {
-        public MessageConsumerSegment(MessageConsumer<TMessage> consumer)
+    	private readonly MessageConsumer<TMessage> _consumer;
+
+    	public MessageConsumerSegment(MessageConsumer<TMessage> consumer)
             : base(typeof (TMessage))
         {
-            Consumer = consumer;
+        	_consumer = consumer;
         }
 
-        public MessageConsumer<TMessage> Consumer { get; private set; }
-
-        public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
+    	public override IEnumerable<MessageConsumer<T>> Accept<T>(T message)
         {
             TMessage msg = message as TMessage;
             if (msg != null)
             {
-                yield return x => Consumer(x as TMessage);
+                yield return x => _consumer(x as TMessage);
             }
         }
     }

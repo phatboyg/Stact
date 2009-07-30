@@ -17,8 +17,8 @@ namespace Magnum.Specs.Pipeline.Consumers
     using Messages;
 
     public class MultipleMessageConsumer :
-        IConsume<ClaimModified>,
-        IConsume<ClaimCreated>
+        IConsumer<ClaimModified>,
+        IConsumer<ClaimCreated>
     {
         public Future<ClaimModified> ClaimModifiedCalled { get; private set; }
         public Future<ClaimCreated> ClaimCreatedCalled { get; private set; }

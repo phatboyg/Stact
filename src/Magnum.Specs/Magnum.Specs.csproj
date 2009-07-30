@@ -71,6 +71,7 @@
     <Compile Include="CommandLine\OneArgument.cs" />
     <Compile Include="CommandLine\TwoArguments.cs" />
     <Compile Include="CommandLine\Visualizer.cs" />
+    <Compile Include="Concurrency\Queue_Specs.cs" />
     <Compile Include="CrazySerializationIdea.cs" />
     <Compile Include="Cryptography\PublicKeyCrypto.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
@@ -84,6 +85,9 @@
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
+    <Compile Include="Pipeline\AsyncConsumer_Specs.cs" />
+    <Compile Include="Pipeline\AutoRegister_Specs.cs" />
+    <Compile Include="Pipeline\Consumers\LongRunningMessageConsumer.cs" />
     <Compile Include="Pipeline\Examples.cs" />
     <Compile Include="Pipeline\Messages\ClaimCreated.cs" />
     <Compile Include="Pipeline\Messages\CustomerChanged.cs" />

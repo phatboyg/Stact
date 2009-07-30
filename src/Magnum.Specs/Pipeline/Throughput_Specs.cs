@@ -12,51 +12,73 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Pipeline
 {
-    using System.Diagnostics;
-    using Magnum.Pipeline;
-    using Magnum.Pipeline.Segments;
-    using Messages;
-    using NUnit.Framework;
+	using System.Diagnostics;
+	using System.Threading;
+	using Magnum.Pipeline;
+	using Magnum.Pipeline.Segments;
+	using Messages;
+	using NUnit.Framework;
 
-    [TestFixture]
-    public class Throughput_Specs
-    {
-        [Test, Explicit]
-        public void How_many_messages_can_the_pipe_send_per_second()
-        {
-            long count = 0;
-            long count2 = 0;
-            long limit = 2500000;
+	[TestFixture]
+	public class Throughput_Specs
+	{
+		private long _count;
+		private long _count2;
+		private long _limit;
+		private Pipe _input;
 
-            Pipe consumer = PipeSegment.Consumer<ClaimModified>(m => { count++; });
-            Pipe consumer2 = PipeSegment.Consumer<ClaimModified>(m => { count2++; });
+		[Test, Explicit]
+		public void How_many_messages_can_the_pipe_send_per_second()
+		{
+			_count = 0;
+			_count2 = 0;
+			_limit = 5000000;
 
-            var recipients = new[] {consumer, consumer2};
+			Pipe consumer = PipeSegment.Consumer<ClaimModified>(m => { Interlocked.Increment(ref _count); });
+			Pipe consumer2 = PipeSegment.Consumer<ClaimModified>(m => { Interlocked.Increment(ref _count2); });
 
-            Pipe recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
-            Pipe filter = PipeSegment.Filter<object>(recipientList);
-            Pipe objectRecipientList = PipeSegment.RecipientList<object>(new[] { filter});
-            Pipe input = PipeSegment.Input(objectRecipientList);
+			var recipients = new[] {consumer, consumer2};
 
-            var message = new ClaimModified();
+			Pipe recipientList = PipeSegment.RecipientList<ClaimModified>(recipients);
+			Pipe filter = PipeSegment.Filter<object>(recipientList);
+			Pipe objectRecipientList = PipeSegment.RecipientList<object>(new[] {filter});
+			_input = PipeSegment.Input(objectRecipientList);
 
-            for (int i = 0; i < 100; i++)
-            {
-                input.Send(message);
-            }
+			var message = new ClaimModified();
 
-            Stopwatch timer = Stopwatch.StartNew();
+			for (int i = 0; i < 100; i++)
+			{
+				_input.Send(message);
+			}
 
-            for (int i = 0; i < limit; i++)
-            {
-                input.Send(message);
-            }
+			_count = 0;
+			_count2 = 0;
 
-            timer.Stop();
+			Thread pusherThread = new Thread(Pusher);
+			Thread pusherThread2 = new Thread(Pusher);
 
-            Trace.WriteLine("Received: " + (count + count2) + ", expected " + limit * 2);
-            Trace.WriteLine("Elapsed Time: " + timer.ElapsedMilliseconds + "ms");
-            Trace.WriteLine("Messages Per Second: " + limit*1000/timer.ElapsedMilliseconds);
-        }
-    }
+			Stopwatch timer = Stopwatch.StartNew();
+
+			pusherThread.Start();
+			pusherThread2.Start();
+
+			pusherThread.Join(10000);
+			pusherThread2.Join(1000);
+
+			timer.Stop();
+
+			Trace.WriteLine("Received: " + (_count + _count2) + ", expected " + _limit*2);
+			Trace.WriteLine("Elapsed Time: " + timer.ElapsedMilliseconds + "ms");
+			Trace.WriteLine("Messages Per Second: " + _limit*1000/timer.ElapsedMilliseconds);
+		}
+
+		private void Pusher()
+		{
+			var message = new ClaimModified();
+			for (int i = 0; i < _limit/2; i++)
+			{
+				_input.Send(message);
+			}
+		}
+	}
 }

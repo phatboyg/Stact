@@ -29,7 +29,7 @@ namespace Magnum.Concurrency
             do
             {
                 newNode.Next = _head.Next;
-            } while (!SyncMethods.CAS(ref _head.Next, newNode.Next, newNode));
+            } while (!SynchronizationMethods.CompareAndSwap(ref _head.Next, newNode.Next, newNode));
         }
 
         public bool Pop(out T item)
@@ -43,7 +43,7 @@ namespace Magnum.Concurrency
                     item = default(T);
                     return false;
                 }
-            } while (!SyncMethods.CAS(ref _head.Next, node, node.Next));
+            } while (!SynchronizationMethods.CompareAndSwap(ref _head.Next, node, node.Next));
             item = node.Item;
             return true;
         }

@@ -10,11 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Pipeline
+namespace Magnum.Specs.Pipeline.Consumers
 {
-    public interface IConsume<TMessage>
-        where TMessage : class
-    {
-        void Consume(TMessage message);
-    }
+	using System.Threading;
+	using Magnum.Actors;
+	using Magnum.Pipeline;
+	using Messages;
+
+	public class LongRunningMessageConsumer :
+		IAsyncConsumer<ClaimModified>
+	{
+		public Future<ClaimModified> ClaimModifiedCalled { get; private set; }
+
+		public LongRunningMessageConsumer()
+		{
+			ClaimModifiedCalled = new Future<ClaimModified>();
+		}
+
+		public void Consume(ClaimModified message)
+		{
+			Thread.Sleep(1000);
+
+			ClaimModifiedCalled.Complete(message);
+		}
+	}
 }

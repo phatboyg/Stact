@@ -10,25 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Pipeline.Consumers
+namespace Magnum.Concurrency
 {
-    using Magnum.Actors;
-    using Magnum.Pipeline;
-    using Messages;
+    using System.Threading;
 
-    public class SingleMessageConsumer :
-        IConsumer<ClaimModified>
+    public static class SynchronizationMethods
     {
-        public Future<ClaimModified> ClaimModifiedCalled { get; private set; }
-
-        public SingleMessageConsumer()
+        public static bool CompareAndSwap<T>(ref T location, T comparand, T newValue) where T : class
         {
-            ClaimModifiedCalled = new Future<ClaimModified>();
-        }
-
-        public void Consume(ClaimModified message)
-        {
-            ClaimModifiedCalled.Complete(message);
+            return comparand == Interlocked.CompareExchange(ref location, newValue, comparand);
         }
     }
 }
