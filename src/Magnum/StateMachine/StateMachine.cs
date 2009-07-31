@@ -109,7 +109,7 @@ namespace Magnum.StateMachine
 			_currentState.RaiseEvent(this as T, eevent, value);
 		}
 
-		internal virtual void ChangeCurrentState(State newState)
+		protected internal virtual void ChangeCurrentState(State newState)
 		{
 			LeaveCurrentState();
 
