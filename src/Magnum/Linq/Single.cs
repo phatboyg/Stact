@@ -10,40 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Monads
+namespace Magnum.Linq
 {
 	using System;
+	using System.Collections.Generic;
+	using ObjectExtensions;
 
-	public class Identity<T>
+	public static class LinqSingleExtensions
 	{
-		public Identity(T value)
+		public static T SingleOr<T>(this IEnumerable<T> source, Func<T> onMissing)
 		{
-			Value = value;
-		}
+			source.MustNotBeNull("source");
+			onMissing.MustNotBeNull("onMissing");
 
-		public T Value { get; private set; }
+			using (var iterator = source.GetEnumerator())
+			{
+				if (!iterator.MoveNext())
+					return onMissing();
 
-		public static Func<T, T> Function
-		{
-			get { return x => x; }
-		}
-	}
+				T first = iterator.Current;
 
-	public static class ExtensionsToIdentity
-	{
-		public static Identity<T> ToIdentity<T>(this T value)
-		{
-			return new Identity<T>(value);
-		}
+				if (iterator.MoveNext())
+					throw new InvalidOperationException("Sequence contains more than one element");
 
-		public static Identity<U> SelectMany<T, U>(this Identity<T> id, Func<T, Identity<U>> k)
-		{
-			return k(id.Value);
-		}
-
-		public static Identity<V> SelectMany<T, U, V>(this Identity<T> id, Func<T, Identity<U>> k, Func<T, U, V> s)
-		{
-			return s(id.Value, k(id.Value).Value).ToIdentity();
+				return first;
+			}
 		}
 	}
 }

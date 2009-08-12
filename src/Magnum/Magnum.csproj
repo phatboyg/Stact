@@ -150,6 +150,10 @@
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
+    <Compile Include="Linq\Batch.cs" />
+    <Compile Include="Linq\Index.cs" />
+    <Compile Include="Linq\Merge.cs" />
+    <Compile Include="Linq\Single.cs" />
     <Compile Include="LocalContext.cs" />
     <Compile Include="Mail\FileMailServer.cs" />
     <Compile Include="Mail\IMailServer.cs" />
@@ -271,9 +275,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Collections\A Note About This Folder.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Linq\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

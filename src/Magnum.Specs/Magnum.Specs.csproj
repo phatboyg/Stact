@@ -82,6 +82,7 @@
     <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
     <Compile Include="Linq\FileRepository.cs" />
     <Compile Include="Linq\FlattenedObject_Specs.cs" />
+    <Compile Include="Linq\Index_Specs.cs" />
     <Compile Include="Metrics\Counter_Specs.cs" />
     <Compile Include="Monads\Parser_Specs.cs" />
     <Compile Include="Monads\TypeParser_Specs.cs" />
