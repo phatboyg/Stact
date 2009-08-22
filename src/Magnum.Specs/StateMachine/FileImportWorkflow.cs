@@ -27,13 +27,13 @@ namespace Magnum.Specs.StateMachine
                        {
                            Initially(
                                When(FileAvailable)
-                                   .And(details => Path.GetExtension(details.Path).ToLowerInvariant() == ".txt")
+                                   .Where(details => Path.GetExtension(details.Path).ToLowerInvariant() == ".txt")
                                    .Then((workflow, details) =>
                                              {
                                              })
                                    .TransitionTo(ProcessingTextFile),
                                When(FileAvailable)
-                                   .And(details => Path.GetExtension(details.Path).ToLowerInvariant() == ".dat")
+                                   .Where(details => Path.GetExtension(details.Path).ToLowerInvariant() == ".dat")
                                    .Then((workflow, details) =>
                                              {
                                              }));

@@ -41,14 +41,14 @@ namespace Magnum.Specs.StateMachine
 
 					Initially(
 						When(CommentCardReceived)
-							.And(card => card.IsComplaint)
+							.Where(card => card.IsComplaint)
 							.Then((workflow, message) =>
 								{
 									// send e-mail to manager about complaint
 								})
 							.TransitionTo(WaitingForManager),
 						When(CommentCardReceived)
-							.And(card => !card.IsComplaint)
+							.Where(card => !card.IsComplaint)
 							.TransitionTo(Completed),
 						When(OrderSubmitted)
 							.Then(workflow =>

@@ -27,9 +27,9 @@ namespace Magnum.StateMachine
 		{
 		}
 
-		public Expression<Func<TData, bool>> Condition { get; set; }
+		public Expression<Func<TData, bool>> Condition { get; private set; }
 
-		public DataEventAction<T, TData> And(Expression<Func<TData, bool>> condition)
+		public DataEventAction<T, TData> Where(Expression<Func<TData, bool>> condition)
 		{
 			Condition = condition;
 
