@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.StateMachine
 {
-	using System;
 	using Magnum.StateMachine;
 	using NUnit.Framework;
 
