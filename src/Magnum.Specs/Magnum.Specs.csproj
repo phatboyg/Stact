@@ -118,6 +118,7 @@
     <Compile Include="Serialization\TestSubjects\PrimitiveClass.cs" />
     <Compile Include="Serialization\XmlParser.cs" />
     <Compile Include="StateMachine\Anytime_Specs.cs" />
+    <Compile Include="StateMachine\Combine_Specs.cs" />
     <Compile Include="StateMachine\EventException_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />

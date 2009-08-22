@@ -221,6 +221,7 @@
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\BasicEventAction.cs" />
+    <Compile Include="StateMachine\EventCombiner.cs" />
     <Compile Include="StateMachine\DataEvent.cs" />
     <Compile Include="StateMachine\DataEventAction.cs" />
     <Compile Include="StateMachine\Event.cs" />

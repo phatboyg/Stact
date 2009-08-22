@@ -76,16 +76,6 @@ namespace Magnum.StateMachine
 			}
 		}
 
-		public void EnterState(T instance)
-		{
-			RaiseEvent(instance, _enter, null);
-		}
-
-		public void LeaveState(T instance)
-		{
-			RaiseEvent(instance, _leave, null);
-		}
-
 		public override string ToString()
 		{
 			return string.Format("{0} (State)", _name);

@@ -32,6 +32,7 @@ namespace Magnum.StateMachine
 		private static readonly Dictionary<string, State<T>> _states = new Dictionary<string, State<T>>();
 		private static State<T> _completedState;
 		private static State<T> _initialState;
+    	private static State<T> _anyState = new State<T>("Any");
 		private State<T> _currentState;
 
 		static StateMachine()
@@ -94,6 +95,7 @@ namespace Magnum.StateMachine
 			BasicEvent<T> eevent = BasicEvent<T>.GetEvent(raised);
 
 			_currentState.RaiseEvent(this as T, eevent, null);
+			_anyState.RaiseEvent(this as T, eevent, null);
 		}
 
 		/// <summary>
@@ -107,6 +109,7 @@ namespace Magnum.StateMachine
 			DataEvent<T, TData> eevent = DataEvent<T, TData>.GetEvent(raised);
 
 			_currentState.RaiseEvent(this as T, eevent, value);
+			_anyState.RaiseEvent(this as T, eevent, value);
 		}
 
 		protected internal virtual void ChangeCurrentState(State newState)
@@ -119,14 +122,15 @@ namespace Magnum.StateMachine
 		private void EnterState(State<T> state)
 		{
 			_currentState = state;
-			_currentState.EnterState(this as T);
+
+			RaiseEvent(state.Enter);
 		}
 
 		private void LeaveCurrentState()
 		{
 			if (_currentState == null) return;
 
-			_currentState.LeaveState(this as T);
+			RaiseEvent(_currentState.Leave);
 			_currentState = null;
 		}
 
@@ -224,7 +228,14 @@ namespace Magnum.StateMachine
 		/// <param name="actions"></param>
 		protected static void Anytime(params StateEventAction<T>[] actions)
 		{
-			_states.Values.Each(state => actions.Each(state.BindEventAction));
+			actions.Each(_anyState.BindEventAction);
+		}
+
+		protected static EventCombiner<T> Combine(params Event[] events)
+		{
+			var combiner = new EventCombiner<T>(_anyState.BindEventAction, events);
+
+			return combiner;
 		}
 
 		internal static State GetCompletedState()
