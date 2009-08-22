@@ -13,7 +13,6 @@
 namespace Magnum.StateMachine
 {
 	using System;
-	using System.Linq.Expressions;
 	using System.Text;
 	using Reflection;
 
@@ -68,7 +67,9 @@ namespace Magnum.StateMachine
 		public bool Inspect<T>(ExpressionAction<T> action)
 			where T : StateMachine<T>
 		{
-			Append("Expression: " + action.Expression);
+			string result = new StateMachineExpressionInspector().Inspect(action.Expression);
+
+			Append(result);
 			return true;
 		}
 
@@ -76,7 +77,9 @@ namespace Magnum.StateMachine
 			where T : StateMachine<T>
 			where TData : class
 		{
-			Append("Expression: " + action.Expression);
+			string result = new StateMachineExpressionInspector().Inspect(action.Expression);
+
+			Append(result);
 			return true;
 		}
 
@@ -132,15 +135,7 @@ namespace Magnum.StateMachine
 		private void AppendEventAction<T>(EventAction<T> eventAction)
 			where T : StateMachine<T>
 		{
-//			foreach (var action in eventAction.Actions)
-//			{
-//				Append(string.Format("(custom action)"));
-//			}
-//
-//			if(eventAction.ResultState != null)
-//				Append(string.Format("Transition To {0}", eventAction.ResultState.Name));
-
-			Append(string.Format("some event action"));
+			Append(string.Format("Then"));
 		}
 
 		public bool Inspect<T, TData>(DataEvent<T, TData> state)
@@ -184,42 +179,6 @@ namespace Magnum.StateMachine
 			machine.Inspect(inspector);
 
 			System.Diagnostics.Trace.WriteLine(inspector.Text);
-		}
-	}
-
-	public class StateMachineExpressionInspector :
-		ExpressionVisitor
-	{
-		private readonly StringBuilder _text = new StringBuilder();
-
-		public string Inspect(Expression expression)
-		{
-			base.Visit(expression);
-
-			return _text.ToString();
-		}
-
-		protected override Expression VisitMemberAccess(MemberExpression m)
-		{
-			_text.Append(string.Format("{0}", m.Member.Name));
-
-			return base.VisitMemberAccess(m);
-		}
-
-		protected override Expression Visit(Expression exp)
-		{
-			switch (exp.NodeType)
-			{
-				case ExpressionType.MemberAccess:
-				case ExpressionType.Parameter:
-					break;
-
-				default:
-					_text.AppendFormat("({0})", exp.NodeType);
-					break;
-			}
-
-			return base.Visit(exp);
 		}
 	}
 }

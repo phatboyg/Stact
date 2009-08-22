@@ -19,7 +19,7 @@ namespace Magnum.StateMachine
 	using System.Reflection;
 	using System.Runtime.Serialization;
 
-    [DebuggerDisplay("Current State = {CurrentState.Name}")]
+	[DebuggerDisplay("Current State = {CurrentState.Name}")]
 	public class StateMachine<T> :
 		StateMachine,
 		ISerializable,
@@ -28,11 +28,11 @@ namespace Magnum.StateMachine
 	{
 		private const string CompletedStateName = "Completed";
 		private const string InitialStateName = "Initial";
+		private static readonly State<T> _anyState = new State<T>("Any");
 		private static readonly Dictionary<string, BasicEvent<T>> _events = new Dictionary<string, BasicEvent<T>>();
 		private static readonly Dictionary<string, State<T>> _states = new Dictionary<string, State<T>>();
 		private static State<T> _completedState;
 		private static State<T> _initialState;
-    	private static State<T> _anyState = new State<T>("Any");
 		private State<T> _currentState;
 
 		static StateMachine()
@@ -54,7 +54,7 @@ namespace Magnum.StateMachine
 
 			_currentState = GetState(currentStateName);
 			if (_currentState == null)
-				throw new SerializationException("The state from the file was not valid for this version of the state machine: " + currentStateName);
+				throw new SerializationException("The serialized state is not valid for this version of the state machine: " + currentStateName);
 		}
 
 		/// <summary>
@@ -81,6 +81,8 @@ namespace Magnum.StateMachine
 						if (state != _initialState && state != _completedState)
 							state.Inspect(inspector);
 					}
+
+					_anyState.Inspect(inspector);
 
 					_completedState.Inspect(inspector);
 				});
@@ -200,7 +202,7 @@ namespace Magnum.StateMachine
 		/// </summary>
 		/// <typeparam name="TException"></typeparam>
 		/// <returns></returns>
-		protected static ExceptionAction<T,TException> InCaseOf<TException>() 
+		protected static ExceptionAction<T, TException> InCaseOf<TException>()
 			where TException : Exception
 		{
 			return new ExceptionAction<T, TException>();

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.StateMachine
 {
+	using System;
 	using Magnum.StateMachine;
 	using NUnit.Framework;
 
@@ -51,6 +52,14 @@ namespace Magnum.Specs.StateMachine
 			machine.UniverseIsExpanding.ShouldBeTrue();
 		}
 
+		[Test]
+		public void Should_be_visible_in_the_visualizer()
+		{
+			var machine = new AnytimeStateMachineTest();
+
+			StateMachineInspector.Trace(machine);
+		}
+
 
 		public class AnytimeStateMachineTest :
 			StateMachine<AnytimeStateMachineTest>
@@ -61,13 +70,23 @@ namespace Magnum.Specs.StateMachine
 					{
 						Anytime(
 							When(BigBang)
-								.Then(sm => sm.BigBangOccurred = true)
+								.Call(sm => SetBigBangOccurred(sm))
 								.Complete(),
 							When(Supernova)
 								.Then(sm => sm.SupernovaOccurred = true),
 							When(Completed.Enter)
-								.Then(sm => sm.UniverseIsExpanding = true));
+								.Call(sm => sm.OnCompleted()));
 					});
+			}
+
+			private static void SetBigBangOccurred(AnytimeStateMachineTest machine)
+			{
+				machine.BigBangOccurred = true;
+			}
+
+			private bool OnCompleted()
+			{
+				return UniverseIsExpanding = true;
 			}
 
 			public bool UniverseIsExpanding { get; private set; }
