@@ -195,6 +195,11 @@ namespace Magnum.StateMachine
 			return new DataEventAction<T, TData>(eevent);
 		}
 
+		/// <summary>
+		/// Defines an action to take if an exception occurs while the event is being handled
+		/// </summary>
+		/// <typeparam name="TException"></typeparam>
+		/// <returns></returns>
 		protected static ExceptionAction<T,TException> InCaseOf<TException>() 
 			where TException : Exception
 		{
