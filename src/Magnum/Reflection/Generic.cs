@@ -38,6 +38,11 @@ namespace Magnum.Reflection
 			return _typeCache.Call<T>(instance, methodName, args);
 		}
 
+		public static T Call<T>(this object instance, string methodName, Type[] argumentTypes, params object[] args)
+		{
+			return _typeCache.Call<T>(instance, methodName, argumentTypes, args);
+		}
+
 
 		private static readonly MethodCallTypeCache _typeCache = new MethodCallTypeCache();
 		private static readonly MethodCache _methodCache = new MethodCache();
