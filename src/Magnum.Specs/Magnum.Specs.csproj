@@ -64,6 +64,7 @@
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
+    <Compile Include="CEP\TimeBased_Specs.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
     <Compile Include="CommandLine\ArgumentWithSameFirstLetter.cs" />
     <Compile Include="CommandLine\Argument_Spec.cs" />
