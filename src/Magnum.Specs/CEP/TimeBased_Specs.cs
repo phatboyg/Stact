@@ -13,20 +13,69 @@ namespace Magnum.Specs.CEP
     public class TimeBased_Specs
     {
         [Test]
-        public void NAME()
+        public void One_NoExpire()
         {
             var o = new object();
             var i = 0;
             var mre = new ManualResetEvent(false);
-            var cq = new ThreadCommandQueue(10, 1);
+            var cq = new ThreadPoolCommandQueue();
             var q = new TimeBasedQueue<object>(cq, 1.Seconds(), (x)=>
             {
                 i++;
+                mre.Set();
             });
             q.Enqueue(o);
             cq.Run();
 
+
+            Assert.IsTrue(mre.WaitOne(3000));
             Assert.AreEqual(1, i);
+        }
+
+        [Test]
+        public void Two_NoExpire()
+        {
+            var o = new object();
+            var i = 0;
+            var mre = new ManualResetEvent(false);
+            var cq = new ThreadPoolCommandQueue();
+            var q = new TimeBasedQueue<object>(cq, 100.Seconds(), x =>
+            {
+                i++;
+                if(i==2)mre.Set();
+            });
+
+            q.Enqueue(o);
+            q.Enqueue(o);
+            cq.Run();
+
+
+            Assert.IsTrue(mre.WaitOne(3000));
+            Assert.AreEqual(2, i);
+        }
+
+        [Test, Ignore] //how to test
+        public void Two_OneExpire()
+        {
+            var o = new object();
+            var i = 0;
+            var mre = new ManualResetEvent(false);
+            var cq = new SynchronousCommandQueue();
+            var q = new TimeBasedQueue<object>(cq, 10.Milliseconds(), x =>
+            {
+                i++;
+                Thread.Sleep(25);
+            });
+
+
+            cq.Run();
+
+            q.Enqueue(o);
+            q.Enqueue(o);
+            q.Enqueue(o);
+
+            //Assert.IsTrue(mre.WaitOne(3000));
+            Assert.AreEqual(2, i);
         }
     }
 
