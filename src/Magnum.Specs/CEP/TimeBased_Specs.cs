@@ -18,14 +18,13 @@ namespace Magnum.Specs.CEP
             var o = new object();
             var i = 0;
             var mre = new ManualResetEvent(false);
-            var q = new TimeBasedQueue<object>(1.Seconds(), (x)=>
+            var cq = new ThreadCommandQueue(10, 1);
+            var q = new TimeBasedQueue<object>(cq, 1.Seconds(), (x)=>
             {
-                i = x.Count();
-                mre.Set();
+                i++;
             });
             q.Enqueue(o);
-
-            mre.WaitOne();
+            cq.Run();
 
             Assert.AreEqual(1, i);
         }
@@ -55,13 +54,13 @@ namespace Magnum.Specs.CEP
     {
         readonly CommandQueue _commandQueue;
         readonly TimeSpan _durationToLastInQueue;
-        readonly List<TimedEntry<T>> _eventsTracked;
+        readonly List<TimedEntry<T>> _eventsTracked = new List<TimedEntry<T>>();
 
         Action<IEnumerable<T>> _queryToApply;
 
-        public TimeBasedQueue(TimeSpan durationToLastInQueue, Action<IEnumerable<T>> queryToApply)
+        public TimeBasedQueue(CommandQueue queue, TimeSpan durationToLastInQueue, Action<IEnumerable<T>> queryToApply)
         {
-            _commandQueue = new ThreadCommandQueue(10, 1);
+            _commandQueue = queue;
             _durationToLastInQueue = durationToLastInQueue;
             _queryToApply = queryToApply;
         }
