@@ -14,9 +14,9 @@ namespace Magnum.Specs.CEP
             var eventStream = new List<object>()
                               {
                                   new object(),
-                                  new int(),
+                                  1,
                                   new object(),
-                                  new int()
+                                  2
                               };
             var channel = new ListChannel<object>(eventStream);
 
@@ -30,7 +30,8 @@ namespace Magnum.Specs.CEP
     {
         public MessageParser()
         {
-            InterestingMessages = Msg<int>();
+            InterestingMessages = Msg<int>(i=> i > 2);
+
             Element =from m in AnyMessage 
                      from i in InterestingMessages
                      select i;
@@ -73,10 +74,10 @@ namespace Magnum.Specs.CEP
                    select m;
         }
 
-        public Parser<object> Msg<T>(Predicate<object> predicate)
+        public Parser<object> Msg<T>(Predicate<T> predicate)
         {
             return from m in AnyMessage
-                   where predicate(m)
+                   where m is T && predicate((T)m)
                    select m;
         }
 
