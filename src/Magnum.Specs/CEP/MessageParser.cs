@@ -22,7 +22,7 @@ namespace Magnum.Specs.CEP
 
             var messages = new MessageParser().Parse(channel);
 
-            Assert.AreEqual(2, messages.Count());
+            Assert.AreEqual(1, messages.Count());
         }
     }
 
@@ -30,7 +30,7 @@ namespace Magnum.Specs.CEP
     {
         public MessageParser()
         {
-            InterestingMessages = Msg<int>(i=> i > 2);
+            InterestingMessages = Msg<int>(i => i > 2);
 
             Element =from m in AnyMessage 
                      from i in InterestingMessages
