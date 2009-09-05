@@ -31,8 +31,10 @@ namespace Magnum.Specs.CEP
         public MessageParser()
         {
             InterestingMessages = Msg<int>();
-            Element = from i in InterestingMessages select i;
-            All = from t in Element select t;
+            Element =from m in AnyMessage 
+                     from i in InterestingMessages
+                     select i;
+            All = Element;
         }
 
         public IEnumerable<object> Parse(Channel<object> channel)
@@ -105,6 +107,23 @@ namespace Magnum.Specs.CEP
                     return null;
 
                 return new Result<INPUT>(selector(result.Value), result.Rest);
+            };
+        }
+
+        public static Parser<INPUT> SelectMany<INPUT>(this Parser<INPUT> parser, Func<INPUT, Parser<INPUT>> selector, Func<INPUT, INPUT, INPUT> projector)
+        {
+            return input =>
+            {
+                Result<INPUT> result = parser(input);
+                if (result == null)
+                    return null;
+
+                INPUT val = result.Value;
+                Result<INPUT> nextResult = selector(val)(result.Rest);
+                if (nextResult == null)
+                    return null;
+
+                return new Result<INPUT>(projector(val, nextResult.Value), nextResult.Rest);
             };
         }
     }
