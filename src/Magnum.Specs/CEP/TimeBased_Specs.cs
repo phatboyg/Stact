@@ -12,6 +12,8 @@ namespace Magnum.Specs.CEP
     [TestFixture]
     public class TimeBased_Specs
     {
+
+
         [Test]
         public void One_NoExpire()
         {
@@ -24,6 +26,7 @@ namespace Magnum.Specs.CEP
                 i++;
                 mre.Set();
             });
+
             q.Enqueue(o);
             cq.Run();
 
@@ -59,12 +62,10 @@ namespace Magnum.Specs.CEP
         {
             var o = new object();
             var i = 0;
-            var mre = new ManualResetEvent(false);
             var cq = new SynchronousCommandQueue();
             var q = new TimeBasedQueue<object>(cq, 10.Milliseconds(), x =>
             {
                 i++;
-                Thread.Sleep(25);
             });
 
 
@@ -72,12 +73,18 @@ namespace Magnum.Specs.CEP
 
             q.Enqueue(o);
             q.Enqueue(o);
+            Thread.Sleep(12);
             q.Enqueue(o);
+
+            cq.Run();
 
             //Assert.IsTrue(mre.WaitOne(3000));
             Assert.AreEqual(2, i);
         }
     }
+
+
+
 
     [TestFixture]
     public class TimedEntry_Specs
