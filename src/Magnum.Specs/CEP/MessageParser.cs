@@ -30,12 +30,12 @@ namespace Magnum.Specs.CEP
     {
         public MessageParser()
         {
-            InterestingMessages = Msg<int>(i => i > 2);
+            InterestingMessages = Msg<int>(i => i > 1);
 
-            Element =from m in AnyMessage 
-                     from i in InterestingMessages
-                     select i;
-            All = Element;
+            Element = (from m in AnyMessage select null).Or(
+                from i in InterestingMessages select i);
+
+            All = from t in Element select t;
         }
 
         public IEnumerable<object> Parse(Channel<object> channel)
@@ -80,6 +80,13 @@ namespace Magnum.Specs.CEP
                    where m is T && predicate((T)m)
                    select m;
         }
+
+        public Parser<INPUT> Succeed<INPUT>(INPUT value)
+        {
+            return input => new Result<INPUT>(value, input);
+        }
+
+
 
         public Parser<object> All { get; private set; }
         public Parser<object> Element { get; private set; }
@@ -126,6 +133,12 @@ namespace Magnum.Specs.CEP
 
                 return new Result<INPUT>(projector(val, nextResult.Value), nextResult.Rest);
             };
+        }
+
+        public static Parser<INPUT> Or<INPUT>(this Parser<INPUT> first,
+                                                       Parser<INPUT> second)
+        {
+            return input => first(input) ?? second(input);
         }
     }
     public interface Channel<OF>
