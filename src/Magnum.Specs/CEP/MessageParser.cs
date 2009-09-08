@@ -22,7 +22,7 @@ namespace Magnum.Specs.CEP
 
             var messages = new MessageParser().Parse(channel);
 
-            Assert.AreEqual(1, messages.Count());
+            Assert.AreEqual(4, messages.Count());
         }
     }
 
@@ -32,8 +32,8 @@ namespace Magnum.Specs.CEP
         {
             InterestingMessages = Msg<int>(i => i > 1);
 
-            Element = (from m in AnyMessage select null).Or(
-                from i in InterestingMessages select i);
+            Element = (from m in AnyMessage select m).Or(
+                from i in InterestingMessages select new InterestingM((int)i));
 
             All = from t in Element select t;
         }
@@ -196,5 +196,15 @@ namespace Magnum.Specs.CEP
 
         public INPUT Value { get; private set; }
         public Channel<INPUT> Rest { get; private set; }
+    }
+
+    public class InterestingM
+    {
+        public InterestingM(int value)
+        {
+            Value = value;
+        }
+
+        public int Value { get; private set; }
     }
 }
