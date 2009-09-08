@@ -12,5 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Monads.Parser
 {
+    // Reference to further information
+    //
+    // http://blogs.msdn.com/lukeh/archive/2007/08/19/monadic-parser-combinators-using-c-3-0.aspx
+
     public delegate Result<TInput, TValue> Parser<TInput, TValue>(TInput input);
 }

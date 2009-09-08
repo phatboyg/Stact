@@ -185,6 +185,7 @@
     <Compile Include="Monads\List.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Parser\AbstractCharacterParser.cs" />
+    <Compile Include="Monads\Parser\AbstractParser.cs" />
     <Compile Include="Monads\Parser\MonadParserExtensions.cs" />
     <Compile Include="Monads\Parser\Parser.cs" />
     <Compile Include="Monads\Parser\Result.cs" />

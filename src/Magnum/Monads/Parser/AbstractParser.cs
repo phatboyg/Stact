@@ -12,21 +12,25 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Monads.Parser
 {
-    using System;
+    using System.Linq;
 
-    public abstract class AbstractCharacterParser<TInput> :
-        AbstractParser<TInput>
+    public abstract class AbstractParser<TInput>
     {
-        public abstract Parser<TInput, char> AnyChar { get; }
-
-        public Parser<TInput, char> Char(char ch)
+        public Parser<TInput, TValue> Succeed<TValue>(TValue value)
         {
-            return from c in AnyChar where c == ch select c;
+            return input => new Result<TInput, TValue>(value, input);
         }
 
-        public Parser<TInput, char> Char(Predicate<char> pred)
+        public Parser<TInput, TValue[]> Rep<TValue>(Parser<TInput, TValue> parser)
         {
-            return from c in AnyChar where pred(c) select c;
+            return Rep1(parser).Or(Succeed(new TValue[0]));
+        }
+
+        public Parser<TInput, TValue[]> Rep1<TValue>(Parser<TInput, TValue> parser)
+        {
+            return from x in parser
+                   from xs in Rep(parser)
+                   select (new[] {x}).Concat(xs).ToArray();
         }
     }
 }

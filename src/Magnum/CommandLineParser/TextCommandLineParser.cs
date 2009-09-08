@@ -50,8 +50,8 @@ namespace Magnum.CommandLineParser
 
             Switch = from w in Whitespace
                      from c in Char('-').Or(Char('/'))
-                     from arg in Argument
-                     select arg;
+                     from arg in Char(char.IsLetterOrDigit)
+                     select (ICommandLineElement) new SwitchElement(arg);
 
             Token = from w in Whitespace
                     from o in Char('[')

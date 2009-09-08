@@ -13,7 +13,6 @@
 namespace Magnum.Monads.Parser
 {
     using System;
-    using System.Linq;
 
     public static class MonadParserExtensions
     {
@@ -68,26 +67,6 @@ namespace Magnum.Monads.Parser
                                                                                           Parser<TInput, TSecondValue> second)
         {
             return input => second(first(input).Rest);
-        }
-    }
-
-    public abstract class Parser<TInput>
-    {
-        public Parser<TInput, TValue> Succeed<TValue>(TValue value)
-        {
-            return input => new Result<TInput, TValue>(value, input);
-        }
-
-        public Parser<TInput, TValue[]> Rep<TValue>(Parser<TInput, TValue> parser)
-        {
-            return Rep1(parser).Or(Succeed(new TValue[0]));
-        }
-
-        public Parser<TInput, TValue[]> Rep1<TValue>(Parser<TInput, TValue> parser)
-        {
-            return from x in parser
-                   from xs in Rep(parser)
-                   select (new[] {x}).Concat(xs).ToArray();
         }
     }
 }
