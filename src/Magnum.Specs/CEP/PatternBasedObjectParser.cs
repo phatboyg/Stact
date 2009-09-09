@@ -9,11 +9,15 @@ namespace Magnum.Specs.CEP
     {
         public PatternBasedObjectParser()
         {
-            PossibleAttackPattern = Rep(Obj<LoginFailed>().And(Obj<LoginFailed>()));
+            BadMessage = Obj<LoginFailed>();
+            PossibleAttackPattern = from a in BadMessage
+                                    from b in BadMessage
+                                    from c in BadMessage
+                                    select new PossibleBruteForceAttack(a,b,c);
 
             All = from o in AnyObject
                 from a in PossibleAttackPattern
-                  select new PossibleBruteForceAttack();
+                  select a;
         }
 
         public IEnumerable<PossibleBruteForceAttack> Parse(IEnumerable<object> inFeed)
@@ -27,7 +31,8 @@ namespace Magnum.Specs.CEP
             }
         }
 
-        public Parser<IEnumerable<object>, object[]> PossibleAttackPattern;
+        public Parser<IEnumerable<object>, PossibleBruteForceAttack> PossibleAttackPattern;
+        public Parser<IEnumerable<object>, object> BadMessage;
         public Parser<IEnumerable<object>, PossibleBruteForceAttack> All;
 
         public override Parser<IEnumerable<object>, object> AnyObject

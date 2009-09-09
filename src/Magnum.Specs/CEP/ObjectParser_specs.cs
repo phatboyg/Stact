@@ -13,15 +13,18 @@ namespace Magnum.Specs.CEP
             var list = new List<object>
                        {
                            new LoginSucceeded(),
-                           new LoginFailed(),
-                           new LoginFailed()
+                           new LoginFailed("a"),
+                           new LoginFailed("b"),
+                           new LoginFailed("c")
                        };
 
             var parser = new PatternBasedObjectParser();
 
             var output = parser.Parse(list);
+           
 
-            Assert.AreEqual(2, output.Count());
+            Assert.AreEqual(1, output.Count());
+    
         }
     }
 }
