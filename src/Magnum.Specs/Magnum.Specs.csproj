@@ -64,8 +64,12 @@
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
-    <Compile Include="CEP\MessageParser.cs" />
-    <Compile Include="CEP\TimeBased_Specs.cs" />
+    <Compile Include="CEP\MessagesToBeTestedWith.cs" />
+    <Compile Include="CEP\ObjectParser.cs" />
+    <Compile Include="CEP\ObjectParser_specs.cs" />
+    <Compile Include="CEP\Parser.cs" />
+    <Compile Include="CEP\PatternBasedObjectParser.cs" />
+    <Compile Include="CEP\Result.cs" />
     <Compile Include="CommandLineParser\Parser_Specs.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
     <Compile Include="CommandLine\ArgumentWithSameFirstLetter.cs" />
