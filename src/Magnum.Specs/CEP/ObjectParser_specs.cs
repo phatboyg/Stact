@@ -12,7 +12,7 @@ namespace Magnum.Specs.CEP
         {
             var list = new List<object>
                        {
-                           new LoginFailed(),
+                           new LoginSucceeded(),
                            new LoginFailed(),
                            new LoginFailed()
                        };
@@ -21,7 +21,7 @@ namespace Magnum.Specs.CEP
 
             var output = parser.Parse(list);
 
-            Assert.AreEqual(1, output.Count());
+            Assert.AreEqual(2, output.Count());
         }
     }
 }
