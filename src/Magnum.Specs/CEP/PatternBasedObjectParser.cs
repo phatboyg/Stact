@@ -9,11 +9,12 @@ namespace Magnum.Specs.CEP
     {
         public PatternBasedObjectParser()
         {
-            BadMessage = Obj<LoginFailed>();
+            BadMessage = Obj<LoginFailed, LoginAttempt>();
 
             PossibleAttackPattern = from a in BadMessage
                                     from b in BadMessage
                                     from c in BadMessage
+                                    where a.Username == b.Username && b.Username == c.Username
                                     select new PossibleBruteForceAttack(a,b,c);
 
             All = from o in AnyObject
@@ -32,11 +33,13 @@ namespace Magnum.Specs.CEP
             }
         }
 
+        
+
         public Parser<IEnumerable<object>, PossibleBruteForceAttack> PossibleAttackPattern;
-        public Parser<IEnumerable<object>, object> BadMessage;
+        public Parser<IEnumerable<object>, LoginAttempt> BadMessage;
         public Parser<IEnumerable<object>, PossibleBruteForceAttack> All;
 
-        public override Parser<IEnumerable<object>, object> AnyObject
+        public override sealed Parser<IEnumerable<object>, object> AnyObject
         {
             get { return input => input.Any() ? new Result<IEnumerable<object>, object>(input.First(), input.Skip(1).ToList()) : null; }
         }
@@ -55,11 +58,19 @@ namespace Magnum.Specs.CEP
         {
             return from o in AnyObject where pred(o) select o;
         }
+
         public Parser<TInputStream, object> Obj<T>()
         {
             return from o in AnyObject 
                    where o is T
                    select o;
+        }
+
+        public Parser<TInputStream, U> Obj<T,U>()
+        {
+            return from o in AnyObject
+                   where o is T
+                   select (U)o;
         }
     }
 

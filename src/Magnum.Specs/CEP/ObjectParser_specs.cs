@@ -14,8 +14,8 @@ namespace Magnum.Specs.CEP
                        {
                            new LoginSucceeded("a"),
                            new LoginFailed("b"),
-                           new LoginFailed("b"),
-                           new LoginFailed("c")
+                           new LoginFailed("a"),
+                           new LoginFailed("b")
                        };
 
             var parser = new PatternBasedObjectParser();
