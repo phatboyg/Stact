@@ -12,8 +12,8 @@ namespace Magnum.Specs.CEP
         {
             var list = new List<object>
                        {
-                           new LoginSucceeded(),
-                           new LoginFailed("a"),
+                           new LoginSucceeded("a"),
+                           new LoginFailed("b"),
                            new LoginFailed("b"),
                            new LoginFailed("c")
                        };

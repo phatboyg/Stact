@@ -1,20 +1,34 @@
 namespace Magnum.Specs.CEP
 {
-    public class LoginSucceeded
-    {
-        
-    }
+    using System;
 
-    public class LoginFailed
+    public class LoginSucceeded : LoginAttempt
     {
-        public LoginFailed(string password)
+        public LoginSucceeded(string username)
         {
-            Password = password;
+            Username = username;
         }
 
-        public string Password { get; set; }
+        public string Username
+        {
+            get; private set;
+        }
     }
 
+    public class LoginFailed : LoginAttempt
+    {
+        public LoginFailed(string username)
+        {
+            Username = username;
+        }
+
+        public string Username { get; private set; }
+    }
+
+    public interface LoginAttempt
+    {
+        string Username { get; }
+    }
     public class PossibleBruteForceAttack
     {
         public PossibleBruteForceAttack(params object[] messages)

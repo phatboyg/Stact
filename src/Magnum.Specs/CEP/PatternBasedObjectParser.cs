@@ -10,6 +10,7 @@ namespace Magnum.Specs.CEP
         public PatternBasedObjectParser()
         {
             BadMessage = Obj<LoginFailed>();
+
             PossibleAttackPattern = from a in BadMessage
                                     from b in BadMessage
                                     from c in BadMessage
@@ -37,7 +38,7 @@ namespace Magnum.Specs.CEP
 
         public override Parser<IEnumerable<object>, object> AnyObject
         {
-            get { return input => input.Count() > 0 ? new Result<IEnumerable<object>, object>(input.First(), input.Skip(1).ToList()) : null; }
+            get { return input => input.Any() ? new Result<IEnumerable<object>, object>(input.First(), input.Skip(1).ToList()) : null; }
         }
     }
 
