@@ -2,13 +2,8 @@ namespace Magnum.Specs.CEP
 {
     using System.Collections.Generic;
 
-    public interface ObjectParser
+    public interface ObjectParser<TInputStream, TOutputValue>
     {
-        IEnumerable<PatternMatches> Parse(IEnumerable<object> inFeed);
-    }
-
-    public interface PatternMatches
-    {
-        
+        IEnumerable<TOutputValue> Parse(TInputStream inFeed);
     }
 }

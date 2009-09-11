@@ -1,3 +1,5 @@
+using System;
+
 namespace Magnum.Specs.CEP
 {
     using System.Collections.Generic;
@@ -18,9 +20,9 @@ namespace Magnum.Specs.CEP
                            new LoginFailed("b")
                        };
 
-            var parser = new PatternBasedObjectParser();
+            var parser = new PossibleAttackPattern();
 
-            var output = parser.Parse(list);
+            var output = parser.Match(list);
            
 
             Assert.AreEqual(1, output.Count());
