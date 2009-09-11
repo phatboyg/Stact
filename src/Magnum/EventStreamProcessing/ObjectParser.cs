@@ -1,7 +1,7 @@
-namespace Magnum.Specs.CEP
-{
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
+namespace Magnum.EventStreamProcessing
+{
     public interface ObjectParser<TInputStream, TOutputValue>
     {
         IEnumerable<TOutputValue> Parse(TInputStream inFeed);

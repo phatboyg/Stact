@@ -1,4 +1,4 @@
-namespace Magnum.Specs.CEP
+namespace Magnum.EventStreamProcessing
 {
     public class Result<TUnconsummedInput, TValue>
     {

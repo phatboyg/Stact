@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -159,6 +159,10 @@
     <Compile Include="Data\UnitOfWork.cs" />
     <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
     <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="EventStreamProcessing\ObjectParser.cs" />
+    <Compile Include="EventStreamProcessing\Parser.cs" />
+    <Compile Include="EventStreamProcessing\PatternBasedObjectParser.cs" />
+    <Compile Include="EventStreamProcessing\Result.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
