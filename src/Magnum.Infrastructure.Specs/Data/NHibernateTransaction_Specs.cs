@@ -15,7 +15,7 @@ namespace Magnum.Infrastructure.Specs.Data
 	using System;
 	using Infrastructure.Data;
 	using Magnum.Specs;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 	using NHibernate;
 	using Rhino.Mocks;
 
@@ -23,9 +23,10 @@ namespace Magnum.Infrastructure.Specs.Data
 	public class NHibernateTransaction_Specs
 	{
 		[Test]
+        [ExpectedException(typeof(ArgumentNullException))]
 		public void Ctor_Throws_ArgumentNullException_When_ITransation_Parameter_Is_Null()
 		{
-			Assert.Throws<ArgumentNullException>(() => new NHibernateTransaction(null, x => { }, y => { }));
+			new NHibernateTransaction(null, x => { }, y => { });
 		}
 
 		[Test]

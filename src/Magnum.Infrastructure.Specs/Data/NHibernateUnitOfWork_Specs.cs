@@ -16,7 +16,7 @@ namespace Magnum.Infrastructure.Specs.Data
 	using System.Data;
 	using Infrastructure.Data;
 	using Magnum.Specs;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 	using NHibernate;
 	using Rhino.Mocks;
 
@@ -24,9 +24,10 @@ namespace Magnum.Infrastructure.Specs.Data
 	public class NHibernateUnitOfWork_Specs
 	{
 		[Test]
+        [ExpectedException(typeof(ArgumentNullException))]
 		public void Ctor_Throws_ArgumentNullException_When_ISession_Parameter_Is_Null()
 		{
-			Assert.Throws<ArgumentNullException>(() => new NHibernateUnitOfWork(null));
+			new NHibernateUnitOfWork(null);
 		}
 
 		[Test]
@@ -74,6 +75,7 @@ namespace Magnum.Infrastructure.Specs.Data
 		}
 
 		[Test]
+        [ExpectedException(typeof(InvalidOperationException))]
 		public void BeginTransaction_Throws_InvalidOperationException_When_Transaction_Already_Running()
 		{
 			var mockSession = MockRepository.GenerateStub<ISession>();
@@ -84,7 +86,7 @@ namespace Magnum.Infrastructure.Specs.Data
 			unitOfWork.BeginTransaction();
 
 			unitOfWork.IsInTransaction.ShouldBeTrue();
-			Assert.Throws<InvalidOperationException>(() => unitOfWork.BeginTransaction());
+            unitOfWork.BeginTransaction();
 		}
 
 		[Test]
@@ -138,6 +140,7 @@ namespace Magnum.Infrastructure.Specs.Data
 		}
 
 		[Test]
+        [ExpectedException(typeof(Exception))]
 		public void TransactionalFlush_Rollsback_Transaction_When_Flush_Throws_Exception()
 		{
 			var mockSession = MockRepository.GenerateMock<ISession>();
@@ -151,7 +154,7 @@ namespace Magnum.Infrastructure.Specs.Data
 			mockTransaction.Expect(x => x.Rollback());
 
 			var unitOfWork = new NHibernateUnitOfWork(mockSession);
-			Assert.Throws<Exception>(unitOfWork.Commit);
+			unitOfWork.Commit();
 
 			mockSession.VerifyAllExpectations();
 			mockTransaction.VerifyAllExpectations();

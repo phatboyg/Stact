@@ -17,7 +17,7 @@ namespace Magnum.Infrastructure.Specs.StateMachine
 	using Infrastructure.Data;
 	using Magnum.Data;
 	using Magnum.Specs.StateMachine;
-	using MbUnit.Framework;
+	using NUnit.Framework;
 	using NHibernate;
 	using NHibernate.Cfg;
 	using NHibernate.Tool.hbm2ddl;
