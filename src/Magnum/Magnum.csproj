@@ -149,6 +149,11 @@
     <Compile Include="Concurrency\ConcurrentStack.cs" />
     <Compile Include="Concurrency\SingleLinkNode.cs" />
     <Compile Include="Concurrency\SynchronizationMethods.cs" />
+    <Compile Include="Configuration\Client\IReadOnlySettings.cs" />
+    <Compile Include="Configuration\Client\IReadWriteSettings.cs" />
+    <Compile Include="Configuration\Client\ISetting.cs" />
+    <Compile Include="Configuration\Client\SettingEntry.cs" />
+    <Compile Include="Configuration\Client\SettingsManager.cs" />
     <Compile Include="Cryptography\EncryptedText.cs" />
     <Compile Include="Cryptography\EncryptedStream.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
