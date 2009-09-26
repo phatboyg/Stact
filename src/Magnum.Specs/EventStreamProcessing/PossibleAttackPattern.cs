@@ -10,8 +10,9 @@ namespace Magnum.Specs.CEP
         public PossibleAttackPattern()
         {
             //Define( ()=> {}); ????
-            BadMessage = Obj<LoginFailed, LoginAttempt>();
+            BadMessage = Obj<LoginFailed, LoginFailed>();
 
+            //how to ignore the success?
             ThePattern = from a in BadMessage
                          from b in BadMessage
                          from c in BadMessage
@@ -23,7 +24,7 @@ namespace Magnum.Specs.CEP
                   select a;
         }
         public Parser<IEnumerable<object>, PossibleBruteForceAttack> ThePattern;
-        public Parser<IEnumerable<object>, LoginAttempt> BadMessage;
+        public Parser<IEnumerable<object>, LoginFailed> BadMessage;
         public Parser<IEnumerable<object>, PossibleBruteForceAttack> All;
 
         public override sealed Parser<IEnumerable<object>, object> AnyObject

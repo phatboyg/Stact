@@ -12,13 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.CEP
 {
+    using System;
     using System.Collections.Generic;
-    using NUnit.Framework;
     using System.Linq;
+    using Magnum.Pipeline;
+    using NUnit.Framework;
 
     [TestFixture]
     public class ObjectParser_specs
     {
+     
+
         [Test]
         public void Three_failed_attempts_in_a_row_should_fire_BruteForceMessage()
         {
@@ -32,11 +36,37 @@ namespace Magnum.Specs.CEP
 
             var parser = new PossibleAttackPattern();
 
-            var output = parser.Match(list);
-           
+            IEnumerable<PossibleBruteForceAttack> output = parser.Match(list);
+
 
             Assert.AreEqual(1, output.Count());
-    
+        }
+
+        [Test]
+        public void Three_failed_attempts_in_a_row_should_fire_BruteForceMessage_with_other_user_interuption()
+        {
+            var list = new List<LoginAttempt>
+                       {
+                           new LoginFailed("b"),
+                           new LoginFailed("b"),
+                           new LoginSucceeded("a"),
+                           new LoginFailed("b")
+                       };
+
+            var b = from a in list
+                    group a by a.Username;
+
+            var x = from a in b
+                    from p in a
+                    select (object)p;
+
+            var parser = new PossibleAttackPattern();
+
+
+            IEnumerable<PossibleBruteForceAttack> output = parser.Match(new List<object>(x));
+
+
+            Assert.AreEqual(1, output.Count());
         }
     }
 }
