@@ -23,6 +23,10 @@ namespace Magnum.CommandLineParser
             Whitespace = Rep(Char(' ').Or(Char('\t').Or(Char('\n')).Or(Char('\r'))));
             NewLine = Rep(Char('\r').Or(Char('\n')));
 
+        	EscChar = (from bs in Char('\\')
+        	          from ch in Char('\\').Or(Char('\"')).Or(Char('-')).Or(Char('/')).Or(Char('\'')) select ch)
+					   .Or(from ch in Char(x => x != '"') select ch);
+				
             Id = from w in Whitespace
                  from c in Char(char.IsLetter)
                  from cs in Rep(Char(char.IsLetterOrDigit))
@@ -31,18 +35,18 @@ namespace Magnum.CommandLineParser
             Argument = (from c in Char('a') select (ICommandLineElement) new SwitchElement(c))
                 .Or(from c in Char('b') select (ICommandLineElement) new SwitchElement(c));
 
-            Definition = (from w in Whitespace
-                          from c in Char('-').Or(Char('/'))
-                          from key in Id
-                          from eq in Char(':').Or(Char('='))
-                          from value in Value
-                          select (ICommandLineElement) new DefinitionElement(key, value))
-                .Or(from w in Whitespace
-                    from c in Char('-').Or(Char('/'))
-                    from key in Id
-                    from ws in Whitespace
-                    from oq in Char('"')
-                    from value in Rep(Char(x => x != '"'))
+        	Definition = (from w in Whitespace
+        	              from c in Char('-').Or(Char('/'))
+        	              from key in Id
+        	              from eq in Char(':').Or(Char('='))
+        	              from value in Value
+        	              select (ICommandLineElement) new DefinitionElement(key, value))
+        		.Or(from w in Whitespace
+        		    from c in Char('-').Or(Char('/'))
+        		    from key in Id
+        		    from ws in Whitespace
+        		    from oq in Char('"')
+        		    from value in Rep(EscChar)
                     from cq in Char('"')
                     select (ICommandLineElement) new DefinitionElement(key, value.Aggregate("", (s, ch) => s + ch)));
 
@@ -69,6 +73,8 @@ namespace Magnum.CommandLineParser
         }
 
         public Parser<TInput, ICommandLineElement> Definition { get; set; }
+
+        public Parser<TInput, char> EscChar { get; private set; }
 
         public Parser<TInput, string> Id { get; private set; }
         public Parser<TInput, string> Token { get; private set; }

@@ -40,6 +40,9 @@ namespace Magnum.Pipeline.Visitors
                 case PipeSegmentType.MessageConsumer:
                     return VisitMessageConsumer((MessageConsumerSegment) pipe);
 
+				case PipeSegmentType.IntervalMessageConsumer:
+            		return VisitIntervalMessageConsumer((IntervalMessageConsumerSegment) pipe);
+
                 case PipeSegmentType.RecipientList:
                     return VisitRecipientList((RecipientListSegment) pipe);
 
@@ -105,6 +108,14 @@ namespace Magnum.Pipeline.Visitors
         }
 
         protected virtual Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
+        {
+            if (messageConsumer == null)
+                return null;
+
+            return messageConsumer;
+        }
+
+        protected virtual Pipe VisitIntervalMessageConsumer(IntervalMessageConsumerSegment messageConsumer)
         {
             if (messageConsumer == null)
                 return null;

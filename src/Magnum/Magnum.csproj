@@ -211,6 +211,7 @@
     <Compile Include="Pipeline\Messages\SubscriberRemoved.cs" />
     <Compile Include="Pipeline\PipelineException.cs" />
     <Compile Include="Pipeline\Segments\AsyncMessageConsumerSegment.cs" />
+    <Compile Include="Pipeline\Segments\IntervalMessageConsumerSegment.cs" />
     <Compile Include="Pipeline\SubscriberBinder.cs" />
     <Compile Include="Pipeline\Segments\InterceptorConfigurator.cs" />
     <Compile Include="Pipeline\Segments\InterceptorSegment.cs" />

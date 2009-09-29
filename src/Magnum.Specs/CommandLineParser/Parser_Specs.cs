@@ -31,5 +31,19 @@ namespace Magnum.Specs.CommandLineParser
             parser.Parse(commandLine)
                 .Each(x => { Trace.WriteLine(x.ToString()); });
         }
+
+    	[Test]
+    	public void Should_handle_escape_characters_in_the_line()
+    	{
+			string commandLine = "cmd -file \"\\\"c:\\\\system\\\\something\\'s cooking.txt\\\"\"";
+
+			ICommandLineParser parser = new MonadicCommandLineParser();
+
+			Trace.WriteLine("Command Line: " + commandLine);
+
+			parser.Parse(commandLine)
+				.Each(x => { Trace.WriteLine(x.ToString()); });
+    		
+    	}
     }
 }

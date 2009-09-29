@@ -45,6 +45,11 @@ namespace Magnum.Pipeline.Segments
             return new InputSegment(pipe);
         }
 
+		public static InputSegment New()
+		{
+			return Input(End());	
+		}
+
         public static EndSegment End()
         {
             return End<object>();
@@ -123,7 +128,13 @@ namespace Magnum.Pipeline.Segments
             return new AsyncMessageConsumerSegment<TConsumer, TMessage>(getConsumer);
         }
 
-        public static InterceptorSegment Interceptor<T>(Pipe pipe, Action<IInterceptorConfigurator<T>> configureAction)
+		public static IntervalMessageConsumerSegment IntervalConsumer<T>(TimeSpan interval, MessageConsumer<IList<T>> consumer) 
+			where T : class
+		{
+			return new IntervalMessageConsumerSegment<T>(interval, consumer);
+		}
+
+    	public static InterceptorSegment Interceptor<T>(Pipe pipe, Action<IInterceptorConfigurator<T>> configureAction)
             where T : class
         {
             var configurator = new InterceptorConfigurator<T>();

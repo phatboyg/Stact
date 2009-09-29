@@ -12,11 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Pipeline
 {
-    public static class ExtensionMethods
+	using Segments;
+
+	public static class ExtensionMethods
     {
         public static ISubscriptionScope NewSubscriptionScope(this Pipe pipe)
         {
             return new SubscriptionScope(pipe);
         }
+
+		public static Pipe New(this Pipe ignored)
+		{
+			return PipeSegment.Input(PipeSegment.End());
+		}
     }
 }

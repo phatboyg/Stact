@@ -38,13 +38,13 @@ namespace Magnum.Pipeline.Segments
 		private readonly CommandQueue _commandQueue = new ThreadPoolCommandQueue();
 
 		public AsyncMessageConsumerSegment(TConsumer consumer)
-			: base(typeof (TMessage), typeof(TConsumer))
+			: base(typeof (TMessage), typeof (TConsumer))
 		{
 			_getConsumer = () => consumer;
 		}
 
 		public AsyncMessageConsumerSegment(Func<TConsumer> getConsumer)
-			: base(typeof (TMessage), typeof(TConsumer))
+			: base(typeof (TMessage), typeof (TConsumer))
 		{
 			_getConsumer = getConsumer;
 		}

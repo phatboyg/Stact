@@ -94,6 +94,7 @@
     <Compile Include="Pipeline\AutoRegister_Specs.cs" />
     <Compile Include="Pipeline\Consumers\LongRunningMessageConsumer.cs" />
     <Compile Include="Pipeline\Examples.cs" />
+    <Compile Include="Pipeline\IntervalSubscriber_Specs.cs" />
     <Compile Include="Pipeline\Messages\ClaimCreated.cs" />
     <Compile Include="Pipeline\Messages\CustomerChanged.cs" />
     <Compile Include="Pipeline\Messages\CustomerRatingDowngraded.cs" />

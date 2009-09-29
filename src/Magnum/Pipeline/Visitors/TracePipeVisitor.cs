@@ -60,6 +60,13 @@ namespace Magnum.Pipeline.Visitors
             return base.VisitMessageConsumer(messageConsumer);
         }
 
+		protected override Pipe VisitIntervalMessageConsumer(IntervalMessageConsumerSegment messageConsumer)
+		{
+			WriteLine(messageConsumer, "Consumer Type = " + messageConsumer.ConsumerType);
+
+			return base.VisitIntervalMessageConsumer(messageConsumer);
+		}
+
 		protected override Pipe VisitAsyncMessageConsumer(AsyncMessageConsumerSegment messageConsumer)
 		{
 			WriteLine(messageConsumer, "Consumer Type = " + messageConsumer.ConsumerType);

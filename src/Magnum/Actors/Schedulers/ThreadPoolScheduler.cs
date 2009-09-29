@@ -127,6 +127,8 @@ namespace Magnum.Actors.Schedulers
 
 		private bool ScheduleTimerCallback()
 		{
+			_waiter = null;
+
 			if (_pending.Count <= 0)
 				return true;
 

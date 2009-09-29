@@ -23,7 +23,7 @@ namespace Magnum.Pipeline
     {
         private readonly Pipe _pipe;
         private bool _disposed;
-        private IList<Pipe> _disposables;
+        private readonly IList<Pipe> _disposables;
 
         public SubscriptionScope(Pipe pipe)
         {
@@ -67,6 +67,17 @@ namespace Magnum.Pipeline
             _disposables.Add(segment);
         }
 
+        public void Subscribe<T>(TimeSpan interval, MessageConsumer<IList<T>> consumer)
+            where T : class
+        {
+			Pipe segment = PipeSegment.IntervalConsumer(interval, consumer);
+
+            var binder = new SubscriberBinder(segment);
+            binder.Bind(_pipe);
+
+            _disposables.Add(segment);
+        }
+
         public void Subscribe<T>(T consumer)
             where T : class
         {
@@ -91,7 +102,7 @@ namespace Magnum.Pipeline
 				.Each(type => this.Call("SubscribeAsyncComponent", new[] { null, type.GetGenericArguments()[0] }, getConsumer));
 		}
 
-        // ReSharper disable UnusedMember.Local
+    	// ReSharper disable UnusedMember.Local
         private void SubscribeConsumer<TConsumer, TMessage>(TConsumer consumer)
             // ReSharper restore UnusedMember.Local
             where TConsumer : IConsumer<TMessage>
