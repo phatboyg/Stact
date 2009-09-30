@@ -13,25 +13,47 @@
 namespace Magnum.Parsers
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
 	using System.Linq.Expressions;
 
 	public class RangeElement :
 		IRangeElement
 	{
-		public string Begin { get; private set; }
-		public string End { get; private set; }
-
 		public RangeElement(string begin, string end)
 		{
-			Begin = begin;
-			End = end;
+			Begin = new GreaterThanElement(begin);
+			End = new LessThanElement(end);
+		}
+
+		public GreaterThanElement Begin { get; private set; }
+		public LessThanElement End { get; private set; }
+
+		public bool Includes(IRangeElement element)
+		{
+			if (element == null)
+				return false;
+
+			if (Begin.Includes(element))
+				return true;
+
+			if (End.Includes(element))
+				return true;
+
+			return false;
+		}
+
+		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		{
+			Expression<Func<T, bool>> begin = Begin.GetQueryExpression(memberExpression);
+			Expression<Func<T, bool>> end = End.GetQueryExpression(memberExpression);
+
+			BinaryExpression range = Expression.MakeBinary(ExpressionType.And, begin.Body, end.Body);
+
+			return Expression.Lambda<Func<T, bool>>(range, new[] {begin.Parameters[0]});
 		}
 
 		public override string ToString()
 		{
-			return string.Format("{0}-{1}", Begin, End);
+			return string.Format("{0}-{1}", Begin.ToString().Trim('-'), End.ToString().Trim('-'));
 		}
 
 		public bool Equals(RangeElement other)
@@ -55,50 +77,6 @@ namespace Magnum.Parsers
 			{
 				return ((Begin != null ? Begin.GetHashCode() : 0)*397) ^ (End != null ? End.GetHashCode() : 0);
 			}
-		}
-
-		public bool Includes(IRangeElement element)
-		{
-			if (element == null)
-				return false;
-
-			if (element is StartsWithElement)
-				return Includes((StartsWithElement) element);
-
-			if (element is RangeElement)
-				return Includes((RangeElement) element);
-
-			return false;
-		}
-
-		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
-		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
-
-			return elements.Where(expression.Compile());
-		}
-
-		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
-		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
-
-			return elements.Where(expression);
-		}
-
-		private bool Includes(StartsWithElement element)
-		{
-			if (element.Start.CompareTo(Begin) >= 0 && element.Start.CompareTo(End) <= 0)
-				return true;
-
-			return false;
-		}
-
-		private bool Includes(RangeElement element)
-		{
-			if (element.Begin.CompareTo(Begin) >= 0 && element.End.CompareTo(End) <= 0)
-				return true;
-
-			return false;
 		}
 	}
 }

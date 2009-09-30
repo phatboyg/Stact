@@ -63,11 +63,9 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
 		{
-			Expression<Func<T, bool>> expression = memberExpression.ToStartsWithExpression(Start);
-
-			return elements.Where(expression.Compile());
+			return memberExpression.ToStartsWithExpression(Start);
 		}
 
 		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)

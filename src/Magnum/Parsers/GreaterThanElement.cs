@@ -13,24 +13,17 @@
 namespace Magnum.Parsers
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
 	using System.Linq.Expressions;
 
 	public class GreaterThanElement :
 		IRangeElement
 	{
-		public string Begin { get; private set; }
-
 		public GreaterThanElement(string begin)
 		{
 			Begin = begin;
 		}
 
-		public override string ToString()
-		{
-			return string.Format("{0}-", Begin);
-		}
+		public string Begin { get; private set; }
 
 		public bool Includes(IRangeElement element)
 		{
@@ -46,34 +39,14 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
 		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
-
-			return elements.Where(expression.Compile());
+			return memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
 		}
 
-		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
+		public override string ToString()
 		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
-
-			return elements.Where(expression);
-		}
-
-		private bool Includes(StartsWithElement element)
-		{
-			if (element.Start.CompareTo(Begin) >= 0)
-				return true;
-
-			return false;
-		}
-
-		private bool Includes(RangeElement element)
-		{
-			if (element.Begin.CompareTo(Begin) >= 0)
-				return true;
-
-			return false;
+			return string.Format("{0}-", Begin);
 		}
 
 		public bool Equals(GreaterThanElement other)
@@ -94,6 +67,22 @@ namespace Magnum.Parsers
 		public override int GetHashCode()
 		{
 			return (Begin != null ? Begin.GetHashCode() : 0);
+		}
+
+		private bool Includes(StartsWithElement element)
+		{
+			if (element.Start.CompareTo(Begin) >= 0)
+				return true;
+
+			return false;
+		}
+
+		private bool Includes(RangeElement element)
+		{
+			if (element.Begin.Begin.CompareTo(Begin) >= 0)
+				return true;
+
+			return false;
 		}
 	}
 }

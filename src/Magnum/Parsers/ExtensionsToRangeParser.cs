@@ -81,7 +81,7 @@ namespace Magnum.Parsers
 		{
 			foreach (IRangeElement rangeElement in rangeElements)
 			{
-				elements = rangeElement.Where(elements, memberExpression);
+				elements = elements.Where(rangeElement.GetQueryExpression(memberExpression));
 			}
 
 			return elements;
@@ -91,7 +91,7 @@ namespace Magnum.Parsers
 		{
 			foreach (IRangeElement rangeElement in rangeElements)
 			{
-				elements = rangeElement.Where(elements, memberExpression);
+				elements = elements.Where(rangeElement.GetQueryExpression(memberExpression).Compile());
 			}
 
 			return elements;

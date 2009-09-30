@@ -421,6 +421,24 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Projecting_a_range_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "G-O";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(2);
+		}
+	}
+
+	[TestFixture]
 	public class Projecting_a_starts_with_to_an_expression :
 		When_using_the_range_parser_with_the_expression_projector
 	{

@@ -13,25 +13,17 @@
 namespace Magnum.Parsers
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 
 	public class LessThanElement :
 		IRangeElement
 	{
-		public string End { get; private set; }
-
 		public LessThanElement(string end)
 		{
 			End = end;
 		}
 
-		public override string ToString()
-		{
-			return string.Format("-{0}", End);
-		}
+		public string End { get; private set; }
 
 		public bool Includes(IRangeElement element)
 		{
@@ -47,39 +39,14 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		private string GetEndForQuery()
+		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
 		{
-			return End + new string('z', 64);
+			return memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
 		}
 
-		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
+		public override string ToString()
 		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
-
-			return elements.Where(expression.Compile());
-		}
-
-		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
-		{
-			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
-
-			return elements.Where(expression);
-		}
-
-		private bool Includes(StartsWithElement element)
-		{
-			if (element.Start.CompareTo(End) <= 0)
-				return true;
-
-			return false;
-		}
-
-		private bool Includes(RangeElement element)
-		{
-			if (element.End.CompareTo(End) <= 0)
-				return true;
-
-			return false;
+			return string.Format("-{0}", End);
 		}
 
 		public bool Equals(LessThanElement other)
@@ -94,12 +61,33 @@ namespace Magnum.Parsers
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
 			if (obj.GetType() != typeof (LessThanElement)) return false;
-			return Equals((LessThanElement)obj);
+			return Equals((LessThanElement) obj);
 		}
 
 		public override int GetHashCode()
 		{
 			return (End != null ? End.GetHashCode() : 0);
+		}
+
+		private string GetEndForQuery()
+		{
+			return End + new string('z', 64);
+		}
+
+		private bool Includes(StartsWithElement element)
+		{
+			if (element.Start.CompareTo(End) <= 0)
+				return true;
+
+			return false;
+		}
+
+		private bool Includes(RangeElement element)
+		{
+			if (element.End.End.CompareTo(End) <= 0)
+				return true;
+
+			return false;
 		}
 	}
 }
