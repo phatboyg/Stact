@@ -106,4 +106,363 @@
     <Variables />
     <CustomProperties />
   </Template>
+  <Template uid="13b6cdbb-c572-4b23-b4cd-43ba1af4edb2" shortcut="dispose" description="Disposable Implementation" text="private bool _disposed;&#xD;&#xA;&#xD;&#xA;public void Dispose()&#xD;&#xA;{&#xD;&#xA;	Dispose(true);&#xD;&#xA;	GC.SuppressFinalize(this);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;~$CLASSNAME$()&#xD;&#xA;{&#xD;&#xA;	Dispose(false);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;private void Dispose(bool disposing)&#xD;&#xA;{&#xD;&#xA;	if(_disposed) return;&#xD;&#xA;	if(disposing)&#xD;&#xA;	{&#xD;&#xA;		$END$&#xD;&#xA;	}&#xD;&#xA;	&#xD;&#xA;	_disposed = true;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="CLASSNAME" expression="typeName()" initialRange="-1" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="67d591af-2cfe-42a3-abd9-53916573ac10" shortcut="gm" description="Generate Mock" text="Rhino.Mocks.MockRepository.GenerateMock&lt;$INT$&gt;();$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Expression" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="INT" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="89107012-afe2-452c-a88b-1dde04c1cd61" shortcut="nevent" description="New Event" text="public static Event $EVENT$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="EVENT" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="f99d1ce7-a95b-4868-9bcf-5f92f20a6f1b" shortcut="nlog" description="Logger" text="private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof($TYPE$));$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="typeName()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="STATE" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="d358e449-17c2-4022-8959-edea50795e4c" shortcut="ntest" description="NUnit Test" text="[NUnit.Framework.Test]&#xD;&#xA;public void $NAME$()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="58f8a558-a479-4a7e-9066-ef09c7cbd2d6" shortcut="pget" description="Property Getter" text="$TYPE$ $NAME$ { get; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="e6b34d48-8e17-40f7-9128-bc5d61b6af6f" shortcut="pgset" description="Property Get/Set" text="$TYPE$ $NAME$ { get; set; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="cf9b1bde-340e-4b07-aaa8-12edbcf7c277" shortcut="setup" description="Test Setup" text="[NUnit.Framework.SetUp]&#xD;&#xA;public void Setup()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;	&#xD;&#xA;	EstablishContext();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void EstablishContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="70fa6ed1-ca16-4dae-b10a-fdeda7ec2d9c" shortcut="teardown" description="Test Teardown" text="[NUnit.Framework.TearDown]&#xD;&#xA;public void Teardown()&#xD;&#xA;{&#xD;&#xA;	ExitContext();&#xD;&#xA;&#xD;&#xA;	$END$&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void ExitContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="13b6cdbb-c572-4b23-b4cd-43ba1af4edb2" shortcut="dispose" description="Disposable Implementation" text="private bool _disposed;&#xD;&#xA;&#xD;&#xA;public void Dispose()&#xD;&#xA;{&#xD;&#xA;	Dispose(true);&#xD;&#xA;	GC.SuppressFinalize(this);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;~$CLASSNAME$()&#xD;&#xA;{&#xD;&#xA;	Dispose(false);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;private void Dispose(bool disposing)&#xD;&#xA;{&#xD;&#xA;	if(_disposed) return;&#xD;&#xA;	if(disposing)&#xD;&#xA;	{&#xD;&#xA;		$END$&#xD;&#xA;	}&#xD;&#xA;	&#xD;&#xA;	_disposed = true;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="CLASSNAME" expression="typeName()" initialRange="-1" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="367bb071-4ca9-4b46-9ba3-6742ea477b1d" shortcut="fnhmap" description="Fluent NHibernate Class Map" text="public class $FILE$Map :&#xD;&#xA;            FluentNHibernate.Mapping.ClassMap&lt;$FILE$&gt;&#xD;&#xA;        {&#xD;&#xA;            public $FILE$Map()&#xD;&#xA;            {&#xD;&#xA;                WithTable(&quot;$FILE2$&quot;);&#xD;&#xA;&#xD;&#xA;                Id(x =&gt; x.Id);&#xD;&#xA;                $END$&#xD;&#xA;            }&#xD;&#xA;        }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeAndNamespace" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="FILE" expression="getFileNameWithoutExtension()" initialRange="0" />
+      <Variable name="FILE2" expression="getFileNameWithoutExtension()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="67d591af-2cfe-42a3-abd9-53916573ac10" shortcut="gm" description="Generate Mock" text="Rhino.Mocks.MockRepository.GenerateMock&lt;$INT$&gt;();$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Expression" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="INT" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="89107012-afe2-452c-a88b-1dde04c1cd61" shortcut="nevent" description="New Event" text="public static Event $EVENT$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="EVENT" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="f99d1ce7-a95b-4868-9bcf-5f92f20a6f1b" shortcut="nlog" description="Logger" text="private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof($TYPE$));$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="typeName()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="STATE" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="d358e449-17c2-4022-8959-edea50795e4c" shortcut="ntest" description="NUnit Test" text="[NUnit.Framework.Test]&#xD;&#xA;public void $NAME$()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="58f8a558-a479-4a7e-9066-ef09c7cbd2d6" shortcut="pget" description="Property Getter" text="$TYPE$ $NAME$ { get; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="e6b34d48-8e17-40f7-9128-bc5d61b6af6f" shortcut="pgset" description="Property Get/Set" text="$TYPE$ $NAME$ { get; set; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="cf9b1bde-340e-4b07-aaa8-12edbcf7c277" shortcut="setup" description="Test Setup" text="[NUnit.Framework.SetUp]&#xD;&#xA;public void Setup()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;	&#xD;&#xA;	EstablishContext();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void EstablishContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="70fa6ed1-ca16-4dae-b10a-fdeda7ec2d9c" shortcut="teardown" description="Test Teardown" text="[NUnit.Framework.TearDown]&#xD;&#xA;public void Teardown()&#xD;&#xA;{&#xD;&#xA;	ExitContext();&#xD;&#xA;&#xD;&#xA;	$END$&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void ExitContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="13b6cdbb-c572-4b23-b4cd-43ba1af4edb2" shortcut="dispose" description="Disposable Implementation" text="private bool _disposed;&#xD;&#xA;&#xD;&#xA;public void Dispose()&#xD;&#xA;{&#xD;&#xA;	Dispose(true);&#xD;&#xA;	GC.SuppressFinalize(this);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;~$CLASSNAME$()&#xD;&#xA;{&#xD;&#xA;	Dispose(false);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;private void Dispose(bool disposing)&#xD;&#xA;{&#xD;&#xA;	if(_disposed) return;&#xD;&#xA;	if(disposing)&#xD;&#xA;	{&#xD;&#xA;		$END$&#xD;&#xA;	}&#xD;&#xA;	&#xD;&#xA;	_disposed = true;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="CLASSNAME" expression="typeName()" initialRange="-1" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="367bb071-4ca9-4b46-9ba3-6742ea477b1d" shortcut="fnhmap" description="Fluent NHibernate Class Map" text="public class $FILE$Map :&#xD;&#xA;            FluentNHibernate.Mapping.ClassMap&lt;$FILE$&gt;&#xD;&#xA;        {&#xD;&#xA;            public $FILE$Map()&#xD;&#xA;            {&#xD;&#xA;                WithTable(&quot;$FILE2$&quot;);&#xD;&#xA;&#xD;&#xA;                Id(x =&gt; x.Id);&#xD;&#xA;                $END$&#xD;&#xA;            }&#xD;&#xA;        }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeAndNamespace" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="FILE" expression="getFileNameWithoutExtension()" initialRange="0" />
+      <Variable name="FILE2" expression="getFileNameWithoutExtension()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="67d591af-2cfe-42a3-abd9-53916573ac10" shortcut="gm" description="Generate Mock" text="Rhino.Mocks.MockRepository.GenerateMock&lt;$INT$&gt;();$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Expression" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="INT" expression="guessExpectedType()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="89107012-afe2-452c-a88b-1dde04c1cd61" shortcut="nevent" description="New Event" text="public static Event $EVENT$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="EVENT" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="f99d1ce7-a95b-4868-9bcf-5f92f20a6f1b" shortcut="nlog" description="Logger" text="private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof($TYPE$));$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="typeName()" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="STATE" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="d358e449-17c2-4022-8959-edea50795e4c" shortcut="ntest" description="NUnit Test" text="[NUnit.Framework.Test]&#xD;&#xA;public void $NAME$()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="58f8a558-a479-4a7e-9066-ef09c7cbd2d6" shortcut="pget" description="Property Getter" text="$TYPE$ $NAME$ { get; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="e6b34d48-8e17-40f7-9128-bc5d61b6af6f" shortcut="pgset" description="Property Get/Set" text="$TYPE$ $NAME$ { get; set; }" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="TYPE" expression="" initialRange="0" />
+      <Variable name="NAME" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
+  <Template uid="cf9b1bde-340e-4b07-aaa8-12edbcf7c277" shortcut="setup" description="Test Setup" text="[NUnit.Framework.SetUp]&#xD;&#xA;public void Setup()&#xD;&#xA;{&#xD;&#xA;	$END$&#xD;&#xA;	&#xD;&#xA;	EstablishContext();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void EstablishContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="70fa6ed1-ca16-4dae-b10a-fdeda7ec2d9c" shortcut="teardown" description="Test Teardown" text="[NUnit.Framework.TearDown]&#xD;&#xA;public void Teardown()&#xD;&#xA;{&#xD;&#xA;	ExitContext();&#xD;&#xA;&#xD;&#xA;	$END$&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;protected virtual void ExitContext()&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables />
+    <CustomProperties />
+  </Template>
+  <Template uid="7a1467db-d16c-4dfc-8a1d-fd9f4b1b07dc" shortcut="twl" description="Trace WriteLine" text="System.Diagnostics.Trace.WriteLine($VALUE$);$END$" reformat="True" shortenQualifiedReferences="True">
+    <Context>
+      <CSharpContext context="Statement" minimumLanguageVersion="2.0" />
+    </Context>
+    <Categories />
+    <Variables>
+      <Variable name="VALUE" expression="" initialRange="0" />
+    </Variables>
+    <CustomProperties />
+  </Template>
 </TemplatesExport>

@@ -200,6 +200,16 @@
     <Compile Include="Monads\Parser\Result.cs" />
     <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
+    <Compile Include="Parsers\RangeElement.cs" />
+    <Compile Include="Parsers\ExtensionsToRangeParser.cs" />
+    <Compile Include="Parsers\GreaterThanElement.cs" />
+    <Compile Include="Parsers\IRangeElement.cs" />
+    <Compile Include="Parsers\IRangeParser.cs" />
+    <Compile Include="Parsers\LessThanElement.cs" />
+    <Compile Include="Parsers\RangeParser.cs" />
+    <Compile Include="Parsers\RangeParserBase.cs" />
+    <Compile Include="Parsers\StartsWithElement.cs" />
+    <Compile Include="Parsers\StringRangeParser.cs" />
     <Compile Include="Pipeline\IAsyncConsumer.cs" />
     <Compile Include="Pipeline\IConsumer.cs" />
     <Compile Include="Pipeline\ExtensionMethods.cs" />

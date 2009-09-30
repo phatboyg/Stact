@@ -64,6 +64,8 @@
     <Compile Include="Cache_Specs.cs" />
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
+    <Compile Include="BehaviorTest.cs" />
+    <Compile Include="RangeParser_Specs.cs" />
     <Compile Include="EventStreamProcessing\MessagesToBeTestedWith.cs" />
     <Compile Include="EventStreamProcessing\ObjectParser_specs.cs" />
     <Compile Include="EventStreamProcessing\PossibleAttackPattern.cs" />
@@ -88,8 +90,7 @@
     <Compile Include="Linq\FlattenedObject_Specs.cs" />
     <Compile Include="Linq\Index_Specs.cs" />
     <Compile Include="Metrics\Counter_Specs.cs" />
-    <Compile Include="Monads\Parser_Specs.cs" />
-    <Compile Include="Monads\TypeParser_Specs.cs" />
+    <Compile Include="Monads\WorkingMemoryParser_Specs.cs" />
     <Compile Include="Pipeline\AsyncConsumer_Specs.cs" />
     <Compile Include="Pipeline\AutoRegister_Specs.cs" />
     <Compile Include="Pipeline\Consumers\LongRunningMessageConsumer.cs" />

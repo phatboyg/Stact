@@ -10,21 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Monads
+namespace Magnum.Parsers
 {
-	using NUnit.Framework;
+	using System.Collections.Generic;
+	using Monads.Parser;
 
-	[TestFixture]
-	public class TypeParser_Specs
+	public class RangeParser :
+		IRangeParser
 	{
-		[Test]
-		public void The_goal_of_what_I_want()
+		public IEnumerable<IRangeElement> Parse(string text)
 		{
+			var parser = new StringRangeParser();
 
+			Result<string, IRangeElement> result = parser.All(text);
+			while (result != null)
+			{
+				yield return result.Value;
 
+				result = parser.All(result.Rest);
+			}
 		}
 	}
-
-
-
 }
