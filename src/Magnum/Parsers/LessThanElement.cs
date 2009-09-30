@@ -12,6 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Parsers
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Linq.Expressions;
+	using System.Reflection;
+
 	public class LessThanElement :
 		IRangeElement
 	{
@@ -39,6 +45,25 @@ namespace Magnum.Parsers
 				return Includes((RangeElement) element);
 
 			return false;
+		}
+
+		private string GetEndForQuery()
+		{
+			return End + new string('z', 64);
+		}
+
+		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
+		{
+			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
+
+			return elements.Where(expression.Compile());
+		}
+
+		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
+		{
+			Expression<Func<T, bool>> expression = memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
+
+			return elements.Where(expression);
 		}
 
 		private bool Includes(StartsWithElement element)

@@ -12,8 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Parsers
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Linq.Expressions;
+
 	public interface IRangeElement
 	{
 		bool Includes(IRangeElement element);
+
+		IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression);
+		IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression);
 	}
 }

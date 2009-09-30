@@ -12,6 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Parsers
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Linq.Expressions;
+
 	public class StartsWithElement :
 		IRangeElement
 	{
@@ -58,6 +63,19 @@ namespace Magnum.Parsers
 			return false;
 		}
 
+		public IEnumerable<T> Where<T>(IEnumerable<T> elements, Expression<Func<T, string>> memberExpression)
+		{
+			Expression<Func<T, bool>> expression = memberExpression.ToStartsWithExpression(Start);
+
+			return elements.Where(expression.Compile());
+		}
+
+		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
+		{
+			Expression<Func<T, bool>> expression = memberExpression.ToStartsWithExpression(Start);
+
+			return elements.Where(expression);
+		}
 		private bool Includes(StartsWithElement element)
 		{
 			if (Start.Length > element.Start.Length)

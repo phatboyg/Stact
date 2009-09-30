@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs
 {
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 	using NUnit.Framework;
@@ -344,6 +345,135 @@ namespace Magnum.Specs
 		public void Should_return_the_proper_display_format()
 		{
 			Elements.ToRangeString().ShouldEqual(Range);
+		}
+	}
+
+	[TestFixture]
+	public class Projecting_a_less_than_range_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "-K";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(4);
+		}
+	}
+
+	[TestFixture]
+	public class Projecting_a_less_than_range_with_multiple_characters_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "-Omd";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(4);
+		}
+	}
+
+	[TestFixture]
+	public class Projecting_a_range_from_a_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "De-";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(4);
+		}
+	}
+
+	[TestFixture]
+	public class Projecting_a_range_through_z_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "-Z";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(6);
+		}
+	}
+
+	[TestFixture]
+	public class Projecting_a_starts_with_to_an_expression :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "G";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(1);
+		}
+	}
+
+	[TestFixture]
+	public class When_using_the_range_parser_with_the_expression_projector :
+		BehaviorTest
+	{
+		protected IRangeParser Parser { get; set; }
+		protected IRangeElement[] Elements { get; set; }
+		protected string Range { get; set; }
+		protected IList<Company> Companies { get; set; }
+		protected IList<Company> Results { get; set; }
+
+		protected override void Given()
+		{
+			Companies = new List<Company>
+				{
+					new Company { Name = "Alpha"},
+					new Company { Name = "Beta"},
+					new Company { Name = "Gamma"},
+					new Company { Name = "Delta"},
+					new Company { Name = "Omega"},
+					new Company { Name = "Zeta"},
+				};
+
+			Parser = new RangeParser();
+			Range = "";
+		}
+
+		protected override void When()
+		{
+			Elements = Parser.Parse(Range).Optimize().ToArray();
+
+			Results = Companies.WhereInRange(x => x.Name, Elements).ToList();
+		}
+
+		protected class Company
+		{
+			public string Name { get; set; }
 		}
 	}
 }
