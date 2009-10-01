@@ -45,9 +45,16 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression)
 		{
-			return memberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
+			if (typeof(V) == typeof(string))
+			{
+				var stringMemberExpression = memberExpression as Expression<Func<T, string>>;
+
+				return stringMemberExpression.ToCompareToExpression(Begin, ExpressionType.GreaterThanOrEqual);
+			}
+
+			return memberExpression.ToBinaryExpression(Begin, ExpressionType.GreaterThanOrEqual);
 		}
 
 		public override string ToString()

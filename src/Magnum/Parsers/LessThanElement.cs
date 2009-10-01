@@ -13,6 +13,7 @@
 namespace Magnum.Parsers
 {
 	using System;
+	using System.ComponentModel;
 	using System.Linq.Expressions;
 
 	public class LessThanElement :
@@ -45,9 +46,16 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression)
 		{
-			return memberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
+			if (typeof(V) == typeof(string))
+			{
+				var stringMemberExpression = memberExpression as Expression<Func<T, string>>;
+
+				return stringMemberExpression.ToCompareToExpression(GetEndForQuery(), ExpressionType.LessThan);
+			}
+
+			return memberExpression.ToBinaryExpression(End, ExpressionType.LessThanOrEqual);
 		}
 
 		public override string ToString()

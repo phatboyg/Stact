@@ -13,6 +13,7 @@
 namespace Magnum.Parsers
 {
 	using System;
+	using System.ComponentModel;
 	using System.Linq;
 	using System.Linq.Expressions;
 
@@ -37,9 +38,16 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression)
 		{
-			return memberExpression.ToStartsWithExpression(Start);
+			if (typeof(V) == typeof(string))
+			{
+				var stringMemberExpression = memberExpression as Expression<Func<T, string>>;
+
+				return stringMemberExpression.ToStartsWithExpression(Start);
+			}
+
+			return memberExpression.ToBinaryExpression(Start, ExpressionType.Equal);
 		}
 
 		public override string ToString()

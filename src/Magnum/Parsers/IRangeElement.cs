@@ -19,6 +19,6 @@ namespace Magnum.Parsers
 	{
 		bool Includes(IRangeElement element);
 
-		Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression);
+		Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression);
 	}
 }

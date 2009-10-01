@@ -12,9 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using NUnit.Framework;
 	using Parsers;
 
@@ -401,6 +403,27 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_a_numeric_range :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "100-110";
+			ExpectedRange = "100-110";
+		}
+
+		[Test]
+		public void Should_include_the_appropriate_range()
+		{
+			var expected = new RangeElement("100", "110");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
 	public class Specifying_overlapping_ranges_where_the_second_is_wider :
 		When_using_the_range_parser_with_the_optimizer
 	{
@@ -635,6 +658,71 @@ namespace Magnum.Specs
 		protected class Company
 		{
 			public string Name { get; set; }
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_a_number_range_to_query :
+		When_using_the_range_parser_with_the_numeric_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "100-110";
+		}
+
+		[Test]
+		public void Should_include_the_appropriate_range()
+		{
+			var expected = new RangeElement("100", "110");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_include_the_matching_values()
+		{
+			Results.Count.ShouldEqual(4);
+		}
+	}
+
+	[TestFixture]
+	public class When_using_the_range_parser_with_the_numeric_expression_projector :
+		BehaviorTest
+	{
+		protected IRangeParser Parser { get; set; }
+		protected IRangeElement[] Elements { get; set; }
+		protected string Range { get; set; }
+		protected IList<Code> Codes { get; set; }
+		protected IList<Code> Results { get; set; }
+
+		protected override void Given()
+		{
+			Codes = new List<Code>
+				{
+					new Code { Value = 100},
+					new Code { Value = 102},
+					new Code { Value = 104},
+					new Code { Value = 110},
+					new Code { Value = 120},
+					new Code { Value = 130},
+				};
+
+			Parser = new RangeParser();
+			Range = "";
+		}
+
+		protected override void When()
+		{
+			Elements = Parser.Parse(Range).Optimize().CombineOverlappingRanges().ToArray();
+
+			Results = Codes.WhereInRange(x => x.Value, Elements).ToList();
+		}
+
+		protected class Code
+		{
+			public int Value { get; set; }
 		}
 	}
 }

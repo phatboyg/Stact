@@ -45,9 +45,9 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression)
 		{
-			Expression<Func<T, bool>> begin = Begin.GetQueryExpression(memberExpression);
+			Expression<Func<T, bool>> begin = Begin.GetQueryExpression<T,V>(memberExpression);
 			Expression<Func<T, bool>> end = End.GetQueryExpression(memberExpression);
 
 			BinaryExpression range = Expression.MakeBinary(ExpressionType.And, begin.Body, end.Body);
