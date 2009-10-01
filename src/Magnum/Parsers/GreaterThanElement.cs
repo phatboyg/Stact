@@ -31,10 +31,16 @@ namespace Magnum.Parsers
 				return false;
 
 			if (element is StartsWithElement)
-				return Includes((StartsWithElement) element);
+				return ((StartsWithElement) element).Start.CompareTo(Begin) >= 0;
 
 			if (element is RangeElement)
-				return Includes((RangeElement) element);
+				return ((RangeElement) element).Begin.Begin.CompareTo(Begin) >= 0;
+
+			if (element is GreaterThanElement)
+				return ((GreaterThanElement) element).Begin.CompareTo(Begin) >= 0;
+
+			if(element is LessThanElement)
+				return false;
 
 			return false;
 		}
@@ -67,22 +73,6 @@ namespace Magnum.Parsers
 		public override int GetHashCode()
 		{
 			return (Begin != null ? Begin.GetHashCode() : 0);
-		}
-
-		private bool Includes(StartsWithElement element)
-		{
-			if (element.Start.CompareTo(Begin) >= 0)
-				return true;
-
-			return false;
-		}
-
-		private bool Includes(RangeElement element)
-		{
-			if (element.Begin.Begin.CompareTo(Begin) >= 0)
-				return true;
-
-			return false;
 		}
 	}
 }

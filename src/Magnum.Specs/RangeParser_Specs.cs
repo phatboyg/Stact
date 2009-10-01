@@ -133,6 +133,27 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_an_out_of_order_range :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "F-A";
+			ExpectedRange = "A-F";
+		}
+
+		[Test]
+		public void Should_adjust_the_range_to_the_proper_order()
+		{
+			var expected = new RangeElement("A", "F");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
 	public class Specifying_multiple_starting_patterns :
 		When_using_the_range_parser
 	{
@@ -258,6 +279,128 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_a_range_included_in_a_greater_than :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "B-;G-M";
+			ExpectedRange = "B-";
+		}
+
+		[Test]
+		public void Should_not_include_the_range()
+		{
+			var expected = new RangeElement("G", "M");
+
+			Elements.Contains(expected).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_include_the_greater_than()
+		{
+			var expected = new GreaterThanElement("B");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_a_wider_range_after_a_narrow_range :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "G-M;B-P";
+			ExpectedRange = "B-P";
+		}
+
+		[Test]
+		public void Should_include_the_wide_range()
+		{
+			var expected = new RangeElement("B", "P");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_not_include_the_narrow_range()
+		{
+			var expected = new RangeElement("G", "M");
+
+			Elements.Contains(expected).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_an_overlapping_range :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "A-D;B-G;P-S;O-Q";
+			ExpectedRange = "A-G;O-S";
+		}
+
+		[Test]
+		public void Should_include_the_first_range()
+		{
+			var expected = new RangeElement("A", "G");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_include_the_second_range()
+		{
+			var expected = new RangeElement("O", "S");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_include_only_one_range()
+		{
+			Elements.Length.ShouldEqual(2);
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_a_range_with_the_same_begin_and_end :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "BA-BA";
+			ExpectedRange = "BA";
+		}
+
+		[Test]
+		public void Should_not_include_the_range()
+		{
+			var expected = new RangeElement("BA", "BA");
+
+			Elements.Contains(expected).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_include_the_starts_with()
+		{
+			var expected = new StartsWithElement("BA");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
 	public class Specifying_overlapping_ranges_where_the_second_is_wider :
 		When_using_the_range_parser_with_the_optimizer
 	{
@@ -312,7 +455,7 @@ namespace Magnum.Specs
 
 		protected override void When()
 		{
-			Elements = Parser.Parse(Range).Optimize().ToArray();
+			Elements = Parser.Parse(Range).Optimize().CombineOverlappingRanges().ToArray();
 		}
 
 		[Test]
@@ -484,7 +627,7 @@ namespace Magnum.Specs
 
 		protected override void When()
 		{
-			Elements = Parser.Parse(Range).Optimize().ToArray();
+			Elements = Parser.Parse(Range).Optimize().CombineOverlappingRanges().ToArray();
 
 			Results = Companies.WhereInRange(x => x.Name, Elements).ToList();
 		}

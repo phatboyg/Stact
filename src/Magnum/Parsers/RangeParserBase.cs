@@ -37,12 +37,18 @@ namespace Magnum.Parsers
 			          from cs in Rep(ValidChar)
 			          select cs.Aggregate(c.ToString(), (s, ch) => s + ch);
 
-			Range = from w in Whitespace
+			Range = (from w in Whitespace
+					 from rs in ElementSeparator
+					 from begin in Pattern
+					 from separator in ItemSeparator
+					 from end in Pattern where begin == end 
+					 select (IRangeElement)new StartsWithElement(begin))
+				.Or(from w in Whitespace
 			        from rs in ElementSeparator
 			        from begin in Pattern
 			        from separator in ItemSeparator
 			        from end in Pattern
-			        select (IRangeElement) new RangeElement(begin, end);
+			        select (IRangeElement) new RangeElement(begin, end));
 
 			GreaterThan = from w in Whitespace
 			               from rs in ElementSeparator
@@ -57,10 +63,10 @@ namespace Magnum.Parsers
 						  select (IRangeElement)new LessThanElement(end);
 
 
-			StartsWith = from w in Whitespace
+			StartsWith = (from w in Whitespace
 			             from rs in ElementSeparator
 			             from start in Pattern
-			             select (IRangeElement) new StartsWithElement(start);
+			             select (IRangeElement) new StartsWithElement(start));
 
 			All = (from r in Range select r)
 				.Or(from g in GreaterThan select g)

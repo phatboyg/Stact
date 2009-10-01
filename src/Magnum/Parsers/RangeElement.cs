@@ -20,6 +20,13 @@ namespace Magnum.Parsers
 	{
 		public RangeElement(string begin, string end)
 		{
+			if (begin.CompareTo(end) > 0)
+			{
+				string temp = begin;
+				begin = end;
+				end = temp;
+			}
+
 			Begin = new GreaterThanElement(begin);
 			End = new LessThanElement(end);
 		}
@@ -32,10 +39,7 @@ namespace Magnum.Parsers
 			if (element == null)
 				return false;
 
-			if (Begin.Includes(element))
-				return true;
-
-			if (End.Includes(element))
+			if (Begin.Includes(element) && End.Includes(element))
 				return true;
 
 			return false;
@@ -54,6 +58,28 @@ namespace Magnum.Parsers
 		public override string ToString()
 		{
 			return string.Format("{0}-{1}", Begin.ToString().Trim('-'), End.ToString().Trim('-'));
+		}
+
+		public bool Overlaps(RangeElement other, out RangeElement combined)
+		{
+			combined = null;
+
+			if(other == null)
+				return false;
+
+			if(Begin.Begin.CompareTo(other.Begin.Begin) <= 0 && End.End.CompareTo(other.Begin.Begin) >= 0)
+			{
+				combined = new RangeElement(Begin.Begin, (End.End.CompareTo(other.End.End) >= 0) ? End.End : other.End.End);
+				return true;
+			}
+
+			if(End.End.CompareTo(other.End.End) >= 0 && Begin.Begin.CompareTo(other.End.End) <= 0)
+			{
+				combined = new RangeElement((Begin.Begin.CompareTo(other.Begin.Begin) <= 0) ? Begin.Begin : other.Begin.Begin, End.End);
+				return true;
+			}
+
+			return false;
 		}
 
 		public bool Equals(RangeElement other)

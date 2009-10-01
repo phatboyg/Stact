@@ -31,10 +31,16 @@ namespace Magnum.Parsers
 				return false;
 
 			if (element is StartsWithElement)
-				return Includes((StartsWithElement) element);
+				return ((StartsWithElement) element).Start.CompareTo(End) <= 0;
 
 			if (element is RangeElement)
-				return Includes((RangeElement) element);
+				return ((RangeElement) element).End.End.CompareTo(End) <= 0;
+
+			if (element is LessThanElement)
+				return ((LessThanElement) element).End.CompareTo(End) <= 0;
+
+			if(element is GreaterThanElement)
+				return false;
 
 			return false;
 		}
@@ -72,22 +78,6 @@ namespace Magnum.Parsers
 		private string GetEndForQuery()
 		{
 			return End + new string('z', 64);
-		}
-
-		private bool Includes(StartsWithElement element)
-		{
-			if (element.Start.CompareTo(End) <= 0)
-				return true;
-
-			return false;
-		}
-
-		private bool Includes(RangeElement element)
-		{
-			if (element.End.End.CompareTo(End) <= 0)
-				return true;
-
-			return false;
 		}
 	}
 }

@@ -55,6 +55,41 @@ namespace Magnum.Parsers
 			return false;
 		}
 
+		public static IEnumerable<IRangeElement> CombineOverlappingRanges(this IEnumerable<IRangeElement> elements)
+		{
+			var ranges = new List<RangeElement>();
+
+			foreach (IRangeElement element in elements)
+			{
+				var range = element as RangeElement;
+				if (range != null)
+				{
+					ranges.Add(range);
+					continue;
+				}
+
+				yield return element;
+			}
+
+			for (int i = 0; i < ranges.Count; i++)
+			{
+				for (int j = i + 1; j < ranges.Count;)
+				{
+					RangeElement combined;
+					if (ranges[i].Overlaps(ranges[j], out combined))
+					{
+						ranges[i] = combined;
+						ranges.Remove(ranges[j]);
+						continue;
+					}
+
+					j++;
+				}
+
+				yield return ranges[i];
+			}
+		}
+
 		public static IEnumerable<IRangeElement> Optimize(this IEnumerable<IRangeElement> elements)
 		{
 			var results = new List<IRangeElement>();

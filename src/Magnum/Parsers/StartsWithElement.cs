@@ -13,18 +13,33 @@
 namespace Magnum.Parsers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 
 	public class StartsWithElement :
 		IRangeElement
 	{
-		public string Start { get; private set; }
-
 		public StartsWithElement(string start)
 		{
 			Start = start;
+		}
+
+		public string Start { get; private set; }
+
+		public bool Includes(IRangeElement element)
+		{
+			if (element == null)
+				return false;
+
+			if (element is StartsWithElement)
+				return Includes((StartsWithElement) element);
+
+			return false;
+		}
+
+		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
+		{
+			return memberExpression.ToStartsWithExpression(Start);
 		}
 
 		public override string ToString()
@@ -52,28 +67,13 @@ namespace Magnum.Parsers
 			return (Start != null ? Start.GetHashCode() : 0);
 		}
 
-		public bool Includes(IRangeElement element)
-		{
-			if (element == null)
-				return false;
-
-			if (element is StartsWithElement)
-				return Includes((StartsWithElement) element);
-
-			return false;
-		}
-
-		public Expression<Func<T, bool>> GetQueryExpression<T>(Expression<Func<T, string>> memberExpression)
-		{
-			return memberExpression.ToStartsWithExpression(Start);
-		}
-
 		public IQueryable<T> Where<T>(IQueryable<T> elements, Expression<Func<T, string>> memberExpression)
 		{
 			Expression<Func<T, bool>> expression = memberExpression.ToStartsWithExpression(Start);
 
 			return elements.Where(expression);
 		}
+
 		private bool Includes(StartsWithElement element)
 		{
 			if (Start.Length > element.Start.Length)
