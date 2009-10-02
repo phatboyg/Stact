@@ -488,6 +488,100 @@ namespace Magnum.Specs
 		}
 	}
 
+
+	[TestFixture]
+	public class Specifying_a_range_that_is_outside_of_the_restriction :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "A-C";
+			Restriction = "D-J";
+			ExpectedRange = "";
+		}
+
+		[Test]
+		public void Should_not_have_the_requested_range()
+		{
+			Elements.Contains(new RangeElement("A", "C")).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_not_have_the_restriction_range()
+		{
+			Elements.Contains(new RangeElement("D", "J")).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_an_overlapping_range_that_is_outside_of_the_restriction :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "A-G";
+			Restriction = "D-J";
+			ExpectedRange = "D-G";
+		}
+
+		[Test]
+		public void Should_have_the_overlapping_range()
+		{
+			Elements.Contains(new RangeElement("D", "G")).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_not_have_the_requested_range()
+		{
+			Elements.Contains(new RangeElement("A", "G")).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_not_have_the_restriction_range()
+		{
+			Elements.Contains(new RangeElement("D", "J")).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class When_applying_a_restriction_to_a_range :
+		BehaviorTest
+	{
+		protected IRangeParser Parser { get; set; }
+		protected IRangeElement[] Elements { get; set; }
+		protected string Range { get; set; }
+		protected string Restriction { get; set; }
+		protected string ExpectedRange { get; set; }
+
+		protected override void Given()
+		{
+			Parser = new RangeParser();
+			Range = "";
+			Restriction = "";
+			ExpectedRange = "";
+		}
+
+		protected override void When()
+		{
+			Elements = Parser
+				.Parse(Range)
+				.RestrictTo(Parser.Parse(Restriction).Optimize().CombineOverlappingRanges())
+				.Optimize()
+				.CombineOverlappingRanges()
+				.ToArray();
+		}
+
+		[Test]
+		public void Should_return_the_proper_display_format()
+		{
+			Elements.ToRangeString().ShouldEqual(ExpectedRange);
+		}
+	}
+
 	[TestFixture]
 	public class When_using_the_range_parser :
 		BehaviorTest

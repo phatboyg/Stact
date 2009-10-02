@@ -76,7 +76,7 @@ namespace Magnum.Parsers
 				for (int j = i + 1; j < ranges.Count;)
 				{
 					RangeElement combined;
-					if (ranges[i].Overlaps(ranges[j], out combined))
+					if (ranges[i].Union(ranges[j], out combined))
 					{
 						ranges[i] = combined;
 						ranges.Remove(ranges[j]);
@@ -87,6 +87,32 @@ namespace Magnum.Parsers
 				}
 
 				yield return ranges[i];
+			}
+		}
+
+		public static IEnumerable<IRangeElement> RestrictTo(this IEnumerable<IRangeElement> requested, IEnumerable<IRangeElement> restriction)
+		{
+			foreach (IRangeElement element in requested)
+			{
+				if (!restriction.Includes(element))
+				{
+					var range = element as RangeElement;
+					if (range != null)
+					{
+						RangeElement intersection = null;
+						restriction
+							.Where(x => x is RangeElement)
+							.Where(x => ((RangeElement) x).Intersection(range, out intersection))
+							.FirstOrDefault();
+
+						if(intersection != null)
+							yield return intersection;
+					}
+
+					continue;
+				}
+
+				yield return element;
 			}
 		}
 

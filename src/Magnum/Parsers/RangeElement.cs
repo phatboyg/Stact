@@ -45,7 +45,7 @@ namespace Magnum.Parsers
 			return false;
 		}
 
-		public Expression<Func<T, bool>> GetQueryExpression<T,V>(Expression<Func<T, V>> memberExpression)
+		public Expression<Func<T, bool>> GetQueryExpression<T, V>(Expression<Func<T, V>> memberExpression)
 		{
 			Expression<Func<T, bool>> begin = Begin.GetQueryExpression(memberExpression);
 			Expression<Func<T, bool>> end = End.GetQueryExpression(memberExpression);
@@ -60,20 +60,41 @@ namespace Magnum.Parsers
 			return string.Format("{0}-{1}", Begin.ToString().Trim('-'), End.ToString().Trim('-'));
 		}
 
-		public bool Overlaps(RangeElement other, out RangeElement combined)
+		public bool Intersection(RangeElement other, out RangeElement intersection)
+		{
+			intersection = null;
+
+			if (other == null)
+				return false;
+
+			// before
+			if (Begin.Begin.CompareTo(other.End.End) > 0)
+				return false;
+
+			// after
+			if (End.End.CompareTo(other.Begin.Begin) < 0)
+				return false;
+
+			string begin = (Begin.Begin.CompareTo(other.Begin.Begin) < 0) ? other.Begin.Begin : Begin.Begin;
+			string end = (End.End.CompareTo(other.End.End) > 0) ? other.End.End : End.End;
+			intersection = new RangeElement(begin, end);
+			return true;
+		}
+
+		public bool Union(RangeElement other, out RangeElement combined)
 		{
 			combined = null;
 
-			if(other == null)
+			if (other == null)
 				return false;
 
-			if(Begin.Begin.CompareTo(other.Begin.Begin) <= 0 && End.End.CompareTo(other.Begin.Begin) >= 0)
+			if (Begin.Begin.CompareTo(other.Begin.Begin) <= 0 && End.End.CompareTo(other.Begin.Begin) >= 0)
 			{
 				combined = new RangeElement(Begin.Begin, (End.End.CompareTo(other.End.End) >= 0) ? End.End : other.End.End);
 				return true;
 			}
 
-			if(End.End.CompareTo(other.End.End) >= 0 && Begin.Begin.CompareTo(other.End.End) <= 0)
+			if (End.End.CompareTo(other.End.End) >= 0 && Begin.Begin.CompareTo(other.End.End) <= 0)
 			{
 				combined = new RangeElement((Begin.Begin.CompareTo(other.Begin.Begin) <= 0) ? Begin.Begin : other.Begin.Begin, End.End);
 				return true;
