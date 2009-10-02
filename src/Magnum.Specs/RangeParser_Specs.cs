@@ -623,6 +623,24 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Projecting_two_ranges_should_include_both_sets_of_results :
+		When_using_the_range_parser_with_the_expression_projector
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "A-B;O-Z";
+		}
+
+		[Test]
+		public void Should_return_the_appropriate_rows()
+		{
+			Results.Count.ShouldEqual(4);
+		}
+	}
+
+	[TestFixture]
 	public class When_using_the_range_parser_with_the_expression_projector :
 		BehaviorTest
 	{

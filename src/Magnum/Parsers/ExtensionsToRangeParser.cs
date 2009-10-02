@@ -17,7 +17,6 @@ namespace Magnum.Parsers
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using System.Xml;
 
 	public static class ExtensionsToRangeParser
 	{
@@ -26,17 +25,17 @@ namespace Magnum.Parsers
 
 		static ExtensionsToRangeParser()
 		{
-			_startsWith = typeof(string)
+			_startsWith = typeof (string)
 				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Where(x => x.Name == "StartsWith")
 				.Where(x => x.GetParameters().Count() == 1)
-				.Where(x => x.GetParameters().Where(p => p.ParameterType == typeof(string)).Count() == 1)
+				.Where(x => x.GetParameters().Where(p => p.ParameterType == typeof (string)).Count() == 1)
 				.Single();
 
-			_compareTo = typeof(string)
+			_compareTo = typeof (string)
 				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Where(x => x.Name == "CompareTo")
-				.Where(x => x.GetParameters().Where(p => p.ParameterType == typeof(string)).Count() == 1)
+				.Where(x => x.GetParameters().Where(p => p.ParameterType == typeof (string)).Count() == 1)
 				.Single();
 		}
 
@@ -49,7 +48,7 @@ namespace Magnum.Parsers
 		{
 			foreach (IRangeElement element in elements)
 			{
-				if(element.Includes(find) && !ReferenceEquals(element,find))
+				if (element.Includes(find) && !ReferenceEquals(element, find))
 					return true;
 			}
 
@@ -97,10 +96,10 @@ namespace Magnum.Parsers
 
 			foreach (IRangeElement element in elements)
 			{
-				if(results.Contains(element))
+				if (results.Contains(element))
 					continue;
 
-				if(results.Includes(element))
+				if (results.Includes(element))
 					continue;
 
 				results.Add(element);
@@ -108,31 +107,40 @@ namespace Magnum.Parsers
 
 			foreach (IRangeElement result in results)
 			{
-				if(!results.Includes(result))
+				if (!results.Includes(result))
 					yield return result;
 			}
 		}
 
-		public static IQueryable<T> WhereInRange<T, V>(this IQueryable<T> elements, Expression<Func<T, V>> memberExpression, IEnumerable<IRangeElement> rangeElements)
+		public static Expression<Func<T, bool>> ToQueryExpression<T, V>(this IEnumerable<IRangeElement> elements, Expression<Func<T, V>> memberExpression)
 		{
-			foreach (IRangeElement rangeElement in rangeElements)
+			Expression<Func<T, bool>> result = null;
+
+			foreach (IRangeElement element in elements)
 			{
-				Expression<Func<T, bool>> expression = rangeElement.GetQueryExpression(memberExpression);
-				elements = elements.Where(expression);
+				Expression<Func<T, bool>> expression = element.GetQueryExpression(memberExpression);
+
+				if (result == null)
+					result = expression;
+				else
+				{
+					var binary = Expression.MakeBinary(ExpressionType.Or, result.Body, expression.Body);
+
+					result = Expression.Lambda<Func<T, bool>>(binary, new[] {result.Parameters[0]});
+				}
 			}
 
-			return elements;
+			return result ?? (x => true);
 		}
 
-		public static IEnumerable<T> WhereInRange<T,V>(this IEnumerable<T> elements, Expression<Func<T, V>> memberExpression, IEnumerable<IRangeElement> rangeElements)
+		public static IQueryable<T> WhereInRange<T, V>(this IQueryable<T> elements, Expression<Func<T, V>> memberExpression, IEnumerable<IRangeElement> rangeElements)
 		{
-			foreach (IRangeElement rangeElement in rangeElements)
-			{
-				Expression<Func<T, bool>> expression = rangeElement.GetQueryExpression(memberExpression);
-				elements = elements.Where(expression.Compile());
-			}
+			return elements.Where(rangeElements.ToQueryExpression(memberExpression));
+		}
 
-			return elements;
+		public static IEnumerable<T> WhereInRange<T, V>(this IEnumerable<T> elements, Expression<Func<T, V>> memberExpression, IEnumerable<IRangeElement> rangeElements)
+		{
+			return elements.Where(rangeElements.ToQueryExpression(memberExpression).Compile());
 		}
 
 		internal static Expression<Func<T, bool>> ToCompareToExpression<T>(this Expression<Func<T, string>> memberExpression, string value, ExpressionType comparisonType)
@@ -144,11 +152,11 @@ namespace Magnum.Parsers
 			var argument = Expression.Constant(value);
 			var zero = Expression.Constant(0);
 
-			var call = Expression.Call(member, _compareTo, new[] { argument });
+			var call = Expression.Call(member, _compareTo, new[] {argument});
 
 			var compare = Expression.MakeBinary(comparisonType, call, zero);
 
-			return Expression.Lambda<Func<T, bool>>(compare, new[] { memberExpression.Parameters[0] });
+			return Expression.Lambda<Func<T, bool>>(compare, new[] {memberExpression.Parameters[0]});
 		}
 
 		internal static Expression<Func<T, bool>> ToStartsWithExpression<T>(this Expression<Func<T, string>> memberExpression, string value)
@@ -159,12 +167,12 @@ namespace Magnum.Parsers
 
 			var argument = Expression.Constant(value);
 
-			var call = Expression.Call(member, _startsWith, new[] { argument });
+			var call = Expression.Call(member, _startsWith, new[] {argument});
 
-			return Expression.Lambda<Func<T, bool>>(call, new[] { memberExpression.Parameters[0] });
+			return Expression.Lambda<Func<T, bool>>(call, new[] {memberExpression.Parameters[0]});
 		}
 
-		internal static Expression<Func<T, bool>> ToBinaryExpression<T,V>(this Expression<Func<T, V>> memberExpression, string value, ExpressionType comparisonType)
+		internal static Expression<Func<T, bool>> ToBinaryExpression<T, V>(this Expression<Func<T, V>> memberExpression, string value, ExpressionType comparisonType)
 		{
 			var member = memberExpression.Body as MemberExpression;
 			if (member == null)
@@ -174,12 +182,12 @@ namespace Magnum.Parsers
 
 			var compare = Expression.MakeBinary(comparisonType, member, argument);
 
-			return Expression.Lambda<Func<T, bool>>(compare, new[] { memberExpression.Parameters[0] });
+			return Expression.Lambda<Func<T, bool>>(compare, new[] {memberExpression.Parameters[0]});
 		}
 
 		internal static object ConvertTo<T>(this string value)
 		{
-			if(typeof(T) == typeof(int))
+			if (typeof (T) == typeof (int))
 				return int.Parse(value);
 
 			throw new InvalidOperationException("The type " + typeof (T).Name + " is not supported");
