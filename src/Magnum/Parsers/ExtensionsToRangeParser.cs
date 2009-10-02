@@ -124,7 +124,7 @@ namespace Magnum.Parsers
 					result = expression;
 				else
 				{
-					var binary = Expression.MakeBinary(ExpressionType.Or, result.Body, expression.Body);
+					var binary = Expression.MakeBinary(ExpressionType.OrElse, result.Body, expression.Body);
 
 					result = Expression.Lambda<Func<T, bool>>(binary, new[] {result.Parameters[0]});
 				}
