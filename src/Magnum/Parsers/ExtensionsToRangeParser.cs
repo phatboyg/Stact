@@ -58,6 +58,7 @@ namespace Magnum.Parsers
 		public static IEnumerable<IRangeElement> CombineOverlappingRanges(this IEnumerable<IRangeElement> elements)
 		{
 			var ranges = new List<RangeElement>();
+			var openRanges = new List<IRangeElement>();
 
 			foreach (IRangeElement element in elements)
 			{
@@ -65,6 +66,12 @@ namespace Magnum.Parsers
 				if (range != null)
 				{
 					ranges.Add(range);
+					continue;
+				}
+
+				if (element is GreaterThanElement || element is LessThanElement)
+				{
+					openRanges.Add(element);
 					continue;
 				}
 
@@ -88,6 +95,44 @@ namespace Magnum.Parsers
 
 				yield return ranges[i];
 			}
+
+			for (int i = 0; i < openRanges.Count;)
+			{
+				bool removed = false;
+				for (int j = i + 1; j < openRanges.Count; j++)
+				{
+					if(openRanges[i].Overlaps(openRanges[j]))
+					{
+						openRanges.Remove(openRanges[j]);
+						openRanges.Remove(openRanges[i]);
+						removed = true;
+						break;
+					}
+				}
+
+				if(removed)
+					continue;
+
+				i++;
+			}
+
+			foreach (IRangeElement element in openRanges)
+				yield return element;
+		}
+
+		public static bool Overlaps(this IRangeElement element, IRangeElement other)
+		{
+			if (element is LessThanElement && other is GreaterThanElement)
+			{
+				return (((LessThanElement) element).End.CompareTo(((GreaterThanElement) other).Begin) >= 0);
+			}
+
+			if (element is GreaterThanElement && other is LessThanElement)
+			{
+				return (((LessThanElement)other).End.CompareTo(((GreaterThanElement)element).Begin) >= 0);
+			}
+
+			return false;
 		}
 
 		public static IEnumerable<IRangeElement> RestrictTo(this IEnumerable<IRangeElement> requested, IEnumerable<IRangeElement> restriction)
@@ -106,7 +151,17 @@ namespace Magnum.Parsers
 							.FirstOrDefault();
 
 						if(intersection != null)
+						{
 							yield return intersection;
+							continue;
+						}
+
+						var includedResults = restriction
+							.Where(x => x is StartsWithElement)
+							.Where(range.Includes);
+
+						foreach (IRangeElement includedResult in includedResults)
+							yield return includedResult;
 					}
 
 					continue;

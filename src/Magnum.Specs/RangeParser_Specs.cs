@@ -310,6 +310,25 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_an_overlapping_greater_than_and_less_than :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "K-;-K";
+			ExpectedRange = "";
+		}
+
+		[Test]
+		public void Should_result_in_an_empty_list()
+		{
+			Elements.Count().ShouldEqual(0);
+		}
+	}
+
+	[TestFixture]
 	public class Specifying_a_wider_range_after_a_narrow_range :
 		When_using_the_range_parser_with_the_optimizer
 	{
@@ -512,6 +531,72 @@ namespace Magnum.Specs
 		public void Should_not_have_the_restriction_range()
 		{
 			Elements.Contains(new RangeElement("D", "J")).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_an_outside_range_with_a_starts_with_restriction :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "A-C";
+			Restriction = "C";
+			ExpectedRange = "C";
+		}
+
+		[Test]
+		public void Should_not_have_the_requested_range()
+		{
+			Elements.Contains(new RangeElement("A", "C")).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_have_the_single_starts_with()
+		{
+			Elements.Contains(new StartsWithElement("C")).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_an_starts_with_that_is_outside_of_a_restriction :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "C";
+			Restriction = "D;M-P";
+			ExpectedRange = "";
+		}
+
+		[Test]
+		public void Should_not_have_the_single_starts_with()
+		{
+			Elements.Contains(new StartsWithElement("C")).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class Specifying_a_starts_with_that_is_within_a_restriction_range :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "C";
+			Restriction = "A-G";
+			ExpectedRange = "C";
+		}
+
+		[Test]
+		public void Should_have_the_single_starts_with()
+		{
+			Elements.Contains(new StartsWithElement("C")).ShouldBeTrue();
 		}
 	}
 
