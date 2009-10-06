@@ -581,6 +581,32 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_a_wide_open_search_against_a_restriction :
+		When_applying_a_restriction_to_a_range
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "";
+			Restriction = "A-J;P";
+			ExpectedRange = "P;A-J";
+		}
+
+		[Test]
+		public void Should_return_the_restriction_range()
+		{
+			Elements.Contains(new RangeElement("A", "J")).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_return_the_restriction_starts_with()
+		{
+			Elements.Contains(new StartsWithElement("P")).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
 	public class Specifying_a_starts_with_that_is_within_a_restriction_range :
 		When_applying_a_restriction_to_a_range
 	{

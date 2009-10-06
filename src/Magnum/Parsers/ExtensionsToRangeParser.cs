@@ -137,8 +137,11 @@ namespace Magnum.Parsers
 
 		public static IEnumerable<IRangeElement> RestrictTo(this IEnumerable<IRangeElement> requested, IEnumerable<IRangeElement> restriction)
 		{
+			int requestedCount = 0;
 			foreach (IRangeElement element in requested)
 			{
+				requestedCount++;
+
 				if (!restriction.Includes(element))
 				{
 					var range = element as RangeElement;
@@ -169,6 +172,10 @@ namespace Magnum.Parsers
 
 				yield return element;
 			}
+
+			if(requestedCount==0)
+				foreach (IRangeElement element in restriction)
+					yield return element;
 		}
 
 		public static IEnumerable<IRangeElement> Optimize(this IEnumerable<IRangeElement> elements)
