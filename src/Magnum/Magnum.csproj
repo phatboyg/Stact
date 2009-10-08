@@ -302,8 +302,11 @@
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
     <Compile Include="StreamExtensions\ExtensionsToStream.cs" />
+    <Compile Include="Threading\AccessLock.cs" />
     <Compile Include="Threading\AsyncExecutor.cs" />
     <Compile Include="Threading\AsyncResult.cs" />
+    <Compile Include="Threading\MonitorAccessLock.cs" />
+    <Compile Include="Threading\SemaphoreAccessLock.cs" />
     <Compile Include="Threading\IAsyncExecutor.cs" />
     <Compile Include="Threading\ILockedObject.cs" />
     <Compile Include="Threading\ReaderWriterLockContext.cs" />
