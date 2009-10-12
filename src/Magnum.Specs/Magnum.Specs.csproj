@@ -128,7 +128,6 @@
     <Compile Include="StateMachine\EventException_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
-    <Compile Include="Threading\ConcurrentAccessLock_Specs.cs" />
     <Compile Include="TypedKey_Specs.cs" />
     <Compile Include="Mapping_Specs.cs" />
     <Compile Include="Metric_Specs.cs" />
