@@ -241,6 +241,12 @@
     <Compile Include="Pipeline\Segments\RecipientListSegment.cs" />
     <Compile Include="Pipeline\Visitors\TracePipeVisitor.cs" />
     <Compile Include="Pipeline\Unsubscriber.cs" />
+    <Compile Include="Policies\CircuitBreaker.cs" />
+    <Compile Include="Policies\CircuitBreakerPolicy.cs" />
+    <Compile Include="Policies\ExceptionHandler.cs" />
+    <Compile Include="Policies\ExceptionPolicy.cs" />
+    <Compile Include="Policies\PolicyBuilder.cs" />
+    <Compile Include="Policies\RetryPolicy.cs" />
     <Compile Include="Reflection\ClassFactory.cs" />
     <Compile Include="Collections\Empty.cs" />
     <Compile Include="Reflection\ExpressionVisitor.cs" />
@@ -302,6 +308,7 @@
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
     <Compile Include="StreamExtensions\ExtensionsToStream.cs" />
+    <Compile Include="SystemUtil.cs" />
     <Compile Include="Threading\AsyncExecutor.cs" />
     <Compile Include="Threading\AsyncResult.cs" />
     <Compile Include="Threading\IAsyncExecutor.cs" />
@@ -310,6 +317,7 @@
     <Compile Include="Threading\ReaderWriterLockedDictionary.cs" />
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
+    <Compile Include="ThreadUtil.cs" />
     <Compile Include="TypedKey.cs" />
     <Compile Include="WeakReference.cs" />
   </ItemGroup>

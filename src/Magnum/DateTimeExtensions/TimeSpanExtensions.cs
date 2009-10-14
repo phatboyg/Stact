@@ -13,6 +13,7 @@
 namespace Magnum.DateTimeExtensions
 {
 	using System;
+	using System.Collections.Generic;
 
 	public static class TimeSpanExt
 	{
@@ -65,6 +66,10 @@ namespace Magnum.DateTimeExtensions
 		{
 			return TimeSpan.FromSeconds(value);
 		}
+		public static TimeSpan Seconds(this double value)
+		{
+			return TimeSpan.FromSeconds(value);
+		}
 
 		/// <summary>
 		/// Creates a TimeSpan for the specified number of milliseconds
@@ -74,6 +79,20 @@ namespace Magnum.DateTimeExtensions
 		public static TimeSpan Milliseconds(this int value)
 		{
 			return TimeSpan.FromMilliseconds(value);
+		}
+
+		/// <summary>
+		/// Returns an enumeration of the specified TimeSpan with the specified number of elements
+		/// </summary>
+		/// <param name="value">The TimeSpan to repeat</param>
+		/// <param name="times">The number of times to repeat the TimeSpan</param>
+		/// <returns>An enumeration of TimeSpan</returns>
+		public static IEnumerable<TimeSpan> Repeat(this TimeSpan value, int times)
+		{
+			for (int i = 0; i < times; i++)
+			{
+				yield return value;
+			}
 		}
 	}
 }
