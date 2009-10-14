@@ -50,6 +50,39 @@ namespace Magnum.Specs.Policies
 
 	}
 
+
+	[TestFixture]
+	public class Specifying_a_policy_that_returns_a_value :
+		BehaviorTest
+	{
+		private ExceptionPolicy _policy;
+		private int _expectedValue;
+		private int _returnedValue;
+
+		[Test]
+		public void Should_return_the_value_to_the_caller()
+		{
+			Assert.AreEqual(_expectedValue, _returnedValue);
+		}
+
+		protected override void Given()
+		{
+			_policy = ExceptionPolicy.InCaseOf<InvalidOperationException>().Retry(5);
+			_expectedValue = 27;
+		}
+
+		protected override void When()
+		{
+			_returnedValue = _policy.Do(() => GetValue());
+		}
+
+		private int GetValue()
+		{
+			return _expectedValue;
+		}
+
+	}
+
 	[TestFixture]
 	public class Specifying_a_retry_policy_with_a_series_of_time_intervals :
 		BehaviorTest
