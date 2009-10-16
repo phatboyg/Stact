@@ -18,7 +18,6 @@ namespace Magnum.Reflection
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using CollectionExtensions;
-	using InterfaceExtensions;
 
 	public static class ClassFactory
 	{
@@ -33,21 +32,22 @@ namespace Magnum.Reflection
 
 		public static object New(Type type)
 		{
-			InstanceFactory factory = GetInstanceFactory(type);
-
-			return factory.New();
+			return GetInstanceFactory(type).New();
 		}
 
 		public static T New<T>()
 		{
-			InstanceFactory factory = GetInstanceFactory(typeof (T));
+			return (T) GetInstanceFactory(typeof (T)).New();
+		}
 
-			return (T)factory.New();
+		public static T New<T>(params object[] args)
+		{
+			return (T) GetInstanceFactory(typeof (T)).New(args);
 		}
 
 		public static object New(Type type, params object[] args)
 		{
-			if(type.IsGenericType)
+			if (type.IsGenericType)
 			{
 				return NewGeneric(type, args);
 			}
@@ -55,9 +55,7 @@ namespace Magnum.Reflection
 			if (args == null)
 				throw new ArgumentNullException("args");
 
-			InstanceFactory factory = GetInstanceFactory(type);
-
-			return factory.New(args);
+			return GetInstanceFactory(type).New(args);
 		}
 
 		private static object NewGeneric(Type type, object[] args)
@@ -70,9 +68,7 @@ namespace Magnum.Reflection
 
 			Type makeType = type.MakeGenericType(argumentTypes);
 
-			InstanceFactory factory = GetInstanceFactory(makeType);
-
-			return factory.New(args);
+			return GetInstanceFactory(makeType).New(args);
 		}
 
 		private static InstanceFactory GetInstanceFactory(Type type)

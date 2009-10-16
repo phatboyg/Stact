@@ -49,15 +49,6 @@ namespace Magnum.Specs.Monads
 			count.ShouldEqual(1);
 			total.ShouldEqual(2);
 		}
-
-		[Test]
-		public void Another_shot()
-		{
-			Expression<Func<Claim, bool>> e0 = x => x.Name == "Chris";
-			Expression<Func<Claim, bool>> e1 = x => x.Name == "Chris";
-
-			e0.ShouldEqual(e1);
-		}
 	}
 
 	public abstract class AbstractObjectParser<TInput> :

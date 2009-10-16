@@ -56,7 +56,7 @@ namespace Magnum.Metrics.Monitor
 				return rate;
 
 			long newItems = (completed - _previousCompleted) + (failed - _previousFailed);
-			long now = DateTime.Now.Ticks;
+			long now = SystemUtil.Now.Ticks;
 			long elapsedTime = now - _previousTicks;
 
 			if (newItems >= _itemThreshold || elapsedTime >= _timeThreshold)
@@ -95,7 +95,7 @@ namespace Magnum.Metrics.Monitor
 			_previousCompleted = _monitor.Completed;
 			_previousFailed = _monitor.Failed;
 
-			_previousTicks = DateTime.Now.Ticks;
+			_previousTicks = SystemUtil.Now.Ticks;
 		}
 
 		private static long CalculateSuccessRate(long completed, long failed)

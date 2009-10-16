@@ -10,31 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Common.Specs
+namespace Magnum.Specs
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Magnum.Specs;
-
-//    [Concern("Caching")]
-//	public class when_a_cache_is_defined
-//	{
-//		private static UserCache _userCache;
-//
-//		private Establish context = () =>
-//			{
-//				User one = new User {Id = 27, Name = "Chris"};
-//
-//				_userCache = new UserCache {one};
-//			};
-//
-//		private Because of = () => {};
-//
-//		private It the_items_in_the_cache_should_exist = () => {SpecExtensions.ShouldBeTrue(_userCache.Exists(27));};
-//	}
 
 	internal class UserCache : CacheBase<User>
 	{

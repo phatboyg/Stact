@@ -97,7 +97,7 @@ namespace Magnum.Specs
         [Test]
         public void It_should_be_able_to_enumerate_days()
         {
-            Range<DateTime> range = DateTime.Now.Through(5.Days().FromNow());
+            Range<DateTime> range = SystemUtil.Now.Through(5.Days().FromNow());
 
             Assert.AreEqual(6, range.Forward(step => step + 1.Days()).Count());
             //Assert.That(range.Forward(step => step + 1.Days()).Count(), Is.EqualTo(6));
@@ -106,10 +106,17 @@ namespace Magnum.Specs
         [Test]
         public void It_should_have_contains_working()
         {
-            Range<DateTime> range = DateTime.Now.Through(5.Days().FromNow());
+			SystemUtil.SetNow(() => DateTime.Now.Next(DayOfWeek.Monday));
 
-            Assert.IsTrue(range.Contains(DateTime.Now.Next(DayOfWeek.Friday)));
-            //Assert.That(range.Contains(DateTime.Now.Next(DayOfWeek.Friday)));
+            Range<DateTime> range = SystemUtil.Now.Through(5.Days().FromNow());
+
+			Assert.IsTrue(range.Contains(SystemUtil.Now.Next(DayOfWeek.Friday)));
         }
+
+    	[TearDown]
+    	public void Teardown()
+    	{
+    		SystemUtil.Reset();
+    	}
     }
 }

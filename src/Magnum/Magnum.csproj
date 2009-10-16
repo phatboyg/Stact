@@ -145,10 +145,7 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="Concurrency\ConcurrentQueue.cs" />
-    <Compile Include="Concurrency\ConcurrentStack.cs" />
     <Compile Include="Concurrency\SingleLinkNode.cs" />
-    <Compile Include="Concurrency\SynchronizationMethods.cs" />
     <Compile Include="Configuration\Client\IReadOnlySettings.cs" />
     <Compile Include="Configuration\Client\IReadWriteSettings.cs" />
     <Compile Include="Configuration\Client\ISetting.cs" />
@@ -297,11 +294,6 @@
     <Compile Include="Data\InMemoryRepository.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="FunctionTimer.cs" />
-    <Compile Include="Serialization\BinarySerializationReader.cs" />
-    <Compile Include="Serialization\BinarySerializationWriter.cs" />
-    <Compile Include="Serialization\ISerializationReader.cs" />
-    <Compile Include="Serialization\ISerializationWriter.cs" />
-    <Compile Include="Serialization\SerializationUtil.cs" />
     <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />

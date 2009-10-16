@@ -14,9 +14,8 @@ namespace Magnum.InterfaceExtensions
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Reflection;
 
-    public static class ExtensionsToInterfaces
+	public static class ExtensionsToInterfaces
 	{
 		public static bool Implements(this object instance, Type interfaceType)
 		{
@@ -155,14 +154,14 @@ namespace Magnum.InterfaceExtensions
 					yield return candidate;
 				}
 			}
-		}	
-		
+		}
+
 		private static IEnumerable<Type> GetGenericFor(this Type type, Type targetType)
 		{
 			var baseType = type;
 			while (baseType != null)
 			{
-				if(baseType.IsGenericType)
+				if (baseType.IsGenericType)
 				{
 					if (baseType.GetGenericTypeDefinition() == targetType)
 						yield return baseType;
@@ -198,12 +197,12 @@ namespace Magnum.InterfaceExtensions
 			return instance.GetType().ImplementsGeneric(targetType);
 		}
 
-        public static IEnumerable<Type> GetAllInterfaces(this Type type)
-        {
-            foreach (Type interfaceType in type.GetInterfaces())
-            {
-                yield return interfaceType;
-            }
-        }
+		public static IEnumerable<Type> GetAllInterfaces(this Type type)
+		{
+			foreach (Type interfaceType in type.GetInterfaces())
+			{
+				yield return interfaceType;
+			}
+		}
 	}
 }

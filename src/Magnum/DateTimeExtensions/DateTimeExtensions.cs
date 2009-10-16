@@ -18,12 +18,12 @@ namespace Magnum.DateTimeExtensions
 	{
 		public static DateTime FromNow(this TimeSpan span)
 		{
-			return DateTime.Now + span;
+			return SystemUtil.Now + span;
 		}
 
 		public static DateTime FromUtcNow(this TimeSpan span)
 		{
-			return DateTime.UtcNow + span;
+			return SystemUtil.UtcNow + span;
 		}
 
 		public static DateTime First(this DateTime value)

@@ -51,7 +51,7 @@ namespace Magnum.Specs
             map.From(x => x.Amount).To(y => y.OrderAmount);
 
             var xml = map.WhatAmIDoing();
-            Assert.AreEqual("<transform from=\"Magnum.Common.Specs.SourceObject\" to=\"Magnum.Common.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
+            Assert.AreEqual("<transform from=\"Magnum.Specs.SourceObject\" to=\"Magnum.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Magnum.Specs
             Assert.AreEqual(source.Amount, target.OrderAmount);
 
             var xml = map.WhatAmIDoing();
-            Assert.AreEqual("<transform from=\"Magnum.Common.Specs.SourceObject\" to=\"Magnum.Common.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
+            Assert.AreEqual("<transform from=\"Magnum.Specs.SourceObject\" to=\"Magnum.Specs.TargetObject\">\r\n    <map from=\"Id\" to=\"CustomerId\" />\r\n    <map from=\"Name\" to=\"DisplayName\" />\r\n    <map from=\"Amount\" to=\"OrderAmount\" />\r\n</transform>\r\n", xml);
         }
     }
 

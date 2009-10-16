@@ -88,6 +88,26 @@ namespace Magnum.Specs.Reflection
 			bing.GetType().ShouldEqual(typeof(CapturedGeneric<CorrelatedClass,Guid>));
 		}
 
+		[Test]
+		public void A_class_with_an_argument_should_be_creatable()
+		{
+			Guid guid = Guid.NewGuid();
+			var obj = ClassFactory.New<TestGuidConstructor>(guid);
+			obj.ShouldNotBeNull();
+
+			obj.CorrelationId.ShouldEqual(guid);
+		}
+
+
+		public class TestGuidConstructor
+		{
+			public Guid CorrelationId { get; set; }
+
+			public TestGuidConstructor(Guid correlationId)
+			{
+				CorrelationId = correlationId;
+			}
+		}
 
 
 		public class TestClassWithDefaultConstructor

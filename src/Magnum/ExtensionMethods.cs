@@ -14,6 +14,7 @@ namespace Magnum
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq.Expressions;
 
 	public static class ExtensionMethods
 	{
@@ -52,5 +53,45 @@ namespace Magnum
                 target.Dispose();
             }
         }
+
+		/// <summary>
+		/// Gets the name of the member specified
+		/// </summary>
+		/// <typeparam name="T">The type referenced</typeparam>
+		/// <typeparam name="V">The type of the member referenced</typeparam>
+		/// <param name="expression">The expression referencing the member</param>
+		/// <returns>The name of the member referenced by the expression</returns>
+		public static string MemberName<T, V>(this Expression<Func<T, V>> expression)
+		{
+			var memberExpression = expression.Body as MemberExpression;
+			if (memberExpression == null)
+				throw new InvalidOperationException("Expression must be a member expression");
+
+			return memberExpression.Member.Name;
+		}
+
+		/// <summary>
+		/// Gets the name of the member specified
+		/// </summary>
+		/// <typeparam name="T">The type referenced</typeparam>
+		/// <typeparam name="V">The type of the member referenced</typeparam>
+		/// <param name="expression">The expression referencing the member</param>
+		/// <returns>The name of the member referenced by the expression</returns>
+		public static string MemberName<T>(this Expression<Action<T>> expression)
+		{
+			var memberExpression = expression.Body as MemberExpression;
+			if (memberExpression == null)
+				throw new InvalidOperationException("Expression must be a member expression");
+
+			return memberExpression.Member.Name;
+		}
+		public static string MemberName<T1,T2>(this Expression<Action<T1,T2>> expression)
+		{
+			var memberExpression = expression.Body as MemberExpression;
+			if (memberExpression == null)
+				throw new InvalidOperationException("Expression must be a member expression");
+
+			return memberExpression.Member.Name;
+		}
 	}
 }

@@ -129,7 +129,7 @@ namespace Magnum.Specs.Reflection
 			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything));
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void TriesToMatchTypesAsGoodAsPossible2()
 		{
 			var mock = MockRepository.GenerateMock<ISelectPolymorphic2>();

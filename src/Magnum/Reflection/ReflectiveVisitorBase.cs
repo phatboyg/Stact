@@ -21,7 +21,7 @@ namespace Magnum.Reflection
 		where TVisitor : class
 	{
 		private const BindingFlags _bindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
-
+		private static readonly Expression<Func<ReflectiveVisitorBase<TVisitor>, bool>> _defaultMemberName = x => x.Visit(null);
 		private static readonly ReaderWriterLockedDictionary<Type, Func<TVisitor, object, bool>> _types;
 		private readonly string _methodName;
 
@@ -31,7 +31,12 @@ namespace Magnum.Reflection
 		}
 
 		protected ReflectiveVisitorBase()
-			: this("Visit")
+			: this(_defaultMemberName.MemberName())
+		{
+		}
+
+		protected ReflectiveVisitorBase(Expression<Func<TVisitor, object>> expression)
+			: this(expression.MemberName())
 		{
 		}
 
@@ -104,7 +109,7 @@ namespace Magnum.Reflection
 
 		private Func<TVisitor, object, bool> SimpleDispatch(object obj, Type objectType)
 		{
-			Type[] argumentTypes = new[] {objectType};
+			var argumentTypes = new[] {objectType};
 
 			MethodInfo mi = GetType().GetMethod(_methodName, _bindingFlags, null, argumentTypes, null);
 			if (mi == null)
@@ -118,12 +123,12 @@ namespace Magnum.Reflection
 
 		private Func<TVisitor, object, bool> GenerateLambda(Type objectType, MethodInfo mi)
 		{
-			var instance = Expression.Parameter(typeof (TVisitor), "visitor");
-			var value = Expression.Parameter(typeof (object), "value");
+			ParameterExpression instance = Expression.Parameter(typeof (TVisitor), "visitor");
+			ParameterExpression value = Expression.Parameter(typeof (object), "value");
 
 			UnaryExpression valueCast = Expression.TypeAs(value, objectType);
 
-			var del = Expression.Lambda<Func<TVisitor, object, bool>>(Expression.Call(instance, mi, valueCast), new[] {instance, value}).Compile();
+			Func<TVisitor, object, bool> del = Expression.Lambda<Func<TVisitor, object, bool>>(Expression.Call(instance, mi, valueCast), new[] {instance, value}).Compile();
 
 			return del;
 		}

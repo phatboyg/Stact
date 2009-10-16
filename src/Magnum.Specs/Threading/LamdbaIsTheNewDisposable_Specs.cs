@@ -118,11 +118,9 @@ namespace Magnum.Specs.Threading
 
 			lockThread.Join();
 
-			Assert.IsTrue(locked);
-			//Assert.That(locked, Is.False);
+			Assert.IsFalse(locked);
 
 			Assert.AreEqual(string.Empty, value);
-			//Assert.That(value, Is.EqualTo(string.Empty));
 		}
 
 		[Test]
