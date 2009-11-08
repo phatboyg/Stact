@@ -36,6 +36,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -151,10 +152,13 @@
     <Compile Include="Configuration\Client\ISetting.cs" />
     <Compile Include="Configuration\Client\SettingEntry.cs" />
     <Compile Include="Configuration\Client\SettingsManager.cs" />
+    <Compile Include="Cryptography\DpapiCryptographyService.cs" />
     <Compile Include="Cryptography\EncryptedText.cs" />
     <Compile Include="Cryptography\EncryptedStream.cs" />
+    <Compile Include="Cryptography\HashingService.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
+    <Compile Include="Cryptography\SHA512HashingService.cs" />
     <Compile Include="Data\NullTransaction.cs" />
     <Compile Include="Data\NullUnitOfWork.cs" />
     <Compile Include="Data\ITransaction.cs" />

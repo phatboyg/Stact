@@ -65,6 +65,7 @@
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
+    <Compile Include="Cryptography\DpapiCryptographyService_Specs.cs" />
     <Compile Include="Policies\ExceptionPolicy_Specs.cs" />
     <Compile Include="RangeParser_Specs.cs" />
     <Compile Include="EventStreamProcessing\MessagesToBeTestedWith.cs" />
