@@ -158,6 +158,7 @@
     <Compile Include="Cryptography\HashingService.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService.cs" />
+    <Compile Include="Cryptography\SHA1HashingService.cs" />
     <Compile Include="Cryptography\SHA512HashingService.cs" />
     <Compile Include="Data\NullTransaction.cs" />
     <Compile Include="Data\NullUnitOfWork.cs" />
