@@ -45,5 +45,19 @@ namespace Magnum.Specs.CommandLineParser
 				.Each(x => { Trace.WriteLine(x.ToString()); });
     		
     	}
+
+        [Test]
+        public void dru()
+        {
+            string commandLine = "cmd -file";
+
+            ICommandLineParser parser = new MonadicCommandLineParser();
+
+            Trace.WriteLine("Command Line: " + commandLine);
+
+            parser.Parse(commandLine)
+                .Each(x => { Trace.WriteLine(x.ToString()); });
+
+        }
     }
 }
