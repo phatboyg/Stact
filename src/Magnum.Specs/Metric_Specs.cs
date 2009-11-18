@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs
 {
-    using Common;
     using log4net;
     using NUnit.Framework;
 

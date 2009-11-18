@@ -14,7 +14,6 @@ namespace Magnum.Specs
 {
     using System;
     using System.Collections.Generic;
-    using Common;
     using Magnum.ObjectExtensions;
     using NUnit.Framework;
 

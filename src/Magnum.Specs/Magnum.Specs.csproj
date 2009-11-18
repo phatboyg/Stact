@@ -80,7 +80,6 @@
     <Compile Include="CommandLine\TwoArguments.cs" />
     <Compile Include="CommandLine\Visualizer.cs" />
     <Compile Include="CrazySerializationIdea.cs" />
-    <Compile Include="Cryptography\PublicKeyCrypto.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="Data\UnitOfWork_Specs.cs" />
     <Compile Include="DateTimeExtension_Specs.cs" />
