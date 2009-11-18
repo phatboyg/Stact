@@ -18,6 +18,7 @@ namespace Magnum.Cryptography.PKI
     using System.Text;
     using System.Text.RegularExpressions;
 
+    //http://www.devx.com/security/Article/17249/0/page/3
     public class RsaCryptographyService :
         IPkiCryptographyService
     {
