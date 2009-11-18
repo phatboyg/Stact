@@ -33,8 +33,8 @@ namespace Magnum.Cryptography.PKI
         {
             RSA rsa = GetRsa();
 
-            var objPublicKey = new Key(rsa.ToXmlString(false), KeyType.Public);
-            var objPrivateKey = new Key(rsa.ToXmlString(true), KeyType.Private);
+            var objPublicKey = new PublicKey(rsa.ToXmlString(false));
+            var objPrivateKey = new PrivateKey(rsa.ToXmlString(true));
             var keyPair = new KeyPair(objPublicKey, objPrivateKey);
 
             return keyPair;

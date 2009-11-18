@@ -2,13 +2,22 @@ namespace Magnum.Cryptography.PKI
 {
     public class PrivateKey
     {
+        public PrivateKey(string key)
+        {
+            Key = key;
+        }
+
         public string Label { get; set; }
         public string Key { get; set; }
-        public PublicKey PublickKey { get; set; }
     }
 
     public class PublicKey
     {
+        public PublicKey(string key)
+        {
+            Key = key;
+        }
+
         public string Label { get; set; }
         public string Key { get; set; }
     }

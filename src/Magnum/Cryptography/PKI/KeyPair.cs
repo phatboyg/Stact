@@ -14,13 +14,13 @@ namespace Magnum.Cryptography.PKI
 {
     public class KeyPair
     {
-        public KeyPair(Key @public, Key @private)
+        public KeyPair(PublicKey @public, PrivateKey @private)
         {
             Public = @public;
             Private = @private;
         }
 
-        public Key Public { get; private set; }
-        public Key Private { get; private set; }
+        public PublicKey Public { get; private set; }
+        public PrivateKey Private { get; private set; }
     }
 }

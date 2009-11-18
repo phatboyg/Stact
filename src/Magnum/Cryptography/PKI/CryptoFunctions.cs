@@ -18,7 +18,8 @@ namespace Magnum.Cryptography.PKI
     using System.Text;
     using System.Text.RegularExpressions;
 
-    public class CryptoFunctions
+    public class CryptoFunctions :
+        IPkiCryptographyService
     {
         readonly RSACryptoServiceProvider _rsaCryptoServiceProvider;
 
@@ -37,11 +38,10 @@ namespace Magnum.Cryptography.PKI
             var enc = Encrypt(encryptionKeyPair, signed);
             return enc;
         }
-        //works
         public string Sign(KeyPair signingKeyPair, string text)
         {
             //Use PrivateKey to sign
-            _rsaCryptoServiceProvider.FromXmlString(signingKeyPair.Private.EncryptionKey);
+            _rsaCryptoServiceProvider.FromXmlString(signingKeyPair.Private.Key);
             var signedData = _rsaCryptoServiceProvider.SignData(TextHelpers.ClearTextToClearBytes(text), HashAlgorithm.Create());
             var signature = TextHelpers.CipherBytesToCipherText(signedData);
             return string.Format("{0}<signature>{1}</signature>", text, signature);
@@ -49,7 +49,7 @@ namespace Magnum.Cryptography.PKI
         public string Encrypt(KeyPair encryptionKeyPair, string plainText)
         {
             //use THEIR public key to encrypt
-            _rsaCryptoServiceProvider.FromXmlString(encryptionKeyPair.Public.EncryptionKey);
+            _rsaCryptoServiceProvider.FromXmlString(encryptionKeyPair.Public.Key);
 
             //Get Modulus Size and compare it to length of PlainText
             // If Length of PlainText > (Modulus Size - 11), then PlainText will need to be broken into segments of size (Modulus Size - 11)
@@ -72,6 +72,7 @@ namespace Magnum.Cryptography.PKI
             var cipherBytes = cipherStream.ToArray();
             return TextHelpers.CipherBytesToCipherText(cipherBytes);
         }
+        
         public string DecryptAndAuthenticate(KeyPair decryptionKeyPair, string cipherText)
         {
             //Use Private key to Decrypt and Public Key to Authenticate
@@ -87,7 +88,7 @@ namespace Magnum.Cryptography.PKI
         public string Decrypt(KeyPair decryptionKeyPair, string cipherText)
         {
             //they use THEIR private key to decrypt
-            _rsaCryptoServiceProvider.FromXmlString(decryptionKeyPair.Private.EncryptionKey);
+            _rsaCryptoServiceProvider.FromXmlString(decryptionKeyPair.Private.Key);
 
             var blockSize = GetModulusSize();
             var plainStream = new MemoryStream();
@@ -104,10 +105,9 @@ namespace Magnum.Cryptography.PKI
             var clearBytes = plainStream.ToArray();
             return TextHelpers.ClearBytesToClearString(clearBytes);
         }
-        //works
         public bool Authenticate(KeyPair authenticationKeyPair, string signedText)
         {
-            _rsaCryptoServiceProvider.FromXmlString(authenticationKeyPair.Public.EncryptionKey);
+            _rsaCryptoServiceProvider.FromXmlString(authenticationKeyPair.Public.Key);
             string signature = CryptoHelpers.ExtractSignature(signedText);
             string message = CryptoHelpers.StripSignature(signedText);
 
@@ -127,6 +127,11 @@ namespace Magnum.Cryptography.PKI
         {
             //in bytes
             return (int)Math.Round(_rsaCryptoServiceProvider.KeySize / 8.0);
+        }
+
+        public void Dispose()
+        {
+            _rsaCryptoServiceProvider.Clear();
         }
     }
 

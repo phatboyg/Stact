@@ -159,9 +159,7 @@
     <Compile Include="Cryptography\ICryptographyService.cs" />
     <Compile Include="Cryptography\PKI\CryptoFunctions.cs" />
     <Compile Include="Cryptography\PKI\IPkiCryptographyService.cs" />
-    <Compile Include="Cryptography\PKI\Key.cs" />
     <Compile Include="Cryptography\PKI\KeyPair.cs" />
-    <Compile Include="Cryptography\PKI\KeyRing.cs" />
     <Compile Include="Cryptography\PKI\KeyType.cs" />
     <Compile Include="Cryptography\PKI\PrivateKey.cs" />
     <Compile Include="Cryptography\PKI\PublicKeyGenerator.cs" />
