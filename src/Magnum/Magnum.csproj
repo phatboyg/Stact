@@ -157,7 +157,7 @@
     <Compile Include="Cryptography\EncryptedStream.cs" />
     <Compile Include="Cryptography\HashingService.cs" />
     <Compile Include="Cryptography\ICryptographyService.cs" />
-    <Compile Include="Cryptography\PKI\CryptoFunctions.cs" />
+    <Compile Include="Cryptography\PKI\RsaCryptographyService.cs" />
     <Compile Include="Cryptography\PKI\IPkiCryptographyService.cs" />
     <Compile Include="Cryptography\PKI\KeyPair.cs" />
     <Compile Include="Cryptography\PKI\KeyType.cs" />

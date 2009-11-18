@@ -18,12 +18,12 @@ namespace Magnum.Cryptography.PKI
     using System.Text;
     using System.Text.RegularExpressions;
 
-    public class CryptoFunctions :
+    public class RsaCryptographyService :
         IPkiCryptographyService
     {
         readonly RSACryptoServiceProvider _rsaCryptoServiceProvider;
 
-        public CryptoFunctions()
+        public RsaCryptographyService()
         {
             var publicKeyGenerator = new PublicKeyGenerator();
             _rsaCryptoServiceProvider = publicKeyGenerator.GetRsa();
@@ -183,7 +183,7 @@ namespace Magnum.Cryptography.PKI
         {
             var aliceKeyPair = new PublicKeyGenerator().MakeKeyPair();
             var bobKeyPair = new PublicKeyGenerator().MakeKeyPair();
-            var crypto = new CryptoFunctions();
+            var crypto = new RsaCryptographyService();
 
             var message = "ch";
 
