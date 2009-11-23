@@ -480,6 +480,49 @@ namespace Magnum.Specs
 	}
 
 	[TestFixture]
+	public class Specifying_a_range_with_a_whitespace_character :
+		When_using_the_range_parser_with_the_optimizer
+	{
+		protected override void Given()
+		{
+			base.Given();
+
+			Range = "LA L-M;P-TE J";
+			ExpectedRange = "LA L-M;P-TE J";
+		}
+
+		[Test]
+		public void Should_properly_include_the_space_in_the_range()
+		{
+			var expected = new RangeElement("LA L", "M");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_properly_include_the_space_in_the_second_range()
+		{
+			var expected = new RangeElement("P", "TE J");
+
+			Elements.Contains(expected).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_not_contain_a_second_group()
+		{
+			var expected = new RangeElement("L", "M");
+
+			Elements.Contains(expected).ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_not_contain_starts_with_entries()
+		{
+			Elements.Contains(new StartsWithElement("LA")).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
 	public class When_using_the_range_parser_with_the_optimizer :
 		BehaviorTest
 	{

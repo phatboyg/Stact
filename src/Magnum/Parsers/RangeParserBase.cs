@@ -30,41 +30,37 @@ namespace Magnum.Parsers
 			ValidChar = (from bs in Char('\\')
 			             from ch in Char('\\').Or(Char('\"')).Or(Char('-')).Or(Char('/')).Or(Char('\''))
 			             select ch)
-				.Or(from ch in Char(char.IsLetterOrDigit) select ch);
+				.Or(from ch in Char(char.IsLetterOrDigit) select ch)
+				.Or(from ch in Char(' ') select ch);
 
 
 			Pattern = from c in ValidChar
 			          from cs in Rep(ValidChar)
 			          select cs.Aggregate(c.ToString(), (s, ch) => s + ch);
 
-			Range = (from w in Whitespace
-					 from rs in ElementSeparator
+			Range = (from rs in ElementSeparator
 					 from begin in Pattern
 					 from separator in ItemSeparator
 					 from end in Pattern where begin == end 
 					 select (IRangeElement)new StartsWithElement(begin))
-				.Or(from w in Whitespace
-			        from rs in ElementSeparator
+				.Or(from rs in ElementSeparator
 			        from begin in Pattern
 			        from separator in ItemSeparator
 			        from end in Pattern
 			        select (IRangeElement) new RangeElement(begin, end));
 
-			GreaterThan = from w in Whitespace
-			               from rs in ElementSeparator
+			GreaterThan =  from rs in ElementSeparator
 			               from begin in Pattern
 			               from separator in ItemSeparator
 			               select (IRangeElement) new GreaterThanElement(begin);
 
-			LessThan = from w in Whitespace
-			               from rs in ElementSeparator
+			LessThan =     from rs in ElementSeparator
 			               from separator in ItemSeparator
 						  from end in Pattern
 						  select (IRangeElement)new LessThanElement(end);
 
 
-			StartsWith = (from w in Whitespace
-			             from rs in ElementSeparator
+			StartsWith = (from rs in ElementSeparator
 			             from start in Pattern
 			             select (IRangeElement) new StartsWithElement(start));
 
