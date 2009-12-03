@@ -10,26 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs
+namespace Magnum.Generator
 {
-    using System.Collections;
-    using Context;
-    using NUnit.Framework;
+	public interface IObjectGenerator
+	{
+		object Create();
+	}
 
-    [TestFixture]
-    public class TypedKey_Specs
-    {
-        [Test]
-        public void FIRST_TEST_NAME()
-        {
-            Hashtable items = new Hashtable();
-
-            Range<int> through = 1.Through(5);
-            items.Store(through);
-
-            var value = items.Retrieve<Range<int>>();
-
-            value.ShouldEqual(through);
-        }
-    }
+	public interface IObjectGenerator<T> :
+		IObjectGenerator
+	{
+		new T Create();
+		T Create<TArg0>(TArg0 arg0);
+		T Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
+	}
 }

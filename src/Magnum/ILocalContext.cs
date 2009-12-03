@@ -13,6 +13,7 @@
 namespace Magnum
 {
 	using System;
+	using Context;
 	using Data;
 
 	public interface ILocalContext

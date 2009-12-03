@@ -175,6 +175,15 @@
     <Compile Include="EventStreamProcessing\Parser.cs" />
     <Compile Include="EventStreamProcessing\PatternBasedObjectParser.cs" />
     <Compile Include="EventStreamProcessing\Result.cs" />
+    <Compile Include="Generator\ExpressionExtensions.cs" />
+    <Compile Include="Generator\ObjectGenerator.cs" />
+    <Compile Include="Generator\ObjectGeneratorBase.cs" />
+    <Compile Include="Generator\ArgumentMatchingExtensions.cs" />
+    <Compile Include="Generator\IObjectGenerator.cs" />
+    <Compile Include="Generator\ObjectGenerator.2.cs" />
+    <Compile Include="Generator\ObjectGenerator.3.cs" />
+    <Compile Include="Generator\ObjectGenerator.1.cs" />
+    <Compile Include="Generator\ObjectGeneratorException.1.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
@@ -320,7 +329,7 @@
     <Compile Include="Threading\ReaderWriterLockedObject.cs" />
     <Compile Include="Threading\UpgradeableLock.cs" />
     <Compile Include="ThreadUtil.cs" />
-    <Compile Include="TypedKey.cs" />
+    <Compile Include="Context\TypedKey.cs" />
     <Compile Include="WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>

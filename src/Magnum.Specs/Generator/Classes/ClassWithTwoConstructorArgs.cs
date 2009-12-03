@@ -10,26 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs
+namespace Magnum.Specs.Generator.Classes
 {
-    using System.Collections;
-    using Context;
-    using NUnit.Framework;
+	public class ClassWithTwoConstructorArgs
+	{
+		public ClassWithTwoConstructorArgs(int value, string name)
+		{
+			Value = value;
+			Name = name;
+		}
 
-    [TestFixture]
-    public class TypedKey_Specs
-    {
-        [Test]
-        public void FIRST_TEST_NAME()
-        {
-            Hashtable items = new Hashtable();
-
-            Range<int> through = 1.Through(5);
-            items.Store(through);
-
-            var value = items.Retrieve<Range<int>>();
-
-            value.ShouldEqual(through);
-        }
-    }
+		public int Value { get; private set; }
+		public string Name { get; private set; }
+	}
 }

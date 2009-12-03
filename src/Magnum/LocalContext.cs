@@ -15,6 +15,7 @@ namespace Magnum
 	using System;
 	using System.Collections;
 	using System.Web;
+	using Context;
 
 	/// <summary>
 	/// Supports the storage of context information through the life of a thread
