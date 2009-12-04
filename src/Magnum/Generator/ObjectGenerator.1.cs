@@ -108,9 +108,10 @@ namespace Magnum.Generator
 
 		private T CreateFromArgs(object[] args)
 		{
-			int key = args.Aggregate(0, (x, o) => x ^ o.GetType().GetHashCode());
+			int offset = 0;
+			int key = args.Aggregate(0, (x, o) => x ^ (o.GetType().GetHashCode() << offset++));
 
-			var generator = _argGenerators.Retrieve(key, () =>
+			Func<object[], T> generator = _argGenerators.Retrieve(key, () =>
 				{
 					ConstructorInfo constructorInfo = Constructors
 						.MatchingArguments(args)
@@ -123,7 +124,7 @@ namespace Magnum.Generator
 
 					Expression[] parameters = constructorInfo.GetParameters().ToObjectArrayExpression(argsParameter).ToArray();
 
-					var newExpression = Expression.New(constructorInfo, parameters);
+					NewExpression newExpression = Expression.New(constructorInfo, parameters);
 
 					Func<object[], T> lambda = Expression.Lambda<Func<object[], T>>(newExpression, argsParameter).Compile();
 

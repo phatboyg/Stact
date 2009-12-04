@@ -23,10 +23,12 @@ namespace Magnum.Generator
 		private static ObjectGenerator _current;
 
 		private readonly Dictionary<Type, IObjectGenerator> _generators;
+		private readonly Dictionary<Type, IObjectGenerator> _genericGenerators;
 
 		private ObjectGenerator()
 		{
 			_generators = new Dictionary<Type, IObjectGenerator>();
+			_genericGenerators = new Dictionary<Type, IObjectGenerator>();
 		}
 
 		public static ObjectGenerator Current
@@ -52,14 +54,53 @@ namespace Magnum.Generator
 				});
 		}
 
+		private IObjectGenerator GetGenericGenerator(Type type)
+		{
+			return _generators.Retrieve(type, () => new GenericObjectGenerator(type));
+		}
+
 		public static object Create(Type type)
 		{
 			return Current.GetGenerator(type).Create();
 		}
 
+		public static object Create<TArg0>(Type type, TArg0 arg0)
+		{
+			if (type.IsGenericType)
+				Current.GetGenericGenerator(type).Create(arg0);
+
+			return Current.GetGenerator(type).Create(arg0);
+		}
+
+		public static object Create<TArg0, TArg1>(Type type, TArg0 arg0, TArg1 arg1)
+		{
+			if (type.IsGenericType)
+				Current.GetGenericGenerator(type).Create(arg0, arg1);
+
+			return Current.GetGenerator(type).Create(arg0, arg1);
+		}
+
 		public static object Create(Type type, object[] args)
 		{
+			if (type.IsGenericType)
+				Current.GetGenericGenerator(type).Create(args);
+
 			return Current.GetGenerator(type).Create(args);
+		}
+
+		public static object Create(Type type, Type[] genericTypes)
+		{
+			if(!type.IsGenericType)
+				throw new ArgumentException("The type specified must be a generic type");
+
+			Type[] genericArguments = type.GetGenericArguments();
+
+			if(genericArguments.Length != genericTypes.Length)
+				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length + " (needed " + genericArguments.Length + ")");
+
+			Type genericType = type.MakeGenericType(genericTypes);
+
+			return Current.GetGenerator(genericType).Create();
 		}
 	}
 }

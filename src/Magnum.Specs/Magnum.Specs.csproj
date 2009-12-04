@@ -71,12 +71,15 @@
     <Compile Include="Generator\Classes\ClassWithMultipleComplexConstructors.cs" />
     <Compile Include="Generator\Classes\ClassWithMultipleConstructorArgs.cs" />
     <Compile Include="Generator\Classes\ClassWithOneConstructorArg.cs" />
+    <Compile Include="Generator\Classes\ClassWithOneGenericArgument.cs" />
     <Compile Include="Generator\Classes\ClassWithPrivateConstructor.cs" />
     <Compile Include="Generator\Classes\ClassWithProtectedConstructor.cs" />
     <Compile Include="Generator\Classes\ClassWithTwoConstructorArgs.cs" />
     <Compile Include="Generator\ComplexByType_Specs.cs" />
     <Compile Include="Generator\ComplexConstructor_Specs.cs" />
     <Compile Include="Generator\Generator_Specs.cs" />
+    <Compile Include="Generator\GenericType_Specs.cs" />
+    <Compile Include="Generator\Matching_Specs.cs" />
     <Compile Include="Generator\Performance_Specs.cs" />
     <Compile Include="Policies\ExceptionPolicy_Specs.cs" />
     <Compile Include="CommandLineParser\EchoCommand.cs" />

@@ -10,23 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Generator
+namespace Magnum.Specs.Generator.Classes
 {
-	using System;
-	using System.Reflection;
-
-	public abstract class ObjectGeneratorBase
+	public class ClassWithOneGenericArgument<T>
 	{
-		private const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-		protected readonly ConstructorInfo[] Constructors;
-
-		protected ObjectGeneratorBase(Type type)
+		public ClassWithOneGenericArgument()
 		{
-			ObjectType = type;
-			Constructors = type.GetConstructors(_constructorBindingFlags);
 		}
 
-		public Type ObjectType { get; private set; }
+		public ClassWithOneGenericArgument(T value)
+		{
+			Value = value;
+		}
+
+		public ClassWithOneGenericArgument(T value, int count)
+		{
+			Value = value;
+			Count = count;
+		}
+
+		public int Count { get; private set; }
+		public T Value { get; private set; }
 	}
 }

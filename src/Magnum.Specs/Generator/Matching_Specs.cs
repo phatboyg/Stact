@@ -10,23 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Generator
+namespace Magnum.Specs.Generator
 {
-	using System;
+	using System.Diagnostics;
+	using System.Linq;
 	using System.Reflection;
+	using Classes;
+	using NUnit.Framework;
 
-	public abstract class ObjectGeneratorBase
+	[TestFixture]
+	public class Matching_arguments_to_a_method_signature
 	{
-		private const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-		protected readonly ConstructorInfo[] Constructors;
-
-		protected ObjectGeneratorBase(Type type)
+		[Test]
+		public void Should_work()
 		{
-			ObjectType = type;
-			Constructors = type.GetConstructors(_constructorBindingFlags);
-		}
+			ConstructorInfo constructorInfo = typeof (ClassWithOneGenericArgument<>).MakeGenericType(typeof(int))
+				.GetConstructors()
+				.Where(x => x.GetParameters().Count() == 1)
+				.Single();
 
-		public Type ObjectType { get; private set; }
+			ParameterInfo[] parameterInfos = constructorInfo.GetParameters();
+
+			Trace.WriteLine(parameterInfos[0].ParameterType);
+		}
 	}
 }
