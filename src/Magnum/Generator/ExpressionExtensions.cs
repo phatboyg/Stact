@@ -36,5 +36,20 @@ namespace Magnum.Generator
 				yield return parameter.ToParameterExpression("arg" + index++);
 			}
 		}
+
+		public static IEnumerable<Expression> ToObjectArrayExpression(this IEnumerable<ParameterInfo> parameters, ParameterExpression objectArrayParameter)
+		{
+			int index = 0;
+			foreach (ParameterInfo parameter in parameters)
+			{
+				var arrayIndex = Expression.Constant(index++);
+
+				var arrayAccessor = Expression.ArrayIndex(objectArrayParameter, arrayIndex);
+
+				var cast = Expression.Convert(arrayAccessor, parameter.ParameterType);
+
+				yield return cast;
+			}
+		}
 	}
 }

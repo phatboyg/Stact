@@ -40,16 +40,26 @@ namespace Magnum.Generator
 			}
 		}
 
-		public static object Create(Type type)
+		private IObjectGenerator GetGenerator(Type type)
 		{
-			return Current._generators.Retrieve(type, () =>
+			return _generators.Retrieve(type, () =>
 				{
 					const BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
 
 					return (IObjectGenerator) typeof (ObjectGenerator<>).MakeGenericType(type)
 					                          	.GetProperty("Current", flags)
 					                          	.GetValue(null, flags, null, null, CultureInfo.InvariantCulture);
-				}).Create();
+				});
+		}
+
+		public static object Create(Type type)
+		{
+			return Current.GetGenerator(type).Create();
+		}
+
+		public static object Create(Type type, object[] args)
+		{
+			return Current.GetGenerator(type).Create(args);
 		}
 	}
 }

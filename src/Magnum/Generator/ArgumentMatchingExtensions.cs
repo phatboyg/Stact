@@ -15,6 +15,7 @@ namespace Magnum.Generator
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using Linq;
 
 	public static class ArgumentMatchingExtensions
 	{
@@ -39,6 +40,13 @@ namespace Magnum.Generator
 				.Where(x => x.GetParameters().MatchesArguments(arg0, arg1));
 		}
 
+		public static IEnumerable<T> MatchingArguments<T>(this IEnumerable<T> constructors, object[] args)
+			where T : MethodBase
+		{
+			return constructors
+				.Where(x => x.GetParameters().MatchesArguments(args));
+		}
+
 		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters)
 		{
 			return parameters.Count() == 0;
@@ -60,6 +68,19 @@ namespace Magnum.Generator
 			       args[0].ParameterType.IsAssignableFrom(typeof (TArg0)) &&
 			       args[1].ParameterType.IsAssignableFrom(typeof (TArg1));
 		}
+
+		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters, object[] args)
+		{
+			if (parameters.Count() != args.Length)
+				return false;
+
+			int matched = parameters.Merge(args, (x, y) => new {Parameter = x, Argument = y})
+				.Where(x => x.Parameter.ParameterType.IsAssignableFrom(x.Argument.GetType()))
+				.Count();
+
+			return args.Length == matched;
+		}
+
 
 //		public static ConstructorInfo FindBestMatch(this IEnumerable<ConstructorInfo> methods, object[] args)
 //		{

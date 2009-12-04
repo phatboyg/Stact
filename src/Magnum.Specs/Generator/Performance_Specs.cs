@@ -138,5 +138,18 @@ namespace Magnum.Specs.Generator
 				ClassWithTwoConstructorArgs item = ObjectGenerator<ClassWithTwoConstructorArgs>.Create(47, "The Name");
 			}
 		}
+
+		[Test]
+		public void Using_object_generator_via_type_and_arguments()
+		{
+			Trace.WriteLine("Using ObjectGenerator(47,TheName) Via Type And Arguments");
+
+			var args = new object[] {47, "The Name"};
+
+			for (int i = 0; i < _iterations; i++)
+			{
+				var item = (ClassWithTwoConstructorArgs) ObjectGenerator.Create(typeof (ClassWithTwoConstructorArgs), args);
+			}
+		}
 	}
 }

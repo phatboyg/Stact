@@ -13,9 +13,11 @@
 namespace Magnum.Generator
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using CollectionExtensions;
 
 	public class ObjectGenerator<T> :
 		ObjectGeneratorBase,
@@ -23,11 +25,14 @@ namespace Magnum.Generator
 	{
 		private static ObjectGenerator<T> _current;
 
+		private Dictionary<int, Func<object[], T>> _argGenerators;
 		private Func<T> _new;
 
 		private ObjectGenerator()
 			: base(typeof (T))
 		{
+			_argGenerators = new Dictionary<int, Func<object[], T>>();
+
 			InitializeNew();
 		}
 
@@ -42,6 +47,36 @@ namespace Magnum.Generator
 			}
 		}
 
+		object IObjectGenerator.Create()
+		{
+			return Create();
+		}
+
+		object IObjectGenerator.Create(object[] args)
+		{
+			return CreateFromArgs(args);
+		}
+
+		object IObjectGenerator.Create<TArg0>(TArg0 arg0)
+		{
+			return Create(arg0);
+		}
+
+		object IObjectGenerator.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
+		{
+			return Create(arg0, arg1);
+		}
+
+		T IObjectGenerator<T>.Create()
+		{
+			return Create();
+		}
+
+		T IObjectGenerator<T>.Create(object[] args)
+		{
+			return CreateFromArgs(args);
+		}
+
 		T IObjectGenerator<T>.Create<TArg0>(TArg0 arg0)
 		{
 			return ObjectGenerator<T, TArg0>.Create(arg0);
@@ -50,16 +85,6 @@ namespace Magnum.Generator
 		T IObjectGenerator<T>.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 		{
 			return ObjectGenerator<T, TArg0, TArg1>.Create(arg0, arg1);
-		}
-
-		T IObjectGenerator<T>.Create()
-		{
-			return Create();
-		}
-
-		object IObjectGenerator.Create()
-		{
-			return Create();
 		}
 
 		private void InitializeNew()
@@ -79,6 +104,33 @@ namespace Magnum.Generator
 
 					return lambda();
 				};
+		}
+
+		private T CreateFromArgs(object[] args)
+		{
+			int key = args.Aggregate(0, (x, o) => x ^ o.GetType().GetHashCode());
+
+			var generator = _argGenerators.Retrieve(key, () =>
+				{
+					ConstructorInfo constructorInfo = Constructors
+						.MatchingArguments(args)
+						.SingleOrDefault();
+
+					if (constructorInfo == null)
+						throw new ObjectGeneratorException(typeof (T), "No usable constructor found");
+
+					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
+
+					Expression[] parameters = constructorInfo.GetParameters().ToObjectArrayExpression(argsParameter).ToArray();
+
+					var newExpression = Expression.New(constructorInfo, parameters);
+
+					Func<object[], T> lambda = Expression.Lambda<Func<object[], T>>(newExpression, argsParameter).Compile();
+
+					return lambda;
+				});
+
+			return generator(args);
 		}
 
 		public static T Create()

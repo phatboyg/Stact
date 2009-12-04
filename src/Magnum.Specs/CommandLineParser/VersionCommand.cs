@@ -10,22 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Generator
+namespace Executor_Specs
 {
-	public interface IObjectGenerator
-	{
-		object Create();
-		object Create(object[] args);
-		object Create<TArg0>(TArg0 arg0);
-		object Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
-	}
+	using System;
 
-	public interface IObjectGenerator<T> :
-		IObjectGenerator
+	public class VersionCommand :
+		ICommand
 	{
-		new T Create();
-		new T Create(object[] args);
-		new T Create<TArg0>(TArg0 arg0);
-		new T Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
+		public int Execute()
+		{
+			Console.WriteLine("Version: (some version)");
+
+			return 0;
+		}
 	}
 }
