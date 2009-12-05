@@ -24,21 +24,19 @@ namespace Magnum.InterfaceExtensions
 			       	: interfaceType.IsAssignableFrom(instance.GetType());
 		}
 
+		public static bool Implements(this Type type, Type interfaceType)
+		{
+			return interfaceType.IsGenericTypeDefinition
+					? type.ImplementsGeneric(interfaceType)
+					: interfaceType.IsAssignableFrom(type);
+		}
+
 		public static bool Implements<T>(this object instance)
 		{
 			var interfaceType = typeof (T);
 			return instance.Implements(interfaceType);
 		}
 
-		public static bool Implements<T>(this object instance, T interfaceType)
-		{
-			return instance.Implements<T>();
-		}
-
-		public static bool Implements<T>(this Type type, T interfaceType)
-		{
-			return Implements<T>(type);
-		}
 
 		public static bool Implements<T>(this Type type)
 		{

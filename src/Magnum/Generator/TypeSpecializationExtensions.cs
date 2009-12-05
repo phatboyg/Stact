@@ -16,108 +16,69 @@ namespace Magnum.Generator
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using Collections;
 	using InterfaceExtensions;
 	using Linq;
-	using Reflection;
 
 	public static class TypeSpecializationExtensions
 	{
-		public static Type ToSpecializedType(this ConstructorInfo constructor, IEnumerable<object> args)
+		public static Type ToSpecializedType<T>(this T method, IEnumerable<object> args)
+			where T : MethodBase
 		{
-			Guard.Against.Null(constructor, "constructor");
+			Guard.Against.Null(method, "method");
 
-			Type type = constructor.DeclaringType;
+			Type type = method.DeclaringType;
 			if (!type.IsGenericType)
-				throw new ArgumentException("The argument must be for a generic type", "constructor");
+				throw new ArgumentException("The argument must be for a generic type", "method");
 
-			var parameters = constructor.GetParameters()
-				.Merge(args, (x, y) => new { Parameter = x, Argument = y});
+			var parameters = method.GetParameters()
+				.Merge(args, (x, y) => new {Parameter = x, Argument = y});
 
-			Type[] genericArguments = type.GetGenericArguments()
-				.Select(argumentType =>
-					{
-						Type result = parameters.Where(arg => arg.Parameter.ParameterType == argumentType && arg.Argument != null)
-							.Select(arg => arg.Argument.GetType())
-							.FirstOrDefault();
+			Type[] arguments = type.GetGenericArguments();
 
-						if(result != null)
-							return result;
-
-						throw new ObjectGeneratorException(type, "Could not create a specialized type for argument: " + argumentType.Name);
-					})
+			Type[] genericArguments = arguments.Join(GetResult(arguments, method, args), t => t, k => k.First, (a, b) => b)
+				.Distinct()
+				.Select(x => x.Second)
 				.ToArray();
+
+			if (arguments.Length != genericArguments.Length)
+				throw new ObjectGeneratorException(type, "Unable to resolve generic arguments");
 
 			return type.MakeGenericType(genericArguments);
 		}
 
-
-		public static IEnumerable<Type> GetGenericArgumentTypes(this IEnumerable<Type> arguments,
-	IEnumerable<ParameterInfo> parameters,
-	object[] args,
-	Type[] argumentTypes)
+		private static IEnumerable<Tuple<Type, Type>> GetResult<T>(IEnumerable<Type> argumentTypes, T method, IEnumerable<object> args)
+			where T : MethodBase
 		{
-			var generics = new Dictionary<Type, Type>();
+			var parameters = method.GetParameters()
+				.Merge(args, (x, y) => new {Parameter = x, Argument = y});
 
-			arguments.Each(argument =>
+			foreach (var argType in argumentTypes)
 			{
-				parameters.Where(parameter => parameter.ParameterType == argument)
-					.Each(parameter =>
-					{
-						Type parameterType = args[parameter.Position].GetType();
+				var argumentType = argType;
 
-						generics[argument] = parameterType;
+				var matches = parameters
+					.Where(arg => arg.Parameter.ParameterType == argumentType && arg.Argument != null)
+					.Select(arg => arg.Argument.GetType());
 
-						argument.GetGenericParameterConstraints()
-							.Where(x => x.IsGenericType)
-							.Each(constraint =>
-							{
-								var declared = constraint.GetDeclaredGenericArguments().ToArray();
-								var specified = parameterType
-									.GetDeclaredTypesForGeneric(constraint.GetGenericTypeDefinition()).ToArray();
-
-								if (declared.Length == specified.Length)
-								{
-									for (int i = 0; i < declared.Length; i++)
-									{
-										if (arguments.Contains(declared[i]))
-											generics[declared[i]] = specified[i];
-									}
-								}
-							});
-					});
-
-				parameters.Where(parameter => parameter.ParameterType != argument && parameter.ParameterType.IsGenericType)
-					.Each(parameter =>
-					{
-						Type parameterType = args[parameter.Position].GetType();
-
-						var declared = parameter.ParameterType.GetDeclaredGenericArguments().ToArray();
-						var specified = parameterType.GetDeclaredTypesForGeneric(parameterType.GetGenericTypeDefinition()).ToArray();
-
-						if (declared.Length == specified.Length)
-						{
-							for (int i = 0; i < declared.Length; i++)
-							{
-								if (arguments.Contains(declared[i]))
-									generics[declared[i]] = specified[i];
-							}
-						}
-					});
-			});
-
-			var methodTypes = arguments.Select(x => generics.ContainsKey(x) ? generics[x] : null).ToArray();
-
-			if (argumentTypes != null)
-			{
-				for (int i = 0; i < methodTypes.Length && i < argumentTypes.Length; i++)
+				foreach (Type match in matches)
 				{
-					if (methodTypes[i] == null)
-						methodTypes[i] = argumentTypes[i];
+					Type type = match;
+
+					yield return new Tuple<Type, Type>(argumentType, type);
+
+					var more = argumentType.GetGenericParameterConstraints()
+						.Where(x => x.IsGenericType)
+						.Where(x => type.Implements(x.GetGenericTypeDefinition()))
+						.SelectMany(x => x.GetGenericArguments()
+						                 	.Merge(type.GetDeclaredTypesForGeneric(x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
+
+					foreach (var next in more)
+					{
+						yield return new Tuple<Type, Type>(next.Argument, next.Type);
+					}
 				}
 			}
-
-			return methodTypes;
 		}
-
 	}
 }

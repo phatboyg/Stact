@@ -12,26 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Generator
 {
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Reflection;
-	using Classes;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class Matching_arguments_to_a_method_signature
 	{
-		[Test]
+		[Test, Explicit]
 		public void Should_work()
 		{
-			ConstructorInfo constructorInfo = typeof (ClassWithOneGenericArgument<>).MakeGenericType(typeof(int))
-				.GetConstructors()
-				.Where(x => x.GetParameters().Count() == 1)
-				.Single();
-
-			ParameterInfo[] parameterInfos = constructorInfo.GetParameters();
-
-			Trace.WriteLine(parameterInfos[0].ParameterType);
 		}
 	}
 }
