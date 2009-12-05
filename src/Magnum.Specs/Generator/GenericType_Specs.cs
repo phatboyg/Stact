@@ -60,14 +60,14 @@ namespace Magnum.Specs.Generator
 		{
 			Guid id = CombGuid.Generate();
 
-			var argument = new ConstrainedClass(id);
+			var argument = new ClassWithGuidConstraint(id);
 
 			var obj = ObjectGenerator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<ConstrainedClass, Guid>>();
+			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>>();
 
-			var instance = (ClassWithAConstrainedGenericArgument<ConstrainedClass, Guid>)obj;
+			var instance = (ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>)obj;
 
 			instance.Value.ShouldEqual(argument);
 		}
@@ -87,6 +87,26 @@ namespace Magnum.Specs.Generator
 			var instance = (ClassWithAConstrainedGenericArgument<SuperConstrainedClass, Guid>)obj;
 
 			instance.Value.ShouldEqual(argument);
+		}
+
+		[Test]
+		public void An_object_with_multiple_constraints_should_be_created()
+		{
+			Guid id = CombGuid.Generate();
+			var argument = new SuperConstrainedClass(id);
+
+			string name = "Name";
+			var argument2 = new ClassWithStringConstraint(name);
+
+			var obj = ObjectGenerator.Create(typeof (ClassWithTwoConstrainedGenericArguments<,,,>), argument, argument2);
+
+			obj.ShouldNotBeNull();
+			obj.ShouldBeType<ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>>();
+
+			var instance = (ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>)obj;
+
+			instance.Value.ShouldEqual(argument);
+			instance.Value2.ShouldEqual(argument2);
 		}
 	}
 }

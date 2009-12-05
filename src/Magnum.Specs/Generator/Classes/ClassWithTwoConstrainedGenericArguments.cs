@@ -12,30 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Generator.Classes
 {
-	using System;
-
-	public class ClassWithAConstrainedGenericArgument<T, K>
+	public class ClassWithTwoConstrainedGenericArguments<T, K, X, Y>
 		where T : ConstrainedBy<K>
+		where X : ConstrainedBy<Y>
 	{
 		public T Value { get; private set; }
+		public X Value2 { get; private set; }
 
-		public ClassWithAConstrainedGenericArgument(T value)
+		public ClassWithTwoConstrainedGenericArguments(T value, X value2)
 		{
 			Value = value;
-		}
-	}
-
-	public interface ConstrainedBy<T>
-	{
-		T Id { get; }
-	}
-
-	public class SuperConstrainedClass :
-		ClassWithGuidConstraint
-	{
-		public SuperConstrainedClass(Guid id)
-			: base(id)
-		{
+			Value2 = value2;
 		}
 	}
 }

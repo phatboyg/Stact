@@ -14,28 +14,34 @@ namespace Magnum.Specs.Generator.Classes
 {
 	using System;
 
-	public class ClassWithAConstrainedGenericArgument<T, K>
-		where T : ConstrainedBy<K>
+	public class ClassWithGuidConstraint :
+		ConstrainedBy<Guid>
 	{
-		public T Value { get; private set; }
-
-		public ClassWithAConstrainedGenericArgument(T value)
+		public ClassWithGuidConstraint(Guid id)
 		{
-			Value = value;
+			Id = id;
 		}
-	}
 
-	public interface ConstrainedBy<T>
-	{
-		T Id { get; }
-	}
+		public Guid Id { get; private set; }
 
-	public class SuperConstrainedClass :
-		ClassWithGuidConstraint
-	{
-		public SuperConstrainedClass(Guid id)
-			: base(id)
+		public bool Equals(ClassWithGuidConstraint other)
 		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return other.Id.Equals(Id);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (ClassWithGuidConstraint)) return false;
+			return Equals((ClassWithGuidConstraint) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
 		}
 	}
 }
