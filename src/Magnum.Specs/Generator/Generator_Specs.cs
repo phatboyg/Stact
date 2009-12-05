@@ -25,7 +25,7 @@ namespace Magnum.Specs.Generator
 		[SetUp]
 		public void Generating_an_object()
 		{
-			Instance = ObjectGenerator<T>.Create();
+			Instance = FastActivator<T>.Create();
 		}
 
 		[Test]
@@ -49,7 +49,7 @@ namespace Magnum.Specs.Generator
 		[SetUp]
 		public void Generating_an_object()
 		{
-			Instance = ObjectGenerator.Create(typeof(T)) as T;
+			Instance = FastActivator.Create(typeof(T)) as T;
 		}
 
 		[Test]

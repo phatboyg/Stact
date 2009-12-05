@@ -17,28 +17,28 @@ namespace Magnum.Generator
 	using System.Linq;
 	using System.Runtime.Serialization;
 
-	public class ObjectGeneratorException :
+	public class FastActivatorException :
 		Exception
 	{
-		public ObjectGeneratorException()
+		public FastActivatorException()
 		{
 		}
 
-		public ObjectGeneratorException(Type type, string message, params Type[] argumentTypes)
+		public FastActivatorException(Type type, string message, params Type[] argumentTypes)
 			: base(FormatMessage(type, message, argumentTypes))
 		{
 			Type = type;
 			ArgumentTypes = new List<Type>(argumentTypes);
 		}
 
-		public ObjectGeneratorException(Type type, string message, Exception innerException, params Type[] argumentTypes)
+		public FastActivatorException(Type type, string message, Exception innerException, params Type[] argumentTypes)
 			: base(FormatMessage(type, message, argumentTypes), innerException)
 		{
 			Type = type;
 			ArgumentTypes = new List<Type>(argumentTypes);
 		}
 
-		protected ObjectGeneratorException(SerializationInfo info, StreamingContext context)
+		protected FastActivatorException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

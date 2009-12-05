@@ -19,34 +19,34 @@ namespace Magnum.Generator
 	using System.Reflection;
 	using CollectionExtensions;
 
-	public class GenericObjectGenerator :
-		ObjectGeneratorBase,
-		IObjectGenerator
+	public class GenericFastActivator :
+		FastActivatorBase,
+		IFastActivator
 	{
 		private readonly Dictionary<int, Func<object[], object>> _argGenerators;
 
-		public GenericObjectGenerator(Type genericType)
+		public GenericFastActivator(Type genericType)
 			: base(genericType)
 		{
 			_argGenerators = new Dictionary<int, Func<object[], object>>();
 		}
 
-		object IObjectGenerator.Create()
+		object IFastActivator.Create()
 		{
 			throw new NotImplementedException();
 		}
 
-		object IObjectGenerator.Create(object[] args)
+		object IFastActivator.Create(object[] args)
 		{
 			return CreateFromArgs(args);
 		}
 
-		object IObjectGenerator.Create<TArg0>(TArg0 arg0)
+		object IFastActivator.Create<TArg0>(TArg0 arg0)
 		{
 			return CreateFromArgs(arg0);
 		}
 
-		object IObjectGenerator.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
+		object IFastActivator.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 		{
 			return CreateFromArgs(arg0, arg1);
 		}
@@ -69,14 +69,14 @@ namespace Magnum.Generator
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new ObjectGeneratorException(ObjectType, "No usable constructor found");
+						throw new FastActivatorException(ObjectType, "No usable constructor found");
 
 					Type specializedType = constructorInfo.ToSpecializedType(args);
 
 					constructorInfo = specializedType.GetConstructors().MatchingArguments(args).SingleOrDefault();
 
 					if(constructorInfo == null)
-						throw new ObjectGeneratorException(specializedType, "Specialized constructor could not be used to build the object");
+						throw new FastActivatorException(specializedType, "Specialized constructor could not be used to build the object");
 
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 

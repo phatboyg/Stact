@@ -18,45 +18,45 @@ namespace Magnum.Generator
 	using System.Reflection;
 	using CollectionExtensions;
 
-	public class ObjectGenerator
+	public class FastActivator
 	{
-		private static ObjectGenerator _current;
+		private static FastActivator _current;
 
-		private readonly Dictionary<Type, IObjectGenerator> _generators;
-		private readonly Dictionary<Type, IObjectGenerator> _genericGenerators;
+		private readonly Dictionary<Type, IFastActivator> _generators;
+		private readonly Dictionary<Type, IFastActivator> _genericGenerators;
 
-		private ObjectGenerator()
+		private FastActivator()
 		{
-			_generators = new Dictionary<Type, IObjectGenerator>();
-			_genericGenerators = new Dictionary<Type, IObjectGenerator>();
+			_generators = new Dictionary<Type, IFastActivator>();
+			_genericGenerators = new Dictionary<Type, IFastActivator>();
 		}
 
-		public static ObjectGenerator Current
+		public static FastActivator Current
 		{
 			get
 			{
 				if (_current == null)
-					_current = new ObjectGenerator();
+					_current = new FastActivator();
 
 				return _current;
 			}
 		}
 
-		private IObjectGenerator GetGenerator(Type type)
+		private IFastActivator GetGenerator(Type type)
 		{
 			return _generators.Retrieve(type, () =>
 				{
 					const BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
 
-					return (IObjectGenerator) typeof (ObjectGenerator<>).MakeGenericType(type)
+					return (IFastActivator) typeof (FastActivator<>).MakeGenericType(type)
 					                          	.GetProperty("Current", flags)
 					                          	.GetValue(null, flags, null, null, CultureInfo.InvariantCulture);
 				});
 		}
 
-		private IObjectGenerator GetGenericGenerator(Type type)
+		private IFastActivator GetGenericGenerator(Type type)
 		{
-			return _generators.Retrieve(type, () => new GenericObjectGenerator(type));
+			return _generators.Retrieve(type, () => new GenericFastActivator(type));
 		}
 
 		public static object Create(Type type)

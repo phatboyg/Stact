@@ -11,7 +11,7 @@ namespace Magnum.Specs.Generator
 		[Test]
 		public void The_generic_arguments_should_be_used_to_build_the_type()
 		{
-			var obj = ObjectGenerator.Create(typeof (ClassWithOneGenericArgument<>), new[] {typeof (int)});
+			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), new[] {typeof (int)});
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithOneGenericArgument<int>>();
@@ -22,7 +22,7 @@ namespace Magnum.Specs.Generator
 		{
 			const int value = 27;
 
-			var obj = ObjectGenerator.Create(typeof (ClassWithOneGenericArgument<>), value);
+			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), value);
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithOneGenericArgument<int>>();
@@ -39,7 +39,7 @@ namespace Magnum.Specs.Generator
 			const string value = "Name";
 			const int count = 47;
 
-			var obj = ObjectGenerator.Create(typeof (ClassWithOneGenericArgument<>), value, count);
+			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), value, count);
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithOneGenericArgument<string>>();
@@ -62,7 +62,7 @@ namespace Magnum.Specs.Generator
 
 			var argument = new ClassWithGuidConstraint(id);
 
-			var obj = ObjectGenerator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
+			var obj = FastActivator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>>();
@@ -79,7 +79,7 @@ namespace Magnum.Specs.Generator
 
 			var argument = new SuperConstrainedClass(id);
 
-			var obj = ObjectGenerator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
+			var obj = FastActivator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<SuperConstrainedClass, Guid>>();
@@ -98,7 +98,7 @@ namespace Magnum.Specs.Generator
 			string name = "Name";
 			var argument2 = new ClassWithStringConstraint(name);
 
-			var obj = ObjectGenerator.Create(typeof (ClassWithTwoConstrainedGenericArguments<,,,>), argument, argument2);
+			var obj = FastActivator.Create(typeof (ClassWithTwoConstrainedGenericArguments<,,,>), argument, argument2);
 
 			obj.ShouldNotBeNull();
 			obj.ShouldBeType<ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>>();

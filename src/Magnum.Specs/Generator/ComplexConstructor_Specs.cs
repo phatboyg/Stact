@@ -15,7 +15,7 @@ namespace Magnum.Specs.Generator
 		{
 			const int expected = 47;
 
-			_instance = ObjectGenerator<ClassWithOneConstructorArg>.Create(expected);
+			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
 			_instance.ShouldBeType<ClassWithOneConstructorArg>();
@@ -28,7 +28,7 @@ namespace Magnum.Specs.Generator
 		{
 			const string expected = "The Name";
 
-			_instance = ObjectGenerator<ClassWithOneConstructorArg>.Create(expected);
+			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
 			_instance.ShouldBeType<ClassWithOneConstructorArg>();
@@ -41,7 +41,7 @@ namespace Magnum.Specs.Generator
 		{
 			Guid expected = CombGuid.Generate();
 
-			_instance = ObjectGenerator<ClassWithOneConstructorArg>.Create(expected);
+			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
 			_instance.ShouldBeType<ClassWithOneConstructorArg>();
@@ -62,7 +62,7 @@ namespace Magnum.Specs.Generator
 			const int expected = 47;
 			const string expectedName = "The Name";
 
-			_instance = ObjectGenerator<ClassWithTwoConstructorArgs>.Create(expected, expectedName);
+			_instance = FastActivator<ClassWithTwoConstructorArgs>.Create(expected, expectedName);
 
 			_instance.ShouldNotBeNull();
 			_instance.ShouldBeType<ClassWithTwoConstructorArgs>();

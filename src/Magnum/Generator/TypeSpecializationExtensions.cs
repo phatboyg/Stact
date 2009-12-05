@@ -42,7 +42,7 @@ namespace Magnum.Generator
 				.ToArray();
 
 			if (arguments.Length != genericArguments.Length)
-				throw new ObjectGeneratorException(type, "Unable to resolve generic arguments");
+				throw new FastActivatorException(type, "Unable to resolve generic arguments");
 
 			return type.MakeGenericType(genericArguments);
 		}

@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Generator
 {
-	public interface IObjectGenerator
+	public interface IFastActivator
 	{
 		object Create();
 		object Create(object[] args);
@@ -20,8 +20,8 @@ namespace Magnum.Generator
 		object Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
 	}
 
-	public interface IObjectGenerator<T> :
-		IObjectGenerator
+	public interface IFastActivator<T> :
+		IFastActivator
 	{
 		new T Create();
 		new T Create(object[] args);

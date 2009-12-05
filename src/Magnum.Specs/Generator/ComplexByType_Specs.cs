@@ -33,7 +33,7 @@ namespace ComplexByType_Specs
 
 			var args = new object[] {value, name, count, description};
 
-			object instance = ObjectGenerator.Create(_objectType, args);
+			object instance = FastActivator.Create(_objectType, args);
 
 			Assert.IsNotNull(instance);
 			Assert.IsInstanceOfType(_objectType, instance);
@@ -56,7 +56,7 @@ namespace ComplexByType_Specs
 
 			var args = new object[] {name, value, count, description};
 
-			object instance = ObjectGenerator.Create(_objectType, args);
+			object instance = FastActivator.Create(_objectType, args);
 
 			Assert.IsNotNull(instance);
 			Assert.IsInstanceOfType(_objectType, instance);

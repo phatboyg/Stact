@@ -15,13 +15,13 @@ namespace Magnum.Generator
 	using System;
 	using System.Reflection;
 
-	public abstract class ObjectGeneratorBase
+	public abstract class FastActivatorBase
 	{
 		private const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		protected readonly ConstructorInfo[] Constructors;
 
-		protected ObjectGeneratorBase(Type type)
+		protected FastActivatorBase(Type type)
 		{
 			ObjectType = type;
 			Constructors = type.GetConstructors(_constructorBindingFlags);

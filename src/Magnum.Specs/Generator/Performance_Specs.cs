@@ -109,46 +109,46 @@ namespace Magnum.Specs.Generator
 		[Test]
 		public void Using_object_generator_with_no_arguments()
 		{
-			Trace.WriteLine("Using ObjectGenerator()");
+			Trace.WriteLine("Using FastActivator()");
 
 			for (int i = 0; i < _iterations; i++)
 			{
-				ClassWithDefaultConstructor item = ObjectGenerator<ClassWithDefaultConstructor>.Create();
+				ClassWithDefaultConstructor item = FastActivator<ClassWithDefaultConstructor>.Create();
 			}
 		}
 
 		[Test]
 		public void Using_object_generator_with_one_argument()
 		{
-			Trace.WriteLine("Using ObjectGenerator(47)");
+			Trace.WriteLine("Using FastActivator(47)");
 
 			for (int i = 0; i < _iterations; i++)
 			{
-				ClassWithOneConstructorArg item = ObjectGenerator<ClassWithOneConstructorArg>.Create(47);
+				ClassWithOneConstructorArg item = FastActivator<ClassWithOneConstructorArg>.Create(47);
 			}
 		}
 
 		[Test]
 		public void Using_object_generator_with_two_arguments()
 		{
-			Trace.WriteLine("Using ObjectGenerator(47,TheName)");
+			Trace.WriteLine("Using FastActivator(47,TheName)");
 
 			for (int i = 0; i < _iterations; i++)
 			{
-				ClassWithTwoConstructorArgs item = ObjectGenerator<ClassWithTwoConstructorArgs>.Create(47, "The Name");
+				ClassWithTwoConstructorArgs item = FastActivator<ClassWithTwoConstructorArgs>.Create(47, "The Name");
 			}
 		}
 
 		[Test]
 		public void Using_object_generator_via_type_and_arguments()
 		{
-			Trace.WriteLine("Using ObjectGenerator(47,TheName) Via Type And Arguments");
+			Trace.WriteLine("Using FastActivator(47,TheName) Via Type And Arguments");
 
 			var args = new object[] {47, "The Name"};
 
 			for (int i = 0; i < _iterations; i++)
 			{
-				var item = (ClassWithTwoConstructorArgs) ObjectGenerator.Create(typeof (ClassWithTwoConstructorArgs), args);
+				var item = (ClassWithTwoConstructorArgs) FastActivator.Create(typeof (ClassWithTwoConstructorArgs), args);
 			}
 		}
 	}

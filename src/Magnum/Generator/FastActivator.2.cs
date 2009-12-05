@@ -17,25 +17,25 @@ namespace Magnum.Generator
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	public class ObjectGenerator<T, TArg0, TArg1> :
-		ObjectGeneratorBase
+	public class FastActivator<T, TArg0> :
+		FastActivatorBase
 	{
-		private static ObjectGenerator<T, TArg0, TArg1> _current;
+		private static FastActivator<T, TArg0> _current;
 
-		private Func<TArg0, TArg1, T> _new;
+		private Func<TArg0, T> _new;
 
-		private ObjectGenerator()
-			: base(typeof (T))
+		private FastActivator()
+			: base(typeof(T))
 		{
 			InitializeNew();
 		}
 
-		public static ObjectGenerator<T, TArg0, TArg1> Current
+		public static FastActivator<T, TArg0> Current
 		{
 			get
 			{
 				if (_current == null)
-					_current = new ObjectGenerator<T, TArg0, TArg1>();
+					_current = new FastActivator<T, TArg0>();
 
 				return _current;
 			}
@@ -43,28 +43,28 @@ namespace Magnum.Generator
 
 		private void InitializeNew()
 		{
-			_new = (arg0, arg1) =>
+			_new = arg0 =>
 				{
 					ConstructorInfo constructorInfo = Constructors
-						.MatchingArguments(arg0, arg1)
+						.MatchingArguments(arg0)
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new ObjectGeneratorException(typeof(T), "No usable constructor found", typeof(TArg0), typeof(TArg1));
+						throw new FastActivatorException(typeof(T), "No usable constructor found", typeof(TArg0));
 
-					ParameterExpression[] parameters = constructorInfo.GetParameters().ToParameterExpressions().ToArray();
+					ParameterExpression parameter = constructorInfo.GetParameters().First().ToParameterExpression();
 
-					Func<TArg0, TArg1, T> lambda = Expression.Lambda<Func<TArg0, TArg1, T>>(Expression.New(constructorInfo, parameters), parameters).Compile();
+					Func<TArg0, T> lambda = Expression.Lambda<Func<TArg0, T>>(Expression.New(constructorInfo, parameter), parameter).Compile();
 
 					_new = lambda;
 
-					return lambda(arg0, arg1);
+					return lambda(arg0);
 				};
 		}
 
-		public static T Create(TArg0 arg0, TArg1 arg1)
+		public static T Create(TArg0 arg0)
 		{
-			return Current._new(arg0, arg1);
+			return Current._new(arg0);
 		}
 	}
 }

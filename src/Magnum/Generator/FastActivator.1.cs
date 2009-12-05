@@ -19,16 +19,16 @@ namespace Magnum.Generator
 	using System.Reflection;
 	using CollectionExtensions;
 
-	public class ObjectGenerator<T> :
-		ObjectGeneratorBase,
-		IObjectGenerator<T>
+	public class FastActivator<T> :
+		FastActivatorBase,
+		IFastActivator<T>
 	{
-		private static ObjectGenerator<T> _current;
+		private static FastActivator<T> _current;
 
 		private Dictionary<int, Func<object[], T>> _argGenerators;
 		private Func<T> _new;
 
-		private ObjectGenerator()
+		private FastActivator()
 			: base(typeof (T))
 		{
 			_argGenerators = new Dictionary<int, Func<object[], T>>();
@@ -36,55 +36,55 @@ namespace Magnum.Generator
 			InitializeNew();
 		}
 
-		public static ObjectGenerator<T> Current
+		public static FastActivator<T> Current
 		{
 			get
 			{
 				if (_current == null)
-					_current = new ObjectGenerator<T>();
+					_current = new FastActivator<T>();
 
 				return _current;
 			}
 		}
 
-		object IObjectGenerator.Create()
+		object IFastActivator.Create()
 		{
 			return Create();
 		}
 
-		object IObjectGenerator.Create(object[] args)
+		object IFastActivator.Create(object[] args)
 		{
 			return CreateFromArgs(args);
 		}
 
-		object IObjectGenerator.Create<TArg0>(TArg0 arg0)
+		object IFastActivator.Create<TArg0>(TArg0 arg0)
 		{
 			return Create(arg0);
 		}
 
-		object IObjectGenerator.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
+		object IFastActivator.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 		{
 			return Create(arg0, arg1);
 		}
 
-		T IObjectGenerator<T>.Create()
+		T IFastActivator<T>.Create()
 		{
 			return Create();
 		}
 
-		T IObjectGenerator<T>.Create(object[] args)
+		T IFastActivator<T>.Create(object[] args)
 		{
 			return CreateFromArgs(args);
 		}
 
-		T IObjectGenerator<T>.Create<TArg0>(TArg0 arg0)
+		T IFastActivator<T>.Create<TArg0>(TArg0 arg0)
 		{
-			return ObjectGenerator<T, TArg0>.Create(arg0);
+			return FastActivator<T, TArg0>.Create(arg0);
 		}
 
-		T IObjectGenerator<T>.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
+		T IFastActivator<T>.Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 		{
-			return ObjectGenerator<T, TArg0, TArg1>.Create(arg0, arg1);
+			return FastActivator<T, TArg0, TArg1>.Create(arg0, arg1);
 		}
 
 		private void InitializeNew()
@@ -96,7 +96,7 @@ namespace Magnum.Generator
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new ObjectGeneratorException(typeof (T), "No usable constructor found");
+						throw new FastActivatorException(typeof (T), "No usable constructor found");
 
 					Func<T> lambda = Expression.Lambda<Func<T>>(Expression.New(constructorInfo)).Compile();
 
@@ -118,7 +118,7 @@ namespace Magnum.Generator
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new ObjectGeneratorException(typeof (T), "No usable constructor found");
+						throw new FastActivatorException(typeof (T), "No usable constructor found");
 
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
@@ -141,12 +141,12 @@ namespace Magnum.Generator
 
 		public static T Create<TArg0>(TArg0 arg0)
 		{
-			return ObjectGenerator<T, TArg0>.Create(arg0);
+			return FastActivator<T, TArg0>.Create(arg0);
 		}
 
 		public static T Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 		{
-			return ObjectGenerator<T, TArg0, TArg1>.Create(arg0, arg1);
+			return FastActivator<T, TArg0, TArg1>.Create(arg0, arg1);
 		}
 	}
 }
