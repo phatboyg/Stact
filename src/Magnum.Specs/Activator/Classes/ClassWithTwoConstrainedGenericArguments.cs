@@ -10,16 +10,19 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.CommandLineParser
+namespace Magnum.Specs.Activator.Classes
 {
-	public class MoveCommandArguments
+	public class ClassWithTwoConstrainedGenericArguments<T, K, X, Y>
+		where T : ConstrainedBy<K>
+		where X : ConstrainedBy<Y>
 	{
-		[Required]
-		public string From { get; set; }
+		public T Value { get; private set; }
+		public X Value2 { get; private set; }
 
-		[Required]
-		public string To { get; set; }
-
-		public bool Overwrite { get; set; }
+		public ClassWithTwoConstrainedGenericArguments(T value, X value2)
+		{
+			Value = value;
+			Value2 = value2;
+		}
 	}
 }

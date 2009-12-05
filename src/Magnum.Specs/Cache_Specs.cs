@@ -17,6 +17,7 @@ namespace Magnum.Specs
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Magnum.Activator;
 
 	internal class UserCache : CacheBase<User>
 	{
@@ -47,7 +48,7 @@ namespace Magnum.Specs
 
 			Type t = typeof (CacheIndex<,>).MakeGenericType(typeof (T), ((PropertyInfo) memberExpression.Member).PropertyType);
 
-			ICacheIndex<T> index = (ICacheIndex<T>) Activator.CreateInstance(t, expression);
+			ICacheIndex<T> index = (ICacheIndex<T>) FastActivator.Create(t, expression);
 
 			_indices.Add(index);
 		}

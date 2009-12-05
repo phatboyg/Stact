@@ -10,17 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Executor_Specs
+namespace Magnum.Specs.CommandLineParser
 {
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Reflection;
-	using Magnum;
 	using Magnum.CommandLineParser;
 	using Magnum.Reflection;
-	using Magnum.Specs;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -40,7 +38,7 @@ namespace Executor_Specs
 			Elements = new MonadicCommandLineParser().Parse(CommandLine);
 		}
 
-		[Test]
+		[Test, Ignore]
 		public void Should_copy_the_arguments_into_the_class()
 		{
 			object arguments = ClassFactory.New(typeof (MoveCommandArguments));

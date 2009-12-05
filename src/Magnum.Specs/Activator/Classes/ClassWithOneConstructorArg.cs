@@ -10,16 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.CommandLineParser
+namespace Magnum.Specs.Activator.Classes
 {
-	public class MoveCommandArguments
+	using System;
+
+	public class ClassWithOneConstructorArg
 	{
-		[Required]
-		public string From { get; set; }
+		public ClassWithOneConstructorArg(int value)
+		{
+			Value = value;
+		}
 
-		[Required]
-		public string To { get; set; }
+		public ClassWithOneConstructorArg(string name)
+		{
+			Name = name;
+		}
 
-		public bool Overwrite { get; set; }
+		public ClassWithOneConstructorArg(Guid id)
+		{
+			Id = id;
+		}
+
+		public Guid Id { get; private set; }
+
+		public string Name { get; private set; }
+
+		public int Value { get; private set; }
 	}
 }

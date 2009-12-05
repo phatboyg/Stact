@@ -10,16 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.CommandLineParser
+namespace Magnum.Activator
 {
-	public class MoveCommandArguments
+	using System;
+	using System.Reflection;
+
+	public abstract class FastActivatorBase
 	{
-		[Required]
-		public string From { get; set; }
+		private const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-		[Required]
-		public string To { get; set; }
+		protected readonly ConstructorInfo[] Constructors;
 
-		public bool Overwrite { get; set; }
+		protected FastActivatorBase(Type type)
+		{
+			ObjectType = type;
+			Constructors = type.GetConstructors(_constructorBindingFlags);
+		}
+
+		public Type ObjectType { get; private set; }
 	}
 }
