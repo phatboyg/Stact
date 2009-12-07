@@ -109,7 +109,7 @@ namespace Magnum.Activator
 		private T CreateFromArgs(object[] args)
 		{
 			int offset = 0;
-			int key = args.Aggregate(0, (x, o) => x ^ (o.GetType().GetHashCode() << offset++));
+			int key = args.Aggregate(0, (x, o) => x ^ (o == null ? offset : o.GetType().GetHashCode() << offset++));
 
 			Func<object[], T> generator = _argGenerators.Retrieve(key, () =>
 				{

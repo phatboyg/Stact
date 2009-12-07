@@ -17,6 +17,7 @@ namespace Magnum.Specs.CommandLineParser
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Reflection;
+	using Magnum.Activator;
 	using Magnum.CommandLineParser;
 	using Magnum.Reflection;
 	using NUnit.Framework;
@@ -41,7 +42,7 @@ namespace Magnum.Specs.CommandLineParser
 		[Test, Ignore]
 		public void Should_copy_the_arguments_into_the_class()
 		{
-			object arguments = ClassFactory.New(typeof (MoveCommandArguments));
+			object arguments = FastActivator<MoveCommandArguments>.Create();
 
 			var properties = arguments.GetType()
 				.GetProperties(BindingFlags.Instance | BindingFlags.Public)

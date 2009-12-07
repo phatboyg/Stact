@@ -85,6 +85,9 @@
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Matching_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
+    <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />
+    <Compile Include="Invoker\Classes\ClassWithSimpleMethods.cs" />
+    <Compile Include="Invoker\FastInvoker_Specs.cs" />
     <Compile Include="Policies\ExceptionPolicy_Specs.cs" />
     <Compile Include="CommandLineParser\EchoCommand.cs" />
     <Compile Include="CommandLineParser\Executor_Specs.cs" />
@@ -141,7 +144,6 @@
     <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
     <Compile Include="Reflection\GenericTypeReflection_Specs.cs" />
     <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
-    <Compile Include="Reflection\ObjectBuilder_Specs.cs" />
     <Compile Include="StateMachine\Anytime_Specs.cs" />
     <Compile Include="StateMachine\Combine_Specs.cs" />
     <Compile Include="StateMachine\EventException_Specs.cs" />

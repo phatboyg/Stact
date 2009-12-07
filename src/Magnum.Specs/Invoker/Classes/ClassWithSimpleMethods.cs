@@ -10,11 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Reflection
+namespace Magnum.Specs.Invoker.Classes
 {
-	public interface InstanceFactory
+	public class ClassWithSimpleMethods
 	{
-		object New();
-		object New(params object[] args);
+		public bool NoArgumentsCalled { get; private set; }
+
+		public void NoArguments()
+		{
+			NoArgumentsCalled = true;
+		}
 	}
 }

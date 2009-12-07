@@ -265,7 +265,6 @@
     <Compile Include="Policies\ExceptionPolicy.cs" />
     <Compile Include="Policies\PolicyBuilder.cs" />
     <Compile Include="Policies\RetryPolicy.cs" />
-    <Compile Include="Reflection\ClassFactory.cs" />
     <Compile Include="Collections\Empty.cs" />
     <Compile Include="Reflection\ExpressionVisitor.cs" />
     <Compile Include="Reflection\ExtensionsForReflection.cs" />
@@ -273,12 +272,10 @@
     <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Reflection\Generic.cs" />
     <Compile Include="Reflection\IMethodCall.cs" />
-    <Compile Include="Reflection\InstanceFactory.cs" />
     <Compile Include="Reflection\MethodCache.cs" />
     <Compile Include="Reflection\MethodCallCache.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Reflection\MethodCallTypeCache.cs" />
-    <Compile Include="Reflection\TypeInstanceFactory.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />

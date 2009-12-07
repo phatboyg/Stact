@@ -37,6 +37,28 @@ namespace Magnum.Specs.Activator
 		}
 
 		[Test]
+		public void The_object_should_be_created_with_a_null_argument()
+		{
+			_instance = FastActivator<ClassWithOneConstructorArg>.Create<string>(null);
+
+			_instance.ShouldNotBeNull();
+			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.Value.ShouldEqual(default(int));
+			_instance.Name.ShouldEqual(null);
+		}
+
+		[Test]
+		public void The_object_should_be_created_with_a_null_argument_via_type()
+		{
+			_instance = (ClassWithOneConstructorArg)FastActivator.Create(typeof(ClassWithOneConstructorArg), new object[]{null});
+
+			_instance.ShouldNotBeNull();
+			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.Value.ShouldEqual(default(int));
+			_instance.Name.ShouldEqual(null);
+		}
+
+		[Test]
 		public void The_object_should_be_created_with_the_id()
 		{
 			Guid expected = CombGuid.Generate();

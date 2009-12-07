@@ -16,6 +16,7 @@ namespace Magnum.Activator
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using InterfaceExtensions;
 	using Linq;
 
 	public static class ArgumentMatchingExtensions
@@ -58,7 +59,7 @@ namespace Magnum.Activator
 			ParameterInfo[] args = parameters.ToArray();
 
 			return args.Length == 1 &&
-			       args[0].ParameterType.RateParameterTypeCompatibility(typeof (TArg0)) >= 2;
+			       args[0].ParameterType.RateParameterTypeCompatibility(typeof (TArg0)) > 0;
 		}
 
 		public static bool MatchesArguments<TArg0, TArg1>(this IEnumerable<ParameterInfo> parameters, TArg0 arg0, TArg1 arg1)
@@ -66,8 +67,8 @@ namespace Magnum.Activator
 			ParameterInfo[] args = parameters.ToArray();
 
 			return args.Length == 2 &&
-			       args[0].ParameterType.RateParameterTypeCompatibility(typeof (TArg0)) >= 2 &&
-			       args[1].ParameterType.RateParameterTypeCompatibility(typeof(TArg1)) >= 2;
+			       args[0].ParameterType.RateParameterTypeCompatibility(typeof (TArg0)) > 0 &&
+			       args[1].ParameterType.RateParameterTypeCompatibility(typeof(TArg1)) > 0;
 		}
 
 		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters, object[] args)
@@ -81,7 +82,7 @@ namespace Magnum.Activator
 				return true;
 
 			int matched = parameterInfos.Merge(args, (x, y) => new {Parameter = x, Argument = y})
-				.Where(x => RateParameterTypeCompatibility(x.Parameter.ParameterType, (object) x.Argument) >= 2)
+				.Where(x => RateParameterTypeCompatibility(x.Parameter.ParameterType, x.Argument) > 0)
 				.Count();
 
 			return args.Length == matched;
@@ -124,7 +125,13 @@ namespace Magnum.Activator
 
 		private static bool MeetsGenericConstraints(this Type type, Type genericType)
 		{
-			return true; // TODO
+			Type[] constraints = genericType.GetGenericParameterConstraints();
+
+			int matched = constraints
+				.Where(x => type.Implements(x.GetGenericTypeDefinition()))
+				.Count();
+
+			return matched == constraints.Length;
 		}
 	}
 }

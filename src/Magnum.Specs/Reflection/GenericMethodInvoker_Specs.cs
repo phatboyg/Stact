@@ -15,6 +15,7 @@ namespace Magnum.Specs.Reflection
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using Magnum.Activator;
 	using Magnum.Reflection;
 	using NUnit.Framework;
 
@@ -30,7 +31,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void Invoking_with_an_object_should_not_properly_initialize_T()
 		{
-			object obj = ClassFactory.New(typeof (MyClass));
+			object obj = FastActivator.Create(typeof (MyClass));
 
 			MyOtherMethod(obj);
 		}
@@ -38,7 +39,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void Invoking_using_the_generic_method_invoker_should_pass_the_appropriate_type()
 		{
-			object obj = ClassFactory.New(typeof(MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			Generic.Call(x => MyMethod(x), obj);
 		}
@@ -46,7 +47,7 @@ namespace Magnum.Specs.Reflection
 		[Test, Ignore] // okay, static doesn't seem tow ork after all
 		public void A_static_method_should_also_be_able_to_be_invoked()
 		{
-			object obj = ClassFactory.New(typeof(MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			Generic.Call(x => MyStaticMethod(x), obj);
 		}
@@ -54,7 +55,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void The_extension_method_syntax_should_work_the_same()
 		{
-			object obj = ClassFactory.New(typeof(MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			this.Call("MyMethod", obj);
 		}
@@ -62,7 +63,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void The_extension_method_syntax_should_work_the_same_for_a_static_method()
 		{
-			object obj = ClassFactory.New(typeof(MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			this.Call("MyStaticMethod", obj);
 		}
@@ -71,7 +72,7 @@ namespace Magnum.Specs.Reflection
 		public void Okay_now_we_have_a_strange_problem_here()
 		{
 			string key = "Chris";
-			MyClass value = ClassFactory.New<MyClass>();
+			MyClass value = FastActivator<MyClass>.Create();
 
 			var pair = new KeyValuePair<string,MyClass>(key, value);
 
@@ -88,7 +89,7 @@ namespace Magnum.Specs.Reflection
 		[Test, ExpectedException(typeof(InvalidOperationException))]
 		public void Invoking_a_regular_method_should_not_work_too()
 		{
-			object obj = ClassFactory.New(typeof (MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			Generic.Call(x => RegularMethod(x), obj);
 		}
@@ -98,7 +99,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void Invoking_it_a_lot_should_be_fast()
 		{
-			object obj = ClassFactory.New(typeof(MyClass));
+			object obj = FastActivator.Create(typeof(MyClass));
 
 			Generic.Call(x => MyMethod(x), obj);
 

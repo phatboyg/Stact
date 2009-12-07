@@ -13,6 +13,7 @@
 namespace Magnum.Reflection
 {
 	using System;
+	using Activator;
 	using Collections;
 	using ObjectExtensions;
 
@@ -43,7 +44,7 @@ namespace Magnum.Reflection
 
 		private static IMethodCall CreateNewValue(Type key)
 		{
-			return (IMethodCall) ClassFactory.New(typeof (MethodCallCache<>).MakeGenericType(key));
+			return (IMethodCall) FastActivator.Create(typeof (MethodCallCache<>).MakeGenericType(key));
 		}
 	}
 }

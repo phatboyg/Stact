@@ -17,6 +17,7 @@ namespace Magnum.Specs.Pipeline
 	using System.Threading;
 	using CollectionExtensions;
 	using Consumers;
+	using Magnum.Activator;
 	using Magnum.Pipeline.Visitors;
 	using Magnum.Reflection;
 	using Messages;
@@ -76,7 +77,7 @@ namespace Magnum.Specs.Pipeline
 		{
 			_called.Retrieve(typeof (T), () => true);
 
-			return ClassFactory.New<T>();
+			return FastActivator<T>.Create();
 		}
 
 		private IEnumerable<Type> GetAllTypes()
