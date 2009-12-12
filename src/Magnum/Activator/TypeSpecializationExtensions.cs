@@ -31,20 +31,35 @@ namespace Magnum.Activator
 			if (!type.IsGenericType)
 				throw new ArgumentException("The argument must be for a generic type", "method");
 
-			var parameters = method.GetParameters()
-				.Merge(args, (x, y) => new {Parameter = x, Argument = y});
+			Type[] genericArguments = GetGenericArguments(method, type.GetGenericArguments(), args);
 
-			Type[] arguments = type.GetGenericArguments();
+			return type.MakeGenericType(genericArguments);
+		}
 
+		public static MethodInfo ToSpecializedMethod(this MethodInfo method, IEnumerable<object> args)
+		{
+			Guard.Against.Null(method, "method");
+
+			if(!method.IsGenericMethod)
+				return method;
+
+			Type[] genericArguments = GetGenericArguments(method, method.GetGenericArguments(), args);
+
+			return method.MakeGenericMethod(genericArguments);
+		}
+
+		private static Type[] GetGenericArguments<T>(T method, ICollection<Type> arguments, IEnumerable<object> args)
+			where T : MethodBase
+		{
 			Type[] genericArguments = arguments.Join(GetResult(arguments, method, args), t => t, k => k.First, (a, b) => b)
 				.Distinct()
 				.Select(x => x.Second)
 				.ToArray();
 
-			if (arguments.Length != genericArguments.Length)
-				throw new FastActivatorException(type, "Unable to resolve generic arguments");
+			if (arguments.Count != genericArguments.Length)
+				throw new ArgumentException("Unable to resolve generic arguments");
 
-			return type.MakeGenericType(genericArguments);
+			return genericArguments;
 		}
 
 		private static IEnumerable<Tuple<Type, Type>> GetResult<T>(IEnumerable<Type> argumentTypes, T method, IEnumerable<object> args)

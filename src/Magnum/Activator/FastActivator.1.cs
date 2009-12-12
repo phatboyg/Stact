@@ -122,7 +122,7 @@ namespace Magnum.Activator
 
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
-					Expression[] parameters = constructorInfo.GetParameters().ToObjectArrayExpression(argsParameter).ToArray();
+					Expression[] parameters = constructorInfo.GetParameters().ToArgumentsExpression(argsParameter).ToArray();
 
 					NewExpression newExpression = Expression.New(constructorInfo, parameters);
 

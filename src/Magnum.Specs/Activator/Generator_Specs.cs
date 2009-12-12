@@ -16,7 +16,6 @@ namespace Magnum.Specs.Activator
 	using Magnum.Activator;
 	using NUnit.Framework;
 
-	[TestFixture]
 	public class When_generating_an_object<T>
 		where T : class
 	{

@@ -39,14 +39,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Internal\DefaultWorkingMemory.cs" />
+    <Compile Include="Condition.cs" />
+    <Compile Include="Consequence.cs" />
+    <Compile Include="DSL\ConditionConfigurator.cs" />
+    <Compile Include="DSL\ExitExtension.cs" />
+    <Compile Include="DSL\Rule.cs" />
+    <Compile Include="DSL\RuleConfigurator.cs" />
+    <Compile Include="HashSetWorkingMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IWorkingMemory.cs" />
+    <Compile Include="RuleContext.cs" />
+    <Compile Include="SemanticModel\ConditionDeclaration.cs" />
+    <Compile Include="SemanticModel\ConsequenceDeclaration.cs" />
+    <Compile Include="SemanticModel\RuleDeclaration.cs" />
+    <Compile Include="SemanticModel\Declaration.cs" />
+    <Compile Include="SemanticModel\DeclarationType.cs" />
+    <Compile Include="WorkingMemory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Magnum.Common\Magnum.Common.csproj">
+    <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum.Common</Name>
+      <Name>Magnum</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

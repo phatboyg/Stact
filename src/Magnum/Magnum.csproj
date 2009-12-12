@@ -190,6 +190,8 @@
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
+    <Compile Include="Invoker\FastInvokerExtensions.cs" />
+    <Compile Include="Invoker\FastInvokerFactory.cs" />
     <Compile Include="Linq\Batch.cs" />
     <Compile Include="Linq\Index.cs" />
     <Compile Include="Linq\Merge.cs" />

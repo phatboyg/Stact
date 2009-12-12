@@ -689,7 +689,7 @@
         </member>
         <member name="M:NUnit.Framework.Constraints.EqualConstraint.#ctor(System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:NUnit.Framework.Constraints.EqualConstraint"/> class.
+            Initializes a new instance of the <see cref="T:EqualConstraint"/> class.
             </summary>
             <param name="expected">The expected value.</param>
         </member>
@@ -717,14 +717,6 @@
             <summary>
             Helper method to compare two arrays
             </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.EqualConstraint.DirectoriesEqual(System.IO.DirectoryInfo,System.IO.DirectoryInfo)">
-            <summary>
-            Method to compare two DirectoryInfo objects
-            </summary>
-            <param name="expected">first directory to compare</param>
-            <param name="actual">second directory to compare</param>
-            <returns>true if equivalent, false if not</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.EqualConstraint.DisplayCollectionDifferences(NUnit.Framework.MessageWriter,System.Collections.ICollection,System.Collections.ICollection,System.Int32)">
             <summary>

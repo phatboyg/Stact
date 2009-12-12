@@ -13,6 +13,7 @@
 namespace Magnum.Activator
 {
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -30,26 +31,16 @@ namespace Magnum.Activator
 
 		public static IEnumerable<ParameterExpression> ToParameterExpressions(this IEnumerable<ParameterInfo> parameters)
 		{
-			int index = 0;
-			foreach (ParameterInfo parameter in parameters)
-			{
-				yield return parameter.ToParameterExpression("arg" + index++);
-			}
+			return parameters.Select((parameter, index) => parameter.ToParameterExpression("arg" + index));
 		}
 
-		public static IEnumerable<Expression> ToObjectArrayExpression(this IEnumerable<ParameterInfo> parameters, ParameterExpression objectArrayParameter)
+		public static IEnumerable<Expression> ToArgumentsExpression(this IEnumerable<ParameterInfo> parameters, ParameterExpression arguments)
 		{
-			int index = 0;
-			foreach (ParameterInfo parameter in parameters)
-			{
-				var arrayIndex = Expression.Constant(index++);
-
-				var arrayAccessor = Expression.ArrayIndex(objectArrayParameter, arrayIndex);
-
-				var cast = Expression.Convert(arrayAccessor, parameter.ParameterType);
-
-				yield return cast;
-			}
+			return parameters.Select((parameter, index) =>
+			                         (Expression)Expression.Convert(
+			                         	Expression.ArrayIndex(arguments, Expression.Constant(index)), parameter.ParameterType));
 		}
 	}
 }
+
+
