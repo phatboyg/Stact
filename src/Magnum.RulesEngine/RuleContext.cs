@@ -14,6 +14,41 @@ namespace Magnum.RulesEngine
 {
 	using System.Collections.Generic;
 
+
+	/*
+	 * I may look to try and provide some sort of monadic selectmany style of context
+	 * similar to how jQuery passing matching elements to the next item in the chain
+	 * 
+	 * This would be interesting in that it would allow conditions to be built in a similar way
+	 * 
+	 * offer up a type of <T, IEnumerable<T> as a tuple or something for dispatching
+	 * 
+	 * This would be a mulitiple Input node type of thing:
+	 * 
+	 * from order in memory<order>
+	 * from orderline in order.orderlines
+	 * where orderline.quantity > 10
+	 * from otherorderline in order.orderlines
+	 * where otherorderline.quantity > 10
+	 * 
+	 * 
+	 * from claim in memory<claim>
+	 * from serviceline in claim.servicelines where serviceline.revenuecode == '300'
+	 * from servicelin2 in claim.servicelines where servicelin2.revenuecode == '280'
+	 * where serviceline.count() > 0 and servicelin2.count() > 0
+	 * select claim.claimid;
+	 * 
+	 * this should match the orders where two orderlines have quantities > 10
+	 * 
+	 * where <order>
+	 *	where 
+	 * 
+	 * 
+	 * 
+	 */
+
+
+
 	public interface RuleContext
 	{
 		IEnumerable<T> Match<T>()

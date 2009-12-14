@@ -15,8 +15,9 @@ namespace Magnum.Specs
     using System.Collections;
     using Context;
     using NUnit.Framework;
+    using TestFramework;
 
-    [TestFixture]
+	[TestFixture]
     public class TypedKey_Specs
     {
         [Test]

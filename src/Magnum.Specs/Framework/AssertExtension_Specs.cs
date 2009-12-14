@@ -10,47 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Invoker
+namespace AssertExtension_Specs
 {
-	using System;
-	using System.Linq.Expressions;
-	using Classes;
+	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using TestFramework;
 
 	[TestFixture]
-	public class FastInvoker_Specs
+	public class Using_the_fluent_assertion_methods
 	{
 		[Test]
 		public void FirstTestName()
 		{
-			var target = new ClassWithSimpleMethods();
+			string empty = null;
 
-			target.FastInvoke(x => x.NoArguments());
-
-			target.NoArgumentsCalled.ShouldBeTrue();
+			empty.ShouldBeNull();
 		}
 
 		[Test]
-		public void The_generic_method_should_be_invoked()
+		public void Should_not_be_null()
 		{
-			var target = new ClassWithGenericMethods();
+			string empty = "hello";
 
-			object name = "Name";
-
-			target.FastInvoke(x => x.OneGenericArgument(0), name);
-
-		}
-	}
-
-	public static class FastInvokeExtension
-	{
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
-		{
-		}
-
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, object arg0)
-		{
+			empty.ShouldNotBeNull();
 		}
 	}
 }

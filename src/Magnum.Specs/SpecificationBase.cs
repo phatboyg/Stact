@@ -67,45 +67,4 @@ namespace Magnum.Specs
             get { return _mocks.Playback(); }
         }
     }
-
-    public static class SpecExtensions
-    {
-        public static void ShouldEqual(this int actual, int expected)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-        public static void ShouldBeTrue(this bool actual)
-        {
-            Assert.IsTrue(actual);
-        }
-        public static void ShouldBeFalse(this bool actual)
-        {
-            Assert.IsFalse(actual);
-        }
-
-        public static void ShouldEqual(this string actual, string expected)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-
-        public static void ShouldEqual(this object actual, object expected)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-
-        public static void ShouldBeType<Expected>(this object actual)
-        {
-            Assert.IsAssignableFrom(typeof(Expected), actual);
-        }
-
-        public static void ShouldBeNull(this object actual)
-        {
-            Assert.IsNull(actual);
-        }
-
-        public static void ShouldNotBeNull(this object actual)
-        {
-            Assert.IsNotNull(actual);
-        }
-    }
 }

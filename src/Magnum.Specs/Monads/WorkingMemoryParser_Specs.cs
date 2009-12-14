@@ -18,6 +18,7 @@ namespace Magnum.Specs.Monads
 	using System.Linq.Expressions;
 	using Magnum.Monads.Parser;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class Parsing_a_working_memory_of_objects

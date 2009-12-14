@@ -2,8 +2,9 @@ namespace Magnum.Specs.CommandLine
 {
     using Magnum.CommandLine;
     using NUnit.Framework;
+    using TestFramework;
 
-    public class Argument_Spec
+	public class Argument_Spec
     {
         [Test]
         public void Positional()

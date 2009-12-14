@@ -19,6 +19,7 @@ namespace Magnum.Specs
 	using System.Linq.Expressions;
 	using NUnit.Framework;
 	using Parsers;
+	using TestFramework;
 
 	[TestFixture]
 	public class Specifying_a_range_for_a_search_string :

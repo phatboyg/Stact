@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.SemanticModel
 {
+	using System;
+	using System.Linq.Expressions;
+
 	public abstract class Declaration
 	{
 		protected Declaration(DeclarationType partType)
@@ -20,5 +23,15 @@ namespace Magnum.RulesEngine.SemanticModel
 		}
 
 		public DeclarationType NodeType { get; protected set; }
+
+
+
+		public static ConditionDeclaration Condition<T>(Expression<Func<T, bool>> expression)
+			where T : class
+		{
+			var declaration = new ConditionDeclaration(typeof (T), expression);
+
+			return declaration;
+		}
 	}
 }

@@ -85,6 +85,7 @@
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Matching_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
+    <Compile Include="Framework\AssertExtension_Specs.cs" />
     <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />
     <Compile Include="Invoker\Classes\ClassWithSimpleMethods.cs" />
     <Compile Include="Invoker\FastInvoker_Specs.cs" />
@@ -174,6 +175,10 @@
     <Compile Include="Threading\WrappedObjectLocking_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
+      <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>
+      <Name>Magnum.TestFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum</Name>

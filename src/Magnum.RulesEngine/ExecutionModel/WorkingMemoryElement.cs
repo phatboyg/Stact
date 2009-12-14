@@ -10,29 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.SemanticModel
+namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Linq.Expressions;
 
-	public class ConditionDeclaration :
-		Declaration
+	public interface WorkingMemoryElement
 	{
-		public ConditionDeclaration(Type matchType, Expression expression)
-			: base(DeclarationType.Condition)
-		{
-			MatchType = matchType;
-			Expression = expression;
-		}
+		Type ElementType { get; }
+	}
+
+	public interface WorkingMemoryElement<T> :
+		WorkingMemoryElement
+	{
+		/// <summary>
+		/// Access the value of the working memory element
+		/// </summary>
+		/// <param name="callback">The callback to invoke when the value is available</param>
+		void Access(Action<T> callback);
 
 		/// <summary>
-		/// The type to match for this condition
+		/// Access the value of the working memory element and return a value to replace it (modify)
 		/// </summary>
-		public Type MatchType { get; private set; }
-
-		/// <summary>
-		/// The expression that is evaluated to determine if this condition is satisfied
-		/// </summary>
-		public Expression Expression { get; private set; }
+		/// <param name="callback">The callback to invoke when the value is available</param>
+		void Access(Func<T, T> callback);
 	}
 }

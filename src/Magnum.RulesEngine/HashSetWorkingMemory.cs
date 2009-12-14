@@ -15,17 +15,21 @@ namespace Magnum.RulesEngine
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
+	using ExecutionModel;
 
 	public class HashSetWorkingMemory :
 		WorkingMemory
 	{
-		private readonly HashSet<object> _objects = new HashSet<object>();
+		private readonly HashSet<WorkingMemoryElement> _objects = new HashSet<WorkingMemoryElement>();
 
 		public void Add<T>(params T[] items)
 			where T : class
 		{
-			items.Each(x => _objects.Add(x));
+			items
+				.Select(x => new WorkingMemoryElementImpl<T>(x))
+				.Each(x => _objects.Add(x));
 		}
 
 		public IEnumerable<T> List<T>()

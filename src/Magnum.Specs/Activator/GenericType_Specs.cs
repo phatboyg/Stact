@@ -16,6 +16,7 @@ namespace Magnum.Specs.Activator
 	using Classes;
 	using Magnum.Activator;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class When_creating_a_generic_type
@@ -26,7 +27,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), new[] {typeof (int)});
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithOneGenericArgument<int>>();
+			obj.ShouldBeAnInstanceOf<ClassWithOneGenericArgument<int>>();
 		}
 
 		[Test]
@@ -37,7 +38,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), value);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithOneGenericArgument<int>>();
+			obj.ShouldBeAnInstanceOf<ClassWithOneGenericArgument<int>>();
 
 			var instance = (ClassWithOneGenericArgument<int>) obj;
 
@@ -54,7 +55,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithOneGenericArgument<>), value, count);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithOneGenericArgument<string>>();
+			obj.ShouldBeAnInstanceOf<ClassWithOneGenericArgument<string>>();
 
 			var instance = (ClassWithOneGenericArgument<string>) obj;
 
@@ -76,7 +77,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>>();
+			obj.ShouldBeAnInstanceOf<ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>>();
 
 			var instance = (ClassWithAConstrainedGenericArgument<ClassWithGuidConstraint, Guid>) obj;
 
@@ -103,7 +104,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithAConstrainedGenericArgument<SuperConstrainedClass, Guid>>();
+			obj.ShouldBeAnInstanceOf<ClassWithAConstrainedGenericArgument<SuperConstrainedClass, Guid>>();
 
 			var instance = (ClassWithAConstrainedGenericArgument<SuperConstrainedClass, Guid>) obj;
 
@@ -122,7 +123,7 @@ namespace Magnum.Specs.Activator
 			var obj = FastActivator.Create(typeof (ClassWithTwoConstrainedGenericArguments<,,,>), argument, argument2);
 
 			obj.ShouldNotBeNull();
-			obj.ShouldBeType<ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>>();
+			obj.ShouldBeAnInstanceOf<ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>>();
 
 			var instance = (ClassWithTwoConstrainedGenericArguments<SuperConstrainedClass, Guid, ClassWithStringConstraint, string>) obj;
 

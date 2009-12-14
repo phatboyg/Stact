@@ -14,6 +14,7 @@ namespace Magnum.Specs.StateMachine
 {
 	using Magnum.StateMachine;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class Specifying_an_event_handler_that_can_happen_anytime

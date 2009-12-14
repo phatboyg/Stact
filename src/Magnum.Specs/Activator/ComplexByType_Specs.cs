@@ -16,6 +16,7 @@ namespace Magnum.Specs.Activator
 	using Classes;
 	using Magnum.Activator;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class When_creating_an_object_with_multiple_arguments

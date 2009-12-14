@@ -10,29 +10,35 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.SemanticModel
+namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Linq.Expressions;
 
-	public class ConditionDeclaration :
-		Declaration
+	/// <summary>
+	/// An object that was added to the working memory
+	/// </summary>
+	/// <typeparam name="T">The type of the object being added</typeparam>
+	public class WorkingMemoryElementImpl<T> :
+		WorkingMemoryElement<T>
 	{
-		public ConditionDeclaration(Type matchType, Expression expression)
-			: base(DeclarationType.Condition)
+		private T Element { get; set; }
+
+		public WorkingMemoryElementImpl(T obj)
 		{
-			MatchType = matchType;
-			Expression = expression;
+			Element = obj;
+			ElementType = typeof (T);
 		}
 
-		/// <summary>
-		/// The type to match for this condition
-		/// </summary>
-		public Type MatchType { get; private set; }
+		public Type ElementType { get; private set; }
 
-		/// <summary>
-		/// The expression that is evaluated to determine if this condition is satisfied
-		/// </summary>
-		public Expression Expression { get; private set; }
+		public void Access(Action<T> callback)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Access(Func<T, T> callback)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

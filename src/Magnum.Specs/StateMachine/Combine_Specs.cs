@@ -14,6 +14,7 @@ namespace Magnum.Specs.StateMachine
 {
 	using Magnum.StateMachine;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class Combining_a_list_of_events

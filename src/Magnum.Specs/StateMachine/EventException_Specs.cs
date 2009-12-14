@@ -15,6 +15,7 @@ namespace Magnum.Specs.StateMachine
 	using System;
 	using Magnum.StateMachine;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class EventException_Specs

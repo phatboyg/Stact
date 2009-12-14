@@ -45,6 +45,10 @@
     <Compile Include="DSL\ExitExtension.cs" />
     <Compile Include="DSL\Rule.cs" />
     <Compile Include="DSL\RuleConfigurator.cs" />
+    <Compile Include="ExecutionModel\SingleInputNode.cs" />
+    <Compile Include="ExecutionModel\WorkingMemoryElement.cs" />
+    <Compile Include="ExecutionModel\WorkingMemoryElementImpl.cs" />
+    <Compile Include="RuleSet.cs" />
     <Compile Include="HashSetWorkingMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleContext.cs" />

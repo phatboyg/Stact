@@ -2,8 +2,9 @@ namespace Magnum.Specs.CommandLine
 {
     using Magnum.CommandLine;
     using NUnit.Framework;
+    using TestFramework;
 
-    public class CommandLineParsing_Specs
+	public class CommandLineParsing_Specs
     {
         private string[] _soloCommand = new []{"test"};
         private string[] _commandAndOnePositionalArgument = new[] {"test","magnum"};
@@ -21,7 +22,7 @@ namespace Magnum.Specs.CommandLine
 
             ParsedCommandLineOutput o = p.Parse(_soloCommand);
             o.CommandName.ShouldEqual("test");
-            o.ParsedArguments.ShouldBeType<NullArgs>();
+			o.ParsedArguments.ShouldBeAnInstanceOf<NullArgs>();
 
             o = p.Parse(_commandAndOnePositionalArgument);
             o.CommandName.ShouldEqual("test");
@@ -38,7 +39,7 @@ namespace Magnum.Specs.CommandLine
 
             var o = p.Parse(_commandTwoAndTwoPositionalArguments);
             o.CommandName.ShouldEqual("two");
-            o.ParsedArguments.ShouldBeType<TwoArguments>();
+			o.ParsedArguments.ShouldBeAnInstanceOf<TwoArguments>();
         }
 
         [Test]

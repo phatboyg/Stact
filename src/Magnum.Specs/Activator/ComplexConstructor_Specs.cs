@@ -4,6 +4,7 @@ namespace Magnum.Specs.Activator
 	using Classes;
 	using Magnum.Activator;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class When_generating_an_object_with_arguments
@@ -18,7 +19,7 @@ namespace Magnum.Specs.Activator
 			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.ShouldBeAnInstanceOf<ClassWithOneConstructorArg>();
 			_instance.Value.ShouldEqual(expected);
 			_instance.Name.ShouldBeNull();
 		}
@@ -31,7 +32,7 @@ namespace Magnum.Specs.Activator
 			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.ShouldBeAnInstanceOf<ClassWithOneConstructorArg>();
 			_instance.Value.ShouldEqual(default(int));
 			_instance.Name.ShouldEqual(expected);
 		}
@@ -42,7 +43,7 @@ namespace Magnum.Specs.Activator
 			_instance = FastActivator<ClassWithOneConstructorArg>.Create<string>(null);
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.ShouldBeAnInstanceOf<ClassWithOneConstructorArg>();
 			_instance.Value.ShouldEqual(default(int));
 			_instance.Name.ShouldEqual(null);
 		}
@@ -53,7 +54,7 @@ namespace Magnum.Specs.Activator
 			_instance = (ClassWithOneConstructorArg)FastActivator.Create(typeof(ClassWithOneConstructorArg), new object[]{null});
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.ShouldBeAnInstanceOf<ClassWithOneConstructorArg>();
 			_instance.Value.ShouldEqual(default(int));
 			_instance.Name.ShouldEqual(null);
 		}
@@ -66,7 +67,7 @@ namespace Magnum.Specs.Activator
 			_instance = FastActivator<ClassWithOneConstructorArg>.Create(expected);
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithOneConstructorArg>();
+			_instance.ShouldBeAnInstanceOf<ClassWithOneConstructorArg>();
 			_instance.Value.ShouldEqual(default(int));
 			_instance.Name.ShouldBeNull();
 			_instance.Id.ShouldEqual(expected);
@@ -87,7 +88,7 @@ namespace Magnum.Specs.Activator
 			_instance = FastActivator<ClassWithTwoConstructorArgs>.Create(expected, expectedName);
 
 			_instance.ShouldNotBeNull();
-			_instance.ShouldBeType<ClassWithTwoConstructorArgs>();
+			_instance.ShouldBeAnInstanceOf<ClassWithTwoConstructorArgs>();
 			_instance.Value.ShouldEqual(expected);
 			_instance.Name.ShouldEqual(expectedName);
 		}

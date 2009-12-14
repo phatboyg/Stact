@@ -17,8 +17,9 @@ namespace Magnum.Specs.Pipeline
     using Magnum.Pipeline;
     using Magnum.Pipeline.Segments;
     using NUnit.Framework;
+    using TestFramework;
 
-    [TestFixture]
+	[TestFixture]
     public class Connecting_a_filter_to_the_pipeline
     {
         [Test]

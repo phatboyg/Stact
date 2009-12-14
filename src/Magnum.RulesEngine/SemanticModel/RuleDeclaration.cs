@@ -14,6 +14,10 @@ namespace Magnum.RulesEngine.SemanticModel
 {
 	using System.Collections.Generic;
 
+	/// <summary>
+	/// A rule is defined by a set of conditions and consequences. When all of the conditions are
+	/// met, all of the consequences are applied.
+	/// </summary>
 	public class RuleDeclaration :
 		Declaration
 	{
@@ -22,7 +26,14 @@ namespace Magnum.RulesEngine.SemanticModel
 		{
 		}
 
+		/// <summary>
+		/// The conditions which must be met for the rule to be applied
+		/// </summary>
 		public IEnumerable<ConditionDeclaration> Conditions { get; private set; }
+
+		/// <summary>
+		/// The consequences to apply if the rule conditions are all satisfied
+		/// </summary>
 		public IEnumerable<ConsequenceDeclaration> Consequences { get; private set; }
 	}
 }

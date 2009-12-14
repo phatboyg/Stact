@@ -49,12 +49,16 @@
   <ItemGroup>
     <Compile Include="Conditions\CustomerIsPreferred.cs" />
     <Compile Include="Consequences\LogOrderDetails.cs" />
+    <Compile Include="EnuemrableItems_Specs.cs" />
     <Compile Include="Events\OrderSubmitted.cs" />
+    <Compile Include="ExecutionModelTest\ProcessingAnEvent_Specs.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Consequences\HoldOrderForApproval.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Conditions\OrderAmountIsOverLimit.cs" />
+    <Compile Include="Model\OrderLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="When_creating_a_condition.cs" />
     <Compile Include="When_declaring_a_rule.cs" />
     <Compile Include="Commands\SubmitOrder.cs" />
     <Compile Include="When_executing_a_rule_against_working_memory.cs" />
@@ -72,6 +76,9 @@
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SemanticModelTest\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
