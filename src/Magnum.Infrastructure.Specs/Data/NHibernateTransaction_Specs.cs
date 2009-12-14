@@ -18,6 +18,7 @@ namespace Magnum.Infrastructure.Specs.Data
 	using NUnit.Framework;
 	using NHibernate;
 	using Rhino.Mocks;
+	using TestFramework;
 
 	[TestFixture]
 	public class NHibernateTransaction_Specs

@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Infrastructure", "Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Infrastructure.Specs", "Magnum.Infrastructure.Specs\Magnum.Infrastructure.Specs.csproj", "{00A9A599-4850-46D5-AC94-4D10717A4EB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.TestFramework", "Magnum.TestFramework\Magnum.TestFramework.csproj", "{D741FD13-08D7-4A71-916E-0D61816D8A80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00A9A599-4850-46D5-AC94-4D10717A4EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D741FD13-08D7-4A71-916E-0D61816D8A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D741FD13-08D7-4A71-916E-0D61816D8A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D741FD13-08D7-4A71-916E-0D61816D8A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D741FD13-08D7-4A71-916E-0D61816D8A80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

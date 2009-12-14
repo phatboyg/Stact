@@ -85,6 +85,10 @@
       <Project>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</Project>
       <Name>Magnum.Specs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
+      <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>
+      <Name>Magnum.TestFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum</Name>
