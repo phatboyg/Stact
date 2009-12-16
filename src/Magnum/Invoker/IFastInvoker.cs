@@ -10,21 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Invoker.Classes
+namespace Magnum.Invoker
 {
 	using System;
+	using System.Linq.Expressions;
 
-	public class ClassWithGenericMethods
+	public interface IFastInvoker
 	{
-		public bool OneGenericArgumentCalled { get; private set; }
-		public Type OneGenericArgumentType { get; private set; }
-		public object OneGenericArgumentValue { get; private set; }
-
-		public void OneGenericArgument<T>(T argument)
-		{
-			OneGenericArgumentCalled = true;
-			OneGenericArgumentType = typeof (T);
-			OneGenericArgumentValue = argument;
-		}
 	}
+
+	public interface IFastInvoker<T> :
+		IFastInvoker
+	{
+		void FastInvoke(T target, Expression<Action<T>> expression);
+		void FastInvoke(T target, Expression<Action<T>> expression, object arg0);
+	}
+
+//		new T Create();
+//		new T Create(object[] args);
+//		new T Create<TArg0>(TArg0 arg0);
+//		new T Create<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
 }

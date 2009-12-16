@@ -25,7 +25,7 @@ namespace Magnum.Activator
 	{
 		private static FastActivator<T> _current;
 
-		private Dictionary<int, Func<object[], T>> _argGenerators;
+		private readonly Dictionary<int, Func<object[], T>> _argGenerators;
 		private Func<T> _new;
 
 		private FastActivator()

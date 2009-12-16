@@ -12,25 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Invoker
 {
-	using System;
-	using System.Linq.Expressions;
 	using Classes;
+	using Magnum.Invoker;
 	using NUnit.Framework;
 	using TestFramework;
 
 	[TestFixture]
-	public class FastInvoker_Specs
+	public class When_using_the_fast_invoker
 	{
-		[Test]
-		public void FirstTestName()
-		{
-			var target = new ClassWithSimpleMethods();
-
-			target.FastInvoke(x => x.NoArguments());
-
-			target.NoArgumentsCalled.ShouldBeTrue();
-		}
-
 		[Test]
 		public void The_generic_method_should_be_invoked()
 		{
@@ -40,17 +29,19 @@ namespace Magnum.Specs.Invoker
 
 			target.FastInvoke(x => x.OneGenericArgument(0), name);
 
-		}
-	}
-
-	public static class FastInvokeExtension
-	{
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
-		{
+			target.OneGenericArgumentCalled.ShouldBeTrue();
+			target.OneGenericArgumentType.ShouldEqual(typeof (string));
+			target.OneGenericArgumentValue.ShouldEqual(name);
 		}
 
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, object arg0)
+		[Test]
+		public void The_simple_method_should_be_invoked()
 		{
+			var target = new ClassWithSimpleMethods();
+
+			target.FastInvoke(x => x.NoArguments());
+
+			target.NoArgumentsCalled.ShouldBeTrue();
 		}
 	}
 }

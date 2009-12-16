@@ -14,6 +14,7 @@ namespace Magnum.Invoker
 {
 	using System;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using System.Reflection;
 	using Activator;
 
@@ -30,6 +31,16 @@ namespace Magnum.Invoker
 			Func<T, object[], object> callback = FastInvokerFactory.Create<T>(method);
 
 			callback(target, args);
+		}
+
+		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
+		{
+			FastInvoker<T>.Invoke(target, expression);
+		}
+
+		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, object arg0)
+		{
+			FastInvoker<T>.Invoke(target, expression, arg0);
 		}
 	}
 }

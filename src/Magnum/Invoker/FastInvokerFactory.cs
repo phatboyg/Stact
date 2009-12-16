@@ -23,7 +23,7 @@ namespace Magnum.Invoker
 		public static Func<T, object[], object> Create<T>(MethodInfo method)
 		{
 			ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
-			ParameterExpression argumentsParameter = Expression.Parameter(typeof(object[]), "args");
+			ParameterExpression argumentsParameter = Expression.Parameter(typeof (object[]), "args");
 
 			Expression[] parameters = method.GetParameters().ToArgumentsExpression(argumentsParameter).ToArray();
 
