@@ -26,6 +26,7 @@ namespace Magnum.Invoker
 		private static FastInvoker<T> _current;
 		private readonly Dictionary<int, Action<T>> _actionT = new Dictionary<int, Action<T>>();
 		private readonly Dictionary<int, Action<T, object>> _actionT1 = new Dictionary<int, Action<T, object>>();
+		private readonly Dictionary<int, Action<T, object, object>> _actionT2 = new Dictionary<int, Action<T, object, object>>();
 
 		private FastInvoker()
 		{
@@ -60,6 +61,14 @@ namespace Magnum.Invoker
 			InvokeWithOneArgument(target, call.Method, arg0);
 		}
 
+		public void FastInvoke(T target, Expression<Action<T>> expression, object arg0, object arg1)
+		{
+			var call = expression.Body as MethodCallExpression;
+			if (call == null)
+				throw new ArgumentException("Only method call expressions are supported.", "expression");
+
+			InvokeWithTwoArguments(target, call.Method, arg0, arg1);
+		}
 
 		private void InvokeWithNoArguments(T target, MethodInfo method)
 		{
@@ -88,7 +97,7 @@ namespace Magnum.Invoker
 					var args = new[] {arg0};
 
 					method = new[] {method.GetGenericMethodDefinition()}
-						.MatchingArguments(arg0)
+						.MatchingArguments(args)
 						.First()
 						.ToSpecializedMethod(args);
 
@@ -108,6 +117,41 @@ namespace Magnum.Invoker
 			invoker(target, arg0);
 		}
 
+		private void InvokeWithTwoArguments(T target, MethodInfo method, object arg0, object arg1)
+		{
+			int key = method.GetHashCode() ^
+			          (arg0 == null ? 0 : arg0.GetType().GetHashCode()) ^
+			          (arg1 == null ? 2 : arg1.GetType().GetHashCode());
+
+			Action<T, object, object> invoker = _actionT2.Retrieve(key, () =>
+				{
+					var args = new[] {arg0, arg1};
+
+					method = new[] {method.GetGenericMethodDefinition()}
+						.MatchingArguments(args)
+						.First()
+						.ToSpecializedMethod(args);
+
+					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
+					ParameterExpression parg0 = Expression.Parameter(typeof (object), "arg0");
+					ParameterExpression parg1 = Expression.Parameter(typeof (object), "arg1");
+
+					ParameterInfo[] parameters = method.GetParameters();
+
+					UnaryExpression convertArg0 = Expression.Convert(parg0, parameters[0].ParameterType);
+
+					UnaryExpression convertArg1 = Expression.Convert(parg1, parameters[1].ParameterType);
+
+					MethodCallExpression call = Expression.Call(instanceParameter, method, convertArg0, convertArg1);
+
+					Expression<Action<T, object, object>> lambda = Expression.Lambda<Action<T, object, object>>(call, new[] {instanceParameter, parg0, parg1});
+
+					return lambda.Compile();
+				});
+
+			invoker(target, arg0, arg1);
+		}
+
 		public static void Invoke(T target, Expression<Action<T>> expression)
 		{
 			Current.FastInvoke(target, expression);
@@ -116,6 +160,11 @@ namespace Magnum.Invoker
 		public static void Invoke(T target, Expression<Action<T>> expression, object arg0)
 		{
 			Current.FastInvoke(target, expression, arg0);
+		}
+
+		public static void Invoke(T target, Expression<Action<T>> expression, object arg0, object arg1)
+		{
+			Current.FastInvoke(target, expression, arg0, arg1);
 		}
 	}
 }

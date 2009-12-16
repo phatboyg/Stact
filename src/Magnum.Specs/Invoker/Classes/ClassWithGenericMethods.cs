@@ -13,18 +13,44 @@
 namespace Magnum.Specs.Invoker.Classes
 {
 	using System;
+	using Activator.Classes;
 
 	public class ClassWithGenericMethods
 	{
 		public bool OneGenericArgumentCalled { get; private set; }
-		public Type OneGenericArgumentType { get; private set; }
-		public object OneGenericArgumentValue { get; private set; }
+		public bool TwoGenericArgumentsCalled { get; private set; }
+		public bool TwoGenericArgumentsOneParameterCalled { get; private set; }
+
+		public Type FirstArgumentType { get; private set; }
+		public object FirstArgumentValue { get; private set; }
+		public Type SecondArgumentType { get; private set; }
+		public object SecondArgumentValue { get; private set; }
 
 		public void OneGenericArgument<T>(T argument)
 		{
 			OneGenericArgumentCalled = true;
-			OneGenericArgumentType = typeof (T);
-			OneGenericArgumentValue = argument;
+			FirstArgumentType = typeof (T);
+			FirstArgumentValue = argument;
+		}
+
+		public void TwoGenericArguments<T, V>(T argumentT, V argumentV)
+		{
+			TwoGenericArgumentsCalled = true;
+			FirstArgumentType = typeof (T);
+			FirstArgumentValue = argumentT;
+
+			SecondArgumentType = typeof (V);
+			SecondArgumentValue = argumentV;
+		}
+
+		public void TwoGenericArgumentsOneParameter<T, V>(T argument)
+			where T : ConstrainedBy<V>
+		{
+			TwoGenericArgumentsOneParameterCalled = true;
+
+			FirstArgumentType = typeof (T);
+			SecondArgumentType = typeof (V);
+			FirstArgumentValue = argument;
 		}
 	}
 }
