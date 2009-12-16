@@ -22,6 +22,7 @@ namespace Magnum.Invoker
 	public interface IFastInvoker<T> :
 		IFastInvoker
 	{
+		void FastInvoke(T target, Expression<Action<T>> expression);
 		void FastInvoke(T target, Expression<Action<T>> expression, params object[] args);
 		void FastInvoke(T target, string methodName, params object[] args);
 	}
