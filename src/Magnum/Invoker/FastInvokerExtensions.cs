@@ -13,24 +13,13 @@
 namespace Magnum.Invoker
 {
 	using System;
-	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
-	using Activator;
 
 	public static class FastInvokerExtensions
 	{
 		public static void FastInvoke<T>(this T target, string methodName, params object[] args)
 		{
-			MethodInfo method = typeof (T).GetMethods()
-				.Where(x => x.Name == methodName)
-				.MatchingArguments(args)
-				.First()
-				.ToSpecializedMethod(args);
-
-			Func<T, object[], object> callback = FastInvokerFactory.Create<T>(method);
-
-			callback(target, args);
+			FastInvoker<T>.Invoke(target, methodName, args);
 		}
 
 		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
@@ -38,14 +27,9 @@ namespace Magnum.Invoker
 			FastInvoker<T>.Invoke(target, expression);
 		}
 
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, object arg0)
+		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, params object[] args)
 		{
-			FastInvoker<T>.Invoke(target, expression, arg0);
-		}
-
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, object arg0, object arg1)
-		{
-			FastInvoker<T>.Invoke(target, expression, arg0, arg1);
+			FastInvoker<T>.Invoke(target, expression, args);
 		}
 	}
 }

@@ -69,6 +69,21 @@ namespace Magnum.Specs.Invoker
 		}
 
 		[Test]
+		public void Invoking_by_name_works()
+		{
+			var target = new ClassWithGenericMethods();
+
+			object value = new ClassWithGuidConstraint(Guid.NewGuid());
+
+			target.FastInvoke("TwoGenericArgumentsOneParameter", value);
+
+			target.TwoGenericArgumentsOneParameterCalled.ShouldBeTrue();
+			target.FirstArgumentType.ShouldEqual(typeof(ClassWithGuidConstraint));
+			target.FirstArgumentValue.ShouldEqual(value);
+			target.SecondArgumentType.ShouldEqual(typeof (Guid));
+		}
+
+		[Test]
 		public void The_generic_method_should_be_invoked_and_not_cached_improperly()
 		{
 			var target = new ClassWithGenericMethods();
