@@ -22,6 +22,11 @@ namespace Magnum.Invoker
 			FastInvoker<T>.Invoke(target, methodName, args);
 		}
 
+		public static TResult FastInvoke<T, TResult>(this T target, string methodName, params object[] args)
+		{
+			return FastInvoker<T>.Invoke<TResult>(target, methodName, args);
+		}
+
 		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
 		{
 			FastInvoker<T>.Invoke(target, expression);

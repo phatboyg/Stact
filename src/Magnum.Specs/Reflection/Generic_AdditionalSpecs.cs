@@ -176,8 +176,8 @@ namespace Magnum.Specs.Reflection
 			stub.Stub(x => x.IntFoo()).Return(123);
 			stub.Stub(x => x.StringFoo()).Return("bar");
 
-			object intResult = stub.Call("IntFoo");
-            object stringResult = stub.Call("StringFoo");
+			object intResult = stub.FastInvoke<IReturnValue, int>("IntFoo");
+            object stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
 
 			Assert.AreEqual(123, intResult);
 			Assert.AreEqual("bar", stringResult);
@@ -190,8 +190,8 @@ namespace Magnum.Specs.Reflection
 			stub.Stub(x => x.IntFoo()).Return(123);
 			stub.Stub(x => x.StringFoo()).Return("bar");
 
-			int intResult = stub.Call<int>("IntFoo");
-			string stringResult = stub.Call<string>("StringFoo");
+			int intResult = stub.FastInvoke<IReturnValue,int>("IntFoo");
+			string stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
 
 			Assert.AreEqual(123, intResult);
 			Assert.AreEqual("bar", stringResult);
