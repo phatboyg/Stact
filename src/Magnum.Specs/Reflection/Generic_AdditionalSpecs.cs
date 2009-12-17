@@ -10,193 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-using Magnum.Invoker;
-
 namespace Magnum.Specs.Reflection
 {
 	using System;
-	using Magnum.Reflection;
+	using Magnum.Invoker;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 
 	[TestFixture]
 	public class ObjectSendExtensionTests
 	{
-		[Test]
-		public void FailsIfTargetIsNull()
-		{
-			const string x = null;
-			//Assert.Throws<ArgumentNullException>(() => x.FastInvoke("ToString"));
-		}
-
-		[Test]
-		public void FailsIfMethodNameIsNull()
-		{
-			//Assert.Throws<ArgumentNullException>(() => 123.FastInvoke(null));
-		}
-
-		[Test]
-		public void CanInvokeUniqueMethodWithoutArgs()
-		{
-			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
-			mock.FastInvoke("Foo");
-			mock.AssertWasCalled(x => x.Foo());
-		}
-
-		[Test]
-		public void CanDistinguishMethodsByParameterCount_FirstMethod()
-		{
-			var mock = MockRepository.GenerateMock<ISimpleOverload>();
-			mock.FastInvoke("Foo");
-			mock.AssertWasCalled(x => x.Foo());
-			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
-		}
-
-		[Test]
-		public void CanDistinguishMethodsByParameterCount_SecondMethod()
-		{
-			var mock = MockRepository.GenerateMock<ISimpleOverload>();
-			mock.FastInvoke("Foo", 42);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(42)));
-			mock.AssertWasNotCalled(x => x.Foo());
-		}
-
-		[Test]
-		public void CanPassArgumentsToMethod()
-		{
-			var mock = MockRepository.GenerateMock<ISimpleArguments>();
-			mock.FastInvoke("Foo", 4, "bar");
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(4), Arg.Is("bar")));
-		}
-
-		[Test]
-		public void CanDoSimpleParameterResolution_StringOverload()
-		{
-			var mock = MockRepository.GenerateMock<IParameterResolution>();
-			var arg = "bar";
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
-		}
-
-		[Test]
-		public void CanDoSimpleParameterResolution_VersionOverload()
-		{
-			var mock = MockRepository.GenerateMock<IParameterResolution>();
-			var arg = new Version(1, 2, 3);
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
-		}
-
-		[Test]
-		public void CanDoSimpleParameterResolution_IntOverload()
-		{
-			var mock = MockRepository.GenerateMock<IParameterResolution>();
-			var arg = 42;
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
-		}
-
-		[Test]
-		public void CanHandleNullableArguments()
-		{
-			var mock = MockRepository.GenerateMock<INullableParameters>();
-			int? arg = 42;
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
-		}
-
-		[Test]
-		public void CanHandleNullableArgumentsWithNullValue()
-		{
-			var mock = MockRepository.GenerateMock<INullableParameters>();
-			int? arg = null;
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
-		}
-
-		[Test, Description("Although not desired this behaviour is expected")]
-		public void SuffersFromNullableBoxingBehaviour()
-		{
-			var mock = MockRepository.GenerateMock<INullableParametersBoxingIssue>();
-			int? arg = 42;
-			mock.FastInvoke("Foo", arg);
-			mock.AssertWasCalled(x => x.Foo(Arg<int>.Is.Equal(42)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<int?>.Is.Anything));
-		}
-
-		[Test]
-		public void TriesToMatchTypesAsGoodAsPossible()
-		{
-			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
-			var item = new DerivedClass();
-			mock.FastInvoke("Foo", item);
-			mock.AssertWasCalled(x => x.Foo(Arg<DerivedClass>.Is.Same(item)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything));
-		}
-
-		[Test]
-		public void TriesToMatchTypesAsGoodAsPossible2()
-		{
-			var mock = MockRepository.GenerateMock<ISelectPolymorphic2>();
-			var item = new DerivedClass();
-			mock.FastInvoke("Foo", null, item);
-			mock.AssertWasCalled(x => x.Foo(Arg<BaseClass>.Is.Null, Arg<DerivedClass>.Is.Same(item)));
-			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything, Arg<BaseClass>.Is.Anything));
-		}
-
-		[Test]
-		public void CanCauseAmbiguousInvocation()
-		{
-			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
-
-			//var exception = Assert.Throws<ArgumentException>(() => mock.FastInvoke("Foo", new object[] { null }));
-			//Assert.AreEqual("Ambiguous method invocation", exception.Message);
-		}
-
-		[Test]
-		public void CanHandleNullArrayAsArguments()
-		{
-			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
-			mock.FastInvoke("Foo", default(object[]));
-			mock.AssertWasCalled(x => x.Foo());
-		}
-
-		[Test]
-		public void ReturnsReturnValue()
-		{
-			var stub = MockRepository.GenerateStub<IReturnValue>();
-			stub.Stub(x => x.IntFoo()).Return(123);
-			stub.Stub(x => x.StringFoo()).Return("bar");
-
-			object intResult = stub.FastInvoke<IReturnValue, int>("IntFoo");
-            object stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
-
-			Assert.AreEqual(123, intResult);
-			Assert.AreEqual("bar", stringResult);
-		}
-
-		[Test]
-		public void ReturnsCastReturnValue()
-		{
-			var stub = MockRepository.GenerateStub<IReturnValue>();
-			stub.Stub(x => x.IntFoo()).Return(123);
-			stub.Stub(x => x.StringFoo()).Return("bar");
-
-			int intResult = stub.FastInvoke<IReturnValue,int>("IntFoo");
-			string stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
-
-			Assert.AreEqual(123, intResult);
-			Assert.AreEqual("bar", stringResult);
-		}
-
 		public interface IUniqueMethodWithoutArgs
 		{
 			void Foo();
@@ -256,6 +79,181 @@ namespace Magnum.Specs.Reflection
 
 		public class DerivedClass : BaseClass
 		{
+		}
+
+		[Test]
+		public void CanCauseAmbiguousInvocation()
+		{
+			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
+
+			//var exception = Assert.Throws<ArgumentException>(() => mock.FastInvoke("Foo", new object[] { null }));
+			//Assert.AreEqual("Ambiguous method invocation", exception.Message);
+		}
+
+		[Test]
+		public void CanDistinguishMethodsByParameterCount_FirstMethod()
+		{
+			var mock = MockRepository.GenerateMock<ISimpleOverload>();
+			mock.FastInvoke("Foo");
+			mock.AssertWasCalled(x => x.Foo());
+			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
+		}
+
+		[Test]
+		public void CanDistinguishMethodsByParameterCount_SecondMethod()
+		{
+			var mock = MockRepository.GenerateMock<ISimpleOverload>();
+			mock.FastInvoke("Foo", 42);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(42)));
+			mock.AssertWasNotCalled(x => x.Foo());
+		}
+
+		[Test]
+		public void CanDoSimpleParameterResolution_IntOverload()
+		{
+			var mock = MockRepository.GenerateMock<IParameterResolution>();
+			int arg = 42;
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
+		}
+
+		[Test]
+		public void CanDoSimpleParameterResolution_StringOverload()
+		{
+			var mock = MockRepository.GenerateMock<IParameterResolution>();
+			string arg = "bar";
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
+		}
+
+		[Test]
+		public void CanDoSimpleParameterResolution_VersionOverload()
+		{
+			var mock = MockRepository.GenerateMock<IParameterResolution>();
+			var arg = new Version(1, 2, 3);
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
+		}
+
+		[Test]
+		public void CanHandleNullableArguments()
+		{
+			var mock = MockRepository.GenerateMock<INullableParameters>();
+			int? arg = 42;
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
+		}
+
+		[Test]
+		public void CanHandleNullableArgumentsWithNullValue()
+		{
+			var mock = MockRepository.GenerateMock<INullableParameters>();
+			int? arg = null;
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
+		}
+
+		[Test]
+		public void CanHandleNullArrayAsArguments()
+		{
+			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
+			mock.FastInvoke("Foo", default(object[]));
+			mock.AssertWasCalled(x => x.Foo());
+		}
+
+		[Test]
+		public void CanInvokeUniqueMethodWithoutArgs()
+		{
+			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
+			mock.FastInvoke("Foo");
+			mock.AssertWasCalled(x => x.Foo());
+		}
+
+		[Test]
+		public void CanPassArgumentsToMethod()
+		{
+			var mock = MockRepository.GenerateMock<ISimpleArguments>();
+			mock.FastInvoke("Foo", 4, "bar");
+			mock.AssertWasCalled(x => x.Foo(Arg.Is(4), Arg.Is("bar")));
+		}
+
+		[Test]
+		public void FailsIfMethodNameIsNull()
+		{
+			//Assert.Throws<ArgumentNullException>(() => 123.FastInvoke(null));
+		}
+
+		[Test]
+		public void FailsIfTargetIsNull()
+		{
+			const string x = null;
+			//Assert.Throws<ArgumentNullException>(() => x.FastInvoke("ToString"));
+		}
+
+		[Test]
+		public void ReturnsCastReturnValue()
+		{
+			var stub = MockRepository.GenerateStub<IReturnValue>();
+			stub.Stub(x => x.IntFoo()).Return(123);
+			stub.Stub(x => x.StringFoo()).Return("bar");
+
+			int intResult = stub.FastInvoke<IReturnValue, int>("IntFoo");
+			string stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
+
+			Assert.AreEqual(123, intResult);
+			Assert.AreEqual("bar", stringResult);
+		}
+
+		[Test]
+		public void ReturnsReturnValue()
+		{
+			var stub = MockRepository.GenerateStub<IReturnValue>();
+			stub.Stub(x => x.IntFoo()).Return(123);
+			stub.Stub(x => x.StringFoo()).Return("bar");
+
+			object intResult = stub.FastInvoke<IReturnValue, int>("IntFoo");
+			object stringResult = stub.FastInvoke<IReturnValue, string>("StringFoo");
+
+			Assert.AreEqual(123, intResult);
+			Assert.AreEqual("bar", stringResult);
+		}
+
+		[Test, Description("Although not desired this behaviour is expected")]
+		public void SuffersFromNullableBoxingBehaviour()
+		{
+			var mock = MockRepository.GenerateMock<INullableParametersBoxingIssue>();
+			int? arg = 42;
+			mock.FastInvoke("Foo", arg);
+			mock.AssertWasCalled(x => x.Foo(Arg<int>.Is.Equal(42)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<int?>.Is.Anything));
+		}
+
+		[Test]
+		public void TriesToMatchTypesAsGoodAsPossible()
+		{
+			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
+			var item = new DerivedClass();
+			mock.FastInvoke("Foo", item);
+			mock.AssertWasCalled(x => x.Foo(Arg<DerivedClass>.Is.Same(item)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything));
+		}
+
+		[Test]
+		public void TriesToMatchTypesAsGoodAsPossible2()
+		{
+			var mock = MockRepository.GenerateMock<ISelectPolymorphic2>();
+			var item = new DerivedClass();
+			mock.FastInvoke("Foo", null, item);
+			mock.AssertWasCalled(x => x.Foo(Arg<BaseClass>.Is.Null, Arg<DerivedClass>.Is.Same(item)));
+			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything, Arg<BaseClass>.Is.Anything));
 		}
 	}
 }

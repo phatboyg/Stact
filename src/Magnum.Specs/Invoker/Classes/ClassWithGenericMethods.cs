@@ -19,6 +19,7 @@ namespace Magnum.Specs.Invoker.Classes
 	{
 		public bool OneGenericArgumentCalled { get; private set; }
 		public bool TwoGenericArgumentsCalled { get; private set; }
+		public bool OneGenericArgumentNoParametersCalled { get; private set; }
 		public bool TwoGenericArgumentsOneParameterCalled { get; private set; }
 
 		public Type FirstArgumentType { get; private set; }
@@ -51,6 +52,13 @@ namespace Magnum.Specs.Invoker.Classes
 			FirstArgumentType = typeof (T);
 			SecondArgumentType = typeof (V);
 			FirstArgumentValue = argument;
+		}
+
+		public void OneGenericArgumentNoParameters<T>()
+		{
+			OneGenericArgumentNoParametersCalled = true;
+
+			FirstArgumentType = typeof (T);
 		}
 	}
 }

@@ -86,7 +86,14 @@ namespace Magnum.Specs.Invoker
 	    [Test]
 	    public void The_generic_method_should_use_the_most_specific_type()
 	    {
-	        
+	    	var target = new ClassWithGenericMethods();
+
+			var argTypes = new Type[]{typeof(DateTime)};
+
+	    	target.FastInvoke(x => x.OneGenericArgumentNoParameters<int>(), argTypes);
+
+	    	target.OneGenericArgumentNoParametersCalled.ShouldBeTrue();
+	    	target.FirstArgumentType.ShouldEqual(typeof (DateTime));
 	    }
 
 		[Test]
@@ -111,6 +118,16 @@ namespace Magnum.Specs.Invoker
 			var target = new ClassWithSimpleMethods();
 
 			target.FastInvoke(x => x.NoArguments());
+
+			target.NoArgumentsCalled.ShouldBeTrue();
+		}
+
+		[Test]
+		public void The_simple_method_should_be_invoked_by_name()
+		{
+			var target = new ClassWithSimpleMethods();
+
+			target.FastInvoke("NoArguments");
 
 			target.NoArgumentsCalled.ShouldBeTrue();
 		}

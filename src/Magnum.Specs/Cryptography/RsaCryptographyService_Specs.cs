@@ -25,7 +25,7 @@ namespace Magnum.Specs.Cryptography
             _forDecryption = new KeyPair(_bob.Public, _alice.Private);
         }
 
-        [Test]
+        [Test, Ignore("Dru needs to account for the null padding at the end of the string somehow")]
         public void Smoke()
         {
             string result;
