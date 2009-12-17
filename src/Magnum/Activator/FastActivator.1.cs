@@ -125,7 +125,7 @@ namespace Magnum.Activator
 
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
-					Expression[] parameters = constructorInfo.GetParameters().ToArgumentsExpression(argsParameter).ToArray();
+					Expression[] parameters = constructorInfo.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 
 					NewExpression newExpression = Expression.New(constructorInfo, parameters);
 
@@ -140,6 +140,11 @@ namespace Magnum.Activator
 		public static T Create()
 		{
 			return Current._new();
+		}
+
+		public static T Create(object[] args)
+		{
+			return Current.CreateFromArgs(args);
 		}
 
 		public static T Create<TArg0>(TArg0 arg0)

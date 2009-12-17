@@ -34,10 +34,10 @@ namespace Magnum.Specs.Activator
 
 			Trace.WriteLine("Elapsed Time: " + _stopwatch.ElapsedMilliseconds + "ms");
 
-			Trace.WriteLine("Allocations Per MS: " + _iterations/_stopwatch.ElapsedMilliseconds);
+			Trace.WriteLine("Allocations Per MS: " + Iterations/_stopwatch.ElapsedMilliseconds);
 		}
 
-		private const int _iterations = 5000000;
+		private const int Iterations = 5000000;
 		private Stopwatch _stopwatch;
 
 		[Test]
@@ -45,7 +45,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using Activator.CreateInstance()");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = (ClassWithDefaultConstructor) Activator.CreateInstance(typeof (ClassWithDefaultConstructor));
 			}
@@ -56,7 +56,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using Activator.CreateInstance(47)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = (ClassWithOneConstructorArg) Activator.CreateInstance(typeof (ClassWithOneConstructorArg), 47);
 			}
@@ -67,7 +67,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using Activator.CreateInstance(47,TheName)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = (ClassWithTwoConstructorArgs) Activator.CreateInstance(typeof (ClassWithTwoConstructorArgs), 47, "The Name");
 			}
@@ -78,7 +78,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using new()");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = new ClassWithDefaultConstructor();
 			}
@@ -89,7 +89,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using new(47)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = new ClassWithOneConstructorArg(47);
 			}
@@ -100,7 +100,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using new(47,TheName)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = new ClassWithTwoConstructorArgs(47, "The Name");
 			}
@@ -111,7 +111,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using FastActivator()");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				ClassWithDefaultConstructor item = FastActivator<ClassWithDefaultConstructor>.Create();
 			}
@@ -122,7 +122,7 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using FastActivator(47)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				ClassWithOneConstructorArg item = FastActivator<ClassWithOneConstructorArg>.Create(47);
 			}
@@ -133,9 +133,21 @@ namespace Magnum.Specs.Activator
 		{
 			Trace.WriteLine("Using FastActivator(47,TheName)");
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				ClassWithTwoConstructorArgs item = FastActivator<ClassWithTwoConstructorArgs>.Create(47, "The Name");
+			}
+		}
+
+		[Test]
+		public void Using_object_generator_with_multiple_arguments()
+		{
+			Trace.WriteLine("Using FastActivator(47,TheName,123,Description)");
+
+			var args = new object[] { 47, "The Name", 123, "Description" };
+			for (int i = 0; i < Iterations; i++)
+			{
+				ClassWithMultipleConstructorArgs item = FastActivator<ClassWithMultipleConstructorArgs>.Create(args);
 			}
 		}
 
@@ -146,7 +158,7 @@ namespace Magnum.Specs.Activator
 
 			var args = new object[] {47, "The Name"};
 
-			for (int i = 0; i < _iterations; i++)
+			for (int i = 0; i < Iterations; i++)
 			{
 				var item = (ClassWithTwoConstructorArgs) FastActivator.Create(typeof (ClassWithTwoConstructorArgs), args);
 			}

@@ -24,6 +24,7 @@ namespace Magnum.Invoker
 	{
 		void FastInvoke(T target, Expression<Action<T>> expression);
 		void FastInvoke(T target, Expression<Action<T>> expression, params object[] args);
+		void FastInvoke(T target, string methodName);
 		void FastInvoke(T target, string methodName, params object[] args);
 	}
 }

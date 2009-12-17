@@ -176,8 +176,8 @@ namespace Magnum.Specs.Reflection
 			stub.Stub(x => x.IntFoo()).Return(123);
 			stub.Stub(x => x.StringFoo()).Return("bar");
 
-			var intResult = stub.Call("IntFoo");
-            var stringResult = stub.Call("StringFoo");
+			object intResult = stub.Call("IntFoo");
+            object stringResult = stub.Call("StringFoo");
 
 			Assert.AreEqual(123, intResult);
 			Assert.AreEqual("bar", stringResult);

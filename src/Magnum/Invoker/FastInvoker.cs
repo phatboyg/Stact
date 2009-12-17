@@ -42,10 +42,20 @@ namespace Magnum.Invoker
 			}
 		}
 
+		public void FastInvoke(T target, string methodName)
+		{
+			MethodInfo method = typeof (T).GetMethods()
+				.Where(x => x.Name == methodName)
+				.MatchingArguments()
+				.First();
+
+			InvokeWithNoArguments(target, method);
+		}
+
 		public void FastInvoke(T target, string methodName, params object[] args)
 		{
-            if(args == null)
-                args = new object[]{};
+			if (args == null)
+				args = new object[] {};
 
 			MethodInfo method = typeof (T).GetMethods()
 				.Where(x => x.Name == methodName)
@@ -98,18 +108,18 @@ namespace Magnum.Invoker
 
 			Action<T, object[]> invoker = _actionArgs.Retrieve(key, () =>
 				{
-                    if (method.IsGenericMethod)
-                    {
-                        method = new[] {method.GetGenericMethodDefinition()}
-                            .MatchingArguments(args)
-                            .First()
-                            .ToSpecializedMethod(args);
-                    }
+					if (method.IsGenericMethod)
+					{
+						method = new[] {method.GetGenericMethodDefinition()}
+							.MatchingArguments(args)
+							.First()
+							.ToSpecializedMethod(args);
+					}
 
-				    ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
+					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
-					Expression[] parameters = method.GetParameters().ToArgumentsExpression(argsParameter).ToArray();
+					Expression[] parameters = method.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 
 					MethodCallExpression call = Expression.Call(instanceParameter, method, parameters);
 
@@ -129,6 +139,11 @@ namespace Magnum.Invoker
 		public static void Invoke(T target, Expression<Action<T>> expression, params object[] args)
 		{
 			Current.FastInvoke(target, expression, args);
+		}
+
+		public static void Invoke(T target, string methodName)
+		{
+			Current.FastInvoke(target, methodName);
 		}
 
 		public static void Invoke(T target, string methodName, params object[] args)

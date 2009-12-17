@@ -80,7 +80,7 @@ namespace Magnum.Activator
 
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
-					Expression[] parameters = constructorInfo.GetParameters().ToArgumentsExpression(argsParameter).ToArray();
+					Expression[] parameters = constructorInfo.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 
 					NewExpression newExpression = Expression.New(constructorInfo, parameters);
 

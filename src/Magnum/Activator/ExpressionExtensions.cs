@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Activator
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -34,11 +35,19 @@ namespace Magnum.Activator
 			return parameters.Select((parameter, index) => parameter.ToParameterExpression("arg" + index));
 		}
 
-		public static IEnumerable<Expression> ToArgumentsExpression(this IEnumerable<ParameterInfo> parameters, ParameterExpression arguments)
+		public static IEnumerable<Expression> ToArrayIndexParameters(this IEnumerable<ParameterInfo> parameters, ParameterExpression arguments)
 		{
-			return parameters.Select((parameter, index) =>
-			                         (Expression)Expression.Convert(
-			                         	Expression.ArrayIndex(arguments, Expression.Constant(index)), parameter.ParameterType));
+			Func<ParameterInfo, int, Expression> converter = (parameter, index) =>
+				{
+					BinaryExpression arrayExpression = Expression.ArrayIndex(arguments, Expression.Constant(index));
+
+					if (parameter.ParameterType.IsValueType)
+						return Expression.Convert(arrayExpression, parameter.ParameterType);
+
+					return Expression.TypeAs(arrayExpression, parameter.ParameterType);
+				};
+
+			return parameters.Select(converter);
 		}
 	}
 }
