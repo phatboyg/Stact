@@ -44,6 +44,9 @@ namespace Magnum.Invoker
 
 		public void FastInvoke(T target, string methodName, params object[] args)
 		{
+            if(args == null)
+                args = new object[]{};
+
 			MethodInfo method = typeof (T).GetMethods()
 				.Where(x => x.Name == methodName)
 				.MatchingArguments(args)
@@ -95,12 +98,15 @@ namespace Magnum.Invoker
 
 			Action<T, object[]> invoker = _actionArgs.Retrieve(key, () =>
 				{
-					method = new[] {method.GetGenericMethodDefinition()}
-						.MatchingArguments(args)
-						.First()
-						.ToSpecializedMethod(args);
+                    if (method.IsGenericMethod)
+                    {
+                        method = new[] {method.GetGenericMethodDefinition()}
+                            .MatchingArguments(args)
+                            .First()
+                            .ToSpecializedMethod(args);
+                    }
 
-					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
+				    ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
 
 					Expression[] parameters = method.GetParameters().ToArgumentsExpression(argsParameter).ToArray();

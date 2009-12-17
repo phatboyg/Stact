@@ -83,7 +83,6 @@
     <Compile Include="Activator\ComplexConstructor_Specs.cs" />
     <Compile Include="Activator\Generator_Specs.cs" />
     <Compile Include="Activator\GenericType_Specs.cs" />
-    <Compile Include="Activator\Matching_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
     <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />

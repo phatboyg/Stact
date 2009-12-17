@@ -10,6 +10,8 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
+using Magnum.Invoker;
+
 namespace Magnum.Specs.Reflection
 {
 	using System;
@@ -24,20 +26,20 @@ namespace Magnum.Specs.Reflection
 		public void FailsIfTargetIsNull()
 		{
 			const string x = null;
-			//Assert.Throws<ArgumentNullException>(() => x.Call("ToString"));
+			//Assert.Throws<ArgumentNullException>(() => x.FastInvoke("ToString"));
 		}
 
 		[Test]
 		public void FailsIfMethodNameIsNull()
 		{
-			//Assert.Throws<ArgumentNullException>(() => 123.Call(null));
+			//Assert.Throws<ArgumentNullException>(() => 123.FastInvoke(null));
 		}
 
 		[Test]
 		public void CanInvokeUniqueMethodWithoutArgs()
 		{
 			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
-			mock.Call("Foo");
+			mock.FastInvoke("Foo");
 			mock.AssertWasCalled(x => x.Foo());
 		}
 
@@ -45,7 +47,7 @@ namespace Magnum.Specs.Reflection
 		public void CanDistinguishMethodsByParameterCount_FirstMethod()
 		{
 			var mock = MockRepository.GenerateMock<ISimpleOverload>();
-			mock.Call("Foo");
+			mock.FastInvoke("Foo");
 			mock.AssertWasCalled(x => x.Foo());
 			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
 		}
@@ -54,7 +56,7 @@ namespace Magnum.Specs.Reflection
 		public void CanDistinguishMethodsByParameterCount_SecondMethod()
 		{
 			var mock = MockRepository.GenerateMock<ISimpleOverload>();
-			mock.Call("Foo", 42);
+			mock.FastInvoke("Foo", 42);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(42)));
 			mock.AssertWasNotCalled(x => x.Foo());
 		}
@@ -63,7 +65,7 @@ namespace Magnum.Specs.Reflection
 		public void CanPassArgumentsToMethod()
 		{
 			var mock = MockRepository.GenerateMock<ISimpleArguments>();
-			mock.Call("Foo", 4, "bar");
+			mock.FastInvoke("Foo", 4, "bar");
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(4), Arg.Is("bar")));
 		}
 
@@ -72,7 +74,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<IParameterResolution>();
 			var arg = "bar";
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
@@ -83,7 +85,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<IParameterResolution>();
 			var arg = new Version(1, 2, 3);
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<int>.Is.Anything));
@@ -94,7 +96,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<IParameterResolution>();
 			var arg = 42;
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<string>.Is.Anything));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<Version>.Is.Anything));
@@ -105,7 +107,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<INullableParameters>();
 			int? arg = 42;
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
 		}
@@ -115,7 +117,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<INullableParameters>();
 			int? arg = null;
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg.Is(arg)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<float>.Is.Anything));
 		}
@@ -125,7 +127,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<INullableParametersBoxingIssue>();
 			int? arg = 42;
-			mock.Call("Foo", arg);
+			mock.FastInvoke("Foo", arg);
 			mock.AssertWasCalled(x => x.Foo(Arg<int>.Is.Equal(42)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<int?>.Is.Anything));
 		}
@@ -135,17 +137,17 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
 			var item = new DerivedClass();
-			mock.Call("Foo", item);
+			mock.FastInvoke("Foo", item);
 			mock.AssertWasCalled(x => x.Foo(Arg<DerivedClass>.Is.Same(item)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything));
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void TriesToMatchTypesAsGoodAsPossible2()
 		{
 			var mock = MockRepository.GenerateMock<ISelectPolymorphic2>();
 			var item = new DerivedClass();
-			mock.Call("Foo", null, item);
+			mock.FastInvoke("Foo", null, item);
 			mock.AssertWasCalled(x => x.Foo(Arg<BaseClass>.Is.Null, Arg<DerivedClass>.Is.Same(item)));
 			mock.AssertWasNotCalled(x => x.Foo(Arg<BaseClass>.Is.Anything, Arg<BaseClass>.Is.Anything));
 		}
@@ -155,7 +157,7 @@ namespace Magnum.Specs.Reflection
 		{
 			var mock = MockRepository.GenerateMock<ISelectPolymorphic>();
 
-			//var exception = Assert.Throws<ArgumentException>(() => mock.Call("Foo", new object[] { null }));
+			//var exception = Assert.Throws<ArgumentException>(() => mock.FastInvoke("Foo", new object[] { null }));
 			//Assert.AreEqual("Ambiguous method invocation", exception.Message);
 		}
 
@@ -163,7 +165,7 @@ namespace Magnum.Specs.Reflection
 		public void CanHandleNullArrayAsArguments()
 		{
 			var mock = MockRepository.GenerateMock<IUniqueMethodWithoutArgs>();
-			mock.Call("Foo", default(object[]));
+			mock.FastInvoke("Foo", default(object[]));
 			mock.AssertWasCalled(x => x.Foo());
 		}
 
@@ -175,7 +177,7 @@ namespace Magnum.Specs.Reflection
 			stub.Stub(x => x.StringFoo()).Return("bar");
 
 			var intResult = stub.Call("IntFoo");
-			var stringResult = stub.Call("StringFoo");
+            var stringResult = stub.Call("StringFoo");
 
 			Assert.AreEqual(123, intResult);
 			Assert.AreEqual("bar", stringResult);

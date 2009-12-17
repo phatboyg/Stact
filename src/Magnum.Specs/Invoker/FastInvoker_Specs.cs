@@ -83,6 +83,12 @@ namespace Magnum.Specs.Invoker
 			target.SecondArgumentType.ShouldEqual(typeof (Guid));
 		}
 
+	    [Test]
+	    public void The_generic_method_should_use_the_most_specific_type()
+	    {
+	        
+	    }
+
 		[Test]
 		public void The_generic_method_should_be_invoked_and_not_cached_improperly()
 		{

@@ -45,8 +45,11 @@ namespace Magnum.Activator
 		public static IEnumerable<T> MatchingArguments<T>(this IEnumerable<T> methods, object[] args)
 			where T : MethodBase
 		{
-			return methods
-				.Where(x => x.GetParameters().MatchesArguments(args));
+		    return methods
+		        .Select(x => new {Method = x, Rating = x.GetParameters().MatchesArguments(args)})
+		        .Where(x => x.Rating > 0)
+		        .OrderByDescending(x => x.Rating)
+		        .Select(x => x.Method);
 		}
 
 		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters)
@@ -71,21 +74,24 @@ namespace Magnum.Activator
 			       args[1].ParameterType.RateParameterTypeCompatibility(typeof(TArg1)) > 0;
 		}
 
-		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters, object[] args)
+		public static int MatchesArguments(this ParameterInfo[] parameterInfos, object[] args)
 		{
-			ParameterInfo[] parameterInfos = parameters.ToArray();
-
 			if (parameterInfos.Length != args.Length)
-				return false;
+				return 0;
 
 			if(parameterInfos.Length == 0)
-				return true;
+				return 5;
 
-			int matched = parameterInfos.Merge(args, (x, y) => new {Parameter = x, Argument = y})
-				.Where(x => RateParameterTypeCompatibility(x.Parameter.ParameterType, x.Argument) > 0)
+            var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y) });
+
+            int valid = matched
+				.Where(x => x.Rating > 0)
 				.Count();
 
-			return args.Length == matched;
+            if (valid != args.Length)
+                return 0;
+
+		    return matched.Sum(x => x.Rating);
 		}
 
 		public static int RateParameterTypeCompatibility(this Type parameterType, object arg)
