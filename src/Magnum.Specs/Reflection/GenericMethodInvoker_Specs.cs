@@ -16,7 +16,7 @@ namespace Magnum.Specs.Reflection
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using Magnum.Activator;
-	using Magnum.Reflection;
+	using Magnum.Invoker;
 	using NUnit.Framework;
 	using TestFramework;
 
@@ -42,15 +42,15 @@ namespace Magnum.Specs.Reflection
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			Generic.Call(x => MyMethod(x), obj);
+			this.FastInvoke(x => MyMethod(x), obj);
 		}
 
-		[Test, Ignore] // okay, static doesn't seem tow ork after all
+		[Test] // okay, static doesn't seem tow ork after all
 		public void A_static_method_should_also_be_able_to_be_invoked()
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			Generic.Call(x => MyStaticMethod(x), obj);
+			this.FastInvoke(x => MyStaticMethod(x), obj);
 		}
 
 		[Test]
@@ -58,15 +58,15 @@ namespace Magnum.Specs.Reflection
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			this.Call("MyMethod", obj);
+			this.FastInvoke("MyMethod", obj);
 		}
 
-		[Test]
+		[Test, Ignore("Static methods are not supported")]
 		public void The_extension_method_syntax_should_work_the_same_for_a_static_method()
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			this.Call("MyStaticMethod", obj);
+			this.FastInvoke("MyStaticMethod", obj);
 		}
 
 		[Test]
@@ -77,22 +77,22 @@ namespace Magnum.Specs.Reflection
 
 			var pair = new KeyValuePair<string,MyClass>(key, value);
 
-			this.Call("ComplexMethod", "ignored", pair);
+			this.FastInvoke("ComplexMethod", "ignored", pair);
 		}
 
 
 		[Test]
 		public void Invoking_using_the_generic_method_invoker_should_pass_the_appropriate_type_for_value_types()
 		{
-			Generic.Call(x => MyIntMethod(x), 27);
+			this.FastInvoke(x => MyIntMethod(x), 27);
 		}
 
-		[Test, ExpectedException(typeof(InvalidOperationException))]
+		[Test]
 		public void Invoking_a_regular_method_should_not_work_too()
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			Generic.Call(x => RegularMethod(x), obj);
+			this.FastInvoke(x => RegularMethod(x), obj);
 		}
 
 
@@ -102,12 +102,12 @@ namespace Magnum.Specs.Reflection
 		{
 			object obj = FastActivator.Create(typeof(MyClass));
 
-			Generic.Call(x => MyMethod(x), obj);
+			this.FastInvoke(x => MyMethod(x), obj);
 
 			Stopwatch count = Stopwatch.StartNew();
 			for (int i = 0; i < 10000; i++)
 			{
-				Generic.Call(x => MyMethod(x), obj);
+				this.FastInvoke(x => MyMethod(x), obj);
 			}
 			count.Stop();
 
@@ -140,6 +140,7 @@ namespace Magnum.Specs.Reflection
 
 		public void RegularMethod(object obj)
 		{
+			obj.GetType().ShouldEqual(typeof(MyClass));
 		}
 
 		public void ComplexMethod<TKey,TValue>(string ignored, KeyValuePair<TKey,TValue> pair)
@@ -154,7 +155,5 @@ namespace Magnum.Specs.Reflection
 		public class MyClass
 		{
 		}
-
-
 	}
 }

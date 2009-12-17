@@ -82,7 +82,7 @@ namespace Magnum.Activator
 			if(parameterInfos.Length == 0)
 				return 5;
 
-            var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y) });
+            var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y) }).ToArray();
 
             int valid = matched
 				.Where(x => x.Rating > 0)
@@ -119,6 +119,11 @@ namespace Magnum.Activator
 
 			if (parameterType.IsGenericParameter)
 				return argType.MeetsGenericConstraints(parameterType) ? 3 : 0;
+
+			if (parameterType.IsGenericType && 
+				argType.IsGenericType && 
+				parameterType.GetGenericTypeDefinition() == argType.GetGenericTypeDefinition())
+				return 3;
 
 			if (parameterType.IsAssignableFrom(argType))
 			{

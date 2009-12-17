@@ -93,6 +93,17 @@ namespace Magnum.Activator
 						yield return new Tuple<Type, Type>(next.Argument, next.Type);
 					}
 				}
+
+				foreach (var parameter in parameters.Where(x => x.Parameter.ParameterType.IsGenericType && x.Argument != null))
+				{
+					var mergeds = parameter.Parameter.ParameterType.GetGenericArguments()
+						.Merge(parameter.Argument.GetType().GetGenericArguments(), (p, a) => new {ParameterType = p, ArgumentType = a});
+
+					foreach (var merged in mergeds)
+					{
+						yield return new Tuple<Type, Type>(merged.ParameterType, merged.ArgumentType);
+					}
+				}
 			}
 		}
 	}
