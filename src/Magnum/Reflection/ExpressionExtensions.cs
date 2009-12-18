@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Activator
+namespace Magnum.Reflection
 {
 	using System;
 	using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Magnum.Activator
 
 		public static IEnumerable<ParameterExpression> ToParameterExpressions(this IEnumerable<ParameterInfo> parameters)
 		{
-			return parameters.Select((parameter, index) => parameter.ToParameterExpression("arg" + index));
+			return parameters.Select((parameter, index) => ToParameterExpression(parameter, "arg" + index));
 		}
 
 		public static IEnumerable<Expression> ToArrayIndexParameters(this IEnumerable<ParameterInfo> parameters, ParameterExpression arguments)
@@ -51,5 +51,3 @@ namespace Magnum.Activator
 		}
 	}
 }
-
-

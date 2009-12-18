@@ -17,7 +17,7 @@ namespace Magnum.Specs
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Magnum.Activator;
+	using Magnum.Reflection;
 
 	internal class UserCache : CacheBase<User>
 	{

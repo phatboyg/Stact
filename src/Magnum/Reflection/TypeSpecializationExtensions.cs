@@ -10,13 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Activator
+namespace Magnum.Reflection
 {
 	using System;
 	using System.Linq;
 	using System.Reflection;
-	using InterfaceExtensions;
 	using Linq;
+	using ExtensionsToInterfaces=Magnum.InterfaceExtensions.ExtensionsToInterfaces;
 
 	public static class TypeSpecializationExtensions
 	{
@@ -102,9 +102,9 @@ namespace Magnum.Activator
 
 							var more = argumentType.GetGenericParameterConstraints()
 								.Where(x => x.IsGenericType)
-								.Where(x => type.Implements(x.GetGenericTypeDefinition()))
+								.Where(x => ExtensionsToInterfaces.Implements(type, x.GetGenericTypeDefinition()))
 								.SelectMany(x => x.GetGenericArguments()
-								                 	.Merge(type.GetDeclaredTypesForGeneric(x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
+								                 	.Merge(ExtensionsToInterfaces.GetDeclaredTypesForGeneric(type, x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
 
 							foreach (var next in more)
 							{

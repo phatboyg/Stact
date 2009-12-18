@@ -16,7 +16,7 @@ namespace Magnum.Specs.Invoker
 	using System.Diagnostics;
 	using System.Reflection;
 	using Classes;
-	using Magnum.Invoker;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 
 	[TestFixture, Explicit]

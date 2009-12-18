@@ -10,14 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Invoker
+namespace Magnum.Reflection
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Activator;
 	using CollectionExtensions;
 
 	public class FastInvoker<T> :
@@ -84,14 +83,14 @@ namespace Magnum.Invoker
 			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes);
 
 			var invoker = GetInvoker(key, () =>
-			{
-				var empty = new object[] { };
+				{
+					var empty = new object[] { };
 
-				return MethodNameCache[methodName]
-				.MatchingArguments()
-				.First()
-				.ToSpecializedMethod(genericTypes, empty);
-			});
+					return MethodNameCache[methodName]
+						.MatchingArguments()
+						.First()
+						.ToSpecializedMethod(genericTypes, empty);
+				});
 
 			invoker(target);
 		}
@@ -107,12 +106,12 @@ namespace Magnum.Invoker
 			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes, args);
 
 			var invoker = GetInvoker(key, () =>
-			{
-				return MethodNameCache[methodName]
-				.MatchingArguments(args)
-				.First()
-				.ToSpecializedMethod(genericTypes, args);
-			}, args);
+				{
+					return MethodNameCache[methodName]
+						.MatchingArguments(args)
+						.First()
+						.ToSpecializedMethod(genericTypes, args);
+				}, args);
 
 			invoker(target, args);
 		}

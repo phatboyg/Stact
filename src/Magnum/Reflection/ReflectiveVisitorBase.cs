@@ -17,7 +17,6 @@ namespace Magnum.Reflection
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Activator;
 	using CollectionExtensions;
 	using Collections;
 

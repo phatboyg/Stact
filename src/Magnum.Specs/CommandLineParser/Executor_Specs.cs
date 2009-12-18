@@ -17,7 +17,6 @@ namespace Magnum.Specs.CommandLineParser
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Reflection;
-	using Magnum.Activator;
 	using Magnum.CommandLineParser;
 	using Magnum.Reflection;
 	using NUnit.Framework;

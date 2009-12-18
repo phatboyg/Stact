@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Activator
 {
 	using Classes;
-	using Magnum.Activator;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 
 	public class When_generating_an_object<T>

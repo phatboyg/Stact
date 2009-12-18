@@ -15,7 +15,7 @@ namespace Magnum.Specs.Activator
 	using System;
 	using System.Diagnostics;
 	using Classes;
-	using Magnum.Activator;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 
 	[TestFixture, Explicit]

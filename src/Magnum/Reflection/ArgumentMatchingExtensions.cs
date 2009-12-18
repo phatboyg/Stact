@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Activator
+namespace Magnum.Reflection
 {
 	using System;
 	using System.Collections.Generic;
@@ -45,11 +45,11 @@ namespace Magnum.Activator
 		public static IEnumerable<T> MatchingArguments<T>(this IEnumerable<T> methods, object[] args)
 			where T : MethodBase
 		{
-		    return methods
-		        .Select(x => new {Method = x, Rating = x.GetParameters().MatchesArguments(args)})
-		        .Where(x => x.Rating > 0)
-		        .OrderByDescending(x => x.Rating)
-		        .Select(x => x.Method);
+			return methods
+				.Select(x => new {Method = x, Rating = x.GetParameters().MatchesArguments(args)})
+				.Where(x => x.Rating > 0)
+				.OrderByDescending(x => x.Rating)
+				.Select(x => x.Method);
 		}
 
 		public static bool MatchesArguments(this IEnumerable<ParameterInfo> parameters)
@@ -82,16 +82,16 @@ namespace Magnum.Activator
 			if(parameterInfos.Length == 0)
 				return 5;
 
-            var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y) }).ToArray();
+			var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, (object) y) }).ToArray();
 
-            int valid = matched
+			int valid = matched
 				.Where(x => x.Rating > 0)
 				.Count();
 
-            if (valid != args.Length)
-                return 0;
+			if (valid != args.Length)
+				return 0;
 
-		    return matched.Sum(x => x.Rating);
+			return matched.Sum(x => x.Rating);
 		}
 
 		public static int RateParameterTypeCompatibility(this Type parameterType, object arg)
@@ -121,8 +121,8 @@ namespace Magnum.Activator
 				return argType.MeetsGenericConstraints(parameterType) ? 3 : 0;
 
 			if (parameterType.IsGenericType && 
-				argType.IsGenericType && 
-				parameterType.GetGenericTypeDefinition() == argType.GetGenericTypeDefinition())
+			    argType.IsGenericType && 
+			    parameterType.GetGenericTypeDefinition() == argType.GetGenericTypeDefinition())
 				return 3;
 
 			if (parameterType.IsAssignableFrom(argType))

@@ -15,8 +15,7 @@ namespace Magnum.Specs.Reflection
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using Magnum.Activator;
-	using Magnum.Invoker;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 	using TestFramework;
 

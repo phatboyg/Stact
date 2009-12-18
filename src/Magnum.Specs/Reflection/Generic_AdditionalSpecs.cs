@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Reflection
 {
 	using System;
-	using Magnum.Invoker;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 

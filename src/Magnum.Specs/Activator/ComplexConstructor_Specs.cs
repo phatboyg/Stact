@@ -2,7 +2,7 @@ namespace Magnum.Specs.Activator
 {
 	using System;
 	using Classes;
-	using Magnum.Activator;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 	using TestFramework;
 

@@ -15,7 +15,7 @@ namespace Magnum.Specs.Invoker
 	using System;
 	using Activator.Classes;
 	using Classes;
-	using Magnum.Invoker;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 	using TestFramework;
 
