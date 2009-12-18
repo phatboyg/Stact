@@ -20,7 +20,7 @@ namespace Magnum.Invoker
 
 	public abstract class FastInvokerBase
 	{
-		private const BindingFlags _methodBindingFlags = BindingFlags.Instance | BindingFlags.Public;
+		private const BindingFlags _methodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		protected readonly MultiDictionary<string, MethodInfo> MethodNameCache;
 
@@ -41,6 +41,7 @@ namespace Magnum.Invoker
 				.MatchingArguments(args)
 				.First()
 				.ToSpecializedMethod(args);
+
 			return method;
 		}
 

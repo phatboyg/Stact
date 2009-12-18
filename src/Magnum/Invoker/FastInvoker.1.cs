@@ -55,7 +55,7 @@ namespace Magnum.Invoker
 
 		public void FastInvoke(T target, string methodName, params object[] args)
 		{
-			if (args == null)
+			if (args == null || args.Length == 0)
 			{
 				FastInvoke(target, methodName);
 				return;
@@ -69,20 +69,21 @@ namespace Magnum.Invoker
 			GetInvoker(method, args)(target, args);
 		}
 
-		public void FastInvoke(T target, string methodName, Type[] genericTypes)
+		public void FastInvoke(T target, Type[] genericTypes, string methodName)
 		{
+			var empty = new object[] {};
+
 			MethodInfo method = MethodNameCache[methodName]
 				.MatchingArguments()
 				.First()
-				.GetGenericMethodDefinition()
-				.MakeGenericMethod(genericTypes);
+				.ToSpecializedMethod(genericTypes, empty);
 
 			GetInvoker(method)(target);
 		}
 
-		public void FastInvoke(T target, string methodName, Type[] genericTypes, object[] args)
+		public void FastInvoke(T target, Type[] genericTypes, string methodName, params object[] args)
 		{
-			if (args == null)
+			if (args == null || args.Length == 0)
 			{
 				FastInvoke(target, methodName);
 				return;
@@ -91,8 +92,7 @@ namespace Magnum.Invoker
 			MethodInfo method = MethodNameCache[methodName]
 				.MatchingArguments(args)
 				.First()
-				.GetGenericMethodDefinition()
-				.MakeGenericMethod(genericTypes);
+				.ToSpecializedMethod(genericTypes, args);
 
 			GetInvoker(method, args)(target, args);
 		}
@@ -120,7 +120,7 @@ namespace Magnum.Invoker
 			GetInvoker(method, args)(target, args);
 		}
 
-		public void FastInvoke(T target, Expression<Action<T>> expression, Type[] genericTypes)
+		public void FastInvoke(T target, Type[] genericTypes, Expression<Action<T>> expression)
 		{
 			var call = expression.Body as MethodCallExpression;
 			if (call == null)
@@ -131,7 +131,7 @@ namespace Magnum.Invoker
 			GetInvoker(method)(target);
 		}
 
-		public void FastInvoke(T target, Expression<Action<T>> expression, Type[] genericTypes, object[] args)
+		public void FastInvoke(T target, Type[] genericTypes, Expression<Action<T>> expression, params object[] args)
 		{
 			var call = expression.Body as MethodCallExpression;
 			if (call == null)

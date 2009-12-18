@@ -15,6 +15,7 @@ namespace Magnum.Pipeline
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Invoker;
     using Reflection;
     using Segments;
 
@@ -83,11 +84,11 @@ namespace Magnum.Pipeline
         {
             typeof (T).GetInterfaces()
                 .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IConsumer<>))
-                .Each(type => this.Call("SubscribeConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
+				.Each(type => this.FastInvoke(new[] { null, type.GetGenericArguments()[0] }, "SubscribeConsumer", consumer));
 
             typeof (T).GetInterfaces()
                 .Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IAsyncConsumer<>))
-                .Each(type => this.Call("SubscribeAsyncConsumer", new[] {null, type.GetGenericArguments()[0]}, consumer));
+				.Each(type => this.FastInvoke(new[] { null, type.GetGenericArguments()[0] }, "SubscribeAsyncConsumer", consumer));
         }
 
 		public void Subscribe<T>(Func<T> getConsumer) 
@@ -95,11 +96,11 @@ namespace Magnum.Pipeline
 		{
 			typeof(T).GetInterfaces()
 				.Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IConsumer<>))
-				.Each(type => this.Call("SubscribeComponent", new[] { null, type.GetGenericArguments()[0] }, getConsumer));
+				.Each(type => this.FastInvoke(new[] { null, type.GetGenericArguments()[0] }, "SubscribeComponent", getConsumer));
 
 			typeof(T).GetInterfaces()
 				.Where(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IAsyncConsumer<>))
-				.Each(type => this.Call("SubscribeAsyncComponent", new[] { null, type.GetGenericArguments()[0] }, getConsumer));
+				.Each(type => this.FastInvoke(new[] { null, type.GetGenericArguments()[0] }, "SubscribeAsyncComponent", getConsumer));
 		}
 
     	// ReSharper disable UnusedMember.Local

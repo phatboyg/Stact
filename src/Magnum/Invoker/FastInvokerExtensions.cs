@@ -17,24 +17,24 @@ namespace Magnum.Invoker
 
 	public static class FastInvokerExtensions
 	{
-		public static void FastInvoke<T>(this T target, string methodName, params object[] args)
-		{
-			FastInvoker<T>.Current.FastInvoke(target, methodName, args);
-		}
-
 		public static void FastInvoke<T>(this T target, string methodName)
 		{
 			FastInvoker<T>.Current.FastInvoke(target, methodName);
 		}
 
-		public static void FastInvoke<T>(this T target, string methodName, Type[] genericTypes)
+		public static void FastInvoke<T>(this T target, string methodName, params object[] args)
 		{
-			FastInvoker<T>.Current.FastInvoke(target, methodName, genericTypes);
+			FastInvoker<T>.Current.FastInvoke(target, methodName, args);
 		}
 
-		public static void FastInvoke<T>(this T target, string methodName, Type[] genericTypes, object[] args)
+		public static void FastInvoke<T>(this T target, Type[] genericTypes, string methodName)
 		{
-			FastInvoker<T>.Current.FastInvoke(target, methodName, genericTypes, args);
+			FastInvoker<T>.Current.FastInvoke(target, genericTypes, methodName);
+		}
+
+		public static void FastInvoke<T>(this T target, Type[] genericTypes, string methodName, params object[] args)
+		{
+			FastInvoker<T>.Current.FastInvoke(target, genericTypes, methodName, args);
 		}
 
 		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression)
@@ -47,19 +47,14 @@ namespace Magnum.Invoker
 			FastInvoker<T>.Current.FastInvoke(target, expression, args);
 		}
 
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, Type[] genericTypes)
+		public static void FastInvoke<T>(this T target, Type[] genericTypes, Expression<Action<T>> expression)
 		{
-			FastInvoker<T>.Current.FastInvoke(target, expression, genericTypes);
+			FastInvoker<T>.Current.FastInvoke(target, genericTypes, expression);
 		}
 
-		public static void FastInvoke<T>(this T target, Expression<Action<T>> expression, Type[] genericTypes, object[] args)
+		public static void FastInvoke<T>(this T target, Type[] genericTypes, Expression<Action<T>> expression, params object[] args)
 		{
-			FastInvoker<T>.Current.FastInvoke(target, expression, genericTypes, args);
-		}
-
-		public static TResult FastInvoke<T, TResult>(this T target, string methodName, params object[] args)
-		{
-			return FastInvoker<T, TResult>.Current.FastInvoke(target, methodName, args);
+			FastInvoker<T>.Current.FastInvoke(target, genericTypes, expression, args);
 		}
 
 		public static TResult FastInvoke<T, TResult>(this T target, string methodName)
@@ -67,14 +62,19 @@ namespace Magnum.Invoker
 			return FastInvoker<T, TResult>.Current.FastInvoke(target, methodName);
 		}
 
-		public static TResult FastInvoke<T, TResult>(this T target, string methodName, Type[] genericTypes)
+		public static TResult FastInvoke<T, TResult>(this T target, string methodName, params object[] args)
 		{
-			return FastInvoker<T, TResult>.Current.FastInvoke(target, methodName, genericTypes);
+			return FastInvoker<T, TResult>.Current.FastInvoke(target, methodName, args);
 		}
 
-		public static TResult FastInvoke<T, TResult>(this T target, string methodName, Type[] genericTypes, object[] args)
+		public static TResult FastInvoke<T, TResult>(this T target, Type[] genericTypes, string methodName)
 		{
-			return FastInvoker<T, TResult>.Current.FastInvoke(target, methodName, genericTypes, args);
+			return FastInvoker<T, TResult>.Current.FastInvoke(target, genericTypes, methodName);
+		}
+
+		public static TResult FastInvoke<T, TResult>(this T target, Type[] genericTypes, string methodName, params object[] args)
+		{
+			return FastInvoker<T, TResult>.Current.FastInvoke(target, genericTypes, methodName, args);
 		}
 
 		public static TResult FastInvoke<T, TResult>(this T target, Expression<Func<T, TResult>> expression)
@@ -87,14 +87,14 @@ namespace Magnum.Invoker
 			return FastInvoker<T, TResult>.Current.FastInvoke(target, expression, args);
 		}
 
-		public static TResult FastInvoke<T, TResult>(this T target, Expression<Func<T, TResult>> expression, Type[] genericTypes)
+		public static TResult FastInvoke<T, TResult>(this T target, Type[] genericTypes, Expression<Func<T, TResult>> expression)
 		{
-			return FastInvoker<T, TResult>.Current.FastInvoke(target, expression, genericTypes);
+			return FastInvoker<T, TResult>.Current.FastInvoke(target, genericTypes, expression);
 		}
 
-		public static TResult FastInvoke<T, TResult>(this T target, Expression<Func<T, TResult>> expression, Type[] genericTypes, object[] args)
+		public static TResult FastInvoke<T, TResult>(this T target, Type[] genericTypes, Expression<Func<T, TResult>> expression, params object[] args)
 		{
-			return FastInvoker<T, TResult>.Current.FastInvoke(target, expression, genericTypes, args);
+			return FastInvoker<T, TResult>.Current.FastInvoke(target, genericTypes, expression, args);
 		}
 	}
 }

@@ -90,10 +90,26 @@ namespace Magnum.Specs.Invoker
 
 			var argTypes = new Type[]{typeof(DateTime)};
 
-	    	target.FastInvoke(x => x.OneGenericArgumentNoParameters<int>(), argTypes);
+	    	target.FastInvoke(argTypes, x => x.OneGenericArgumentNoParameters<int>());
 
 	    	target.OneGenericArgumentNoParametersCalled.ShouldBeTrue();
 	    	target.FirstArgumentType.ShouldEqual(typeof (DateTime));
+	    }
+
+	    [Test]
+	    public void The_generic_method_should_use_the_most_specific_type_but_not_the_argument_type()
+	    {
+	    	var target = new ClassWithGenericMethods();
+
+			var argTypes = new[]{typeof(double)};
+			object name = "Name";
+
+	    	target.FastInvoke(argTypes, x => x.OneGenericArgumentOnUnrelatedParameter<int>(null), name);
+
+			target.OneGenericArgumentOnUnrelatedParameterCalled.ShouldBeTrue();
+			target.FirstArgumentType.ShouldEqual(typeof(double));
+			target.SecondArgumentType.ShouldEqual(typeof(string));
+	    	target.SecondArgumentValue.ShouldEqual(name);
 	    }
 
 		[Test]

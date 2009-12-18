@@ -13,16 +13,14 @@
 namespace Magnum.Activator
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using Collections;
 	using InterfaceExtensions;
 	using Linq;
 
 	public static class TypeSpecializationExtensions
 	{
-		public static Type ToSpecializedType<T>(this T method, IEnumerable<object> args)
+		public static Type ToSpecializedType<T>(this T method, object[] args)
 			where T : MethodBase
 		{
 			Guard.Against.Null(method, "method");
@@ -31,68 +29,88 @@ namespace Magnum.Activator
 			if (!type.IsGenericType)
 				throw new ArgumentException("The argument must be for a generic type", "method");
 
-			Type[] genericArguments = GetGenericArguments(method, type.GetGenericArguments(), args);
+			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), type.GetGenericArguments(), args);
 
 			return type.MakeGenericType(genericArguments);
 		}
 
-		public static MethodInfo ToSpecializedMethod(this MethodInfo method, IEnumerable<object> args)
+		public static MethodInfo ToSpecializedMethod(this MethodInfo method, object[] args)
 		{
 			Guard.Against.Null(method, "method");
 
-			if(!method.IsGenericMethod)
+			if (!method.IsGenericMethod)
 				return method;
 
-			Type[] genericArguments = GetGenericArguments(method, method.GetGenericArguments(), args);
+			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), method.GetGenericArguments(), args);
 
 			return method.MakeGenericMethod(genericArguments);
 		}
 
-		private static Type[] GetGenericArguments<T>(T method, ICollection<Type> arguments, IEnumerable<object> args)
-			where T : MethodBase
+		public static MethodInfo ToSpecializedMethod(this MethodInfo method, Type[] genericTypes, object[] args)
 		{
-			Type[] genericArguments = arguments.Join(GetResult(arguments, method, args), t => t, k => k.First, (a, b) => b)
-				.Distinct()
-				.Select(x => x.Second)
-				.ToArray();
+			Guard.Against.Null(method, "method");
 
-			if (arguments.Count != genericArguments.Length)
-				throw new ArgumentException("Unable to resolve generic arguments");
+			if (!method.IsGenericMethod)
+				return method;
 
-			return genericArguments;
+			Guard.Against.Null(genericTypes, "genericTypes");
+			Guard.Against.Null(args, "args");
+
+			Type[] arguments = method.GetGenericArguments()
+				.ApplyGenericTypesToArguments(genericTypes);
+
+			arguments = GetGenericTypesFromArguments(method.GetParameters(), arguments, args);
+
+			method = method.MakeGenericMethod(arguments);
+
+			return method;
 		}
 
-		private static IEnumerable<Tuple<Type, Type>> GetResult<T>(IEnumerable<Type> argumentTypes, T method, IEnumerable<object> args)
-			where T : MethodBase
+		private static Type[] ApplyGenericTypesToArguments(this Type[] arguments, Type[] genericTypes)
 		{
-			var parameters = method.GetParameters()
+			for (int i = 0; i < arguments.Length && i < genericTypes.Length; i++)
+			{
+				if (genericTypes[i] != null)
+					arguments[i] = genericTypes[i];
+			}
+
+			return arguments;
+		}
+
+		private static Type[] GetGenericTypesFromArguments(ParameterInfo[] parameterInfos, Type[] arguments, object[] args)
+		{
+			var parameters = parameterInfos
 				.Merge(args, (x, y) => new {Parameter = x, Argument = y});
 
-			foreach (var argType in argumentTypes)
+			for (int i = 0; i < arguments.Length; i++)
 			{
-				var argumentType = argType;
+				Type argumentType = arguments[i];
 
-				var matches = parameters
+				if (!argumentType.IsGenericParameter)
+					continue;
+
+				parameters
 					.Where(arg => arg.Parameter.ParameterType == argumentType && arg.Argument != null)
-					.Select(arg => arg.Argument.GetType());
+					.Select(arg => arg.Argument.GetType())
+					.Each(type =>
+						{
+							arguments[i] = type;
 
-				foreach (Type match in matches)
-				{
-					Type type = match;
+							var more = argumentType.GetGenericParameterConstraints()
+								.Where(x => x.IsGenericType)
+								.Where(x => type.Implements(x.GetGenericTypeDefinition()))
+								.SelectMany(x => x.GetGenericArguments()
+								                 	.Merge(type.GetDeclaredTypesForGeneric(x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
 
-					yield return new Tuple<Type, Type>(argumentType, type);
-
-					var more = argumentType.GetGenericParameterConstraints()
-						.Where(x => x.IsGenericType)
-						.Where(x => type.Implements(x.GetGenericTypeDefinition()))
-						.SelectMany(x => x.GetGenericArguments()
-						                 	.Merge(type.GetDeclaredTypesForGeneric(x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
-
-					foreach (var next in more)
-					{
-						yield return new Tuple<Type, Type>(next.Argument, next.Type);
-					}
-				}
+							foreach (var next in more)
+							{
+								for (int j = 0; j < arguments.Length; j++)
+								{
+									if (arguments[j] == next.Argument)
+										arguments[j] = next.Type;
+								}
+							}
+						});
 
 				foreach (var parameter in parameters.Where(x => x.Parameter.ParameterType.IsGenericType && x.Argument != null))
 				{
@@ -101,10 +119,16 @@ namespace Magnum.Activator
 
 					foreach (var merged in mergeds)
 					{
-						yield return new Tuple<Type, Type>(merged.ParameterType, merged.ArgumentType);
+						for (int j = 0; j < arguments.Length; j++)
+						{
+							if (arguments[j] == merged.ParameterType)
+								arguments[j] = merged.ArgumentType;
+						}
 					}
 				}
 			}
+
+			return arguments;
 		}
 	}
 }

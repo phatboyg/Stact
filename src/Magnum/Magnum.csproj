@@ -275,12 +275,7 @@
     <Compile Include="Reflection\ExtensionsForReflection.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
-    <Compile Include="Reflection\Generic.cs" />
-    <Compile Include="Reflection\IMethodCall.cs" />
-    <Compile Include="Reflection\MethodCache.cs" />
-    <Compile Include="Reflection\MethodCallCache.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
-    <Compile Include="Reflection\MethodCallTypeCache.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />

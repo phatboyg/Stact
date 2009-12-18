@@ -68,7 +68,7 @@ namespace Magnum.Invoker
 			return GetInvoker(method, args)(target, args);
 		}
 
-		public TResult FastInvoke(T target, string methodName, Type[] genericTypes)
+		public TResult FastInvoke(T target, Type[] genericTypes, string methodName)
 		{
 			MethodInfo method = MethodNameCache[methodName]
 				.Where(x => x.ReturnType == typeof (TResult))
@@ -80,7 +80,7 @@ namespace Magnum.Invoker
 			return GetInvoker(method)(target);
 		}
 
-		public TResult FastInvoke(T target, string methodName, Type[] genericTypes, object[] args)
+		public TResult FastInvoke(T target, Type[] genericTypes, string methodName, object[] args)
 		{
 			if (args == null)
 				return FastInvoke(target, methodName);
@@ -118,7 +118,7 @@ namespace Magnum.Invoker
 			return GetInvoker(method, args)(target, args);
 		}
 
-		public TResult FastInvoke(T target, Expression<Func<T, TResult>> expression, Type[] genericTypes)
+		public TResult FastInvoke(T target, Type[] genericTypes, Expression<Func<T, TResult>> expression)
 		{
 			var call = expression.Body as MethodCallExpression;
 			if (call == null)
@@ -129,7 +129,7 @@ namespace Magnum.Invoker
 			return GetInvoker(method)(target);
 		}
 
-		public TResult FastInvoke(T target, Expression<Func<T, TResult>> expression, Type[] genericTypes, object[] args)
+		public TResult FastInvoke(T target, Type[] genericTypes, Expression<Func<T, TResult>> expression, object[] args)
 		{
 			var call = expression.Body as MethodCallExpression;
 			if (call == null)

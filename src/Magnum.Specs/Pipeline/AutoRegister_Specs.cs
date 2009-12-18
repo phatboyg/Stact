@@ -18,6 +18,7 @@ namespace Magnum.Specs.Pipeline
 	using CollectionExtensions;
 	using Consumers;
 	using Magnum.Activator;
+	using Magnum.Invoker;
 	using Magnum.Pipeline.Visitors;
 	using Magnum.Reflection;
 	using Messages;
@@ -37,7 +38,7 @@ namespace Magnum.Specs.Pipeline
 			_called = new Dictionary<Type, bool>();
 			_types = new[] {typeof (SingleMessageConsumer), typeof (MultipleMessageConsumer), typeof (LongRunningMessageConsumer)};
 
-			GetAllTypes().Each(type => { this.Call("SubscribeToScope", new[] { type }, new object[] { }); });
+			GetAllTypes().Each(type => { this.FastInvoke(new[] { type }, "SubscribeToScope"); });
 
 			Input.Send(new ClaimModified());
 		}

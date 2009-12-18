@@ -1,84 +1,26 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Reflection
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Reflection;
-	using NUnit.Framework;
 	using Magnum.Reflection;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class Reflecting_over_a_generic_type
 	{
-		[Test]
-		public void Should_return_an_enumeration_of_a_single_generic_type()
-		{
-			var subject = new List<string>();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(1, types.Length);
-			Assert.AreEqual(typeof (string), types[0]);
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_single_nested_generic_type()
-		{
-			var subject = new SingleNestedGeneric();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(1, types.Length);
-			Assert.AreEqual(typeof (string), types[0]);
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_deep_single_nested_generic_type()
-		{
-			var subject = new DeepSingleNestedGeneric();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(1, types.Length);
-			Assert.AreEqual(typeof (string), types[0]);
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_double_generic_type()
-		{
-			var subject = new Dictionary<int, string>();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(typeof (int), types[0]);
-			Assert.AreEqual(typeof (string), types[1]);
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_double_nested_generic_type()
-		{
-			var subject = new DoubleNestedGeneric();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(typeof (int), types[0]);
-			Assert.AreEqual(typeof (string), types[1]);
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_deep_double_nested_generic_type()
-		{
-			var subject = new DeepDoubleNestedGeneric();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(typeof (int), types[0]);
-			Assert.AreEqual(typeof (string), types[1]);
-		}
-
 		private class SingleNestedGeneric :
 			List<string>
 		{
@@ -90,24 +32,13 @@ namespace Magnum.Specs.Reflection
 		}
 
 		private class DoubleNestedGeneric :
-			Dictionary<int,string>
+			Dictionary<int, string>
 		{
 		}
 
 		private class DeepDoubleNestedGeneric :
 			DoubleNestedGeneric
 		{
-		}
-
-		[Test]
-		public void Should_return_an_enumeration_of_a_single_generic_interface()
-		{
-			var subject = new SingleGenericInterface();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(1, types.Length);
-			Assert.AreEqual(typeof(int), types[0]);
 		}
 
 		private class SingleGenericInterface :
@@ -119,24 +50,22 @@ namespace Magnum.Specs.Reflection
 		{
 		}
 
-		[Test]
-		public void Should_return_an_enumeration_of_a_double_generic_interface()
-		{
-			var subject = new DoubleGenericInterface();
-
-			var types = subject.GetDeclaredGenericArguments().ToArray();
-
-			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(typeof(int), types[0]);
-			Assert.AreEqual(typeof(string), types[1]);
-		}
-
 		private class DoubleGenericInterface :
-			IDoubleGeneric<int,string>
+			IDoubleGeneric<int, string>
 		{
 		}
 
-		private interface IDoubleGeneric<T,K>
+		private interface IDoubleGeneric<T, K>
+		{
+		}
+
+		private class NestedDoubleGenericInterface :
+			INestedDoubleGeneric<SingleGenericInterface, int>
+		{
+		}
+
+		private interface INestedDoubleGeneric<T, K>
+			where T : ISingleGeneric<K>
 		{
 		}
 
@@ -145,107 +74,103 @@ namespace Magnum.Specs.Reflection
 		{
 			var subject = new NestedDoubleGenericInterface();
 
-			var types = subject.GetDeclaredGenericArguments().ToArray();
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
 
 			Assert.AreEqual(2, types.Length);
-			Assert.AreEqual(typeof(SingleGenericInterface), types[0]);
-			Assert.AreEqual(typeof(int), types[1]);
-		}
-
-		private class NestedDoubleGenericInterface :
-			INestedDoubleGeneric<SingleGenericInterface, int>
-		{
-		}
-
-		private interface INestedDoubleGeneric<T,K>
-			where T : ISingleGeneric<K>
-		{
-		}
-	}
-
-	[TestFixture]
-	public class When_reflecting_a_generic_method
-	{
-		private bool _invoked;
-		private Type[] _argumentTypes;
-
-		[SetUp]
-		public void Establish_context()
-		{
-			_invoked = false;
-			_argumentTypes = null;
+			Assert.AreEqual(typeof (SingleGenericInterface), types[0]);
+			Assert.AreEqual(typeof (int), types[1]);
 		}
 
 		[Test]
-		public void Should_return_the_generic_types_expected()
+		public void Should_return_an_enumeration_of_a_deep_double_nested_generic_type()
 		{
-			MethodInfo methodInfo = GetType().GetMethodCandidates("SingleGeneric").FirstOrDefault();
+			var subject = new DeepDoubleNestedGeneric();
 
-			var types = methodInfo.GetGenericArguments().ToArray();
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
+
+			Assert.AreEqual(2, types.Length);
+			Assert.AreEqual(typeof (int), types[0]);
+			Assert.AreEqual(typeof (string), types[1]);
+		}
+
+		[Test]
+		public void Should_return_an_enumeration_of_a_deep_single_nested_generic_type()
+		{
+			var subject = new DeepSingleNestedGeneric();
+
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
 
 			Assert.AreEqual(1, types.Length);
-			Assert.AreEqual("T", types[0].Name);
+			Assert.AreEqual(typeof (string), types[0]);
 		}
 
 		[Test]
-		public void Should_determine_the_argument_types_to_call_the_method_properly()
+		public void Should_return_an_enumeration_of_a_double_generic_interface()
 		{
-			object[] args = new object[] { 27 };
-			var argumentTypes = args.GetElementTypes();
+			var subject = new DoubleGenericInterface();
 
-			MethodInfo methodInfo = GetType()
-				.GetMethodCandidates("SingleGeneric")
-				.FindBestMatch(args);
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
 
-			methodInfo
-				.InvokeOn<object>(this, args);
-
-			Assert.IsTrue(_invoked);
-			Assert.IsNotNull(_argumentTypes);
-			Assert.AreEqual(1, _argumentTypes.Length);
-			Assert.AreEqual(typeof(int), _argumentTypes[0]);
-		}
-
-		private void SingleGeneric<T>(T argument)
-		{
-			_invoked = true;
-			_argumentTypes = new[] {typeof (T)};
+			Assert.AreEqual(2, types.Length);
+			Assert.AreEqual(typeof (int), types[0]);
+			Assert.AreEqual(typeof (string), types[1]);
 		}
 
 		[Test]
-		public void Should_determine_the_argument_types_via_generic_constraints()
+		public void Should_return_an_enumeration_of_a_double_generic_type()
 		{
-			object[] args = new object[] { new HiddenGeneric() };
-			var argumentTypes = args.GetElementTypes();
+			var subject = new Dictionary<int, string>();
 
-			MethodInfo methodInfo = GetType()
-				.GetMethodCandidates("ComplexGeneric")
-				.FindBestMatch(args);
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
 
-			methodInfo
-				.InvokeOn<object>(this, args);
-
-			Assert.IsTrue(_invoked);
-			Assert.IsNotNull(_argumentTypes);
-			Assert.AreEqual(2, _argumentTypes.Length);
-			Assert.AreEqual(typeof(HiddenGeneric), _argumentTypes[0]);
-			Assert.AreEqual(typeof(int), _argumentTypes[1]);
+			Assert.AreEqual(2, types.Length);
+			Assert.AreEqual(typeof (int), types[0]);
+			Assert.AreEqual(typeof (string), types[1]);
 		}
 
-		private void ComplexGeneric<T,V>(T argument)
-			where T : ISingleGeneric<V>
+		[Test]
+		public void Should_return_an_enumeration_of_a_double_nested_generic_type()
 		{
-			_invoked = true;
-			_argumentTypes = new[] { typeof(T), typeof(V) };
+			var subject = new DoubleNestedGeneric();
+
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
+
+			Assert.AreEqual(2, types.Length);
+			Assert.AreEqual(typeof (int), types[0]);
+			Assert.AreEqual(typeof (string), types[1]);
 		}
 
-		private class HiddenGeneric :
-			ISingleGeneric<int>
+		[Test]
+		public void Should_return_an_enumeration_of_a_single_generic_interface()
 		{
+			var subject = new SingleGenericInterface();
+
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
+
+			Assert.AreEqual(1, types.Length);
+			Assert.AreEqual(typeof (int), types[0]);
 		}
 
-		private interface ISingleGeneric<T>
+		[Test]
+		public void Should_return_an_enumeration_of_a_single_generic_type()
 		{
+			var subject = new List<string>();
+
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
+
+			Assert.AreEqual(1, types.Length);
+			Assert.AreEqual(typeof (string), types[0]);
+		}
+
+		[Test]
+		public void Should_return_an_enumeration_of_a_single_nested_generic_type()
+		{
+			var subject = new SingleNestedGeneric();
+
+			Type[] types = subject.GetDeclaredGenericArguments().ToArray();
+
+			Assert.AreEqual(1, types.Length);
+			Assert.AreEqual(typeof (string), types[0]);
 		}
 	}
 }
