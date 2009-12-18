@@ -45,9 +45,33 @@ namespace Magnum.Invoker
 			return method;
 		}
 
-		protected static int GetArgumentHashCode(MethodInfo method, object[] args)
+		protected static int GetArgumentHashCode(int seed, object[] args)
 		{
-			int key = method.GetHashCode();
+			int key = seed;
+			for (int i = 0; i < args.Length; i++)
+			{
+				key ^= args[i] == null ? 31*i : args[i].GetType().GetHashCode() << i;
+			}
+			return key;
+		}
+
+		protected static int GetArgumentHashCode(int seed, Type[] genericTypes)
+		{
+			int key = seed;
+			for (int i = 0; i < genericTypes.Length; i++)
+			{
+				key ^= genericTypes[i] == null ? 27*i : genericTypes[i].GetHashCode()*101 << i;
+			}
+			return key;
+		}
+
+		protected static int GetArgumentHashCode(int seed, Type[] genericTypes, object[] args)
+		{
+			int key = seed;
+			for (int i = 0; i < genericTypes.Length; i++)
+			{
+				key ^= genericTypes[i] == null ? 27*i : genericTypes[i].GetHashCode()*101 << i;
+			}
 			for (int i = 0; i < args.Length; i++)
 			{
 				key ^= args[i] == null ? 31*i : args[i].GetType().GetHashCode() << i;

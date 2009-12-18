@@ -46,53 +46,73 @@ namespace Magnum.Invoker
 
 		public TResult FastInvoke(T target, string methodName)
 		{
-			MethodInfo method = MethodNameCache[methodName]
-				.Where(x => x.ReturnType == typeof (TResult))
-				.MatchingArguments()
-				.First();
+			int key = 97 * methodName.GetHashCode();
 
-			return GetInvoker(method)(target);
+			var invoker = GetInvoker(key, () =>
+			{
+				return MethodNameCache[methodName]
+					.Where(x => x.ReturnType == typeof(TResult))
+					.MatchingArguments()
+					.First();
+			});
+
+			return invoker(target);
 		}
 
 		public TResult FastInvoke(T target, string methodName, params object[] args)
 		{
-			if (args == null)
+			if (args == null || args.Length == 0)
 				return FastInvoke(target, methodName);
 
-			MethodInfo method = MethodNameCache[methodName]
+			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), args);
+
+			var invoker = GetInvoker(key, () =>
+			{
+				return MethodNameCache[methodName]
 				.Where(x => x.ReturnType == typeof (TResult))
 				.MatchingArguments(args)
 				.First()
 				.ToSpecializedMethod(args);
+			}, args);
 
-			return GetInvoker(method, args)(target, args);
+			return invoker(target, args);
 		}
 
 		public TResult FastInvoke(T target, Type[] genericTypes, string methodName)
 		{
-			MethodInfo method = MethodNameCache[methodName]
-				.Where(x => x.ReturnType == typeof (TResult))
+			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes);
+
+			var invoker = GetInvoker(key, () =>
+			{
+				var empty = new object[] { };
+
+				return MethodNameCache[methodName]
+				.Where(x => x.ReturnType == typeof(TResult))
 				.MatchingArguments()
 				.First()
-				.GetGenericMethodDefinition()
-				.MakeGenericMethod(genericTypes);
+				.ToSpecializedMethod(genericTypes, empty);
+			});
 
-			return GetInvoker(method)(target);
+			return invoker(target);
 		}
 
 		public TResult FastInvoke(T target, Type[] genericTypes, string methodName, object[] args)
 		{
-			if (args == null)
-				return FastInvoke(target, methodName);
+			if (args == null || args.Length == 0)
+				return FastInvoke(target, genericTypes, methodName);
 
-			MethodInfo method = MethodNameCache[methodName]
-				.Where(x => x.ReturnType == typeof (TResult))
+			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes, args);
+
+			var invoker = GetInvoker(key, () =>
+			{
+				return MethodNameCache[methodName]
+				.Where(x => x.ReturnType == typeof(TResult))
 				.MatchingArguments(args)
 				.First()
-				.GetGenericMethodDefinition()
-				.MakeGenericMethod(genericTypes);
+				.ToSpecializedMethod(genericTypes, args);
+			}, args);
 
-			return GetInvoker(method, args)(target, args);
+			return invoker(target, args);
 		}
 
 		public TResult FastInvoke(T target, Expression<Func<T, TResult>> expression)
@@ -101,7 +121,11 @@ namespace Magnum.Invoker
 			if (call == null)
 				throw new ArgumentException("Only method call expressions are supported.", "expression");
 
-			return GetInvoker(call.Method)(target);
+			int key = 61 * call.Method.GetHashCode();
+
+			var invoker = GetInvoker(key, () => call.Method);
+
+			return invoker(target);
 		}
 
 		public TResult FastInvoke(T target, Expression<Func<T, TResult>> expression, params object[] args)
@@ -112,10 +136,14 @@ namespace Magnum.Invoker
 
 			MethodInfo method = call.Method;
 
-			if (method.IsGenericMethod)
-				method = method.GetGenericMethodDefinition();
+			int key = GetArgumentHashCode(61 * method.GetHashCode(), args);
 
-			return GetInvoker(method, args)(target, args);
+			var invoker = GetInvoker(key, () =>
+			{
+				return method.IsGenericMethod ? method.GetGenericMethodDefinition().ToSpecializedMethod(args) : method;
+			}, args);
+
+			return invoker(target, args);
 		}
 
 		public TResult FastInvoke(T target, Type[] genericTypes, Expression<Func<T, TResult>> expression)
@@ -124,9 +152,19 @@ namespace Magnum.Invoker
 			if (call == null)
 				throw new ArgumentException("Only method call expressions are supported.", "expression");
 
-			MethodInfo method = GetGenericMethodFromTypes(call.Method, genericTypes);
+			MethodInfo method = call.Method;
 
-			return GetInvoker(method)(target);
+			int key = GetArgumentHashCode(61 * method.GetHashCode(), genericTypes);
+
+			var invoker = GetInvoker(key, () =>
+				{
+					if (method.IsGenericMethod)
+						return GetGenericMethodFromTypes(method.GetGenericMethodDefinition(), genericTypes);
+
+					return method;
+				});
+
+			return invoker(target);
 		}
 
 		public TResult FastInvoke(T target, Type[] genericTypes, Expression<Func<T, TResult>> expression, object[] args)
@@ -135,17 +173,27 @@ namespace Magnum.Invoker
 			if (call == null)
 				throw new ArgumentException("Only method call expressions are supported.", "expression");
 
-			MethodInfo method = GetGenericMethodFromTypes(call.Method, genericTypes);
+			MethodInfo method = call.Method;
 
-			return GetInvoker(method, args)(target, args);
+			int key = GetArgumentHashCode(61 * method.GetHashCode(), genericTypes, args);
+
+			var invoker = GetInvoker(key, () =>
+				{
+					if (method.IsGenericMethod)
+						return method.GetGenericMethodDefinition().ToSpecializedMethod(genericTypes, args);
+
+					return method.ToSpecializedMethod(genericTypes, args);
+				}, args);
+
+			return invoker(target, args);
 		}
 
-		private Func<T, TResult> GetInvoker(MethodInfo method)
+		private Func<T, TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo)
 		{
-			int key = method.GetHashCode();
-
 			return _noArgs.Retrieve(key, () =>
 				{
+					MethodInfo method = getMethodInfo();
+
 					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
 
 					MethodCallExpression call = Expression.Call(instanceParameter, method);
@@ -154,14 +202,11 @@ namespace Magnum.Invoker
 				});
 		}
 
-		private Func<T, object[], TResult> GetInvoker(MethodInfo method, object[] args)
+		private Func<T, object[], TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo, object[] args)
 		{
-			int key = GetArgumentHashCode(method, args);
-
 			return _withArgs.Retrieve(key, () =>
 				{
-					if (method.IsGenericMethodDefinition)
-						method = GetGenericMethodFromArguments(method, args);
+					MethodInfo method = getMethodInfo();
 
 					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
 					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");

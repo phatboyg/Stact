@@ -29,6 +29,8 @@ namespace Magnum.Activator
 			if (!type.IsGenericType)
 				throw new ArgumentException("The argument must be for a generic type", "method");
 
+			Guard.Against.Null(args, "args");
+
 			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), type.GetGenericArguments(), args);
 
 			return type.MakeGenericType(genericArguments);
@@ -40,6 +42,8 @@ namespace Magnum.Activator
 
 			if (!method.IsGenericMethod)
 				return method;
+
+			Guard.Against.Null(args, "args");
 
 			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), method.GetGenericArguments(), args);
 
