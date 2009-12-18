@@ -14,17 +14,15 @@ namespace Magnum.Reflection
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Reflection;
 
-	public static class ExtensionsForReflection
+	public static class ExtensionsForGenericArguments
 	{
 		public static IEnumerable<Type> GetDeclaredGenericArguments(this object obj)
 		{
 			if (obj == null)
 				yield break;
 
-			foreach (var type in obj.GetType().GetDeclaredGenericArguments())
+			foreach (Type type in obj.GetType().GetDeclaredGenericArguments())
 			{
 				yield return type;
 			}
@@ -33,12 +31,12 @@ namespace Magnum.Reflection
 		public static IEnumerable<Type> GetDeclaredGenericArguments(this Type type)
 		{
 			bool atLeastOne = false;
-			var baseType = type;
+			Type baseType = type;
 			while (baseType != null)
 			{
 				if (baseType.IsGenericType)
 				{
-					foreach (var declaredType in baseType.GetGenericArguments())
+					foreach (Type declaredType in baseType.GetGenericArguments())
 					{
 						yield return declaredType;
 
@@ -52,12 +50,12 @@ namespace Magnum.Reflection
 			if (atLeastOne)
 				yield break;
 
-			foreach (var interfaceType in type.GetInterfaces())
+			foreach (Type interfaceType in type.GetInterfaces())
 			{
 				if (!interfaceType.IsGenericType)
 					continue;
 
-				foreach (var declaredType in interfaceType.GetGenericArguments())
+				foreach (Type declaredType in interfaceType.GetGenericArguments())
 				{
 					if (declaredType.IsGenericParameter)
 						continue;

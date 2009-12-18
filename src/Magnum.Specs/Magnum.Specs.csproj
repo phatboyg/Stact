@@ -159,7 +159,6 @@
     <Compile Include="Reflection\Customer.cs" />
     <Compile Include="Reflection\FastCollection_Specs.cs" />
     <Compile Include="Reflection\Visibility_Specs.cs" />
-    <Compile Include="Reflection_Specs.cs" />
     <Compile Include="Repository\Repository_Specs.cs" />
     <Compile Include="SpecificationBase.cs" />
     <Compile Include="StateMachine\AccountManagementWorkflow.cs" />

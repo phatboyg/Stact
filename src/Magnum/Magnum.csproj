@@ -272,9 +272,10 @@
     <Compile Include="Policies\RetryPolicy.cs" />
     <Compile Include="Collections\Empty.cs" />
     <Compile Include="Reflection\ExpressionVisitor.cs" />
-    <Compile Include="Reflection\ExtensionsForReflection.cs" />
+    <Compile Include="Reflection\ExtensionsForGenericArguments.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
     <Compile Include="Reflection\FastCollectionProperty.cs" />
+    <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="StateMachine\Activity.cs" />
@@ -305,9 +306,6 @@
     <Compile Include="RangeEnumerator.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Reflection\FastProperty.cs" />
-    <Compile Include="Reflection\IReflectedObjectContext.cs" />
-    <Compile Include="Reflection\ReflectedPropertyContext.cs" />
-    <Compile Include="Reflection\ReflectionCache.cs" />
     <Compile Include="Data\RepositoryBase.cs" />
     <Compile Include="Data\InMemoryRepository.cs" />
     <Compile Include="ReverseComparer.cs" />
