@@ -13,21 +13,30 @@
 namespace Magnum.Reflection
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Threading;
+	using Activator;
+	using CollectionExtensions;
+	using Collections;
 
 	public abstract class ReflectiveVisitorBase<TVisitor>
 		where TVisitor : class
 	{
-		private const BindingFlags _bindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+		private const BindingFlags _methodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		private static readonly Expression<Func<ReflectiveVisitorBase<TVisitor>, bool>> _defaultMemberName = x => x.Visit(null);
-		private static readonly ReaderWriterLockedDictionary<Type, Func<TVisitor, object, bool>> _types;
+		private static readonly Dictionary<int, Func<TVisitor, object, bool>> _withArgs;
+		private static readonly MultiDictionary<string, MethodInfo> MethodNameCache;
 		private readonly string _methodName;
 
 		static ReflectiveVisitorBase()
 		{
-			_types = new ReaderWriterLockedDictionary<Type, Func<TVisitor, object, bool>>();
+			_withArgs = new Dictionary<int, Func<TVisitor, object, bool>>();
+
+			MethodNameCache = new MultiDictionary<string, MethodInfo>(false);
+
+			typeof (TVisitor).GetMethods(_methodBindingFlags).Each(method => MethodNameCache.Add(method.Name, method));
 		}
 
 		protected ReflectiveVisitorBase()
@@ -52,11 +61,12 @@ namespace Magnum.Reflection
 
 		public virtual bool Visit(object obj, Func<bool> action)
 		{
-			if (!DispatchVisit(obj))
+			bool result = DispatchVisit(obj);
+			if (!result)
 				return false;
 
 			IncreaseDepth();
-			bool result = action();
+			result = action();
 			DecreaseDepth();
 
 			return result;
@@ -72,120 +82,49 @@ namespace Magnum.Reflection
 
 		protected bool DispatchVisit(object obj)
 		{
-			Type objectType = obj.GetType();
+			var target = this as TVisitor;
 
-			Func<TVisitor, object, bool> method = _types.Retrieve(objectType, () =>
+			int key = obj.GetType().GetHashCode();
+
+			Func<TVisitor, object, bool> invoker = GetInvoker(key, () =>
 				{
-					while (objectType != typeof (object))
-					{
-						Func<TVisitor, object, bool> result = SimpleDispatch(obj, objectType);
-						if (result != null)
-							return result;
+					var args = new[] {obj};
 
-						result = GenericDispatch(obj, objectType);
-						if (result != null)
-							return result;
+					MethodInfo method = MethodNameCache[_methodName]
+						.Where(x => x.ReturnType == typeof (bool))
+						.MatchingArguments(args)
+						.FirstOrDefault();
 
-						objectType = objectType.BaseType;
-					}
+					if (method == null)
+						return null;
 
-					// if we are here, we need to think about maybe doing interfaces
-					foreach (Type interfaceType in obj.GetType().GetInterfaces())
-					{
-						Func<TVisitor, object, bool> result = SimpleDispatch(obj, interfaceType);
-						if (result != null)
-							return result;
-
-						result = GenericDispatch(obj, interfaceType);
-						if (result != null)
-							return result;
-					}
-
-					return null;
+					return method.ToSpecializedMethod(args);
 				});
 
-			return method == null || method(this as TVisitor, obj);
+			return invoker(target, obj);
 		}
 
-		private Func<TVisitor, object, bool> SimpleDispatch(object obj, Type objectType)
+		private static Func<TVisitor, object, bool> GetInvoker(int key, Func<MethodInfo> getMethodInfo)
 		{
-			var argumentTypes = new[] {objectType};
+			return _withArgs.Retrieve(key, () =>
+				{
+					MethodInfo method = getMethodInfo();
+					if (method == null)
+						return (x, y) => true;
 
-			MethodInfo mi = GetType().GetMethod(_methodName, _bindingFlags, null, argumentTypes, null);
-			if (mi == null)
-				return null;
+					ParameterExpression instanceParameter = Expression.Parameter(typeof (TVisitor), "target");
+					ParameterExpression argParameter = Expression.Parameter(typeof (object), "arg");
 
-			if (mi.GetParameters()[0].ParameterType == typeof (object))
-				return null;
+					ParameterInfo parameter = method.GetParameters().First();
 
-			return GenerateLambda(objectType, mi);
-		}
+					UnaryExpression arg = (parameter.ParameterType.IsValueType)
+					                      	? Expression.Convert(argParameter, parameter.ParameterType)
+					                      	: Expression.TypeAs(argParameter, parameter.ParameterType);
 
-		private Func<TVisitor, object, bool> GenerateLambda(Type objectType, MethodInfo mi)
-		{
-			ParameterExpression instance = Expression.Parameter(typeof (TVisitor), "visitor");
-			ParameterExpression value = Expression.Parameter(typeof (object), "value");
+					MethodCallExpression call = Expression.Call(instanceParameter, method, arg);
 
-			UnaryExpression valueCast = Expression.TypeAs(value, objectType);
-
-			Func<TVisitor, object, bool> del = Expression.Lambda<Func<TVisitor, object, bool>>(Expression.Call(instance, mi, valueCast), new[] {instance, value}).Compile();
-
-			return del;
-		}
-
-		private Func<TVisitor, object, bool> GenericDispatch(object obj, Type objectType)
-		{
-			if (!objectType.IsGenericType)
-				return null;
-
-			Type[] genericArguments = objectType.GetGenericArguments();
-
-			MethodInfo match = null;
-
-			MethodInfo[] methods = GetType().GetMethods(_bindingFlags);
-
-			foreach (MethodInfo method in methods)
-			{
-				if (method.Name != _methodName)
-					continue;
-
-				Type[] methodArguments = method.GetGenericArguments();
-
-				if (methodArguments.Length != genericArguments.Length)
-					continue;
-
-				ParameterInfo[] methodParameters = method.GetParameters();
-
-				if (methodParameters.Length != 1)
-					continue;
-
-				Type genericTypeDefinition = objectType.GetGenericTypeDefinition();
-				if (!methodParameters[0].ParameterType.IsGenericType)
-					continue;
-
-				Type typeDefinition = methodParameters[0].ParameterType.GetGenericTypeDefinition();
-
-				if (typeDefinition != genericTypeDefinition)
-					continue;
-
-				MethodInfo genericMethod = method.MakeGenericMethod(genericArguments);
-
-				ParameterInfo[] parameters = genericMethod.GetParameters();
-
-				if (parameters.Length != 1)
-					continue;
-
-				if (parameters[0].ParameterType != objectType)
-					continue;
-
-				match = genericMethod;
-				break;
-			}
-
-			if (match == null)
-				return null;
-
-			return GenerateLambda(objectType, match);
+					return Expression.Lambda<Func<TVisitor, object, bool>>(call, new[] {instanceParameter, argParameter}).Compile();
+				});
 		}
 	}
 }

@@ -12,18 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.StateMachine
 {
-    using Magnum.StateMachine;
-    using NUnit.Framework;
+	using Magnum.StateMachine;
+	using NUnit.Framework;
 
-    [TestFixture]
-    public class StateVisualizer_Specs
-    {
-        [Test]
-        public void I_want_to_see_what_you_see()
-        {
-            ExampleStateMachine machine = new ExampleStateMachine();
+	[TestFixture]
+	public class StateVisualizer_Specs
+	{
+		[Test]
+		public void I_want_to_see_what_you_see()
+		{
+			var machine = new ExampleStateMachine();
 
-            StateMachineInspector.Trace(machine);
-        }
-    }
+			StateMachineInspector.Trace(machine);
+		}
+	}
 }
