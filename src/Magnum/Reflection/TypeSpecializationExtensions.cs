@@ -15,6 +15,7 @@ namespace Magnum.Reflection
 	using System;
 	using System.Linq;
 	using System.Reflection;
+	using InterfaceExtensions;
 	using Linq;
 	using ExtensionsToInterfaces=Magnum.InterfaceExtensions.ExtensionsToInterfaces;
 
@@ -104,7 +105,7 @@ namespace Magnum.Reflection
 								.Where(x => x.IsGenericType)
 								.Where(x => ExtensionsToInterfaces.Implements(type, x.GetGenericTypeDefinition()))
 								.SelectMany(x => x.GetGenericArguments()
-								                 	.Merge(ExtensionsToInterfaces.GetDeclaredTypesForGeneric(type, x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
+								                 	.Merge(type.GetDeclaredTypesForGeneric(x.GetGenericTypeDefinition()), (c, a) => new {Argument = c, Type = a}));
 
 							foreach (var next in more)
 							{
@@ -118,8 +119,11 @@ namespace Magnum.Reflection
 
 				foreach (var parameter in parameters.Where(x => x.Parameter.ParameterType.IsGenericType && x.Argument != null))
 				{
+					var definition = parameter.Parameter.ParameterType.GetGenericTypeDefinition();
+					var declaredTypesForGeneric = parameter.Argument.GetType().GetDeclaredTypesForGeneric(definition);
+
 					var mergeds = parameter.Parameter.ParameterType.GetGenericArguments()
-						.Merge(parameter.Argument.GetType().GetGenericArguments(), (p, a) => new {ParameterType = p, ArgumentType = a});
+						.Merge(declaredTypesForGeneric, (p, a) => new { ParameterType = p, ArgumentType = a });
 
 					foreach (var merged in mergeds)
 					{

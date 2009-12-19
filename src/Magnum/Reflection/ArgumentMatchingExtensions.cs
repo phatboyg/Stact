@@ -71,7 +71,7 @@ namespace Magnum.Reflection
 
 			return args.Length == 2 &&
 			       args[0].ParameterType.RateParameterTypeCompatibility(typeof (TArg0)) > 0 &&
-			       args[1].ParameterType.RateParameterTypeCompatibility(typeof(TArg1)) > 0;
+			       args[1].ParameterType.RateParameterTypeCompatibility(typeof (TArg1)) > 0;
 		}
 
 		public static int MatchesArguments(this ParameterInfo[] parameterInfos, object[] args)
@@ -79,10 +79,10 @@ namespace Magnum.Reflection
 			if (parameterInfos.Length != args.Length)
 				return 0;
 
-			if(parameterInfos.Length == 0)
-				return 5;
+			if (parameterInfos.Length == 0)
+				return 7;
 
-			var matched = parameterInfos.Merge(args, (x, y) => new { Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, (object) y) }).ToArray();
+			var matched = parameterInfos.Merge(args, (x, y) => new {Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y)}).ToArray();
 
 			int valid = matched
 				.Where(x => x.Rating > 0)
@@ -104,26 +104,32 @@ namespace Magnum.Reflection
 
 		private static bool CanBeNull(this Type type)
 		{
-			return !type.IsValueType || type.IsNullableType() || type == typeof(string);
+			return !type.IsValueType || type.IsNullableType() || type == typeof (string);
 		}
 
 		private static bool IsNullableType(this Type type)
 		{
-			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
 		}
 
 		private static int RateParameterTypeCompatibility(this Type parameterType, Type argType)
 		{
 			if (argType == parameterType)
-				return 4;
+				return 6;
 
 			if (parameterType.IsGenericParameter)
-				return argType.MeetsGenericConstraints(parameterType) ? 3 : 0;
+				return argType.MeetsGenericConstraints(parameterType) ? 5 : 0;
 
-			if (parameterType.IsGenericType && 
-			    argType.IsGenericType && 
-			    parameterType.GetGenericTypeDefinition() == argType.GetGenericTypeDefinition())
-				return 3;
+			if (parameterType.IsGenericType)
+			{
+				Type definition = parameterType.GetGenericTypeDefinition();
+
+				if (argType.IsGenericType && definition == argType.GetGenericTypeDefinition())
+					return 4;
+
+				if (argType.Implements(definition))
+					return 3;
+			}
 
 			if (parameterType.IsAssignableFrom(argType))
 			{

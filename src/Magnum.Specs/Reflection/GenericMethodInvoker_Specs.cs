@@ -17,11 +17,14 @@ namespace Magnum.Specs.Reflection
 	using System.Diagnostics;
 	using Magnum.Reflection;
 	using NUnit.Framework;
+	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
 	public class When_invoking_a_generic_method
 	{
+		private int _called;
+
 		[Test]
 		public void Invoking_the_method_directly_should_pass_the_appropriate_type()
 		{
@@ -94,7 +97,25 @@ namespace Magnum.Specs.Reflection
 			this.FastInvoke(x => RegularMethod(x), obj);
 		}
 
+		[Test]
+		public void Should_be_able_to_call_inferred_methods_with_matching_type()
+		{
+			var thing = new InferredClass<string>();
 
+			this.FastInvoke("MyInferredMethod", thing);
+
+			_called.ShouldEqual(13);
+		}
+
+		[Test]
+		public void Should_be_able_to_call_inferred_methods()
+		{
+			var thing = MockRepository.GenerateMock<IInferred<string>>();
+
+			this.FastInvoke("MyInferredMethod", thing);
+
+			_called.ShouldEqual(12);
+		}
 
 		[Test]
 		public void Invoking_it_a_lot_should_be_fast()
@@ -111,6 +132,26 @@ namespace Magnum.Specs.Reflection
 			count.Stop();
 
 			Console.WriteLine("time to run = " + count.ElapsedMilliseconds + "ms");
+		}
+
+		public void MyInferredMethod<T>(IInferred<T> inferred)
+		{
+			_called = 12;
+		}
+
+		public void MyInferredMethod<T>(InferredClass<T> inferred)
+		{
+			_called = 13;
+		}
+
+		public class InferredClass<T> :
+			IInferred<T>
+		{
+			
+		}
+
+		public interface IInferred<T>
+		{
 		}
 
 		public void MyMethod<T>(T obj)
