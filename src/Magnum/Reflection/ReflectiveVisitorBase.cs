@@ -97,6 +97,9 @@ namespace Magnum.Reflection
 					if (method == null)
 						return null;
 
+					if (method.GetParameters().First().ParameterType == typeof (object))
+						return null;
+
 					return method.ToSpecializedMethod(args);
 				});
 
