@@ -12,8 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Specs.Model
 {
+	using System;
+
 	public class Customer
 	{
-		public bool Preferred { get; private set; }
+		public bool Preferred { get; set; }
+		public bool Active { get; set; }
+
+		public DateTime LastActivity { get; set; }
 	}
 }

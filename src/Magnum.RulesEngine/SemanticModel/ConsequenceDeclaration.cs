@@ -12,12 +12,25 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.SemanticModel
 {
+	using System;
+	using System.Linq.Expressions;
+
 	public class ConsequenceDeclaration :
 		Declaration
 	{
+		private readonly Expression<Action> _expression;
+		private Action _eval;
+
 		public ConsequenceDeclaration()
 			: base(DeclarationType.Consequence)
 		{
+		}
+
+		public ConsequenceDeclaration(Expression<Action> expression)
+			: base(DeclarationType.Consequence)
+		{
+			_expression = expression;
+			_eval = expression.Compile();
 		}
 	}
 }

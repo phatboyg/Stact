@@ -12,18 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-
-	public interface WorkingMemoryElement
+	public interface Tuple<TFirst>
 	{
-		Type ElementType { get; }
-
-		object Object { get; }
+		TFirst First { get; }
 	}
 
-	public interface WorkingMemoryElement<T> :
-		WorkingMemoryElement
+	public interface Tuple<TFirst, TSecond> :
+		Tuple<TFirst>
 	{
-		new T Object { get; }
+		TSecond Second { get; }
+	}
+
+	public interface Tuple<TFirst, TSecond, TThird> :
+		Tuple<TFirst, TSecond>
+	{
+		TThird Third { get; }
+	}
+
+	public interface Tuple<TFirst, TSecond, TThird, TFourth> :
+		Tuple<TFirst, TSecond, TThird>
+	{
+		TFourth Fourth { get; }
+	}
+
+	public interface Tuple<TFirst, TSecond, TThird, TFourth, TFifth> :
+		Tuple<TFirst, TSecond, TThird, TFourth>
+	{
+		TFifth Fifth { get; }
+	}
+
+	public interface Tuple<TFirst, TSecond, TThird, TFourth, TFifth, TSixth> :
+		Tuple<TFirst, TSecond, TThird, TFourth, TFifth>
+	{
+		TSixth Sixth { get; }
 	}
 }

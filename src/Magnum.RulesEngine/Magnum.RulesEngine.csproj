@@ -40,14 +40,39 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Condition.cs" />
+    <Compile Include="ConditionNormalizer.cs" />
     <Compile Include="Consequence.cs" />
     <Compile Include="DSL\ConditionConfigurator.cs" />
     <Compile Include="DSL\ExitExtension.cs" />
     <Compile Include="DSL\Rule.cs" />
     <Compile Include="DSL\RuleConfigurator.cs" />
+    <Compile Include="ExecutionModel\AbstractNode.cs" />
+    <Compile Include="ExecutionModel\ActionConsequenceNode.cs" />
+    <Compile Include="ExecutionModel\Agenda.cs" />
+    <Compile Include="ExecutionModel\AlphaNode.cs" />
+    <Compile Include="ExecutionModel\AlphaMemoryActivation.cs" />
+    <Compile Include="ExecutionModel\ConstantJoinNode.cs" />
+    <Compile Include="ExecutionModel\MultipleConditionNode.cs" />
+    <Compile Include="ExecutionModel\NodeVisitor.cs" />
+    <Compile Include="ExecutionModel\ProductionNode.cs" />
+    <Compile Include="ExecutionModel\SelectManyNode.cs" />
+    <Compile Include="ExecutionModel\SingleInputTreeNode.cs" />
+    <Compile Include="ExecutionModel\ConsequenceNode.cs" />
+    <Compile Include="ExecutionModel\Engine.cs" />
+    <Compile Include="ExecutionModel\JoinNode.cs" />
+    <Compile Include="ExecutionModel\Node.cs" />
+    <Compile Include="ExecutionModel\NodeCollection.cs" />
+    <Compile Include="ExecutionModel\NodeType.cs" />
+    <Compile Include="ExecutionModel\ConditionNode.cs" />
     <Compile Include="ExecutionModel\SingleInputNode.cs" />
+    <Compile Include="ExecutionModel\StatefulSession.cs" />
+    <Compile Include="ExecutionModel\StatefulSessionImpl.cs" />
+    <Compile Include="ExecutionModel\Token.cs" />
+    <Compile Include="ExecutionModel\Tuple.cs" />
+    <Compile Include="ExecutionModel\TupleSource.cs" />
     <Compile Include="ExecutionModel\WorkingMemoryElement.cs" />
-    <Compile Include="ExecutionModel\WorkingMemoryElementImpl.cs" />
+    <Compile Include="ExecutionModel\SessionWorkingMemoryElement.cs" />
+    <Compile Include="ExecutionModel\WorkingMemoryElementList.cs" />
     <Compile Include="RuleSet.cs" />
     <Compile Include="HashSetWorkingMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,6 +82,9 @@
     <Compile Include="SemanticModel\RuleDeclaration.cs" />
     <Compile Include="SemanticModel\Declaration.cs" />
     <Compile Include="SemanticModel\DeclarationType.cs" />
+    <Compile Include="SessionRuleContext.cs" />
+    <Compile Include="StringNodeVisitor.cs" />
+    <Compile Include="StringUtil.cs" />
     <Compile Include="WorkingMemory.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.Specs
 {
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using Model;
 	using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace Magnum.RulesEngine.Specs
 					order
 				};
 
-			var qx = from o in orders
+			IQueryable<IGrouping<int, OrderLine>> qx = from o in orders.AsQueryable()
 			         from ol in o.OrderLines
 			         group ol by ol.ProductCode
 			         into lines
@@ -47,7 +48,7 @@ namespace Magnum.RulesEngine.Specs
 			         	where l1 > 0 && l2 > 0
 			         	select lines;
 
-
+			Trace.WriteLine(qx.Expression);
 
 			var query = orders
 				.Select(o => new

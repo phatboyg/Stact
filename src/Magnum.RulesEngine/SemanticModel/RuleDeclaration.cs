@@ -21,19 +21,31 @@ namespace Magnum.RulesEngine.SemanticModel
 	public class RuleDeclaration :
 		Declaration
 	{
-		public RuleDeclaration()
+		private readonly IList<ConditionDeclaration> _conditions;
+		private readonly IList<ConsequenceDeclaration> _consequences;
+
+		public RuleDeclaration(IEnumerable<ConditionDeclaration> conditions, IEnumerable<ConsequenceDeclaration> consequences)
 			: base(DeclarationType.Rule)
 		{
+			_conditions = new List<ConditionDeclaration>(conditions);
+
+			_consequences = new List<ConsequenceDeclaration>(consequences);
 		}
 
 		/// <summary>
 		/// The conditions which must be met for the rule to be applied
 		/// </summary>
-		public IEnumerable<ConditionDeclaration> Conditions { get; private set; }
+		public IEnumerable<ConditionDeclaration> Conditions
+		{
+			get { return _conditions; }
+		}
 
 		/// <summary>
 		/// The consequences to apply if the rule conditions are all satisfied
 		/// </summary>
-		public IEnumerable<ConsequenceDeclaration> Consequences { get; private set; }
+		public IEnumerable<ConsequenceDeclaration> Consequences
+		{
+			get { return _consequences; }
+		}
 	}
 }

@@ -15,24 +15,29 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System;
 
 	/// <summary>
-	/// Implemented by nodes that have a single input type
+	/// An object that was added to the working memory
 	/// </summary>
-	public interface SingleInputNode :
-		Node
+	/// <typeparam name="T">The type of the object being added</typeparam>
+	public class SessionWorkingMemoryElement<T> :
+		WorkingMemoryElement<T>
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
-	}
+		private readonly StatefulSession _session;
 
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
-	{
-		void Activate(RuleContext<T> context);
+		public SessionWorkingMemoryElement(StatefulSession session, T obj)
+		{
+			_session = session;
+			Object = obj;
+
+			ElementType = typeof (T);
+		}
+
+		public T Object { get; private set; }
+
+		public Type ElementType { get; private set; }
+
+		object WorkingMemoryElement.Object
+		{
+			get { return Object; }
+		}
 	}
 }

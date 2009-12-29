@@ -14,25 +14,28 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 
-	/// <summary>
-	/// Implemented by nodes that have a single input type
-	/// </summary>
-	public interface SingleInputNode :
+	public class JoinNode :
 		Node
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
+		public NodeType NodeType
+		{
+			get { return NodeType.Join; }
+		}
 	}
 
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
+	public class JoinNode<T> :
+		JoinNode
 	{
-		void Activate(RuleContext<T> context);
+		private readonly ConditionNode<T> _leftNode;
+		private readonly ConditionNode<T> _rightNode;
+
+		public JoinNode(ConditionNode<T> leftNode, ConditionNode<T> rightNode)
+		{
+			_leftNode = leftNode;
+			_rightNode = rightNode;
+		}
 	}
+
+
+
 }

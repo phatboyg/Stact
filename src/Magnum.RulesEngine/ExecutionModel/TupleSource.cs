@@ -12,27 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// Implemented by nodes that have a single input type
-	/// </summary>
-	public interface SingleInputNode :
-		Node
+	public interface TupleSource<TFirst>
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
-	}
-
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
-	{
-		void Activate(RuleContext<T> context);
+		IEnumerable<TFirst> Activate();
 	}
 }

@@ -14,25 +14,42 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 
-	/// <summary>
-	/// Implemented by nodes that have a single input type
-	/// </summary>
-	public interface SingleInputNode :
-		Node
+	public interface Token
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
+		Type Type { get; }
+		object Value { get; }
 	}
 
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
+
+	public interface Token<T> :
+		Token
 	{
-		void Activate(RuleContext<T> context);
+		new T Value { get; }
+	}
+
+	public class ContextToken<T> :
+		Token<T>
+	{
+		private readonly T _value;
+
+		public ContextToken(T value)
+		{
+			_value = value;
+		}
+
+		public Type Type
+		{
+			get { return typeof(T); }
+		}
+
+		public T Value
+		{
+			get { return _value; }
+		}
+
+		object Token.Value
+		{
+			get { return Value; }
+		}
 	}
 }

@@ -28,7 +28,7 @@ namespace Magnum.RulesEngine
 			where T : class
 		{
 			items
-				.Select(x => new WorkingMemoryElementImpl<T>(x))
+				.Select(x => new SessionWorkingMemoryElement<T>(null, x))
 				.Each(x => _objects.Add(x));
 		}
 

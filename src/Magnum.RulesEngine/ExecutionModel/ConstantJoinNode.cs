@@ -12,33 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// An object that was added to the working memory
-	/// </summary>
-	/// <typeparam name="T">The type of the object being added</typeparam>
-	public class WorkingMemoryElementImpl<T> :
-		WorkingMemoryElement<T>
+	public class ConstantJoinNode :
+		Node
 	{
-		private T Element { get; set; }
+		private readonly IList<Node> _empty = new List<Node>();
 
-		public WorkingMemoryElementImpl(T obj)
+		public NodeType NodeType
 		{
-			Element = obj;
-			ElementType = typeof (T);
+			get { return NodeType.ConstantJoinNode; }
 		}
 
-		public Type ElementType { get; private set; }
-
-		public void Access(Action<T> callback)
+		public IEnumerable<Node> Evaluate(RuleContext context)
 		{
-			throw new NotImplementedException();
-		}
-
-		public void Access(Func<T, T> callback)
-		{
-			throw new NotImplementedException();
+			return _empty;
 		}
 	}
 }

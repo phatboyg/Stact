@@ -13,26 +13,22 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq.Expressions;
 
-	/// <summary>
-	/// Implemented by nodes that have a single input type
-	/// </summary>
-	public interface SingleInputNode :
-		Node
+	public class SelectManyNode<TInput, TResult>
+		where TInput : class
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
-	}
+		private readonly Expression<Func<TInput, IEnumerable<TResult>>> _expression;
 
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
-	{
-		void Activate(RuleContext<T> context);
+		public SelectManyNode(Expression<Func<TInput, IEnumerable<TResult>>> expression)
+		{
+			_expression = expression;
+		}
+
+		public IEnumerable<TResult> Evaluate(RuleContext<TInput> context)
+		{
+			yield break;
+		}
 	}
 }

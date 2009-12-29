@@ -12,8 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
+	using System;
 	using System.Collections.Generic;
-
+	using ExecutionModel;
 
 	/*
 	 * I may look to try and provide some sort of monadic selectmany style of context
@@ -48,9 +49,10 @@ namespace Magnum.RulesEngine
 	 */
 
 
-
 	public interface RuleContext
 	{
+		Type ItemType { get; set; }
+
 		IEnumerable<T> Match<T>()
 			where T : class;
 
@@ -67,10 +69,10 @@ namespace Magnum.RulesEngine
 			where T : class;
 	}
 
-	public interface RuleContext<T> :
-		RuleContext
-		where T : class
+	public interface RuleContext<T>
 	{
-		T Item { get; }
+		WorkingMemoryElement<T> Element { get; }
+
+		void AddElementToAlphaMemory(WorkingMemoryElement<T> element, IEnumerable<Node> successors);
 	}
 }

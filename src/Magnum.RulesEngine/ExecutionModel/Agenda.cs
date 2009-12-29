@@ -13,26 +13,29 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// Implemented by nodes that have a single input type
-	/// </summary>
-	public interface SingleInputNode :
-		Node
+	public interface Agenda
 	{
-		/// <summary>
-		/// The input type accepted by the node, needed in a non-generic interface
-		/// </summary>
-		Type InputType { get; }
 	}
 
-	/// <summary>
-	/// The generic specialization for nodes that have a single input type
-	/// </summary>
-	/// <typeparam name="T">The type of input accepted by the node</typeparam>
-	public interface SingleInputNode<T> :
-		Node
+
+	public class NodeAgenda : 
+		Agenda
 	{
-		void Activate(RuleContext<T> context);
+		public struct Element
+		{
+			public Element(int priority, Action<RuleContext> evaluator)
+			{
+				Priority = priority;
+				Evaluator = evaluator;
+			}
+
+			public readonly int Priority;
+			public readonly Action<RuleContext> Evaluator;
+		}
+
+
+		private readonly Queue<Element> _items = new Queue<Element>();
 	}
 }

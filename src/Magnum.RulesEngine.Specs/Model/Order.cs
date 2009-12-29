@@ -12,10 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Specs.Model
 {
+	using System;
 	using System.Collections.Generic;
 
 	public class Order
 	{
-		public IEnumerable<OrderLine> OrderLines { get; set; }
+		public IList<OrderLine> OrderLines { get; set; }
+
+		public Customer Customer { get; set; }
+
+		public string Source { get; set; }
 	}
 }
