@@ -13,8 +13,8 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Linq.Expressions;
 
 	/// <summary>
@@ -24,10 +24,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 		SingleInputNode
 	{
 		Expression Expression { get; }
-
-		IEnumerable<Node> Successors { get; }
-
-		void Add(Node successor);
 	}
 
 	/// <summary>
@@ -35,20 +31,15 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class ConditionNode<T> :
-		SingleInputNode<T>,
+		SingleInputNodeWithSuccessors<T>,
 		ConditionNode
 	{
 		private readonly Func<T, bool> _eval;
 		private readonly Expression<Func<T, bool>> _expression;
-		private readonly NodeCollection<T> _successors;
 
 		public ConditionNode(Expression<Func<T, bool>> expression)
+			: base(typeof (T), NodeType.SingleConditionNode)
 		{
-			InputType = typeof (T);
-			NodeType = NodeType.SingleConditionNode;
-
-			_successors = new NodeCollection<T>();
-
 			_expression = expression;
 			_eval = _expression.Compile();
 		}
@@ -58,34 +49,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 			get { return _expression; }
 		}
 
-		public IEnumerable<Node> Successors
-		{
-			get
-			{
-				foreach (SingleInputNode<T> node in _successors)
-				{
-					yield return node;
-				}
-			}
-		}
-
-		public void Add(Node successor)
-		{
-			_successors.Add(successor);
-		}
-
-		public Type InputType { get; private set; }
-
-		public void Activate(RuleContext<T> context)
+		public override void Activate(RuleContext<T> context)
 		{
 			if (_eval(context.Element.Object))
 			{
-				_successors.Each(x => x.Activate(context));
+				Successors.Select(x => x as SingleInputNode<T>)
+					.Where(x => x != null)
+					.Each(x => x.Activate(context));
 
 				Trace.WriteLine(_expression + " matched " + context.Element.Object);
 			}
 		}
-
-		public NodeType NodeType { get; private set; }
 	}
 }

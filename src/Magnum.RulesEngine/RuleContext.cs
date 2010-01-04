@@ -73,6 +73,6 @@ namespace Magnum.RulesEngine
 	{
 		WorkingMemoryElement<T> Element { get; }
 
-		void AddElementToAlphaMemory(WorkingMemoryElement<T> element, IEnumerable<Node> successors);
+		void AddElementToAlphaMemory(int key, WorkingMemoryElement<T> element, IEnumerable<Node> successors);
 	}
 }

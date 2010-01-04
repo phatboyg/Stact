@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// Implemented by nodes that have a single input type
@@ -24,14 +25,19 @@ namespace Magnum.RulesEngine.ExecutionModel
 		/// The input type accepted by the node, needed in a non-generic interface
 		/// </summary>
 		Type InputType { get; }
+
+		IEnumerable<Node> Successors { get; }
+
+		void Add(Node successor);
 	}
+
 
 	/// <summary>
 	/// The generic specialization for nodes that have a single input type
 	/// </summary>
 	/// <typeparam name="T">The type of input accepted by the node</typeparam>
 	public interface SingleInputNode<T> :
-		Node
+		SingleInputNode
 	{
 		void Activate(RuleContext<T> context);
 	}

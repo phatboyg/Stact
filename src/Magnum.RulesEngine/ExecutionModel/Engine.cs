@@ -13,6 +13,8 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using SemanticModel;
 
@@ -33,6 +35,9 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public void Add(RuleDeclaration rule)
 		{
+			SingleInputNode lastAlphaNode = null;
+			SingleInputNode lastJoinNode = null;
+
 			foreach (ConditionDeclaration condition in rule.Conditions)
 			{
 				var normalizer = new ConditionNormalizer();
@@ -45,7 +50,32 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 				conditionNode.Add(alphaNode);
 
+				if(lastAlphaNode == null)
+					lastAlphaNode = alphaNode as SingleInputNode;
+				else if (lastJoinNode != null)
+				{
+					var joinNode = (SingleInputNode)Activator.CreateInstance(typeof(JoinNode<>).MakeGenericType(conditionNode.InputType), alphaNode, lastJoinNode);
+					lastJoinNode = joinNode;
+				}
+				else
+				{
+					var joinNode = (SingleInputNode)Activator.CreateInstance(typeof(JoinNode<>).MakeGenericType(conditionNode.InputType), alphaNode, lastAlphaNode);
+					lastJoinNode = joinNode;
+				}
+
+				lastAlphaNode = alphaNode as SingleInputNode;
+
 				_alpha.Add(condition.MatchType, conditionNode);
+			}
+
+
+			foreach (var consequence in rule.Consequences)
+			{
+				ConsequenceDeclaration declaration = consequence;
+
+				ActionConsequenceNode node = new ActionConsequenceNode(x => declaration.Activate());
+
+				(lastJoinNode ?? lastAlphaNode).Add(node);
 			}
 		}
 

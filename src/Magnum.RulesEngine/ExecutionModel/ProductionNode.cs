@@ -12,9 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public class ProductionNode<T> :
+	using System;
+	using System.Linq.Expressions;
+
+	public interface ProductionNode :
 		Node
 	{
+		
+	}
+
+	public class ProductionNode<T> :
+		ProductionNode
+	{
+		private readonly Expression<Action> _expression;
+		private Action _eval;
+
+		public ProductionNode(Expression<Action> expression)
+		{
+			_expression = expression;
+			_eval = _expression.Compile();
+		}
+
 		public NodeType NodeType
 		{
 			get { return NodeType.Production; }

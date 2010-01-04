@@ -12,21 +12,42 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System.Linq;
+	using System;
+	using System.Collections.Generic;
 
-	public class AlphaNode<T> :
-		SingleInputNodeWithSuccessors<T>
+	public abstract class SingleInputNodeWithSuccessors<T> :
+		SingleInputNode<T>
 	{
 		private readonly NodeCollection<T> _successors;
 
-		public AlphaNode()
-			: base(typeof (T), NodeType.AlphaNode)
+		protected SingleInputNodeWithSuccessors(Type inputType, NodeType nodeType)
 		{
+			InputType = inputType;
+			NodeType = nodeType;
+
+			_successors = new NodeCollection<T>();
 		}
 
-		public override void Activate(RuleContext<T> context)
+		public Type InputType { get; private set; }
+
+		public IEnumerable<Node> Successors
 		{
-			context.AddElementToAlphaMemory(GetHashCode(), context.Element, _successors.Cast<Node>());
+			get
+			{
+				foreach (SingleInputNode<T> node in _successors)
+				{
+					yield return node;
+				}
+			}
+		}
+
+		public abstract void Activate(RuleContext<T> context);
+
+		public NodeType NodeType { get; private set; }
+
+		public void Add(Node successor)
+		{
+			_successors.Add(successor);
 		}
 	}
 }

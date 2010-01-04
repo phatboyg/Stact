@@ -12,30 +12,26 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-
-	public class JoinNode :
-		Node
-	{
-		public NodeType NodeType
-		{
-			get { return NodeType.Join; }
-		}
-	}
+	using System.Linq;
 
 	public class JoinNode<T> :
-		JoinNode
+		SingleInputNodeWithSuccessors<T>
 	{
-		private readonly ConditionNode<T> _leftNode;
-		private readonly ConditionNode<T> _rightNode;
+		private readonly TupleSource<T> _leftNode;
+		private readonly TupleSource<T> _rightNode;
 
-		public JoinNode(ConditionNode<T> leftNode, ConditionNode<T> rightNode)
+		public JoinNode(TupleSource<T> leftNode, TupleSource<T> rightNode)
+			: base(typeof (T), NodeType.Join)
 		{
 			_leftNode = leftNode;
 			_rightNode = rightNode;
 		}
+
+		public override void Activate(RuleContext<T> context)
+		{
+			Successors.Select(x => x as SingleInputNode<T>)
+				.Where(x => x != null)
+				.Each(x => x.Activate(context));
+		}
 	}
-
-
-
 }

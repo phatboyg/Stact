@@ -40,8 +40,6 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 			ConditionNode<Customer> isActive = new ConditionNode<Customer>(x => x.Active);
 
 
-			JoinNode<Customer> joinNode = new JoinNode<Customer>(isPreferred, isActive);
-
 			//conditionNode.
 
 			//node.Activate(context);

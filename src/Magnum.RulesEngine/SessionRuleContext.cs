@@ -10,28 +10,30 @@ namespace Magnum.RulesEngine
 		RuleContext<T>
 	{
 		private readonly StatefulSession _session;
-		private readonly MultiDictionary<WorkingMemoryElement<T>, Node> _activations;
+		private readonly MultiDictionary<long, Node> _activations;
 
 		public SessionRuleContext(StatefulSession session, WorkingMemoryElement<T> item)
 		{
 			_session = session;
-			_activations = new MultiDictionary<WorkingMemoryElement<T>, Node>(false, new KeyComparer(), new NodeComparer());
+			_activations = new MultiDictionary<long, Node>(false);
 
 			Element = item;
 		}
 
 		public WorkingMemoryElement<T> Element { get; private set; }
 
-		public void AddElementToAlphaMemory(WorkingMemoryElement<T> element, IEnumerable<Node> successors)
+		public void AddElementToAlphaMemory(int key, WorkingMemoryElement<T> element, IEnumerable<Node> successors)
 		{
-			_activations.AddMany(element, successors);
+			long superKey = key << 32 | element.GetHashCode();
+
+			_activations.AddMany(superKey, successors);
 		}
 
 		public void DumpMemory()
 		{
 			_activations.Each(element =>
 				{
-					Trace.WriteLine("Element: " + element.Key.Object.GetType().Name);
+					Trace.WriteLine("Element: " + element.Key);
 
 					element.Value.Each(successor =>
 						{

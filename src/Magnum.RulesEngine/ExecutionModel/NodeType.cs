@@ -22,6 +22,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 		ActionConsequence,
 		ConstantJoinNode,
 		Production,
-		AlphaMemory
+		AlphaMemory,
+		AlphaNode
 	}
 }
