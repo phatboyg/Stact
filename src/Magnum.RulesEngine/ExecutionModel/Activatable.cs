@@ -12,19 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public enum NodeType
+	public interface Activatable
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		SingleInputTree,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		void Activate(RuleContext context);
+	}
+
+	public interface Activatable<T>
+	{
+		void Activate(RuleContext<T> context);
 	}
 }

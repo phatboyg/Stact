@@ -12,19 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public enum NodeType
+	using System;
+
+	public class ExecutionModelException :
+		RulesEngineException
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		SingleInputTree,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		public ExecutionModelException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
 	}
 }

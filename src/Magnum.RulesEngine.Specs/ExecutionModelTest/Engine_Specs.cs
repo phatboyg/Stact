@@ -96,7 +96,7 @@ namespace Engine_Specs
 
 		private RuleDeclaration CreatePreferredRule()
 		{
-			Expression<Func<Order, bool>> exp = o => o.Customer.Preferred;
+			Expression<Func<Order, bool>> exp = o => o.Customer.Preferred;	
 			ConditionDeclaration condition = Declaration.Condition(exp);
 
 			ConsequenceDeclaration consequence = Declaration.Consequence(() => Trace.WriteLine("Preferred Customer"));

@@ -16,6 +16,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Reflection;
 	using SemanticModel;
 
 	public interface RulesEngine
@@ -50,33 +51,41 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 				conditionNode.Add(alphaNode);
 
-				if(lastAlphaNode == null)
-					lastAlphaNode = alphaNode as SingleInputNode;
-				else if (lastJoinNode != null)
-				{
-					var joinNode = (SingleInputNode)Activator.CreateInstance(typeof(JoinNode<>).MakeGenericType(conditionNode.InputType), alphaNode, lastJoinNode);
-					lastJoinNode = joinNode;
-				}
-				else
-				{
-					var joinNode = (SingleInputNode)Activator.CreateInstance(typeof(JoinNode<>).MakeGenericType(conditionNode.InputType), alphaNode, lastAlphaNode);
-					lastJoinNode = joinNode;
-				}
+				lastAlphaNode = lastAlphaNode ?? ( alphaNode as SingleInputNode );
+				lastJoinNode = lastJoinNode ?? lastAlphaNode;
+
+
+				lastJoinNode = this.FastInvoke<Engine, SingleInputNode>(new[] {conditionNode.InputType}, "GenerateJoinNode", new object[] {alphaNode, lastJoinNode});
 
 				lastAlphaNode = alphaNode as SingleInputNode;
 
 				_alpha.Add(condition.MatchType, conditionNode);
 			}
 
+			var inputNode = (lastJoinNode ?? lastAlphaNode);
 
 			foreach (var consequence in rule.Consequences)
 			{
 				ConsequenceDeclaration declaration = consequence;
 
-				ActionConsequenceNode node = new ActionConsequenceNode(x => declaration.Activate());
+				Action<RuleContext> action = x => declaration.Activate();
 
-				(lastJoinNode ?? lastAlphaNode).Add(node);
+				SingleInputNode node = this.FastInvoke<Engine, SingleInputNode>(new[] {inputNode.InputType}, "GenerateNode", new object[] { action });
+
+				inputNode.Add(node);
 			}
+		}
+
+		private SingleInputNode GenerateJoinNode<T>(TupleSource<T> left, TupleSource<T> right)
+		{
+			return new JoinNode<T>(left, right);
+		}
+
+		private SingleInputNode GenerateNode<T>(Action<RuleContext> action)
+		{
+			var node = new ActionConsequenceNode<T>(x => action(x));
+
+			return node;
 		}
 
 		private void ProjectCondition(ConditionDeclaration condition)

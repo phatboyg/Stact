@@ -10,21 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.ExecutionModel
+namespace Magnum.RulesEngine
 {
-	public enum NodeType
+	using System;
+
+	public class RulesEngineException :
+		Exception
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		SingleInputTree,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		protected RulesEngineException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
 	}
 }

@@ -51,25 +51,14 @@ namespace Magnum.RulesEngine
 
 	public interface RuleContext
 	{
-		Type ItemType { get; set; }
+		Type ItemType { get; }
 
-		IEnumerable<T> Match<T>()
-			where T : class;
-
-		IEnumerable<T> Match<T>(Condition<T> condition)
-			where T : class;
-
-		bool Contains<T>()
-			where T : class;
-
-		void Add<T>(T item)
-			where T : class;
-
-		void Remove<T>(T item)
-			where T : class;
+		void EnqueueAgendaAction(Action action);
+		void EnqueueAgendaAction(int priority, Action action);
 	}
 
-	public interface RuleContext<T>
+	public interface RuleContext<T> :
+		RuleContext
 	{
 		WorkingMemoryElement<T> Element { get; }
 

@@ -12,19 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public enum NodeType
+	using System;
+	using System.Linq.Expressions;
+
+	/// <summary>
+	/// Thrown when an expression is unable to be compiled
+	/// </summary>
+	public class CompileExpressionException :
+		ExecutionModelException
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		SingleInputTree,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		public CompileExpressionException(Expression expression, Exception innerException)
+			: base("Unable to compile the expression: " + expression, innerException)
+		{
+			Expression = expression;
+		}
+
+		public Expression Expression { get; private set; }
 	}
 }

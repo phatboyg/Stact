@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agenda Specs\Agenda_Specs.cs" />
+    <Compile Include="Agenda Specs\BetaMemory_Specs.cs" />
     <Compile Include="Conditions\CustomerIsPreferred.cs" />
     <Compile Include="Consequences\LogOrderDetails.cs" />
     <Compile Include="EnuemrableItems_Specs.cs" />

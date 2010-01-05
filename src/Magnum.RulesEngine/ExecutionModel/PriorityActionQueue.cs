@@ -12,19 +12,43 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public enum NodeType
+	using System;
+	using Collections;
+
+	public class PriorityActionQueue
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		SingleInputTree,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		private readonly OrderedDictionary<int, Deque<Action>> _queue;
+
+		public PriorityActionQueue()
+		{
+			_queue = new OrderedDictionary<int, Deque<Action>>();
+		}
+
+		public void Add(int priority, Action action)
+		{
+			if (!_queue.ContainsKey(priority))
+			{
+				_queue.Add(priority, new Deque<Action>());
+			}
+
+			_queue[priority].Add(action);
+		}
+
+		public void ExecuteAll()
+		{
+			_queue.Each(priority =>
+				{
+					priority.Value.Each(action =>
+						{
+							action();
+							
+						});
+				});
+		}
+
+		public void Clear()
+		{
+			_queue.Clear();
+		}
 	}
 }

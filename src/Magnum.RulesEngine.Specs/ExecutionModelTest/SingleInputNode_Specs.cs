@@ -29,12 +29,11 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 		[Test]
 		public void Should_property_make_things_work()
 		{
-			ActionConsequenceNode node = new ActionConsequenceNode(x => Trace.WriteLine("Hello"));
+			var node = new ActionConsequenceNode<Customer>(x => Trace.WriteLine("Hello"));
 
 			var customer = new Customer {Preferred = true};
 
 			var context = MockRepository.GenerateMock<RuleContext>();
-			context.Stub(x => x.Match<Customer>()).Return(new[] {customer});
 
 			ConditionNode<Customer> isPreferred = new ConditionNode<Customer>(x => x.Preferred);
 			ConditionNode<Customer> isActive = new ConditionNode<Customer>(x => x.Active);

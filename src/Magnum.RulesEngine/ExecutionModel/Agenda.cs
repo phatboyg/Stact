@@ -13,29 +13,12 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Collections.Generic;
 
 	public interface Agenda
 	{
-	}
+		void Add(Action action);
+		void Add(int priority, Action action);
 
-
-	public class NodeAgenda : 
-		Agenda
-	{
-		public struct Element
-		{
-			public Element(int priority, Action<RuleContext> evaluator)
-			{
-				Priority = priority;
-				Evaluator = evaluator;
-			}
-
-			public readonly int Priority;
-			public readonly Action<RuleContext> Evaluator;
-		}
-
-
-		private readonly Queue<Element> _items = new Queue<Element>();
+		void Execute();
 	}
 }

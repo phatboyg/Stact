@@ -16,17 +16,24 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 
-	public class ActionConsequenceNode :
-		Node
-	{
-		private readonly Expression<Action<RuleContext>> _expression;
-		private Action<RuleContext> _eval;
 
-		public ActionConsequenceNode(Expression<Action<RuleContext>> expression)
+	public class ActionConsequenceNode<T> :
+		SingleInputNode<T>
+	{
+		private static readonly IEnumerable<Node> _none = new Node[] {};
+		private readonly Expression<Action<RuleContext<T>>> _expression;
+		private readonly Action<RuleContext<T>> _eval;
+
+		public ActionConsequenceNode(Expression<Action<RuleContext<T>>> expression)
 		{
 			_expression = expression;
 
 			_eval = _expression.Compile();
+		}
+
+		public void Activate(RuleContext<T> context)
+		{
+			context.EnqueueAgendaAction(() => _eval(context));
 		}
 
 		public NodeType NodeType
@@ -34,17 +41,25 @@ namespace Magnum.RulesEngine.ExecutionModel
 			get { return NodeType.ActionConsequence; }
 		}
 
-		public void Evaluate(RuleContext context)
+		public Type InputType
 		{
-			_eval(context);
+			get { return typeof (T); }
+		}
+
+		public IEnumerable<Node> Successors
+		{
+			get { return _none; }
+		}
+
+		public void Add(Node successor)
+		{
+			throw new InvalidOperationException("Cannot add successors to a final node");
 		}
 	}
 
 
 	public class Thejoiner
 	{
-
-
 		/// <summary>
 		/// The left side of the join, matched against the rule context
 		/// </summary>
@@ -60,8 +75,5 @@ namespace Magnum.RulesEngine.ExecutionModel
 		/// The nodes that are to be evaluated for each bound left/right pair
 		/// </summary>
 		public IEnumerable<Node> Successors { get; private set; }
-
 	}
-
-
 }
