@@ -14,9 +14,12 @@ namespace BetaMemory_Specs
 {
 	using System;
 	using System.Diagnostics;
+	using System.Threading;
+	using Magnum.Actors;
 	using Magnum.RulesEngine;
 	using Magnum.RulesEngine.ExecutionModel;
 	using Magnum.RulesEngine.Specs.Model;
+	using Magnum.TestFramework;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 
@@ -121,9 +124,12 @@ namespace BetaMemory_Specs
 		[SetUp]
 		public void Setup()
 		{
+			_primaryCalled = new Future<Customer>();
+			_secondaryCalled = new Future<Customer>();
+
 			_customer = new Customer {Preferred = true};
 
-			_actionNode = new ActionNode<Customer>(x => Trace.WriteLine("Called for " + x.Element.Object.Preferred));
+			_actionNode = new ActionNode<Customer>(x => _primaryCalled.Complete(x.Element.Object));
 
 			_leafNode = new LeafNode<Customer>();
 
@@ -139,6 +145,9 @@ namespace BetaMemory_Specs
 		private ActionNode<Customer> _actionNode;
 		private LeafNode<Customer> _leafNode;
 		private RuleContext<Customer> _context;
+		private Future<Customer> _primaryCalled;
+		private Future<Customer> _secondaryCalled;
+
 
 		[Test]
 		public void FirstTestName()
@@ -151,6 +160,8 @@ namespace BetaMemory_Specs
 			memoryA.Activate(_context);
 
 			_context.RunAgenda();
+
+			_primaryCalled.IsAvailable().ShouldBeTrue();
 		}
 
 		[Test]
@@ -165,6 +176,8 @@ namespace BetaMemory_Specs
 			alphaNode.Activate(_context);
 
 			_context.RunAgenda();
+
+			_primaryCalled.IsAvailable().ShouldBeTrue();
 		}
 
 		[Test]
@@ -185,6 +198,47 @@ namespace BetaMemory_Specs
 			alphaNodeB.Activate(_context);
 
 			_context.RunAgenda();
+		}
+
+		[Test]
+		public void Only_those_that_are_matched_should_be_called()
+		{
+			var junction = new MemoryJunction<Customer>(_leafNode.Activate);
+			junction.AddSuccessor(_actionNode);
+
+			var alphaNodeA = new AlphaNode<Customer>();
+			alphaNodeA.AddSuccessor(junction);
+
+			var joinJunction = new MemoryJunction<Customer>(alphaNodeA.RightActivate);
+
+			var alphaNodeB = new AlphaNode<Customer>();
+			alphaNodeB.AddSuccessor(joinJunction);
+
+			var actionNode = new ActionNode<Customer>(x => _secondaryCalled.Complete(x.Element.Object));
+
+			var joinJunction2 = new MemoryJunction<Customer>(alphaNodeA.RightActivate);
+			joinJunction2.AddSuccessor(actionNode);
+
+			var alphaNodeC = new AlphaNode<Customer>();
+			alphaNodeC.AddSuccessor(joinJunction2);
+
+			var tree = new ConditionTree<Customer>();
+			
+			var isPreferred = new ConditionNode<Customer>(x => x.Preferred);
+			isPreferred.AddSuccessor(alphaNodeA);
+			tree.AddSuccessor(isPreferred);
+
+			tree.AddSuccessor(alphaNodeB);
+
+			var isActive = new ConditionNode<Customer>(x => x.Active);
+			isActive.AddSuccessor(alphaNodeC);
+			tree.AddSuccessor(isActive);
+
+			tree.Activate(_context);
+			_context.RunAgenda();
+
+			_primaryCalled.IsAvailable().ShouldBeTrue();
+			_secondaryCalled.IsAvailable().ShouldBeFalse();
 		}
 	}
 }

@@ -12,49 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-	using System.Linq.Expressions;
-
-	/// <summary>
-	/// The interface supported by all condition (alpha) nodes in the network
-	/// </summary>
-	public interface ConditionNode :
-		SingleInputNode
-	{
-		Expression Expression { get; }
-	}
-
-	/// <summary>
-	/// A generic condition that has a single input type (alpha node)
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ConditionNode<T> :
+	public class ConditionTree<T> :
 		Activatable<T>
 	{
-		private readonly Func<RuleContext<T>, bool> _condition;
-		private readonly Func<T, bool> _eval;
-		private readonly Expression<Func<T, bool>> _expression;
-
 		private readonly SuccessorSet<T> _successors;
 
-		public ConditionNode(Expression<Func<T, bool>> expression)
+		public ConditionTree()
 		{
 			_successors = new SuccessorSet<T>();
-			_expression = expression;
-			_eval = _expression.Compile();
-		}
-
-		public Expression Expression
-		{
-			get { return _expression; }
 		}
 
 		public void Activate(RuleContext<T> context)
 		{
-			if (_eval(context.Element.Object))
-			{
-				context.EnqueueAgendaAction(0, () => _successors.Activate(context));
-			}
+			_successors.Activate(context);
 		}
 
 		public void AddSuccessor(params Activatable<T>[] successors)
