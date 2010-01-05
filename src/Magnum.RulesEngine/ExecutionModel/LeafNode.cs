@@ -12,26 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-
-	public class PriorityQueueAgenda :
-		Agenda
+	public class LeafNode<T>
 	{
-		private readonly PriorityActionQueue _queue = new PriorityActionQueue();
-
-		public void Add(Action action)
+		public bool Activate(RuleContext<T> context)
 		{
-			_queue.Add(0, action);
-		}
-
-		public void Add(int priority, Action action)
-		{
-			_queue.Add(priority, action);
-		}
-
-		public void Execute()
-		{
-			_queue.ExecuteAll();
+			return true;
 		}
 	}
 }

@@ -23,86 +23,73 @@ namespace BetaMemory_Specs
 	[TestFixture]
 	public class BetaMemory_Specs
 	{
-		private Customer _customer;
-		private ActionNode<Customer> _actionNode;
-		private LeafNode<Customer> _leafNode;
-
 		[SetUp]
 		public void Setup()
 		{
-			_customer = new Customer { Preferred = true };
+			_customer = new Customer {Preferred = true};
 
 			_actionNode = new ActionNode<Customer>(x => Trace.WriteLine("Called for " + x.Element.Object.Preferred));
 
 			_leafNode = new LeafNode<Customer>();
-			_leafNode.AddSuccessor(_actionNode);
 
+			_agenda = new PriorityQueueAgenda();
+
+			_context = MockRepository.GenerateMock<RuleContext<Customer>>();
+			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
+			element.Stub(x => x.Object).Return(_customer);
+			_context.Stub(x => x.Element).Return(element);
+
+			_context.Expect(x => x.EnqueueAgendaAction(0, null))
+				.IgnoreArguments()
+				.Repeat.AtLeastOnce()
+				.WhenCalled(invocation =>
+					{
+						var priority = (int) invocation.Arguments[0];
+						var action = invocation.Arguments[1] as Action;
+
+						_agenda.Add(priority, action);
+					});
 		}
+
+		private Customer _customer;
+		private ActionNode<Customer> _actionNode;
+		private LeafNode<Customer> _leafNode;
+		private RuleContext<Customer> _context;
+		private Agenda _agenda;
 
 		[Test]
 		public void FirstTestName()
 		{
 			var junction = new MemoryJunction<Customer>(_leafNode.Activate);
+			junction.AddSuccessor(_actionNode);
 
-			var successors = new Activatable<Customer>[] {junction};
+			var memoryA = new BetaMemory<Customer>(junction);
 
-			var memoryA = new BetaMemory<Customer>(successors);
+			memoryA.Activate(_context);
 
-			var context = MockRepository.GenerateMock<RuleContext<Customer>>();
-			
-			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
-			element.Stub(x => x.Object).Return(_customer);
-			context.Stub(x => x.Element).Return(element);
+			_agenda.Execute();
 
-			context.Expect(x => x.EnqueueAgendaAction(0, null)).IgnoreArguments()
-				.WhenCalled(invocation =>
-					{
-						var action = invocation.Arguments[1] as Action;
-						if (action != null) action();
-					});
-
-			memoryA.Activate(context);
-
-			memoryA.ActivateSuccessors();
-
-			context.VerifyAllExpectations();
+			_context.VerifyAllExpectations();
 		}
 
 		[Test]
 		public void Pulling_an_element_through_two_memories_should_merge_properly()
 		{
 			var junction = new MemoryJunction<Customer>(_leafNode.Activate);
+			junction.AddSuccessor(_actionNode);
 
-			var successors = new Activatable<Customer>[] {junction};
-
-			var memoryB = new BetaMemory<Customer>(successors);
+			var memoryB = new BetaMemory<Customer>(junction);
 
 			var joinJunction = new MemoryJunction<Customer>(memoryB.RightActivate);
 
-			var succB = new Activatable<Customer>[] {joinJunction};
+			var memoryA = new BetaMemory<Customer>(joinJunction);
 
-			var memoryA = new BetaMemory<Customer>(succB);
+			memoryA.Activate(_context);
+			memoryB.Activate(_context);
 
-			var context = MockRepository.GenerateMock<RuleContext<Customer>>();
-			
-			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
-			element.Stub(x => x.Object).Return(_customer);
-			context.Stub(x => x.Element).Return(element);
+			_agenda.Execute();
 
-			context.Expect(x => x.EnqueueAgendaAction(0, null)).IgnoreArguments()
-				.WhenCalled(invocation =>
-					{
-						var action = invocation.Arguments[1] as Action;
-						if (action != null) action();
-					});
-
-			memoryA.Activate(context);
-			memoryB.Activate(context);
-
-			memoryA.ActivateSuccessors();
-			memoryB.ActivateSuccessors();
-
-			context.VerifyAllExpectations();
+			_context.VerifyAllExpectations();
 		}
 	}
 }

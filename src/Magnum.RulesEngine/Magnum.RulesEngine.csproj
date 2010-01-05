@@ -57,11 +57,14 @@
     <Compile Include="ExecutionModel\AlphaMemoryActivation.cs" />
     <Compile Include="ExecutionModel\ConstantJoinNode.cs" />
     <Compile Include="ExecutionModel\ExecutionModelException.cs" />
+    <Compile Include="ExecutionModel\LeafNode.cs" />
+    <Compile Include="ExecutionModel\MemoryJunction.cs" />
     <Compile Include="ExecutionModel\MultipleConditionNode.cs" />
     <Compile Include="ExecutionModel\NodeVisitor.cs" />
     <Compile Include="ExecutionModel\PriorityActionQueue.cs" />
     <Compile Include="ExecutionModel\PriorityQueueAgenda.cs" />
     <Compile Include="ExecutionModel\ProductionNode.cs" />
+    <Compile Include="ExecutionModel\SuccessorSet.cs" />
     <Compile Include="RulesEngineException.cs" />
     <Compile Include="ExecutionModel\SelectManyNode.cs" />
     <Compile Include="ExecutionModel\SingleInputNodeWithSuccessors.cs" />

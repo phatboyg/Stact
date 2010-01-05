@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Linq;
 	using Collections;
 
 	public class PriorityActionQueue
@@ -36,19 +37,24 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public void ExecuteAll()
 		{
-			_queue.Each(priority =>
-				{
-					priority.Value.Each(action =>
-						{
-							action();
-							
-						});
-				});
+			Action[] actions;
+			do
+			{
+				actions = RemoveQueuedActions();
+
+				actions.Each(action => action());
+			} while (actions.Length > 0);
 		}
 
-		public void Clear()
+		private Action[] RemoveQueuedActions()
 		{
+			Action[] actions = _queue
+				.SelectMany(x => x.Value)
+				.ToArray();
+
 			_queue.Clear();
+
+			return actions;
 		}
 	}
 }

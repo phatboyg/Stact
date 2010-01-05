@@ -12,36 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System.Collections.Generic;
+	using System;
 
-	/// <summary>
-	///	A transient store of working memory elements
-	/// 
-	/// Derived from the beta memory concept in RETE
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class BetaMemory<T> :
+	public class MemoryJunction<T> :
 		Activatable<T>
 	{
-		private readonly HashSet<RuleContext<T>> _contexts;
+		private readonly Func<RuleContext<T>, bool> _condition;
 		private readonly SuccessorSet<T> _successors;
 
-		public BetaMemory(params Activatable<T>[] successors)
+		public MemoryJunction(Func<RuleContext<T>, bool> condition)
 		{
-			_successors = new SuccessorSet<T>(successors);
-			_contexts = new HashSet<RuleContext<T>>();
+			_condition = condition;
+			_successors = new SuccessorSet<T>();
 		}
 
 		public void Activate(RuleContext<T> context)
 		{
-			_contexts.Add(context);
-
-			context.EnqueueAgendaAction(0, () => _successors.Activate(context));
+			if (_condition(context))
+			{
+				context.EnqueueAgendaAction(0, () => _successors.Activate(context));
+			}
 		}
 
-		public bool RightActivate(RuleContext<T> context)
+		public void AddSuccessor(params Activatable<T>[] successors)
 		{
-			return _contexts.Contains(context);
+			successors.Each(x => _successors.Add(x));
 		}
 	}
 }

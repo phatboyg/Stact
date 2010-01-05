@@ -14,34 +14,33 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System.Collections.Generic;
 
-	/// <summary>
-	///	A transient store of working memory elements
-	/// 
-	/// Derived from the beta memory concept in RETE
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class BetaMemory<T> :
-		Activatable<T>
+	public class SuccessorSet<T>
 	{
-		private readonly HashSet<RuleContext<T>> _contexts;
-		private readonly SuccessorSet<T> _successors;
+		private readonly HashSet<Activatable<T>> _successors;
 
-		public BetaMemory(params Activatable<T>[] successors)
+		public SuccessorSet()
 		{
-			_successors = new SuccessorSet<T>(successors);
-			_contexts = new HashSet<RuleContext<T>>();
+			_successors = new HashSet<Activatable<T>>();
 		}
 
-		public void Activate(RuleContext<T> context)
+		public SuccessorSet(IEnumerable<Activatable<T>> successors)
 		{
-			_contexts.Add(context);
-
-			context.EnqueueAgendaAction(0, () => _successors.Activate(context));
+			_successors = new HashSet<Activatable<T>>(successors);
 		}
 
-		public bool RightActivate(RuleContext<T> context)
+		public void Add(Activatable<T> activatable)
 		{
-			return _contexts.Contains(context);
+			_successors.Add(activatable);
+		}
+
+		public void Activate(RuleContext<T> ruleContext)
+		{
+			_successors.Each(successor => ActivateSuccessor(successor, ruleContext));
+		}
+
+		private static void ActivateSuccessor(Activatable<T> successor, RuleContext<T> ruleContext)
+		{
+			successor.Activate(ruleContext);
 		}
 	}
 }
