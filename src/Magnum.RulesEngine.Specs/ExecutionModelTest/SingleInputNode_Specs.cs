@@ -46,8 +46,8 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 
 			SingleInputTreeNode singleInputTreeNode = new SingleInputTreeNode();
 
-			singleInputTreeNode.Add(isPreferred);
-			singleInputTreeNode.Add(isActive);
+			//singleInputTreeNode.Add(isPreferred);
+			//singleInputTreeNode.Add(isActive);
 
 			var element = new SessionWorkingMemoryElement<Customer>(null, customer);
 

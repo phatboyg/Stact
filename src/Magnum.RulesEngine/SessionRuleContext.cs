@@ -15,32 +15,32 @@ namespace Magnum.RulesEngine
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using Collections;
+	using CollectionExtensions;
 	using ExecutionModel;
 
 	public class SessionRuleContext<T> :
 		RuleContext<T>
 	{
-		private readonly MultiDictionary<long, Node> _activations;
 		private readonly Agenda _agenda = new PriorityQueueAgenda();
+
+		private readonly Dictionary<int, BetaMemory<T>> _betaMemory;
 		private readonly StatefulSession _session;
 
 		public SessionRuleContext(StatefulSession session, WorkingMemoryElement<T> item)
 		{
 			_session = session;
-			_activations = new MultiDictionary<long, Node>(false);
+			_betaMemory = new Dictionary<int, BetaMemory<T>>();
 
 			Element = item;
 		}
 
 		public WorkingMemoryElement<T> Element { get; private set; }
 
-		public void AddElementToAlphaMemory(int key, WorkingMemoryElement<T> element, IEnumerable<Node> successors)
+		public BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing)
 		{
-			long superKey = key << 32 | element.GetHashCode();
-
-			_activations.AddMany(superKey, successors);
+			return _betaMemory.Retrieve(key, onMissing);
 		}
+
 
 		public Type ItemType
 		{
@@ -57,14 +57,13 @@ namespace Magnum.RulesEngine
 			_agenda.Add(priority, action);
 		}
 
+		public void RunAgenda()
+		{
+			_agenda.Execute();
+		}
+
 		public void DumpMemory()
 		{
-			_activations.Each(element =>
-				{
-					Trace.WriteLine("Element: " + element.Key);
-
-					element.Value.Each(successor => { Trace.WriteLine("  Successor: " + successor.NodeType); });
-				});
 		}
 
 		private class KeyComparer :

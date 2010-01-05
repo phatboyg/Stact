@@ -55,6 +55,8 @@ namespace Magnum.RulesEngine
 
 		void EnqueueAgendaAction(Action action);
 		void EnqueueAgendaAction(int priority, Action action);
+
+		void RunAgenda();
 	}
 
 	public interface RuleContext<T> :
@@ -62,6 +64,6 @@ namespace Magnum.RulesEngine
 	{
 		WorkingMemoryElement<T> Element { get; }
 
-		void AddElementToAlphaMemory(int key, WorkingMemoryElement<T> element, IEnumerable<Node> successors);
+		BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing);
 	}
 }

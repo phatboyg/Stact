@@ -12,9 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
+	using System.Collections;
 	using System.Collections.Generic;
 
-	public class SuccessorSet<T>
+	public class SuccessorSet<T> :
+		IEnumerable<Activatable<T>>
 	{
 		private readonly HashSet<Activatable<T>> _successors;
 
@@ -26,6 +28,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 		public SuccessorSet(IEnumerable<Activatable<T>> successors)
 		{
 			_successors = new HashSet<Activatable<T>>(successors);
+		}
+
+		public IEnumerator<Activatable<T>> GetEnumerator()
+		{
+			return _successors.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 
 		public void Add(Activatable<T> activatable)

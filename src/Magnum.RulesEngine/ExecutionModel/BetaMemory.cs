@@ -32,6 +32,12 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_contexts = new HashSet<RuleContext<T>>();
 		}
 
+		public BetaMemory(IEnumerable<Activatable<T>> successors)
+		{
+			_successors = new SuccessorSet<T>(successors);
+			_contexts = new HashSet<RuleContext<T>>();
+		}
+
 		public void Activate(RuleContext<T> context)
 		{
 			_contexts.Add(context);

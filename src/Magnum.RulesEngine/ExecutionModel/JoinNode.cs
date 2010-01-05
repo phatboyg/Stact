@@ -15,7 +15,8 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Linq;
 
 	public class JoinNode<T> :
-		SingleInputNodeWithSuccessors<T>
+		SingleInputNodeWithSuccessors<T>,
+		SingleInputNode<T>
 	{
 		private readonly TupleSource<T> _leftNode;
 		private readonly TupleSource<T> _rightNode;
