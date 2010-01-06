@@ -83,26 +83,4 @@ namespace Magnum.RulesEngine
 			_output.Append(Pad()).AppendFormat(format, args).AppendLine();
 		}
 	}
-
-	public class AddConditionVisitor :
-		NodeVisitor
-	{
-		private readonly Expression _expression;
-		private readonly IList<Node> _outputNodes = new List<Node>();
-
-		public AddConditionVisitor(Expression expression)
-		{
-			_expression = expression;
-		}
-
-		protected override Node VisitSingleCondition(ConditionNode node)
-		{
-			if (node.Expression.ToString() == _expression.ToString())
-			{
-				_outputNodes.Add(node);
-			}
-
-			return base.VisitSingleCondition(node);
-		}
-	}
 }

@@ -48,11 +48,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 			get { return _expression; }
 		}
 
-		public NodeType NodeType
-		{
-			get { return NodeType.Action; }
-		}
-
 		public void Activate<T>(RuleContext<T> context)
 		{
 			context.EnqueueAgendaAction(Priority, () => _eval(context));
@@ -109,11 +104,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 		public void Activate(RuleContext<T> context)
 		{
 			context.EnqueueAgendaAction(Priority, () => _eval(context));
-		}
-
-		public NodeType NodeType
-		{
-			get { return NodeType.Action; }
 		}
 
 		private static Action<RuleContext<T>> CompileExpression(Expression<Action<RuleContext<T>>> expression)

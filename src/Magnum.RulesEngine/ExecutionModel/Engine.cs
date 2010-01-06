@@ -12,11 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using Reflection;
 	using SemanticModel;
 
 	public interface RulesEngine
@@ -24,13 +22,20 @@ namespace Magnum.RulesEngine.ExecutionModel
 		void Assert<T>(RuleContext<T> element);
 	}
 
-	public class Engine : 
-		RulesEngine
+	public class Engine :
+		RulesEngine,
+		ModelVisitorSite
 	{
 		private MatchTypeNode _root = new MatchTypeNode();
 
 
-//		public void Add(RuleDeclaration rule)
+		public void Add(RuleDeclaration rule)
+		{
+			var compiler = new DeclarationCompiler();
+
+			_root = compiler.Add(_root, rule);
+		}
+
 //		{
 //			SingleInputNode lastAlphaNode = null;
 //			SingleInputNode lastJoinNode = null;
@@ -87,6 +92,53 @@ namespace Magnum.RulesEngine.ExecutionModel
 		public void Assert<T>(RuleContext<T> context)
 		{
 			_root.Activate(context);
+		}
+
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => _root.Visit(visitor));
+		}
+	}
+
+
+	public class FindConditionVisitor :
+		AbstractModelVisitor<FindConditionVisitor>
+	{
+		private readonly object[] _conditionNodes;
+		private readonly Expression[] _expressions;
+
+		public FindConditionVisitor(Expression[] expressions)
+		{
+			_expressions = expressions;
+			_conditionNodes = new object[_expressions.Length];
+		}
+
+		public object[] ExistingNodes
+		{
+			get {
+				return _conditionNodes;
+			}
+		}
+
+		protected bool Visit<T>(ConditionNode<T> node)
+		{
+			_expressions
+				.Select((expression, index) => new {Text = expression.ToString(), Index = index})
+				.Where(x => x.Text == node.Expression.ToString())
+				.Each(match => { _conditionNodes[match.Index] = node; });
+
+			return _conditionNodes.Where(x => x == null).Count() > 0;
+		}
+
+		private void MatchExistingConditionNode<T>(ConditionDeclaration condition, ConditionNode<T> node)
+		{
+			if (condition.MatchType != typeof (T))
+				return;
+
+			if (node.Expression.ToString() != condition.Expression.ToString())
+				return;
+
+			AlphaNode<T> alphaNode = node.GetAlphaNode();
 		}
 	}
 }

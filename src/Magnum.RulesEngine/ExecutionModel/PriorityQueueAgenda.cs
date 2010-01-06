@@ -17,7 +17,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	public class PriorityQueueAgenda :
 		Agenda
 	{
-		private readonly PriorityActionQueue _queue = new PriorityActionQueue();
+		private readonly PriorityActionQueue<Action> _queue = new PriorityActionQueue<Action>();
 
 		public void Add(Action action)
 		{
@@ -31,7 +31,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public void Execute()
 		{
-			_queue.ExecuteAll();
+			_queue.ExecuteAll(action => action());
 		}
 	}
 }

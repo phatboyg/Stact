@@ -13,22 +13,15 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Linq;
 	using System.Linq.Expressions;
-
-	/// <summary>
-	/// The interface supported by all condition (alpha) nodes in the network
-	/// </summary>
-	public interface ConditionNode :
-		SingleInputNode
-	{
-		Expression Expression { get; }
-	}
 
 	/// <summary>
 	/// A generic condition that has a single input type (alpha node)
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class ConditionNode<T> :
+		Node,
 		Activation<T>,
 		ModelVisitorSite
 	{
@@ -58,14 +51,33 @@ namespace Magnum.RulesEngine.ExecutionModel
 			}
 		}
 
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => _successors.Visit(visitor));
+		}
+
 		public void AddSuccessor(params Activation<T>[] successors)
 		{
 			successors.Each(x => _successors.Add(x));
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public AlphaNode<T> GetAlphaNode()
 		{
-			return visitor.Visit(this, () => _successors.Visit(visitor));
+			AlphaNode<T> result = _successors
+				.Where(x => x.GetType() == typeof (AlphaNode<T>))
+				.Cast<AlphaNode<T>>()
+				.FirstOrDefault();
+
+			return result ?? AddAlphaNode();
+		}
+
+		private AlphaNode<T> AddAlphaNode()
+		{
+			var alphaNode = new AlphaNode<T>();
+
+			_successors.Add(alphaNode);
+
+			return alphaNode;
 		}
 	}
 }

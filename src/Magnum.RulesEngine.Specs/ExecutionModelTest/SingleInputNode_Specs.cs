@@ -13,73 +13,27 @@
 namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq.Expressions;
 	using DateTimeExtensions;
-	using ExecutionModel;
 	using Model;
 	using NUnit.Framework;
-	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
 	public class Loading_up_a_single_node
 	{
 		[Test]
-		public void Should_property_make_things_work()
-		{
-			var node = new ActionConsequenceNode<Customer>(x => Trace.WriteLine("Hello"));
-
-			var customer = new Customer {Preferred = true};
-
-			var context = MockRepository.GenerateMock<RuleContext>();
-
-			ConditionNode<Customer> isPreferred = new ConditionNode<Customer>(x => x.Preferred);
-			ConditionNode<Customer> isActive = new ConditionNode<Customer>(x => x.Active);
-
-
-			//conditionNode.
-
-			//node.Activate(context);
-
-
-			//SingleInputTreeNode singleInputTreeNode = new SingleInputTreeNode();
-
-			//singleInputTreeNode.Add(isPreferred);
-			//singleInputTreeNode.Add(isActive);
-
-			var element = new SessionWorkingMemoryElement<Customer>(null, customer);
-
-			var ruleContext = new SessionRuleContext<Customer>(null, element);
-
-			//singleInputTreeNode.Activate(ruleContext);
-		}
-
-
-
-
-
-
-
-
-
-
-
-		[Test]
 		public void Sometimes_a_prototype_is_just_that()
 		{
+			var customer = new Customer {Preferred = true, Active = true, LastActivity = DateTime.Now - 5.Days()};
 
-
-			Customer customer = new Customer() { Preferred = true, Active = true, LastActivity = DateTime.Now - 5.Days() };
-
-			ANode<Customer> node = new ANode<Customer>(x => x.Preferred);
+			var node = new ANode<Customer>(x => x.Preferred);
 
 			AMemory<Customer> memory = node.CreateAlphaMemory(customer);
 
 			memory.IsSatisfied().ShouldBeTrue();
 			memory.IsSatisfied().ShouldBeTrue();
-
 		}
 	}
 
@@ -98,20 +52,16 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 		{
 			Func<bool> eval;
 			eval = () =>
-			{
-				bool result = _eval(item);
-				Trace.WriteLine("Eval ran");
-
-				eval = () => result;
-
-				return result;
-			};
-
-			Func<bool> satisfied = () =>
 				{
+					bool result = _eval(item);
+					Trace.WriteLine("Eval ran");
 
-					return eval();
+					eval = () => result;
+
+					return result;
 				};
+
+			Func<bool> satisfied = () => { return eval(); };
 
 			return new AMemory<T>(satisfied);
 		}

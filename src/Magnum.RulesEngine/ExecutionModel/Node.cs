@@ -17,9 +17,5 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	public interface Node
 	{
-		/// <summary>
-		/// The type of the node, used for visitor
-		/// </summary>
-		NodeType NodeType { get; }
 	}
 }

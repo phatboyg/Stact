@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	public class MemoryJunction<T> :
+		Node,
 		Activation<T>,
 		ModelVisitorSite
 	{

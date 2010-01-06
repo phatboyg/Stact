@@ -110,6 +110,7 @@ namespace BetaMemory_Specs
 
 			var isPreferred = new ConditionNode<Customer>(x => x.Preferred);
 			isPreferred.AddSuccessor(alphaNodeA);
+
 			tree.AddSuccessor(isPreferred);
 
 			tree.AddSuccessor(alphaNodeB);

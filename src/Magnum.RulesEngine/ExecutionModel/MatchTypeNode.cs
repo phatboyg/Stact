@@ -16,32 +16,30 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using Collections;
 
 	public class MatchTypeNode :
-		Activation
+		Node,
+		Activation,
+		ModelVisitorSite
 	{
-		private readonly MultiDictionary<Type, Activation> _alphaNodes;
+		private readonly MultiDictionary<Type, Activation> _types;
 
 		public MatchTypeNode()
 		{
-			_alphaNodes = new MultiDictionary<Type, Activation>(false);
-		}
-
-		public NodeType NodeType
-		{
-			get { return NodeType.MatchType; }
+			_types = new MultiDictionary<Type, Activation>(false);
 		}
 
 		public void Activate<T>(RuleContext<T> context)
 		{
-			_alphaNodes[typeof (T)].Each(x => x.Activate(context));
+			_types[typeof (T)].Each(x => x.Activate(context));
 		}
 
 		public void Add<T>(Activation<T> successor)
 		{
-			_alphaNodes.Add(typeof (T), new ActivationTranslater<T>(successor));
+			_types.Add(typeof (T), new ActivationTranslater<T>(successor));
 		}
 
 		private class ActivationTranslater<T> :
-			Activation
+			Activation,
+			ModelVisitorSite
 		{
 			private readonly Activation<T> _activation;
 
@@ -59,6 +57,20 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 				_activation.Activate(ruleContext);
 			}
+
+			public bool Visit(ModelVisitor visitor)
+			{
+				var site = _activation as ModelVisitorSite;
+				if(site != null)
+					return site.Visit(visitor);
+
+				return true;
+			}
+		}
+
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => _types.Values.EachUntilFalse<ModelVisitorSite>(x => x.Visit(visitor)));
 		}
 	}
 }

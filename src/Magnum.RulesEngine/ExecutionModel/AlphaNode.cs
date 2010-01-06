@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	public class AlphaNode<T> :
+		Node,
 		Activation<T>,
 		RightActivation<T>,
 		ModelVisitorSite

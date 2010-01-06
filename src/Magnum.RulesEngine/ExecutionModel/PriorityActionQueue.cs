@@ -16,45 +16,50 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Linq;
 	using Collections;
 
-	public class PriorityActionQueue
+	public class PriorityActionQueue<T>
 	{
-		private readonly OrderedDictionary<int, Deque<Action>> _queue;
+		private readonly OrderedDictionary<int, Deque<T>> _queue;
 
 		public PriorityActionQueue()
 		{
-			_queue = new OrderedDictionary<int, Deque<Action>>();
+			_queue = new OrderedDictionary<int, Deque<T>>();
 		}
 
-		public void Add(int priority, Action action)
+		public void Add(int priority, T action)
 		{
 			if (!_queue.ContainsKey(priority))
 			{
-				_queue.Add(priority, new Deque<Action>());
+				_queue.Add(priority, new Deque<T>());
 			}
 
 			_queue[priority].Add(action);
 		}
 
-		public void ExecuteAll()
+		public void ExecuteAll(Action<T> callback)
 		{
-			Action[] actions;
+			T[] actions;
 			do
 			{
 				actions = RemoveQueuedActions();
 
-				actions.Each(action => action());
+				actions.Each(callback);
 			} while (actions.Length > 0);
 		}
 
-		private Action[] RemoveQueuedActions()
+		private T[] RemoveQueuedActions()
 		{
-			Action[] actions = _queue
-				.SelectMany(x => x.Value)
-				.ToArray();
+			lock (_queue)
+			{
+				T[] actions = _queue
+					.SelectMany(x => x.Value)
+					.ToArray();
 
-			_queue.Clear();
+				_queue.Clear();
 
-			return actions;
+				return actions;	
+			}
+
+			
 		}
 	}
 }

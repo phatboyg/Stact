@@ -18,6 +18,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	/// <typeparam name="T">The type of the constant true operation</typeparam>
 	public class ConstantNode<T> :
+		Node,
 		RightActivation<T>
 	{
 		public bool RightActivate(RuleContext<T> context)
