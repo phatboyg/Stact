@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 {
 	using System;
+	using System.Diagnostics;
 	using System.Linq.Expressions;
 	using Events;
 	using ExecutionModel;
@@ -26,6 +27,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 		private OrderSubmitted _order;
 		private Engine _engine;
 		private Action<OrderSubmitted> _overLimit;
+		private Action<OrderSubmitted> _underLimit;
 
 		[SetUp]
 		public void Setup()
@@ -35,6 +37,22 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 			_overLimit = MockRepository.GenerateMock<Action<OrderSubmitted>>();
 			_overLimit.Expect(x => x(_order));
 
+			_underLimit = MockRepository.GenerateMock<Action<OrderSubmitted>>();
+			_underLimit.Expect(x => x(_order)).Repeat.Never();
+
+			_engine = new Engine();
+
+			AddOverLimitRule();
+			AddUnderLimitRule();
+
+			StringNodeVisitor visitor = new StringNodeVisitor();
+			_engine.Visit(visitor);
+
+			Trace.WriteLine(visitor.Result);
+		}
+
+		private void AddOverLimitRule()
+		{
 			Expression<Func<OrderSubmitted, bool>> exp = o => o.Amount > 1000.00m;
 
 			ConditionDeclaration condition = Declaration.Condition(exp);
@@ -42,7 +60,18 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 
 			RuleDeclaration rule = Declaration.Rule(new[] {condition}, new[] {consequence});
 
-			_engine = new Engine();
+			_engine.Add(rule);
+		}
+
+		private void AddUnderLimitRule()
+		{
+			Expression<Func<OrderSubmitted, bool>> exp = o => o.Amount < 50.00m;
+
+			ConditionDeclaration condition = Declaration.Condition(exp);
+			ConsequenceDeclaration<OrderSubmitted> consequence = Declaration.Consequence<OrderSubmitted>(o => _underLimit(o.Element.Object));
+
+			RuleDeclaration rule = Declaration.Rule(new[] {condition}, new[] {consequence});
+
 			_engine.Add(rule);
 		}
 
@@ -58,6 +87,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 			}
 
 			_overLimit.VerifyAllExpectations();
+			_underLimit.VerifyAllExpectations();
 		}
 	}
 }
