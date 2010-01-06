@@ -45,6 +45,15 @@ namespace Magnum.RulesEngine.ExecutionModel
 			context.DumpMemory();
 		}
 
+		private readonly Agenda _agenda = new PriorityQueueAgenda();
+
+		public Agenda Agenda { get { return _agenda; }}
+
+		public void Run()
+		{
+			_agenda.Execute();
+		}
+
 		private void Dispose(bool disposing)
 		{
 			if (_disposed) return;

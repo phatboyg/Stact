@@ -41,6 +41,13 @@ namespace Magnum.RulesEngine.SemanticModel
 			return declaration;
 		}
 
+		public static ConsequenceDeclaration<T> Consequence<T>(Expression<Action<RuleContext<T>>> expression)
+		{
+			var declaration = new ConsequenceDeclaration<T>(expression);
+
+			return declaration;
+		}
+
 		public static RuleDeclaration Rule(ConditionDeclaration[] conditions, ConsequenceDeclaration[] consequences)
 		{
 			var declaration = new RuleDeclaration(conditions, consequences);

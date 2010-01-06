@@ -39,10 +39,9 @@ namespace BetaMemory_Specs
 			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
 			element.Stub(x => x.Object).Return(_customer);
 
-			var session = MockRepository.GenerateMock<StatefulSession>();
-			;
+			_session = new StatefulSessionImpl(MockRepository.GenerateMock<RulesEngine>());
 
-			_context = new SessionRuleContext<Customer>(session, element);
+			_context = new SessionRuleContext<Customer>(_session, element);
 		}
 
 		private Customer _customer;
@@ -51,6 +50,7 @@ namespace BetaMemory_Specs
 		private RuleContext<Customer> _context;
 		private Future<Customer> _primaryCalled;
 		private Future<Customer> _secondaryCalled;
+		private StatefulSessionImpl _session;
 
 
 		[Test]
@@ -63,7 +63,7 @@ namespace BetaMemory_Specs
 
 			memoryA.Activate(_context);
 
-			_context.RunAgenda();
+			_session.Run();
 
 			_primaryCalled.IsAvailable().ShouldBeTrue();
 		}
@@ -79,7 +79,7 @@ namespace BetaMemory_Specs
 
 			alphaNode.Activate(_context);
 
-			_context.RunAgenda();
+			_session.Run();
 
 			_primaryCalled.IsAvailable().ShouldBeTrue();
 		}
@@ -127,7 +127,7 @@ namespace BetaMemory_Specs
 
 
 			tree.Activate(_context);
-			_context.RunAgenda();
+			_session.Run();
 
 			_primaryCalled.IsAvailable().ShouldBeTrue();
 			_secondaryCalled.IsAvailable().ShouldBeFalse();
@@ -150,7 +150,7 @@ namespace BetaMemory_Specs
 			alphaNodeA.Activate(_context);
 			alphaNodeB.Activate(_context);
 
-			_context.RunAgenda();
+			_session.Run();
 		}
 	}
 }

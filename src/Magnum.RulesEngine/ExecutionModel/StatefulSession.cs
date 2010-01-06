@@ -18,5 +18,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 		IDisposable
 	{
 		void Assert<T>(T obj);
+
+		void Run();
 	}
 }

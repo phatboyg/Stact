@@ -109,7 +109,6 @@ namespace Engine_Specs
 		{
 			var engine = new Engine();
 
-
 			RuleDeclaration rule = CreateOnlineOrderRule();
 			engine.Add(rule);
 			engine.Add(rule);
@@ -132,6 +131,8 @@ namespace Engine_Specs
 			using (StatefulSession session = engine.CreateSession())
 			{
 				session.Assert(CurrentOrder);
+
+				session.Run();
 			}
 		}
 	}

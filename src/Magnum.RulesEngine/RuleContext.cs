@@ -55,15 +55,12 @@ namespace Magnum.RulesEngine
 
 		void EnqueueAgendaAction(Action action);
 		void EnqueueAgendaAction(int priority, Action action);
-
-		void RunAgenda();
 	}
 
 	public interface RuleContext<T> :
 		RuleContext
 	{
 		WorkingMemoryElement<T> Element { get; }
-
 		BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing);
 	}
 }

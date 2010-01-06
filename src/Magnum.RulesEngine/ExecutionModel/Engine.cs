@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using SemanticModel;
@@ -29,61 +28,21 @@ namespace Magnum.RulesEngine.ExecutionModel
 		private MatchTypeNode _root = new MatchTypeNode();
 
 
-		public void Add(RuleDeclaration rule)
+		public bool Visit(ModelVisitor visitor)
 		{
-			var compiler = new DeclarationCompiler();
-
-			_root = compiler.Add(_root, rule);
+			return visitor.Visit(this, () => _root.Visit(visitor));
 		}
-
-//		{
-//			SingleInputNode lastAlphaNode = null;
-//			SingleInputNode lastJoinNode = null;
-//
-//			foreach (ConditionDeclaration condition in rule.Conditions)
-//			{
-//
-//				lastJoinNode = this.FastInvoke<Engine, SingleInputNode>(new[] {conditionNode.InputType}, "GenerateJoinNode", new object[] {alphaNode, lastJoinNode});
-//
-//				lastAlphaNode = alphaNode as SingleInputNode;
-//
-//				_alpha.Add(condition.MatchType, conditionNode);
-//			}
-//
-//			var inputNode = (lastJoinNode ?? lastAlphaNode);
-//
-//			foreach (var consequence in rule.Consequences)
-//			{
-//				ConsequenceDeclaration declaration = consequence;
-//
-//				Action<RuleContext> action = x => declaration.Activate();
-//
-//				SingleInputNode node = this.FastInvoke<Engine, SingleInputNode>(new[] {inputNode.InputType}, "GenerateNode", new object[] { action });
-//
-//				inputNode.Add(node);
-//			}
-//		}
-//
-//		private SingleInputNode GenerateJoinNode<T>(TupleSource<T> left, TupleSource<T> right)
-//		{
-//			return new MemoryJunction<T>();
-//		}
-//
-//		private SingleInputNode GenerateNode<T>(Action<RuleContext> action)
-//		{
-//			var node = new ActionConsequenceNode<T>(x => action(x));
-//
-//			return node;
-//		}
 
 		public void Assert<T>(RuleContext<T> context)
 		{
 			_root.Activate(context);
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public void Add(RuleDeclaration rule)
 		{
-			return visitor.Visit(this, () => _root.Visit(visitor));
+			var compiler = new DeclarationCompiler();
+
+			_root = compiler.Add(_root, rule);
 		}
 	}
 
@@ -102,9 +61,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public object[] ExistingNodes
 		{
-			get {
-				return _conditionNodes;
-			}
+			get { return _conditionNodes; }
 		}
 
 		protected bool Visit<T>(ConditionNode<T> node)

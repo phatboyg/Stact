@@ -21,12 +21,10 @@ namespace Magnum.RulesEngine
 	public class SessionRuleContext<T> :
 		RuleContext<T>
 	{
-		private readonly Agenda _agenda = new PriorityQueueAgenda();
-
 		private readonly Dictionary<int, BetaMemory<T>> _betaMemory;
-		private readonly StatefulSession _session;
+		private readonly StatefulSessionImpl _session;
 
-		public SessionRuleContext(StatefulSession session, WorkingMemoryElement<T> item)
+		public SessionRuleContext(StatefulSessionImpl session, WorkingMemoryElement<T> item)
 		{
 			_session = session;
 			_betaMemory = new Dictionary<int, BetaMemory<T>>();
@@ -49,17 +47,12 @@ namespace Magnum.RulesEngine
 
 		public void EnqueueAgendaAction(Action action)
 		{
-			_agenda.Add(action);
+			_session.Agenda.Add(action);
 		}
 
 		public void EnqueueAgendaAction(int priority, Action action)
 		{
-			_agenda.Add(priority, action);
-		}
-
-		public void RunAgenda()
-		{
-			_agenda.Execute();
+			_session.Agenda.Add(priority, action);
 		}
 
 		public void DumpMemory()
