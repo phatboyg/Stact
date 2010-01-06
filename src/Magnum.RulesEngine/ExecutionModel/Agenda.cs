@@ -14,11 +14,27 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 
+	/// <summary>
+	/// An agenda is used to schedule actions to be performed as a result of rules and elements being evaluated.
+	/// </summary>
 	public interface Agenda
 	{
+		/// <summary>
+		/// Add an action to the agenda using the default priority (0).
+		/// </summary>
+		/// <param name="action"></param>
 		void Add(Action action);
+
+		/// <summary>
+		/// Add an action to the agenda using the specified priority.
+		/// </summary>
+		/// <param name="priority">The priority of the action</param>
+		/// <param name="action">The action to execute</param>
 		void Add(int priority, Action action);
 
+		/// <summary>
+		/// Executes all pending agenda items in priority order from lowest to highest
+		/// </summary>
 		void Execute();
 	}
 }

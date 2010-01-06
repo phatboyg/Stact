@@ -16,7 +16,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections.Generic;
 
 	public abstract class SingleInputNodeWithSuccessors<T> :
-		Activatable<T>
+		Activation<T>
 	{
 		private readonly NodeCollection<T> _successors;
 

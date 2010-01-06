@@ -13,7 +13,9 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	public class AlphaNode<T> :
-		Activatable<T>
+		Activation<T>,
+		RightActivation<T>,
+		ModelVisitorSite
 	{
 		private readonly SuccessorSet<T> _successors;
 
@@ -29,16 +31,21 @@ namespace Magnum.RulesEngine.ExecutionModel
 			betaMemory.Activate(context);
 		}
 
-		public void AddSuccessor(params Activatable<T>[] successors)
+		public bool RightActivate(RuleContext<T> context)
+		{
+			RightActivation<T> betaMemory = context.GetBetaMemory(GetHashCode(), () => new BetaMemory<T>(_successors));
+
+			return betaMemory.RightActivate(context);
+		}
+
+		public void AddSuccessor(params Activation<T>[] successors)
 		{
 			successors.Each(x => _successors.Add(x));
 		}
 
-		public bool RightActivate(RuleContext<T> context)
+		public bool Visit(ModelVisitor visitor)
 		{
-			BetaMemory<T> betaMemory = context.GetBetaMemory(GetHashCode(), () => new BetaMemory<T>(_successors));
-
-			return betaMemory.RightActivate(context);
+			return visitor.Visit(this, () => _successors.Visit(visitor));
 		}
 	}
 }

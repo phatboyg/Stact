@@ -39,7 +39,7 @@ namespace Magnum.Reflection
 		}
 
 		protected ReflectiveVisitorBase()
-			: this(_defaultMemberName.MemberName())
+			: this("Visit")
 		{
 		}
 

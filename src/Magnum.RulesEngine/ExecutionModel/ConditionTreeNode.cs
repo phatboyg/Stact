@@ -12,19 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public enum NodeType
+	public class ConditionTreeNode<T> :
+		Activation<T>,
+		ModelVisitorSite
 	{
-		Unknown = 0,
-		SingleInputNode,
-		Join,
-		MatchType,
-		SingleConditionNode,
-		ActionConsequence,
-		ConstantJoinNode,
-		Production,
-		AlphaMemory,
-		AlphaNode,
-		Action,
-		BetaMemory
+		private readonly SuccessorSet<T> _successors;
+
+		public ConditionTreeNode()
+		{
+			_successors = new SuccessorSet<T>();
+		}
+
+		public void Activate(RuleContext<T> context)
+		{
+			_successors.Activate(context);
+		}
+
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => _successors.Visit(visitor));
+		}
+
+		public void AddSuccessor(params Activation<T>[] successors)
+		{
+			successors.Each(x => _successors.Add(x));
+		}
 	}
 }

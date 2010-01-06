@@ -18,53 +18,77 @@ namespace Magnum.RulesEngine
 	using ExecutionModel;
 
 	public class StringNodeVisitor :
-		NodeVisitor
+		AbstractModelVisitor<StringNodeVisitor>
 	{
 		private readonly StringBuilder _output = new StringBuilder();
+		private int _depth;
 
 		public string Result
 		{
 			get { return _output.ToString(); }
 		}
 
-		public void Visit(Engine engine)
+		protected override void IncreaseDepth()
 		{
-			Visit(engine.Nodes);
+			_depth++;
 		}
 
-		protected override Node VisitRootAlpha(SingleInputTreeNode r)
+		protected override void DecreaseDepth()
 		{
-			_output.AppendLine("Alpha Nodes");
-
-			r.Outputs.Each(x =>
-				{
-					Visit(x);
-				});
-
-			return base.VisitRootAlpha(r);
+			_depth--;
 		}
 
-		protected override Node VisitSingleInput(SingleInputNode node)
+		protected bool Visit<T>(ConditionTreeNode<T> node)
 		{
-			_output.AppendFormat("Single Input Node: {0}", node.InputType.Name).AppendLine();
+			Append("ConditionTree<{0}>", typeof (T).Name);
 
-			return base.VisitSingleInput(node);
+			return true;
 		}
 
-		protected override Node VisitSingleCondition(ConditionNode node)
+		protected bool Visit<T>(ConditionNode<T> node)
 		{
-			_output.AppendFormat("\t{0} - Condition: {1}", node.InputType.Name, node.Expression).AppendLine();
+			Append("Condition<{0}>: {1}", typeof (T).Name, node.Expression);
 
-			return base.VisitSingleCondition(node);
+			return true;
 		}
 
+		protected bool Visit<T>(AlphaNode<T> node)
+		{
+			Append("Alpha<{0}>[{1}]", typeof(T).Name, node.GetHashCode());
+
+			return true;
+		}
+
+		protected bool Visit<T>(MemoryJunction<T> node)
+		{
+			Append("Junction<{0}>[{1}]", typeof(T).Name, node.GetHashCode());
+
+			return true;
+		}
+
+		protected bool Visit<T>(ConstantNode<T> node)
+		{
+			Append("Constant<{0}>", typeof (T).Name);
+
+			return true;
+		}
+
+		private string Pad()
+		{
+			return new string('\t', _depth);
+		}
+
+		private void Append(string format, params object[] args)
+		{
+			_output.Append(Pad()).AppendFormat(format, args).AppendLine();
+		}
 	}
 
 	public class AddConditionVisitor :
 		NodeVisitor
 	{
-		private readonly IList<Node> _outputNodes = new List<Node>();
 		private readonly Expression _expression;
+		private readonly IList<Node> _outputNodes = new List<Node>();
 
 		public AddConditionVisitor(Expression expression)
 		{
@@ -80,6 +104,5 @@ namespace Magnum.RulesEngine
 
 			return base.VisitSingleCondition(node);
 		}
-		
 	}
 }

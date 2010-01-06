@@ -13,42 +13,52 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Collections.Generic;
 	using Collections;
 
-	public class SingleInputTreeNode :
-		Node
+	public class MatchTypeNode :
+		Activation
 	{
-		private readonly MultiDictionary<Type, Node> _alphaNodes;
+		private readonly MultiDictionary<Type, Activation> _alphaNodes;
 
-		public SingleInputTreeNode()
+		public MatchTypeNode()
 		{
-			_alphaNodes = new MultiDictionary<Type, Node>(false);
-		}
-
-		public IEnumerable<Node> Outputs
-		{
-			get { return _alphaNodes.Values; }
+			_alphaNodes = new MultiDictionary<Type, Activation>(false);
 		}
 
 		public NodeType NodeType
 		{
-			get { return NodeType.SingleInputTree; }
-		}
-
-		public void Add<T>(SingleInputNode<T> singleInputNode)
-		{
-			_alphaNodes.Add(typeof (T), singleInputNode);
+			get { return NodeType.MatchType; }
 		}
 
 		public void Activate<T>(RuleContext<T> context)
 		{
-			_alphaNodes[typeof (T)].Each(x => ((SingleInputNode<T>) x).Activate(context));
+			_alphaNodes[typeof (T)].Each(x => x.Activate(context));
 		}
 
-		public void Add(Type inputType, Node node)
+		public void Add<T>(Activation<T> successor)
 		{
-			_alphaNodes.Add(inputType, node);
+			_alphaNodes.Add(typeof (T), new ActivationTranslater<T>(successor));
+		}
+
+		private class ActivationTranslater<T> :
+			Activation
+		{
+			private readonly Activation<T> _activation;
+
+			public ActivationTranslater(Activation<T> activation)
+			{
+				if (activation == null)
+					throw new ArgumentNullException("activation", "Activation cannot be null");
+
+				_activation = activation;
+			}
+
+			public void Activate<TInput>(RuleContext<TInput> context)
+			{
+				var ruleContext = (RuleContext<T>) context;
+
+				_activation.Activate(ruleContext);
+			}
 		}
 	}
 }

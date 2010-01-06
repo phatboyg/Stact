@@ -22,8 +22,8 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// without a generic specialization on the argument
 	/// </summary>
 	public class ActionNode :
-		Node,
-		Activatable
+		Activation,
+		ModelVisitorSite
 	{
 		private readonly Action<RuleContext> _eval;
 		private readonly Expression<Action<RuleContext>> _expression;
@@ -48,14 +48,19 @@ namespace Magnum.RulesEngine.ExecutionModel
 			get { return _expression; }
 		}
 
-		public void Activate(RuleContext context)
+		public NodeType NodeType
+		{
+			get { return NodeType.Action; }
+		}
+
+		public void Activate<T>(RuleContext<T> context)
 		{
 			context.EnqueueAgendaAction(Priority, () => _eval(context));
 		}
 
-		public NodeType NodeType
+		public bool Visit(ModelVisitor visitor)
 		{
-			get { return NodeType.Action; }
+			return visitor.Visit(this);
 		}
 
 		private static Action<RuleContext> CompileExpression(Expression<Action<RuleContext>> expression)
@@ -79,7 +84,8 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	public class ActionNode<T> :
 		Node,
-		Activatable<T>
+		Activation<T>,
+		ModelVisitorSite
 	{
 		private readonly Action<RuleContext<T>> _eval;
 		private readonly Expression<Action<RuleContext<T>>> _expression;
@@ -120,6 +126,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 			{
 				throw new CompileExpressionException(expression, ex);
 			}
+		}
+
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this);
 		}
 	}
 }

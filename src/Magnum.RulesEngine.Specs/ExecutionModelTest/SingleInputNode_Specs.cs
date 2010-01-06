@@ -44,7 +44,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 			//node.Activate(context);
 
 
-			SingleInputTreeNode singleInputTreeNode = new SingleInputTreeNode();
+			//SingleInputTreeNode singleInputTreeNode = new SingleInputTreeNode();
 
 			//singleInputTreeNode.Add(isPreferred);
 			//singleInputTreeNode.Add(isActive);
@@ -53,7 +53,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 
 			var ruleContext = new SessionRuleContext<Customer>(null, element);
 
-			singleInputTreeNode.Activate(ruleContext);
+			//singleInputTreeNode.Activate(ruleContext);
 		}
 
 

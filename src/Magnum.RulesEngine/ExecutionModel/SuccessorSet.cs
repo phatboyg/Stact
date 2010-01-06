@@ -16,21 +16,22 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections.Generic;
 
 	public class SuccessorSet<T> :
-		IEnumerable<Activatable<T>>
+		IEnumerable<Activation<T>>,
+		ModelVisitorSite
 	{
-		private readonly HashSet<Activatable<T>> _successors;
+		private readonly HashSet<Activation<T>> _successors;
 
 		public SuccessorSet()
 		{
-			_successors = new HashSet<Activatable<T>>();
+			_successors = new HashSet<Activation<T>>();
 		}
 
-		public SuccessorSet(IEnumerable<Activatable<T>> successors)
+		public SuccessorSet(IEnumerable<Activation<T>> successors)
 		{
-			_successors = new HashSet<Activatable<T>>(successors);
+			_successors = new HashSet<Activation<T>>(successors);
 		}
 
-		public IEnumerator<Activatable<T>> GetEnumerator()
+		public IEnumerator<Activation<T>> GetEnumerator()
 		{
 			return _successors.GetEnumerator();
 		}
@@ -40,9 +41,14 @@ namespace Magnum.RulesEngine.ExecutionModel
 			return GetEnumerator();
 		}
 
-		public void Add(Activatable<T> activatable)
+		public bool Visit(ModelVisitor visitor)
 		{
-			_successors.Add(activatable);
+			return _successors.EachUntilFalse<ModelVisitorSite>(x => x.Visit(visitor));
+		}
+
+		public void Add(Activation<T> activation)
+		{
+			_successors.Add(activation);
 		}
 
 		public void Activate(RuleContext<T> ruleContext)
@@ -50,7 +56,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_successors.Each(successor => ActivateSuccessor(successor, ruleContext));
 		}
 
-		private static void ActivateSuccessor(Activatable<T> successor, RuleContext<T> ruleContext)
+		private static void ActivateSuccessor(Activation<T> successor, RuleContext<T> ruleContext)
 		{
 			successor.Activate(ruleContext);
 		}

@@ -27,74 +27,66 @@ namespace Magnum.RulesEngine.ExecutionModel
 	public class Engine : 
 		RulesEngine
 	{
-		private SingleInputTreeNode _alpha = new SingleInputTreeNode();
+		private MatchTypeNode _root = new MatchTypeNode();
 
-		public Node Nodes
+
+//		public void Add(RuleDeclaration rule)
+//		{
+//			SingleInputNode lastAlphaNode = null;
+//			SingleInputNode lastJoinNode = null;
+//
+//			foreach (ConditionDeclaration condition in rule.Conditions)
+//			{
+//				var normalizer = new ConditionNormalizer();
+//
+//				Expression expression = normalizer.Normalize(condition.Expression);
+//
+//				var conditionNode = (ConditionNode) Activator.CreateInstance(typeof (ConditionNode<>).MakeGenericType(condition.MatchType), expression);
+//
+//				var alphaNode = (Node) Activator.CreateInstance(typeof (AlphaNode<>).MakeGenericType(condition.MatchType));
+//
+//				conditionNode.Add(alphaNode);
+//
+//				lastAlphaNode = lastAlphaNode ?? ( alphaNode as SingleInputNode );
+//				lastJoinNode = lastJoinNode ?? lastAlphaNode;
+//
+//
+//				lastJoinNode = this.FastInvoke<Engine, SingleInputNode>(new[] {conditionNode.InputType}, "GenerateJoinNode", new object[] {alphaNode, lastJoinNode});
+//
+//				lastAlphaNode = alphaNode as SingleInputNode;
+//
+//				_alpha.Add(condition.MatchType, conditionNode);
+//			}
+//
+//			var inputNode = (lastJoinNode ?? lastAlphaNode);
+//
+//			foreach (var consequence in rule.Consequences)
+//			{
+//				ConsequenceDeclaration declaration = consequence;
+//
+//				Action<RuleContext> action = x => declaration.Activate();
+//
+//				SingleInputNode node = this.FastInvoke<Engine, SingleInputNode>(new[] {inputNode.InputType}, "GenerateNode", new object[] { action });
+//
+//				inputNode.Add(node);
+//			}
+//		}
+//
+//		private SingleInputNode GenerateJoinNode<T>(TupleSource<T> left, TupleSource<T> right)
+//		{
+//			return new MemoryJunction<T>();
+//		}
+//
+//		private SingleInputNode GenerateNode<T>(Action<RuleContext> action)
+//		{
+//			var node = new ActionConsequenceNode<T>(x => action(x));
+//
+//			return node;
+//		}
+
+		public void Assert<T>(RuleContext<T> context)
 		{
-			get { return _alpha; }
-		}
-
-		public void Add(RuleDeclaration rule)
-		{
-			SingleInputNode lastAlphaNode = null;
-			SingleInputNode lastJoinNode = null;
-
-			foreach (ConditionDeclaration condition in rule.Conditions)
-			{
-				var normalizer = new ConditionNormalizer();
-
-				Expression expression = normalizer.Normalize(condition.Expression);
-
-				var conditionNode = (ConditionNode) Activator.CreateInstance(typeof (ConditionNode<>).MakeGenericType(condition.MatchType), expression);
-
-				var alphaNode = (Node) Activator.CreateInstance(typeof (AlphaNode<>).MakeGenericType(condition.MatchType));
-
-				conditionNode.Add(alphaNode);
-
-				lastAlphaNode = lastAlphaNode ?? ( alphaNode as SingleInputNode );
-				lastJoinNode = lastJoinNode ?? lastAlphaNode;
-
-
-				lastJoinNode = this.FastInvoke<Engine, SingleInputNode>(new[] {conditionNode.InputType}, "GenerateJoinNode", new object[] {alphaNode, lastJoinNode});
-
-				lastAlphaNode = alphaNode as SingleInputNode;
-
-				_alpha.Add(condition.MatchType, conditionNode);
-			}
-
-			var inputNode = (lastJoinNode ?? lastAlphaNode);
-
-			foreach (var consequence in rule.Consequences)
-			{
-				ConsequenceDeclaration declaration = consequence;
-
-				Action<RuleContext> action = x => declaration.Activate();
-
-				SingleInputNode node = this.FastInvoke<Engine, SingleInputNode>(new[] {inputNode.InputType}, "GenerateNode", new object[] { action });
-
-				inputNode.Add(node);
-			}
-		}
-
-		private SingleInputNode GenerateJoinNode<T>(TupleSource<T> left, TupleSource<T> right)
-		{
-			return new JoinNode<T>(left, right);
-		}
-
-		private SingleInputNode GenerateNode<T>(Action<RuleContext> action)
-		{
-			var node = new ActionConsequenceNode<T>(x => action(x));
-
-			return node;
-		}
-
-		private void ProjectCondition(ConditionDeclaration condition)
-		{
-		}
-
-		public void Assert<T>(RuleContext<T> element)
-		{
-			_alpha.Activate(element);
+			_root.Activate(context);
 		}
 	}
 }

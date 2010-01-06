@@ -12,24 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public class ConditionTree<T> :
-		Activatable<T>
+	/// <summary>
+	/// Right activation is used to match a node with a right node when doing a join.
+	/// </summary>
+	/// <typeparam name="T">The type of object being activated</typeparam>
+	public interface RightActivation<T>
 	{
-		private readonly SuccessorSet<T> _successors;
-
-		public ConditionTree()
-		{
-			_successors = new SuccessorSet<T>();
-		}
-
-		public void Activate(RuleContext<T> context)
-		{
-			_successors.Activate(context);
-		}
-
-		public void AddSuccessor(params Activatable<T>[] successors)
-		{
-			successors.Each(x => _successors.Add(x));
-		}
+		/// <summary>
+		/// Activates the specified RuleContext to see if a match is present
+		/// </summary>
+		/// <param name="context">The context containing the element to match</param>
+		/// <returns>True if the context should be passed down to the successors</returns>
+		bool RightActivate(RuleContext<T> context);
 	}
 }

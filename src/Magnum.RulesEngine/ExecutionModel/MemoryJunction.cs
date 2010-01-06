@@ -12,31 +12,39 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-
 	public class MemoryJunction<T> :
-		Activatable<T>
+		Activation<T>,
+		ModelVisitorSite
 	{
-		private readonly Func<RuleContext<T>, bool> _condition;
+		private readonly RightActivation<T> _rightActivation;
 		private readonly SuccessorSet<T> _successors;
 
-		public MemoryJunction(Func<RuleContext<T>, bool> condition)
+		public MemoryJunction(RightActivation<T> rightActivation)
 		{
-			_condition = condition;
+			_rightActivation = rightActivation;
+
 			_successors = new SuccessorSet<T>();
 		}
 
 		public void Activate(RuleContext<T> context)
 		{
-			if (_condition(context))
+			if (_rightActivation.RightActivate(context))
 			{
 				context.EnqueueAgendaAction(0, () => _successors.Activate(context));
 			}
 		}
 
-		public void AddSuccessor(params Activatable<T>[] successors)
+		public void AddSuccessor(params Activation<T>[] successors)
 		{
 			successors.Each(x => _successors.Add(x));
+		}
+
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () =>
+				{
+					return visitor.Visit(_rightActivation) && _successors.Visit(visitor);
+				});
 		}
 	}
 }

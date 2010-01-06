@@ -23,8 +23,8 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 			switch (node.NodeType)
 			{
-				case NodeType.SingleInputTree:
-					return VisitRootAlpha((SingleInputTreeNode) node);
+//				case NodeType.MatchType:
+//					return VisitRootAlpha((SingleInputTreeNode) node);
 
 				case NodeType.SingleInputNode:
 					return VisitSingleInput((SingleInputNode)node);
@@ -54,12 +54,5 @@ namespace Magnum.RulesEngine.ExecutionModel
 			return node;
 		}
 
-		protected virtual Node VisitRootAlpha(SingleInputTreeNode r)
-		{
-			if (r == null)
-				return null;
-
-			return r;
-		}
 	}
 }

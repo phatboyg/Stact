@@ -56,24 +56,4 @@ namespace Magnum.RulesEngine.ExecutionModel
 			throw new InvalidOperationException("Cannot add successors to a final node");
 		}
 	}
-
-
-	public class Thejoiner
-	{
-		/// <summary>
-		/// The left side of the join, matched against the rule context
-		/// </summary>
-		public Node Left { get; private set; }
-
-		/// <summary>
-		/// The right side of the join, matched against the rule context
-		/// </summary>
-		public Node Right { get; private set; }
-
-
-		/// <summary>
-		/// The nodes that are to be evaluated for each bound left/right pair
-		/// </summary>
-		public IEnumerable<Node> Successors { get; private set; }
-	}
 }

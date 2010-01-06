@@ -21,18 +21,19 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class BetaMemory<T> :
-		Activatable<T>
+		Activation<T>,
+		RightActivation<T>
 	{
 		private readonly HashSet<RuleContext<T>> _contexts;
 		private readonly SuccessorSet<T> _successors;
 
-		public BetaMemory(params Activatable<T>[] successors)
+		public BetaMemory(params Activation<T>[] successors)
 		{
 			_successors = new SuccessorSet<T>(successors);
 			_contexts = new HashSet<RuleContext<T>>();
 		}
 
-		public BetaMemory(IEnumerable<Activatable<T>> successors)
+		public BetaMemory(IEnumerable<Activation<T>> successors)
 		{
 			_successors = new SuccessorSet<T>(successors);
 			_contexts = new HashSet<RuleContext<T>>();

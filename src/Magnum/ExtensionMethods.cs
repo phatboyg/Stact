@@ -13,6 +13,7 @@
 namespace Magnum
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 
@@ -33,6 +34,20 @@ namespace Magnum
 			}
 
 			return collection;
+		}
+
+		public static bool EachUntilFalse<T>(this IEnumerable collection, Func<T, bool> callback)
+		{
+			foreach (T item in collection)
+			{
+				if(item == null)
+					continue;
+
+				if(callback(item) == false)
+					return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>

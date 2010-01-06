@@ -12,13 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public interface Activatable
+	public interface ModelVisitorSite
 	{
-		void Activate(RuleContext context);
-	}
-
-	public interface Activatable<T>
-	{
-		void Activate(RuleContext<T> context);
+		bool Visit(ModelVisitor visitor);
 	}
 }
