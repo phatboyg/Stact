@@ -31,29 +31,23 @@ namespace Magnum.RulesEngine.SemanticModel
 			_expression = expression;
 		}
 
-		public Expression<Action> Expression
+		public virtual Expression Expression
 		{
 			get { return _expression; }
 		}
 	}
 
 	public class ConsequenceDeclaration<T> :
-		Declaration
+		ConsequenceDeclaration
 	{
 		private readonly Expression<Action<RuleContext<T>>> _expression;
 
-		public ConsequenceDeclaration()
-			: base(DeclarationType.Consequence)
-		{
-		}
-
 		public ConsequenceDeclaration(Expression<Action<RuleContext<T>>> expression)
-			: base(DeclarationType.Consequence)
 		{
 			_expression = expression;
 		}
 
-		public Expression<Action<RuleContext<T>>> Expression
+		public override Expression Expression
 		{
 			get { return _expression; }
 		}

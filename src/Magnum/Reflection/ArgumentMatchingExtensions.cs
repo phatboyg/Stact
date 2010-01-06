@@ -80,7 +80,7 @@ namespace Magnum.Reflection
 				return 0;
 
 			if (parameterInfos.Length == 0)
-				return 7;
+				return 17;
 
 			var matched = parameterInfos.Merge(args, (x, y) => new {Parameter = x, Argument = y, Rating = RateParameterTypeCompatibility(x.ParameterType, y)}).ToArray();
 
@@ -115,17 +115,21 @@ namespace Magnum.Reflection
 		private static int RateParameterTypeCompatibility(this Type parameterType, Type argType)
 		{
 			if (argType == parameterType)
-				return 6;
+				return 16;
 
 			if (parameterType.IsGenericParameter)
-				return argType.MeetsGenericConstraints(parameterType) ? 5 : 0;
+				return argType.MeetsGenericConstraints(parameterType) ? 15 : 0;
 
 			if (parameterType.IsGenericType)
 			{
 				Type definition = parameterType.GetGenericTypeDefinition();
 
-				if (argType.IsGenericType && definition == argType.GetGenericTypeDefinition())
-					return 4;
+				if (argType.IsGenericType)
+				{
+					int matchDepth = parameterType.GetMatchDepth(argType);
+					if(matchDepth > 0)
+						return matchDepth + 3;
+				}
 
 				if (argType.Implements(definition))
 					return 3;
@@ -149,6 +153,26 @@ namespace Magnum.Reflection
 				.Count();
 
 			return matched == constraints.Length;
+		}
+
+		public static int GetMatchDepth(this Type type, Type targetType)
+		{
+			if(!type.IsGenericType || !targetType.IsGenericType)
+				return 0;
+
+			var typeGeneric = type.GetGenericTypeDefinition();
+			var targetTypeGeneric = targetType.GetGenericTypeDefinition();
+
+			if(typeGeneric != targetTypeGeneric)
+				return 0;
+            
+			int result = type
+				.GetGenericArguments()
+				.MergeBalanced(targetType.GetGenericArguments(), (x, y) => new {Type = x, TargetType = y})
+				.Select(x => x.Type.GetMatchDepth(x.TargetType))
+				.Sum();
+
+			return result + 1;
 		}
 	}
 }

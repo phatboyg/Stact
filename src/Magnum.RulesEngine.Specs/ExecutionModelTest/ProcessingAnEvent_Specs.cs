@@ -1,25 +1,63 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 {
+	using System;
+	using System.Linq.Expressions;
 	using Events;
+	using ExecutionModel;
 	using NUnit.Framework;
+	using Rhino.Mocks;
+	using SemanticModel;
 
 	[TestFixture]
 	public class ProcessingAnEvent_Specs
 	{
+		private OrderSubmitted _order;
+		private Engine _engine;
+		private Action<OrderSubmitted> _overLimit;
+
+		[SetUp]
+		public void Setup()
+		{
+			_order = new OrderSubmitted();
+
+			_overLimit = MockRepository.GenerateMock<Action<OrderSubmitted>>();
+			_overLimit.Expect(x => x(_order));
+
+			Expression<Func<OrderSubmitted, bool>> exp = o => o.Amount > 1000.00m;
+
+			ConditionDeclaration condition = Declaration.Condition(exp);
+			ConsequenceDeclaration<OrderSubmitted> consequence = Declaration.Consequence<OrderSubmitted>(o => _overLimit(o.Element.Object));
+
+			RuleDeclaration rule = Declaration.Rule(new[] {condition}, new[] {consequence});
+
+			_engine = new Engine();
+			_engine.Add(rule);
+		}
+
 		[Test]
 		public void FirstTestName()
 		{
-			var obj = new OrderSubmitted();
+			_order.Amount = 10000.00m;
 
-			WorkingMemory memory = new HashSetWorkingMemory();
-			memory.Add(obj);
+			using (var session = _engine.CreateSession())
+			{
+				session.Assert(_order);
+				session.Run();
+			}
 
-			RuleSet ruleSet = null;
-
-			ruleSet.Evaluate(memory);
-
-
-			
+			_overLimit.VerifyAllExpectations();
 		}
 	}
 }

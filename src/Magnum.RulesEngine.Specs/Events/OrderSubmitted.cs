@@ -14,6 +14,6 @@ namespace Magnum.RulesEngine.Specs.Events
 {
 	public class OrderSubmitted
 	{
-		public decimal Amount { get; private set; }
+		public decimal Amount { get; set; }
 	}
 }
