@@ -18,7 +18,6 @@ namespace Magnum.RulesEngine.SemanticModel
 	public class ConsequenceDeclaration :
 		Declaration
 	{
-		private readonly Action _eval;
 		private readonly Expression<Action> _expression;
 
 		public ConsequenceDeclaration()
@@ -30,12 +29,11 @@ namespace Magnum.RulesEngine.SemanticModel
 			: base(DeclarationType.Consequence)
 		{
 			_expression = expression;
-			_eval = expression.Compile();
 		}
 
-		public void Activate()
+		public Expression<Action> Expression
 		{
-			_eval();
+			get { return _expression; }
 		}
 	}
 }

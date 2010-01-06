@@ -18,6 +18,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 		ModelVisitorSite
 	{
 		private readonly RightActivation<T> _rightActivation;
+
 		private readonly SuccessorSet<T> _successors;
 
 		public MemoryJunction(RightActivation<T> rightActivation)
@@ -25,6 +26,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_rightActivation = rightActivation;
 
 			_successors = new SuccessorSet<T>();
+		}
+
+		public RightActivation<T> RightActivation
+		{
+			get { return _rightActivation; }
 		}
 
 		public void Activate(RuleContext<T> context)
@@ -35,17 +41,14 @@ namespace Magnum.RulesEngine.ExecutionModel
 			}
 		}
 
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => { return visitor.Visit(_rightActivation) && _successors.Visit(visitor); });
+		}
+
 		public void AddSuccessor(params Activation<T>[] successors)
 		{
 			successors.Each(x => _successors.Add(x));
-		}
-
-		public bool Visit(ModelVisitor visitor)
-		{
-			return visitor.Visit(this, () =>
-				{
-					return visitor.Visit(_rightActivation) && _successors.Visit(visitor);
-				});
 		}
 	}
 }

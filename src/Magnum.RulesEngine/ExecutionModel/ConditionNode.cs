@@ -63,21 +63,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public AlphaNode<T> GetAlphaNode()
 		{
-			AlphaNode<T> result = _successors
-				.Where(x => x.GetType() == typeof (AlphaNode<T>))
-				.Cast<AlphaNode<T>>()
-				.FirstOrDefault();
-
-			return result ?? AddAlphaNode();
-		}
-
-		private AlphaNode<T> AddAlphaNode()
-		{
-			var alphaNode = new AlphaNode<T>();
-
-			_successors.Add(alphaNode);
-
-			return alphaNode;
+			return _successors.Get(() => new AlphaNode<T>());
 		}
 	}
 }

@@ -55,6 +55,7 @@
     <Compile Include="EnuemrableItems_Specs.cs" />
     <Compile Include="Events\OrderSubmitted.cs" />
     <Compile Include="ExecutionModelTest\Engine_Specs.cs" />
+    <Compile Include="ExecutionModelTest\JoinTree_Specs.cs" />
     <Compile Include="ExecutionModelTest\ProcessingAnEvent_Specs.cs" />
     <Compile Include="ExecutionModelTest\SingleInputNode_Specs.cs" />
     <Compile Include="Expression_Specs.cs" />

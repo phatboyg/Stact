@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using Reflection;
@@ -20,7 +21,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 	public class DeclarationCompiler
 	{
-		private ConditionNormalizer _normalizer;
+		private readonly ConditionNormalizer _normalizer;
 
 		public DeclarationCompiler()
 		{
@@ -45,8 +46,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 				}
 			}
 
+			Node junctionNode = CreateJunctionNode(conditionNodes, conditions[0].MatchType);
+
+			declaration.Consequences.Each(consequence =>
+				{
+					CreateActionNode(junctionNode, consequence.Expression);
+				});
+
 			return root;
 		}
+
 
 		private Node CreateConditionNode(MatchTypeNode root, Type matchType, Expression expression)
 		{
@@ -60,6 +69,66 @@ namespace Magnum.RulesEngine.ExecutionModel
 			root.Add(conditionNode);
 
 			return conditionNode;
+		}
+
+		private Node CreateJunctionNode(object[] conditionNodes, Type matchType)
+		{
+			var args = new object[] {conditionNodes};
+
+			return this.FastInvoke<DeclarationCompiler, Node>(new[] {matchType}, "CreateJunctionNodeOfT", args);
+		}
+
+		private Node CreateJunctionNodeOfT<T>(object[] conditionNodes)
+		{
+			IEnumerable<AlphaNode<T>> nodes = conditionNodes
+				.Cast<ConditionNode<T>>()
+				.Select(x => x.GetAlphaNode());
+
+			return GetFinalJunction(nodes);
+		}
+
+		private Node CreateActionNode(Node junctionNode, Expression expression)
+		{
+			object[] args = new object[]{junctionNode, expression};
+
+			return this.FastInvoke<DeclarationCompiler, Node>("CreateActionNodeOfT", args);
+		}
+
+		private Node CreateActionNodeOfT<T>(MemoryJunction<T> junctionNode, Expression<Action> expression)
+		{
+			Expression<Action<RuleContext<T>>> action = expression.WrapActionWithArgument<RuleContext<T>>();
+
+			return CreateActionNodeOfT(junctionNode, action);
+		}
+
+		private Node CreateActionNodeOfT<T>(MemoryJunction<T> junctionNode, Expression<Action<RuleContext<T>>> expression)
+		{
+			var actionNode = new ActionNode<T>(expression);
+
+			junctionNode.AddSuccessor(actionNode);
+
+			return actionNode;
+		}
+
+		private static MemoryJunction<T> GetFinalJunction<T>(IEnumerable<AlphaNode<T>> nodes)
+		{
+			MemoryJunction<T> junction;
+
+			if (nodes.Count() == 1)
+			{
+				junction = nodes.Single().GetConstantJunction();
+			}
+			else if (nodes.Count() == 2)
+			{
+				junction = nodes.Skip(1).First().GetAlphaNodeJunction(nodes.First());
+			}
+			else
+			{
+				junction = new MemoryJunction<T>(nodes.First());
+				GetFinalJunction(nodes.Skip(1)).AddSuccessor(junction);
+			}
+
+			return junction;
 		}
 	}
 }

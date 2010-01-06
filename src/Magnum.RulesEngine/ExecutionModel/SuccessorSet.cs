@@ -12,8 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
+	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	public class SuccessorSet<T> :
 		IEnumerable<Activation<T>>,
@@ -54,6 +56,31 @@ namespace Magnum.RulesEngine.ExecutionModel
 		public void Activate(RuleContext<T> ruleContext)
 		{
 			_successors.Each(successor => ActivateSuccessor(successor, ruleContext));
+		}
+
+		public TNode Get<TNode>(Func<TNode, bool> filter, Func<TNode> onMissing)
+			where TNode : class, Activation<T>
+		{
+			TNode result = _successors
+				.Where(x => x.GetType() == typeof (TNode))
+				.Cast<TNode>()
+				.Where(filter)
+				.FirstOrDefault();
+
+			if (result != default(TNode))
+				return result;
+
+			result = onMissing();
+
+			_successors.Add(result);
+
+			return result;
+		}
+
+		public TNode Get<TNode>(Func<TNode> onMissing)
+			where TNode : class, Activation<T>
+		{
+			return Get(x => true, onMissing);
 		}
 
 		private static void ActivateSuccessor(Activation<T> successor, RuleContext<T> ruleContext)

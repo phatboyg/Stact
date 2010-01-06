@@ -42,19 +42,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 //
 //			foreach (ConditionDeclaration condition in rule.Conditions)
 //			{
-//				var normalizer = new ConditionNormalizer();
-//
-//				Expression expression = normalizer.Normalize(condition.Expression);
-//
-//				var conditionNode = (ConditionNode) Activator.CreateInstance(typeof (ConditionNode<>).MakeGenericType(condition.MatchType), expression);
-//
-//				var alphaNode = (Node) Activator.CreateInstance(typeof (AlphaNode<>).MakeGenericType(condition.MatchType));
-//
-//				conditionNode.Add(alphaNode);
-//
-//				lastAlphaNode = lastAlphaNode ?? ( alphaNode as SingleInputNode );
-//				lastJoinNode = lastJoinNode ?? lastAlphaNode;
-//
 //
 //				lastJoinNode = this.FastInvoke<Engine, SingleInputNode>(new[] {conditionNode.InputType}, "GenerateJoinNode", new object[] {alphaNode, lastJoinNode});
 //

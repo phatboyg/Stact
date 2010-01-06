@@ -32,6 +32,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 			betaMemory.Activate(context);
 		}
 
+		public bool Visit(ModelVisitor visitor)
+		{
+			return visitor.Visit(this, () => _successors.Visit(visitor));
+		}
+
 		public bool RightActivate(RuleContext<T> context)
 		{
 			RightActivation<T> betaMemory = context.GetBetaMemory(GetHashCode(), () => new BetaMemory<T>(_successors));
@@ -44,9 +49,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 			successors.Each(x => _successors.Add(x));
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public MemoryJunction<T> GetConstantJunction()
 		{
-			return visitor.Visit(this, () => _successors.Visit(visitor));
+			return _successors
+				.Get(x => x.RightActivation.GetType() == typeof (ConstantNode<T>), () => new MemoryJunction<T>(new ConstantNode<T>()));
+		}
+
+		public MemoryJunction<T> GetAlphaNodeJunction(AlphaNode<T> node)
+		{
+			return _successors
+				.Get(x => ReferenceEquals(x.RightActivation, node), () => new MemoryJunction<T>(node));
 		}
 	}
 }

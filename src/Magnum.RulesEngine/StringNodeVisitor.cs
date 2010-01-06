@@ -73,6 +73,13 @@ namespace Magnum.RulesEngine
 			return true;
 		}
 
+		protected bool Visit<T>(ActionNode<T> node)
+		{
+			Append("Action<{0}>: {1}", typeof (T).Name, node.Expression);
+			
+			return true;
+		}
+
 		private string Pad()
 		{
 			return new string('\t', _depth);
