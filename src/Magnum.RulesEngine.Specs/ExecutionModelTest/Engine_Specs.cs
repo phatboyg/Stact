@@ -111,15 +111,11 @@ namespace Engine_Specs
 
 			RuleDeclaration rule = CreateOnlineOrderRule();
 			engine.Add(rule);
-			engine.Add(rule);
 			rule = CreateCustomerExistsRule();
-			engine.Add(rule);
 			engine.Add(rule);
 			rule = CreateActiveNotPreferredRule();
 			engine.Add(rule);
-			engine.Add(rule);
 			rule = CreatePreferredRule();
-			engine.Add(rule);
 			engine.Add(rule);
 
 			var visitor = new StringNodeVisitor();

@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
-	using System.Collections.Generic;
-	using System.Linq.Expressions;
 	using System.Text;
 	using ExecutionModel;
 
@@ -38,6 +36,13 @@ namespace Magnum.RulesEngine
 			_depth--;
 		}
 
+		protected bool Visit(MatchTypeNode node)
+		{
+			Append("MatchType");
+
+			return true;
+		}
+
 		protected bool Visit<T>(ConditionTreeNode<T> node)
 		{
 			Append("ConditionTree<{0}>", typeof (T).Name);
@@ -54,14 +59,14 @@ namespace Magnum.RulesEngine
 
 		protected bool Visit<T>(AlphaNode<T> node)
 		{
-			Append("Alpha<{0}>[{1}]", typeof(T).Name, node.GetHashCode());
+			Append("Alpha<{0}>[{1}]", typeof (T).Name, node.GetHashCode());
 
 			return true;
 		}
 
 		protected bool Visit<T>(MemoryJunction<T> node)
 		{
-			Append("Junction<{0}>[{1}]", typeof(T).Name, node.GetHashCode());
+			Append("Junction<{0}>[{1}]", typeof (T).Name, node.GetHashCode());
 
 			return true;
 		}
@@ -76,7 +81,7 @@ namespace Magnum.RulesEngine
 		protected bool Visit<T>(ActionNode<T> node)
 		{
 			Append("Action<{0}>: {1}", typeof (T).Name, node.Expression);
-			
+
 			return true;
 		}
 
