@@ -107,7 +107,7 @@ namespace Magnum.RulesEngine.Visualizers
 			_root = _lastNodeVertex;
 
 			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
@@ -117,7 +117,7 @@ namespace Magnum.RulesEngine.Visualizers
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => typeof (T).Name, typeof (T), typeof (ConditionTreeNode<>));
 
 			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
@@ -127,17 +127,17 @@ namespace Magnum.RulesEngine.Visualizers
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => GetExpressionBody(node.Expression), typeof (T), typeof (ConditionNode<>));
 
 			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
 
 		protected bool Visit<T>(AlphaNode<T> node)
 		{
-			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Alpha", typeof (T), typeof (AlphaNode<>));
+			_lastNodeVertex = GetSink(node.GetHashCode(), () => "\u03B1", typeof(T), typeof(AlphaNode<>));
 
-			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+			if (_stack.Count > 0 && _stack.Peek().NodeType != typeof(MemoryJunction<>))
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
@@ -146,8 +146,15 @@ namespace Magnum.RulesEngine.Visualizers
 		{
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Join", typeof (T), typeof (MemoryJunction<>));
 
+			if(_nodes.ContainsKey(node.RightActivation.GetHashCode()))
+			{
+				var sink = _nodes[node.RightActivation.GetHashCode()];
+
+				_graph.AddEdge(new Edge<NodeVertex>(sink, _lastNodeVertex));
+			}
+
 			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
@@ -167,7 +174,7 @@ namespace Magnum.RulesEngine.Visualizers
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => GetExpressionBody(node.Expression), typeof (T), typeof (ActionNode<>));
 
 			if (_stack.Count > 0)
-				_graph.AddEdge(new Edge<NodeVertex>(_lastNodeVertex, _stack.Peek()));
+				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
@@ -210,6 +217,7 @@ namespace Magnum.RulesEngine.Visualizers
 			e.GEdge.EdgeAttr.Label = e.Edge.Source.ObjectType.Name;
 			e.GEdge.EdgeAttr.Fontsize = 8;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
+			e.GEdge.EdgeAttr.Fontsize = 6;
 		}
 	}
 }

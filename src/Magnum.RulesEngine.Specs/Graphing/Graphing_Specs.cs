@@ -18,6 +18,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	using ExecutionModel;
 	using Model;
 	using NUnit.Framework;
+	using Rhino.Mocks;
 	using SemanticModel;
 	using Visualizers;
 
@@ -29,11 +30,14 @@ namespace Magnum.RulesEngine.Specs.Graphing
 		[SetUp]
 		public void Setup()
 		{
+			//TODO Dru needs to see this
+
 			_engine = new Engine();
 			_engine.Add(CreateOnlineOrderRule());
 			_engine.Add(CustomerIsSpecified());
 			_engine.Add(CreateActiveNotPreferredRule());
 			_engine.Add(CreatePreferredRule());
+			_engine.Add(CreateOnlinePreferredOrderRule());
 		}
 
 		private RuleDeclaration CreateOnlineOrderRule()
@@ -41,9 +45,22 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			Expression<Func<Order, bool>> exp = o => o.Source == "Online";
 
 			ConditionDeclaration condition = Declaration.Condition(exp);
-			ConsequenceDeclaration consequence = Declaration.Consequence(() => Trace.WriteLine("Online Order"));
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsOnline());
 
 			return Declaration.Rule(new[] { condition }, new[] { consequence });
+		}
+
+		private RuleDeclaration CreateOnlinePreferredOrderRule()
+		{
+			Expression<Func<Order, bool>> exp = o => o.Source == "Online";
+			ConditionDeclaration condition = Declaration.Condition(exp);
+
+			Expression<Func<Order, bool>> exp2 = o => o.Customer.Preferred == true;
+			ConditionDeclaration condition2 = Declaration.Condition(exp2);
+
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsOnlinePreferred()); ;
+
+			return Declaration.Rule(new[] { condition, condition2 }, new[] { consequence });
 		}
 
 		private RuleDeclaration CustomerIsSpecified()
@@ -51,7 +68,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			Expression<Func<Order, bool>> exp = o => o.Customer != null;
 
 			ConditionDeclaration condition = Declaration.Condition(exp);
-			ConsequenceDeclaration consequence = Declaration.Consequence(() => Trace.WriteLine("Customer Order"));
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.HasCustomer());
 
 			return Declaration.Rule(new[] { condition }, new[] { consequence });
 		}
@@ -64,18 +81,17 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			Expression<Func<Order, bool>> exp2 = o => o.Customer.Active;
 			ConditionDeclaration condition2 = Declaration.Condition(exp2);
 
-			ConsequenceDeclaration consequence = Declaration.Consequence(() => Trace.WriteLine("Active, Not Preferred"));
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsActiveNotPreferred()); ;
 
 			return Declaration.Rule(new[] { condition, condition2 }, new[] { consequence });
 		}
-
 
 		private RuleDeclaration CreatePreferredRule()
 		{
 			Expression<Func<Order, bool>> exp = o => o.Customer.Preferred;
 			ConditionDeclaration condition = Declaration.Condition(exp);
 
-			ConsequenceDeclaration consequence = Declaration.Consequence(() => Trace.WriteLine("Preferred Customer"));
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsPreferred());
 
 			return Declaration.Rule(new[] { condition }, new[] { consequence });
 		}
@@ -88,6 +104,25 @@ namespace Magnum.RulesEngine.Specs.Graphing
 
 			visitor.ComputeShortestPath();
 			visitor.GetGraph();
+		}
+	}
+
+	public static class xxx
+	{
+		public static void HasCustomer(this RuleContext<Order> x)
+		{
+		}
+		public static void IsPreferred(this RuleContext<Order> x)
+		{
+		}
+		public static void IsActiveNotPreferred(this RuleContext<Order> x)
+		{
+		}
+		public static void IsOnlinePreferred(this RuleContext<Order> x)
+		{
+		}
+		public static void IsOnline(this RuleContext<Order> x)
+		{
 		}
 	}
 }
