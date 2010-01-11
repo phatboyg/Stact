@@ -12,16 +12,26 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.DSL
 {
+	using System;
+	using System.Linq.Expressions;
+
 	public interface RuleConfigurator<TRule>
 		where TRule : class
 	{
-		ConditionConfigurator<TRule, TCondition> When<TCondition>()
-			where TCondition : class;
+
+
+
+
+		RuleConfigurator<TRule> When<TCondition>()
+			where TCondition : Condition<TRule>, new();
+
+		RuleConfigurator<TRule> When(Expression<Func<TRule, bool>> condition);
+
 
 		RuleConfigurator<TRule> Then<TConsequence>()
-			where TConsequence : Consequence<TRule>;
+			where TConsequence : Consequence<TRule>, new();
 
-		RuleConfigurator<TRule> Always<TConsequence>()
-			where TConsequence : Consequence<TRule>;
+		RuleConfigurator<TRule> Then(Expression<Action<RuleContext<TRule>>> action);
+
 	}
 }

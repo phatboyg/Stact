@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Specs.Consequences
 {
-	using System;
+	using System.Diagnostics;
 	using Events;
 
 	public class LogOrderDetails :
@@ -20,7 +20,7 @@ namespace Magnum.RulesEngine.Specs.Consequences
 	{
 		public void Execute(RuleContext<OrderSubmitted> context)
 		{
-			throw new NotImplementedException();
+			Trace.WriteLine("Order Details Received: " + context.Element.Object.Amount);
 		}
 	}
 }

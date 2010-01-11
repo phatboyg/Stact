@@ -13,7 +13,6 @@
 namespace Magnum.RulesEngine
 {
 	using System;
-	using System.Collections.Generic;
 	using ExecutionModel;
 
 	/*
@@ -61,6 +60,9 @@ namespace Magnum.RulesEngine
 		RuleContext
 	{
 		SessionElement<T> Element { get; }
+
+		T Object { get; }
+
 		BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing);
 	}
 }

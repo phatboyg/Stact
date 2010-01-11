@@ -26,10 +26,10 @@ namespace Magnum.RulesEngine.Specs
 		{
 			var declared = Rule.Declare<OrderSubmitted>(rule =>
 				{
-					rule.When<CustomerIsPreferred>()
-						.Exit();
+//					rule.When<CustomerIsPreferred>()
+//						.Exit();
 
-					rule.Always<LogOrderDetails>();
+					//rule.Always<LogOrderDetails>();
 
 					rule.When<OrderAmountIsOverLimit>()
 						.Then<HoldOrderForApproval>();

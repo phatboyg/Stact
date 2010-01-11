@@ -15,7 +15,7 @@ namespace Magnum.RulesEngine.DSL
 	public interface ConditionConfigurator<TRule, TCondition> :
 		RuleConfigurator<TRule>
 		where TRule : class
-		where TCondition : class
+		where TCondition : Condition<TRule>
 	{
 	}
 }

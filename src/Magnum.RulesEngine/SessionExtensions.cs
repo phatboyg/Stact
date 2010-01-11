@@ -13,29 +13,12 @@
 namespace Magnum.RulesEngine
 {
 	using ExecutionModel;
-	using SemanticModel;
 
-	public class MagnumRulesEngine :
-		RulesEngine
+	public static class SessionExtensions
 	{
-		private TypeDispatchNode _root = new TypeDispatchNode();
-
-
-		public bool Visit(NodeVisitor visitor)
+		public static StatefulSession CreateSession(this RulesEngine engine)
 		{
-			return visitor.Visit(this, () => _root.Visit(visitor));
-		}
-
-		public void Assert<T>(RuleContext<T> context)
-		{
-			_root.Activate(context);
-		}
-
-		public void Add(RuleDeclaration rule)
-		{
-			var compiler = new DeclarationCompiler();
-
-			_root = compiler.Add(_root, rule);
+			return new StatefulSessionImpl(engine);
 		}
 	}
 }

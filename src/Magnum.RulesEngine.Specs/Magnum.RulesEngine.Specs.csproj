@@ -52,6 +52,7 @@
     <Compile Include="Agenda Specs\ContextAgenda_Specs.cs" />
     <Compile Include="Conditions\CustomerIsPreferred.cs" />
     <Compile Include="Consequences\LogOrderDetails.cs" />
+    <Compile Include="Consequences\RequestOrderApproval.cs" />
     <Compile Include="EnuemrableItems_Specs.cs" />
     <Compile Include="Events\OrderSubmitted.cs" />
     <Compile Include="ExecutionModelTest\Engine_Specs.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="ExecutionModelTest\ProcessingAnEvent_Specs.cs" />
     <Compile Include="ExecutionModelTest\SingleInputNode_Specs.cs" />
     <Compile Include="Expression_Specs.cs" />
+    <Compile Include="FluentRuleSyntax\DeclareRule_Specs.cs" />
     <Compile Include="Graphing\Graphing_Specs.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Consequences\HoldOrderForApproval.cs" />

@@ -32,6 +32,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public SessionElement<T> Element { get; private set; }
 
+		public T Object
+		{
+			get { return Element.Object; }
+		}
+
 		public BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing)
 		{
 			return _betaMemory.Retrieve(key, onMissing);

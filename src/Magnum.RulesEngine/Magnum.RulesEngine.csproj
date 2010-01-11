@@ -84,6 +84,7 @@
     <Compile Include="SemanticModel\RuleDeclaration.cs" />
     <Compile Include="SemanticModel\Declaration.cs" />
     <Compile Include="SemanticModel\DeclarationType.cs" />
+    <Compile Include="SessionExtensions.cs" />
     <Compile Include="StatefulSession.cs" />
   </ItemGroup>
   <ItemGroup>

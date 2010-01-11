@@ -10,32 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine
+namespace Magnum.RulesEngine.Specs.Consequences
 {
-	using ExecutionModel;
-	using SemanticModel;
+	using System.Diagnostics;
+	using Events;
 
-	public class MagnumRulesEngine :
-		RulesEngine
+	public class RequestOrderApproval :
+		Consequence<OrderSubmitted>
 	{
-		private TypeDispatchNode _root = new TypeDispatchNode();
-
-
-		public bool Visit(NodeVisitor visitor)
+		public void Execute(RuleContext<OrderSubmitted> context)
 		{
-			return visitor.Visit(this, () => _root.Visit(visitor));
-		}
-
-		public void Assert<T>(RuleContext<T> context)
-		{
-			_root.Activate(context);
-		}
-
-		public void Add(RuleDeclaration rule)
-		{
-			var compiler = new DeclarationCompiler();
-
-			_root = compiler.Add(_root, rule);
+			Trace.WriteLine("Requesting Order Approval: " + context.Element.Object.Amount);
 		}
 	}
 }

@@ -78,12 +78,4 @@ namespace Magnum.RulesEngine.ExecutionModel
 			Dispose(false);
 		}
 	}
-
-	public static class SessionExtensions
-	{
-		public static StatefulSession CreateSession(this RulesEngine engine)
-		{
-			return new StatefulSessionImpl(engine);
-		}
-	}
 }
