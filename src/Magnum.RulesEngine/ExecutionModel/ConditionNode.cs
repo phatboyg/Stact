@@ -13,19 +13,21 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
-	using System.Linq;
 	using System.Linq.Expressions;
 
 	/// <summary>
 	/// A generic condition that has a single input type (alpha node)
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
+	[Serializable]
 	public class ConditionNode<T> :
 		Node,
 		Activation<T>
 	{
-		private readonly Func<RuleContext<T>, bool> _condition;
+		[NonSerialized]
 		private readonly Func<T, bool> _eval;
+
+		[NonSerialized]
 		private readonly Expression<Func<T, bool>> _expression;
 
 		private readonly SuccessorSet<T> _successors;
@@ -35,12 +37,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_successors = new SuccessorSet<T>();
 			_expression = expression;
 			_eval = _expression.Compile();
+	
+			Body = GetExpressionBody(_expression);
 		}
 
 		public Expression Expression
 		{
 			get { return _expression; }
 		}
+
+		public string Body { get; private set; }
 
 		public void Activate(RuleContext<T> context)
 		{
@@ -63,6 +69,15 @@ namespace Magnum.RulesEngine.ExecutionModel
 		public AlphaNode<T> GetAlphaNode()
 		{
 			return _successors.Get(() => new AlphaNode<T>());
+		}
+
+		private string GetExpressionBody(Expression expression)
+		{
+			var lambda = expression as LambdaExpression;
+			if (lambda != null)
+				return lambda.Body.ToString();
+
+			return expression.ToString();
 		}
 	}
 }

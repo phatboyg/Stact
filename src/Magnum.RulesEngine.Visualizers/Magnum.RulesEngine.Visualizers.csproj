@@ -43,6 +43,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Glee\Microsoft.GLEE.GraphViewerGDI.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="QuickGraph, Version=3.3.40824.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\QuickGraph\QuickGraph.dll</HintPath>
@@ -57,12 +58,22 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphNodeVisitor.cs" />
+    <Compile Include="Edge.cs" />
+    <Compile Include="RulesEngineGraphGenerator.cs" />
+    <Compile Include="RulesEngineGraphVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NodeVertex.cs" />
+    <Compile Include="RulesEngineDebugVisualizer.cs" />
+    <Compile Include="RulesEngineVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RulesEngineVisualizerForm.Designer.cs">
+      <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Vertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">
@@ -73,6 +84,11 @@
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Magnum</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RulesEngineVisualizerForm.resx">
+      <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

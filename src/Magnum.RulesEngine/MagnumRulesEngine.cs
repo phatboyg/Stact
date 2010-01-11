@@ -12,10 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
+	using System;
 	using System.Collections.Generic;
 	using ExecutionModel;
 	using SemanticModel;
 
+	[Serializable]
 	public class MagnumRulesEngine :
 		RulesEngine
 	{
@@ -34,7 +36,8 @@ namespace Magnum.RulesEngine
 
 		public void Add(params RuleDeclaration[] rules)
 		{
-			Add(rules);
+			IEnumerable<RuleDeclaration> all = rules;
+			Add(all);
 		}
 
 		public void Add(IEnumerable<RuleDeclaration> rules)

@@ -101,14 +101,10 @@ namespace Magnum.RulesEngine.Specs.Graphing
 		[Test]
 		public void Should_generate_a_nice_graph_of_the_network()
 		{
-			GraphNodeVisitor visitor = new GraphNodeVisitor();
-			_engine.Visit(visitor);
-
-			visitor.ComputeShortestPath();
-
 			var filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
-			visitor.GetGraph(2560, 1920, filename);
+			var generator = new RulesEngineGraphGenerator();
+			generator.SaveGraphToFile(_engine, 2560, 1920, filename);
 		}
 	}
 

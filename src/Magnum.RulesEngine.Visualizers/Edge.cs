@@ -12,25 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Visualizers
 {
-	using System;
-
-	public class NodeVertex
+	public class Edge
 	{
-		public NodeVertex(string name, Type objectType, Type nodeType)
+		public Edge(Vertex from, Vertex to)
 		{
-			ObjectType = objectType;
-			NodeType = nodeType;
-			Name = name;
+			From = from;
+			To = to;
 		}
 
-		public Type ObjectType { get; private set; }
-		public Type NodeType { get; private set; }
+		public Vertex To { get; private set; }
 
-		public string Name { get; private set; }
-
-		public override string ToString()
-		{
-			return string.Format("{0} ({1})", Name, ObjectType.Name);
-		}
+		public Vertex From { get; private set; }
 	}
 }

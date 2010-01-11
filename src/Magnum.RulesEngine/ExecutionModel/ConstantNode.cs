@@ -12,11 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
+	using System;
+
 	/// <summary>
 	/// A constant node is used to balance out a join node with a positive match,
 	/// allowing an activation to complete.
 	/// </summary>
 	/// <typeparam name="T">The type of the constant true operation</typeparam>
+	[Serializable]
 	public class ConstantNode<T> :
 		Node,
 		RightActivation<T>

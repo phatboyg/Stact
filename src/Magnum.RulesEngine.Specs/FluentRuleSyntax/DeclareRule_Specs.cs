@@ -13,8 +13,6 @@
 namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 {
 	using System.Diagnostics;
-	using System.IO;
-	using System.Reflection;
 	using Conditions;
 	using Consequences;
 	using DSL;
@@ -34,14 +32,7 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 		[TearDown]
 		public void Teardown()
 		{
-			var visitor = new GraphNodeVisitor();
-			_engine.Visit(visitor);
-
-			visitor.ComputeShortestPath();
-
-			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
-
-			visitor.GetGraph(2560, 1920, filename);
+			RulesEngineDebugVisualizer.TestShowVisualizer(_engine);
 		}
 
 		private RulesEngine _engine;

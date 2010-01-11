@@ -16,6 +16,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections.Generic;
 	using CollectionExtensions;
 
+	[Serializable]
 	public class TypeDispatchNode :
 		Node,
 		Activation

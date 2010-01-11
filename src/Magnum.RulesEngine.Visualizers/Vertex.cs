@@ -10,37 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.ExecutionModel
+namespace Magnum.RulesEngine.Visualizers
 {
 	using System;
+	using System.Drawing;
 
-	[Serializable]
-	public class TypeNode<T> :
-		Node,
-		Activation
+	public class Vertex
 	{
-		private readonly SuccessorSet<T> _successors;
-
-		public TypeNode()
+		public Vertex(Type nodeType, Type objectType, string title, Color color)
 		{
-			_successors = new SuccessorSet<T>();
+			NodeType = nodeType;
+			ObjectType = objectType;
+			Title = title;
+			Color = color;
 		}
 
-		public void Activate<TInput>(RuleContext<TInput> context)
-		{
-			var ruleContext = (RuleContext<T>) context;
+		public Color Color { get; private set; }
 
-			_successors.Activate(ruleContext);
-		}
+		public string Title { get; private set; }
 
-		public bool Visit(NodeVisitor visitor)
-		{
-			return visitor.Visit(this, () => _successors.Visit(visitor));
-		}
+		public Type NodeType { get; private set; }
 
-		public void AddSuccessor(params Activation<T>[] successors)
-		{
-			successors.Each(x => _successors.Add(x));
-		}
+		public Type ObjectType { get; private set; }
 	}
 }
