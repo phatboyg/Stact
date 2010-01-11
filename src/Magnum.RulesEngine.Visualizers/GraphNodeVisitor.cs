@@ -45,6 +45,7 @@ namespace Magnum.RulesEngine.Visualizers
 			_colors = new Dictionary<Type, Color>
 				{
 					{typeof (AlphaNode<>), Color.Red},
+					{typeof(TypeNode<>), Color.Orange},
 					{typeof (JoinNode<>), Color.Green},
 					{typeof (ConditionNode<>), Color.Blue},
 					{typeof (ActionNode<>), Color.Teal},
@@ -52,7 +53,7 @@ namespace Magnum.RulesEngine.Visualizers
 				};
 		}
 
-		public void GetGraph()
+		public void GetGraph(int width, int height, string filename)
 		{
 			GleeGraphPopulator<NodeVertex, Edge<NodeVertex>> glee = _graph.CreateGleePopulator();
 
@@ -65,10 +66,8 @@ namespace Magnum.RulesEngine.Visualizers
 			var renderer = new GraphRenderer(gleeGraph);
 			renderer.CalculateLayout();
 
-			var bitmap = new Bitmap(2560, 1920, PixelFormat.Format32bppArgb);
+			var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 			renderer.Render(bitmap);
-
-			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
 			Trace.WriteLine("Saving graph to " + filename);
 
@@ -144,7 +143,7 @@ namespace Magnum.RulesEngine.Visualizers
 
 		protected bool Visit<T>(JoinNode<T> node)
 		{
-			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Join", typeof (T), typeof (JoinNode<>));
+			_lastNodeVertex = GetSink(node.GetHashCode(), () => "J", typeof (T), typeof (JoinNode<>));
 
 			if(_nodes.ContainsKey(node.RightActivation.GetHashCode()))
 			{
@@ -207,15 +206,14 @@ namespace Magnum.RulesEngine.Visualizers
 			args.Node.Attr.Shape = Shape.Box;
 			args.Node.Attr.Fontcolor = Color.White;
 			args.Node.Attr.Fontsize = 8;
-			args.Node.Attr.FontName = "Tahoma";
+			args.Node.Attr.FontName = "Arial";
 			args.Node.Attr.Label = args.Vertex.Name;
-			args.Node.Attr.Padding = 1.0;
+			args.Node.Attr.Padding = 1.2;
 		}
 
 		private static void EdgeStyler(object sender, GleeEdgeEventArgs<NodeVertex, Edge<NodeVertex>> e)
 		{
 			e.GEdge.EdgeAttr.Label = e.Edge.Source.ObjectType.Name;
-			e.GEdge.EdgeAttr.Fontsize = 8;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;
 		}

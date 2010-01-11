@@ -14,7 +14,9 @@ namespace Magnum.RulesEngine.Specs.Graphing
 {
 	using System;
 	using System.Diagnostics;
+	using System.IO;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using ExecutionModel;
 	using Model;
 	using NUnit.Framework;
@@ -103,7 +105,10 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			_engine.Visit(visitor);
 
 			visitor.ComputeShortestPath();
-			visitor.GetGraph();
+
+			var filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
+
+			visitor.GetGraph(2560, 1920, filename);
 		}
 	}
 
