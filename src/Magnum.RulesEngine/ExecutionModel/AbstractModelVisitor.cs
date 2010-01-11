@@ -12,8 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public interface RulesEngine
+	using Reflection;
+
+	public abstract class AbstractModelVisitor<TVisitor> :
+		ReflectiveVisitorBase<TVisitor>,
+		NodeVisitor
+		where TVisitor : class
 	{
-		void Assert<T>(RuleContext<T> element);
 	}
 }

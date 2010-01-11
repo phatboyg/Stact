@@ -39,24 +39,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractModelVisitor.cs" />
     <Compile Include="Condition.cs" />
-    <Compile Include="ConditionNormalizer.cs" />
     <Compile Include="Consequence.cs" />
     <Compile Include="DSL\ConditionConfigurator.cs" />
     <Compile Include="DSL\ExitExtension.cs" />
     <Compile Include="DSL\Rule.cs" />
     <Compile Include="DSL\RuleConfigurator.cs" />
+    <Compile Include="ExecutionModel\AbstractModelVisitor.cs" />
+    <Compile Include="ExecutionModel\ConditionNormalizer.cs" />
     <Compile Include="ExecutionModel\DeclarationCompiler.cs" />
     <Compile Include="ExecutionModel\FindConditionVisitor.cs" />
-    <Compile Include="ExecutionModel\RulesEngine.cs" />
-    <Compile Include="NodeVisitor.cs" />
+    <Compile Include="ExecutionModel\NodeVisitor.cs" />
     <Compile Include="ExecutionModel\ActionNode.cs" />
     <Compile Include="ExecutionModel\BetaMemory.cs" />
     <Compile Include="ExecutionModel\Exceptions\CompileExpressionException.cs" />
     <Compile Include="ExecutionModel\Activation.cs" />
     <Compile Include="ExecutionModel\Agenda.cs" />
     <Compile Include="ExecutionModel\AlphaNode.cs" />
+    <Compile Include="ExecutionModel\SessionRuleContext.cs" />
+    <Compile Include="ExecutionModel\StringNodeVisitor.cs" />
     <Compile Include="ExecutionModel\TypeNode.cs" />
     <Compile Include="ExecutionModel\Exceptions\ExecutionModelException.cs" />
     <Compile Include="ExecutionModel\ConstantNode.cs" />
@@ -65,19 +66,17 @@
     <Compile Include="ExecutionModel\PriorityQueueAgenda.cs" />
     <Compile Include="ExecutionModel\RightActivation.cs" />
     <Compile Include="ExecutionModel\SuccessorSet.cs" />
+    <Compile Include="MagnumRulesEngine.cs" />
+    <Compile Include="RulesEngine.cs" />
     <Compile Include="RulesEngineException.cs" />
     <Compile Include="ExecutionModel\TypeDispatchNode.cs" />
-    <Compile Include="ExecutionModel\MagnumRulesEngine.cs" />
     <Compile Include="ExecutionModel\Node.cs" />
     <Compile Include="ExecutionModel\ConditionNode.cs" />
-    <Compile Include="ExecutionModel\StatefulSession.cs" />
     <Compile Include="ExecutionModel\StatefulSessionImpl.cs" />
     <Compile Include="ExecutionModel\Tuple.cs" />
     <Compile Include="ExecutionModel\SessionElement.cs" />
     <Compile Include="ExecutionModel\SessionElementImpl.cs" />
     <Compile Include="ExecutionModel\SessionElementSet.cs" />
-    <Compile Include="RuleSet.cs" />
-    <Compile Include="HashSetWorkingMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuleContext.cs" />
     <Compile Include="SemanticModel\ConditionDeclaration.cs" />
@@ -85,10 +84,7 @@
     <Compile Include="SemanticModel\RuleDeclaration.cs" />
     <Compile Include="SemanticModel\Declaration.cs" />
     <Compile Include="SemanticModel\DeclarationType.cs" />
-    <Compile Include="SessionRuleContext.cs" />
-    <Compile Include="StringNodeVisitor.cs" />
-    <Compile Include="StringUtil.cs" />
-    <Compile Include="WorkingMemory.cs" />
+    <Compile Include="StatefulSession.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">

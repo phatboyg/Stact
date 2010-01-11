@@ -69,7 +69,6 @@
     <Compile Include="When_creating_a_condition.cs" />
     <Compile Include="When_declaring_a_rule.cs" />
     <Compile Include="Commands\SubmitOrder.cs" />
-    <Compile Include="When_executing_a_rule_against_working_memory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.RulesEngine.Visualizers\Magnum.RulesEngine.Visualizers.csproj">

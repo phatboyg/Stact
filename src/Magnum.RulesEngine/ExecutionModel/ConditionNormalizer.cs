@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine
+namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -57,14 +57,14 @@ namespace Magnum.RulesEngine
 
 				MemberExpression me;
 				if (((me = b.Left as MemberExpression) != null && (c = b.Right as ConstantExpression) != null)
-					|| ((me = b.Right as MemberExpression) != null && (c = b.Left as ConstantExpression) != null))
+				    || ((me = b.Right as MemberExpression) != null && (c = b.Left as ConstantExpression) != null))
 				{
 					if (me.Member.MemberType == MemberTypes.Property)
 					{
-						PropertyInfo property = me.Member as PropertyInfo;
-						if (property.PropertyType == typeof(bool) && c.Type == typeof(bool))
+						var property = me.Member as PropertyInfo;
+						if (property.PropertyType == typeof (bool) && c.Type == typeof (bool))
 						{
-							bool? value = c.Value as bool?;
+							var value = c.Value as bool?;
 
 							if (value.Value)
 							{

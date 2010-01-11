@@ -14,10 +14,8 @@ namespace Expression_Specs
 {
 	using System;
 	using System.Diagnostics;
-	using System.Linq;
 	using System.Linq.Expressions;
-	using Magnum.Linq;
-	using Magnum.RulesEngine;
+	using Magnum.RulesEngine.ExecutionModel;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -38,29 +36,6 @@ namespace Expression_Specs
 
 			Trace.WriteLine(e1);
 			Trace.WriteLine(e2);
-
-
-			var flattener1 = new FlattenExpression();
-			var flattener2 = new FlattenExpression();
-
-			var enum1 = flattener1.Flatten(e1).Items;
-			var enum2 = flattener2.Flatten(e2).Items;
-
-			bool merged = enum1.MergeBalanced(enum2, (a, b) => a.Equals(b))
-			              	.Where(x => !x)
-			              	.Count() > 0;
-
-			Trace.WriteLine("Equal: " + merged);
-
-			enum1 = flattener1.Flatten(x1).Items;
-			enum2 = flattener2.Flatten(x2).Items;
-
-			merged = enum1.MergeBalanced(enum2, (a, b) => a.Equals(b))
-							.Where(x => !x)
-							.Count() > 0;
-
-			Trace.WriteLine("X-Equal: " + merged);
-
 		}
 	}
 }

@@ -12,8 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
-	public interface RuleSet
+	/// <summary>
+	/// The interface used to communicate with the rules engine
+	/// </summary>
+	public interface RulesEngine
 	{
-		void Evaluate(WorkingMemory memory);
+		void Assert<T>(RuleContext<T> element);
 	}
 }

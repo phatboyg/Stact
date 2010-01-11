@@ -12,14 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
-	using System.Collections.Generic;
+	using ExecutionModel;
+	using SemanticModel;
 
-	public interface WorkingMemory
+	public class MagnumRulesEngine :
+		Node,
+		RulesEngine
 	{
-		void Add<T>(params T[] items)
-			where T : class;
+		private TypeDispatchNode _root = new TypeDispatchNode();
 
-		IEnumerable<T> List<T>()
-			where T : class;
+
+		public bool Visit(NodeVisitor visitor)
+		{
+			return visitor.Visit(this, () => _root.Visit(visitor));
+		}
+
+		public void Assert<T>(RuleContext<T> context)
+		{
+			_root.Activate(context);
+		}
+
+		public void Add(RuleDeclaration rule)
+		{
+			var compiler = new DeclarationCompiler();
+
+			_root = compiler.Add(_root, rule);
+		}
 	}
 }
