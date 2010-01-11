@@ -13,5 +13,9 @@
 using System.Diagnostics;
 using Magnum.RulesEngine;
 using Magnum.RulesEngine.Visualizers;
+using Microsoft.VisualStudio.DebuggerVisualizers;
 
-[assembly : DebuggerVisualizer(typeof (RulesEngineDebugVisualizer), Target = typeof (RulesEngine), Description = "Stream Visualizer")]
+[assembly : DebuggerVisualizer(typeof (RulesEngineDebugVisualizer),
+	typeof (VisualizerObjectSource), 
+	Target = typeof (RulesEngine),
+	Description = "Rules Engine Graph Visualizer")]

@@ -12,24 +12,29 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Visualizers
 {
-	using System.Diagnostics;
+	using System;
+	using System.Windows.Forms;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
 
+	[Serializable]
 	public class RulesEngineDebugVisualizer :
 		DialogDebuggerVisualizer
 	{
 		protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider)
 		{
-			var data = objectProvider.GetObject() as RulesEngine;
-			if (data == null)
+			try
 			{
-				Trace.WriteLine("Unable to display rules engine visualizer");
-				return;
-			}
+				var engine = (RulesEngine) objectProvider.GetObject();
 
-			using (var form = new RulesEngineVisualizerForm(data))
+				using (var form = new RulesEngineVisualizerForm(engine))
+				{
+					windowService.ShowDialog(form);
+				}
+			}
+			catch (InvalidCastException)
 			{
-				windowService.ShowDialog(form);
+				MessageBox.Show("The selected data is not of a type compatible with this visualizer.",
+					GetType().ToString());
 			}
 		}
 
