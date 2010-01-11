@@ -16,11 +16,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Linq;
 	using Collections;
 
-	public class PriorityActionQueue<T>
+	public class PriorityQueue<T>
 	{
 		private readonly OrderedDictionary<int, Deque<T>> _queue;
 
-		public PriorityActionQueue()
+		public PriorityQueue()
 		{
 			_queue = new OrderedDictionary<int, Deque<T>>();
 		}
@@ -46,6 +46,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 			} while (actions.Length > 0);
 		}
 
+		public void Clear()
+		{
+			_queue.Clear();
+		}
+
 		private T[] RemoveQueuedActions()
 		{
 			lock (_queue)
@@ -56,10 +61,8 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 				_queue.Clear();
 
-				return actions;	
+				return actions;
 			}
-
-			
 		}
 	}
 }

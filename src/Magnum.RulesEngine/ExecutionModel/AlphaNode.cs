@@ -15,8 +15,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	public class AlphaNode<T> :
 		Node,
 		Activation<T>,
-		RightActivation<T>,
-		ModelVisitorSite
+		RightActivation<T>
 	{
 		private readonly SuccessorSet<T> _successors;
 
@@ -32,7 +31,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			betaMemory.Activate(context);
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
 			return visitor.Visit(this, () => _successors.Visit(visitor));
 		}
@@ -49,16 +48,16 @@ namespace Magnum.RulesEngine.ExecutionModel
 			successors.Each(x => _successors.Add(x));
 		}
 
-		public MemoryJunction<T> GetConstantJunction()
+		public JoinNode<T> GetConstantJoinNode()
 		{
 			return _successors
-				.Get(x => x.RightActivation.GetType() == typeof (ConstantNode<T>), () => new MemoryJunction<T>(new ConstantNode<T>()));
+				.Get(x => x.RightActivation.GetType() == typeof (ConstantNode<T>), () => new JoinNode<T>(new ConstantNode<T>()));
 		}
 
-		public MemoryJunction<T> GetAlphaNodeJunction(AlphaNode<T> node)
+		public JoinNode<T> GetAlphaJoinNode(AlphaNode<T> node)
 		{
 			return _successors
-				.Get(x => ReferenceEquals(x.RightActivation, node), () => new MemoryJunction<T>(node));
+				.Get(x => ReferenceEquals(x.RightActivation, node), () => new JoinNode<T>(node));
 		}
 	}
 }

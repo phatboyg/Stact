@@ -10,13 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine
+namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 
-	public interface ModelVisitor
+	/// <summary>
+	/// An object that was added to the working memory
+	/// </summary>
+	/// <typeparam name="T">The type of the object being added</typeparam>
+	public class SessionElementImpl<T> :
+		SessionElement<T>
 	{
-		bool Visit(object node);
-		bool Visit(object node, Func<bool> successors);
+		public SessionElementImpl(StatefulSession session, T obj)
+		{
+			Session = session;
+			Object = obj;
+
+			ElementType = typeof (T);
+		}
+
+		public StatefulSession Session { get; private set; }
+
+		public T Object { get; private set; }
+
+		public Type ElementType { get; private set; }
+
+		object SessionElement.Object
+		{
+			get { return Object; }
+		}
 	}
 }

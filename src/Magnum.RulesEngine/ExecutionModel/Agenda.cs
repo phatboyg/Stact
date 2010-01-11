@@ -36,5 +36,10 @@ namespace Magnum.RulesEngine.ExecutionModel
 		/// Executes all pending agenda items in priority order from lowest to highest
 		/// </summary>
 		void Execute();
+
+		/// <summary>
+		///  Clear the agenda 
+		/// </summary>
+		void Clear();
 	}
 }

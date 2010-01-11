@@ -13,18 +13,29 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
 
 	public class StatefulSessionImpl :
 		StatefulSession
 	{
-		private readonly WorkingMemoryElementList _elements;
+		private readonly Agenda _agenda;
+		private readonly HashSet<RuleContext> _contexts;
+		private readonly SessionElementSet _elements;
 		private readonly RulesEngine _engine;
 		private bool _disposed;
 
 		public StatefulSessionImpl(RulesEngine engine)
 		{
 			_engine = engine;
-			_elements = new WorkingMemoryElementList();
+
+			_elements = new SessionElementSet();
+			_contexts = new HashSet<RuleContext>();
+			_agenda = new PriorityQueueAgenda();
+		}
+
+		public Agenda Agenda
+		{
+			get { return _agenda; }
 		}
 
 		public void Dispose()
@@ -35,19 +46,14 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public void Assert<T>(T obj)
 		{
-			WorkingMemoryElement<T> element = new SessionWorkingMemoryElement<T>(this, obj);
+			SessionElement<T> element = new SessionElementImpl<T>(this, obj);
 			_elements.Add(element);
 
 			var context = new SessionRuleContext<T>(this, element);
+			_contexts.Add(context);
 
 			_engine.Assert(context);
-
-			context.DumpMemory();
 		}
-
-		private readonly Agenda _agenda = new PriorityQueueAgenda();
-
-		public Agenda Agenda { get { return _agenda; }}
 
 		public void Run()
 		{
@@ -59,6 +65,9 @@ namespace Magnum.RulesEngine.ExecutionModel
 			if (_disposed) return;
 			if (disposing)
 			{
+				_agenda.Clear();
+				_contexts.Clear();
+				_elements.Clear();
 			}
 
 			_disposed = true;

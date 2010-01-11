@@ -51,7 +51,7 @@ namespace Magnum.RulesEngine
 
 	public interface RuleContext
 	{
-		Type ItemType { get; }
+		Type ElementType { get; }
 
 		void EnqueueAgendaAction(Action action);
 		void EnqueueAgendaAction(int priority, Action action);
@@ -60,7 +60,7 @@ namespace Magnum.RulesEngine
 	public interface RuleContext<T> :
 		RuleContext
 	{
-		WorkingMemoryElement<T> Element { get; }
+		SessionElement<T> Element { get; }
 		BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing);
 	}
 }

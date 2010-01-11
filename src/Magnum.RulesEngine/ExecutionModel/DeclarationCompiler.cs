@@ -28,7 +28,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_normalizer = new ConditionNormalizer();
 		}
 
-		public MatchTypeNode Add(MatchTypeNode root, RuleDeclaration declaration)
+		public TypeDispatchNode Add(TypeDispatchNode root, RuleDeclaration declaration)
 		{
 			ConditionDeclaration[] conditions = declaration.Conditions.ToArray();
 			Expression[] expressions = conditions.Select(x => _normalizer.Normalize(x.Expression)).ToArray();
@@ -46,23 +46,23 @@ namespace Magnum.RulesEngine.ExecutionModel
 				}
 			}
 
-			Node junctionNode = CreateJunctionNode(conditionNodes, conditions[0].MatchType);
+			Node joinNode = CreateJoinNode(conditionNodes, conditions[0].MatchType);
 
 			declaration.Consequences.Each(consequence =>
 				{
-					CreateActionNode(junctionNode, consequence.Expression);
+					CreateActionNode(joinNode, consequence.Expression);
 				});
 
 			return root;
 		}
 
 
-		private Node CreateConditionNode(MatchTypeNode root, Type matchType, Expression expression)
+		private Node CreateConditionNode(TypeDispatchNode root, Type matchType, Expression expression)
 		{
 			return this.FastInvoke<DeclarationCompiler, Node>(new[] {matchType}, "CreateConditionNodeOfT", root, expression);
 		}
 
-		private Node CreateConditionNodeOfT<T>(MatchTypeNode root, Expression<Func<T, bool>> expression)
+		private Node CreateConditionNodeOfT<T>(TypeDispatchNode root, Expression<Func<T, bool>> expression)
 		{
 			var conditionNode = new ConditionNode<T>(expression);
 
@@ -71,14 +71,14 @@ namespace Magnum.RulesEngine.ExecutionModel
 			return conditionNode;
 		}
 
-		private Node CreateJunctionNode(object[] conditionNodes, Type matchType)
+		private Node CreateJoinNode(object[] conditionNodes, Type matchType)
 		{
 			var args = new object[] {conditionNodes};
 
-			return this.FastInvoke<DeclarationCompiler, Node>(new[] {matchType}, "CreateJunctionNodeOfT", args);
+			return this.FastInvoke<DeclarationCompiler, Node>(new[] {matchType}, "CreateJoinNodeOfT", args);
 		}
 
-		private Node CreateJunctionNodeOfT<T>(object[] conditionNodes)
+		private Node CreateJoinNodeOfT<T>(object[] conditionNodes)
 		{
 			IEnumerable<AlphaNode<T>> nodes = conditionNodes
 				.Cast<ConditionNode<T>>()
@@ -87,44 +87,44 @@ namespace Magnum.RulesEngine.ExecutionModel
 			return GetFinalJunction(nodes);
 		}
 
-		private Node CreateActionNode(Node junctionNode, Expression expression)
+		private Node CreateActionNode(Node joinNode, Expression expression)
 		{
-			object[] args = new object[]{junctionNode, expression};
+			object[] args = new object[]{joinNode, expression};
 
 			return this.FastInvoke<DeclarationCompiler, Node>("CreateActionNodeOfT", args);
 		}
 
-		private Node CreateActionNodeOfT<T>(MemoryJunction<T> junctionNode, Expression<Action> expression)
+		private Node CreateActionNodeOfT<T>(JoinNode<T> joinNode, Expression<Action> expression)
 		{
 			Expression<Action<RuleContext<T>>> action = expression.WrapActionWithArgument<RuleContext<T>>();
 
-			return CreateActionNodeOfT(junctionNode, action);
+			return CreateActionNodeOfT(joinNode, action);
 		}
 
-		private Node CreateActionNodeOfT<T>(MemoryJunction<T> junctionNode, Expression<Action<RuleContext<T>>> expression)
+		private Node CreateActionNodeOfT<T>(JoinNode<T> joinNode, Expression<Action<RuleContext<T>>> expression)
 		{
 			var actionNode = new ActionNode<T>(expression);
 
-			junctionNode.AddSuccessor(actionNode);
+			joinNode.AddSuccessor(actionNode);
 
 			return actionNode;
 		}
 
-		private static MemoryJunction<T> GetFinalJunction<T>(IEnumerable<AlphaNode<T>> nodes)
+		private static JoinNode<T> GetFinalJunction<T>(IEnumerable<AlphaNode<T>> nodes)
 		{
-			MemoryJunction<T> junction;
+			JoinNode<T> junction;
 
 			if (nodes.Count() == 1)
 			{
-				junction = nodes.Single().GetConstantJunction();
+				junction = nodes.Single().GetConstantJoinNode();
 			}
 			else if (nodes.Count() == 2)
 			{
-				junction = nodes.Skip(1).First().GetAlphaNodeJunction(nodes.First());
+				junction = nodes.Skip(1).First().GetAlphaJoinNode(nodes.First());
 			}
 			else
 			{
-				junction = new MemoryJunction<T>(nodes.First());
+				junction = new JoinNode<T>(nodes.First());
 				GetFinalJunction(nodes.Skip(1)).AddSuccessor(junction);
 			}
 

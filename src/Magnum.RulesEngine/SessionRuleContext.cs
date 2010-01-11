@@ -14,7 +14,6 @@ namespace Magnum.RulesEngine
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using CollectionExtensions;
 	using ExecutionModel;
 
@@ -24,7 +23,7 @@ namespace Magnum.RulesEngine
 		private readonly Dictionary<int, BetaMemory<T>> _betaMemory;
 		private readonly StatefulSessionImpl _session;
 
-		public SessionRuleContext(StatefulSessionImpl session, WorkingMemoryElement<T> item)
+		public SessionRuleContext(StatefulSessionImpl session, SessionElement<T> item)
 		{
 			_session = session;
 			_betaMemory = new Dictionary<int, BetaMemory<T>>();
@@ -32,15 +31,14 @@ namespace Magnum.RulesEngine
 			Element = item;
 		}
 
-		public WorkingMemoryElement<T> Element { get; private set; }
+		public SessionElement<T> Element { get; private set; }
 
 		public BetaMemory<T> GetBetaMemory(int key, Func<BetaMemory<T>> onMissing)
 		{
 			return _betaMemory.Retrieve(key, onMissing);
 		}
 
-
-		public Type ItemType
+		public Type ElementType
 		{
 			get { return typeof (T); }
 		}
@@ -53,50 +51,6 @@ namespace Magnum.RulesEngine
 		public void EnqueueAgendaAction(int priority, Action action)
 		{
 			_session.Agenda.Add(priority, action);
-		}
-
-		public void DumpMemory()
-		{
-		}
-
-		private class KeyComparer :
-			IEqualityComparer<WorkingMemoryElement<T>>
-		{
-			public bool Equals(WorkingMemoryElement<T> x, WorkingMemoryElement<T> y)
-			{
-				if ((x == null || y == null) && x != y)
-					return false;
-
-				if (x == null && y == null)
-					return true;
-
-				return ReferenceEquals(x.Object, y.Object);
-			}
-
-			public int GetHashCode(WorkingMemoryElement<T> obj)
-			{
-				return obj == null ? 0 : obj.Object.GetHashCode();
-			}
-		}
-
-		private class NodeComparer :
-			IEqualityComparer<Node>
-		{
-			public bool Equals(Node x, Node y)
-			{
-				if ((x == null || y == null) && x != y)
-					return false;
-
-				if (x == null && y == null)
-					return true;
-
-				return ReferenceEquals(x, y);
-			}
-
-			public int GetHashCode(Node node)
-			{
-				return node == null ? 0 : node.GetHashCode();
-			}
 		}
 	}
 }

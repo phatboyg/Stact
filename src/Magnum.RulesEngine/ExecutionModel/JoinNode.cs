@@ -12,16 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	public class MemoryJunction<T> :
+	public class JoinNode<T> :
 		Node,
-		Activation<T>,
-		ModelVisitorSite
+		Activation<T>
 	{
 		private readonly RightActivation<T> _rightActivation;
 
 		private readonly SuccessorSet<T> _successors;
 
-		public MemoryJunction(RightActivation<T> rightActivation)
+		public JoinNode(RightActivation<T> rightActivation)
 		{
 			_rightActivation = rightActivation;
 
@@ -41,7 +40,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			}
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
 			return visitor.Visit(this, () => { return visitor.Visit(_rightActivation) && _successors.Visit(visitor); });
 		}

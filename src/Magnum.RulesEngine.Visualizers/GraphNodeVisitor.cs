@@ -45,7 +45,7 @@ namespace Magnum.RulesEngine.Visualizers
 			_colors = new Dictionary<Type, Color>
 				{
 					{typeof (AlphaNode<>), Color.Red},
-					{typeof (MemoryJunction<>), Color.Green},
+					{typeof (JoinNode<>), Color.Green},
 					{typeof (ConditionNode<>), Color.Blue},
 					{typeof (ActionNode<>), Color.Teal},
 					{typeof (ConstantNode<>), Color.Magenta},
@@ -101,9 +101,9 @@ namespace Magnum.RulesEngine.Visualizers
 				_stack.Pop();
 		}
 
-		protected bool Visit(MatchTypeNode node)
+		protected bool Visit(TypeDispatchNode node)
 		{
-			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Rules", typeof (object), typeof (MatchTypeNode));
+			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Rules", typeof (object), typeof (TypeDispatchNode));
 			_root = _lastNodeVertex;
 
 			if (_stack.Count > 0)
@@ -112,9 +112,9 @@ namespace Magnum.RulesEngine.Visualizers
 			return true;
 		}
 
-		protected bool Visit<T>(ConditionTreeNode<T> node)
+		protected bool Visit<T>(TypeNode<T> node)
 		{
-			_lastNodeVertex = GetSink(node.GetHashCode(), () => typeof (T).Name, typeof (T), typeof (ConditionTreeNode<>));
+			_lastNodeVertex = GetSink(node.GetHashCode(), () => typeof (T).Name, typeof (T), typeof (TypeNode<>));
 
 			if (_stack.Count > 0)
 				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
@@ -136,15 +136,15 @@ namespace Magnum.RulesEngine.Visualizers
 		{
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => "\u03B1", typeof(T), typeof(AlphaNode<>));
 
-			if (_stack.Count > 0 && _stack.Peek().NodeType != typeof(MemoryJunction<>))
+			if (_stack.Count > 0 && _stack.Peek().NodeType != typeof(JoinNode<>))
 				_graph.AddEdge(new Edge<NodeVertex>(_stack.Peek(), _lastNodeVertex));
 
 			return true;
 		}
 
-		protected bool Visit<T>(MemoryJunction<T> node)
+		protected bool Visit<T>(JoinNode<T> node)
 		{
-			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Join", typeof (T), typeof (MemoryJunction<>));
+			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Join", typeof (T), typeof (JoinNode<>));
 
 			if(_nodes.ContainsKey(node.RightActivation.GetHashCode()))
 			{

@@ -22,8 +22,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// <typeparam name="T"></typeparam>
 	public class ConditionNode<T> :
 		Node,
-		Activation<T>,
-		ModelVisitorSite
+		Activation<T>
 	{
 		private readonly Func<RuleContext<T>, bool> _condition;
 		private readonly Func<T, bool> _eval;
@@ -51,7 +50,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			}
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
 			return visitor.Visit(this, () => _successors.Visit(visitor));
 		}

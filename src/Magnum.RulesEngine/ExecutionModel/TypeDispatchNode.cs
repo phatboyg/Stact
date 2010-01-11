@@ -12,23 +12,40 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	/// <summary>
-	/// A constant node is used to balance out a join node with a positive match,
-	/// allowing an activation to complete.
-	/// </summary>
-	/// <typeparam name="T">The type of the constant true operation</typeparam>
-	public class ConstantNode<T> :
+	using System;
+	using System.Collections.Generic;
+	using CollectionExtensions;
+
+	public class TypeDispatchNode :
 		Node,
-		RightActivation<T>
+		Activation
 	{
-		public bool Visit(NodeVisitor visitor)
+		private readonly Dictionary<Type, Activation> _types;
+
+		public TypeDispatchNode()
 		{
-			return true;
+			_types = new Dictionary<Type, Activation>();
 		}
 
-		public bool RightActivate(RuleContext<T> context)
+		public void Activate<T>(RuleContext<T> context)
 		{
-			return true;
+			Activation activation;
+			if (_types.TryGetValue(typeof (T), out activation))
+			{
+				activation.Activate(context);
+			}
+		}
+
+		public bool Visit(NodeVisitor visitor)
+		{
+			return visitor.Visit(this, () => _types.Values.EachUntilFalse<Node>(x => x.Visit(visitor)));
+		}
+
+		public void Add<T>(Activation<T> successor)
+		{
+			Activation activation = _types.Retrieve(typeof (T), () => new TypeNode<T>());
+
+			((TypeNode<T>) activation).AddSuccessor(successor);
 		}
 	}
 }

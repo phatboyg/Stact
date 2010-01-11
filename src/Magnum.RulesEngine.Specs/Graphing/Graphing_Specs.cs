@@ -25,14 +25,14 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	[TestFixture]
 	public class Graphing_an_existing_engine
 	{
-		private Engine _engine;
+		private MagnumRulesEngine _engine;
 
 		[SetUp]
 		public void Setup()
 		{
 			//TODO Dru needs to see this
 
-			_engine = new Engine();
+			_engine = new MagnumRulesEngine();
 			_engine.Add(CreateOnlineOrderRule());
 			_engine.Add(CustomerIsSpecified());
 			_engine.Add(CreateActiveNotPreferredRule());

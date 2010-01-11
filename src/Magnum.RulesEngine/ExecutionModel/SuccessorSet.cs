@@ -19,7 +19,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 	public class SuccessorSet<T> :
 		IEnumerable<Activation<T>>,
-		ModelVisitorSite
+		Node
 	{
 		private readonly HashSet<Activation<T>> _successors;
 
@@ -43,9 +43,9 @@ namespace Magnum.RulesEngine.ExecutionModel
 			return GetEnumerator();
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
-			return _successors.EachUntilFalse<ModelVisitorSite>(x => x.Visit(visitor));
+			return _successors.EachUntilFalse<Node>(x => x.Visit(visitor));
 		}
 
 		public void Add(Activation<T> activation)

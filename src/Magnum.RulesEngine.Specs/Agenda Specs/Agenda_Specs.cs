@@ -42,7 +42,7 @@ namespace Agenda_Specs
 		{
 			var customer = new Customer();
 
-			var wme = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
+			var wme = MockRepository.GenerateMock<SessionElement<Customer>>();
 			wme.Stub(x => x.Object).Return(customer);
 
 			var context = MockRepository.GenerateMock<RuleContext<Customer>>();

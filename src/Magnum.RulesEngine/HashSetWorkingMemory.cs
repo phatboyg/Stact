@@ -22,13 +22,13 @@ namespace Magnum.RulesEngine
 	public class HashSetWorkingMemory :
 		WorkingMemory
 	{
-		private readonly HashSet<WorkingMemoryElement> _objects = new HashSet<WorkingMemoryElement>();
+		private readonly HashSet<SessionElement> _objects = new HashSet<SessionElement>();
 
 		public void Add<T>(params T[] items)
 			where T : class
 		{
 			items
-				.Select(x => new SessionWorkingMemoryElement<T>(null, x))
+				.Select(x => new SessionElementImpl<T>(null, x))
 				.Each(x => _objects.Add(x));
 		}
 

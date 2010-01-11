@@ -36,14 +36,14 @@ namespace Magnum.RulesEngine
 			_depth--;
 		}
 
-		protected bool Visit(MatchTypeNode node)
+		protected bool Visit(TypeDispatchNode node)
 		{
 			Append("MatchType");
 
 			return true;
 		}
 
-		protected bool Visit<T>(ConditionTreeNode<T> node)
+		protected bool Visit<T>(TypeNode<T> node)
 		{
 			Append("ConditionTree<{0}>", typeof (T).Name);
 
@@ -64,7 +64,7 @@ namespace Magnum.RulesEngine
 			return true;
 		}
 
-		protected bool Visit<T>(MemoryJunction<T> node)
+		protected bool Visit<T>(JoinNode<T> node)
 		{
 			Append("Junction<{0}>[{1}]", typeof (T).Name, node.GetHashCode());
 

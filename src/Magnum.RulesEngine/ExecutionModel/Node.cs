@@ -17,5 +17,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	public interface Node
 	{
+		bool Visit(NodeVisitor visitor);
 	}
 }

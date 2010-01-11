@@ -12,7 +12,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 	public class JoinTree_Specs
 	{
 		private StringNodeVisitor _visitor;
-		private MemoryJunction<Customer> _junction;
+		private JoinNode<Customer> _junction;
 
 		[SetUp]
 		public void Setup()
@@ -50,33 +50,33 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 
 	public static class xxx
 	{
-		public static MemoryJunction<T> GetFinalJunction<T>(this IEnumerable<AlphaNode<T>> nodes)
+		public static JoinNode<T> GetFinalJunction<T>(this IEnumerable<AlphaNode<T>> nodes)
 		{
-			MemoryJunction<T> junction;
+			JoinNode<T> junction;
 
 			if (nodes.Count() == 1)
 			{
-				junction = new MemoryJunction<T>(new ConstantNode<T>());
+				junction = new JoinNode<T>(new ConstantNode<T>());
 				junction.AddSuccessor(nodes.Single());
 			}
 			else if (nodes.Count() == 2)
 			{
-				junction = new MemoryJunction<T>(nodes.First());
+				junction = new JoinNode<T>(nodes.First());
 				nodes.Skip(1).First().AddSuccessor(junction);
 			}
 			else
 			{
 
-				junction = new MemoryJunction<T>(nodes.First());
+				junction = new JoinNode<T>(nodes.First());
 				nodes.Skip(1).GetFinalJunction().AddSuccessor(junction);
 			}
 
 			return junction;
 		}
 
-		public static MemoryJunction<T> CreateJunction<T>(this IEnumerable<AlphaNode<T>> nodes, RightActivation<T> rightActivation)
+		public static JoinNode<T> CreateJunction<T>(this IEnumerable<AlphaNode<T>> nodes, RightActivation<T> rightActivation)
 		{
-			var junction = new MemoryJunction<T>(rightActivation);
+			var junction = new JoinNode<T>(rightActivation);
 
 //			junction.AddSuccessor(nodes.CreateJunction());
 			throw new NotImplementedException();

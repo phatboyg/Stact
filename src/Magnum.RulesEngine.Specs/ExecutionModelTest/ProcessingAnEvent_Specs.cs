@@ -25,7 +25,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 	public class ProcessingAnEvent_Specs
 	{
 		private OrderSubmitted _order;
-		private Engine _engine;
+		private MagnumRulesEngine _engine;
 		private Action<OrderSubmitted> _overLimit;
 		private Action<OrderSubmitted> _underLimit;
 
@@ -40,7 +40,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 			_underLimit = MockRepository.GenerateMock<Action<OrderSubmitted>>();
 			_underLimit.Expect(x => x(_order)).Repeat.Never();
 
-			_engine = new Engine();
+			_engine = new MagnumRulesEngine();
 
 			AddOverLimitRule();
 			AddUnderLimitRule();

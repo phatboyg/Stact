@@ -107,7 +107,7 @@ namespace Engine_Specs
 		[Test]
 		public void FirstTestName()
 		{
-			var engine = new Engine();
+			var engine = new MagnumRulesEngine();
 
 			RuleDeclaration rule = CreateOnlineOrderRule();
 			engine.Add(rule);

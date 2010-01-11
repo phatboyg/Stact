@@ -12,32 +12,32 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
-
-	/// <summary>
-	/// An object that was added to the working memory
-	/// </summary>
-	/// <typeparam name="T">The type of the object being added</typeparam>
-	public class SessionWorkingMemoryElement<T> :
-		WorkingMemoryElement<T>
+	public class TypeNode<T> :
+		Node,
+		Activation
 	{
-		private readonly StatefulSession _session;
+		private readonly SuccessorSet<T> _successors;
 
-		public SessionWorkingMemoryElement(StatefulSession session, T obj)
+		public TypeNode()
 		{
-			_session = session;
-			Object = obj;
-
-			ElementType = typeof (T);
+			_successors = new SuccessorSet<T>();
 		}
 
-		public T Object { get; private set; }
-
-		public Type ElementType { get; private set; }
-
-		object WorkingMemoryElement.Object
+		public void Activate<TInput>(RuleContext<TInput> context)
 		{
-			get { return Object; }
+			var ruleContext = (RuleContext<T>) context;
+
+			_successors.Activate(ruleContext);
+		}
+
+		public bool Visit(NodeVisitor visitor)
+		{
+			return visitor.Visit(this, () => _successors.Visit(visitor));
+		}
+
+		public void AddSuccessor(params Activation<T>[] successors)
+		{
+			successors.Each(x => _successors.Add(x));
 		}
 	}
 }

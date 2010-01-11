@@ -13,17 +13,50 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using System.Collections.Generic;
 
-	public interface WorkingMemoryElement
+	public class SessionElementSet :
+		IDisposable
 	{
-		Type ElementType { get; }
+		private readonly HashSet<SessionElement> _elements;
 
-		object Object { get; }
-	}
+		private bool _disposed;
 
-	public interface WorkingMemoryElement<T> :
-		WorkingMemoryElement
-	{
-		new T Object { get; }
+		public SessionElementSet()
+		{
+			_elements = new HashSet<SessionElement>();
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		public void Add(SessionElement element)
+		{
+			_elements.Add(element);
+		}
+
+		public void Clear()
+		{
+			_elements.Clear();
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
+			{
+				_elements.Clear();
+			}
+
+			_disposed = true;
+		}
+
+		~SessionElementSet()
+		{
+			Dispose(false);
+		}
 	}
 }

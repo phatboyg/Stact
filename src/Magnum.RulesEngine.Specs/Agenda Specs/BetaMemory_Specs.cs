@@ -36,7 +36,7 @@ namespace BetaMemory_Specs
 			_agenda = new PriorityQueueAgenda();
 
 			_context = MockRepository.GenerateMock<RuleContext<Customer>>();
-			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
+			var element = MockRepository.GenerateMock<SessionElement<Customer>>();
 			element.Stub(x => x.Object).Return(_customer);
 			_context.Stub(x => x.Element).Return(element);
 
@@ -61,7 +61,7 @@ namespace BetaMemory_Specs
 		[Test]
 		public void FirstTestName()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var memoryA = new BetaMemory<Customer>(junction);
@@ -76,7 +76,7 @@ namespace BetaMemory_Specs
 		[Test]
 		public void One_more_level_of_indirection()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var alphaNode = new AlphaNode<Customer>();
@@ -98,12 +98,12 @@ namespace BetaMemory_Specs
 		[Test]
 		public void Pulling_an_element_through_two_memories_should_merge_properly()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var memoryB = new BetaMemory<Customer>(junction);
 
-			var joinJunction = new MemoryJunction<Customer>(memoryB);
+			var joinJunction = new JoinNode<Customer>(memoryB);
 
 			var memoryA = new BetaMemory<Customer>(joinJunction);
 

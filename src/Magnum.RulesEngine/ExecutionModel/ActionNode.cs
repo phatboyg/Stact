@@ -23,7 +23,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	public class ActionNode :
 		Activation,
-		ModelVisitorSite
+		Node
 	{
 		private readonly Action<RuleContext> _eval;
 		private readonly Expression<Action<RuleContext>> _expression;
@@ -53,7 +53,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			context.EnqueueAgendaAction(Priority, () => _eval(context));
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
 			return visitor.Visit(this);
 		}
@@ -79,8 +79,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// </summary>
 	public class ActionNode<T> :
 		Node,
-		Activation<T>,
-		ModelVisitorSite
+		Activation<T>
 	{
 		private readonly Action<RuleContext<T>> _eval;
 		private readonly Expression<Action<RuleContext<T>>> _expression;
@@ -118,7 +117,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			}
 		}
 
-		public bool Visit(ModelVisitor visitor)
+		public bool Visit(NodeVisitor visitor)
 		{
 			return visitor.Visit(this);
 		}

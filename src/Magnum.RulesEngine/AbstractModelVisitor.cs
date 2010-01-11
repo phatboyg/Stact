@@ -16,7 +16,7 @@ namespace Magnum.RulesEngine
 
 	public abstract class AbstractModelVisitor<TVisitor> :
 		ReflectiveVisitorBase<TVisitor>,
-		ModelVisitor
+		NodeVisitor
 		where TVisitor : class
 	{
 	}

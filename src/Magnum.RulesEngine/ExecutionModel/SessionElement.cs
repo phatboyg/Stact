@@ -12,20 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System.Collections.Generic;
+	using System;
 
-	public class WorkingMemoryElementList
+	public interface SessionElement
 	{
-		private readonly List<WorkingMemoryElement> _elements;
+		Type ElementType { get; }
 
-		public WorkingMemoryElementList()
-		{
-			_elements = new List<WorkingMemoryElement>();
-		}
+		object Object { get; }
+	}
 
-		public void Add(WorkingMemoryElement element)
-		{
-			_elements.Add(element);
-		}
+	public interface SessionElement<T> :
+		SessionElement
+	{
+		new T Object { get; }
 	}
 }

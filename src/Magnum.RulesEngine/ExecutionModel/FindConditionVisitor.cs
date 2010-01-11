@@ -16,37 +16,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Linq.Expressions;
 	using SemanticModel;
 
-	public interface RulesEngine
-	{
-		void Assert<T>(RuleContext<T> element);
-	}
-
-	public class Engine :
-		RulesEngine,
-		ModelVisitorSite
-	{
-		private MatchTypeNode _root = new MatchTypeNode();
-
-
-		public bool Visit(ModelVisitor visitor)
-		{
-			return visitor.Visit(this, () => _root.Visit(visitor));
-		}
-
-		public void Assert<T>(RuleContext<T> context)
-		{
-			_root.Activate(context);
-		}
-
-		public void Add(RuleDeclaration rule)
-		{
-			var compiler = new DeclarationCompiler();
-
-			_root = compiler.Add(_root, rule);
-		}
-	}
-
-
 	public class FindConditionVisitor :
 		AbstractModelVisitor<FindConditionVisitor>
 	{

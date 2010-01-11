@@ -36,7 +36,7 @@ namespace BetaMemory_Specs
 
 			_constantNode = new ConstantNode<Customer>();
 
-			var element = MockRepository.GenerateMock<WorkingMemoryElement<Customer>>();
+			var element = MockRepository.GenerateMock<SessionElement<Customer>>();
 			element.Stub(x => x.Object).Return(_customer);
 
 			_session = new StatefulSessionImpl(MockRepository.GenerateMock<RulesEngine>());
@@ -56,7 +56,7 @@ namespace BetaMemory_Specs
 		[Test]
 		public void FirstTestName()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var memoryA = new BetaMemory<Customer>(junction);
@@ -71,7 +71,7 @@ namespace BetaMemory_Specs
 		[Test]
 		public void One_more_level_of_indirection()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var alphaNode = new AlphaNode<Customer>();
@@ -87,26 +87,26 @@ namespace BetaMemory_Specs
 		[Test]
 		public void Only_those_that_are_matched_should_be_called()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var alphaNodeA = new AlphaNode<Customer>();
 			alphaNodeA.AddSuccessor(junction);
 
-			var joinJunction = new MemoryJunction<Customer>(alphaNodeA);
+			var joinJunction = new JoinNode<Customer>(alphaNodeA);
 
 			var alphaNodeB = new AlphaNode<Customer>();
 			alphaNodeB.AddSuccessor(joinJunction);
 
 			var actionNode = new ActionNode<Customer>(x => _secondaryCalled.Complete(x.Element.Object));
 
-			var joinJunction2 = new MemoryJunction<Customer>(alphaNodeA);
+			var joinJunction2 = new JoinNode<Customer>(alphaNodeA);
 			joinJunction2.AddSuccessor(actionNode);
 
 			var alphaNodeC = new AlphaNode<Customer>();
 			alphaNodeC.AddSuccessor(joinJunction2);
 
-			var tree = new ConditionTreeNode<Customer>();
+			var tree = new TypeNode<Customer>();
 
 			var isPreferred = new ConditionNode<Customer>(x => x.Preferred);
 			isPreferred.AddSuccessor(alphaNodeA);
@@ -136,13 +136,13 @@ namespace BetaMemory_Specs
 		[Test]
 		public void Pulling_an_element_through_two_memories_should_merge_properly()
 		{
-			var junction = new MemoryJunction<Customer>(_constantNode);
+			var junction = new JoinNode<Customer>(_constantNode);
 			junction.AddSuccessor(_actionNode);
 
 			var alphaNodeA = new AlphaNode<Customer>();
 			alphaNodeA.AddSuccessor(junction);
 
-			var joinJunction = new MemoryJunction<Customer>(alphaNodeA);
+			var joinJunction = new JoinNode<Customer>(alphaNodeA);
 
 			var alphaNodeB = new AlphaNode<Customer>();
 			alphaNodeB.AddSuccessor(joinJunction);
