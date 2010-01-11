@@ -12,19 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.DSL
 {
-	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using SemanticModel;
 
-	public class Rule
+	public class RuleSet :
+		IEnumerable<RuleDeclaration>
 	{
-		public static RuleSet Declare<TRule>(Action<RuleConfigurator<TRule>> configure)
-			where TRule : class
+		private readonly IEnumerable<RuleDeclaration> _rules;
+
+		public RuleSet(IEnumerable<RuleDeclaration> rules)
 		{
-			var configurator = new DynamicRuleConfigurator<TRule>();
-			configure(configurator);
+			_rules = rules;
+		}
 
-			var ruleSet = new RuleSet(configurator.Rules());
+		public IEnumerator<RuleDeclaration> GetEnumerator()
+		{
+			return _rules.GetEnumerator();
+		}
 
-			return ruleSet;
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

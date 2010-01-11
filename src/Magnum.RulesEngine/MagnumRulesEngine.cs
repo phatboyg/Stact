@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
+	using System.Collections.Generic;
 	using ExecutionModel;
 	using SemanticModel;
 
@@ -31,11 +32,16 @@ namespace Magnum.RulesEngine
 			_root.Activate(context);
 		}
 
-		public void Add(RuleDeclaration rule)
+		public void Add(params RuleDeclaration[] rules)
+		{
+			Add(rules);
+		}
+
+		public void Add(IEnumerable<RuleDeclaration> rules)
 		{
 			var compiler = new DeclarationCompiler();
 
-			_root = compiler.Add(_root, rule);
+			rules.Each(rule => _root = compiler.Add(_root, rule));
 		}
 	}
 }

@@ -42,9 +42,11 @@
     <Compile Include="Condition.cs" />
     <Compile Include="Consequence.cs" />
     <Compile Include="DSL\ConditionConfigurator.cs" />
+    <Compile Include="DSL\DynamicRuleConfigurator.cs" />
     <Compile Include="DSL\ExitExtension.cs" />
     <Compile Include="DSL\Rule.cs" />
     <Compile Include="DSL\RuleConfigurator.cs" />
+    <Compile Include="DSL\RuleSet.cs" />
     <Compile Include="ExecutionModel\AbstractModelVisitor.cs" />
     <Compile Include="ExecutionModel\ConditionNormalizer.cs" />
     <Compile Include="ExecutionModel\DeclarationCompiler.cs" />

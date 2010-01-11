@@ -19,15 +19,12 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 	using Consequences;
 	using DSL;
 	using Events;
-	using ExecutionModel;
 	using NUnit.Framework;
 	using Visualizers;
 
 	[TestFixture]
 	public class When_declaring_a_rule_using_the_domain_specific_language
 	{
-		private RulesEngine _engine;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -37,20 +34,44 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 		[TearDown]
 		public void Teardown()
 		{
-			GraphNodeVisitor visitor = new GraphNodeVisitor();
+			var visitor = new GraphNodeVisitor();
 			_engine.Visit(visitor);
 
 			visitor.ComputeShortestPath();
 
-			var filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
+			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
 			visitor.GetGraph(2560, 1920, filename);
 		}
 
-        [Test]
+		private RulesEngine _engine;
+
+		[Test]
+		public void Should_be_able_to_add_pure_expressions_as_well_for_ease()
+		{
+			RuleSet ruleSet = Rule.Declare<OrderSubmitted>(rule =>
+				{
+					rule.Then(x => Trace.WriteLine("Order Amount: " + x.Object.Amount));
+
+					rule.When(x => x.Amount > 100.00m)
+						.Then(x => Trace.WriteLine("Order is over the limit"))
+						.Then(x => x.RequestApproval());
+				});
+
+			_engine.Add(ruleSet);
+
+			using (StatefulSession session = _engine.CreateSession())
+			{
+				session.Assert(new OrderSubmitted {Amount = 123.45m});
+
+				session.Run();
+			}
+		}
+
+		[Test]
 		public void Should_be_able_to_add_them_into_a_set_of_rules()
 		{
-			var ruleSet = Rule.Declare<OrderSubmitted>(rule =>
+			RuleSet ruleSet = Rule.Declare<OrderSubmitted>(rule =>
 				{
 					rule.Then<LogOrderDetails>();
 
@@ -58,35 +79,21 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 						.Then<RequestOrderApproval>();
 				});
 
-			ruleSet.Each(rule => _engine.Add(rule));
+			_engine.Add(ruleSet);
 
-			using (var session = _engine.CreateSession())
+			using (StatefulSession session = _engine.CreateSession())
 			{
-				session.Assert(new OrderSubmitted {Amount = 123.45m });
+				session.Assert(new OrderSubmitted {Amount = 123.45m});
 
 				session.Run();
 			}
 		}
+	}
 
-        [Test]
-		public void Should_be_able_to_add_pure_expressions_as_well_for_ease()
+	public static class Extensions
+	{
+		public static void RequestApproval(this RuleContext<OrderSubmitted> order)
 		{
-			var ruleSet = Rule.Declare<OrderSubmitted>(rule =>
-				{
-					rule.Then(x => Trace.WriteLine("Order Amount: " + x.Object.Amount));
-
-					rule.When(x => x.Amount > 100.00m)
-						.Then(x => Trace.WriteLine("Order is over the limit"));
-				});
-
-			ruleSet.Each(rule => _engine.Add(rule));
-
-			using (var session = _engine.CreateSession())
-			{
-				session.Assert(new OrderSubmitted {Amount = 123.45m });
-
-				session.Run();
-			}
 		}
 	}
 }
