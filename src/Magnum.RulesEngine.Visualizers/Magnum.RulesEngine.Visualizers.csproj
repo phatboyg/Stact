@@ -68,6 +68,8 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Edge.cs" />
+    <Compile Include="PipelineGraphGenerator.cs" />
+    <Compile Include="PipelineGraphVisitor.cs" />
     <Compile Include="RulesEngineGraphGenerator.cs" />
     <Compile Include="RulesEngineGraphVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="RulesEngineVisualizerForm.Designer.cs">
       <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StateMachineGraphVisitor.cs" />
     <Compile Include="Vertex.cs" />
   </ItemGroup>
   <ItemGroup>

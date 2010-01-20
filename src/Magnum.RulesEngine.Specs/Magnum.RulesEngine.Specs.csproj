@@ -63,6 +63,7 @@
     <Compile Include="Expression_Specs.cs" />
     <Compile Include="FluentRuleSyntax\DeclareRule_Specs.cs" />
     <Compile Include="Graphing\Graphing_Specs.cs" />
+    <Compile Include="Graphing\PipelineGraphing_Specs.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Consequences\HoldOrderForApproval.cs" />
     <Compile Include="Model\Order.cs" />

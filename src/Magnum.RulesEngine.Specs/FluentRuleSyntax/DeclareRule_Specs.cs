@@ -47,9 +47,20 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 					rule.When(x => x.Amount > 100.00m)
 						.Then(x => Trace.WriteLine("Order is over the limit"))
 						.Then(x => x.RequestApproval());
+
+					rule.When(x => x.Amount > 1000m)
+						.Then(x => x.RequestClearance());
 				});
 
+//			RuleSet ruleSet2 = Rule.Declare<OrderSubmitted>(rule =>
+//				{
+//					rule.When(x => x.Amount > 100.00m)
+//						.Then(x => Trace.WriteLine("BING"));
+//				});
+
+
 			_engine.Add(ruleSet);
+//			_engine.Add(ruleSet2);
 
 			using (StatefulSession session = _engine.CreateSession())
 			{
@@ -84,6 +95,9 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 	public static class Extensions
 	{
 		public static void RequestApproval(this RuleContext<OrderSubmitted> order)
+		{
+		}
+		public static void RequestClearance(this RuleContext<OrderSubmitted> order)
 		{
 		}
 	}
