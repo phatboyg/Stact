@@ -10,7 +10,7 @@
   <property name="folder.build_scripts" value="build" overwrite="false" />
   <property name="folder.build_scripts_custom" value="build.custom\" overwrite="false" />
   <property name="dirs.build_scripts_custom" value="${dirs.current}\${path.to.toplevel}\${folder.build_scripts_custom}\versioners" />
-
+  <property name="repository.path" value="__REPOSITORY_PATH__" overwrite="false" />
   <property name="version.revision" value="0" overwrite="false" />
   <property name="file.custom.step.before" value="${dirs.build_scripts_custom}\${file.current.no_extension}.pre.step" />
   <property name="file.custom.step.after" value="${dirs.build_scripts_custom}\${file.current.no_extension}.post.step" />
@@ -29,7 +29,7 @@
   </target>
 
   <target name="run_normal_tasks"
-          depends="get_revision"
+          depends="get_revision,set_version_environment_variable"
           description="Generating Assembly File." />
 
   <target name="custom_tasks_before">
@@ -38,6 +38,37 @@
   </target>
 
   <target name="get_revision">
+    <echo message="Getting revision number from working directory ${directory::get-parent-directory(dirs.current)} or remotely at ${repository.path}."/>
+    <!-- try to update the revision -->
+    <exec
+      program="svn"
+      commandline="info ${dirs.current}\${path.to.toplevel}\ --xml"
+      output="_revision.xml"
+      failonerror="false"/>
+    <xmlpeek
+      file="_revision.xml"
+      xpath="/info/entry/commit/@revision"
+      property="version.revision"
+      failonerror="false"/>
+    <exec
+      program="svn"
+      commandline="info ${repository.path} --xml"
+      output="_revision.xml"
+      failonerror="false"
+      if="${version.revision == '0'}"
+      />
+    <xmlpeek
+      file="_revision.xml"
+      xpath="/info/entry/@revision"
+      property="version.revision"
+      failonerror="false"
+      if="${version.revision == '0'}"
+      />
+    <delete file="_revision.xml" failonerror="false" />
+  </target>
+
+  <target name="set_version_environment_variable">
+    <setenv name="uc.app.revision" value="${version.revision}"/>
   </target>
 
 

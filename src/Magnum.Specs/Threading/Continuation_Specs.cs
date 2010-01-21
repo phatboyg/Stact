@@ -49,7 +49,7 @@ namespace Magnum.Specs.Threading
             Assert.IsFalse(r.HasValue);
         }
 
-        [Test]
+        [Test, Explicit]
         public void Lets_pull_some_magic_juice()
         {
             var requests = new[]
@@ -80,7 +80,7 @@ namespace Magnum.Specs.Threading
         }
 
 
-        [Test]
+        [Test, Explicit]
         public void Something_special_this_way_comes()
         {
             var r = from request in new[] {new MyRequestMessage()}

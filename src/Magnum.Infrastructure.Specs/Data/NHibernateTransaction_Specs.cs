@@ -23,7 +23,7 @@ namespace Magnum.Infrastructure.Specs.Data
 	[TestFixture]
 	public class NHibernateTransaction_Specs
 	{
-		[Test]
+		[Test, Ignore]
         [ExpectedException(typeof(ArgumentNullException))]
 		public void Ctor_Throws_ArgumentNullException_When_ITransation_Parameter_Is_Null()
 		{

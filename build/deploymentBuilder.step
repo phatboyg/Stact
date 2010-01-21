@@ -6,19 +6,20 @@
   <include buildfile="${build.config.settings}" if="${file::exists(build.config.settings)}" />
   <property name="file.current.no_extension" value="deploymentBuilder" />
   <property name="dirs.current" value="${directory::get-parent-directory(project::get-buildfile-path())}" />
+  <property name="path.to.toplevel" value=".." />
   <property name="folder.build_scripts" value="build" overwrite="false" />
   <property name="folder.build_scripts_custom" value="build.custom" overwrite="false" />
-  <property name="dirs.build_scripts_custom" value="${dirs.current}\..\${folder.build_scripts_custom}" />
+  <property name="dirs.build_scripts_custom" value="${dirs.current}\${path.to.toplevel}\${folder.build_scripts_custom}" />
   <property name="folder.code_build" value="build_output" overwrite="false" />
-  <property name="dirs.build" value="${dirs.current}\..\${folder.code_build}" />
+  <property name="dirs.build" value="${dirs.current}\${path.to.toplevel}\${folder.code_build}" />
   <property name="folder.code_drop" value="code_drop" overwrite="false" />
-  <property name="dirs.drop" value="${dirs.current}\..\${folder.code_drop}" overwrite="false" />
+  <property name="dirs.drop" value="${dirs.current}\${path.to.toplevel}\${folder.code_drop}" overwrite="false" />
   <property name="folder.deployment" value="deployment" overwrite="false" />
   <property name="dirs.deployment" value="${dirs.drop}\${folder.deployment}" overwrite="false" />
   <property name="folder.settings" value="settings" overwrite="false" />
   <property name="dirs.deployment.settings" value="${dirs.drop}\${folder.settings}" overwrite="false" />
-  <property name="dirs.deployment.templates" value="${dirs.current}\..\${folder.deployment}\templates" overwrite="false" />
-  <property name="folder.deployment.settings.templates" value="${dirs.current}\..\${folder.deployment}\Settings" overwrite="false" />
+  <property name="dirs.deployment.templates" value="${dirs.current}\${path.to.toplevel}\${folder.deployment}\templates" overwrite="false" />
+  <property name="folder.deployment.settings.templates" value="${dirs.current}\${path.to.toplevel}\${folder.deployment}\Settings" overwrite="false" />
   <property name="dirs.deployment.settings.templates" value="${dirs.drop}\${folder.deployment}\Settings" overwrite="false" />
   <property name="file.custom.step.before" value="${dirs.build_scripts_custom}\${file.current.no_extension}.pre.step" />
   <property name="file.custom.step.after" value="${dirs.build_scripts_custom}\${file.current.no_extension}.post.step" />
@@ -53,6 +54,7 @@
       destinationDirectory="${dirs.deployment}"
       templateExtension=".BAT"
       keepExtension="true"
+      useEnvironmentSubdirectory="false"
 	  />
   </target>
   

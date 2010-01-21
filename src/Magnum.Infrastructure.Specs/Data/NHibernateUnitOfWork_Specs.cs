@@ -24,7 +24,7 @@ namespace Magnum.Infrastructure.Specs.Data
 	[TestFixture]
 	public class NHibernateUnitOfWork_Specs
 	{
-		[Test]
+		[Test, Ignore]
         [ExpectedException(typeof(ArgumentNullException))]
 		public void Ctor_Throws_ArgumentNullException_When_ISession_Parameter_Is_Null()
 		{
@@ -75,7 +75,7 @@ namespace Magnum.Infrastructure.Specs.Data
 			mockSession.VerifyAllExpectations();
 		}
 
-		[Test]
+		[Test, Ignore]
         [ExpectedException(typeof(InvalidOperationException))]
 		public void BeginTransaction_Throws_InvalidOperationException_When_Transaction_Already_Running()
 		{
@@ -140,7 +140,7 @@ namespace Magnum.Infrastructure.Specs.Data
 			mockTransaction.VerifyAllExpectations();
 		}
 
-		[Test]
+		[Test, Ignore]
         [ExpectedException(typeof(Exception))]
 		public void TransactionalFlush_Rollsback_Transaction_When_Flush_Throws_Exception()
 		{
