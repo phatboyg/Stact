@@ -84,14 +84,15 @@ namespace Magnum.Specs.Activator
 			instance.Value.ShouldEqual(argument);
 		}
 
-		[Test, ExpectedException(typeof(FastActivatorException))]
+		[Test]
 		public void An_object_not_matching_the_constraint_should_throw_an_exception()
 		{
 			var argument = new ClassWithDefaultConstructor();
 
-			var obj = FastActivator.Create(typeof (ClassWithAConstrainedGenericArgument<,>), argument);
-
-			Assert.Fail("Should not have succeeded");
+			Assert.Throws<FastActivatorException>(() =>
+				{
+					var obj = FastActivator.Create(typeof(ClassWithAConstrainedGenericArgument<,>), argument);
+				});
 		}
 
 		[Test]

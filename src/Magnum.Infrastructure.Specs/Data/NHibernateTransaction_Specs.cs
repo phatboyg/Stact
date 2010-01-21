@@ -14,22 +14,14 @@ namespace Magnum.Infrastructure.Specs.Data
 {
 	using System;
 	using Infrastructure.Data;
-	using Magnum.Specs;
-	using NUnit.Framework;
 	using NHibernate;
+	using NUnit.Framework;
 	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
 	public class NHibernateTransaction_Specs
 	{
-		[Test, Ignore]
-        [ExpectedException(typeof(ArgumentNullException))]
-		public void Ctor_Throws_ArgumentNullException_When_ITransation_Parameter_Is_Null()
-		{
-			new NHibernateTransaction(null, x => { }, y => { });
-		}
-
 		[Test]
 		public void Commit_Calls_Commit_On_Underlying_ITransaction()
 		{
@@ -38,18 +30,6 @@ namespace Magnum.Infrastructure.Specs.Data
 
 			var transaction = new NHibernateTransaction(mockTransaction, x => { }, y => { });
 			transaction.Commit();
-
-			mockTransaction.VerifyAllExpectations();
-		}
-
-		[Test]
-		public void Rollback_Calls_Rollback_On_Underlying_ITransaction()
-		{
-			var mockTransaction = MockRepository.GenerateMock<ITransaction>();
-			mockTransaction.Expect(x => x.Rollback()).IgnoreArguments();
-
-			var transaction = new NHibernateTransaction(mockTransaction, x => { }, y => { });
-			transaction.Rollback();
 
 			mockTransaction.VerifyAllExpectations();
 		}
@@ -69,6 +49,24 @@ namespace Magnum.Infrastructure.Specs.Data
 			mockTransaction.VerifyAllExpectations();
 			commitCalled.ShouldBeTrue();
 			rollbackCalled.ShouldBeFalse();
+		}
+
+		[Test]
+		public void Ctor_Throws_ArgumentNullException_When_ITransation_Parameter_Is_Null()
+		{
+			Assert.Throws<ArgumentNullException>(() => { new NHibernateTransaction(null, x => { }, y => { }); });
+		}
+
+		[Test]
+		public void Rollback_Calls_Rollback_On_Underlying_ITransaction()
+		{
+			var mockTransaction = MockRepository.GenerateMock<ITransaction>();
+			mockTransaction.Expect(x => x.Rollback()).IgnoreArguments();
+
+			var transaction = new NHibernateTransaction(mockTransaction, x => { }, y => { });
+			transaction.Rollback();
+
+			mockTransaction.VerifyAllExpectations();
 		}
 
 		[Test]
