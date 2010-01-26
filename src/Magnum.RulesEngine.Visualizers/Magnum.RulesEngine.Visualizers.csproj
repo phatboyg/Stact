@@ -106,6 +106,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>..\..\lib\ILMerge\ILMerge.exe /wildcards /out:..\Magnum.Visualizers.dll Magnum.RulesEngine.Visualizers.dll Magnum Magnum.RulesEngine Quickgraph.*.dll Microsoft.*.dll</PostBuildEvent>
+    <PostBuildEvent>..\..\lib\ILMerge\ILMerge.exe /allowDup /out:..\Magnum.Visualizers.dll Magnum.RulesEngine.Visualizers.dll Magnum.dll Magnum.RulesEngine.dll Quickgraph.dll Quickgraph.Glee.dll Microsoft.GLEE.dll Microsoft.GLEE.Drawing.dll Microsoft.GLEE.GraphViewerGDI.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>
