@@ -104,7 +104,7 @@ namespace Engine_Specs
 			return Declaration.Rule(new[] {condition}, new[] {consequence});
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void FirstTestName()
 		{
 			var engine = new MagnumRulesEngine();
