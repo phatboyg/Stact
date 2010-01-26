@@ -41,7 +41,7 @@ namespace Magnum.Specs.Threading
             Trace.WriteLine("Content Length: " + loader.TotalBytesRead);
         }
 
-        [Test]
+        [Test, Ignore]
         public void The_task_should_run_synchronously()
         {
             ContentLoader loader = new ContentLoader();

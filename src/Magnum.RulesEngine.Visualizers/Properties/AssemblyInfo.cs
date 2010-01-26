@@ -11,6 +11,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 using System.Diagnostics;
+using Magnum.Pipeline;
 using Magnum.RulesEngine;
 using Magnum.RulesEngine.Visualizers;
 using Microsoft.VisualStudio.DebuggerVisualizers;
@@ -19,3 +20,8 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 	typeof (VisualizerObjectSource), 
 	Target = typeof (RulesEngine),
 	Description = "Rules Engine Graph Visualizer")]
+
+[assembly: DebuggerVisualizer(typeof(PipelineDebugVisualizer),
+	typeof(VisualizerObjectSource),
+	Description = "Pipeline Graph Visualizer",
+	Target = typeof(Pipe))]

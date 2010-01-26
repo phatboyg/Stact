@@ -13,22 +13,17 @@
 namespace Magnum.RulesEngine.Specs.Graphing
 {
 	using System;
-	using System.Diagnostics;
 	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using ExecutionModel;
 	using Model;
 	using NUnit.Framework;
-	using Rhino.Mocks;
 	using SemanticModel;
 	using Visualizers;
 
 	[TestFixture]
 	public class Graphing_an_existing_engine
 	{
-		private MagnumRulesEngine _engine;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -42,6 +37,8 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			_engine.Add(CreateOnlinePreferredOrderRule());
 		}
 
+		private MagnumRulesEngine _engine;
+
 		private RuleDeclaration CreateOnlineOrderRule()
 		{
 			Expression<Func<Order, bool>> exp = o => o.Source == "Online";
@@ -49,7 +46,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			ConditionDeclaration condition = Declaration.Condition(exp);
 			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsOnline());
 
-			return Declaration.Rule(new[] { condition }, new[] { consequence });
+			return Declaration.Rule(new[] {condition}, new[] {consequence});
 		}
 
 		private RuleDeclaration CreateOnlinePreferredOrderRule()
@@ -57,12 +54,12 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			Expression<Func<Order, bool>> exp = o => o.Source == "Online";
 			ConditionDeclaration condition = Declaration.Condition(exp);
 
-			Expression<Func<Order, bool>> exp2 = o => o.Customer.Preferred == true;
+			Expression<Func<Order, bool>> exp2 = o => o.Customer.Preferred;
 			ConditionDeclaration condition2 = Declaration.Condition(exp2);
 
-			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsOnlinePreferred()); ;
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsOnlinePreferred());
 
-			return Declaration.Rule(new[] { condition, condition2 }, new[] { consequence });
+			return Declaration.Rule(new[] {condition, condition2}, new[] {consequence});
 		}
 
 		private RuleDeclaration CustomerIsSpecified()
@@ -72,7 +69,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			ConditionDeclaration condition = Declaration.Condition(exp);
 			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.HasCustomer());
 
-			return Declaration.Rule(new[] { condition }, new[] { consequence });
+			return Declaration.Rule(new[] {condition}, new[] {consequence});
 		}
 
 		private RuleDeclaration CreateActiveNotPreferredRule()
@@ -83,9 +80,9 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			Expression<Func<Order, bool>> exp2 = o => o.Customer.Active;
 			ConditionDeclaration condition2 = Declaration.Condition(exp2);
 
-			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsActiveNotPreferred()); ;
+			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsActiveNotPreferred());
 
-			return Declaration.Rule(new[] { condition, condition2 }, new[] { consequence });
+			return Declaration.Rule(new[] {condition, condition2}, new[] {consequence});
 		}
 
 		private RuleDeclaration CreatePreferredRule()
@@ -95,13 +92,13 @@ namespace Magnum.RulesEngine.Specs.Graphing
 
 			ConsequenceDeclaration consequence = Declaration.Consequence<Order>(x => x.IsPreferred());
 
-			return Declaration.Rule(new[] { condition }, new[] { consequence });
+			return Declaration.Rule(new[] {condition}, new[] {consequence});
 		}
 
 		[Test]
 		public void Should_generate_a_nice_graph_of_the_network()
 		{
-			var filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
+			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
 			var generator = new RulesEngineGraphGenerator();
 			generator.SaveGraphToFile(_engine, 2560, 1920, filename);
@@ -113,15 +110,19 @@ namespace Magnum.RulesEngine.Specs.Graphing
 		public static void HasCustomer(this RuleContext<Order> x)
 		{
 		}
+
 		public static void IsPreferred(this RuleContext<Order> x)
 		{
 		}
+
 		public static void IsActiveNotPreferred(this RuleContext<Order> x)
 		{
 		}
+
 		public static void IsOnlinePreferred(this RuleContext<Order> x)
 		{
 		}
+
 		public static void IsOnline(this RuleContext<Order> x)
 		{
 		}

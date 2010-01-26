@@ -16,7 +16,8 @@ namespace Magnum.Pipeline.Segments
     using System.Collections.Generic;
     using System.Linq;
 
-    public class RecipientListSegment :
+	[Serializable]
+	public class RecipientListSegment :
         PipeSegment
     {
         public Pipe[] Recipients { get; private set; }

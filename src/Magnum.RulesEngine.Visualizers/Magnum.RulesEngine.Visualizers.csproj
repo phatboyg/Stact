@@ -12,12 +12,13 @@
     <AssemblyName>Magnum.RulesEngine.Visualizers</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\DebugVisualizer\</OutputPath>
+    <OutputPath>..\..\bin\DebugVisualizer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,12 +26,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\DebugVisualizer\</OutputPath>
+    <OutputPath>..\..\bin\DebugVisualizer\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\bin\Magnum.RulesEngine.Visualizers.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.GLEE, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f84f738e1fc245c, processorArchitecture=MSIL">
@@ -67,11 +67,16 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Edge.cs" />
+    <Compile Include="PipelineVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PipelineVisualizerForm.Designer.cs">
+      <DependentUpon>PipelineVisualizerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GraphGenerator.cs" />
+    <Compile Include="PipelineDebugVisualizer.cs" />
     <Compile Include="PipelineGraphGenerator.cs" />
-    <Compile Include="PipelineGraphVisitor.cs" />
     <Compile Include="RulesEngineGraphGenerator.cs" />
-    <Compile Include="RulesEngineGraphVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RulesEngineDebugVisualizer.cs" />
     <Compile Include="RulesEngineVisualizerForm.cs">
@@ -81,7 +86,6 @@
       <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StateMachineGraphVisitor.cs" />
-    <Compile Include="Vertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">
@@ -93,11 +97,6 @@
       <Name>Magnum</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="RulesEngineVisualizerForm.resx">
-      <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -106,4 +105,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>..\..\lib\ILMerge\ILMerge.exe /wildcards /out:..\Magnum.Visualizers.dll Magnum.RulesEngine.Visualizers.dll Magnum Magnum.RulesEngine Quickgraph.*.dll Microsoft.*.dll</PostBuildEvent>
+  </PropertyGroup>
 </Project>

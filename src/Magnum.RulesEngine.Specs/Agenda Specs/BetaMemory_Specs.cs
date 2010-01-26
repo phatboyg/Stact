@@ -74,28 +74,6 @@ namespace BetaMemory_Specs
 		}
 
 		[Test]
-		public void One_more_level_of_indirection()
-		{
-			var junction = new JoinNode<Customer>(_constantNode);
-			junction.AddSuccessor(_actionNode);
-
-			var alphaNode = new AlphaNode<Customer>();
-			alphaNode.AddSuccessor(junction);
-
-			alphaNode.Activate(_context);
-
-			//var memoryA = new BetaMemory<Customer>(junction);
-
-
-
-			//memoryA.Activate(_context);
-
-			_agenda.Execute();
-
-			_context.VerifyAllExpectations();
-		}
-
-		[Test]
 		public void Pulling_an_element_through_two_memories_should_merge_properly()
 		{
 			var junction = new JoinNode<Customer>(_constantNode);

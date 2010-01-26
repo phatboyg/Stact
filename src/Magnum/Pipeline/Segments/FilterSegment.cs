@@ -15,7 +15,8 @@ namespace Magnum.Pipeline.Segments
     using System;
     using System.Collections.Generic;
 
-    public class FilterSegment :
+	[Serializable]
+	public class FilterSegment :
         PipeSegment
     {
         public FilterSegment(Pipe pipe, Type messageType)
@@ -38,10 +39,12 @@ namespace Magnum.Pipeline.Segments
         }
     }
 
-    public class FilterSegment<TMessage> :
+	[Serializable]
+	public class FilterSegment<TMessage> :
         FilterSegment
         where TMessage : class
     {
+		[NonSerialized]
         private readonly Predicate<TMessage> _accept;
 
         public FilterSegment(Pipe pipe, Predicate<TMessage> accept)

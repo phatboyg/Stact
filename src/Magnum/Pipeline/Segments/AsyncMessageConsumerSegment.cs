@@ -17,6 +17,7 @@ namespace Magnum.Pipeline.Segments
 	using Actors;
 	using Actors.CommandQueues;
 
+	[Serializable]
 	public abstract class AsyncMessageConsumerSegment :
 		PipeSegment
 	{

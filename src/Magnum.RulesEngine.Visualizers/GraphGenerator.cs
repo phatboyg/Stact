@@ -10,23 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Specs
+namespace Magnum.RulesEngine.Visualizers
 {
-	using System;
-	using System.Linq.Expressions;
-	using Model;
-	using NUnit.Framework;
-	using SemanticModel;
+	using System.Collections.Generic;
+	using Graphing;
+	using Microsoft.Glee.Drawing;
 
-	[TestFixture]
-	public class When_creating_a_condition
+	public interface GraphGenerator
 	{
-		[Test]
-		public void FirstTestName()
-		{
-			Expression<Func<Customer, bool>> preferred = x => x.Preferred;
-
-			ConditionDeclaration condition = Declaration.Condition(preferred);
-		}
+		Graph CreateGraph(IEnumerable<Vertex> vertices, IEnumerable<Graphing.Edge> edges);
 	}
 }

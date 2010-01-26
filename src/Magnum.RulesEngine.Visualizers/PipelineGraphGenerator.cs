@@ -12,18 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Visualizers
 {
+	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
+	using CollectionExtensions;
+	using Graphing;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using Pipeline;
+	using Pipeline.Segments;
+	using Pipeline.Visitors;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Color=Microsoft.Glee.Drawing.Color;
 
-	public class PipelineGraphGenerator
+	public class PipelineGraphGenerator : 
+		GraphGenerator
 	{
+		private static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
+
+		static PipelineGraphGenerator()
+		{
+			_colors = new Dictionary<Type, Microsoft.Glee.Drawing.Color>
+				{
+					{typeof (InputSegment), Microsoft.Glee.Drawing.Color.Green},
+					{typeof (FilterSegment), Microsoft.Glee.Drawing.Color.Yellow},
+					{typeof (RecipientListSegment), Microsoft.Glee.Drawing.Color.Orange},
+					{typeof (EndSegment), Microsoft.Glee.Drawing.Color.Red},
+					{typeof (MessageConsumerSegment), Microsoft.Glee.Drawing.Color.Blue},
+				};
+		}
+
 		public void SaveGraphToFile(Pipe pipe, int width, int height, string filename)
 		{
 			Graph gleeGraph = CreateGraph(pipe);
@@ -41,13 +61,18 @@ namespace Magnum.RulesEngine.Visualizers
 
 		public Graph CreateGraph(Pipe pipe)
 		{
-			var visitor = new PipelineGraphVisitor();
+			var visitor = new GraphPipelineVisitor();
 			visitor.Visit(pipe);
 
+			return CreateGraph(visitor.Vertices, visitor.Edges);
+		}
+
+		public Graph CreateGraph(IEnumerable<Vertex> vertices, IEnumerable<Graphing.Edge> edges)
+		{
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
 
-			visitor.Vertices.Each(x => graph.AddVertex(x));
-			visitor.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
+			vertices.Each(x => graph.AddVertex(x));
+			edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
 
 			GleeGraphPopulator<Vertex, Edge<Vertex>> glee = graph.CreateGleePopulator();
 
@@ -62,21 +87,26 @@ namespace Magnum.RulesEngine.Visualizers
 
 		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
-			var color = new Color(args.Vertex.Color.R, args.Vertex.Color.G, args.Vertex.Color.B);
+			Microsoft.Glee.Drawing.Color color = GetVertexColor(args.Vertex.VertexType);
 
 			args.Node.Attr.Fillcolor = color;
 
 			args.Node.Attr.Shape = Shape.Box;
-			args.Node.Attr.Fontcolor = Color.White;
+			args.Node.Attr.Fontcolor = Microsoft.Glee.Drawing.Color.White;
 			args.Node.Attr.Fontsize = 8;
 			args.Node.Attr.FontName = "Arial";
 			args.Node.Attr.Label = args.Vertex.Title;
 			args.Node.Attr.Padding = 1.2;
 		}
 
+		private static Microsoft.Glee.Drawing.Color GetVertexColor(Type type)
+		{
+			return _colors.Retrieve(type, () => Microsoft.Glee.Drawing.Color.Black);
+		}
+
 		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
-			e.GEdge.EdgeAttr.Label = e.Edge.Source.ObjectType.Name;
+			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.Name;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;
 		}

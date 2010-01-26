@@ -32,7 +32,7 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 		[TearDown]
 		public void Teardown()
 		{
-			RulesEngineDebugVisualizer.TestShowVisualizer(_engine);
+	//			RulesEngineDebugVisualizer.TestShowVisualizer(_engine);
 		}
 
 		private RulesEngine _engine;
@@ -97,6 +97,7 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 		public static void RequestApproval(this RuleContext<OrderSubmitted> order)
 		{
 		}
+
 		public static void RequestClearance(this RuleContext<OrderSubmitted> order)
 		{
 		}

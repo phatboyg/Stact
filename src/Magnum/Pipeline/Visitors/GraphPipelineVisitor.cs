@@ -1,0 +1,145 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+namespace Magnum.Pipeline.Visitors
+{
+	using System;
+	using System.Collections.Generic;
+	using CollectionExtensions;
+	using Graphing;
+	using Segments;
+
+	public class GraphPipelineVisitor :
+		AbstractPipeVisitor
+	{
+		private readonly List<Edge> _edges = new List<Edge>();
+		private readonly Stack<Vertex> _stack = new Stack<Vertex>();
+		private readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
+		private Vertex _lastNodeVertex;
+
+		public IEnumerable<Vertex> Vertices
+		{
+			get { return _vertices.Values; }
+		}
+
+		public IEnumerable<Edge> Edges
+		{
+			get { return _edges; }
+		}
+
+		public new void Visit(Pipe pipe)
+		{
+			base.Visit(pipe);
+		}
+
+		protected override Pipe VisitInput(InputSegment input)
+		{
+			_lastNodeVertex = GetSink(input.GetHashCode(), () => "Input", typeof (InputSegment), input.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitInput(input));
+		}
+
+		protected override Pipe VisitEnd(EndSegment end)
+		{
+			_lastNodeVertex = GetSink(end.GetHashCode(), () => "End", typeof (EndSegment), end.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return base.VisitEnd(end);
+		}
+
+		protected override Pipe VisitFilter(FilterSegment filter)
+		{
+			_lastNodeVertex = GetSink(filter.GetHashCode(), () => "Filter", typeof (FilterSegment), filter.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitFilter(filter));
+		}
+
+		protected override Pipe VisitInterceptor(InterceptorSegment interceptor)
+		{
+			_lastNodeVertex = GetSink(interceptor.GetHashCode(), () => "Interceptor", typeof (InterceptorSegment), interceptor.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitInterceptor(interceptor));
+		}
+
+		protected override Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
+		{
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (MessageConsumerSegment), messageConsumer.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitMessageConsumer(messageConsumer));
+		}
+
+		protected override Pipe VisitIntervalMessageConsumer(IntervalMessageConsumerSegment messageConsumer)
+		{
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (IntervalMessageConsumerSegment), messageConsumer.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitIntervalMessageConsumer(messageConsumer));
+		}
+
+		protected override Pipe VisitAsyncMessageConsumer(AsyncMessageConsumerSegment messageConsumer)
+		{
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (AsyncMessageConsumerSegment), messageConsumer.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitAsyncMessageConsumer(messageConsumer));
+		}
+
+		protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
+		{
+			_lastNodeVertex = GetSink(recipientList.GetHashCode(), () => "List", typeof (RecipientListSegment), recipientList.MessageType);
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+
+			return Recurse(() => base.VisitRecipientList(recipientList));
+		}
+
+		private Pipe Recurse(Func<Pipe> action)
+		{
+			_stack.Push(_lastNodeVertex);
+
+			Pipe result = action();
+
+			_stack.Pop();
+
+			return result;
+		}
+
+		private Vertex GetSink(int key, Func<string> getTitle, Type nodeType, Type objectType)
+		{
+			return _vertices.Retrieve(key, () =>
+				{
+					var newSink = new Vertex(nodeType, objectType, getTitle());
+
+					return newSink;
+				});
+		}
+	}
+}

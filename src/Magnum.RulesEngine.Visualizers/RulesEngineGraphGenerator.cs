@@ -12,17 +12,36 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Visualizers
 {
+	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
+	using CollectionExtensions;
+	using ExecutionModel;
+	using Graphing;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Color=Microsoft.Glee.Drawing.Color;
 
 	public class RulesEngineGraphGenerator
 	{
+		private static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
+
+		static RulesEngineGraphGenerator()
+		{
+			_colors = new Dictionary<Type, Microsoft.Glee.Drawing.Color>
+				{
+					{typeof (AlphaNode<>), Microsoft.Glee.Drawing.Color.Red},
+					{typeof (TypeNode<>), Microsoft.Glee.Drawing.Color.Orange},
+					{typeof (JoinNode<>), Microsoft.Glee.Drawing.Color.Green},
+					{typeof (ConditionNode<>), Microsoft.Glee.Drawing.Color.Blue},
+					{typeof (ActionNode<>), Microsoft.Glee.Drawing.Color.Teal},
+					{typeof (ConstantNode<>), Microsoft.Glee.Drawing.Color.Magenta},
+				};
+		}
+
 		public void SaveGraphToFile(RulesEngine engine, int width, int height, string filename)
 		{
 			Graph gleeGraph = CreateGraph(engine);
@@ -41,7 +60,7 @@ namespace Magnum.RulesEngine.Visualizers
 
 		public Graph CreateGraph(RulesEngine engine)
 		{
-			var visitor = new RulesEngineGraphVisitor();
+			var visitor = new GraphRulesEngineVisitor();
 			engine.Visit(visitor);
 
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
@@ -63,21 +82,28 @@ namespace Magnum.RulesEngine.Visualizers
 
 		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
-			var color = new Color(args.Vertex.Color.R, args.Vertex.Color.G, args.Vertex.Color.B);
+			Microsoft.Glee.Drawing.Color color = GetVertexColor(args.Vertex.VertexType);
 
 			args.Node.Attr.Fillcolor = color;
 
 			args.Node.Attr.Shape = Shape.Box;
-			args.Node.Attr.Fontcolor = Color.White;
+			args.Node.Attr.Fontcolor = Microsoft.Glee.Drawing.Color.White;
 			args.Node.Attr.Fontsize = 8;
 			args.Node.Attr.FontName = "Arial";
 			args.Node.Attr.Label = args.Vertex.Title;
 			args.Node.Attr.Padding = 1.2;
 		}
 
+
+		private static Microsoft.Glee.Drawing.Color GetVertexColor(Type type)
+		{
+			return _colors.Retrieve(type, () => Microsoft.Glee.Drawing.Color.Black);
+		}
+
+
 		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
-			e.GEdge.EdgeAttr.Label = e.Edge.Source.ObjectType.Name;
+			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.Name;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;
 		}

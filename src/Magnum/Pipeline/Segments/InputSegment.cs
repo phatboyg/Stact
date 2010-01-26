@@ -16,7 +16,8 @@ namespace Magnum.Pipeline.Segments
     using System.Collections.Generic;
     using System.Threading;
 
-    public class InputSegment :
+	[Serializable]
+	public class InputSegment :
         PipeSegment
     {
         public InputSegment(Pipe pipe)

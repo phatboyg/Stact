@@ -15,6 +15,7 @@ namespace Magnum.Pipeline.Segments
     using System;
     using System.Collections.Generic;
 
+	[Serializable]
     public abstract class PipeSegment :
         Pipe
     {

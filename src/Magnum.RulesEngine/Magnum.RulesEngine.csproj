@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,11 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Magnum.RulesEngine.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Magnum.RulesEngine.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +72,7 @@
     <Compile Include="ExecutionModel\PriorityQueueAgenda.cs" />
     <Compile Include="ExecutionModel\RightActivation.cs" />
     <Compile Include="ExecutionModel\SuccessorSet.cs" />
+    <Compile Include="ExecutionModel\GraphRulesEngineVisitor.cs" />
     <Compile Include="MagnumRulesEngine.cs" />
     <Compile Include="RulesEngine.cs" />
     <Compile Include="RulesEngineException.cs" />

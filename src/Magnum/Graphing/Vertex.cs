@@ -10,27 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Graphing
 {
 	using System;
-	using System.Drawing;
 
 	public class Vertex
 	{
-		public Vertex(Type nodeType, Type objectType, string title, Color color)
+		public Vertex(Type type, Type targetType, string title)
 		{
-			NodeType = nodeType;
-			ObjectType = objectType;
+			VertexType = type;
+			TargetType = targetType;
 			Title = title;
-			Color = color;
 		}
-
-		public Color Color { get; private set; }
 
 		public string Title { get; private set; }
 
-		public Type NodeType { get; private set; }
+		public Type VertexType { get; private set; }
 
-		public Type ObjectType { get; private set; }
+		public Type TargetType { get; private set; }
 	}
 }
