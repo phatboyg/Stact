@@ -17,15 +17,93 @@ namespace Magnum.CommandLineParser
 	using System.Linq;
 	using Monads.Parser;
 
-	public abstract class CommandLineElementParser<TResult> :
-		AbstractParser<IEnumerable<ICommandLineElement>>
+	public class CommandLineElementParser<TResult> :
+		AbstractParser<IEnumerable<ICommandLineElement>>,
+		ICommandLineElementParser<TResult>
 	{
+		private readonly IList<Parser<IEnumerable<ICommandLineElement>, TResult>> _parsers;
+
+		public CommandLineElementParser()
+		{
+			_parsers = new List<Parser<IEnumerable<ICommandLineElement>, TResult>>();
+
+			All = from element in _parsers.FirstMatch() select element;
+		}
+
 		public Parser<IEnumerable<ICommandLineElement>, ICommandLineElement> AnyElement
 		{
 			get { return input => input.Any() ? new Result<IEnumerable<ICommandLineElement>, ICommandLineElement>(input.First(), input.Skip(1)) : null; }
 		}
 
-		public abstract Parser<IEnumerable<ICommandLineElement>, TResult> All { get; }
+		public Parser<IEnumerable<ICommandLineElement>, TResult> All { get; protected set; }
+
+		public void Add(Parser<IEnumerable<ICommandLineElement>, TResult> parser)
+		{
+			_parsers.Add(parser);
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definition()
+		{
+			return from c in AnyElement
+				   where c.GetType() == typeof(DefinitionElement)
+				   select (IDefinitionElement)c;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definition(string key)
+		{
+			return from def in Definition()
+				   where def.Key == key
+				   select def;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definitions(params string[] keys)
+		{
+			return from def in Definition()
+				   where keys.Contains(def.Key)
+				   select def;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switch()
+		{
+			return from c in AnyElement
+			       where c.GetType() == typeof (SwitchElement)
+			       select (ISwitchElement) c;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switch(string key)
+		{
+			return from sw in Switch()
+			       where sw.Key == key
+			       select sw;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switches(params string[] keys)
+		{
+			return from sw in Switch()
+			       where keys.Contains(sw.Key)
+			       select sw;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument()
+		{
+			return from c in AnyElement
+			       where c.GetType() == typeof (ArgumentElement)
+			       select (IArgumentElement) c;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument(string value)
+		{
+			return from arg in Argument()
+			       where arg.Id == value
+			       select arg;
+		}
+
+		public Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument(Predicate<IArgumentElement> pred)
+		{
+			return from arg in Argument()
+			       where pred(arg)
+			       select arg;
+		}
 
 		public IEnumerable<TResult> Parse(IEnumerable<ICommandLineElement> elements)
 		{
@@ -37,28 +115,38 @@ namespace Magnum.CommandLineParser
 				result = All(result.Rest);
 			}
 		}
+	}
 
-		public Parser<IEnumerable<ICommandLineElement>, ArgumentElement> Argument()
+	public static class ExtensionForCommandLineElementParsers
+	{
+		public static Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Optional(this Parser<IEnumerable<ICommandLineElement>, ISwitchElement> source, string key, bool defaultValue)
 		{
-			return from c in AnyElement
-			       where c.GetType() == typeof (ArgumentElement)
-			       select (ArgumentElement) c;
+			return input =>
+				{
+					IEnumerable<ICommandLineElement> query = input
+						.Where(x => x.GetType() == typeof (SwitchElement))
+						.Where(x => ((SwitchElement) x).Key == key);
+
+					if (query.Any())
+						return new Result<IEnumerable<ICommandLineElement>, ISwitchElement>(query.First() as ISwitchElement, input.Except(query));
+
+					return new Result<IEnumerable<ICommandLineElement>, ISwitchElement>(new SwitchElement(key, defaultValue), input);
+				};
 		}
 
-		public Parser<IEnumerable<ICommandLineElement>, ArgumentElement> Argument(string value)
+		public static Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Optional(this Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> source, string key, string defaultValue)
 		{
-			return from c in AnyElement
-			       where c.GetType() == typeof (ArgumentElement)
-			       where ((ArgumentElement) c).Id == value
-			       select (ArgumentElement) c;
-		}
+			return input =>
+				{
+					IEnumerable<ICommandLineElement> query = input
+						.Where(x => x.GetType() == typeof (DefinitionElement))
+						.Where(x => ((DefinitionElement) x).Key == key);
 
-		public Parser<IEnumerable<ICommandLineElement>, ArgumentElement> Argument(Predicate<ArgumentElement> pred)
-		{
-			return from c in AnyElement
-			       where c.GetType() == typeof (ArgumentElement)
-			       where pred((ArgumentElement) c)
-			       select (ArgumentElement) c;
+					if (query.Any())
+						return new Result<IEnumerable<ICommandLineElement>, IDefinitionElement>(query.First() as IDefinitionElement, input.Except(query));
+
+					return new Result<IEnumerable<ICommandLineElement>, IDefinitionElement>(new DefinitionElement(key, defaultValue), input);
+				};
 		}
 	}
 }

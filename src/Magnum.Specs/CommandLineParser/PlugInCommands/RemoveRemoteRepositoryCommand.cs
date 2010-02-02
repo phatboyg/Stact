@@ -10,26 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.CommandLineParser
+namespace Magnum.Specs.CommandLineParser.PlugInCommands
 {
-	public class TokenElement :
-		ITokenElement
+	using System.Diagnostics;
+
+	public class RemoveRemoteRepositoryCommand :
+		ICommand
 	{
-		public TokenElement(string token)
+		public RemoveRemoteRepositoryCommand(string alias, string url)
 		{
-			Token = token;
+			Alias = alias;
+			Url = url;
 		}
 
-		public string Token { get; private set; }
+		public string Alias { get; private set; }
+		public string Url { get; private set; }
 
-		public override string ToString()
+		public int Execute()
 		{
-			return "TOKEN: " + Token;
-		}
+			Trace.WriteLine("Removing remote repository (" + Alias + ") for: " + Url);
 
-		public static ICommandLineElement New(string token)
-		{
-			return new TokenElement(token);
+			return 0;
 		}
 	}
 }

@@ -12,24 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-	public class TokenElement :
-		ITokenElement
+	public interface IInitializeParser<T>
 	{
-		public TokenElement(string token)
-		{
-			Token = token;
-		}
-
-		public string Token { get; private set; }
-
-		public override string ToString()
-		{
-			return "TOKEN: " + Token;
-		}
-
-		public static ICommandLineElement New(string token)
-		{
-			return new TokenElement(token);
-		}
 	}
 }

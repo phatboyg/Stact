@@ -12,19 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-    public class ArgumentElement :
-        IArgumentElement
-    {
-        public ArgumentElement(string id)
-        {
-            Id = id;
-        }
+	public class ArgumentElement :
+		IArgumentElement
+	{
+		public ArgumentElement(string id)
+		{
+			Id = id;
+		}
 
-        public override string ToString()
-        {
-            return "ARGUMENT: " + Id;
-        }
+		public string Id { get; private set; }
 
-        public string Id { get; private set; }
-    }
+		public override string ToString()
+		{
+			return "ARGUMENT: " + Id;
+		}
+
+		public static ICommandLineElement New(string id)
+		{
+			return new ArgumentElement(id);
+		}
+	}
 }

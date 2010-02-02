@@ -12,9 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-    public interface ISwitchElement :
-        ICommandLineElement
-    {
-        char Key { get; }
-    }
+	public interface ISwitchElement :
+		ICommandLineElement
+	{
+		string Key { get; }
+		bool Value { get; }
+	}
 }

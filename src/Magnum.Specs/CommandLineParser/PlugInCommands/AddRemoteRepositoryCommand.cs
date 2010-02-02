@@ -10,11 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.CommandLineParser
+namespace Magnum.Specs.CommandLineParser.PlugInCommands
 {
-	public interface IFlagElement :
-		ICommandLineElement
+	using System.Diagnostics;
+
+	public class AddRemoteRepositoryCommand :
+		ICommand
 	{
-		string Key { get; }
+		public AddRemoteRepositoryCommand(string alias, string url)
+		{
+			Alias = alias;
+			Url = url;
+		}
+
+		public string Alias { get; private set; }
+		public string Url { get; private set; }
+
+		public int Execute()
+		{
+			Trace.WriteLine("Adding remote repository (" + Alias + ") for: " + Url);
+
+			return 0;
+		}
 	}
 }

@@ -12,21 +12,26 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-    public class DefinitionElement :
-        IDefinitionElement
-    {
-        public DefinitionElement(string key, string value)
-        {
-            Key = key;
-            Value = value;
-        }
+	public class DefinitionElement :
+		IDefinitionElement
+	{
+		public DefinitionElement(string key, string value)
+		{
+			Key = key;
+			Value = value;
+		}
 
-        public override string ToString()
-        {
-            return "DEFINE: " + Key + " = " + Value;
-        }
+		public string Key { get; private set; }
+		public string Value { get; private set; }
 
-        public string Key { get; private set; }
-        public string Value { get; private set; }
-    }
+		public override string ToString()
+		{
+			return "DEFINE: " + Key + " = " + Value;
+		}
+
+		public static ICommandLineElement New(string key, string value)
+		{
+			return new DefinitionElement(key, value);
+		}
+	}
 }

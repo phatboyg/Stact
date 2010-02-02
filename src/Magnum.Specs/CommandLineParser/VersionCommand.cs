@@ -17,6 +17,23 @@ namespace Magnum.Specs.CommandLineParser
 	public class VersionCommand :
 		ICommand
 	{
+		public VersionCommand(bool verbose, bool quiet, string output)
+		{
+			Verbose = verbose;
+			Quiet = quiet;
+			Output = output;
+		}
+
+		public VersionCommand()
+		{
+		}
+
+		public bool Quiet { get; private set; }
+
+		public bool Verbose { get; private set; }
+
+		public string Output { get; private set; }
+
 		public int Execute()
 		{
 			Console.WriteLine("Version: (some version)");

@@ -12,19 +12,41 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-    public class SwitchElement : 
-        ISwitchElement
-    {
-        public SwitchElement(char key)
-        {
-            Key = key;
-        }
+	public class SwitchElement :
+		ISwitchElement
+	{
+		public SwitchElement(char key)
+			: this(key.ToString())
+		{
+		}
 
-        public char Key { get; private set; }
+		public SwitchElement(string key)
+			: this(key, true)
+		{
+		}
 
-        public override string ToString()
-        {
-            return "SWITCH: " + Key;
-        }
-    }
+		public SwitchElement(string key, bool value)
+		{
+			Key = key;
+			Value = value;
+		}
+
+		public string Key { get; private set; }
+		public bool Value { get; private set; }
+
+		public override string ToString()
+		{
+			return "SWITCH: " + Key + " (" + Value + ")";
+		}
+
+		public static ICommandLineElement New(char key)
+		{
+			return new SwitchElement(key);
+		}
+
+		public static ICommandLineElement New(string key)
+		{
+			return new SwitchElement(key);
+		}
+	}
 }

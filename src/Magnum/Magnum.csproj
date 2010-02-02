@@ -119,12 +119,14 @@
     <Compile Include="Collections\Util.cs" />
     <Compile Include="CombGuid.cs" />
     <Compile Include="CommandLineParser\ArgumentElement.cs" />
+    <Compile Include="CommandLineParser\CommandLine.cs" />
     <Compile Include="CommandLineParser\CommandLineElementParser.cs" />
-    <Compile Include="CommandLineParser\FlagElement.cs" />
+    <Compile Include="CommandLineParser\CommandLineParseException.cs" />
     <Compile Include="CommandLineParser\IArgumentElement.cs" />
+    <Compile Include="CommandLineParser\ICommandLineElementParser.cs" />
     <Compile Include="CommandLineParser\ICommandLineParser.cs" />
     <Compile Include="CommandLineParser\IDefinitionElement.cs" />
-    <Compile Include="CommandLineParser\IFlagElement.cs" />
+    <Compile Include="CommandLineParser\IInitializeParser.cs" />
     <Compile Include="CommandLineParser\ISwitchElement.cs" />
     <Compile Include="CommandLineParser\ITokenElement.cs" />
     <Compile Include="CommandLineParser\MonadicCommandLineParser.cs" />

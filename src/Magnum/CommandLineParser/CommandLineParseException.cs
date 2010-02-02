@@ -12,19 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.CommandLineParser
 {
-	public class FlagElement :
-		IFlagElement
+	using System;
+	using System.Runtime.Serialization;
+
+	[Serializable]
+	public class CommandLineParseException :
+		Exception
 	{
-		public FlagElement(string key)
+		public CommandLineParseException(string message)
+			: base(message)
 		{
-			Key = key;
 		}
 
-		public string Key { get; private set; }
-
-		public override string ToString()
+		public CommandLineParseException()
 		{
-			return "FLAG: " + Key;
+		}
+
+		public CommandLineParseException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected CommandLineParseException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
 		}
 	}
 }

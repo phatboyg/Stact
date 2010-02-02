@@ -13,8 +13,10 @@
 namespace Magnum.Monads.Parser
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    public static class MonadParserExtensions
+	public static class MonadParserExtensions
     {
         public static Parser<TInput, TValue> Where<TInput, TValue>(this Parser<TInput, TValue> parser, Func<TValue, bool> pred)
         {
@@ -63,7 +65,18 @@ namespace Magnum.Monads.Parser
             return input => first(input) ?? second(input);
         }
 
-        public static Parser<TInput, TSecondValue> And<TInput, TFirstValue, TSecondValue>(this Parser<TInput, TFirstValue> first,
+		public static Parser<TInput, TValue> FirstMatch<TInput, TValue>(this IEnumerable<Parser<TInput, TValue>> options)
+		{
+			return input =>
+				{
+					return options
+						.Select(option => option(input))
+						.Where(result => result != null)
+						.FirstOrDefault();
+				};
+		}
+
+    	public static Parser<TInput, TSecondValue> And<TInput, TFirstValue, TSecondValue>(this Parser<TInput, TFirstValue> first,
                                                                                           Parser<TInput, TSecondValue> second)
         {
             return input => second(first(input).Rest);
