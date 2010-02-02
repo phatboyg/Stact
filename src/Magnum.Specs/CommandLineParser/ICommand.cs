@@ -14,5 +14,6 @@ namespace Magnum.Specs.CommandLineParser
 {
 	public interface ICommand
 	{
+		int Execute();
 	}
 }

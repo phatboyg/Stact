@@ -59,5 +59,31 @@ namespace Magnum.Specs.CommandLineParser
                 .Each(x => { Trace.WriteLine(x.ToString()); });
 
         }
+
+    	[Test]
+    	public void Should_handle_a_nested_set_of_commands_and_flags()
+    	{
+    		string commandLine = "config --global net.framework net-3.5";
+
+			Trace.WriteLine("Command Line: " + commandLine);
+			
+			ICommandLineParser parser = new MonadicCommandLineParser();
+
+    		parser.Parse(commandLine)
+    			.Each(x => Trace.WriteLine(x.ToString()));
+    	}
+
+    	[Test]
+    	public void A_git_style_command_should_be_supported()
+    	{
+    		string commandLine = "remote add dru git://github.com/drusellers/nu.git";
+
+			Trace.WriteLine("Command Line: " + commandLine);
+			
+			ICommandLineParser parser = new MonadicCommandLineParser();
+
+    		parser.Parse(commandLine)
+    			.Each(x => Trace.WriteLine(x.ToString()));
+    	}
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
+    <Compile Include="CommandLineParser\LinqSpecification_Specs.cs" />
     <Compile Include="Cryptography\DpapiCryptographyService_Specs.cs" />
     <Compile Include="Cryptography\RsaCryptographyService_Specs.cs" />
     <Compile Include="Activator\Classes\ClassWithAConstrainedGenericArgument.cs" />

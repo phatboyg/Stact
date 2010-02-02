@@ -18,17 +18,17 @@ namespace Magnum.Specs.CommandLineParser
 	public class MoveCommand :
 		ICommand
 	{
-		public int Execute(MoveCommandArguments arguments)
+		public int Execute()
 		{
 			try
 			{
-				File.Move(arguments.From, arguments.To);
+//				File.Move(arguments.From, arguments.To);
 
 				return 0;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Failed to move file from " + arguments.From + " to " + arguments.To);
+//				Console.WriteLine("Failed to move file from " + arguments.From + " to " + arguments.To);
 				Console.WriteLine("Exception: " + ex.Message);
 				return 1;
 			}
