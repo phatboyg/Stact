@@ -183,6 +183,15 @@
     <Compile Include="EventStreamProcessing\Result.cs" />
     <Compile Include="Graphing\Edge.cs" />
     <Compile Include="Graphing\Vertex.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\ILogProvider.cs" />
+    <Compile Include="Logging\ILogSource.cs" />
+    <Compile Include="Logging\ILogWriter.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LoggerImpl.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\TraceLogProvider.cs" />
     <Compile Include="Pipeline\Visitors\GraphPipelineVisitor.cs" />
     <Compile Include="Reflection\ExpressionExtensions.cs" />
     <Compile Include="Reflection\GenericFastActivator.cs" />
