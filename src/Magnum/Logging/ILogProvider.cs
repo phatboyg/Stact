@@ -12,21 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Logging
 {
-	using System;
-
 	/// <summary>
 	/// Implemented by a logging provider to obtain log sinks by name
 	/// </summary>
 	public interface ILogProvider
 	{
-		bool IsLogSourceEnabled(ILogSource source);
-
-		void Log(ILogSource source, string message);
-		void Log(ILogSource source, string message, object[] objects);
-		void Log(ILogSource source, IFormatProvider provider, string format, object[] objects);
-		void Log(ILogSource source, Exception exception);
-		void Log(ILogSource source, Exception exception, string message);
-		void Log(ILogSource source, Exception exception, string format, object[] objects);
-		void Log(ILogSource source, Exception exception, IFormatProvider provider, string format, object[] objects);
+		ILogger GetLogger<T>();
+		ILogger GetLogger(string name);
 	}
 }

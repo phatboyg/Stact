@@ -13,40 +13,29 @@
 namespace Magnum.Logging
 {
 	using System;
+	using System.Runtime.Serialization;
 
-	public class TraceLogProvider :
-		ILogProvider
+	[Serializable]
+	public class LoggerException :
+		Exception
 	{
-		public TraceLogProvider()
+		public LoggerException()
 		{
-			Level = LogLevel.Error;
 		}
 
-		public LogLevel Level { get; private set; }
-
-		public ILogger GetLogger<T>()
+		public LoggerException(string message)
+			: base(message)
 		{
-			return GetLogger(typeof (T).FullName);
 		}
 
-		public ILogger GetLogger(string name)
+		public LoggerException(string message, Exception innerException)
+			: base(message, innerException)
 		{
-			return new TraceLogger(name, this);
 		}
 
-		public void SetLogLevel(LogLevel level)
+		protected LoggerException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
-			Level = level;
-		}
-
-		public void SetLogLevel(string name, LogLevel level)
-		{
-			throw new NotImplementedException("This would be nice, but not mandatory at this point");
-		}
-
-		public bool IsEnabled(LogLevel level)
-		{
-			return (int) level >= (int) Level;
 		}
 	}
 }

@@ -188,9 +188,11 @@
     <Compile Include="Logging\ILogSource.cs" />
     <Compile Include="Logging\ILogWriter.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LoggerImpl.cs" />
+    <Compile Include="Logging\LoggerException.cs" />
+    <Compile Include="Logging\LoggerFacade.cs" />
     <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Logging\LogWriter.cs" />
+    <Compile Include="Logging\TraceLogger.cs" />
+    <Compile Include="Logging\TraceLogWriter.cs" />
     <Compile Include="Logging\TraceLogProvider.cs" />
     <Compile Include="Pipeline\Visitors\GraphPipelineVisitor.cs" />
     <Compile Include="Reflection\ExpressionExtensions.cs" />

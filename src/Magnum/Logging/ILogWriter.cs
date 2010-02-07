@@ -29,5 +29,6 @@ namespace Magnum.Logging
 		void Write(Exception exception, string message);
 		void Write(Exception exception, string format, params object[] args);
 		void Write(Exception exception, IFormatProvider provider, string format, params object[] args);
+		void Write(Action<ILogWriter> logAction);
 	}
 }

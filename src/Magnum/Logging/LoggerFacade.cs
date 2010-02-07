@@ -18,29 +18,25 @@ namespace Magnum.Logging
 	/// Abstract base class which provides most logging method
 	/// overloads for an <see cref="ILogger"/> implementation.
 	/// </summary>
-	public abstract class LoggerImpl :
+	public abstract class LoggerFacade :
 		ILogger
 	{
-		readonly LogWriter _debug;
-		readonly LogWriter _error;
-		readonly LogWriter _fatal;
-		readonly LogWriter _info;
+		readonly ILogWriter _debug;
+		readonly ILogWriter _error;
+		readonly ILogWriter _fatal;
+		readonly ILogWriter _info;
+		readonly ILogWriter _warn;
 
-		readonly LogWriter _warn;
-
-		protected LoggerImpl(ILogProvider provider, string name)
+		protected LoggerFacade(string name, ILogWriter debug, ILogWriter info, ILogWriter warn, ILogWriter error, ILogWriter fatal)
 		{
-			Provider = provider;
 			Name = name;
 
-			_debug = new LogWriter(provider, name, LogLevel.Debug);
-			_info = new LogWriter(provider, name, LogLevel.Info);
-			_warn = new LogWriter(provider, name, LogLevel.Warn);
-			_error = new LogWriter(provider, name, LogLevel.Error);
-			_fatal = new LogWriter(provider, name, LogLevel.Fatal);
+			_debug = debug;
+			_info = info;
+			_warn = warn;
+			_error = error;
+			_fatal = fatal;
 		}
-
-		public ILogProvider Provider { get; private set; }
 
 		public string Name { get; private set; }
 
@@ -66,8 +62,7 @@ namespace Magnum.Logging
 
 		public void Debug(Action<ILogWriter> logAction)
 		{
-			if (Provider.IsLogSourceEnabled(_debug))
-				logAction(_debug);
+			_debug.Write(logAction);
 		}
 
 		public void Info(object obj)
@@ -92,8 +87,7 @@ namespace Magnum.Logging
 
 		public void Info(Action<ILogWriter> logAction)
 		{
-			if (Provider.IsLogSourceEnabled(_info))
-				logAction(_info);
+			_info.Write(logAction);
 		}
 
 		public void Warn(object obj)
@@ -118,8 +112,7 @@ namespace Magnum.Logging
 
 		public void Warn(Action<ILogWriter> logAction)
 		{
-			if (Provider.IsLogSourceEnabled(_warn))
-				logAction(_warn);
+			_warn.Write(logAction);
 		}
 
 		public void Error(object obj)
@@ -144,8 +137,7 @@ namespace Magnum.Logging
 
 		public void Error(Action<ILogWriter> logAction)
 		{
-			if (Provider.IsLogSourceEnabled(_error))
-				logAction(_error);
+			_error.Write(logAction);
 		}
 
 		public void Fatal(object obj)
@@ -170,8 +162,7 @@ namespace Magnum.Logging
 
 		public void Fatal(Action<ILogWriter> logAction)
 		{
-			if (Provider.IsLogSourceEnabled(_fatal))
-				logAction(_fatal);
+			_fatal.Write(logAction);
 		}
 	}
 }

@@ -13,85 +13,80 @@
 namespace Magnum.Logging
 {
 	using System;
+	using System.Diagnostics;
+	using ObjectExtensions;
 
-	public class LogWriter :
-		ILogWriter,
-		ILogSource
+	public class TraceLogWriter :
+		ILogWriter
 	{
 		const string NullString = "null";
+		readonly Func<bool> _enabled;
 
-		public LogWriter(ILogProvider provider, string name, LogLevel level)
+		public TraceLogWriter(Func<bool> enabled)
 		{
-			Provider = provider;
-			Name = name;
-			Level = level;
+			_enabled = enabled;
 		}
-
-		public ILogProvider Provider { get; private set; }
-		public string Name { get; private set; }
-		public LogLevel Level { get; private set; }
 
 		public void Write(string format, params object[] args)
 		{
-			if (Provider.IsLogSourceEnabled(this))
-			{
-				Provider.Log(this, format, args);
-			}
+			if (_enabled())
+				Trace.WriteLine(string.Format(format, args));
 		}
 
 		public void Write(IFormatProvider provider, string format, params object[] args)
 		{
-			if (Provider.IsLogSourceEnabled(this))
-			{
-				Provider.Log(this, provider, format, args);
-			}
+			if (_enabled())
+				Trace.WriteLine(string.Format(provider, format, args));
 		}
 
 		public void Write(Exception exception, string format, params object[] args)
 		{
-			if (Provider.IsLogSourceEnabled(this))
+			if (_enabled())
 			{
-				Provider.Log(this, exception, format, args);
+				Trace.WriteLine(string.Format(format, args));
+				Trace.WriteLine(exception);
 			}
 		}
 
 		public void Write(Exception exception, IFormatProvider provider, string format, params object[] args)
 		{
-			if (Provider.IsLogSourceEnabled(this))
+			if (_enabled())
 			{
-				Provider.Log(this, exception, provider, format, args);
+				Trace.WriteLine(string.Format(provider, format, args));
+				Trace.WriteLine(exception);
 			}
+		}
+
+		public void Write(Action<ILogWriter> logAction)
+		{
+			if (_enabled())
+				logAction(this);
 		}
 
 		public void Write(object obj)
 		{
-			if (Provider.IsLogSourceEnabled(this))
-			{
-				Provider.Log(this, obj != null ? obj.ToString() : NullString);
-			}
+			if (_enabled())
+				Trace.WriteLine(obj != null ? obj.ToString() : NullString);
 		}
 
 		public void Write(string message)
 		{
-			if (Provider.IsLogSourceEnabled(this))
-			{
-				Provider.Log(this, message);
-			}
+			if (_enabled() && !message.IsNullOrEmpty())
+				Trace.WriteLine(message);
 		}
 
 		public void Write(Exception exception)
 		{
-			if (Provider.IsLogSourceEnabled(this))
-			{
-				Provider.Log(this, exception);
-			}
+			if (_enabled())
+				Trace.WriteLine(exception);
 		}
 
 		public void Write(Exception exception, string message)
 		{
-			if (Provider.IsLogSourceEnabled(this))
+			if (_enabled())
 			{
-				Provider.Log(this, exception, message);
+				Trace.WriteLine(message);
+				Trace.WriteLine(exception);
 			}
 		}
 	}

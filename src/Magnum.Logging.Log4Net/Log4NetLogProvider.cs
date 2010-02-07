@@ -10,20 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Logging
+namespace Magnum.Logging.Log4Net
 {
 	using System;
+	using log4net;
 
-	public class TraceLogProvider :
+	public class Log4NetLogProvider :
 		ILogProvider
 	{
-		public TraceLogProvider()
-		{
-			Level = LogLevel.Error;
-		}
-
-		public LogLevel Level { get; private set; }
-
 		public ILogger GetLogger<T>()
 		{
 			return GetLogger(typeof (T).FullName);
@@ -31,22 +25,21 @@ namespace Magnum.Logging
 
 		public ILogger GetLogger(string name)
 		{
-			return new TraceLogger(name, this);
+			ILog logger = LogManager.GetLogger(name);
+
+			return new Log4NetLogger(name, logger);
 		}
 
-		public void SetLogLevel(LogLevel level)
+		public static void Configure()
 		{
-			Level = level;
-		}
-
-		public void SetLogLevel(string name, LogLevel level)
-		{
-			throw new NotImplementedException("This would be nice, but not mandatory at this point");
-		}
-
-		public bool IsEnabled(LogLevel level)
-		{
-			return (int) level >= (int) Level;
+			try
+			{
+				LogManager.GetLogger(typeof (Log4NetLogProvider));
+			}
+			catch (Exception ex)
+			{
+				throw new LoggerException("The Log4Net assembly is not referenced or could not be initialized", ex);
+			}
 		}
 	}
 }

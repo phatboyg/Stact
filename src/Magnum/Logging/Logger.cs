@@ -14,18 +14,12 @@ namespace Magnum.Logging
 {
 	using System;
 
-	public class Logger :
-		LoggerImpl
+	public static class Logger
 	{
 		static readonly object _changeProviderLock = new object();
 
 		static ILogProvider _defaultTraceLogger;
 		static Func<ILogProvider> _getLogProvider = GetDefaultTraceLogger;
-
-		Logger(ILogProvider provider, string name)
-			: base(provider, name)
-		{
-		}
 
 		public static Func<ILogProvider> SetLogProvider(Func<ILogProvider> getProvider)
 		{
@@ -41,12 +35,12 @@ namespace Magnum.Logging
 
 		public static ILogger GetLogger<T>()
 		{
-			return new Logger(_getLogProvider(), typeof (T).FullName);
+			return _getLogProvider().GetLogger<T>();
 		}
 
-		public static Logger GetLogger(string name)
+		public static ILogger GetLogger(string name)
 		{
-			return new Logger(_getLogProvider(), name);
+			return _getLogProvider().GetLogger(name);
 		}
 
 		static ILogProvider GetDefaultTraceLogger()

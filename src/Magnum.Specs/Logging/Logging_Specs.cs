@@ -29,19 +29,23 @@ namespace Magnum.Specs.Logging
 			try
 			{
 				throw new InvalidOperationException("Boom!");
-
 			}
 			catch (Exception ex)
 			{
 				_log.Error(ex);
 			}
-
 		}
 
 		[Test]
 		public void Should_work_with_lambda_methods()
 		{
 			_log.Error(x => x.Write("Hello {0}", "Chris"));
+		}
+
+		[Test]
+		public void Should_not_output_debug_if_not_configured()
+		{
+			_log.Debug("This should not be visible");
 		}
 	}
 }
