@@ -76,10 +76,10 @@ namespace Magnum.Logging.Log4Net
 				_exceptionAction(exception, string.Format(provider, format, args));
 		}
 
-		public void Write(Action<ILogWriter> logAction)
+		public void Write(Action<ILogWriter> action)
 		{
 			if (_enabled())
-				_logAction(this);
+				action(this);
 		}
 	}
 }

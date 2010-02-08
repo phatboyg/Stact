@@ -24,8 +24,6 @@ namespace Expression_Specs
 		[Test]
 		public void FirstTestName()
 		{
-			string name = "Chris";
-
 			Expression<Func<string, bool>> x1 = x => x.Equals("Chris");
 			Expression<Func<string, bool>> x2 = x => x == "Chris";
 

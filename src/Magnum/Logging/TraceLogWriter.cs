@@ -57,10 +57,10 @@ namespace Magnum.Logging
 			}
 		}
 
-		public void Write(Action<ILogWriter> logAction)
+		public void Write(Action<ILogWriter> action)
 		{
 			if (_enabled())
-				logAction(this);
+				action(this);
 		}
 
 		public void Write(object obj)

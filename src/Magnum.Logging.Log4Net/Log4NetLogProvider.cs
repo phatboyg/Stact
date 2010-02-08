@@ -13,7 +13,9 @@
 namespace Magnum.Logging.Log4Net
 {
 	using System;
+	using System.IO;
 	using log4net;
+	using log4net.Config;
 
 	public class Log4NetLogProvider :
 		ILogProvider
@@ -30,11 +32,17 @@ namespace Magnum.Logging.Log4Net
 			return new Log4NetLogger(name, logger);
 		}
 
-		public static void Configure()
+		public static void Configure(FileInfo fileInfo)
 		{
 			try
 			{
+				XmlConfigurator.Configure(fileInfo);
+
 				LogManager.GetLogger(typeof (Log4NetLogProvider));
+
+				var provider = new Log4NetLogProvider();
+
+				Logger.SetLogProvider(() => provider);
 			}
 			catch (Exception ex)
 			{
