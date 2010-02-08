@@ -53,7 +53,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => "Rules", typeof (TypeDispatchNode), typeof (object));
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}
@@ -63,7 +63,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => typeof (T).Name, typeof (TypeNode<>), typeof (T));
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}
@@ -73,7 +73,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => node.Body, typeof (ConditionNode<>), typeof (T));
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}
@@ -83,7 +83,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => "\u03B1", typeof (AlphaNode<>), typeof (T));
 
 			if (_stack.Count > 0 && _stack.Peek().VertexType != typeof (JoinNode<>))
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}
@@ -96,11 +96,11 @@ namespace Magnum.RulesEngine.ExecutionModel
 			{
 				Vertex sink = _vertices[node.RightActivation.GetHashCode()];
 
-				_edges.Add(new Edge(sink, _lastNodeVertex));
+				_edges.Add(new Edge(sink, _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 			}
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}
@@ -110,7 +110,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => "C", typeof (ConstantNode<>), typeof (T));
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_lastNodeVertex, _stack.Peek()));
+				_edges.Add(new Edge(_lastNodeVertex, _stack.Peek(), _stack.Peek().TargetType.Name));
 
 			return true;
 		}
@@ -120,7 +120,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 			_lastNodeVertex = GetSink(node.GetHashCode(), () => node.Body, typeof (ActionNode<>), typeof (T));
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return true;
 		}

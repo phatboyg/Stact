@@ -14,14 +14,17 @@ namespace Magnum.Graphing
 {
 	public class Edge
 	{
-		public Edge(Vertex from, Vertex to)
+		public Edge(Vertex from, Vertex to, string title)
 		{
 			From = from;
 			To = to;
+			Title = title;
 		}
 
 		public Vertex To { get; private set; }
 
 		public Vertex From { get; private set; }
+
+		public string Title { get; private set; }
 	}
 }

@@ -321,6 +321,7 @@
     <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />
+    <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
     <Compile Include="StreamExtensions\ExtensionsToStream.cs" />

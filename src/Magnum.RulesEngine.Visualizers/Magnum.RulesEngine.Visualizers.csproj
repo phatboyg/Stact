@@ -85,7 +85,13 @@
     <Compile Include="RulesEngineVisualizerForm.Designer.cs">
       <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StateMachineGraphVisitor.cs" />
+    <Compile Include="StateMachineGraphGenerator.cs" />
+    <Compile Include="StateMachineVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StateMachineVisualizerForm.designer.cs">
+      <DependentUpon>StateMachineVisualizerForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">
@@ -106,6 +112,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>..\..\lib\ILMerge\ILMerge.exe /allowDup /out:..\Magnum.Visualizers.dll Magnum.RulesEngine.Visualizers.dll Magnum.dll Magnum.RulesEngine.dll Quickgraph.dll Quickgraph.Glee.dll Microsoft.GLEE.dll Microsoft.GLEE.Drawing.dll Microsoft.GLEE.GraphViewerGDI.dll</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

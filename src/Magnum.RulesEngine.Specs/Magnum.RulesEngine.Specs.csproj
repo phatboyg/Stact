@@ -64,6 +64,7 @@
     <Compile Include="FluentRuleSyntax\DeclareRule_Specs.cs" />
     <Compile Include="Graphing\Graphing_Specs.cs" />
     <Compile Include="Graphing\PipelineGraphing_Specs.cs" />
+    <Compile Include="Graphing\StateMachineGraph_Specs.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Consequences\HoldOrderForApproval.cs" />
     <Compile Include="Model\Order.cs" />
@@ -81,6 +82,10 @@
     <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">
       <Project>{0A39AEF0-BBF8-4183-8D8E-A9DEED8A43F3}</Project>
       <Name>Magnum.RulesEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Magnum.Specs\Magnum.Specs.csproj">
+      <Project>{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}</Project>
+      <Name>Magnum.Specs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
       <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>

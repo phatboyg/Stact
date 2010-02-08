@@ -46,7 +46,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(input.GetHashCode(), () => "Input", typeof (InputSegment), input.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitInput(input));
 		}
@@ -56,7 +56,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(end.GetHashCode(), () => "End", typeof (EndSegment), end.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return base.VisitEnd(end);
 		}
@@ -66,7 +66,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(filter.GetHashCode(), () => "Filter", typeof (FilterSegment), filter.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitFilter(filter));
 		}
@@ -76,7 +76,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(interceptor.GetHashCode(), () => "Interceptor", typeof (InterceptorSegment), interceptor.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitInterceptor(interceptor));
 		}
@@ -86,7 +86,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (MessageConsumerSegment), messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitMessageConsumer(messageConsumer));
 		}
@@ -96,7 +96,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (IntervalMessageConsumerSegment), messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitIntervalMessageConsumer(messageConsumer));
 		}
@@ -106,7 +106,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (AsyncMessageConsumerSegment), messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitAsyncMessageConsumer(messageConsumer));
 		}
@@ -116,7 +116,7 @@ namespace Magnum.Pipeline.Visitors
 			_lastNodeVertex = GetSink(recipientList.GetHashCode(), () => "List", typeof (RecipientListSegment), recipientList.MessageType);
 
 			if (_stack.Count > 0)
-				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex));
+				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
 
 			return Recurse(() => base.VisitRecipientList(recipientList));
 		}
