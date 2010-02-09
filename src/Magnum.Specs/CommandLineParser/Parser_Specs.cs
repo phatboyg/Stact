@@ -12,11 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.CommandLineParser
 {
-    using System.Diagnostics;
+	using System;
+	using System.Diagnostics;
+    using System.Linq;
     using Magnum.CommandLineParser;
     using NUnit.Framework;
+    using TestFramework;
 
-    [TestFixture]
+	[TestFixture]
     public class Parsing_a_command_line
     {
         [Test]
@@ -28,8 +31,18 @@ namespace Magnum.Specs.CommandLineParser
 
             Trace.WriteLine("Command Line: " + commandLine);
 
-            parser.Parse(commandLine)
-                .Each(x => { Trace.WriteLine(x.ToString()); });
+        	var elements = parser.Parse(commandLine).ToArray();
+
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+        	
+			elements.Count().ShouldEqual(7);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<SwitchElement>();
+			elements[2].ShouldBeAnInstanceOf<SwitchElement>();
+			elements[3].ShouldBeAnInstanceOf<DefinitionElement>();
+			elements[4].ShouldBeAnInstanceOf<DefinitionElement>();
+			elements[5].ShouldBeAnInstanceOf<DefinitionElement>();
+			elements[6].ShouldBeAnInstanceOf<TokenElement>();
         }
 
     	[Test]
@@ -41,9 +54,15 @@ namespace Magnum.Specs.CommandLineParser
 
 			Trace.WriteLine("Command Line: " + commandLine);
 
-			parser.Parse(commandLine)
-				.Each(x => { Trace.WriteLine(x.ToString()); });
-    		
+			var elements = parser.Parse(commandLine).ToArray();
+
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+
+			elements.Count().ShouldEqual(2);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<DefinitionElement>();
+
+    		((DefinitionElement) elements[1]).Value.ShouldEqual("\"" + @"c:\system\something's cooking.txt" + "\"");
     	}
 
         [Test]
@@ -55,10 +74,15 @@ namespace Magnum.Specs.CommandLineParser
 
             Trace.WriteLine("Command Line: " + commandLine);
 
-            parser.Parse(commandLine)
-                .Each(x => { Trace.WriteLine(x.ToString()); });
+			var elements = parser.Parse(commandLine).ToArray();
 
-        }
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+
+			elements.Count().ShouldEqual(2);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<DefinitionElement>();
+			((DefinitionElement)elements[1]).Value.ShouldEqual("");
+		}
 
     	[Test]
     	public void Should_handle_a_nested_set_of_commands_and_flags()
@@ -69,9 +93,16 @@ namespace Magnum.Specs.CommandLineParser
 			
 			ICommandLineParser parser = new MonadicCommandLineParser();
 
-    		parser.Parse(commandLine)
-    			.Each(x => Trace.WriteLine(x.ToString()));
-    	}
+			var elements = parser.Parse(commandLine).ToArray();
+
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+
+			elements.Count().ShouldEqual(4);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<SwitchElement>();
+			elements[2].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[3].ShouldBeAnInstanceOf<ArgumentElement>();
+		}
 
     	[Test]
     	public void A_git_style_command_should_be_supported()
@@ -82,8 +113,34 @@ namespace Magnum.Specs.CommandLineParser
 			
 			ICommandLineParser parser = new MonadicCommandLineParser();
 
-    		parser.Parse(commandLine)
-    			.Each(x => Trace.WriteLine(x.ToString()));
-    	}
+			var elements = parser.Parse(commandLine).ToArray();
+
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+
+			elements.Count().ShouldEqual(4);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[2].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[3].ShouldBeAnInstanceOf<ArgumentElement>();
+		}
+
+    	[Test]
+    	public void A_simple_path_specification_should_be_allowed()
+    	{
+    		string commandLine = "add --all .";
+
+			Trace.WriteLine("Command Line: " + commandLine);
+			
+			ICommandLineParser parser = new MonadicCommandLineParser();
+
+			var elements = parser.Parse(commandLine).ToArray();
+
+			Trace.WriteLine(string.Join(Environment.NewLine, elements.Select(x => x.ToString()).ToArray()));
+
+			elements.Count().ShouldEqual(3);
+			elements[0].ShouldBeAnInstanceOf<ArgumentElement>();
+			elements[1].ShouldBeAnInstanceOf<SwitchElement>();
+			elements[2].ShouldBeAnInstanceOf<ArgumentElement>();
+		}
     }
 }

@@ -141,6 +141,40 @@ namespace Magnum.Specs.CommandLineParser.PlugInCommands
 		}
 
 		[Test]
+		public void Should_handle_paths_now()
+		{
+			string commandLine = "add .";
+
+			ICommand command = CommandLine.Parse<ICommand>(commandLine, x =>
+				{
+					x.Add(from remote in x.Argument("add")
+						  from add in x.ValidPath()
+						  select (ICommand)new AddFileCommand(add.Id));
+
+				}).First();
+
+			command.ShouldBeAnInstanceOf<AddFileCommand>();
+			command.Execute();
+		}
+
+		[Test]
+		public void Should_handle_super_paths_now()
+		{
+			string commandLine = @"add c:\";
+
+			ICommand command = CommandLine.Parse<ICommand>(commandLine, x =>
+				{
+					x.Add(from remote in x.Argument("add")
+						  from add in x.ValidPath()
+						  select (ICommand)new AddFileCommand(add.Id));
+
+				}).First();
+
+			command.ShouldBeAnInstanceOf<AddFileCommand>();
+			command.Execute();
+		}
+
+		[Test]
 		public void Should_be_an_add_remote_repository_command()
 		{
 			string commandLine = "remote add dru git://github.com/dru/nu.git";

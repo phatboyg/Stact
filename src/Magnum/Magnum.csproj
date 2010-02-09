@@ -122,6 +122,7 @@
     <Compile Include="CommandLineParser\CommandLine.cs" />
     <Compile Include="CommandLineParser\CommandLineElementParser.cs" />
     <Compile Include="CommandLineParser\CommandLineParseException.cs" />
+    <Compile Include="CommandLineParser\ExtensionForCommandLineElementParsers.cs" />
     <Compile Include="CommandLineParser\IArgumentElement.cs" />
     <Compile Include="CommandLineParser\ICommandLineElementParser.cs" />
     <Compile Include="CommandLineParser\ICommandLineParser.cs" />
@@ -183,6 +184,9 @@
     <Compile Include="EventStreamProcessing\Result.cs" />
     <Compile Include="Graphing\Edge.cs" />
     <Compile Include="Graphing\Vertex.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ConsoleLogProvider.cs" />
+    <Compile Include="Logging\ConsoleLogWriter.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\ILogProvider.cs" />
     <Compile Include="Logging\ILogSource.cs" />
