@@ -28,12 +28,7 @@ namespace Magnum.CommandLineParser
 		/// <param name="parser">The pattern to match and return the resulting object</param>
 		void Add(Parser<IEnumerable<ICommandLineElement>, TResult> parser);
 
-		/// <summary>
-		/// Matches an argument on the command line
-		/// </summary>
-		/// <returns></returns>
 		Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument();
-
 		Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument(string value);
 		Parser<IEnumerable<ICommandLineElement>, IArgumentElement> Argument(Predicate<IArgumentElement> pred);
 
@@ -44,5 +39,7 @@ namespace Magnum.CommandLineParser
 		Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switch();
 		Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switch(string key);
 		Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switches(params string[] keys);
+
+		Parser<IEnumerable<ICommandLineElement>, IArgumentElement> ValidPath();
 	}
 }

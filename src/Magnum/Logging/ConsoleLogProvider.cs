@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Logging
 {
-	public class TraceLogProvider :
+	public class ConsoleLogProvider :
 		ILogProvider
 	{
-		public TraceLogProvider(LogLevel level)
+		public ConsoleLogProvider(LogLevel level)
 		{
 			Level = level;
 		}
@@ -29,7 +29,7 @@ namespace Magnum.Logging
 
 		public ILogger GetLogger(string name)
 		{
-			return new TraceLogger(name, this);
+			return new ConsoleLogger(name, this);
 		}
 
 		public bool IsEnabled(LogLevel level)
@@ -44,7 +44,7 @@ namespace Magnum.Logging
 
 		public static void Configure(LogLevel level)
 		{
-			var provider = new TraceLogProvider(level);
+			var provider = new ConsoleLogProvider(level);
 
 			Logger.SetLogProvider(() => provider);
 		}

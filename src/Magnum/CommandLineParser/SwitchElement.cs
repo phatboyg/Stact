@@ -48,5 +48,10 @@ namespace Magnum.CommandLineParser
 		{
 			return new SwitchElement(key);
 		}
+
+		public static ICommandLineElement New(char key, bool value)
+		{
+			return new SwitchElement(key.ToString(), value);
+		}
 	}
 }
