@@ -24,11 +24,15 @@ namespace Magnum.Specs.CommandLineParser.PlugInCommands
 	{
 		private static void InitializeCommandLinePatterns(ICommandLineElementParser<ICommand> x)
 		{
+			Parser<IEnumerable<ICommandLineElement>, ISwitchElement> switches =
+				(from replace in x.Switch("replace") select replace);
+
 			x.Add(from remote in x.Argument("remote")
 			      from add in x.Argument("add")
+				  from replace in switches.Optional("replace", false)
 			      from alias in x.Argument()
 			      from url in x.Argument()
-			      select (ICommand) new AddRemoteRepositoryCommand(alias.Id, url.Id));
+			      select (ICommand) new AddRemoteRepositoryCommand(alias.Id, url.Id, replace.Value));
 
 			x.Add(from remote in x.Argument("remote")
 			      from add in x.Argument("rm")
@@ -182,6 +186,28 @@ namespace Magnum.Specs.CommandLineParser.PlugInCommands
 			ICommand command = CommandLine.Parse<ICommand>(commandLine, InitializeCommandLinePatterns).First();
 
 			command.ShouldBeAnInstanceOf<AddRemoteRepositoryCommand>();
+
+			var typed = (AddRemoteRepositoryCommand) command;
+
+			typed.Alias.ShouldEqual("dru");
+			typed.Url.ShouldEqual("git://github.com/dru/nu.git");
+			typed.ReplaceExisting.ShouldBeFalse();
+		}
+
+		[Test]
+		public void Adding_the_optional_argument_should_not_break_the_parsing_logic()
+		{
+			string commandLine = "remote add --replace dru git://github.com/dru/nu.git";
+
+			ICommand command = CommandLine.Parse<ICommand>(commandLine, InitializeCommandLinePatterns).First();
+
+			command.ShouldBeAnInstanceOf<AddRemoteRepositoryCommand>();
+
+			var typed = (AddRemoteRepositoryCommand) command;
+
+			typed.Alias.ShouldEqual("dru");
+			typed.Url.ShouldEqual("git://github.com/dru/nu.git");
+			typed.ReplaceExisting.ShouldBeTrue();
 		}
 	}
 }

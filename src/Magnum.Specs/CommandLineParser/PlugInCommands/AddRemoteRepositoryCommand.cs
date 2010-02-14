@@ -17,14 +17,16 @@ namespace Magnum.Specs.CommandLineParser.PlugInCommands
 	public class AddRemoteRepositoryCommand :
 		ICommand
 	{
-		public AddRemoteRepositoryCommand(string alias, string url)
+		public AddRemoteRepositoryCommand(string alias, string url, bool replaceExisting)
 		{
 			Alias = alias;
 			Url = url;
+			ReplaceExisting = replaceExisting;
 		}
 
 		public string Alias { get; private set; }
 		public string Url { get; private set; }
+		public bool ReplaceExisting { get; private set; }
 
 		public int Execute()
 		{

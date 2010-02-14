@@ -29,6 +29,29 @@ namespace Magnum.CommandLineParser
 			return "DEFINE: " + Key + " = " + Value;
 		}
 
+		public bool Equals(DefinitionElement other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other.Key, Key) && Equals(other.Value, Value);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (DefinitionElement)) return false;
+			return Equals((DefinitionElement) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((Key != null ? Key.GetHashCode() : 0)*397) ^ (Value != null ? Value.GetHashCode() : 0);
+			}
+		}
+
 		public static ICommandLineElement New(string key, string value)
 		{
 			return new DefinitionElement(key, value);

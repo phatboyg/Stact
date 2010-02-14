@@ -39,6 +39,29 @@ namespace Magnum.CommandLineParser
 			return "SWITCH: " + Key + " (" + Value + ")";
 		}
 
+		public bool Equals(SwitchElement other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other.Key, Key) && other.Value.Equals(Value);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (SwitchElement)) return false;
+			return Equals((SwitchElement) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((Key != null ? Key.GetHashCode() : 0)*397) ^ Value.GetHashCode();
+			}
+		}
+
 		public static ICommandLineElement New(char key)
 		{
 			return new SwitchElement(key);

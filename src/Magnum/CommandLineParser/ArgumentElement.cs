@@ -27,6 +27,26 @@ namespace Magnum.CommandLineParser
 			return "ARGUMENT: " + Id;
 		}
 
+		public bool Equals(ArgumentElement other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other.Id, Id);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (ArgumentElement)) return false;
+			return Equals((ArgumentElement) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (Id != null ? Id.GetHashCode() : 0);
+		}
+
 		public static ICommandLineElement New(string id)
 		{
 			return new ArgumentElement(id);
