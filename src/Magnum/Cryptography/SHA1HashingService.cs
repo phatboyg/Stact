@@ -16,5 +16,14 @@ namespace Magnum.Cryptography
                 return Convert.ToBase64String(cipherBytes);
             }
         }
+
+        public byte[] Hash(byte[] clearBytes)
+        {
+            using (var s = new SHA1Managed())
+            {
+                var cipherBytes = s.ComputeHash(clearBytes);
+                return cipherBytes;
+            }
+        }
     }
 }
