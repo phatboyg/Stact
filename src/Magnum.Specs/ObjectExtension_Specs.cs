@@ -40,5 +40,11 @@ namespace Magnum.Specs
                 Assert.Fail("Should have been an ArgumentException");
             }
         }
+
+        [Test]
+        public void TestFormatWith()
+        {
+            Assert.AreEqual("'rob'", "'{0}'".FormatWith("rob"));
+        }
     }
 }

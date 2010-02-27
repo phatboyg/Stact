@@ -16,10 +16,10 @@ namespace Magnum.Logging
 
 	public static class Logger
 	{
-		static readonly object _changeProviderLock = new object();
+		private static readonly object _changeProviderLock = new object();
 
-		static ILogProvider _defaultTraceLogger;
-		static Func<ILogProvider> _getLogProvider = GetDefaultTraceLogger;
+		private static ILogProvider _defaultTraceLogger;
+		private static Func<ILogProvider> _getLogProvider = GetDefaultTraceLogger;
 
 		public static Func<ILogProvider> SetLogProvider(Func<ILogProvider> getProvider)
 		{
@@ -43,7 +43,7 @@ namespace Magnum.Logging
 			return _getLogProvider().GetLogger(name);
 		}
 
-		static ILogProvider GetDefaultTraceLogger()
+		private static ILogProvider GetDefaultTraceLogger()
 		{
 			if (_defaultTraceLogger != null)
 				return _defaultTraceLogger;
@@ -53,7 +53,7 @@ namespace Magnum.Logging
 				if (_defaultTraceLogger != null)
 					return _defaultTraceLogger;
 
-				_defaultTraceLogger = new TraceLogProvider();
+				_defaultTraceLogger = new TraceLogProvider(LogLevel.Error);
 			}
 
 			return _defaultTraceLogger;

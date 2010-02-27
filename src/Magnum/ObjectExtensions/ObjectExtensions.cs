@@ -96,5 +96,10 @@ namespace Magnum.ObjectExtensions
                 action(attribute);
             }
         }
+
+        public static string FormatWith(this string format, params string[] args)
+        {
+            return string.Format(format, args);
+        }
 	}
 }

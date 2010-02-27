@@ -54,28 +54,35 @@ namespace Magnum.CommandLineParser
 				    from oq in Char('"')
 				    from value in Rep(EscChar)
 				    from cq in Char('"')
-				    select DefinitionElement.New(key, value.Aggregate("", (s, ch) => s + ch)))
-				.Or(from w in Whitespace
-				    from c in Char('-').Or(Char('/'))
-				    from key in Id
-				    from ws in Whitespace
-				    select DefinitionElement.New(key, ""));
+				    select DefinitionElement.New(key, value.Aggregate("", (s, ch) => s + ch)));
+
+			EmptyDefinition = (from w in Whitespace
+			                   from c in Char('-').Or(Char('/'))
+			                   from key in Id
+			                   from ws in Whitespace
+			                   select DefinitionElement.New(key, ""));
 
 			Argument = from w in Whitespace
-			           from c in Char(char.IsLetterOrDigit)
+			           from c in Char(char.IsLetterOrDigit).Or(Char(char.IsPunctuation))
 			           from cs in Rep(Char(char.IsLetterOrDigit).Or(Char(char.IsPunctuation)))
 			           select ArgumentElement.New(cs.Aggregate(c.ToString(), (s, ch) => s + ch));
 
-			Switch = from w in Whitespace
-			         from c in Char('-').Or(Char('/'))
-			         from arg in Char(char.IsLetterOrDigit)
-			         select SwitchElement.New(arg);
-
-			Flag = from w in Whitespace
-			       from c1 in Char('-')
-			       from c2 in Char('-')
-			       from arg in Id
-			       select SwitchElement.New(arg);
+			Switch = (from w in Whitespace
+			          from c in Char('-').Or(Char('/'))
+			          from arg in Char(char.IsLetterOrDigit)
+					  from non in Rep(Char(char.IsLetterOrDigit))
+					  where non.Count() == 0
+			          select SwitchElement.New(arg))
+					  .Or(from w in Whitespace
+						  from c in Char('-').Or(Char('/'))
+						  from arg in Char(char.IsLetterOrDigit)
+						  from n in Char('-')
+						  select SwitchElement.New(arg, false))
+				.Or(from w in Whitespace
+				    from c1 in Char('-')
+				    from c2 in Char('-')
+				    from arg in Id
+					select SwitchElement.New(arg));
 
 			Token = from w in Whitespace
 			        from o in Char('[')
@@ -83,14 +90,14 @@ namespace Magnum.CommandLineParser
 			        from c in Char(']')
 			        select TokenElement.New(t);
 
-			All = (from element in Argument select element)
-				.Or(from element in Token select element)
-				.Or(from element in Definition select element)
-				.Or(from element in Switch select element)
-				.Or(from element in Flag select element);
+			All =
+					(from element in Definition select element)
+					.Or(from element in Switch select element)
+					.Or(from element in EmptyDefinition select element)
+					.Or(from element in Token select element)
+					.Or(from element in Argument select element);
 		}
 
-		public Parser<TInput, ICommandLineElement> Definition { get; set; }
 
 		public Parser<TInput, char[]> Whitespace { get; private set; }
 		public Parser<TInput, char[]> NewLine { get; private set; }
@@ -101,9 +108,10 @@ namespace Magnum.CommandLineParser
 		public Parser<TInput, string> Key { get; private set; }
 		public Parser<TInput, string> Value { get; private set; }
 
+		public Parser<TInput, ICommandLineElement> Definition { get; set; }
+		public Parser<TInput, ICommandLineElement> EmptyDefinition { get; set; }
 		public Parser<TInput, ICommandLineElement> Argument { get; private set; }
 		public Parser<TInput, ICommandLineElement> Token { get; private set; }
-		public Parser<TInput, ICommandLineElement> Flag { get; private set; }
 		public Parser<TInput, ICommandLineElement> Switch { get; private set; }
 		public Parser<TInput, ICommandLineElement> All { get; private set; }
 	}

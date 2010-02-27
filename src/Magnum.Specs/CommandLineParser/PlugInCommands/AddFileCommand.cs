@@ -14,23 +14,19 @@ namespace Magnum.Specs.CommandLineParser.PlugInCommands
 {
 	using System.Diagnostics;
 
-	public class AddRemoteRepositoryCommand :
+	public class AddFileCommand :
 		ICommand
 	{
-		public AddRemoteRepositoryCommand(string alias, string url, bool replaceExisting)
+		public AddFileCommand(string path)
 		{
-			Alias = alias;
-			Url = url;
-			ReplaceExisting = replaceExisting;
+			Path = path;
 		}
 
-		public string Alias { get; private set; }
-		public string Url { get; private set; }
-		public bool ReplaceExisting { get; private set; }
+		public string Path { get; set; }
 
 		public int Execute()
 		{
-			Trace.WriteLine("Adding remote repository (" + Alias + ") for: " + Url);
+			Trace.WriteLine("Adding file: " + Path);
 
 			return 0;
 		}

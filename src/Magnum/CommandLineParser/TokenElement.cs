@@ -27,6 +27,26 @@ namespace Magnum.CommandLineParser
 			return "TOKEN: " + Token;
 		}
 
+		public bool Equals(TokenElement other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other.Token, Token);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (TokenElement)) return false;
+			return Equals((TokenElement) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (Token != null ? Token.GetHashCode() : 0);
+		}
+
 		public static ICommandLineElement New(string token)
 		{
 			return new TokenElement(token);

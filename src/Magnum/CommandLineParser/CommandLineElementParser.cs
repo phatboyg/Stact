@@ -14,6 +14,7 @@ namespace Magnum.CommandLineParser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.IO;
 	using System.Linq;
 	using Monads.Parser;
 
@@ -45,22 +46,22 @@ namespace Magnum.CommandLineParser
 		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definition()
 		{
 			return from c in AnyElement
-				   where c.GetType() == typeof(DefinitionElement)
-				   select (IDefinitionElement)c;
+			       where c.GetType() == typeof (DefinitionElement)
+			       select (IDefinitionElement) c;
 		}
 
 		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definition(string key)
 		{
 			return from def in Definition()
-				   where def.Key == key
-				   select def;
+			       where def.Key == key
+			       select def;
 		}
 
 		public Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Definitions(params string[] keys)
 		{
 			return from def in Definition()
-				   where keys.Contains(def.Key)
-				   select def;
+			       where keys.Contains(def.Key)
+			       select def;
 		}
 
 		public Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Switch()
@@ -105,6 +106,14 @@ namespace Magnum.CommandLineParser
 			       select arg;
 		}
 
+		public Parser<IEnumerable<ICommandLineElement>, IArgumentElement> ValidPath()
+		{
+			return from c in AnyElement
+			       where c.GetType() == typeof (ArgumentElement)
+			       where IsValidPath(((ArgumentElement) c).Id)
+			       select (IArgumentElement) c;
+		}
+
 		public IEnumerable<TResult> Parse(IEnumerable<ICommandLineElement> elements)
 		{
 			Result<IEnumerable<ICommandLineElement>, TResult> result = All(elements);
@@ -115,38 +124,17 @@ namespace Magnum.CommandLineParser
 				result = All(result.Rest);
 			}
 		}
-	}
 
-	public static class ExtensionForCommandLineElementParsers
-	{
-		public static Parser<IEnumerable<ICommandLineElement>, ISwitchElement> Optional(this Parser<IEnumerable<ICommandLineElement>, ISwitchElement> source, string key, bool defaultValue)
+		private static bool IsValidPath(string path)
 		{
-			return input =>
-				{
-					IEnumerable<ICommandLineElement> query = input
-						.Where(x => x.GetType() == typeof (SwitchElement))
-						.Where(x => ((SwitchElement) x).Key == key);
+			if (!Path.IsPathRooted(path))
+				path = Path.Combine(Directory.GetCurrentDirectory(), path);
 
-					if (query.Any())
-						return new Result<IEnumerable<ICommandLineElement>, ISwitchElement>(query.First() as ISwitchElement, input.Except(query));
+			string directoryName = Path.GetDirectoryName(path) ?? path;
+			if (!Directory.Exists(directoryName))
+				return false;
 
-					return new Result<IEnumerable<ICommandLineElement>, ISwitchElement>(new SwitchElement(key, defaultValue), input);
-				};
-		}
-
-		public static Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> Optional(this Parser<IEnumerable<ICommandLineElement>, IDefinitionElement> source, string key, string defaultValue)
-		{
-			return input =>
-				{
-					IEnumerable<ICommandLineElement> query = input
-						.Where(x => x.GetType() == typeof (DefinitionElement))
-						.Where(x => ((DefinitionElement) x).Key == key);
-
-					if (query.Any())
-						return new Result<IEnumerable<ICommandLineElement>, IDefinitionElement>(query.First() as IDefinitionElement, input.Except(query));
-
-					return new Result<IEnumerable<ICommandLineElement>, IDefinitionElement>(new DefinitionElement(key, defaultValue), input);
-				};
+			return true;
 		}
 	}
 }
