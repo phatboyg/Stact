@@ -119,20 +119,24 @@ namespace Magnum.Reflection
 
 		private static Action<T, object> InitializeSet(PropertyInfo property, bool includeNonPublic)
 		{
-			var instance = Expression.Parameter(typeof (T), "instance");
-			var value = Expression.Parameter(typeof (object), "value");
-			UnaryExpression valueCast;
-			if (property.PropertyType.IsValueType)
-				valueCast = Expression.Convert(value, property.PropertyType);
-			else
-				valueCast = Expression.TypeAs(value, property.PropertyType);
+		    if (!property.CanWrite)
+		        return (x, i) => { throw new InvalidOperationException("No setter available on " + property.Name); };
+		    
 
-			var call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), valueCast);
+		    var instance = Expression.Parameter(typeof(T), "instance");
+		    var value = Expression.Parameter(typeof(object), "value");
+		    UnaryExpression valueCast;
+		    if (property.PropertyType.IsValueType)
+		        valueCast = Expression.Convert(value, property.PropertyType);
+		    else
+		        valueCast = Expression.TypeAs(value, property.PropertyType);
 
-			return Expression.Lambda<Action<T, object>>(call, new[] {instance, value}).Compile();
+		    var call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), valueCast);
+
+		    return Expression.Lambda<Action<T, object>>(call, new[] { instance, value }).Compile();
 		}
 
-		private static Func<T, object> InitializeGet(PropertyInfo property)
+	    private static Func<T, object> InitializeGet(PropertyInfo property)
 		{
 			var instance = Expression.Parameter(typeof (T), "instance");
 			var call = Expression.Call(instance, property.GetGetMethod());
