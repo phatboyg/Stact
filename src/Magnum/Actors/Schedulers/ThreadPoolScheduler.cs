@@ -54,8 +54,11 @@ namespace Magnum.Actors.Schedulers
 		public void Dispose()
 		{
 			_enabled = false;
+			if (_waiter != null)
+			{
+				_waiter.Set();
+			}
 		}
-
 
 		public void QueueEvent(ScheduledEvent pending)
 		{
@@ -65,7 +68,6 @@ namespace Magnum.Actors.Schedulers
 				if (_waiter != null)
 				{
 					_waiter.Set();
-					_waiter = null;
 				}
 				else
 				{
@@ -88,7 +90,7 @@ namespace Magnum.Actors.Schedulers
 			if (_pending.Count <= 0)
 				return false;
 
-			foreach (var pair in _pending)
+			foreach (KeyValuePair<long, List<ScheduledEvent>> pair in _pending)
 			{
 				if (now >= pair.Key)
 					return false;
@@ -119,7 +121,7 @@ namespace Magnum.Actors.Schedulers
 			{
 				do
 				{
-					var rescheduled = ExecuteExpired();
+					List<ScheduledEvent> rescheduled = ExecuteExpired();
 					Queue(rescheduled);
 				} while (!ScheduleTimerCallback());
 			}
@@ -127,7 +129,11 @@ namespace Magnum.Actors.Schedulers
 
 		private bool ScheduleTimerCallback()
 		{
-			_waiter = null;
+			if (_waiter != null)
+			{
+				_waiter.Close();
+				_waiter = null;
+			}
 
 			if (_pending.Count <= 0)
 				return true;
@@ -147,7 +153,7 @@ namespace Magnum.Actors.Schedulers
 		{
 			if (rescheduled == null) return;
 
-			foreach (var pendingEvent in rescheduled)
+			foreach (ScheduledEvent pendingEvent in rescheduled)
 			{
 				QueueEvent(pendingEvent);
 			}
@@ -155,17 +161,17 @@ namespace Magnum.Actors.Schedulers
 
 		private List<ScheduledEvent> ExecuteExpired()
 		{
-			var expired = RemoveExpired();
+			SortedList<long, List<ScheduledEvent>> expired = RemoveExpired();
 
 			List<ScheduledEvent> rescheduled = null;
 			if (expired.Count <= 0)
 				return rescheduled;
 
-			foreach (var pair in expired)
+			foreach (KeyValuePair<long, List<ScheduledEvent>> pair in expired)
 			{
-				foreach (var pendingEvent in pair.Value)
+				foreach (ScheduledEvent pendingEvent in pair.Value)
 				{
-					var next = pendingEvent.Execute(Now);
+					ScheduledEvent next = pendingEvent.Execute(Now);
 					if (next == null) continue;
 
 					if (rescheduled == null)
@@ -182,7 +188,7 @@ namespace Magnum.Actors.Schedulers
 			lock (_lock)
 			{
 				var expired = new SortedList<long, List<ScheduledEvent>>();
-				foreach (var item in _pending)
+				foreach (KeyValuePair<long, List<ScheduledEvent>> item in _pending)
 				{
 					if (Now < item.Key)
 						break;
@@ -190,7 +196,7 @@ namespace Magnum.Actors.Schedulers
 					expired.Add(item.Key, item.Value);
 				}
 
-				foreach (var item in expired)
+				foreach (KeyValuePair<long, List<ScheduledEvent>> item in expired)
 				{
 					_pending.Remove(item.Key);
 				}
