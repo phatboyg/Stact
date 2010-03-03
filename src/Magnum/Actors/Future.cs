@@ -12,29 +12,34 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
-    using System;
-    using System.Threading;
+	using System;
+	using System.Threading;
 
-    public class Future<T>
-    {
-        private readonly ManualResetEvent _completed = new ManualResetEvent(false);
+	public class Future<T>
+	{
+		private readonly ManualResetEvent _completed = new ManualResetEvent(false);
 
-        public T Value { get; private set; }
+		public T Value { get; private set; }
 
-        public void Complete(T value)
-        {
-            Value = value;
-            _completed.Set();
-        }
+		public void Complete(T value)
+		{
+			Value = value;
+			_completed.Set();
+		}
 
-        public bool IsAvailable()
-        {
-            return _completed.WaitOne(TimeSpan.Zero);
-        }
+		public bool IsAvailable()
+		{
+			return _completed.WaitOne(TimeSpan.Zero);
+		}
 
-        public bool IsAvailable(TimeSpan timeout)
-        {
-            return _completed.WaitOne(timeout, true);
-        }
-    }
+		public bool IsAvailable(TimeSpan timeout)
+		{
+			return _completed.WaitOne(timeout, true);
+		}
+
+		~Future()
+		{
+			_completed.Close();
+		}
+	}
 }
