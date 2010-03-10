@@ -156,6 +156,7 @@
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\OrderStateMachine.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
+    <Compile Include="Tree\BuildingATree.cs" />
     <Compile Include="TypedKey_Specs.cs" />
     <Compile Include="Mapping_Specs.cs" />
     <Compile Include="Metric_Specs.cs" />

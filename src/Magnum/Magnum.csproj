@@ -352,6 +352,7 @@
     <Compile Include="Threading\UpgradeableLock.cs" />
     <Compile Include="ThreadUtil.cs" />
     <Compile Include="Context\TypedKey.cs" />
+    <Compile Include="Tree\Tree.cs" />
     <Compile Include="WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>
