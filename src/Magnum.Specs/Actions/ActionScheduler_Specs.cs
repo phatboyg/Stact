@@ -1,3 +1,15 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actions
 {
 	using System;
@@ -58,6 +70,43 @@ namespace Magnum.Specs.Actions
 
 			scheduler.Schedule(2.Seconds(), queue, () => { });
 			scheduler.Schedule(0.Seconds(), queue, () => called.Complete(true));
+
+			called.IsAvailable(1.Seconds()).ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
+	public class Disabling_the_scheduler
+	{
+		[Test]
+		public void Should_not_run_any_pending_actions()
+		{
+			ActionQueue queue = new ThreadPoolActionQueue();
+			ActionScheduler scheduler = new TimerActionScheduler();
+
+			var called = new Future<bool>();
+
+			scheduler.Schedule(1.Seconds(), queue, () => called.Complete(true));
+
+			scheduler.Disable();
+
+			called.IsAvailable(2.Seconds()).ShouldBeFalse();
+		}
+	}
+
+	[TestFixture]
+	public class A_scheduled_item_throwing_an_exception
+	{
+		[Test]
+		public void Should_not_stall_the_scheduler()
+		{
+			ActionQueue queue = new ThreadPoolActionQueue();
+			ActionScheduler scheduler = new TimerActionScheduler();
+
+			var called = new Future<bool>();
+
+			scheduler.Schedule(200.Milliseconds(), queue, () => { throw new InvalidOperationException("Bugger!"); });
+			scheduler.Schedule(400.Milliseconds(), queue, () => called.Complete(true));
 
 			called.IsAvailable(1.Seconds()).ShouldBeTrue();
 		}

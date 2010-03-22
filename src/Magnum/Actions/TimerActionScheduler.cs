@@ -58,7 +58,7 @@ namespace Magnum.Actions
 					}
 					finally
 					{
-						scheduled.ScheduledAt = Now + periodicInterval;
+						scheduled.ScheduledAt = GetScheduledTime(periodicInterval);
 						Schedule(scheduled);
 					}
 				});
@@ -67,14 +67,22 @@ namespace Magnum.Actions
 			return scheduled;
 		}
 
-		public void Schedule(ExecuteScheduledAction action)
-		{
-			ScheduleAction(action);
-		}
-
 		public void Disable()
 		{
 			_disabled = true;
+
+			lock (_lock)
+			{
+				if (_timer != null)
+				{
+					_timer.Dispose();
+				}
+			}
+		}
+
+		public void Schedule(ExecuteScheduledAction action)
+		{
+			ScheduleAction(action);
 		}
 
 		private void ScheduleAction(ExecuteScheduledAction scheduled)
@@ -93,7 +101,7 @@ namespace Magnum.Actions
 			{
 				lock (_lock)
 				{
-					var dueTime = scheduledAt - now;
+					TimeSpan dueTime = scheduledAt - now;
 
 					if (_timer != null)
 					{

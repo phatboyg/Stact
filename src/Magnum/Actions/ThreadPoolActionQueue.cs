@@ -17,10 +17,13 @@ namespace Magnum.Actions
 	using System.Threading;
 	using Actors;
 	using Actors.Exceptions;
+	using Logging;
 
 	public class ThreadPoolActionQueue :
 		ActionQueue
 	{
+		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
+
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
 		private bool _disabled;
@@ -90,7 +93,14 @@ namespace Magnum.Actions
 				if (_disabled)
 					break;
 
-				action();
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					_log.Error(ex);
+				}
 			}
 
 			lock (_lock)

@@ -52,6 +52,7 @@
     <Compile Include="Actions\Scheduler\ExecuteScheduledAction.cs" />
     <Compile Include="Actions\Scheduler\ScheduledActionList.cs" />
     <Compile Include="Actions\Scheduler\SingleScheduledAction.cs" />
+    <Compile Include="Actions\SynchronousActionQueue.cs" />
     <Compile Include="Actions\ThreadPoolActionQueue.cs" />
     <Compile Include="Actions\TimerActionScheduler.cs" />
     <Compile Include="Actors\Actor.cs" />
