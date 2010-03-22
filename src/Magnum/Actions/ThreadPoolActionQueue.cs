@@ -15,17 +15,14 @@ namespace Magnum.Actions
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
-	using Actors;
-	using Actors.Exceptions;
 	using Logging;
 
 	public class ThreadPoolActionQueue :
 		ActionQueue
 	{
-		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
-
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
+		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
 		private bool _disabled;
 		private bool _executorQueued;
 
@@ -119,7 +116,7 @@ namespace Magnum.Actions
 		private void QueueExecute()
 		{
 			if (!ThreadPool.QueueUserWorkItem(Execute))
-				throw new QueueFullException("Unable to queue executor to thread pool");
+				throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
 
 			_executorQueued = true;
 		}

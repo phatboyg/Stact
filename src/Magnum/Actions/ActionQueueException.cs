@@ -10,11 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions.Scheduler
+namespace Magnum.Actions
 {
-	public interface ExecuteScheduledAction :
-		ScheduledAction
+	using System;
+	using System.Runtime.Serialization;
+
+	public class ActionQueueException :
+		Exception
 	{
-		void Execute();
+		public ActionQueueException()
+		{
+		}
+
+		public ActionQueueException(string message)
+			: base(message)
+		{
+		}
+
+		public ActionQueueException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected ActionQueueException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
 	}
 }

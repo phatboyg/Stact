@@ -47,11 +47,12 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actions\ActionQueue.cs" />
+    <Compile Include="Actions\ActionQueueException.cs" />
     <Compile Include="Actions\ActionScheduler.cs" />
     <Compile Include="Actions\ScheduledAction.cs" />
-    <Compile Include="Actions\Scheduler\ExecuteScheduledAction.cs" />
-    <Compile Include="Actions\Scheduler\ScheduledActionList.cs" />
-    <Compile Include="Actions\Scheduler\SingleScheduledAction.cs" />
+    <Compile Include="Actions\ExecuteScheduledAction.cs" />
+    <Compile Include="Actions\ScheduledActionList.cs" />
+    <Compile Include="Actions\SingleScheduledAction.cs" />
     <Compile Include="Actions\SynchronousActionQueue.cs" />
     <Compile Include="Actions\ThreadPoolActionQueue.cs" />
     <Compile Include="Actions\TimerActionScheduler.cs" />
