@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionQueue_Specs.cs" />
+    <Compile Include="Actions\ActionScheduler_Specs.cs" />
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Actors\Channel_Specs.cs" />
     <Compile Include="Actors\CommandQueue_Specs.cs" />
