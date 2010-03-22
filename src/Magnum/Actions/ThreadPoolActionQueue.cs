@@ -13,18 +13,28 @@
 namespace Magnum.Actions
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Threading;
+	using Internal;
 	using Logging;
 
 	public class ThreadPoolActionQueue :
 		ActionQueue
 	{
-		private readonly List<Action> _actions = new List<Action>();
+		private readonly IActionList _actions;
 		private readonly object _lock = new object();
 		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
 		private bool _disabled;
 		private bool _executorQueued;
+
+		public ThreadPoolActionQueue()
+		{
+			_actions = new ActionList(-1, Timeout.Infinite);
+		}
+
+		public ThreadPoolActionQueue(int queueLimit, int queueTimeout)
+		{
+			_actions = new ActionList(queueLimit, queueTimeout);
+		}
 
 		public void Enqueue(Action action)
 		{
@@ -33,7 +43,7 @@ namespace Magnum.Actions
 				if (_disabled)
 					return;
 
-				_actions.Add(action);
+				_actions.Enqueue(action);
 
 				if (_executorQueued)
 					return;
@@ -49,7 +59,7 @@ namespace Magnum.Actions
 				if (_disabled)
 					return;
 
-				_actions.AddRange(actions);
+				_actions.EnqueueMany(actions);
 
 				if (_executorQueued)
 					return;
@@ -63,6 +73,9 @@ namespace Magnum.Actions
 			lock (_lock)
 			{
 				_disabled = true;
+				_actions.Disable();
+
+				Monitor.PulseAll(_lock);
 			}
 		}
 
@@ -81,7 +94,7 @@ namespace Magnum.Actions
 
 		private void Execute(object state)
 		{
-			Action[] actions = DequeueAll();
+			Action[] actions = _actions.DequeueAll();
 			if (actions == null)
 				return;
 
@@ -119,32 +132,6 @@ namespace Magnum.Actions
 				throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
 
 			_executorQueued = true;
-		}
-
-		private Action[] DequeueAll()
-		{
-			lock (_lock)
-			{
-				if (ActionsAvailable())
-				{
-					Action[] results = _actions.ToArray();
-
-					_actions.Clear();
-
-					return results;
-				}
-				return null;
-			}
-		}
-
-		private bool ActionsAvailable()
-		{
-			while (_actions.Count == 0 && !_disabled)
-			{
-				Monitor.Wait(_lock);
-			}
-
-			return !_disabled;
 		}
 	}
 }

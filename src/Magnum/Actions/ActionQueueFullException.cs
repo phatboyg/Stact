@@ -13,34 +13,33 @@
 namespace Magnum.Actions
 {
 	using System;
+	using System.Runtime.Serialization;
 
-	public class SingleScheduledAction :
-		ExecuteScheduledAction
+	public class ActionQueueFullException :
+		ActionQueueException
 	{
-		private readonly Action _action;
-		private readonly ActionQueue _queue;
-		private bool _cancelled;
-
-		public SingleScheduledAction(DateTime scheduledAt, ActionQueue queue, Action action)
+		public ActionQueueFullException()
 		{
-			ScheduledAt = scheduledAt;
-			_queue = queue;
-			_action = action;
 		}
 
-		public DateTime ScheduledAt { get; set; }
-
-		public void Cancel()
+		public ActionQueueFullException(int needed, int count, int limit)
+			: base(string.Format("Insufficient space in queue, requested {0}, currently {1} of {2} used", needed, count, limit))
 		{
-			_cancelled = true;
 		}
 
-		public void Execute()
+		public ActionQueueFullException(string message)
+			: base(message)
 		{
-			if (_cancelled)
-				return;
+		}
 
-			_queue.Enqueue(_action);
+		public ActionQueueFullException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected ActionQueueFullException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
 		}
 	}
 }

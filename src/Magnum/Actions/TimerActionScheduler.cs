@@ -15,6 +15,7 @@ namespace Magnum.Actions
 	using System;
 	using System.Threading;
 	using DateTimeExtensions;
+	using Internal;
 	using Logging;
 
 	public class TimerActionScheduler :
