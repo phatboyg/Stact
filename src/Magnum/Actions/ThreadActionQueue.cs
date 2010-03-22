@@ -17,88 +17,72 @@ namespace Magnum.Actions
 	using Internal;
 	using Logging;
 
-	public class ThreadPoolActionQueue :
+	public class ThreadActionQueue :
 		ActionQueue
 	{
 		private readonly IActionList _actions;
-		private readonly object _lock = new object();
-		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
-		private bool _disabled;
-		private bool _executorQueued;
+		private readonly ILogger _log = Logger.GetLogger<ThreadActionQueue>();
+		private readonly Thread _thread;
 
-		public ThreadPoolActionQueue()
+		public ThreadActionQueue()
+			: this(-1, Timeout.Infinite)
 		{
-			_actions = new ActionList(-1, Timeout.Infinite);
 		}
 
-		public ThreadPoolActionQueue(int queueLimit, int queueTimeout)
+		public ThreadActionQueue(int queueLimit, int queueTimeout)
 		{
 			_actions = new ActionList(queueLimit, queueTimeout);
+			_thread = CreateThread();
+
+			_thread.Start();
 		}
 
 		public void Enqueue(Action action)
 		{
 			_actions.Enqueue(action);
-
-			QueueExecute();
 		}
 
 		public void EnqueueMany(params Action[] actions)
 		{
 			_actions.EnqueueMany(actions);
-
-			QueueExecute();
 		}
 
 		public void Disable()
 		{
-			lock (_lock)
-			{
-				_disabled = true;
-				_actions.Disable();
-
-				Monitor.PulseAll(_lock);
-			}
+			_actions.Disable();
 		}
 
 		public bool WaitAll(TimeSpan timeout)
 		{
-			return _actions.WaitAll(timeout, () => _executorQueued);
+			bool completed = _actions.WaitAll(timeout, () => _thread.IsAlive);
+
+			if (completed)
+				_thread.Join(timeout);
+
+			return completed;
 		}
 
-		private void Execute(object state)
+		private Thread CreateThread()
 		{
-			bool result = _actions.Execute();
-			if(result == false)
-				return;
+			var thread = new Thread(Run);
+			thread.Name = GetType().Name + "-" + thread.ManagedThreadId;
+			thread.IsBackground = false;
+			thread.Priority = ThreadPriority.Normal;
 
-			lock (_lock)
+			return thread;
+		}
+
+		private void Run()
+		{
+			try
 			{
-				if (_actions.Count > 0)
+				while (_actions.Execute())
 				{
-					QueueExecute();
-				}
-				else
-				{
-					_executorQueued = false;
 				}
 			}
-		}
-
-		private void QueueExecute()
-		{
-			lock (_lock)
+			catch (Exception ex)
 			{
-				if (_disabled)
-					return;
-
-				if (_executorQueued)
-					return;
-
-				if (!ThreadPool.QueueUserWorkItem(Execute))
-					throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
-
-				_executorQueued = true;
+				_log.Error(ex);
 			}
 		}
 	}

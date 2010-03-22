@@ -33,7 +33,7 @@ namespace Magnum.Actions
 		/// </summary>
 		/// <param name="timeout"></param>
 		/// <returns>True if the queue is empty when RunAll returns</returns>
-		bool RunAll(TimeSpan timeout);
+		bool WaitAll(TimeSpan timeout);
 
 		/// <summary>
 		/// Disable the action queue, discarding any remaining items

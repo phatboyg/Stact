@@ -55,7 +55,7 @@ namespace Magnum.Actions
 				});
 		}
 
-		public bool RunAll(TimeSpan timeout)
+		public bool WaitAll(TimeSpan timeout)
 		{
 			return true;
 		}

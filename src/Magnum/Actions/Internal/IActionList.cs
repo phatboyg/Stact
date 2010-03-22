@@ -37,14 +37,22 @@ namespace Magnum.Actions.Internal
 		void EnqueueMany(params Action[] actions);
 
 		/// <summary>
+		/// Execute the actions in the list
+		/// </summary>
+		/// <returns>True if actions were executed, otherwise false</returns>
+		bool Execute();
+
+		/// <summary>
+		/// Execute all the actions in the list and only return once they have completed
+		/// </summary>
+		/// <param name="timeout">How long to wait (in ms) before returning anyway</param>
+		/// <param name="condition">An extra condition to check as part of the exit clause</param>
+		/// <returns>True if everything was executed</returns>
+		bool WaitAll(TimeSpan timeout, Func<bool> condition);
+
+		/// <summary>
 		/// Prevent new actions from being added to the list
 		/// </summary>
 		void Disable();
-
-		/// <summary>
-		/// Return all actions in the list, clearing the list
-		/// </summary>
-		/// <returns></returns>
-		Action[] DequeueAll();
 	}
 }

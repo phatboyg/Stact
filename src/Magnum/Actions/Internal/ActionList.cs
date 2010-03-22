@@ -15,15 +15,18 @@ namespace Magnum.Actions.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
+	using Logging;
 
 	public class ActionList :
 		IActionList
 	{
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
+		private readonly ILogger _log = Logger.GetLogger<ActionList>();
 		private readonly int _queueLimit;
 		private readonly int _queueTimeout;
 		private bool _disabled;
+		private bool _waiting;
 
 		public ActionList(int queueLimit, int queueTimeout)
 		{
@@ -62,6 +65,51 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
+		public bool Execute()
+		{
+			Action[] actions = DequeueAll();
+			if (actions == null)
+				return false;
+
+			foreach (Action action in actions)
+			{
+				if (_disabled)
+					break;
+
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					_log.Error(ex);
+				}
+			}
+
+			return true;
+		}
+
+		public bool WaitAll(TimeSpan timeout, Func<bool> condition)
+		{
+			lock (_lock)
+			{
+				_waiting = true;
+
+				Monitor.PulseAll(_lock);
+
+				while (_actions.Count > 0 || condition())
+				{
+					Monitor.Wait(_lock, timeout);
+				}
+
+				_waiting = false;
+
+				Monitor.PulseAll(_lock);
+
+				return _actions.Count == 0 && !condition();
+			}
+		}
+
 		public void Disable()
 		{
 			lock (_lock)
@@ -71,18 +119,18 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
-		public Action[] DequeueAll()
+		private Action[] DequeueAll()
 		{
 			lock (_lock)
 			{
 				if (ActionsAvailable())
 				{
 					Action[] results = _actions.ToArray();
-
 					_actions.Clear();
+
 					Monitor.PulseAll(_lock);
 
-					return results;
+					return results.Length == 0 ? null : results;
 				}
 				return null;
 			}
@@ -90,7 +138,7 @@ namespace Magnum.Actions.Internal
 
 		private bool ActionsAvailable()
 		{
-			while (_actions.Count == 0 && !_disabled)
+			while (_actions.Count == 0 && !_disabled && !_waiting)
 			{
 				Monitor.Wait(_lock);
 			}
