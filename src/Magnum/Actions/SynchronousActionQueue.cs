@@ -20,11 +20,15 @@ namespace Magnum.Actions
 	{
 		private readonly ILogger _log = Logger.GetLogger<SynchronousActionQueue>();
 
-		private bool _disabled;
+		private bool _acceptingActions;
+		private bool _discardActions;
 
 		public void Enqueue(Action action)
 		{
-			if (_disabled)
+			if (!_acceptingActions)
+				return;
+
+			if (_discardActions)
 				return;
 
 			try
@@ -39,30 +43,21 @@ namespace Magnum.Actions
 
 		public void EnqueueMany(params Action[] actions)
 		{
-			actions.Each(action =>
-				{
-					if (_disabled)
-						return;
-
-					try
-					{
-						action();
-					}
-					catch (Exception ex)
-					{
-						_log.Error(ex);
-					}
-				});
+			actions.Each(Enqueue);
 		}
 
-		public bool WaitAll(TimeSpan timeout)
+		public void StopAcceptingActions()
 		{
-			return true;
+			_acceptingActions = true;
 		}
 
-		public void Disable()
+		public void DiscardAllActions()
 		{
-			_disabled = true;
+			_discardActions = true;
+		}
+
+		public void ExecuteAll(TimeSpan timeout)
+		{
 		}
 	}
 }

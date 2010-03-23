@@ -20,23 +20,20 @@ namespace Magnum.Actions.Internal
 	public class ActionList :
 		IActionList
 	{
+		private static readonly ILogger _log = Logger.GetLogger<ActionList>();
+
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
-		private readonly ILogger _log = Logger.GetLogger<ActionList>();
 		private readonly int _queueLimit;
 		private readonly int _queueTimeout;
-		private bool _disabled;
-		private bool _waiting;
+		private bool _discardAllActions;
+		private bool _executingAllActions;
+		private bool _notAcceptingActions;
 
 		public ActionList(int queueLimit, int queueTimeout)
 		{
 			_queueLimit = queueLimit;
 			_queueTimeout = queueTimeout;
-		}
-
-		public int Count
-		{
-			get { lock (_lock) return _actions.Count; }
 		}
 
 		public void Enqueue(Action action)
@@ -67,13 +64,17 @@ namespace Magnum.Actions.Internal
 
 		public bool Execute()
 		{
+			_log.Debug("Execute(dequeue)");
 			Action[] actions = DequeueAll();
 			if (actions == null)
+			{
+				_log.Debug("Execute(false)");
 				return false;
+			}
 
 			foreach (Action action in actions)
 			{
-				if (_disabled)
+				if (_discardAllActions)
 					break;
 
 				try
@@ -86,75 +87,94 @@ namespace Magnum.Actions.Internal
 				}
 			}
 
+			_log.Debug("Execute(true)");
 			return true;
 		}
 
-		public bool WaitAll(TimeSpan timeout, Func<bool> condition)
+		public void ExecuteAll(TimeSpan timeout, Func<bool> executingActions)
 		{
 			DateTime giveUpAt = SystemUtil.Now + timeout;
 
+			_log.Debug("ExecuteAll(lock)");
 			lock (_lock)
 			{
-				_waiting = true;
+				_executingAllActions = true;
 
-				Monitor.PulseAll(_lock);
-
-				while ((_actions.Count > 0 && !_disabled) || condition())
+				while (_actions.Count > 0 || executingActions())
 				{
+					timeout = giveUpAt - SystemUtil.Now;
+					if (timeout < TimeSpan.Zero)
+						throw new ActionQueueException("Timeout expired waiting for queue to execute all pending actions");
+
+					_log.Debug("ExecuteAll(wait)");
 					Monitor.Wait(_lock, timeout);
 
-					if(giveUpAt <= SystemUtil.Now)
-						break;
+					_log.Debug("ExecuteAll(wait-complete)");
 				}
-
-				_waiting = false;
-
-				Monitor.PulseAll(_lock);
-
-				return _actions.Count == 0 && !condition();
 			}
 		}
 
-		public void Disable()
+		public void StopAcceptingActions()
 		{
 			lock (_lock)
 			{
-				_disabled = true;
+				_notAcceptingActions = true;
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		public void DiscardAllActions()
+		{
+			lock (_lock)
+			{
+				_discardAllActions = true;
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		public void Pulse()
+		{
+			lock (_lock)
+			{
 				Monitor.PulseAll(_lock);
 			}
 		}
 
 		private Action[] DequeueAll()
 		{
+			_log.Debug("DequeueAll(lock)");
 			lock (_lock)
 			{
-				if (ActionsAvailable())
+				_log.Debug("DequeueAll(ActionsAreAvailable)");
+				if (ActionsAreAvailable())
 				{
 					Action[] results = _actions.ToArray();
 					_actions.Clear();
 
-					Monitor.PulseAll(_lock);
-
-					return results.Length == 0 ? null : results;
+					_log.Debug("DequeueAll(return action)");
+					return results;
 				}
+
+				_log.Debug("DequeueAll(return null)");
 				return null;
 			}
 		}
 
-		private bool ActionsAvailable()
+		private bool ActionsAreAvailable()
 		{
-			while (_actions.Count == 0 && !_disabled && !_waiting)
+			while (_actions.Count == 0 && !_executingAllActions)
 			{
+				_log.Debug("ActionsAreAvailable(wait)");
 				Monitor.Wait(_lock);
 			}
 
-			return !_disabled;
+			return _actions.Count > 0;
 		}
 
 		private bool IsSpaceAvailable(int needed)
 		{
-			if (_disabled)
-				return false;
+			if (_notAcceptingActions)
+				throw new ActionQueueException("The queue is no longer accepting actions");
 
 			if (_queueLimit <= 0 || _actions.Count + needed <= _queueLimit)
 				return true;
@@ -162,8 +182,9 @@ namespace Magnum.Actions.Internal
 			if (_queueTimeout <= 0)
 				throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
 
+			_log.Debug("IsSpaceAvailable(wait)");
 			Monitor.Wait(_lock, _queueTimeout);
-			if (_disabled)
+			if (_notAcceptingActions)
 				return false;
 
 			if (_queueLimit > 0 && _actions.Count + needed > _queueLimit)

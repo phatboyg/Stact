@@ -20,11 +20,6 @@ namespace Magnum.Actions.Internal
 	public interface IActionList
 	{
 		/// <summary>
-		/// Return the number of actions in the list
-		/// </summary>
-		int Count { get; }
-
-		/// <summary>
 		/// Add a single action to the list
 		/// </summary>
 		/// <param name="action"></param>
@@ -37,7 +32,8 @@ namespace Magnum.Actions.Internal
 		void EnqueueMany(params Action[] actions);
 
 		/// <summary>
-		/// Execute the actions in the list
+		/// Execute the actions in the list - this should only be called on the thread being 
+		/// used by the action queue to avoid threading issues
 		/// </summary>
 		/// <returns>True if actions were executed, otherwise false</returns>
 		bool Execute();
@@ -46,13 +42,23 @@ namespace Magnum.Actions.Internal
 		/// Execute all the actions in the list and only return once they have completed
 		/// </summary>
 		/// <param name="timeout">How long to wait (in ms) before returning anyway</param>
-		/// <param name="condition">An extra condition to check as part of the exit clause</param>
+		/// <param name="executingActions">An extra condition to check as part of the exit clause</param>
 		/// <returns>True if everything was executed</returns>
-		bool WaitAll(TimeSpan timeout, Func<bool> condition);
+		void ExecuteAll(TimeSpan timeout, Func<bool> executingActions);
 
 		/// <summary>
 		/// Prevent new actions from being added to the list
 		/// </summary>
-		void Disable();
+		void StopAcceptingActions();
+
+		/// <summary>
+		/// Discard all pending actions
+		/// </summary>
+		void DiscardAllActions();
+
+		/// <summary>
+		/// Wake up the system?
+		/// </summary>
+		void Pulse();
 	}
 }

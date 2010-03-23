@@ -17,20 +17,34 @@ namespace Magnum.Actions
 	using Internal;
 	using Logging;
 
+	/// <summary>
+	/// An ActionQueue that uses the .NET ThreadPool and QueueUserWorkItem to execute
+	/// actions.
+	/// </summary>
 	public class ThreadPoolActionQueue :
 		ActionQueue
 	{
+		private static readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
+
 		private readonly IActionList _actions;
 		private readonly object _lock = new object();
-		private readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
-		private bool _disabled;
 		private bool _executorQueued;
 
+		/// <summary>
+		/// Constructs a new ThreadPoolActionQueue using the default queue settings
+		/// of unlimited actions with an infinite timeout to add new actions
+		/// </summary>
 		public ThreadPoolActionQueue()
 		{
 			_actions = new ActionList(-1, Timeout.Infinite);
 		}
 
+		/// <summary>
+		/// Constructs a new ThreadPoolActionQueue using the specified settings for the
+		/// queue
+		/// </summary>
+		/// <param name="queueLimit">The maximum number of actions that can be waiting in the queue</param>
+		/// <param name="queueTimeout">The timeout to wait when adding actions when the queue if full before throwing an exception</param>
 		public ThreadPoolActionQueue(int queueLimit, int queueTimeout)
 		{
 			_actions = new ActionList(queueLimit, queueTimeout);
@@ -40,64 +54,73 @@ namespace Magnum.Actions
 		{
 			_actions.Enqueue(action);
 
-			QueueExecute();
+			ActionAddedToQueue();
 		}
 
 		public void EnqueueMany(params Action[] actions)
 		{
 			_actions.EnqueueMany(actions);
 
-			QueueExecute();
+			ActionAddedToQueue();
 		}
 
-		public void Disable()
+		public void StopAcceptingActions()
 		{
-			lock (_lock)
-			{
-				_disabled = true;
-				_actions.Disable();
-			}
+			_actions.StopAcceptingActions();
 		}
 
-		public bool WaitAll(TimeSpan timeout)
+		public void DiscardAllActions()
 		{
-			return _actions.WaitAll(timeout, () => _executorQueued);
+			_actions.DiscardAllActions();
+		}
+
+		public void ExecuteAll(TimeSpan timeout)
+		{
+			_actions.ExecuteAll(timeout, () => _executorQueued);
 		}
 
 		private void Execute(object state)
 		{
-			bool result = _actions.Execute();
-			if(result == false)
-				return;
+			_log.Debug("ThreadPoolActionQueue.Execute(execute)");
+            bool result = _actions.Execute();
 
+			_log.Debug("ThreadPoolActionQueue.Execute(lock)");
 			lock (_lock)
 			{
-				if (_actions.Count > 0)
+				if (result)
 				{
-					QueueExecute();
+					QueueWorkItem();
 				}
 				else
 				{
 					_executorQueued = false;
+
+					_actions.Pulse();
 				}
 			}
+
+			_log.Debug("ThreadPoolActionQueue.Execute(return)");
 		}
 
-		private void QueueExecute()
+		private void ActionAddedToQueue()
 		{
 			lock (_lock)
 			{
-				if (_disabled)
-					return;
-
 				if (_executorQueued)
 					return;
 
-				if (!ThreadPool.QueueUserWorkItem(Execute))
-					throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
-
-				_executorQueued = true;
+				QueueWorkItem();
 			}
+		}
+
+		private void QueueWorkItem()
+		{
+			_log.Debug("ThreadPoolActionQueue.QueueWorkItem");
+
+			if (!ThreadPool.QueueUserWorkItem(Execute))
+				throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
+
+			_executorQueued = true;
 		}
 	}
 }

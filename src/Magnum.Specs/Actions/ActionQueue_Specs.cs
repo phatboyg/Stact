@@ -18,6 +18,7 @@ namespace Magnum.Specs.Actions
 	using Magnum.Actions;
 	using Magnum.Actions.Internal;
 	using Magnum.Actors;
+	using Magnum.Logging;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 	using TestFramework;
@@ -32,13 +33,11 @@ namespace Magnum.Specs.Actions
 
 			var called = new Future<bool>();
 
-			queue.Disable();
+			queue.StopAcceptingActions();
 
-			queue.Enqueue(() => called.Complete(true));
+			Assert.Throws<ActionQueueException>(() => queue.Enqueue(() => called.Complete(true)));
 
-			bool completed = queue.WaitAll(1.Seconds());
-
-			completed.ShouldBeTrue();
+			queue.ExecuteAll(10.Seconds());
 
 			called.IsAvailable().ShouldBeFalse();
 		}
@@ -50,6 +49,8 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_result_in_no_waiting_actions_in_the_queue()
 		{
+			TraceLogProvider.Configure(LogLevel.Debug);
+
 			ActionQueue queue = new ThreadPoolActionQueue();
 
 			queue.Enqueue(() => Thread.Sleep(1000));
@@ -58,9 +59,7 @@ namespace Magnum.Specs.Actions
 
 			queue.Enqueue(() => called.Complete(true));
 
-			bool completed = queue.WaitAll(2.Seconds());
-
-			completed.ShouldBeTrue();
+			queue.ExecuteAll(8.Seconds());
 
 			called.IsAvailable().ShouldBeTrue();
 		}
@@ -104,9 +103,7 @@ namespace Magnum.Specs.Actions
 
 			queue.Enqueue(() => called.Complete(true));
 
-			bool completed = queue.WaitAll(2.Seconds());
-
-			completed.ShouldBeTrue();
+			queue.ExecuteAll(12.Seconds());
 
 			called.IsAvailable().ShouldBeTrue();
 		}

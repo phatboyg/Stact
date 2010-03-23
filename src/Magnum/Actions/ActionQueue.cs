@@ -31,13 +31,17 @@ namespace Magnum.Actions
 		/// <summary>
 		/// Run all remaining actions and return when complete (or when the timeout expires)
 		/// </summary>
-		/// <param name="timeout"></param>
-		/// <returns>True if the queue is empty when RunAll returns</returns>
-		bool WaitAll(TimeSpan timeout);
+		/// <param name="timeout">The time to wait for all pending actions to be executed before throwing an exception</param>
+		void ExecuteAll(TimeSpan timeout);
 
 		/// <summary>
 		/// Disable the action queue, discarding any remaining items
 		/// </summary>
-		void Disable();
+		void StopAcceptingActions();
+
+		/// <summary>
+		/// Discard any pending actions from the queue
+		/// </summary>
+		void DiscardAllActions();
 	}
 }

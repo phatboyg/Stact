@@ -14,6 +14,7 @@ namespace Magnum.Logging
 {
 	using System;
 	using System.Diagnostics;
+	using System.Threading;
 	using ObjectExtensions;
 
 	public class TraceLogWriter :
@@ -30,20 +31,20 @@ namespace Magnum.Logging
 		public void Write(string format, params object[] args)
 		{
 			if (_enabled())
-				Trace.WriteLine(string.Format(format, args));
+				WriteLine(string.Format(format, args));
 		}
 
 		public void Write(IFormatProvider provider, string format, params object[] args)
 		{
 			if (_enabled())
-				Trace.WriteLine(string.Format(provider, format, args));
+				WriteLine(string.Format(provider, format, args));
 		}
 
 		public void Write(Exception exception, string format, params object[] args)
 		{
 			if (_enabled())
 			{
-				Trace.WriteLine(string.Format(format, args));
+				WriteLine(string.Format(format, args));
 				Trace.WriteLine(exception);
 			}
 		}
@@ -52,7 +53,7 @@ namespace Magnum.Logging
 		{
 			if (_enabled())
 			{
-				Trace.WriteLine(string.Format(provider, format, args));
+				WriteLine(string.Format(provider, format, args));
 				Trace.WriteLine(exception);
 			}
 		}
@@ -66,28 +67,39 @@ namespace Magnum.Logging
 		public void Write(object obj)
 		{
 			if (_enabled())
-				Trace.WriteLine(obj != null ? obj.ToString() : NullString);
+				WriteLine(obj != null ? obj.ToString() : NullString);
 		}
 
 		public void Write(string message)
 		{
 			if (_enabled() && !message.IsNullOrEmpty())
-				Trace.WriteLine(message);
+				WriteLine(message);
 		}
 
 		public void Write(Exception exception)
 		{
 			if (_enabled())
-				Trace.WriteLine(exception);
+				WriteLine(exception != null ? exception.ToString() : NullString);
 		}
 
 		public void Write(Exception exception, string message)
 		{
 			if (_enabled())
 			{
-				Trace.WriteLine(message);
+				WriteLine(message);
 				Trace.WriteLine(exception);
 			}
+		}
+
+		private void WriteLine(string text)
+		{
+			DateTime now = SystemUtil.Now;
+
+			string date = now.ToShortDateString();
+			string time = now.ToLongTimeString();
+			string thread = Thread.CurrentThread.ManagedThreadId.ToString();
+
+			Trace.WriteLine(string.Format("{0} {1} [{2}]: {3}", date, time, thread, text));
 		}
 	}
 }
