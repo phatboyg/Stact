@@ -105,7 +105,6 @@
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
-    <Compile Include="Channels\ActionQueueConsumer.cs" />
     <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Channels\DistinctIntervalConsumerChannel.cs" />
     <Compile Include="Channels\Filter.cs" />
@@ -384,6 +383,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Collections\A Note About This Folder.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Channels\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
