@@ -49,7 +49,7 @@ namespace Magnum.Specs.Pipeline
 				_pipe.Send(new ClaimModified());
 			}
 
-			Assert.IsTrue(_received.WaitOne(2.Seconds(), true));
+			Assert.IsTrue(_received.WaitOne(4.Seconds(), true));
 			Assert.AreEqual(2, count);
 		}
 
