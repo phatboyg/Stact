@@ -81,10 +81,8 @@ namespace Magnum.Actions
 
 		private void Execute(object state)
 		{
-			_log.Debug("ThreadPoolActionQueue.Execute(execute)");
             bool result = _actions.Execute();
 
-			_log.Debug("ThreadPoolActionQueue.Execute(lock)");
 			lock (_lock)
 			{
 				if (result)
@@ -98,8 +96,6 @@ namespace Magnum.Actions
 					_actions.Pulse();
 				}
 			}
-
-			_log.Debug("ThreadPoolActionQueue.Execute(return)");
 		}
 
 		private void ActionAddedToQueue()
@@ -115,8 +111,6 @@ namespace Magnum.Actions
 
 		private void QueueWorkItem()
 		{
-			_log.Debug("ThreadPoolActionQueue.QueueWorkItem");
-
 			if (!ThreadPool.QueueUserWorkItem(Execute))
 				throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
 

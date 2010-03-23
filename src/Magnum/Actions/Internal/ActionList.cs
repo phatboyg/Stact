@@ -64,13 +64,9 @@ namespace Magnum.Actions.Internal
 
 		public bool Execute()
 		{
-			_log.Debug("Execute(dequeue)");
 			Action[] actions = DequeueAll();
 			if (actions == null)
-			{
-				_log.Debug("Execute(false)");
 				return false;
-			}
 
 			foreach (Action action in actions)
 			{
@@ -87,7 +83,6 @@ namespace Magnum.Actions.Internal
 				}
 			}
 
-			_log.Debug("Execute(true)");
 			return true;
 		}
 
@@ -95,10 +90,10 @@ namespace Magnum.Actions.Internal
 		{
 			DateTime giveUpAt = SystemUtil.Now + timeout;
 
-			_log.Debug("ExecuteAll(lock)");
 			lock (_lock)
 			{
 				_executingAllActions = true;
+				Monitor.PulseAll(_lock);
 
 				while (_actions.Count > 0 || executingActions())
 				{
@@ -106,10 +101,7 @@ namespace Magnum.Actions.Internal
 					if (timeout < TimeSpan.Zero)
 						throw new ActionQueueException("Timeout expired waiting for queue to execute all pending actions");
 
-					_log.Debug("ExecuteAll(wait)");
 					Monitor.Wait(_lock, timeout);
-
-					_log.Debug("ExecuteAll(wait-complete)");
 				}
 			}
 		}
@@ -142,20 +134,16 @@ namespace Magnum.Actions.Internal
 
 		private Action[] DequeueAll()
 		{
-			_log.Debug("DequeueAll(lock)");
 			lock (_lock)
 			{
-				_log.Debug("DequeueAll(ActionsAreAvailable)");
 				if (ActionsAreAvailable())
 				{
 					Action[] results = _actions.ToArray();
 					_actions.Clear();
 
-					_log.Debug("DequeueAll(return action)");
 					return results;
 				}
 
-				_log.Debug("DequeueAll(return null)");
 				return null;
 			}
 		}
@@ -164,7 +152,6 @@ namespace Magnum.Actions.Internal
 		{
 			while (_actions.Count == 0 && !_executingAllActions)
 			{
-				_log.Debug("ActionsAreAvailable(wait)");
 				Monitor.Wait(_lock);
 			}
 
@@ -182,7 +169,6 @@ namespace Magnum.Actions.Internal
 			if (_queueTimeout <= 0)
 				throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
 
-			_log.Debug("IsSpaceAvailable(wait)");
 			Monitor.Wait(_lock, _queueTimeout);
 			if (_notAcceptingActions)
 				return false;
