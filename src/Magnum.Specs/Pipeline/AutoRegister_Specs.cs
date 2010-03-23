@@ -62,7 +62,7 @@ namespace Magnum.Specs.Pipeline
 		[Test]
 		public void The_long_running_consumer_should_be_called()
 		{
-			Thread.Sleep(650);
+			Thread.Sleep(1500);
 			Assert.IsTrue(_called.ContainsKey(typeof(LongRunningMessageConsumer)));
 		}
 
