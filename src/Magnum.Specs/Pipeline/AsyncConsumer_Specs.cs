@@ -43,7 +43,7 @@ namespace Magnum.Specs.Pipeline
 		[Test]
 		public void Should_complete_eventually()
 		{
-			Assert.IsTrue(_consumer.ClaimModifiedCalled.IsAvailable(2.Seconds()));
+			Assert.IsTrue(_consumer.ClaimModifiedCalled.IsAvailable(8.Seconds()));
 		}
 	}
 }
