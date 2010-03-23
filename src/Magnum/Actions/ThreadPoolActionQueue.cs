@@ -56,8 +56,6 @@ namespace Magnum.Actions
 			{
 				_disabled = true;
 				_actions.Disable();
-
-				Monitor.PulseAll(_lock);
 			}
 		}
 

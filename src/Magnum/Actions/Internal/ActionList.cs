@@ -91,15 +91,20 @@ namespace Magnum.Actions.Internal
 
 		public bool WaitAll(TimeSpan timeout, Func<bool> condition)
 		{
+			DateTime giveUpAt = SystemUtil.Now + timeout;
+
 			lock (_lock)
 			{
 				_waiting = true;
 
 				Monitor.PulseAll(_lock);
 
-				while (_actions.Count > 0 || condition())
+				while ((_actions.Count > 0 && !_disabled) || condition())
 				{
 					Monitor.Wait(_lock, timeout);
+
+					if(giveUpAt <= SystemUtil.Now)
+						break;
 				}
 
 				_waiting = false;
