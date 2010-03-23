@@ -30,14 +30,14 @@ namespace Magnum.Specs.Channels
 			var scheduler = new TimerActionScheduler();
 
 			var called = new Future<IList<MyMessage>>();
-			var channel = new IntervalConsumerChannel<MyMessage>(queue, scheduler, 1.Seconds(), called.Complete);
+			var channel = new IntervalConsumerChannel<MyMessage>(queue, scheduler, 2.Seconds(), called.Complete);
 
 			for (int i = 0; i < 5; i++)
 			{
 				channel.Send(new MyMessage());
 			}
 
-			called.IsAvailable(2.Seconds()).ShouldBeTrue();
+			called.IsAvailable(4.Seconds()).ShouldBeTrue();
 
 			channel.Dispose();
 

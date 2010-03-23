@@ -20,12 +20,12 @@ namespace Magnum.Actions
 	{
 		private readonly ILogger _log = Logger.GetLogger<SynchronousActionQueue>();
 
-		private bool _acceptingActions;
+		private bool _notAcceptingActions;
 		private bool _discardActions;
 
 		public void Enqueue(Action action)
 		{
-			if (!_acceptingActions)
+			if (_notAcceptingActions)
 				return;
 
 			if (_discardActions)
@@ -48,7 +48,7 @@ namespace Magnum.Actions
 
 		public void StopAcceptingActions()
 		{
-			_acceptingActions = true;
+			_notAcceptingActions = true;
 		}
 
 		public void DiscardAllActions()
