@@ -103,6 +103,9 @@
     <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
     <Compile Include="Calendar\DefaultCalendar.cs" />
     <Compile Include="Calendar\Months.cs" />
+    <Compile Include="Channels\ActionQueueChannel.cs" />
+    <Compile Include="Channels\Channel.cs" />
+    <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="Collections\Algorithms.cs" />

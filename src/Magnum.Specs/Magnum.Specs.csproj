@@ -67,6 +67,7 @@
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
+    <Compile Include="Channels\ChannelQueue_Specs.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddFileCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddRemoteRepositoryCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />
