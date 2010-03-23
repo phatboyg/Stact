@@ -20,10 +20,10 @@ namespace Magnum.Specs.Channels
 	using TestFramework;
 
 	[TestFixture]
-	public class Subscribing_to_a_channel
+	public class Binding_an_action_queue_channel_to_a_method
 	{
 		[Test]
-		public void Should_place_the_consumer_action_on_the_queue()
+		public void Should_call_the_consumer_method()
 		{
 			var actor = new SomeActorInstance();
 
@@ -36,7 +36,7 @@ namespace Magnum.Specs.Channels
 		}
 
 		[Test]
-		public void Should_place_the_consumer_action_on_the_queue_for_lambdas()
+		public void Should_call_the_consumer_anonymous_method()
 		{
 			var actor = new SomeActorInstance();
 
@@ -60,8 +60,8 @@ namespace Magnum.Specs.Channels
 			_queue = new ThreadPoolActionQueue();
 			_future = new Future<MyMessage>();
 
-			MessageChannel = new ActionQueueChannel<MyMessage>(_queue, Consume);
-			LambdaMessageChannel = new ActionQueueChannel<MyMessage>(_queue, message => _future.Complete(message));
+			MessageChannel = new ConsumerChannel<MyMessage>(_queue, Consume);
+			LambdaMessageChannel = new ConsumerChannel<MyMessage>(_queue, message => _future.Complete(message));
 		}
 
 		public Future<MyMessage> Future

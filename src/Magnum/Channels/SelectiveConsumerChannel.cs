@@ -12,33 +12,65 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using System;
 	using Actions;
 
 	/// <summary>
-	/// A channel that accepts a message and enqueues the consumer method via the
-	/// specified ActionQueue
+	/// A channel that selectively accepts a message and enqueues the consumer method via the
+	/// specified ActionQueue.
+	/// Note that the filter function is called as part of the queued action, so threading
+	/// is not an issue.
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
-	public class ActionQueueChannel<T> :
+	public class SelectiveConsumerChannel<T> :
 		Channel<T>
 	{
 		private readonly Consumer<T> _consumer;
+		private readonly Filter<T> _filter;
 		private readonly ActionQueue _queue;
+		private bool _disposed;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
 		/// <param name="queue">The queue where consumer actions should be enqueued</param>
 		/// <param name="consumer">The method to call when a message is sent to the channel</param>
-		public ActionQueueChannel(ActionQueue queue, Consumer<T> consumer)
+		/// <param name="filter">The filter to determine if the message can be consumed</param>
+		public SelectiveConsumerChannel(ActionQueue queue, Consumer<T> consumer, Filter<T> filter)
 		{
 			_queue = queue;
 			_consumer = consumer;
+			_filter = filter;
 		}
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() => _consumer(message));
+			_queue.Enqueue(() =>
+				{
+					if (_filter(message))
+						_consumer(message);
+				});
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
+			{
+			}
+
+			_disposed = true;
+		}
+
+		~SelectiveConsumerChannel()
+		{
+			Dispose(false);
 		}
 	}
 }

@@ -12,27 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-
-	/// <summary>
-	/// A channel represents a one-way communication, well, channel
-	/// </summary>
-	public interface Channel :
-		IDisposable
-	{
-	}
-
-	/// <summary>
-	/// A one-way communication containing messages of the specified type
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface Channel<T> :
-		Channel
-	{
-		/// <summary>
-		/// Send a message to the channel
-		/// </summary>
-		/// <param name="message">The message to send</param>
-		void Send(T message);
-	}
+	public delegate bool Filter<T>(T message);
 }

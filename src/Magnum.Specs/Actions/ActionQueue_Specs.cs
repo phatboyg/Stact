@@ -12,11 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actions
 {
+	using System;
 	using System.Threading;
 	using DateTimeExtensions;
 	using Magnum.Actions;
+	using Magnum.Actions.Internal;
 	using Magnum.Actors;
 	using NUnit.Framework;
+	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
@@ -60,6 +63,30 @@ namespace Magnum.Specs.Actions
 			completed.ShouldBeTrue();
 
 			called.IsAvailable().ShouldBeTrue();
+		}
+	}
+
+	[TestFixture]
+	public class Adding_an_action_to_a_full_queue
+	{
+		[Test]
+		public void Should_result_in_an_exception()
+		{
+			var action = MockRepository.GenerateMock<Action>();
+
+			var queue = new ActionList(2, 0);
+			queue.Enqueue(action);
+			queue.Enqueue(action);
+
+			try
+			{
+				queue.Enqueue(action);
+				Assert.Fail("Should have thrown an exception");
+			}
+			catch (ActionQueueException ex)
+			{
+				ex.Message.Contains("Insufficient").ShouldBeTrue();
+			}
 		}
 	}
 

@@ -10,29 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
-	using System;
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// A channel represents a one-way communication, well, channel
-	/// </summary>
-	public interface Channel :
-		IDisposable
+	public interface IMessageDictionary<TKey, TValue>
 	{
-	}
-
-	/// <summary>
-	/// A one-way communication containing messages of the specified type
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface Channel<T> :
-		Channel
-	{
-		/// <summary>
-		/// Send a message to the channel
-		/// </summary>
-		/// <param name="message">The message to send</param>
-		void Send(T message);
+		void Add(TValue message);
+		IDictionary<TKey, TValue> RemoveAll();
 	}
 }

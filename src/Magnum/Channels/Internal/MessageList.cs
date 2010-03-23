@@ -10,29 +10,39 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
-	using System;
+	using System.Collections.Generic;
+	using System.Threading;
 
-	/// <summary>
-	/// A channel represents a one-way communication, well, channel
-	/// </summary>
-	public interface Channel :
-		IDisposable
+	public class MessageList<T> :
+		IMessageList<T>
 	{
-	}
+		private readonly object _lock = new object();
+		private List<T> _messages = new List<T>();
 
-	/// <summary>
-	/// A one-way communication containing messages of the specified type
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface Channel<T> :
-		Channel
-	{
-		/// <summary>
-		/// Send a message to the channel
-		/// </summary>
-		/// <param name="message">The message to send</param>
-		void Send(T message);
+		public void Add(T message)
+		{
+			lock (_lock)
+			{
+				_messages.Add(message);
+
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		public IList<T> RemoveAll()
+		{
+			lock (_lock)
+			{
+				List<T> result = _messages;
+
+				_messages = new List<T>();
+
+				Monitor.PulseAll(_lock);
+
+				return result;
+			}
+		}
 	}
 }
