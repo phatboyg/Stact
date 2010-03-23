@@ -22,7 +22,8 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	public class IntervalConsumerChannel<T> :
-		Channel<T>
+		Channel<T>,
+		IDisposable
 	{
 		private readonly Consumer<IList<T>> _consumer;
 		private readonly IMessageList<T> _messages;

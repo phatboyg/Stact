@@ -23,7 +23,8 @@ namespace Magnum.Channels
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	/// <typeparam name="TKey">The type of the key for the message</typeparam>
 	public class DistinctIntervalConsumerChannel<T, TKey> :
-		Channel<T>
+		Channel<T>,
+		IDisposable
 	{
 		private readonly Consumer<IDictionary<TKey, T>> _consumer;
 		private readonly IMessageDictionary<TKey, T> _messages;

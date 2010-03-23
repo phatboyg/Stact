@@ -12,13 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-
 	/// <summary>
 	/// A channel represents a one-way communication, well, channel
 	/// </summary>
-	public interface Channel :
-		IDisposable
+	public interface Channel
 	{
 	}
 

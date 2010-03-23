@@ -23,7 +23,8 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	public class SelectiveConsumerChannel<T> :
-		Channel<T>
+		Channel<T>,
+		IDisposable
 	{
 		private readonly Consumer<T> _consumer;
 		private readonly Filter<T> _filter;
