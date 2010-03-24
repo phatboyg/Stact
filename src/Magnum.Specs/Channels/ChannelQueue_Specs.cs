@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
+	using System;
 	using DateTimeExtensions;
 	using Magnum.Actions;
 	using Magnum.Actors;
@@ -80,5 +81,6 @@ namespace Magnum.Specs.Channels
 
 	public class MyMessage
 	{
+		public Guid Id { get; set; }
 	}
 }

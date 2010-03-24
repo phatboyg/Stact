@@ -13,10 +13,11 @@
 namespace Magnum.Channels
 {
 	/// <summary>
-	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
-	/// including Actions, void methods, etc.
+	/// Provides a channel from an instance
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	public delegate void Consumer<T>(T message);
+	/// <typeparam name="TInstance">The type of instance being accessed</typeparam>
+	/// <typeparam name="TChannel">The type of channel to return</typeparam>
+	/// <param name="instance">The instance to retrieve the channel from</param>
+	/// <returns>The channel of the requested type from the instance</returns>
+	public delegate Channel<TChannel> ChannelProvider<TInstance, TChannel>(TInstance instance);
 }

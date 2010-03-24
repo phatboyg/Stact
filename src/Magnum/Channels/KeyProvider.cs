@@ -13,10 +13,11 @@
 namespace Magnum.Channels
 {
 	/// <summary>
-	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
-	/// including Actions, void methods, etc.
+	/// Returns the key for the given target
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	public delegate void Consumer<T>(T message);
+	/// <typeparam name="TKey"></typeparam>
+	/// <param name="target"></param>
+	/// <returns></returns>
+	public delegate TKey KeyProvider<T, TKey>(T target);
 }

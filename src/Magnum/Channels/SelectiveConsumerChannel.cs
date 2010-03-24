@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
 	using Actions;
 
 	/// <summary>
@@ -23,13 +22,11 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	public class SelectiveConsumerChannel<T> :
-		Channel<T>,
-		IDisposable
+		Channel<T>
 	{
 		private readonly Consumer<T> _consumer;
 		private readonly Filter<T> _filter;
 		private readonly ActionQueue _queue;
-		private bool _disposed;
 
 		/// <summary>
 		/// Constructs a channel
@@ -51,27 +48,6 @@ namespace Magnum.Channels
 					if (_filter(message))
 						_consumer(message);
 				});
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		private void Dispose(bool disposing)
-		{
-			if (_disposed) return;
-			if (disposing)
-			{
-			}
-
-			_disposed = true;
-		}
-
-		~SelectiveConsumerChannel()
-		{
-			Dispose(false);
 		}
 	}
 }

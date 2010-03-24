@@ -12,11 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	/// <summary>
-	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
-	/// including Actions, void methods, etc.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	public delegate void Consumer<T>(T message);
+	public interface ChannelInstanceCache<TChannel>
+	{
+		Channel<TChannel> Get(TChannel message);
+	}
 }

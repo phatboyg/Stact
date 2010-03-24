@@ -103,16 +103,22 @@
     <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
     <Compile Include="Calendar\DefaultCalendar.cs" />
     <Compile Include="Calendar\Months.cs" />
+    <Compile Include="Channels\ChannelInstanceCache.cs" />
+    <Compile Include="Channels\ChannelProvider.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />
+    <Compile Include="Channels\ChannelInstanceProvider.cs" />
+    <Compile Include="Channels\DictionaryChannelInstanceCache.cs" />
     <Compile Include="Channels\DistinctIntervalConsumerChannel.cs" />
     <Compile Include="Channels\Filter.cs" />
+    <Compile Include="Channels\InstanceChannel.cs" />
     <Compile Include="Channels\Internal\IMessageDictionary.cs" />
     <Compile Include="Channels\Internal\IMessageList.cs" />
     <Compile Include="Channels\Internal\MessageDictionary.cs" />
     <Compile Include="Channels\Internal\MessageList.cs" />
     <Compile Include="Channels\IntervalConsumerChannel.cs" />
+    <Compile Include="Channels\KeyProvider.cs" />
     <Compile Include="Channels\LastIntervalConsumerChannel.cs" />
     <Compile Include="Channels\SelectiveConsumerChannel.cs" />
     <Compile Include="Check.cs" />
@@ -383,9 +389,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Collections\A Note About This Folder.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Channels\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

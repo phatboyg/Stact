@@ -13,10 +13,27 @@
 namespace Magnum.Channels
 {
 	/// <summary>
-	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
-	/// including Actions, void methods, etc.
+	/// An instance channel requests an instance of a channel which can be created/loaded
+	/// based on the information in the message being sent on the channel
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	public delegate void Consumer<T>(T message);
+	public class InstanceChannel<T> :
+		Channel<T>
+	{
+		private readonly ChannelInstanceProvider<T> _instanceProvider;
+
+		public InstanceChannel(ChannelInstanceProvider<T> channelInstanceProvider)
+		{
+			_instanceProvider = channelInstanceProvider;
+		}
+
+		public void Send(T message)
+		{
+			Channel<T> channel = _instanceProvider(message);
+			if (channel == null)
+				return;
+
+			channel.Send(message);
+		}
+	}
 }
