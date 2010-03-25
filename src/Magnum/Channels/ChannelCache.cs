@@ -12,11 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-	using Actions;
-
-
-	public delegate Channel<T> ChannelInstanceProvider<T>(T message);
-
-	public delegate ActionQueue ActionQueueProvider();
+	public interface ChannelCache<T>
+	{
+		Channel<T> Get(T message);
+	}
 }

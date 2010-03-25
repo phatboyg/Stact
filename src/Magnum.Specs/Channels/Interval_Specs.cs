@@ -30,7 +30,9 @@ namespace Magnum.Specs.Channels
 			var scheduler = new TimerActionScheduler();
 
 			var called = new Future<IList<MyMessage>>();
-			var channel = new IntervalConsumerChannel<MyMessage>(queue, scheduler, 2.Seconds(), called.Complete);
+			var consumer = new ConsumerChannel<IList<MyMessage>>(queue, called.Complete);
+
+			var channel = new IntervalChannel<MyMessage>(queue, scheduler, 2.Seconds(), consumer);
 
 			for (int i = 0; i < 5; i++)
 			{

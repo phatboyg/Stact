@@ -63,7 +63,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_get_the_key_from_the_message()
 		{
-			KeyProvider<MyCommand, Guid> getKey = message => message.Id;
+			KeySelector<MyCommand, Guid> getKey = message => message.Id;
 
 			Guid id = CombGuid.Generate();
 			var command = new MyCommand {Id = id};
@@ -87,11 +87,11 @@ namespace Magnum.Specs.Channels
 	public class ConsumerPool<TConsumer, TMessage, TKey>
 	{
 		private readonly IConsumerDictionary<TKey, TConsumer> _dictionary;
-		private readonly ChannelProvider<TConsumer, TMessage> _getChannel;
-		private readonly KeyProvider<TMessage, TKey> _getKey;
+		private readonly ChannelAccessor<TConsumer, TMessage> _getChannel;
+		private readonly KeySelector<TMessage, TKey> _getKey;
 		private readonly ActionQueue _queue;
 
-		public ConsumerPool(ActionQueue queue, IConsumerDictionary<TKey, TConsumer> dictionary, KeyProvider<TMessage, TKey> getKey, ChannelProvider<TConsumer, TMessage> getChannel)
+		public ConsumerPool(ActionQueue queue, IConsumerDictionary<TKey, TConsumer> dictionary, KeySelector<TMessage, TKey> getKey, ChannelAccessor<TConsumer, TMessage> getChannel)
 		{
 			_queue = queue;
 			_dictionary = dictionary;

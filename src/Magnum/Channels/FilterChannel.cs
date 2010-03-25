@@ -21,23 +21,23 @@ namespace Magnum.Channels
 	/// is not an issue.
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
-	public class SelectiveConsumerChannel<T> :
+	public class FilterChannel<T> :
 		Channel<T>
 	{
-		private readonly Consumer<T> _consumer;
 		private readonly Filter<T> _filter;
+		private readonly Channel<T> _output;
 		private readonly ActionQueue _queue;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
 		/// <param name="queue">The queue where consumer actions should be enqueued</param>
-		/// <param name="consumer">The method to call when a message is sent to the channel</param>
+		/// <param name="output">The method to call when a message is sent to the channel</param>
 		/// <param name="filter">The filter to determine if the message can be consumed</param>
-		public SelectiveConsumerChannel(ActionQueue queue, Consumer<T> consumer, Filter<T> filter)
+		public FilterChannel(ActionQueue queue, Channel<T> output, Filter<T> filter)
 		{
 			_queue = queue;
-			_consumer = consumer;
+			_output = output;
 			_filter = filter;
 		}
 
@@ -46,7 +46,7 @@ namespace Magnum.Channels
 			_queue.Enqueue(() =>
 				{
 					if (_filter(message))
-						_consumer(message);
+						_output.Send(message);
 				});
 		}
 	}

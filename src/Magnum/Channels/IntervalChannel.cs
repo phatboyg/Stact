@@ -13,21 +13,22 @@
 namespace Magnum.Channels
 {
 	using System;
+	using System.Collections.Generic;
 	using Actions;
+	using Internal;
 
 	/// <summary>
-	/// A channel that sends the most recent message to the consumer every interval
+	/// A channel that accepts messages and sends them to the channel at regular intervals
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
-	public class LastIntervalConsumerChannel<T> :
+	public class IntervalChannel<T> :
 		Channel<T>,
 		IDisposable
 	{
-		private readonly Consumer<T> _consumer;
-		private readonly object _lock = new object();
+		private readonly IMessageList<T> _messages;
 		private readonly ActionQueue _queue;
+		private readonly Channel<IList<T>> _output;
 		private bool _disposed;
-		private T _lastMessage;
 		private ScheduledAction _scheduledAction;
 
 		/// <summary>
@@ -36,25 +37,26 @@ namespace Magnum.Channels
 		/// <param name="queue">The queue where consumer actions should be enqueued</param>
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
-		/// <param name="consumer">The method to call when a message is sent to the channel</param>
-		public LastIntervalConsumerChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Consumer<T> consumer)
+		/// <param name="output">The method to call when a message is sent to the channel</param>
+		public IntervalChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Channel<IList<T>> output)
 		{
-			_queue = queue;
-			_consumer = consumer;
+			_messages = new MessageList<T>();
 
-			_scheduledAction = scheduler.Schedule(interval, interval, queue, DeliverMessageToConsumer);
+			_queue = queue;
+			_output = output;
+
+			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessagesToOutputChannel);
+		}
+
+		public void Send(T message)
+		{
+			_messages.Add(message);
 		}
 
 		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
-		}
-
-		public void Send(T message)
-		{
-			lock (_lock)
-				_lastMessage = message;
 		}
 
 		private void Dispose(bool disposing)
@@ -69,12 +71,12 @@ namespace Magnum.Channels
 			_disposed = true;
 		}
 
-		private void DeliverMessageToConsumer()
+		private void SendMessagesToOutputChannel()
 		{
-			_queue.Enqueue(() => _consumer(_lastMessage));
+			_queue.Enqueue(() => _output.Send(_messages.RemoveAll()));
 		}
 
-		~LastIntervalConsumerChannel()
+		~IntervalChannel()
 		{
 			Dispose(false);
 		}

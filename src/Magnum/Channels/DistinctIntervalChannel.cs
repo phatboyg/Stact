@@ -22,13 +22,13 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	/// <typeparam name="TKey">The type of the key for the message</typeparam>
-	public class DistinctIntervalConsumerChannel<T, TKey> :
+	public class DistinctIntervalChannel<T, TKey> :
 		Channel<T>,
 		IDisposable
 	{
-		private readonly Consumer<IDictionary<TKey, T>> _consumer;
 		private readonly IMessageDictionary<TKey, T> _messages;
 		private readonly ActionQueue _queue;
+		private readonly Channel<IDictionary<TKey, T>> _output;
 		private bool _disposed;
 		private ScheduledAction _scheduledAction;
 
@@ -39,26 +39,26 @@ namespace Magnum.Channels
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
 		/// <param name="getKey">Returns the key for the message</param>
-		/// <param name="consumer">The method to call when a message is sent to the channel</param>
-		public DistinctIntervalConsumerChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Consumer<IDictionary<TKey, T>> consumer)
+		/// <param name="output">The method to call when a message is sent to the channel</param>
+		public DistinctIntervalChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
 		{
 			_messages = new MessageDictionary<TKey, T>(getKey);
 
 			_queue = queue;
-			_consumer = consumer;
+			_output = output;
 
-			_scheduledAction = scheduler.Schedule(interval, interval, queue, DeliverMessagesToConsumer);
+			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessagesToOutputChannel);
+		}
+
+		public void Send(T message)
+		{
+			_messages.Add(message);
 		}
 
 		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
-		}
-
-		public void Send(T message)
-		{
-			_messages.Add(message);
 		}
 
 		private void Dispose(bool disposing)
@@ -73,12 +73,12 @@ namespace Magnum.Channels
 			_disposed = true;
 		}
 
-		private void DeliverMessagesToConsumer()
+		private void SendMessagesToOutputChannel()
 		{
-			_queue.Enqueue(() => _consumer(_messages.RemoveAll()));
+			_queue.Enqueue(() => _output.Send(_messages.RemoveAll()));
 		}
 
-		~DistinctIntervalConsumerChannel()
+		~DistinctIntervalChannel()
 		{
 			Dispose(false);
 		}

@@ -12,8 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	public interface ChannelInstanceCache<TChannel>
-	{
-		Channel<TChannel> Get(TChannel message);
-	}
+	/// <summary>
+	/// Provides a channel from an instance
+	/// </summary>
+	/// <typeparam name="T">The type of instance being accessed</typeparam>
+	/// <typeparam name="TChannel">The type of channel to return</typeparam>
+	/// <param name="source">The instance to retrieve the channel from</param>
+	/// <returns>The channel of the requested type from the instance</returns>
+	public delegate Channel<TChannel> ChannelAccessor<T, TChannel>(T source);
 }

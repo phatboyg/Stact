@@ -28,7 +28,7 @@ namespace Magnum.Specs.Channels
 			var result = MockRepository.GenerateMock<Channel<MyMessage>>();
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
-			var provider = MockRepository.GenerateMock<ChannelInstanceProvider<MyMessage>>();
+			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
 			provider.Expect(x => x(message)).Return(result).Repeat.Twice();
 
 			var channel = new InstanceChannel<MyMessage>(provider);
@@ -48,12 +48,12 @@ namespace Magnum.Specs.Channels
 			var result = MockRepository.GenerateMock<Channel<MyMessage>>();
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
-			var provider = MockRepository.GenerateMock<ChannelInstanceProvider<MyMessage>>();
+			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
 			provider.Expect(x => x(message)).Return(result).Repeat.Once();
 
-			KeyProvider<MyMessage, Guid> messageKeyProvider = x => x.Id;
+			KeySelector<MyMessage, Guid> messageKeySelector = x => x.Id;
 
-			ChannelInstanceCache<MyMessage> cache = new DictionaryChannelInstanceCache<MyMessage, Guid>(provider, messageKeyProvider);
+			ChannelCache<MyMessage> cache = new DictionaryChannelCache<MyMessage, Guid>(provider, messageKeySelector);
 
 			Channel<MyMessage> channel = cache.Get(message);
 			channel.Send(message);
@@ -73,12 +73,12 @@ namespace Magnum.Specs.Channels
 			var result = MockRepository.GenerateMock<Channel<int>>();
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
-			var provider = MockRepository.GenerateMock<ChannelInstanceProvider<int>>();
+			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
 			provider.Expect(x => x(message)).Return(result).Repeat.Once();
 
-			KeyProvider<int, int> messageKeyProvider = x => x;
+			KeySelector<int, int> messageKeySelector = x => x;
 
-			ChannelInstanceCache<int> cache = new DictionaryChannelInstanceCache<int, int>(provider, messageKeyProvider);
+			ChannelCache<int> cache = new DictionaryChannelCache<int, int>(provider, messageKeySelector);
 
 			Channel<int> channel = cache.Get(message);
 			channel.Send(message);

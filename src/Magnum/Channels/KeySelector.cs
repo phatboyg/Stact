@@ -13,10 +13,11 @@
 namespace Magnum.Channels
 {
 	/// <summary>
-	/// Given a message, returns a channel
+	/// Returns the key for the given source
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
+	/// <typeparam name="TKey"></typeparam>
+	/// <param name="source"></param>
 	/// <returns></returns>
-	public delegate Channel<T> ChannelProvider<T>(T message);
+	public delegate TKey KeySelector<T, TKey>(T source);
 }

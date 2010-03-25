@@ -20,9 +20,9 @@ namespace Magnum.Channels
 	public class InstanceChannel<T> :
 		Channel<T>
 	{
-		private readonly ChannelInstanceProvider<T> _instanceProvider;
+		private readonly ChannelProvider<T> _instanceProvider;
 
-		public InstanceChannel(ChannelInstanceProvider<T> channelInstanceProvider)
+		public InstanceChannel(ChannelProvider<T> channelInstanceProvider)
 		{
 			_instanceProvider = channelInstanceProvider;
 		}
