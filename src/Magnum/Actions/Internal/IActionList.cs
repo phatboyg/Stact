@@ -39,6 +39,14 @@ namespace Magnum.Actions.Internal
 		bool Execute();
 
 		/// <summary>
+		/// Execute the actions in the list - this should only be called on the thread being 
+		/// used by the action queue to avoid threading issues
+		/// </summary>
+		/// <param name="remaining">The number of actions remaining in the queue</param>
+		/// <returns>True if actions were executed, otherwise false</returns>
+		bool Execute(out int remaining);
+
+		/// <summary>
 		/// Execute all the actions in the list and only return once they have completed
 		/// </summary>
 		/// <param name="timeout">How long to wait (in ms) before returning anyway</param>

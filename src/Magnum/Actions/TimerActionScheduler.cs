@@ -26,9 +26,15 @@ namespace Magnum.Actions
 		private readonly ScheduledActionList _actions = new ScheduledActionList();
 		private readonly object _lock = new object();
 		private readonly Func<DateTime> _now = () => SystemUtil.UtcNow;
+		private readonly ActionQueue _queue;
 		private readonly TimeSpan _timerInterval = -1.Milliseconds();
 		private bool _disabled;
 		private Timer _timer;
+
+		public TimerActionScheduler(ActionQueue queue)
+		{
+			_queue = queue;
+		}
 
 		private DateTime Now
 		{
@@ -38,7 +44,7 @@ namespace Magnum.Actions
 		public ScheduledAction Schedule(TimeSpan interval, ActionQueue queue, Action action)
 		{
 			var scheduled = new SingleScheduledAction(GetScheduledTime(interval), queue, action);
-			ScheduleAction(scheduled);
+			Schedule(scheduled);
 
 			return scheduled;
 		}
@@ -62,7 +68,7 @@ namespace Magnum.Actions
 						Schedule(scheduled);
 					}
 				});
-			ScheduleAction(scheduled);
+			Schedule(scheduled);
 
 			return scheduled;
 		}
@@ -82,14 +88,12 @@ namespace Magnum.Actions
 
 		public void Schedule(ExecuteScheduledAction action)
 		{
-			ScheduleAction(action);
-		}
+			_queue.Enqueue(() =>
+				{
+					_actions.Add(action);
 
-		private void ScheduleAction(ExecuteScheduledAction scheduled)
-		{
-			_actions.Add(scheduled);
-
-			ScheduleTimer();
+					ScheduleTimer();
+				});
 		}
 
 		private void ScheduleTimer()
@@ -109,37 +113,34 @@ namespace Magnum.Actions
 					}
 					else
 					{
-						_timer = new Timer(ExecuteExpiredActions, this, dueTime, _timerInterval);
+						_timer = new Timer(x => _queue.Enqueue(ExecuteExpiredActions), this, dueTime, _timerInterval);
 					}
 				}
 			}
 		}
 
-		private void ExecuteExpiredActions(object state)
+		private void ExecuteExpiredActions()
 		{
 			if (_disabled)
 				return;
 
-			lock (_lock)
+			ExecuteScheduledAction[] expiredActions;
+			while ((expiredActions = _actions.GetExpiredActions(Now)).Length > 0)
 			{
-				ExecuteScheduledAction[] expiredActions;
-				while ((expiredActions = _actions.GetExpiredActions(Now)).Length > 0)
-				{
-					expiredActions.Each(action =>
+				expiredActions.Each(action =>
+					{
+						try
 						{
-							try
-							{
-								action.Execute();
-							}
-							catch (Exception ex)
-							{
-								_log.Error(ex);
-							}
-						});
-				}
-
-				ScheduleTimer();
+							action.Execute();
+						}
+						catch (Exception ex)
+						{
+							_log.Error(ex);
+						}
+					});
 			}
+
+			ScheduleTimer();
 		}
 
 		private DateTime GetScheduledTime(TimeSpan interval)

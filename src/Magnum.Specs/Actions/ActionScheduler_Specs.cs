@@ -27,7 +27,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_action_immediately()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
 
 			var called = new Future<bool>();
 
@@ -44,7 +44,7 @@ namespace Magnum.Specs.Actions
 		public void Should_wait_until_the_appropriate_time_for_the_action_to_execute()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
 
 			var called = new Future<bool>();
 
@@ -64,7 +64,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_new_action_immediately()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
 
 			var called = new Future<bool>();
 
@@ -82,7 +82,7 @@ namespace Magnum.Specs.Actions
 		public void Should_not_run_any_pending_actions()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
 
 			var called = new Future<bool>();
 
@@ -101,7 +101,7 @@ namespace Magnum.Specs.Actions
 		public void Should_not_stall_the_scheduler()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
 
 			var called = new Future<bool>();
 
@@ -119,7 +119,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_action_until_disabled()
 		{
 			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler();
+			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
 
 			Stopwatch elapsed = Stopwatch.StartNew();
 
@@ -142,7 +142,7 @@ namespace Magnum.Specs.Actions
 					}
 				});
 
-			called.IsAvailable(2.Seconds()).ShouldBeTrue();
+			called.IsAvailable(5.Seconds()).ShouldBeTrue();
 
 			elapsed.Stop();
 

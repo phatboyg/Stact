@@ -62,6 +62,22 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
+		public bool Execute(out int remaining)
+		{
+			bool result = Execute();
+			if (!result)
+			{
+				remaining = 0;
+				return false;
+			}
+
+			lock (_lock)
+			{
+				remaining = _actions.Count;
+				return true;
+			}
+		}
+
 		public bool Execute()
 		{
 			Action[] actions = DequeueAll();
@@ -82,7 +98,7 @@ namespace Magnum.Actions.Internal
 					_log.Error(ex);
 				}
 			}
-
+            
 			return true;
 		}
 

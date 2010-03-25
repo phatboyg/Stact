@@ -81,11 +81,12 @@ namespace Magnum.Actions
 
 		private void Execute(object state)
 		{
-            bool result = _actions.Execute();
+			int remaining;
+            bool result = _actions.Execute(out remaining);
 
 			lock (_lock)
 			{
-				if (result)
+				if (remaining > 0)
 				{
 					QueueWorkItem();
 				}
@@ -93,7 +94,7 @@ namespace Magnum.Actions
 				{
 					_executorQueued = false;
 
-					_actions.Pulse();
+//					_actions.Pulse();
 				}
 			}
 		}

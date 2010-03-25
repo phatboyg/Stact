@@ -27,7 +27,7 @@ namespace Magnum.Specs.Channels
 		public void Should_deliver_the_messages_at_once()
 		{
 			var queue = new SynchronousActionQueue();
-			var scheduler = new TimerActionScheduler();
+			var scheduler = new TimerActionScheduler(new SynchronousActionQueue());
 
 			var called = new Future<IList<MyMessage>>();
 			var consumer = new ConsumerChannel<IList<MyMessage>>(queue, called.Complete);
