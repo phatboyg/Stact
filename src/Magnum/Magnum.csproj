@@ -119,7 +119,7 @@
     <Compile Include="Channels\Internal\MessageDictionary.cs" />
     <Compile Include="Channels\Internal\MessageList.cs" />
     <Compile Include="Channels\IntervalChannel.cs" />
-    <Compile Include="Channels\KeySelector.cs" />
+    <Compile Include="Channels\KeyAccessor.cs" />
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
     <Compile Include="Check.cs" />

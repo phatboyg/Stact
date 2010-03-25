@@ -51,9 +51,9 @@ namespace Magnum.Specs.Channels
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
 			provider.Expect(x => x(message)).Return(result).Repeat.Once();
 
-			KeySelector<MyMessage, Guid> messageKeySelector = x => x.Id;
+			KeyAccessor<MyMessage, Guid> messageKeyAccessor = x => x.Id;
 
-			ChannelCache<MyMessage> cache = new DictionaryChannelCache<MyMessage, Guid>(provider, messageKeySelector);
+			ChannelCache<MyMessage> cache = new DictionaryChannelCache<MyMessage, Guid>(provider, messageKeyAccessor);
 
 			Channel<MyMessage> channel = cache.Get(message);
 			channel.Send(message);
@@ -76,9 +76,9 @@ namespace Magnum.Specs.Channels
 			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
 			provider.Expect(x => x(message)).Return(result).Repeat.Once();
 
-			KeySelector<int, int> messageKeySelector = x => x;
+			KeyAccessor<int, int> messageKeyAccessor = x => x;
 
-			ChannelCache<int> cache = new DictionaryChannelCache<int, int>(provider, messageKeySelector);
+			ChannelCache<int> cache = new DictionaryChannelCache<int, int>(provider, messageKeyAccessor);
 
 			Channel<int> channel = cache.Get(message);
 			channel.Send(message);

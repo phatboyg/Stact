@@ -15,9 +15,9 @@ namespace Magnum.Channels
 	/// <summary>
 	/// Returns the key for the given source
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <typeparam name="TKey"></typeparam>
-	/// <param name="source"></param>
-	/// <returns></returns>
-	public delegate TKey KeySelector<T, TKey>(T source);
+	/// <typeparam name="T">The type of the source from which the key is to be retrieved</typeparam>
+	/// <typeparam name="TKey">The type of the key to return</typeparam>
+	/// <param name="source">The source from which to retrieve the key</param>
+	/// <returns>The value of the key for the source</returns>
+	public delegate TKey KeyAccessor<T, TKey>(T source);
 }

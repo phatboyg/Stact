@@ -19,17 +19,17 @@ namespace Magnum.Channels
 	{
 		private readonly Dictionary<TKey, Channel<TChannel>> _dictionary = new Dictionary<TKey, Channel<TChannel>>();
 		private readonly ChannelProvider<TChannel> _instanceProvider;
-		private readonly KeySelector<TChannel, TKey> _keySelector;
+		private readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 
-		public DictionaryChannelCache(ChannelProvider<TChannel> instanceProvider, KeySelector<TChannel, TKey> keySelector)
+		public DictionaryChannelCache(ChannelProvider<TChannel> instanceProvider, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_instanceProvider = instanceProvider;
-			_keySelector = keySelector;
+			_keyAccessor = keyAccessor;
 		}
 
 		public Channel<TChannel> Get(TChannel message)
 		{
-			TKey key = _keySelector(message);
+			TKey key = _keyAccessor(message);
 
 			Channel<TChannel> value;
 			if (_dictionary.TryGetValue(key, out value))
