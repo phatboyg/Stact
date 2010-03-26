@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actions
 {
-	using System;
 	using System.Threading;
 	using Internal;
 	using Logging;
@@ -22,12 +21,10 @@ namespace Magnum.Actions
 	/// actions.
 	/// </summary>
 	public class ThreadPoolActionQueue :
-		ActionQueue
+		AbstractActionQueue
 	{
 		private static readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
 
-		private readonly IActionList _actions;
-		private readonly object _lock = new object();
 		private bool _executorQueued;
 
 		/// <summary>
@@ -35,8 +32,8 @@ namespace Magnum.Actions
 		/// of unlimited actions with an infinite timeout to add new actions
 		/// </summary>
 		public ThreadPoolActionQueue()
+			: this(-1, Timeout.Infinite)
 		{
-			_actions = new ActionList(-1, Timeout.Infinite);
 		}
 
 		/// <summary>
@@ -46,68 +43,34 @@ namespace Magnum.Actions
 		/// <param name="queueLimit">The maximum number of actions that can be waiting in the queue</param>
 		/// <param name="queueTimeout">The timeout to wait when adding actions when the queue if full before throwing an exception</param>
 		public ThreadPoolActionQueue(int queueLimit, int queueTimeout)
+			: base(queueLimit, queueTimeout)
 		{
-			_actions = new ActionList(queueLimit, queueTimeout);
 		}
 
-		public void Enqueue(Action action)
+		protected override bool Active
 		{
-			_actions.Enqueue(action);
-
-			ActionAddedToQueue();
+			get { return _executorQueued; }
 		}
 
-		public void EnqueueMany(params Action[] actions)
+		protected override void AfterExecute(bool actionsRemaining)
 		{
-			_actions.EnqueueMany(actions);
-
-			ActionAddedToQueue();
+			if (actionsRemaining)
+				QueueWorkItem();
+			else
+				_executorQueued = false;
 		}
 
-		public void StopAcceptingActions()
+		protected override void ActionAddedToQueue()
 		{
-			_actions.StopAcceptingActions();
-		}
+			if (_executorQueued)
+				return;
 
-		public void DiscardAllActions()
-		{
-			_actions.DiscardAllActions();
-		}
-
-		public void ExecuteAll(TimeSpan timeout)
-		{
-			_actions.ExecuteAll(timeout, () => _executorQueued);
+			QueueWorkItem();
 		}
 
 		private void Execute(object state)
 		{
-			int remaining;
-            bool result = _actions.Execute(out remaining);
-
-			lock (_lock)
-			{
-				if (remaining > 0)
-				{
-					QueueWorkItem();
-				}
-				else
-				{
-					_executorQueued = false;
-
-//					_actions.Pulse();
-				}
-			}
-		}
-
-		private void ActionAddedToQueue()
-		{
-			lock (_lock)
-			{
-				if (_executorQueued)
-					return;
-
-				QueueWorkItem();
-			}
+			Execute();
 		}
 
 		private void QueueWorkItem()

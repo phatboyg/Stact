@@ -73,7 +73,7 @@ namespace Magnum.Specs.Actions
 		{
 			var action = MockRepository.GenerateMock<Action>();
 
-			var queue = new ActionList(2, 0);
+			var queue = new ThreadPoolActionQueue(2, 0);
 			queue.Enqueue(action);
 			queue.Enqueue(action);
 

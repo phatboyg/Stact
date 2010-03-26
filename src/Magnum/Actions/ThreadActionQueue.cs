@@ -18,12 +18,11 @@ namespace Magnum.Actions
 	using Logging;
 
 	public class ThreadActionQueue :
-		ActionQueue
+		AbstractActionQueue
 	{
-		private readonly IActionList _actions;
 		private readonly ILogger _log = Logger.GetLogger<ThreadActionQueue>();
 		private readonly Thread _thread;
-		private bool _isRunning;
+		private bool _isActive;
 
 		public ThreadActionQueue()
 			: this(-1, Timeout.Infinite)
@@ -31,36 +30,21 @@ namespace Magnum.Actions
 		}
 
 		public ThreadActionQueue(int queueLimit, int queueTimeout)
+			: base(queueLimit, queueTimeout)
 		{
-			_actions = new ActionList(queueLimit, queueTimeout);
 			_thread = CreateThread();
 
 			_thread.Start();
 		}
 
-		public void Enqueue(Action action)
+		protected override bool Active
 		{
-			_actions.Enqueue(action);
+			get { return _isActive; }
 		}
 
-		public void EnqueueMany(params Action[] actions)
+		public override void ExecuteAll(TimeSpan timeout)
 		{
-			_actions.EnqueueMany(actions);
-		}
-
-		public void StopAcceptingActions()
-		{
-			_actions.StopAcceptingActions();
-		}
-
-		public void DiscardAllActions()
-		{
-			_actions.DiscardAllActions();
-		}
-
-		public void ExecuteAll(TimeSpan timeout)
-		{
-			_actions.ExecuteAll(timeout, () => _isRunning);
+			base.ExecuteAll(timeout);
 
 			_thread.Join(timeout);
 		}
@@ -77,12 +61,13 @@ namespace Magnum.Actions
 
 		private void Run()
 		{
-			_isRunning = true;
+			_isActive = true;
 
 			_log.Debug(x => x.Write("{0} Started", _thread.Name));
+
 			try
 			{
-				while (_actions.Execute())
+				while (Execute())
 				{
 				}
 			}
@@ -91,8 +76,9 @@ namespace Magnum.Actions
 				_log.Error(ex);
 			}
 
-			_isRunning = false;
-			_actions.Pulse();
+			_isActive = false;
+
+			Pulse();
 
 			_log.Debug(x => x.Write("{0} Exiting", _thread.Name));
 		}

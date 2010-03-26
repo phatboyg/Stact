@@ -17,10 +17,10 @@ namespace Magnum.Actions.Internal
 	using System.Threading;
 	using Logging;
 
-	public class ActionList :
-		IActionList
+	public abstract class AbstractActionQueue :
+		ActionQueue
 	{
-		private static readonly ILogger _log = Logger.GetLogger<ActionList>();
+		private static readonly ILogger _log = Logger.GetLogger<AbstractActionQueue>();
 
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
@@ -30,11 +30,13 @@ namespace Magnum.Actions.Internal
 		private bool _executingAllActions;
 		private bool _notAcceptingActions;
 
-		public ActionList(int queueLimit, int queueTimeout)
+		protected AbstractActionQueue(int queueLimit, int queueTimeout)
 		{
 			_queueLimit = queueLimit;
 			_queueTimeout = queueTimeout;
 		}
+
+		protected abstract bool Active { get; }
 
 		public void Enqueue(Action action)
 		{
@@ -46,6 +48,8 @@ namespace Magnum.Actions.Internal
 				_actions.Add(action);
 
 				Monitor.PulseAll(_lock);
+
+				ActionAddedToQueue();
 			}
 		}
 
@@ -59,50 +63,12 @@ namespace Magnum.Actions.Internal
 				_actions.AddRange(actions);
 
 				Monitor.PulseAll(_lock);
+
+				ActionAddedToQueue();
 			}
 		}
 
-		public bool Execute(out int remaining)
-		{
-			bool result = Execute();
-			if (!result)
-			{
-				remaining = 0;
-				return false;
-			}
-
-			lock (_lock)
-			{
-				remaining = _actions.Count;
-				return true;
-			}
-		}
-
-		public bool Execute()
-		{
-			Action[] actions = DequeueAll();
-			if (actions == null)
-				return false;
-
-			foreach (Action action in actions)
-			{
-				if (_discardAllActions)
-					break;
-
-				try
-				{
-					action();
-				}
-				catch (Exception ex)
-				{
-					_log.Error(ex);
-				}
-			}
-            
-			return true;
-		}
-
-		public void ExecuteAll(TimeSpan timeout, Func<bool> executingActions)
+		public virtual void ExecuteAll(TimeSpan timeout)
 		{
 			DateTime giveUpAt = SystemUtil.Now + timeout;
 
@@ -111,7 +77,7 @@ namespace Magnum.Actions.Internal
 				_executingAllActions = true;
 				Monitor.PulseAll(_lock);
 
-				while (_actions.Count > 0 || executingActions())
+				while (_actions.Count > 0 || Active)
 				{
 					timeout = giveUpAt - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -140,11 +106,53 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
-		public void Pulse()
+		protected bool Execute()
+		{
+			Action[] actions = DequeueAll();
+			if (actions == null)
+				return false;
+
+			ExecuteActions(actions);
+
+			lock (_lock)
+			{
+				AfterExecute(_actions.Count > 0);
+			}
+
+			return true;
+		}
+
+		protected virtual void ActionAddedToQueue()
+		{
+		}
+
+		protected virtual void AfterExecute(bool more)
+		{
+		}
+
+		protected void Pulse()
 		{
 			lock (_lock)
 			{
 				Monitor.PulseAll(_lock);
+			}
+		}
+
+		private void ExecuteActions(IEnumerable<Action> actions)
+		{
+			foreach (Action action in actions)
+			{
+				if (_discardAllActions)
+					break;
+
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					_log.Error(ex);
+				}
 			}
 		}
 
@@ -173,6 +181,7 @@ namespace Magnum.Actions.Internal
 
 			return _actions.Count > 0;
 		}
+
 
 		private bool IsSpaceAvailable(int needed)
 		{

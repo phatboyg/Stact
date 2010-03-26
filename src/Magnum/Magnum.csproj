@@ -46,12 +46,11 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Actions\Internal\ActionList.cs" />
+    <Compile Include="Actions\Internal\AbstractActionQueue.cs" />
     <Compile Include="Actions\ActionQueue.cs" />
     <Compile Include="Actions\ActionQueueException.cs" />
     <Compile Include="Actions\ActionQueueFullException.cs" />
     <Compile Include="Actions\ActionScheduler.cs" />
-    <Compile Include="Actions\Internal\IActionList.cs" />
     <Compile Include="Actions\ScheduledAction.cs" />
     <Compile Include="Actions\Internal\ExecuteScheduledAction.cs" />
     <Compile Include="Actions\Internal\ScheduledActionList.cs" />
