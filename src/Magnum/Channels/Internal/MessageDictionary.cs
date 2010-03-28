@@ -14,13 +14,11 @@ namespace Magnum.Channels.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Threading;
 
 	public class MessageDictionary<TKey, TValue> :
 		IMessageDictionary<TKey, TValue>
 	{
 		private readonly Func<TValue, TKey> _getKey;
-		private readonly object _lock = new object();
 		private Dictionary<TKey, TValue> _messages = new Dictionary<TKey, TValue>();
 
 		public MessageDictionary(Func<TValue, TKey> getKey)
@@ -32,22 +30,16 @@ namespace Magnum.Channels.Internal
 		{
 			TKey key = _getKey(message);
 
-			lock (_lock)
-				_messages[key] = message;
+			_messages[key] = message;
 		}
 
 		public IDictionary<TKey, TValue> RemoveAll()
 		{
-			lock (_lock)
-			{
-				Dictionary<TKey, TValue> result = _messages;
+			Dictionary<TKey, TValue> result = _messages;
 
-				_messages = new Dictionary<TKey, TValue>();
+			_messages = new Dictionary<TKey, TValue>();
 
-				Monitor.PulseAll(_lock);
-
-				return result;
-			}
+			return result;
 		}
 	}
 }

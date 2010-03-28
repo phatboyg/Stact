@@ -13,36 +13,24 @@
 namespace Magnum.Channels.Internal
 {
 	using System.Collections.Generic;
-	using System.Threading;
 
 	public class MessageList<T> :
 		IMessageList<T>
 	{
-		private readonly object _lock = new object();
 		private List<T> _messages = new List<T>();
 
 		public void Add(T message)
 		{
-			lock (_lock)
-			{
-				_messages.Add(message);
-
-				Monitor.PulseAll(_lock);
-			}
+			_messages.Add(message);
 		}
 
 		public IList<T> RemoveAll()
 		{
-			lock (_lock)
-			{
-				List<T> result = _messages;
+			List<T> result = _messages;
 
-				_messages = new List<T>();
+			_messages = new List<T>();
 
-				Monitor.PulseAll(_lock);
-
-				return result;
-			}
+			return result;
 		}
 	}
 }

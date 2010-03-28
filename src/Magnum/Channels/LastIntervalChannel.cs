@@ -23,7 +23,6 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly object _lock = new object();
 		private readonly Channel<T> _output;
 		private readonly ActionQueue _queue;
 		private bool _disposed;
@@ -47,8 +46,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			lock (_lock)
-				_lastMessage = message;
+			_queue.Enqueue(() => _lastMessage = message);
 		}
 
 		public void Dispose()
@@ -71,7 +69,7 @@ namespace Magnum.Channels
 
 		private void SendMessageToOutputChannel()
 		{
-			_queue.Enqueue(() => _output.Send(_lastMessage));
+			_output.Send(_lastMessage);
 		}
 
 		~LastIntervalChannel()

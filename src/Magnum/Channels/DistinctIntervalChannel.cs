@@ -52,7 +52,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_messages.Add(message);
+			_queue.Enqueue(() => _messages.Add(message));
 		}
 
 		public void Dispose()
@@ -75,7 +75,7 @@ namespace Magnum.Channels
 
 		private void SendMessagesToOutputChannel()
 		{
-			_queue.Enqueue(() => _output.Send(_messages.RemoveAll()));
+			_output.Send(_messages.RemoveAll());
 		}
 
 		~DistinctIntervalChannel()
