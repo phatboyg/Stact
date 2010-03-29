@@ -65,6 +65,7 @@
     <Compile Include="Actors\Echo\EchoInputModel.cs" />
     <Compile Include="Actors\Echo\EchoOutputModel.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\TraceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -101,7 +102,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Shared\" />
   </ItemGroup>

@@ -47,7 +47,7 @@ namespace Magnum.Web.Actors
 
 		public void BuildRoute<TActor, TChannel>(Expression<Func<TActor, Channel<TChannel>>> channelExpression, Action<Route> routeAction)
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 	}
 }
