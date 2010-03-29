@@ -10,19 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web
+namespace Magnum.Web.Binding.TypeBinders
 {
-	using System;
-
-	public interface ValueProvider
+	public class ChannelBinder<T> :
+		ObjectBinder<T>
 	{
-		object GetValue(string key);
-		object GetValue(string key, Func<object> defaultValue);
-
-
-		T GetValue<T>(string key);
-		T GetValue<T>(string key, T defaultValue);
-		T GetValue<T>(string key, Func<object, T> valueConverter);
-		T GetValue<T>(string key, Func<object, T> valueConverter, T defaultValue);
+		public object Bind(BinderContext context)
+		{
+			// TODO: let's see about actually making the channel resolve here!
+			return null;
+		}
 	}
 }

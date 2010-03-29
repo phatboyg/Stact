@@ -16,6 +16,7 @@ namespace Magnum
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
+	using System.Reflection;
 
 	public static class ExtensionMethods
 	{
@@ -78,11 +79,49 @@ namespace Magnum
 		/// <returns>The name of the member referenced by the expression</returns>
 		public static string MemberName<T, V>(this Expression<Func<T, V>> expression)
 		{
-			var memberExpression = expression.Body as MemberExpression;
-			if (memberExpression == null)
-				throw new InvalidOperationException("Expression must be a member expression");
+			var memberExpression = expression.GetMemberExpression();
 
 			return memberExpression.Member.Name;
+		}
+
+		public static MemberExpression GetMemberExpression<T,V>(this Expression<Func<T,V>> expression)
+		{
+          MemberExpression memberExpression = null;
+            if (expression.Body.NodeType == ExpressionType.Convert)
+            {
+                var body = (UnaryExpression) expression.Body;
+                memberExpression = body.Operand as MemberExpression;
+            }
+            else if (expression.Body.NodeType == ExpressionType.MemberAccess)
+            {
+                memberExpression = expression.Body as MemberExpression;
+            }
+
+            if (memberExpression == null) throw new ArgumentException("Expression is not a member access");
+            return memberExpression;
+		}
+
+		public static MemberExpression GetMemberExpression<T>(this Expression<Action<T>> expression)
+		{
+          MemberExpression memberExpression = null;
+            if (expression.Body.NodeType == ExpressionType.Convert)
+            {
+                var body = (UnaryExpression) expression.Body;
+                memberExpression = body.Operand as MemberExpression;
+            }
+            else if (expression.Body.NodeType == ExpressionType.MemberAccess)
+            {
+                memberExpression = expression.Body as MemberExpression;
+            }
+
+            if (memberExpression == null) throw new ArgumentException("Expression is not a member access");
+            return memberExpression;
+  
+		}
+
+		public static PropertyInfo GetMemberPropertyInfo<T, V>(this Expression<Func<T, V>> expression)
+		{
+			return expression.GetMemberExpression().Member as PropertyInfo;
 		}
 
 		/// <summary>
@@ -94,9 +133,7 @@ namespace Magnum
 		/// <returns>The name of the member referenced by the expression</returns>
 		public static string MemberName<T>(this Expression<Action<T>> expression)
 		{
-			var memberExpression = expression.Body as MemberExpression;
-			if (memberExpression == null)
-				throw new InvalidOperationException("Expression must be a member expression");
+			var memberExpression = expression.GetMemberExpression();
 
 			return memberExpression.Member.Name;
 		}

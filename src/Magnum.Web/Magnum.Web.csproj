@@ -37,6 +37,12 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web.Routing">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -46,9 +52,12 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Actors\ActorBinder.cs" />
     <Compile Include="Actors\ActorHttpAsyncHandler.cs" />
+    <Compile Include="Actors\ActorBinderContext.cs" />
     <Compile Include="Actors\ActorRouteBuilder.cs" />
     <Compile Include="Actors\ActorRouteHandler.cs" />
+    <Compile Include="Actors\BasicActorBinder.cs" />
     <Compile Include="Actors\HasOutputChannel.cs" />
     <Compile Include="Binding\FastModelBinder.cs" />
     <Compile Include="Binding\ModelBinderContext.cs" />
@@ -79,6 +88,7 @@
     <Compile Include="Binding\TypeBinders\ArrayBinder.cs" />
     <Compile Include="Binding\TypeBinders\BooleanBinder.cs" />
     <Compile Include="Binding\TypeBinders\ByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ChannelBinder.cs" />
     <Compile Include="Binding\TypeBinders\CharBinder.cs" />
     <Compile Include="Binding\TypeBinders\DateTimeBinder.cs" />
     <Compile Include="Binding\TypeBinders\DateTimeOffsetBinder.cs" />
@@ -125,10 +135,14 @@
     <Compile Include="Binding\TypeSerializers\ULongSerializer.cs" />
     <Compile Include="Binding\TypeSerializers\UriSerializer.cs" />
     <Compile Include="Binding\TypeSerializers\UShortSerializer.cs" />
-    <Compile Include="DictionaryValueProvider.cs" />
-    <Compile Include="NestedValueProvider.cs" />
+    <Compile Include="ValueProviders\AccessorValueProvider.cs" />
+    <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
+    <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
+    <Compile Include="ValueProviders\MultipleValueProvider.cs" />
+    <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="RouteBuilder.cs" />
-    <Compile Include="ValueProvider.cs" />
+    <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">

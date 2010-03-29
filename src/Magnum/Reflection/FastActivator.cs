@@ -90,6 +90,13 @@ namespace Magnum.Reflection
 
 		public static object Create(Type type, Type[] genericTypes)
 		{
+			Type genericType = GetGenericType(type, genericTypes);
+
+			return Current.GetGenerator(genericType).Create();
+		}
+
+		private static Type GetGenericType(Type type, Type[] genericTypes)
+		{
 			if(!type.IsGenericType)
 				throw new ArgumentException("The type specified must be a generic type");
 
@@ -98,9 +105,14 @@ namespace Magnum.Reflection
 			if(genericArguments.Length != genericTypes.Length)
 				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length + " (needed " + genericArguments.Length + ")");
 
-			Type genericType = type.MakeGenericType(genericTypes);
+			return type.MakeGenericType(genericTypes);
+		}
 
-			return Current.GetGenerator(genericType).Create();
+		public static object Create(Type type, Type[] genericTypes, Type[] args)
+		{
+			Type genericType = GetGenericType(type, genericTypes);
+
+			return Current.GetGenerator(genericType).Create(args);
 		}
 	}
 }

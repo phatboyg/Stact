@@ -13,7 +13,6 @@
 namespace Magnum.Web.Binding
 {
 	using System;
-	using MassTransit.Serialization.Custom;
 	using Reflection;
 
 	/// <summary>

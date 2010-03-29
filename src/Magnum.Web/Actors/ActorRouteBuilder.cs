@@ -17,12 +17,52 @@ namespace Magnum.Web.Actors
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Web.Routing;
+	using Binding;
 	using Channels;
 	using InterfaceExtensions;
+	using Reflection;
 
 	public class ActorRouteBuilder :
 		RouteBuilder
 	{
+		private readonly Action<Route> _addRoute;
+		private readonly ModelBinder _modelBinder;
+		private readonly string _prefix;
+
+		public ActorRouteBuilder(string prefix, ModelBinder modelBinder, Action<Route> addRoute)
+		{
+			_addRoute = addRoute;
+			_prefix = prefix;
+			_modelBinder = modelBinder;
+		}
+
+		public void BuildRoute<TActor, TInput, TOutput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor)
+			where TInput : HasOutputChannel<TOutput>
+		{
+			PropertyInfo property = channelAccessor.GetMemberPropertyInfo();
+
+			Func<TActor, Channel<TInput>> compiled = channelAccessor.Compile();
+
+			Func<Channel<TInput>> getChannel = () => compiled(getActor());
+
+			ActorBinder binder = new BasicActorBinder<TInput, TOutput>(_modelBinder, getChannel);
+			var routeHandler = new ActorRouteHandler(binder);
+
+			string url = GetUrl(typeof (TActor).Name, property.Name);
+
+			var route = new Route(url, routeHandler);
+
+			_addRoute(route);
+		}
+
+		private string GetUrl(string actorName, string propertyName)
+		{
+			string actor = actorName.EndsWith("Actor") ? actorName.Substring(0, actorName.Length - 5) : actorName;
+			string channel = propertyName.EndsWith("Channel") ? propertyName.Substring(0, propertyName.Length - 7) : propertyName;
+
+			return string.Format("{0}{1}/{2}", _prefix, actor, channel);
+		}
+
 		public void BuildRoute(Type actorType, Action<Route> routeAction)
 		{
 			string prefix = "actor/";
@@ -39,15 +79,16 @@ namespace Magnum.Web.Actors
 
 						string url = string.Format("{0}{1}/{2}", prefix, actor, channel);
 
-						var route = new Route(url, new ActorRouteHandler());
+						Type inputType = property.PropertyType.GetDeclaredTypeForGeneric(typeof (Channel<>));
 
-						routeAction(route);
+						Type outputType = inputType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+							.Where(x => x.Implements<Channel>())
+							.Where(x => x.Name.StartsWith("Output"))
+							.Select(x => x.PropertyType).Single();
+
+						this.FastInvoke(new[] {actorType, inputType, outputType}, "BuildRoute", new object[] {property});
+
 					});
-		}
-
-		public void BuildRoute<TActor, TChannel>(Expression<Func<TActor, Channel<TChannel>>> channelExpression, Action<Route> routeAction)
-		{
-			//throw new NotImplementedException();
 		}
 	}
 }

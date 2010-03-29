@@ -12,16 +12,25 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System;
 	using System.Web;
 	using System.Web.Routing;
+	using ValueProviders;
 
 	public class ActorRouteHandler :
 		IRouteHandler
 	{
+		private readonly ActorBinder _binder;
+
+		public ActorRouteHandler(ActorBinder binder)
+		{
+			_binder = binder;
+		}
+
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
-			throw new NotImplementedException();
+			var provider = new RequestContextValueProvider(requestContext);
+
+			return _binder.GetHandler(provider);
 		}
 	}
 }

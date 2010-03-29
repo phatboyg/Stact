@@ -10,29 +10,30 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Serialization.Custom
+namespace Magnum.Web.Binding
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using System.Runtime.Serialization;
 	using System.Xml;
-	using Magnum;
-	using Magnum.CollectionExtensions;
-	using Magnum.Logging;
-	using Magnum.Reflection;
-	using Magnum.Web.Binding;
-	using Magnum.Web.Binding.TypeBinders;
+	using Channels;
+	using CollectionExtensions;
+	using InterfaceExtensions;
+	using Logging;
+	using MassTransit.Serialization.Custom;
+	using Reflection;
+	using TypeBinders;
 
 	public class FastBinderContext :
 		BinderContext
 
 	{
-		private readonly ModelBinderContext _context;
 		private static readonly Dictionary<Type, ObjectBinder> _binders;
 		private static readonly ILogger _log = Logger.GetLogger<FastBinderContext>();
+		private readonly ModelBinderContext _context;
+		private readonly Stack<ObjectPropertyBinder> _propertyStack;
 		private readonly XmlReader _reader;
 
 		static FastBinderContext()
@@ -42,9 +43,12 @@ namespace MassTransit.Serialization.Custom
 			LoadBuiltInBinders();
 		}
 
-		public object PropertyValue { get; protected set; }
+		public FastBinderContext(ModelBinderContext context)
+		{
+			_context = context;
+		}
 
-		private readonly Stack<ObjectPropertyBinder> _propertyStack;
+		public object PropertyValue { get; protected set; }
 
 
 		public PropertyInfo Property
@@ -52,11 +56,6 @@ namespace MassTransit.Serialization.Custom
 			get { return _propertyStack.Peek().Property; }
 		}
 
-	
-		public FastBinderContext(ModelBinderContext context)
-		{
-			_context = context;
-		}
 
 		public object Bind(Type type)
 		{
@@ -71,20 +70,23 @@ namespace MassTransit.Serialization.Custom
 
 		public object Bind(PropertyInfo property)
 		{
-			object value = _context.Values.GetValue(property.Name);
-
-			PropertyValue = value;
+			_context.Values.GetValue(property.Name, value =>
+				{
+					PropertyValue = value;
+					return true;
+				},
+				() => PropertyValue = null);
 
 			return Bind(property.PropertyType);
 		}
 
-		public void Bind(ObjectPropertyBinder property)
-		{
-		}
-
 		public string ReadElementAsString()
 		{
-			return PropertyValue.ToString();
+			return PropertyValue != null ? PropertyValue.ToString() : null;
+		}
+
+		public void Bind(ObjectPropertyBinder property)
+		{
 		}
 
 		private static void LoadBuiltInBinders()
@@ -95,8 +97,7 @@ namespace MassTransit.Serialization.Custom
 				.Where(x => x.Namespace == typeof (StringBinder).Namespace)
 				.Each(type =>
 					{
-						type.GetInterfaces()
-							.Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof (ObjectBinder<>))
+						type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof (ObjectBinder<>))
 							.Each(interfaceType =>
 								{
 									Type itemType = interfaceType.GetGenericArguments().First();
@@ -110,6 +111,13 @@ namespace MassTransit.Serialization.Custom
 
 		private static ObjectBinder CreateBinderFor(Type type)
 		{
+			if (type.Implements<Channel>())
+			{
+				Type[] genericType = type.GetGenericArguments();
+
+				return (ObjectBinder) FastActivator.Create(typeof (ChannelBinder<>).MakeGenericType(genericType));
+			}
+
 			if (type.IsEnum)
 			{
 				return (ObjectBinder) FastActivator.Create(typeof (EnumBinder<>).MakeGenericType(type));

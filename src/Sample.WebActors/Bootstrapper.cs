@@ -14,18 +14,22 @@ namespace Sample.WebActors
 {
 	using System.Web.Routing;
 	using Actors.Echo;
+	using Magnum.Actions;
 	using Magnum.Web;
 	using Magnum.Web.Actors;
+	using Magnum.Web.Binding;
 
 	public class Bootstrapper
 	{
 		public void Bootstrap(RouteCollection routeCollection)
 		{
-			RouteBuilder routeBuilder = new ActorRouteBuilder();
+			ModelBinder modelBinder = new FastModelBinder();
 
-			//routeBuilder.BuildRoute(typeof (EchoActor), routeCollection.Add);
+			RouteBuilder routeBuilder = new ActorRouteBuilder("actors/", modelBinder, routeCollection.Add);
 
-			routeBuilder.BuildRoute<EchoActor, EchoInputModel>(x => x.EchoChannel, routeCollection.Add);
+			var actor = new EchoActor(new ThreadPoolActionQueue());
+
+			routeBuilder.BuildRoute<EchoActor, EchoInputModel, EchoOutputModel>(() => actor, x => x.EchoChannel);
 		}
 	}
 }

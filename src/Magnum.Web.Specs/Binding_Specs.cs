@@ -17,6 +17,7 @@ namespace Magnum.Web.Specs
 	using NUnit.Framework;
 	using Rhino.Mocks;
 	using TestFramework;
+	using ValueProviders;
 
 	[TestFixture]
 	public class Binding_a_dictionary_to_an_object

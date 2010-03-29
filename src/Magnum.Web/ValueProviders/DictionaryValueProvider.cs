@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web
+namespace Magnum.Web.ValueProviders
 {
 	using System;
 	using System.Collections.Generic;
@@ -26,47 +26,30 @@ namespace Magnum.Web
 			_values = dictionary;
 		}
 
-		public object GetValue(string key)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
-			return GetValue(key, null);
+			object result;
+			bool found = _values.TryGetValue(key, out result);
+			if (found)
+			{
+				return matchingValueAction(result);
+			}
+
+			return false;
 		}
 
-		public object GetValue(string key, Func<object> defaultValue)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
-			object value;
-			return _values.TryGetValue(key, out value) ? value : defaultValue();
+			if (GetValue(key, matchingValueAction))
+				return true;
+
+			missingValueAction();
+			return false;
 		}
 
-		public T GetValue<T>(string key)
+		public void GetAll(Action<string, object> valueAction)
 		{
-			object value = GetValue(key);
-
-			if (value == null)
-				throw new ArgumentException("The [" + key + "] setting was not found");
-
-			return ConvertValue<T>(key, value);
-		}
-
-		public T GetValue<T>(string key, T defaultValue)
-		{
-			object value;
-			return _values.TryGetValue(key, out value) ? ConvertValue<T>(key, value) : defaultValue;
-		}
-
-		public T GetValue<T>(string key, Func<object, T> valueConverter)
-		{
-			object value = GetValue(key);
-
-			if (value == null)
-				throw new ArgumentException("The [" + key + "] setting was not found");
-
-			return valueConverter(value);
-		}
-
-		public T GetValue<T>(string key, Func<object, T> valueConverter, T defaultValue)
-		{
-			object value;
-			return _values.TryGetValue(key, out value) ? valueConverter(value) : defaultValue;
+			_values.Each(x => valueAction(x.Key, x.Value));
 		}
 
 		private static T ConvertValue<T>(string key, object value)

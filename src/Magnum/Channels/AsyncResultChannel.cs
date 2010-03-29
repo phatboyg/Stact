@@ -32,8 +32,8 @@ namespace Magnum.Channels
 
 		public AsyncResultChannel(Channel<T> output, AsyncCallback callback, object state)
 		{
-			_output.MustNotBeNull("output");
-			_callback.MustNotBeNull("callback");
+			output.MustNotBeNull("output");
+			callback.MustNotBeNull("callback");
 
 			_output = output;
 			_callback = callback;

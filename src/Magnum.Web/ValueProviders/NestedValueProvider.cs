@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web
+namespace Magnum.Web.ValueProviders
 {
 	using System;
 
@@ -26,34 +26,19 @@ namespace Magnum.Web
 			_prefix = prefix;
 		}
 
-		public object GetValue(string key)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
-			return _parent.GetValue(_prefix + key);
+			return _parent.GetValue(_prefix + key, matchingValueAction);
 		}
 
-		public object GetValue(string key, Func<object> defaultValue)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
-			return _parent.GetValue(_prefix + key, defaultValue);
+			return _parent.GetValue(_prefix + key, matchingValueAction, missingValueAction);
 		}
 
-		public T GetValue<T>(string key)
+		public void GetAll(Action<string, object> valueAction)
 		{
-			return _parent.GetValue<T>(_prefix + key);
-		}
-
-		public T GetValue<T>(string key, T defaultValue)
-		{
-			return _parent.GetValue(_prefix + key, defaultValue);
-		}
-
-		public T GetValue<T>(string key, Func<object, T> valueConverter)
-		{
-			return _parent.GetValue(_prefix + key, valueConverter);
-		}
-
-		public T GetValue<T>(string key, Func<object, T> valueConverter, T defaultValue)
-		{
-			return _parent.GetValue(_prefix + key, valueConverter, defaultValue);
+			_parent.GetAll(valueAction);
 		}
 	}
 }
