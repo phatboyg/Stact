@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.RulesEngine.Visualiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Logging.Log4Net", "Magnum.Logging.Log4Net\Magnum.Logging.Log4Net.csproj", "{66A05739-70C4-47D7-B7D0-69C038864457}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Web", "Magnum.Web\Magnum.Web.csproj", "{716A460C-0F8C-4336-8448-5ED8C24F31EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{716A460C-0F8C-4336-8448-5ED8C24F31EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{716A460C-0F8C-4336-8448-5ED8C24F31EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{716A460C-0F8C-4336-8448-5ED8C24F31EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{716A460C-0F8C-4336-8448-5ED8C24F31EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

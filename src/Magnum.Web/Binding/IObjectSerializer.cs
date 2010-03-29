@@ -10,14 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace MassTransit.Serialization.Custom
 {
 	using System;
-	using System.Web;
+	using System.Collections.Generic;
+	using System.Xml;
+	using Magnum.Monads;
 
-	public interface AsyncHttpActor :
-		Actor
+	public interface IObjectSerializer
 	{
-		IAsyncResult BeginAction(HttpContext context, AsyncCallback callback, object state);
+		IEnumerable<K<Action<XmlWriter>>> GetSerializationActions(ISerializerContext context, string localName, object value);
 	}
 }

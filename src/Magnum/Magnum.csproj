@@ -38,8 +38,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,6 @@
     <Compile Include="Actions\TimerActionScheduler.cs" />
     <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\AsyncActor.cs" />
-    <Compile Include="Actors\AsyncHttpActor.cs" />
     <Compile Include="Actors\ChannelFactory.cs" />
     <Compile Include="Actors\Channels\Channel.cs" />
     <Compile Include="Actors\Channels\Extensions.cs" />
@@ -103,6 +102,7 @@
     <Compile Include="Calendar\DefaultCalendar.cs" />
     <Compile Include="Calendar\Months.cs" />
     <Compile Include="Actions\ActionQueueProvider.cs" />
+    <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelCache.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />

@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{716A460C-0F8C-4336-8448-5ED8C24F31EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Magnum.Web</RootNamespace>
+    <AssemblyName>Magnum.Web</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Routing">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionVersion.cs">
+      <Link>SolutionVersion.cs</Link>
+    </Compile>
+    <Compile Include="Actors\ActorHttpAsyncHandler.cs" />
+    <Compile Include="Actors\ActorRouteBuilder.cs" />
+    <Compile Include="Actors\ActorRouteHandler.cs" />
+    <Compile Include="Actors\HasOutputChannel.cs" />
+    <Compile Include="Binding\FastModelBinder.cs" />
+    <Compile Include="Binding\ModelBinderContext.cs" />
+    <Compile Include="Binding\ObjectPropertyBinder.cs" />
+    <Compile Include="Binding\DictionaryObjectPropertyBinderCache.cs" />
+    <Compile Include="Binding\FastBinderContext.cs" />
+    <Compile Include="Binding\ExtensionsForType.cs" />
+    <Compile Include="Binding\ObjectPropertyBinderCache.cs" />
+    <Compile Include="Binding\BinderContext.cs" />
+    <Compile Include="Binding\InterfaceImplementationBuilder.cs" />
+    <Compile Include="Binding\ObjectBinder.cs" />
+    <Compile Include="Binding\IObjectFieldCache.cs" />
+    <Compile Include="Binding\IObjectSerializer.cs" />
+    <Compile Include="Binding\ISerializerContext.cs" />
+    <Compile Include="Binding\IXmlSerializer.cs" />
+    <Compile Include="Binding\ModelBinder.cs" />
+    <Compile Include="Binding\NamespaceTable.cs" />
+    <Compile Include="Binding\NonClosingStream.cs" />
+    <Compile Include="Binding\FastObjectBinder.cs" />
+    <Compile Include="Binding\ObjectField.cs" />
+    <Compile Include="Binding\ObjectFieldCache.cs" />
+    <Compile Include="Binding\ObjectPropertyBinderList.cs" />
+    <Compile Include="Binding\ObjectSerializer.cs" />
+    <Compile Include="Binding\SerializeObjectProperty.cs" />
+    <Compile Include="Binding\SerializeObjectPropertyCache.cs" />
+    <Compile Include="Binding\SerializerContext.cs" />
+    <Compile Include="Binding\SerializerTypeMapper.cs" />
+    <Compile Include="Binding\TypeBinders\ArrayBinder.cs" />
+    <Compile Include="Binding\TypeBinders\BooleanBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\CharBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DateTimeBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DateTimeOffsetBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DecimalBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DictionaryBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DoubleBinder.cs" />
+    <Compile Include="Binding\TypeBinders\EnumBinder.cs" />
+    <Compile Include="Binding\TypeBinders\EnumerableBinderBase.cs" />
+    <Compile Include="Binding\TypeBinders\FloatBinder.cs" />
+    <Compile Include="Binding\TypeBinders\GuidBinder.cs" />
+    <Compile Include="Binding\TypeBinders\IntBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ListBinder.cs" />
+    <Compile Include="Binding\TypeBinders\LongBinder.cs" />
+    <Compile Include="Binding\TypeBinders\SByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ShortBinder.cs" />
+    <Compile Include="Binding\TypeBinders\StringBinder.cs" />
+    <Compile Include="Binding\TypeBinders\TimeSpanBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UIntBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ULongBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UriBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
+    <Compile Include="Binding\TypeSerializers\ArraySerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\BooleanSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\ByteSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\CharSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\DateTimeOffsetSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\DateTimeSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\DecimalSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\DictionarySerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\DoubleSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\EnumerableSerializerBase.cs" />
+    <Compile Include="Binding\TypeSerializers\EnumSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\FloatSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\GuidSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\IntSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\ListSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\LongSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\SByteSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\SerializerBase.cs" />
+    <Compile Include="Binding\TypeSerializers\ShortSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\StringSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\TimeSpanSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\UIntSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\ULongSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\UriSerializer.cs" />
+    <Compile Include="Binding\TypeSerializers\UShortSerializer.cs" />
+    <Compile Include="DictionaryValueProvider.cs" />
+    <Compile Include="NestedValueProvider.cs" />
+    <Compile Include="RouteBuilder.cs" />
+    <Compile Include="ValueProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Magnum\Magnum.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Magnum</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
