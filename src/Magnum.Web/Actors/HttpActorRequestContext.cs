@@ -29,6 +29,7 @@ namespace Magnum.Web.Actors
 		private readonly ValueProvider _valueProvider;
 		private AsyncCallback _callback;
 		private volatile bool _completed;
+		private Type _responseType;
 		private object _state;
 
 		public HttpActorRequestContext(ActionQueue queue, RequestContext requestContext)
@@ -60,7 +61,7 @@ namespace Magnum.Web.Actors
 			_callback = callback;
 			_state = state;
 
-			return new JsonResponseChannel<T>(_objectWriter, _queue, x => Complete(), state);
+			return new ObjectResponseChannel<T>(_objectWriter, _queue, Complete);
 		}
 
 		public bool IsCompleted
@@ -83,8 +84,9 @@ namespace Magnum.Web.Actors
 			get { return false; }
 		}
 
-		private void Complete()
+		private void Complete<T>(Channel<T> channel)
 		{
+			_responseType = typeof (T);
 			_completed = true;
 
 			if (_callback != null)

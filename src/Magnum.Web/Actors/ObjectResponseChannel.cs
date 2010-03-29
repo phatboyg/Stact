@@ -12,7 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	public interface ResponseChannelFactory
+	using System;
+	using Abstractions;
+	using Actions;
+	using Channels;
+
+	public class ObjectResponseChannel<T> :
+		Channel<T>
 	{
+		private readonly Action<Channel<T>> _completed;
+		private readonly ActionQueue _queue;
+		private readonly ObjectWriter _writer;
+
+		public ObjectResponseChannel(ObjectWriter writer, ActionQueue queue, Action<Channel<T>> completed)
+		{
+			_writer = writer;
+			_queue = queue;
+			_completed = completed;
+		}
+
+		public void Send(T message)
+		{
+			_queue.Enqueue(() =>
+				{
+					_writer.Write(message);
+
+					_completed(this);
+				});
+		}
 	}
 }
