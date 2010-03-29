@@ -13,10 +13,9 @@
 namespace Magnum.Web.Actors
 {
 	using System.Web;
-	using ValueProviders;
 
 	public interface ActorBinder
 	{
-		IHttpAsyncHandler GetHandler(ValueProvider provider);
+		IHttpAsyncHandler GetHandler(ActorRequestContext context);
 	}
 }

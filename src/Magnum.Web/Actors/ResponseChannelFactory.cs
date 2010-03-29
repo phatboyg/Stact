@@ -10,14 +10,9 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Sample.WebActors.Actors.Echo
+namespace Magnum.Web.Actors
 {
-	public class EchoOutputModel
+	public interface ResponseChannelFactory
 	{
-		public string Text { get; set; }
-
-		public string Browser { get; set; }
-
-		public string UserAgent { get; set; }
 	}
 }

@@ -17,8 +17,9 @@ namespace Magnum.Web.Actors
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Web.Routing;
+	using Actions;
 	using Binding;
-	using Channels;
+	using Magnum.Channels;
 	using InterfaceExtensions;
 	using Reflection;
 
@@ -46,7 +47,7 @@ namespace Magnum.Web.Actors
 			Func<Channel<TInput>> getChannel = () => compiled(getActor());
 
 			ActorBinder binder = new BasicActorBinder<TInput, TOutput>(_modelBinder, getChannel);
-			var routeHandler = new ActorRouteHandler(binder);
+			var routeHandler = new ActorRouteHandler(binder, () => new ThreadPoolActionQueue());
 
 			string url = GetUrl(typeof (TActor).Name, property.Name);
 

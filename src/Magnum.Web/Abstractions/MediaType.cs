@@ -10,14 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Sample.WebActors.Actors.Echo
+namespace Magnum.Web.Abstractions
 {
-	public class EchoOutputModel
+	using System.Net.Mime;
+
+	public class MediaType
 	{
-		public string Text { get; set; }
+		public static readonly MediaType Html = new MediaType(MediaTypeNames.Text.Html);
+		public static readonly MediaType Json = new MediaType("application/json");
+		public static readonly MediaType Text = new MediaType(MediaTypeNames.Text.Plain);
+		private readonly string _mimeType;
 
-		public string Browser { get; set; }
+		private MediaType(string typeName)
+		{
+			_mimeType = typeName;
+		}
 
-		public string UserAgent { get; set; }
+		public override string ToString()
+		{
+			return _mimeType;
+		}
 	}
 }

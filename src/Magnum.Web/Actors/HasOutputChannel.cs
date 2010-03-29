@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using Channels;
+	using Magnum.Channels;
 
 	/// <summary>
 	/// A model that also has an output channel binding so that it can be used to

@@ -14,8 +14,6 @@ namespace Magnum.Web.Actors
 {
 	using System;
 	using System.Web;
-	using System.Web.Script.Serialization;
-	using Actions;
 	using Channels;
 
 	/// <summary>
@@ -28,15 +26,15 @@ namespace Magnum.Web.Actors
 		IHttpAsyncHandler
 		where TInput : HasOutputChannel<TOutput>
 	{
+		private readonly ActorRequestContext _context;
 		private readonly Channel<TInput> _input;
 		private readonly TInput _inputModel;
-		private JavaScriptSerializer _serializer;
 
-		public ActorHttpAsyncHandler(TInput inputModel, Channel<TInput> input)
+		public ActorHttpAsyncHandler(ActorRequestContext context, TInput inputModel, Channel<TInput> input)
 		{
+			_context = context;
 			_input = input;
 			_inputModel = inputModel;
-			_serializer = new JavaScriptSerializer();
 		}
 
 		public void ProcessRequest(HttpContext context)
@@ -51,18 +49,10 @@ namespace Magnum.Web.Actors
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
-			var channel = new ConsumerChannel<TOutput>(new ThreadPoolActionQueue(), message =>
-				{
-					context.Response.ContentType = "application/json";
-					var body = _serializer.Serialize(message);
-					context.Response.Write(body);
-				});
-
-			var outputChannel = new AsyncResultChannel<TOutput>(channel, cb, extraData);
-			_inputModel.OutputChannel = outputChannel;
+			_inputModel.OutputChannel = _context.GetResponseChannel<TOutput>(cb, extraData);
 			_input.Send(_inputModel);
 
-			return outputChannel;
+			return _context;
 		}
 
 		public void EndProcessRequest(IAsyncResult result)

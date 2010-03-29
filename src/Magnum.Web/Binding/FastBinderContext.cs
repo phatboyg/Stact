@@ -18,10 +18,10 @@ namespace Magnum.Web.Binding
 	using System.Linq;
 	using System.Reflection;
 	using System.Xml;
-	using Channels;
 	using CollectionExtensions;
 	using InterfaceExtensions;
 	using Logging;
+	using Magnum.Channels;
 	using MassTransit.Serialization.Custom;
 	using Reflection;
 	using TypeBinders;

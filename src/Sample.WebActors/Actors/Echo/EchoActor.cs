@@ -36,6 +36,7 @@ namespace Sample.WebActors.Actors.Echo
 			inputModel.OutputChannel.Send(new EchoOutputModel
 				{
 					Text = inputModel.Text,
+					UserAgent = inputModel.UserAgent,
 				});
 		}
 	}

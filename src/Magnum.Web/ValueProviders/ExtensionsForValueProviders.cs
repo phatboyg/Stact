@@ -10,14 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Sample.WebActors.Actors.Echo
+namespace Magnum.Web.ValueProviders
 {
-	public class EchoOutputModel
+	using System;
+
+	public static class ExtensionsForValueProviders
 	{
-		public string Text { get; set; }
+		private const string XmlHttpRequestValue = "XMLHttpRequest";
+		private const string XRequestedWithHeader = "X-Requested-With";
 
-		public string Browser { get; set; }
+		public static bool IsAjaxRequest(this ValueProvider valueProvider)
+		{
+			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
+		}
 
-		public string UserAgent { get; set; }
+		private static bool IsAjaxRequest(object value)
+		{
+			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
+		}
 	}
 }

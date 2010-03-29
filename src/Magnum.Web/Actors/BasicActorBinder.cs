@@ -32,11 +32,11 @@ namespace Magnum.Web.Actors
 			_getInputChannel = getInputChannel;
 		}
 
-		public IHttpAsyncHandler GetHandler(ValueProvider provider)
+		public IHttpAsyncHandler GetHandler(ActorRequestContext context)
 		{
-			TInput inputModel = BindModel(provider);
+			TInput inputModel = BindModel(context);
 
-			var handler = new ActorHttpAsyncHandler<TInput, TOutput>(inputModel, _getInputChannel());
+			var handler = new ActorHttpAsyncHandler<TInput, TOutput>(context, inputModel, _getInputChannel());
 
 			return handler;
 		}

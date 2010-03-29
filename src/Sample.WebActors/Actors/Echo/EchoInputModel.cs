@@ -19,6 +19,8 @@ namespace Sample.WebActors.Actors.Echo
 		HasOutputChannel<EchoOutputModel>
 	{
 		public string Text { get; set; }
+		public string UserAgent { get; set; }
+
 		public Channel<EchoOutputModel> OutputChannel { get; set; }
 	}
 }

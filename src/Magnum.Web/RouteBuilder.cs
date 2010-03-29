@@ -15,7 +15,7 @@ namespace Magnum.Web
 	using System;
 	using System.Linq.Expressions;
 	using Actors;
-	using Channels;
+	using Magnum.Channels;
 
 	public interface RouteBuilder
 	{

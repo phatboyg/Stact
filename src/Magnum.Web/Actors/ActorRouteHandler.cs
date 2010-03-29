@@ -14,23 +14,25 @@ namespace Magnum.Web.Actors
 {
 	using System.Web;
 	using System.Web.Routing;
-	using ValueProviders;
+	using Actions;
 
 	public class ActorRouteHandler :
 		IRouteHandler
 	{
 		private readonly ActorBinder _binder;
+		private readonly ActionQueueProvider _queueProvider;
 
-		public ActorRouteHandler(ActorBinder binder)
+		public ActorRouteHandler(ActorBinder binder, ActionQueueProvider queueProvider)
 		{
 			_binder = binder;
+			_queueProvider = queueProvider;
 		}
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
-			var provider = new RequestContextValueProvider(requestContext);
+			var context = new HttpActorRequestContext(_queueProvider(), requestContext);
 
-			return _binder.GetHandler(provider);
+			return _binder.GetHandler(context);
 		}
 	}
 }
