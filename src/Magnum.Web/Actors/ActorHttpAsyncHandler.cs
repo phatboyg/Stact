@@ -13,8 +13,10 @@
 namespace Magnum.Web.Actors
 {
 	using System;
+	using System.Threading;
 	using System.Web;
 	using Channels;
+	using Logging;
 
 	/// <summary>
 	/// A handler is bound to the route by input type, which is the only thing used to build
@@ -26,6 +28,8 @@ namespace Magnum.Web.Actors
 		IHttpAsyncHandler
 		where TInput : HasOutputChannel<TOutput>
 	{
+		private static readonly ILogger _log = Logger.GetLogger<ActorHttpAsyncHandler<TInput, TOutput>>();
+
 		private readonly ActorRequestContext _context;
 		private readonly Channel<TInput> _input;
 		private readonly TInput _inputModel;
@@ -49,6 +53,8 @@ namespace Magnum.Web.Actors
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
+			_log.Debug(x => x.Write("Request[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof(TInput).FullName));
+
 			_inputModel.OutputChannel = _context.GetResponseChannel<TOutput>(cb, extraData);
 			_input.Send(_inputModel);
 

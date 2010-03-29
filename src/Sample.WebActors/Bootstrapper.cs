@@ -15,6 +15,7 @@ namespace Sample.WebActors
 	using System.Web.Routing;
 	using Actors.Echo;
 	using Magnum.Actions;
+	using Magnum.Logging;
 	using Magnum.Web;
 	using Magnum.Web.Actors;
 	using Magnum.Web.Binding;
@@ -23,6 +24,9 @@ namespace Sample.WebActors
 	{
 		public void Bootstrap(RouteCollection routeCollection)
 		{
+			TraceLogProvider.Configure(LogLevel.Debug);
+
+
 			ModelBinder modelBinder = new FastModelBinder();
 
 			RouteBuilder routeBuilder = new ActorRouteBuilder("actors/", modelBinder, routeCollection.Add);

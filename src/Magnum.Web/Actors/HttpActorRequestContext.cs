@@ -18,11 +18,14 @@ namespace Magnum.Web.Actors
 	using Abstractions;
 	using Actions;
 	using Channels;
+	using Logging;
 	using ValueProviders;
 
 	public class HttpActorRequestContext :
 		ActorRequestContext
 	{
+		private static readonly ILogger _log = Logger.GetLogger<HttpActorRequestContext>();
+
 		private readonly ContentWriter _contentWriter;
 		private readonly ObjectWriter _objectWriter;
 		private readonly ActionQueue _queue;
@@ -84,8 +87,19 @@ namespace Magnum.Web.Actors
 			get { return false; }
 		}
 
+		public override string ToString()
+		{
+			string actor = "Unknown";
+
+			GetValue("Actor", x => (actor = x.ToString()) != null);
+
+			return string.Format("{0}", actor);
+		}
+
 		private void Complete<T>(Channel<T> channel)
 		{
+			_log.Debug(x => x.Write("Response[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof (T).FullName));
+
 			_responseType = typeof (T);
 			_completed = true;
 
