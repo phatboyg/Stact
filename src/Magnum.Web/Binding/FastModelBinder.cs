@@ -13,7 +13,6 @@
 namespace Magnum.Web.Binding
 {
 	using System;
-	using Reflection;
 
 	/// <summary>
 	/// A fast model binder for quickly applying values to properties
@@ -23,14 +22,12 @@ namespace Magnum.Web.Binding
 	{
 		public object Bind(Type type, ModelBinderContext context)
 		{
-			object instance = FastActivator.Create(type);
-
-			return Bind(type, instance, context);
+			return new InstanceBinderContext(context).Bind(type);
 		}
 
-		public object Bind(Type type, object instance, ModelBinderContext context)
+		public T Bind<T>(ModelBinderContext context)
 		{
-			return new FastBinderContext(context).Bind(type);
+			return (T) Bind(typeof (T), context);
 		}
 	}
 }

@@ -20,7 +20,20 @@ namespace Magnum.Web.Binding.TypeBinders
 	{
 		public object Bind(BinderContext context)
 		{
-			return XmlConvert.ToTimeSpan(context.ReadElementAsString());
+			object value = context.PropertyValue;
+			if (value == null)
+				return null;
+
+			if (value is TimeSpan)
+				return value;
+
+			string text = value.ToString();
+
+			TimeSpan result;
+			if (TimeSpan.TryParse(text, out result))
+				return result;
+			
+			return XmlConvert.ToTimeSpan(text);
 		}
 	}
 }

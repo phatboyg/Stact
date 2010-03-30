@@ -20,13 +20,24 @@ namespace Magnum.Web.Binding.TypeBinders
 	{
 		public object Bind(BinderContext context)
 		{
-			if(context.PropertyValue is DateTime)
-				return context.PropertyValue;
+			object value = context.PropertyValue;
 
-			if(context.PropertyValue is DateTimeOffset)
-				return ((DateTimeOffset) context.PropertyValue).DateTime;
+			if (value == null)
+				return null;
 
-			return XmlConvert.ToDateTime(context.ReadElementAsString(), XmlDateTimeSerializationMode.Utc);
+			if (value is DateTime)
+				return value;
+
+			if (value is DateTimeOffset)
+				return ((DateTimeOffset) value).DateTime;
+
+			string text = value.ToString();
+
+			DateTime result;
+			if (DateTime.TryParse(text, out result))
+				return result;
+
+			return XmlConvert.ToDateTime(text, XmlDateTimeSerializationMode.Utc);
 		}
 	}
 }

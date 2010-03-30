@@ -17,79 +17,114 @@ namespace Magnum.Web.Binding
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using System.Xml;
+	using Channels;
 	using CollectionExtensions;
 	using InterfaceExtensions;
 	using Logging;
-	using Magnum.Channels;
 	using Reflection;
 	using TypeBinders;
 
-	public class FastBinderContext :
+	public class InstanceBinderContext :
 		BinderContext
 	{
-		private static readonly Dictionary<Type, ObjectBinder> _binders;
-		private static readonly ILogger _log = Logger.GetLogger<FastBinderContext>();
-		private readonly ModelBinderContext _context;
-		private readonly Stack<ObjectPropertyBinder> _propertyStack;
-		private readonly XmlReader _reader;
+		private static readonly ILogger _log = Logger.GetLogger<InstanceBinderContext>();
+		private static readonly Dictionary<Type, ObjectBinder> _typeBinders;
 
-		static FastBinderContext()
+		private readonly Stack<ModelBinderContext> _contextStack;
+		private readonly Stack<ObjectPropertyBinder> _propertyStack;
+
+		static InstanceBinderContext()
 		{
-			_binders = new Dictionary<Type, ObjectBinder>();
+			_typeBinders = new Dictionary<Type, ObjectBinder>();
 
 			LoadBuiltInBinders();
 		}
 
-		public FastBinderContext(ModelBinderContext context)
+		public InstanceBinderContext(ModelBinderContext context)
 		{
-			_context = context;
+			_contextStack = new Stack<ModelBinderContext>();
+			_contextStack.Push(context);
+
+			_propertyStack = new Stack<ObjectPropertyBinder>();
 		}
 
-		public object PropertyValue { get; protected set; }
+		public ModelBinderContext Context
+		{
+			get { return _contextStack.Count > 0 ? _contextStack.Peek() : null; }
+		}
 
+		public string PropertyKey
+		{
+			get
+			{
+				const string separator = "_";
+
+				string value = string.Join(separator,
+					_propertyStack
+						.Select(x => x.Property.Name)
+						.Reverse()
+						.ToArray());
+
+				return value;
+			}
+		}
+
+		public object PropertyValue
+		{
+			get
+			{
+				object value = null;
+
+				Context.GetValue(PropertyKey, x =>
+					{
+						value = x;
+						return true;
+					}, () => value = null);
+
+				return value;
+			}
+		}
 
 		public PropertyInfo Property
 		{
-			get { return _propertyStack.Peek().Property; }
+			get { return _propertyStack.Count > 0 ? _propertyStack.Peek().Property : null; }
 		}
-
 
 		public object Bind(Type type)
 		{
 			ObjectBinder binder;
-			lock (_binders)
+			lock (_typeBinders)
 			{
-				binder = _binders.Retrieve(type, () => CreateBinderFor(type));
+				binder = _typeBinders.Retrieve(type, () => CreateBinderFor(type));
 			}
 
 			return binder.Bind(this);
 		}
 
-		public object Bind(PropertyInfo property)
+		public object Bind(ObjectPropertyBinder property)
 		{
-			_context.GetValue(property.Name, value =>
-				{
-					PropertyValue = value;
-					return true;
-				},
-				() => PropertyValue = null);
+			_propertyStack.Push(property);
 
-			return Bind(property.PropertyType);
+			try
+			{
+				return Bind(Property.PropertyType);
+			}
+			finally
+			{
+				_propertyStack.Pop();
+			}
 		}
 
 		public string ReadElementAsString()
 		{
-			return PropertyValue != null ? PropertyValue.ToString() : null;
+			object value = PropertyValue;
+
+			return value != null ? value.ToString() : null;
 		}
 
 		public Channel<T> GetChannel<T>()
 		{
-			return _context.GetChannel<T>();
-		}
-
-		public void Bind(ObjectPropertyBinder property)
-		{
+			return Context.GetChannel<T>();
 		}
 
 		private static void LoadBuiltInBinders()
@@ -107,7 +142,7 @@ namespace Magnum.Web.Binding
 
 									_log.Debug(x => x.Write("Loading binder or {0} ({1})", itemType.Name, type.Name));
 
-									_binders.Add(itemType, FastActivator.Create(type) as ObjectBinder);
+									_typeBinders.Add(itemType, FastActivator.Create(type) as ObjectBinder);
 								});
 					});
 		}

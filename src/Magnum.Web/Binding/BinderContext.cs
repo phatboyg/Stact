@@ -22,7 +22,7 @@ namespace Magnum.Web.Binding
 		PropertyInfo Property { get; }
 
 		object Bind(Type type);
-		object Bind(PropertyInfo property);
+		object Bind(ObjectPropertyBinder property);
 		string ReadElementAsString();
 
 		/// <summary>

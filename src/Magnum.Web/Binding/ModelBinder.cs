@@ -17,6 +17,7 @@ namespace Magnum.Web.Binding
 	public interface ModelBinder
 	{
 		object Bind(Type type, ModelBinderContext context);
-		object Bind(Type type, object instance, ModelBinderContext context);
+		
+		T Bind<T>(ModelBinderContext context);
 	}
 }
