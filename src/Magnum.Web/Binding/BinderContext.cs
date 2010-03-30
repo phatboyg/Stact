@@ -26,10 +26,10 @@ namespace Magnum.Web.Binding
 		string ReadElementAsString();
 
 		/// <summary>
-		/// Returns a channel for the specified type
+		/// Returns a channel for the specified message type
 		/// </summary>
-		/// <param name="channelType">The message type of the channel</param>
-		/// <returns>A channel of the requested type</returns>
+		/// <typeparam name="T">The channel message type</typeparam>
+		/// <returns>A channel </returns>
 		Channel<T> GetChannel<T>();
 	}
 }

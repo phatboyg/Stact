@@ -22,7 +22,6 @@ namespace Magnum.Web.Binding
 	using InterfaceExtensions;
 	using Logging;
 	using Magnum.Channels;
-	using MassTransit.Serialization.Custom;
 	using Reflection;
 	using TypeBinders;
 

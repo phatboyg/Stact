@@ -243,6 +243,7 @@
     <Compile Include="Reflection\FastActivator.3.cs" />
     <Compile Include="Reflection\FastActivator.1.cs" />
     <Compile Include="Reflection\FastActivatorException.cs" />
+    <Compile Include="Reflection\InterfaceImplementationBuilder.cs" />
     <Compile Include="Reflection\TypeSpecializationExtensions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />

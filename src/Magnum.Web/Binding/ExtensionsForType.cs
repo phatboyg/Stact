@@ -18,25 +18,5 @@ namespace MassTransit.Serialization.Custom
 
 	public static class ExtensionsForType
 	{
-		public static IEnumerable<PropertyInfo> GetAllProperties(this Type type)
-		{
-			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-
-			foreach (PropertyInfo propertyInfo in type.GetProperties(bindingFlags))
-			{
-				yield return propertyInfo;
-			}
-
-			if (type.IsInterface)
-			{
-				foreach (Type interfaceType in type.GetInterfaces())
-				{
-					foreach (PropertyInfo propertyInfo in interfaceType.GetAllProperties())
-					{
-						yield return propertyInfo;
-					}
-				}
-			}
-		}
 	}
 }

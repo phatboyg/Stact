@@ -10,20 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Serialization.Custom
+namespace Magnum.Reflection
 {
 	using System;
 	using System.Reflection;
 	using System.Reflection.Emit;
-	using Magnum;
-	using Magnum.Threading;
+	using Threading;
 
 	public static class InterfaceImplementationBuilder
 	{
-		private static readonly ReaderWriterLockedDictionary<Type, Type> _proxyTypes = new ReaderWriterLockedDictionary<Type, Type>();
+		private const MethodAttributes PropertyAccessMethodAttributes = MethodAttributes.Public | MethodAttributes.SpecialName |
+		                                                                MethodAttributes.HideBySig | MethodAttributes.Final |
+		                                                                MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
 
 		private const string ProxyNamespaceSuffix = ".DynamicImpl";
-		private const MethodAttributes PropertyAccessMethodAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Final | MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
+		private static readonly ReaderWriterLockedDictionary<Type, Type> _proxyTypes = new ReaderWriterLockedDictionary<Type, Type>();
 
 		public static Type GetProxyFor(Type typeToProxy)
 		{
@@ -49,7 +50,9 @@ namespace MassTransit.Serialization.Custom
 		{
 			string typeName = typeToProxy.Namespace + ProxyNamespaceSuffix + "." + typeToProxy.Name;
 
-			TypeBuilder typeBuilder = builder.DefineType(typeName, TypeAttributes.Serializable | TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, typeof (object), new[]{typeToProxy});
+			TypeBuilder typeBuilder = builder.DefineType(typeName, TypeAttributes.Serializable | TypeAttributes.Class |
+			                                                       TypeAttributes.Public | TypeAttributes.Sealed,
+				typeof (object), new[] {typeToProxy});
 
 			typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
@@ -57,16 +60,15 @@ namespace MassTransit.Serialization.Custom
 				{
 					FieldBuilder fieldBuilder = typeBuilder.DefineField("field_" + x.Name, x.PropertyType, FieldAttributes.Private);
 
-					PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(x.Name, x.Attributes | PropertyAttributes.HasDefault, x.PropertyType, null);
+					PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(x.Name, x.Attributes | PropertyAttributes.HasDefault,
+						x.PropertyType, null);
 
-					var getMethod = GetGetMethodBuilder(x, typeBuilder, fieldBuilder);
-					var setMethod = GetSetMethodBuilder(x, typeBuilder, fieldBuilder);
+					MethodBuilder getMethod = GetGetMethodBuilder(x, typeBuilder, fieldBuilder);
+					MethodBuilder setMethod = GetSetMethodBuilder(x, typeBuilder, fieldBuilder);
 
 					propertyBuilder.SetGetMethod(getMethod);
 					propertyBuilder.SetSetMethod(setMethod);
 				});
-
-			//typeBuilder.AddInterfaceImplementation(typeToProxy);
 
 			return typeBuilder.CreateType();
 		}
