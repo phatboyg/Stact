@@ -12,19 +12,41 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding.TypeBinders
 {
-	using System.Xml;
-
-	public class UIntBinder :
-		ValueTypeBinder<uint>
+	public abstract class ValueTypeBinder<T> :
+		ObjectBinder<T>
 	{
-		protected override bool ParseType(string text, out uint result)
+		public object Bind(BinderContext context)
 		{
-			return uint.TryParse(text, out result);
+			object value = context.PropertyValue;
+			if (value == null)
+				return null;
+
+			T result;
+			if(ConvertType(value, out result))
+				return result;
+
+			string text = value.ToString();
+
+			if (ParseType(text, out result))
+				return result;
+
+			return UseXmlConvert(text);
 		}
 
-		protected override uint UseXmlConvert(string text)
+		protected virtual bool ConvertType(object value, out T result)
 		{
-			return XmlConvert.ToUInt32(text);
+			if (value is T)
+			{
+				result = (T) value;
+				return true;
+			}
+
+			result = default(T);
+			return false;
 		}
+
+		protected abstract bool ParseType(string text, out T result);
+
+		protected abstract T UseXmlConvert(string text);
 	}
 }

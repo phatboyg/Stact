@@ -68,7 +68,6 @@
     <Compile Include="Binding\ModelBinderContext.cs" />
     <Compile Include="Binding\ObjectPropertyBinder.cs" />
     <Compile Include="Binding\InstanceBinderContext.cs" />
-    <Compile Include="Binding\ExtensionsForType.cs" />
     <Compile Include="Binding\BinderContext.cs" />
     <Compile Include="Binding\ObjectBinder.cs" />
     <Compile Include="Binding\ModelBinder.cs" />
@@ -100,6 +99,7 @@
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Actors\ObjectResponseChannel.cs" />
+    <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="ValueProviders\AccessorValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />

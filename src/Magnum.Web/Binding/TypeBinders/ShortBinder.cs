@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class ShortBinder :
-		ObjectBinder<short>
+		ValueTypeBinder<short>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out short result)
 		{
-			return XmlConvert.ToInt16(context.ReadElementAsString());
+			return short.TryParse(text, out result);
+		}
+
+		protected override short UseXmlConvert(string text)
+		{
+			return XmlConvert.ToInt16(text);
 		}
 	}
 }

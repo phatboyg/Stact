@@ -16,23 +16,15 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class TimeSpanBinder :
-		ObjectBinder<TimeSpan>
+		ValueTypeBinder<TimeSpan>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out TimeSpan result)
 		{
-			object value = context.PropertyValue;
-			if (value == null)
-				return null;
+			return TimeSpan.TryParse(text, out result);
+		}
 
-			if (value is TimeSpan)
-				return value;
-
-			string text = value.ToString();
-
-			TimeSpan result;
-			if (TimeSpan.TryParse(text, out result))
-				return result;
-			
+		protected override TimeSpan UseXmlConvert(string text)
+		{
 			return XmlConvert.ToTimeSpan(text);
 		}
 	}

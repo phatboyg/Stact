@@ -12,18 +12,32 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding
 {
-	using System;
 	using System.Reflection;
 	using Channels;
 
+	/// <summary>
+	/// Used by the type binders to obtain information
+	/// </summary>
 	public interface BinderContext
 	{
-		object PropertyValue { get; }
+		/// <summary>
+		/// The current property being bound
+		/// </summary>
 		PropertyInfo Property { get; }
 
-		object Bind(Type type);
+		/// <summary>
+		/// Resolves the value of the property based on the naming convention.
+		/// This can be an expensive call, so it should only be called once and
+		/// the return value should be cached to avoid performance concerns
+		/// </summary>
+		object PropertyValue { get; }
+
+		/// <summary>
+		/// Binds a property of an object, pushing the property context on the stack
+		/// </summary>
+		/// <param name="property"></param>
+		/// <returns></returns>
 		object Bind(ObjectPropertyBinder property);
-		string ReadElementAsString();
 
 		/// <summary>
 		/// Returns a channel for the specified message type

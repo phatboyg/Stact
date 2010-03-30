@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class BooleanBinder :
-		ObjectBinder<bool>
+		ValueTypeBinder<bool>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out bool result)
 		{
-			return XmlConvert.ToBoolean(context.ReadElementAsString());
+			return bool.TryParse(text, out result);
+		}
+
+		protected override bool UseXmlConvert(string text)
+		{
+			return XmlConvert.ToBoolean(text);
 		}
 	}
 }

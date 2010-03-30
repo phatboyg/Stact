@@ -17,7 +17,17 @@ namespace Magnum.Web.Binding.TypeBinders
 	{
 		public object Bind(BinderContext context)
 		{
-			return context.ReadElementAsString();
+			object value = context.PropertyValue;
+			if (value == null)
+				return null;
+
+			if (value is string)
+			{
+				var text = (string) value;
+				return text;
+			}
+
+			return value.ToString();
 		}
 	}
 }

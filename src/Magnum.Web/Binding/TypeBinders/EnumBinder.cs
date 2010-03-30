@@ -19,7 +19,13 @@ namespace Magnum.Web.Binding.TypeBinders
 	{
 		public object Bind(BinderContext context)
 		{
-			return Enum.Parse(typeof (T), context.ReadElementAsString());
+			object value = context.PropertyValue;
+			if (value == null)
+				return null;
+
+			string text = value.ToString();
+
+			return Enum.Parse(typeof (T), text);
 		}
 	}
 }

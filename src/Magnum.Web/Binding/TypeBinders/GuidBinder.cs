@@ -16,11 +16,25 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class GuidBinder :
-		ObjectBinder<Guid>
+		ValueTypeBinder<Guid>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out Guid result)
 		{
-			return XmlConvert.ToGuid(context.ReadElementAsString());
+			try
+			{
+				result = new Guid(text);
+				return true;
+			}
+			catch (Exception)
+			{
+				result = Guid.Empty;
+				return false;
+			}
+		}
+
+		protected override Guid UseXmlConvert(string text)
+		{
+			return XmlConvert.ToGuid(text);
 		}
 	}
 }

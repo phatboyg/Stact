@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class LongBinder :
-		ObjectBinder<long>
+		ValueTypeBinder<long>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out long result)
 		{
-			return XmlConvert.ToInt64(context.ReadElementAsString());
+			return long.TryParse(text, out result);
+		}
+
+		protected override long UseXmlConvert(string text)
+		{
+			return XmlConvert.ToInt64(text);
 		}
 	}
 }

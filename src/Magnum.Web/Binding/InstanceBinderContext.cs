@@ -115,13 +115,6 @@ namespace Magnum.Web.Binding
 			}
 		}
 
-		public string ReadElementAsString()
-		{
-			object value = PropertyValue;
-
-			return value != null ? value.ToString() : null;
-		}
-
 		public Channel<T> GetChannel<T>()
 		{
 			return Context.GetChannel<T>();

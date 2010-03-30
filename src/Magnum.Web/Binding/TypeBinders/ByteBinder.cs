@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class ByteBinder :
-		ObjectBinder<byte>
+		ValueTypeBinder<byte>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out byte result)
 		{
-			return XmlConvert.ToByte(context.ReadElementAsString());
+			return byte.TryParse(text, out result);
+		}
+
+		protected override byte UseXmlConvert(string text)
+		{
+			return XmlConvert.ToByte(text);
 		}
 	}
 }

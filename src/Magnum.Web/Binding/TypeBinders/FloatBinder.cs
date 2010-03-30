@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class FloatBinder :
-		ObjectBinder<float>
+		ValueTypeBinder<float>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out float result)
 		{
-			return XmlConvert.ToSingle(context.ReadElementAsString());
+			return float.TryParse(text, out result);
+		}
+
+		protected override float UseXmlConvert(string text)
+		{
+			return XmlConvert.ToSingle(text);
 		}
 	}
 }

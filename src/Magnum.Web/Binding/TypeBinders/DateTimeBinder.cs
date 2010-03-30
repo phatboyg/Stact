@@ -16,27 +16,29 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class DateTimeBinder :
-		ObjectBinder<DateTime>
+		ValueTypeBinder<DateTime>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ConvertType(object value, out DateTime result)
 		{
-			object value = context.PropertyValue;
-
-			if (value == null)
-				return null;
-
-			if (value is DateTime)
-				return value;
+			if (base.ConvertType(value, out result))
+				return true;
 
 			if (value is DateTimeOffset)
-				return ((DateTimeOffset) value).DateTime;
+			{
+				result = ((DateTimeOffset) value).DateTime;
+				return true;
+			}
 
-			string text = value.ToString();
+			return false;
+		}
 
-			DateTime result;
-			if (DateTime.TryParse(text, out result))
-				return result;
+		protected override bool ParseType(string text, out DateTime result)
+		{
+			return DateTime.TryParse(text, out result);
+		}
 
+		protected override DateTime UseXmlConvert(string text)
+		{
 			return XmlConvert.ToDateTime(text, XmlDateTimeSerializationMode.Utc);
 		}
 	}
