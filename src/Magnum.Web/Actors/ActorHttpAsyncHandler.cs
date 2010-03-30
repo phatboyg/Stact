@@ -23,12 +23,10 @@ namespace Magnum.Web.Actors
 	/// the route. 
 	/// </summary>
 	/// <typeparam name="TInput">The input model for the request</typeparam>
-	/// <typeparam name="TOutput">The output model for the response</typeparam>
-	public class ActorHttpAsyncHandler<TInput, TOutput> :
+	public class ActorHttpAsyncHandler<TInput> :
 		IHttpAsyncHandler
-		where TInput : HasOutputChannel<TOutput>
 	{
-		private static readonly ILogger _log = Logger.GetLogger<ActorHttpAsyncHandler<TInput, TOutput>>();
+		private static readonly ILogger _log = Logger.GetLogger<ActorHttpAsyncHandler<TInput>>();
 
 		private readonly ActorRequestContext _context;
 		private readonly Channel<TInput> _input;

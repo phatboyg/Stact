@@ -26,14 +26,13 @@ namespace Sample.WebActors
 		{
 			TraceLogProvider.Configure(LogLevel.Debug);
 
-
 			ModelBinder modelBinder = new FastModelBinder();
 
 			RouteBuilder routeBuilder = new ActorRouteBuilder("actors/", modelBinder, routeCollection.Add);
 
 			var actor = new EchoActor(new ThreadPoolActionQueue());
 
-			routeBuilder.BuildRoute<EchoActor, EchoInputModel, EchoOutputModel>(() => actor, x => x.EchoChannel);
+			routeBuilder.BuildRoute(() => actor, x => x.EchoChannel);
 		}
 	}
 }

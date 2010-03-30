@@ -37,8 +37,7 @@ namespace Magnum.Web.Actors
 			_modelBinder = modelBinder;
 		}
 
-		public void BuildRoute<TActor, TInput, TOutput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor)
-			where TInput : HasOutputChannel<TOutput>
+		public void BuildRoute<TActor, TInput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor)
 		{
 			PropertyInfo property = channelAccessor.GetMemberPropertyInfo();
 
@@ -46,7 +45,7 @@ namespace Magnum.Web.Actors
 
 			Func<Channel<TInput>> getChannel = () => compiled(getActor());
 
-			ActorBinder binder = new BasicActorBinder<TInput, TOutput>(_modelBinder, getChannel);
+			ActorBinder binder = new BasicActorBinder<TInput>(_modelBinder, getChannel);
 			var routeHandler = new ActorRouteHandler(binder, () => new ThreadPoolActionQueue());
 
 			string url = GetUrl(typeof (TActor).Name, property.Name);

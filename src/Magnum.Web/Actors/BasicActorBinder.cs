@@ -17,10 +17,8 @@ namespace Magnum.Web.Actors
 	using Binding;
 	using Channels;
 
-	public class BasicActorBinder<TInput, TOutput> :
+	public class BasicActorBinder<TInput> :
 		ActorBinder
-		where TInput : HasOutputChannel<TOutput>
-
 	{
 		private readonly Func<Channel<TInput>> _getInputChannel;
 		private readonly ModelBinder _modelBinder;
@@ -35,7 +33,7 @@ namespace Magnum.Web.Actors
 		{
 			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
 
-			var handler = new ActorHttpAsyncHandler<TInput, TOutput>(context, inputModel, _getInputChannel());
+			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _getInputChannel());
 
 			return handler;
 		}

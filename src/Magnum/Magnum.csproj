@@ -109,7 +109,7 @@
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Channels\ChannelProvider.cs" />
-    <Compile Include="Channels\DictionaryChannelCache.cs" />
+    <Compile Include="Channels\KeyedChannelProvider.cs" />
     <Compile Include="Channels\DistinctIntervalChannel.cs" />
     <Compile Include="Channels\Filter.cs" />
     <Compile Include="Channels\InstanceChannel.cs" />
@@ -121,6 +121,7 @@
     <Compile Include="Channels\KeyAccessor.cs" />
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
+    <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
     <Compile Include="Collections\Algorithms.cs" />
