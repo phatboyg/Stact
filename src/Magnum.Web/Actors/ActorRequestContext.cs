@@ -13,13 +13,17 @@
 namespace Magnum.Web.Actors
 {
 	using System;
+	using Binding;
 	using Channels;
 	using ValueProviders;
 
 	public interface ActorRequestContext :
+		ModelBinderContext,
 		ValueProvider,
 		IAsyncResult
 	{
-		Channel<T> GetResponseChannel<T>(AsyncCallback callback, object state);
+		Channel<T> GetChannel<T>();
+
+		void SetCallback(AsyncCallback callback, object state);
 	}
 }

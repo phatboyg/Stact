@@ -12,13 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding
 {
+	using System;
+	using Channels;
 	using ValueProviders;
 
 	/// <summary>
 	/// Context for binding to a model
 	/// </summary>
-	public interface ModelBinderContext
+	public interface ModelBinderContext :
+		ValueProvider
 	{
-		ValueProvider Values { get; }
+		Channel<T> GetChannel<T>();
 	}
 }

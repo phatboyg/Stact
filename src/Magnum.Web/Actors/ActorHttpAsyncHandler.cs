@@ -53,9 +53,10 @@ namespace Magnum.Web.Actors
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
-			_log.Debug(x => x.Write("Request[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof(TInput).FullName));
+			_log.Debug(x => x.Write("Request[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof (TInput).FullName));
 
-			_inputModel.OutputChannel = _context.GetResponseChannel<TOutput>(cb, extraData);
+			_context.SetCallback(cb, extraData);
+
 			_input.Send(_inputModel);
 
 			return _context;

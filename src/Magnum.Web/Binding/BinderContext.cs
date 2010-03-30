@@ -14,6 +14,7 @@ namespace Magnum.Web.Binding
 {
 	using System;
 	using System.Reflection;
+	using Channels;
 
 	public interface BinderContext
 	{
@@ -23,5 +24,12 @@ namespace Magnum.Web.Binding
 		object Bind(Type type);
 		object Bind(PropertyInfo property);
 		string ReadElementAsString();
+
+		/// <summary>
+		/// Returns a channel for the specified type
+		/// </summary>
+		/// <param name="channelType">The message type of the channel</param>
+		/// <returns>A channel of the requested type</returns>
+		Channel<T> GetChannel<T>();
 	}
 }

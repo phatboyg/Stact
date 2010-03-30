@@ -12,13 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding.TypeBinders
 {
+	using System.Linq;
+
 	public class ChannelBinder<T> :
 		ObjectBinder<T>
 	{
 		public object Bind(BinderContext context)
 		{
-			// TODO: let's see about actually making the channel resolve here!
-			return null;
+			return context.GetChannel<T>();
 		}
 	}
 }

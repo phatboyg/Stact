@@ -38,7 +38,7 @@ namespace Magnum.Web.Specs
 
 
 			var binderContext = MockRepository.GenerateMock<ModelBinderContext>();
-			binderContext.Stub(x => x.Values).Return(new DictionaryValueProvider(_dictionary));
+			//binderContext.Stub(x => x.GetValue("StringValue", )).Return(new DictionaryValueProvider(_dictionary));
 
 			object obj = binder.Bind(typeof (BinderTestClass), binderContext);
 

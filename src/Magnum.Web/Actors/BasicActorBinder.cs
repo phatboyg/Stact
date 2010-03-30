@@ -16,7 +16,6 @@ namespace Magnum.Web.Actors
 	using System.Web;
 	using Binding;
 	using Channels;
-	using ValueProviders;
 
 	public class BasicActorBinder<TInput, TOutput> :
 		ActorBinder
@@ -34,20 +33,11 @@ namespace Magnum.Web.Actors
 
 		public IHttpAsyncHandler GetHandler(ActorRequestContext context)
 		{
-			TInput inputModel = BindModel(context);
+			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
 
 			var handler = new ActorHttpAsyncHandler<TInput, TOutput>(context, inputModel, _getInputChannel());
 
 			return handler;
-		}
-
-		private TInput BindModel(ValueProvider provider)
-		{
-			ModelBinderContext context = new ActorBinderContext(provider);
-
-			var model = (TInput) _modelBinder.Bind(typeof (TInput), context);
-
-			return model;
 		}
 	}
 }

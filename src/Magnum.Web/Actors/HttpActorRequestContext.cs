@@ -19,6 +19,7 @@ namespace Magnum.Web.Actors
 	using Actions;
 	using Channels;
 	using Logging;
+	using Reflection;
 	using ValueProviders;
 
 	public class HttpActorRequestContext :
@@ -59,12 +60,15 @@ namespace Magnum.Web.Actors
 			_valueProvider.GetAll(valueAction);
 		}
 
-		public Channel<T> GetResponseChannel<T>(AsyncCallback callback, object state)
+		public Channel<T> GetChannel<T>()
+		{
+			return new ObjectResponseChannel<T>(_objectWriter, _queue, Complete);
+		}
+
+		public void SetCallback(AsyncCallback callback, object state)
 		{
 			_callback = callback;
 			_state = state;
-
-			return new ObjectResponseChannel<T>(_objectWriter, _queue, Complete);
 		}
 
 		public bool IsCompleted
@@ -85,6 +89,11 @@ namespace Magnum.Web.Actors
 		public bool CompletedSynchronously
 		{
 			get { return false; }
+		}
+
+		public Channel GetChannel(Type channelType)
+		{
+			return this.FastInvoke<HttpActorRequestContext, Channel>(new[] {channelType}, "GetChannel");
 		}
 
 		public override string ToString()

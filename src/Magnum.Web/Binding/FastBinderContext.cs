@@ -28,7 +28,6 @@ namespace Magnum.Web.Binding
 
 	public class FastBinderContext :
 		BinderContext
-
 	{
 		private static readonly Dictionary<Type, ObjectBinder> _binders;
 		private static readonly ILogger _log = Logger.GetLogger<FastBinderContext>();
@@ -70,7 +69,7 @@ namespace Magnum.Web.Binding
 
 		public object Bind(PropertyInfo property)
 		{
-			_context.Values.GetValue(property.Name, value =>
+			_context.GetValue(property.Name, value =>
 				{
 					PropertyValue = value;
 					return true;
@@ -83,6 +82,11 @@ namespace Magnum.Web.Binding
 		public string ReadElementAsString()
 		{
 			return PropertyValue != null ? PropertyValue.ToString() : null;
+		}
+
+		public Channel<T> GetChannel<T>()
+		{
+			return _context.GetChannel<T>();
 		}
 
 		public void Bind(ObjectPropertyBinder property)
