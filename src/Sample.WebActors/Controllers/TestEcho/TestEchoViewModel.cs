@@ -10,12 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Sample.WebActors.Actors.Echo
+namespace Sample.WebActors.Controllers.TestEcho
 {
-	public class EchoOutputModel
+	public class TestEchoViewModel
 	{
 		public string Text { get; set; }
-
-		public string UserAgent { get; set; }
 	}
 }

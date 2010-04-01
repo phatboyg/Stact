@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Abstractions
 {
+	using System.Web;
 	using System.Web.Script.Serialization;
 	using ValueProviders;
 
