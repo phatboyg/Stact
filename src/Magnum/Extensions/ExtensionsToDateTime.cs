@@ -10,12 +10,19 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.DateTimeExtensions
+namespace Magnum.Extensions
 {
 	using System;
 
-	public static class DateTimeExt
+	public static class ExtensionsToDateTime
 	{
+		private static DateTime _origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+		/// <summary>
+		/// Gets the current DateTime and adjusts it by the specified TimeSpan
+		/// </summary>
+		/// <param name="span"></param>
+		/// <returns></returns>
 		public static DateTime FromNow(this TimeSpan span)
 		{
 			return SystemUtil.Now + span;
@@ -90,12 +97,31 @@ namespace Magnum.DateTimeExtensions
 			return new DateTime(value.Year, value.Month, value.Day, hour, minute, second, millisecond);
 		}
 
-        public static DateTime ForceUtc(this DateTime value)
-        {
-            if (value.Kind == DateTimeKind.Utc)
-                return value;
+		public static DateTime ForceUtc(this DateTime value)
+		{
+			if (value.Kind == DateTimeKind.Utc)
+				return value;
 
-            return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond, DateTimeKind.Utc);
-        }
+			return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond, DateTimeKind.Utc);
+		}
+
+
+		/// <summary>
+		/// Gets a Unix Timestamp from a DateTime, converting local time to UTC if necessary.
+		/// </summary>
+		/// <param name="date">The date to convert</param>
+		/// <returns></returns>
+		public static int ToUnixTimestamp(this DateTime date)
+		{
+			TimeSpan difference = ((date.Kind == DateTimeKind.Local) ? date.ToUniversalTime() : date) - _origin;
+
+			return (int) Math.Floor(difference.TotalSeconds);
+		}
+
+		public static DateTime ConvertUnixTimestamp(int timestamp)
+		{
+			return _origin.AddSeconds(timestamp);
+		}
 	}
+    
 }

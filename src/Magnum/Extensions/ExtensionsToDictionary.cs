@@ -10,12 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.CollectionExtensions
+namespace Magnum.Extensions
 {
 	using System;
 	using System.Collections.Generic;
 
-	public static class DictionaryExt
+	public static class ExtensionsToDictionary
 	{
 		/// <summary>
 		/// Gets the value for the specified key or adds a new value to the dictionary

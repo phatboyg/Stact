@@ -13,7 +13,7 @@
 namespace Magnum.Specs
 {
     using System;
-    using Magnum.DateTimeExtensions;
+    using Magnum.Extensions;
     using NUnit.Framework;
 
     [TestFixture]

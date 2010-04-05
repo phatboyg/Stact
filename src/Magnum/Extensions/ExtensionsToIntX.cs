@@ -10,16 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Extensions
 {
-    /// <summary>
-    /// Used by the concurrent collections for interlocked operations
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    internal class SingleLinkNode<T>
-        where T : class
-    {
-        public SingleLinkNode<T> Next;
-        public T Item;
-    }
+	using System;
+	using System.Globalization;
+	using ObjectExtensions;
+
+	public static class ExtensionsToIntX
+	{
+		public static int FromHexToInt32(string text)
+		{
+			int value;
+			if (int.TryParse(text, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out value))
+				return value;
+
+			throw new ArgumentException("'{0}' is not a valid hexidecimal value".FormatWith(text));
+		}
+	}
 }

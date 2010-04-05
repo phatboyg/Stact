@@ -15,8 +15,8 @@ namespace Magnum.Specs.Pipeline
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
-	using CollectionExtensions;
 	using Consumers;
+	using Magnum.Extensions;
 	using Magnum.Pipeline.Visitors;
 	using Magnum.Reflection;
 	using Messages;

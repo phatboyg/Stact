@@ -10,24 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.CollectionExtensions
+namespace Magnum.Specs.Extensions
 {
-	using System.Collections.Generic;
+	using InterfaceExtensions;
+	using NUnit.Framework;
 
-	public static class ComparerExtensions
+	[TestFixture]
+	public class An_object_that_implements_a_generic_interface
 	{
-		public static IComparer<T> Reverse<T>(this IComparer<T> original)
+		public interface IGeneric<T>
 		{
-			ReverseComparer<T> originalAsReverse = original as ReverseComparer<T>;
-			if (originalAsReverse != null)
-				return originalAsReverse.OriginalComparer;
-
-			return new ReverseComparer<T>(original);
 		}
 
-		public static IComparer<T> ThenBy<T>(this IComparer<T> firstComparer, IComparer<T> secondComparer)
+		public class GenericClass : IGeneric<int>
 		{
-			return new LinkedComparer<T>(firstComparer, secondComparer);
+		}
+
+		[Test]
+		public void Should_match_the_generic_interface_type_check()
+		{
+			var genericClass = new GenericClass();
+
+			Assert.IsTrue(genericClass.Implements(typeof (IGeneric<>)));
 		}
 	}
 }

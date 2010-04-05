@@ -16,7 +16,7 @@ namespace Magnum.Reflection
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Reflection;
-	using CollectionExtensions;
+	using Extensions;
 
 	public class FastActivator
 	{

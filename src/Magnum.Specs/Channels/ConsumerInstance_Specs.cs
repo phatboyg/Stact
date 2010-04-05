@@ -15,9 +15,9 @@ namespace Magnum.Specs.Channels
 	using System;
 	using System.Linq;
 	using System.Threading;
-	using DateTimeExtensions;
 	using Magnum.Actors;
 	using Magnum.Channels;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 	using TestFramework;

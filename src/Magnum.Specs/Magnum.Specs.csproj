@@ -95,6 +95,7 @@
     <Compile Include="Activator\Generator_Specs.cs" />
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
+    <Compile Include="Extensions\StringExtension_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
     <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />
     <Compile Include="Invoker\Classes\ClassWithSimpleMethods.cs" />
@@ -121,12 +122,11 @@
     <Compile Include="CommandLine\OneArgument.cs" />
     <Compile Include="CommandLine\TwoArguments.cs" />
     <Compile Include="CommandLine\Visualizer.cs" />
-    <Compile Include="CrazySerializationIdea.cs" />
     <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
     <Compile Include="Data\UnitOfWork_Specs.cs" />
-    <Compile Include="DateTimeExtension_Specs.cs" />
-    <Compile Include="DictionaryExtension_Specs.cs" />
-    <Compile Include="Extensions\ExtensionsToInterfaces_Specs.cs" />
+    <Compile Include="Extensions\DateTimeExtension_Specs.cs" />
+    <Compile Include="Extensions\DictionaryExtension_Specs.cs" />
+    <Compile Include="Extensions\TypeExtension_Specs.cs" />
     <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
     <Compile Include="Linq\Index_Specs.cs" />
     <Compile Include="Metrics\Counter_Specs.cs" />

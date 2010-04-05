@@ -13,10 +13,10 @@
 namespace Magnum.Specs.Channels
 {
 	using System.Collections.Generic;
-	using DateTimeExtensions;
 	using Magnum.Actions;
 	using Magnum.Actors;
 	using Magnum.Channels;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
 

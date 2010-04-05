@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Pipeline
 {
 	using System.Threading;
-	using DateTimeExtensions;
+	using Magnum.Extensions;
 	using Magnum.Pipeline;
 	using Magnum.Pipeline.Segments;
 	using Messages;

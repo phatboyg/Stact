@@ -17,7 +17,7 @@ namespace Magnum.Reflection
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using CollectionExtensions;
+	using Extensions;
 
 	public class GenericFastActivator :
 		FastActivatorBase,

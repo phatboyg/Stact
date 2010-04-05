@@ -14,7 +14,7 @@ namespace Magnum.Pipeline.Visitors
 {
 	using System;
 	using System.Collections.Generic;
-	using CollectionExtensions;
+	using Extensions;
 	using Graphing;
 	using Segments;
 

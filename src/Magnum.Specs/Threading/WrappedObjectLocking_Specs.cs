@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Threading
 {
     using System.Threading;
-    using Magnum.DateTimeExtensions;
+    using Magnum.Extensions;
     using Magnum.Threading;
     using NUnit.Framework;
 

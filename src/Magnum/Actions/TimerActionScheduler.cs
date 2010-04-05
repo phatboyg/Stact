@@ -13,11 +13,13 @@
 namespace Magnum.Actions
 {
 	using System;
+	using System.Diagnostics;
 	using System.Threading;
-	using DateTimeExtensions;
+	using Extensions;
 	using Internal;
 	using Logging;
 
+	[DebuggerDisplay("{Count} Actions, Next: {NextActionTime}")]
 	public class TimerActionScheduler :
 		ActionScheduler
 	{
@@ -34,6 +36,25 @@ namespace Magnum.Actions
 		public TimerActionScheduler(ActionQueue queue)
 		{
 			_queue = queue;
+		}
+
+		protected int Count
+		{
+			get { return _actions.Count; }
+		}
+
+		protected string NextActionTime
+		{
+			get
+			{
+				DateTime now = Now;
+
+				DateTime scheduledAt;
+				if (_actions.GetNextScheduledActionTime(now, out scheduledAt))
+					return scheduledAt.ToString();
+
+				return "None";
+			}
 		}
 
 		private DateTime Now

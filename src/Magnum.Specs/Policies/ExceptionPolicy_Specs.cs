@@ -1,7 +1,7 @@
 namespace Magnum.Specs.Policies
 {
 	using System;
-	using DateTimeExtensions;
+	using Magnum.Extensions;
 	using Magnum.Policies;
 	using NUnit.Framework;
 

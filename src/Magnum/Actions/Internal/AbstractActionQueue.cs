@@ -38,6 +38,15 @@ namespace Magnum.Actions.Internal
 
 		protected abstract bool Active { get; }
 
+		protected int Count
+		{
+			get
+			{
+				lock (_lock)
+					return _actions.Count;
+			}
+		}
+
 		public void Enqueue(Action action)
 		{
 			lock (_lock)

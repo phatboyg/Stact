@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
-	using DateTimeExtensions;
 	using Magnum.Actions;
 	using Magnum.Actors;
 	using Magnum.Channels;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
 

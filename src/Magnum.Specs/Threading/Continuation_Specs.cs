@@ -19,7 +19,7 @@ namespace Magnum.Specs.Threading
     using System.Net;
     using System.Text;
     using System.Threading;
-    using DateTimeExtensions;
+    using Magnum.Extensions;
     using Magnum.Monads;
     using NUnit.Framework;
     using Monads;

@@ -14,11 +14,11 @@ namespace Magnum.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using DateTimeExtensions;
 	using Magnum.Actors;
 	using Magnum.Actors.Channels;
 	using Magnum.Actors.CommandQueues;
 	using Magnum.Actors.Schedulers;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 
 	[TestFixture]

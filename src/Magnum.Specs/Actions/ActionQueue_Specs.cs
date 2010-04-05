@@ -14,10 +14,9 @@ namespace Magnum.Specs.Actions
 {
 	using System;
 	using System.Threading;
-	using DateTimeExtensions;
 	using Magnum.Actions;
-	using Magnum.Actions.Internal;
 	using Magnum.Actors;
+	using Magnum.Extensions;
 	using Magnum.Logging;
 	using NUnit.Framework;
 	using Rhino.Mocks;

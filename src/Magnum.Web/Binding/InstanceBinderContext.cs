@@ -18,7 +18,7 @@ namespace Magnum.Web.Binding
 	using System.Linq;
 	using System.Reflection;
 	using Channels;
-	using CollectionExtensions;
+	using Extensions;
 	using InterfaceExtensions;
 	using Logging;
 	using Reflection;
