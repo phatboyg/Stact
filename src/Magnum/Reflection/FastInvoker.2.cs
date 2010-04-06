@@ -50,8 +50,8 @@ namespace Magnum.Reflection
 			var invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
-						.Where(x => x.ReturnType == typeof(TResult))
 						.MatchingArguments()
+						.Where(x => x.ReturnType == typeof(TResult))
 						.First();
 				});
 
@@ -68,10 +68,12 @@ namespace Magnum.Reflection
 			var invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
-						.Where(x => x.ReturnType == typeof (TResult))
 						.MatchingArguments(args)
-						.First()
-						.ToSpecializedMethod(args);
+						.Select(x => x.ToSpecializedMethod(args))
+						.Where(x => x.ReturnType == typeof (TResult))
+						.First();
+
+					// TODO: Need to check return type after method has been specialized
 				}, args);
 
 			return invoker(target, args);
@@ -86,10 +88,10 @@ namespace Magnum.Reflection
 					var empty = new object[] { };
 
 					return MethodNameCache[methodName]
-						.Where(x => x.ReturnType == typeof(TResult))
 						.MatchingArguments()
-						.First()
-						.ToSpecializedMethod(genericTypes, empty);
+						.Select(x => x.ToSpecializedMethod(genericTypes, empty))
+						.Where(x => x.ReturnType == typeof (TResult))
+						.First();
 				});
 
 			return invoker(target);
@@ -105,10 +107,10 @@ namespace Magnum.Reflection
 			var invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
-						.Where(x => x.ReturnType == typeof(TResult))
 						.MatchingArguments(args)
-						.First()
-						.ToSpecializedMethod(genericTypes, args);
+						.Select(x => x.ToSpecializedMethod(genericTypes, args))
+						.Where(x => x.ReturnType == typeof (TResult))
+						.First();
 				}, args);
 
 			return invoker(target, args);
