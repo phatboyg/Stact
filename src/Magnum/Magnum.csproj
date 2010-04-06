@@ -104,6 +104,7 @@
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelCache.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
+    <Compile Include="Channels\ChannelVisitor.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />

@@ -35,16 +35,6 @@ namespace Magnum.Reflection
 
 		public Type ObjectType { get; private set; }
 
-		protected static MethodInfo GetGenericMethodFromArguments(MethodInfo method, object[] args)
-		{
-			method = new[] {method.GetGenericMethodDefinition()}
-				.MatchingArguments(args)
-				.First()
-				.ToSpecializedMethod(args);
-
-			return method;
-		}
-
 		protected static int GetArgumentHashCode(int seed, object[] args)
 		{
 			int key = seed;

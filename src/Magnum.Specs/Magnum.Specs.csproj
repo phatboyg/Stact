@@ -68,6 +68,7 @@
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
+    <Compile Include="Channels\ChannelVisitor_Specs.cs" />
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />
     <Compile Include="Channels\ConsumerPool_Specs.cs" />
     <Compile Include="Channels\Interval_Specs.cs" />
