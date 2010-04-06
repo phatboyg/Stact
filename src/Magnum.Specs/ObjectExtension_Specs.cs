@@ -12,39 +12,40 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs
 {
-    using System;
-    using System.Collections.Generic;
-    using Magnum.ObjectExtensions;
-    using NUnit.Framework;
+	using System;
+	using System.Collections.Generic;
+	using Magnum.Extensions;
+	using NUnit.Framework;
+	using ObjectExtensions;
 
-    [TestFixture]
-    public class When_a_value_is_being_verified
-    {
-        [Test]
-        public void An_exception_should_be_thrown_if_the_value_is_out_of_range()
-        {
-            List<int> items = new List<int> { 1,2,3,4,5,6,7};
-            int value = 27;
+	[TestFixture]
+	public class When_a_value_is_being_verified
+	{
+		[Test]
+		public void An_exception_should_be_thrown_if_the_value_is_out_of_range()
+		{
+			var items = new List<int> {1, 2, 3, 4, 5, 6, 7};
+			int value = 27;
 
-            try
-            {
-                value.MustBeInRange(0.Through(items.Count));
+			try
+			{
+				value.MustBeInRange(0.Through(items.Count));
 
-                Assert.Fail("The exception should have been thrown");
-            }
-            catch (ArgumentException)
-            {
-            }
-            catch (Exception)
-            {
-                Assert.Fail("Should have been an ArgumentException");
-            }
-        }
+				Assert.Fail("The exception should have been thrown");
+			}
+			catch (ArgumentException)
+			{
+			}
+			catch (Exception)
+			{
+				Assert.Fail("Should have been an ArgumentException");
+			}
+		}
 
-        [Test]
-        public void TestFormatWith()
-        {
-            Assert.AreEqual("'rob'", "'{0}'".FormatWith("rob"));
-        }
-    }
+		[Test]
+		public void TestFormatWith()
+		{
+			Assert.AreEqual("'rob'", "'{0}'".FormatWith("rob"));
+		}
+	}
 }

@@ -28,10 +28,9 @@ namespace Magnum.Linq
 
 		public static IEnumerable<TResult> Batch<TSource, TResult>(this IEnumerable<TSource> source, int size, Func<IEnumerable<TSource>, TResult> resultSelector)
 		{
-			source.MustNotBeNull("source");
-			if (size <= 0)
-				throw new ArgumentOutOfRangeException("size", "must be greater than zero");
-			resultSelector.MustNotBeNull("resultSelector");
+			Guard.AgainstNull(source, "source");
+			Guard.GreaterThan(0, size, "size");
+			Guard.AgainstNull(resultSelector, "resultSelector");
 
 			return BatchImpl(source, size, resultSelector);
 		}

@@ -15,6 +15,7 @@ namespace Magnum.Logging
 	using System;
 	using System.Diagnostics;
 	using System.Threading;
+	using Extensions;
 	using ObjectExtensions;
 
 	public class TraceLogWriter :
@@ -72,7 +73,7 @@ namespace Magnum.Logging
 
 		public void Write(string message)
 		{
-			if (_enabled() && !message.IsNullOrEmpty())
+			if (_enabled() && message.IsNotEmpty())
 				WriteLine(message);
 		}
 

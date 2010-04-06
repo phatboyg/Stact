@@ -40,14 +40,14 @@ namespace Magnum.Linq
 
 		public static IEnumerable<TResult> Index<TResult>(Func<int, TResult> selector)
 		{
-			selector.MustNotBeNull("selector");
+			Guard.AgainstNull(selector, "selector");
 
 			return GenerateByIndexImpl(0, selector);
 		}
 
 		public static IEnumerable<TResult> Index<TResult>(int start, Func<int, TResult> selector)
 		{
-			selector.MustNotBeNull("selector");
+			Guard.AgainstNull(selector, "selector");
 
 			return GenerateByIndexImpl(start, selector);
 		}

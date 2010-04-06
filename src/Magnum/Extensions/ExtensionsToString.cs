@@ -43,5 +43,16 @@ namespace Magnum.Extensions
 		{
 			return value == null;
 		}
+
+		/// <summary>
+		/// Uses the string as a template and applies the specified arguments
+		/// </summary>
+		/// <param name="format">The format string</param>
+		/// <param name="args">The arguments to pass to the format provider</param>
+		/// <returns>The formatted string</returns>
+		public static string FormatWith(this string format, params object[] args)
+		{
+			return format.IsEmpty() ? format : string.Format(format, args);
+		}
 	}
 }

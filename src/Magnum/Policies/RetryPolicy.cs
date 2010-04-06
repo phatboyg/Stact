@@ -19,40 +19,42 @@ namespace Magnum.Policies
 	{
 		public static ExceptionPolicy Retry(this PolicyBuilder<ExceptionHandler> builder, int retryCount)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
+			Guard.AgainstNull(builder, "builder");
+			Guard.GreaterThan(0, retryCount, "retryCount");
 
 			return new ExceptionPolicy(action => ImplementPolicy(action, RetryImmediately(builder.Condition, retryCount)));
 		}
 
 		public static ExceptionPolicy Retry(this PolicyBuilder<ExceptionHandler> builder, int retryCount, Action<Exception, int> retryAction)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
-			Guard.Against.Null(retryAction, "retryAction cannot be null");
+			Guard.AgainstNull(builder, "builder");
+			Guard.GreaterThan(0, retryCount, "retryCount");
+			Guard.AgainstNull(retryAction, "retryAction");
 
 			return new ExceptionPolicy(action => ImplementPolicy(action, RetryImmediately(builder.Condition, retryCount, retryAction)));
 		}
 
 		public static ExceptionPolicy Retry(this PolicyBuilder<ExceptionHandler> builder, Action<Exception> retryAction)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
-			Guard.Against.Null(retryAction, "retryAction cannot be null");
+			Guard.AgainstNull(builder, "builder");
+			Guard.AgainstNull(retryAction, "retryAction");
 
 			return new ExceptionPolicy(action => ImplementPolicy(action, RetryImmediately(builder.Condition, retryAction)));
 		}
 
 		public static ExceptionPolicy Retry(this PolicyBuilder<ExceptionHandler> builder, IEnumerable<TimeSpan> intervals, Action<Exception, TimeSpan> retryAction)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
-			Guard.Against.Null(intervals, "intervals cannot be null");
-			Guard.Against.Null(retryAction, "retryAction cannot be null");
+			Guard.AgainstNull(builder, "builder");
+			Guard.AgainstNull(intervals, "intervals");
+			Guard.AgainstNull(retryAction, "retryAction");
 
 			return new ExceptionPolicy(action => ImplementPolicy(action, RetryInterval(builder.Condition, intervals, retryAction)));
 		}
 
 		public static ExceptionPolicy Retry(this PolicyBuilder<ExceptionHandler> builder, IEnumerable<TimeSpan> intervals)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
-			Guard.Against.Null(intervals, "intervals cannot be null");
+			Guard.AgainstNull(builder, "builder");
+			Guard.AgainstNull(intervals, "intervals");
 
 			return new ExceptionPolicy(action => ImplementPolicy(action, RetryInterval(builder.Condition, intervals)));
 		}

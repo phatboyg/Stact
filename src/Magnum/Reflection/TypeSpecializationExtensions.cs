@@ -24,13 +24,13 @@ namespace Magnum.Reflection
 		public static Type ToSpecializedType<T>(this T method, object[] args)
 			where T : MethodBase
 		{
-			Guard.Against.Null(method, "method");
+			Guard.AgainstNull(method, "method");
 
 			Type type = method.DeclaringType;
 			if (!type.IsGenericType)
 				throw new ArgumentException("The argument must be for a generic type", "method");
 
-			Guard.Against.Null(args, "args");
+			Guard.AgainstNull(args, "args");
 
 			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), type.GetGenericArguments(), args);
 
@@ -39,12 +39,12 @@ namespace Magnum.Reflection
 
 		public static MethodInfo ToSpecializedMethod(this MethodInfo method, object[] args)
 		{
-			Guard.Against.Null(method, "method");
+			Guard.AgainstNull(method, "method");
 
 			if (!method.IsGenericMethod)
 				return method;
 
-			Guard.Against.Null(args, "args");
+			Guard.AgainstNull(args, "args");
 
 			Type[] genericArguments = GetGenericTypesFromArguments(method.GetParameters(), method.GetGenericArguments(), args);
 
@@ -53,13 +53,13 @@ namespace Magnum.Reflection
 
 		public static MethodInfo ToSpecializedMethod(this MethodInfo method, Type[] genericTypes, object[] args)
 		{
-			Guard.Against.Null(method, "method");
+			Guard.AgainstNull(method, "method");
 
 			if (!method.IsGenericMethod)
 				return method;
 
-			Guard.Against.Null(genericTypes, "genericTypes");
-			Guard.Against.Null(args, "args");
+			Guard.AgainstNull(genericTypes, "genericTypes");
+			Guard.AgainstNull(args, "args");
 
 			Type[] arguments = method.GetGenericArguments()
 				.ApplyGenericTypesToArguments(genericTypes);

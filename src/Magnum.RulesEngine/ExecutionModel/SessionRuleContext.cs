@@ -14,7 +14,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 	using System.Collections.Generic;
-	using CollectionExtensions;
+	using Extensions;
 
 	public class SessionRuleContext<T> :
 		RuleContext<T>

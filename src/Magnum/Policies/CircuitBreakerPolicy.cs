@@ -18,7 +18,8 @@ namespace Magnum.Policies
 	{
 		public static ExceptionPolicy CircuitBreak(this PolicyBuilder<ExceptionHandler> builder, TimeSpan duration, int threshold)
 		{
-			Guard.Against.Null(builder, "builder cannot be null");
+			Guard.AgainstNull(builder, "builder");
+
 			if (duration == default(TimeSpan))
 				throw new ArgumentOutOfRangeException("duration", "must be greater than zero");
 			if (threshold <= 0)

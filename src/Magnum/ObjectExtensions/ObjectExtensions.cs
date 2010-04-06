@@ -13,52 +13,9 @@
 namespace Magnum.ObjectExtensions
 {
 	using System;
-	using System.Reflection;
 
-    public static class ObjectExt
+	public static class ObjectExt
 	{
-		public static void MustNotBeNull<T>(this T reference) where T : class
-		{
-			if (reference == null)
-				throw new ArgumentNullException();
-		}
-
-		public static void MustNotBeNull<T>(this T reference, string name) where T : class
-		{
-			if (reference == null)
-				throw new ArgumentNullException(name);
-		}
-
-		public static void MustNotBeNull<T>(this T reference, string name, string message) where T : class
-		{
-			if (reference == null)
-				throw new ArgumentNullException(name, message);
-		}
-
-		public static void MustNotBeEmpty(this string value)
-		{
-			if (value == null)
-				throw new ArgumentNullException();
-
-			if (string.IsNullOrEmpty(value))
-				throw new ArgumentException();
-		}
-
-		public static void MustNotBeEmpty(this string value, string name)
-		{
-			if (value == null)
-				throw new ArgumentNullException(name, "The argument must not be null");
-
-			if (string.IsNullOrEmpty(value))
-				throw new ArgumentException("The argument must not be empty", name);
-		}
-
-		public static void MustNotBeEmpty(this string value, string name, string message)
-		{
-			if (string.IsNullOrEmpty(value))
-				throw new ArgumentException(message, name);
-		}
-
 		public static void MustBeInRange<T>(this T value, RangeBuilder<T> rangeBuilder)
 		{
 			Range<T> range = rangeBuilder;
@@ -71,35 +28,5 @@ namespace Magnum.ObjectExtensions
 			if (!range.Contains(value))
 				throw new ArgumentException();
 		}
-
-        public static bool IsNullOrEmpty(this string value)
-        {
-            return string.IsNullOrEmpty(value);
-        }
-
-        /// <summary>
-        /// props to Jeremy Miller for these two nice helpers
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="provider"></param>
-        /// <returns></returns>
-	    public static T GetAttribute<T>(this ICustomAttributeProvider provider) where T : Attribute
-	    {
-	        var attributes = provider.GetCustomAttributes(typeof(T), true);
-	        return attributes.Length > 0 ? attributes[0] as T : null;
-	    }
-
-        public static void ForAttributesOf<T>(this ICustomAttributeProvider provider, Action<T> action) where T : Attribute
-        {
-            foreach (T attribute in provider.GetCustomAttributes(typeof(T), true))
-            {
-                action(attribute);
-            }
-        }
-
-        public static string FormatWith(this string format, params string[] args)
-        {
-            return string.Format(format, args);
-        }
 	}
 }

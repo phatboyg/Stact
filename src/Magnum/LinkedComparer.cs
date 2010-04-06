@@ -13,26 +13,26 @@
 namespace Magnum
 {
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
-	public class LinkedComparer<T> : IComparer<T>
+	public class LinkedComparer<T> :
+		IComparer<T>
 	{
-		readonly IComparer<T> primary, secondary;
+		private readonly IComparer<T> _primary, _secondary;
 
 		public LinkedComparer(IComparer<T> primary, IComparer<T> secondary)
 		{
-			primary.MustNotBeNull("primary");
-			secondary.MustNotBeNull("secondary");
+			Guard.AgainstNull(primary, "primary");
+			Guard.AgainstNull(secondary, "secondary");
 
-			this.primary = primary;
-			this.secondary = secondary;
+			_primary = primary;
+			_secondary = secondary;
 		}
 
 		int IComparer<T>.Compare(T x, T y)
 		{
-			int result = primary.Compare(x, y);
+			int result = _primary.Compare(x, y);
 
-			return result == 0 ? secondary.Compare(x, y) : result;
+			return result == 0 ? _secondary.Compare(x, y) : result;
 		}
 	}
 }

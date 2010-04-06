@@ -152,8 +152,8 @@ namespace Magnum
 
             public MapAction<TProperty> To<TTargetProperty>(Expression<Func<TTarget, TTargetProperty>> expression)
             {
-                var body = expression.Body as MemberExpression;
-                body.MustNotBeNull("expression");
+            	Guard.AgainstNull(expression);
+            	var body = Guard.IsTypeOf<MemberExpression>(expression.Body);
 
                 Type t = body.Member.DeclaringType;
                 PropertyInfo prop = t.GetProperty(body.Member.Name,

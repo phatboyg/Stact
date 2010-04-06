@@ -14,16 +14,15 @@ namespace Magnum.Linq
 {
 	using System;
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
 	public static class LinqSingleExtensions
 	{
 		public static T SingleOr<T>(this IEnumerable<T> source, Func<T> onMissing)
 		{
-			source.MustNotBeNull("source");
-			onMissing.MustNotBeNull("onMissing");
+			Guard.AgainstNull(source, "source");
+			Guard.AgainstNull(onMissing, "onMissing");
 
-			using (var iterator = source.GetEnumerator())
+			using (IEnumerator<T> iterator = source.GetEnumerator())
 			{
 				if (!iterator.MoveNext())
 					return onMissing();

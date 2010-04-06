@@ -122,7 +122,6 @@
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
     <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
-    <Compile Include="Check.cs" />
     <Compile Include="Collections\Algorithms.cs" />
     <Compile Include="Collections\Bag.cs" />
     <Compile Include="Collections\BigList.cs" />
@@ -185,7 +184,6 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="Concurrency\SingleLinkNode.cs" />
     <Compile Include="Configuration\Client\IReadOnlySettings.cs" />
     <Compile Include="Configuration\Client\IReadWriteSettings.cs" />
     <Compile Include="Configuration\Client\ISetting.cs" />
@@ -208,6 +206,7 @@
     <Compile Include="Data\NullUnitOfWork.cs" />
     <Compile Include="Data\ITransaction.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
+    <Compile Include="Extensions\ExtensionsToAttributes.cs" />
     <Compile Include="Extensions\ExtensionsToDateTime.cs" />
     <Compile Include="Extensions\ExtensionsToDictionary.cs" />
     <Compile Include="EventStreamProcessing\ObjectParser.cs" />
