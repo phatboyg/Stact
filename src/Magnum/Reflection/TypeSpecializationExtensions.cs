@@ -15,6 +15,7 @@ namespace Magnum.Reflection
 	using System;
 	using System.Linq;
 	using System.Reflection;
+	using Extensions;
 	using InterfaceExtensions;
 	using Linq;
 	using ExtensionsToInterfaces=Magnum.InterfaceExtensions.ExtensionsToInterfaces;

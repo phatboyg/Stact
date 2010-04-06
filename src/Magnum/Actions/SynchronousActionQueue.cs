@@ -13,6 +13,7 @@
 namespace Magnum.Actions
 {
 	using System;
+	using Extensions;
 	using Logging;
 
 	public class SynchronousActionQueue :

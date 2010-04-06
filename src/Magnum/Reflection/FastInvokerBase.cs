@@ -16,6 +16,7 @@ namespace Magnum.Reflection
 	using System.Linq;
 	using System.Reflection;
 	using Collections;
+	using Extensions;
 
 	public abstract class FastInvokerBase
 	{

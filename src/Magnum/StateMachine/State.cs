@@ -14,6 +14,7 @@ namespace Magnum.StateMachine
 {
 	using System;
 	using Collections;
+	using Extensions;
 
 	public class State<T> :
 		State,

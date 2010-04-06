@@ -15,6 +15,7 @@ namespace Magnum.Web.ValueProviders
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
+	using Extensions;
 
 	public class DictionaryValueProvider :
 		ValueProvider

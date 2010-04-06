@@ -15,6 +15,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System;
 	using System.Linq;
 	using Collections;
+	using Extensions;
 
 	public class PriorityQueue<T>
 	{

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding
 {
+	using Extensions;
 	using Reflection;
 
 	public class FastObjectBinder<T> :

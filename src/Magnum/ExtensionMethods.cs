@@ -20,36 +20,6 @@ namespace Magnum
 
 	public static class ExtensionMethods
 	{
-		/// <summary>
-		/// Enumerates a collection, calling the specified action for each entry in the collection
-		/// </summary>
-		/// <typeparam name="T">The type of the enumeration</typeparam>
-		/// <param name="collection">The collection to enumerate</param>
-		/// <param name="callback">The action to call for each entry in the collection</param>
-		/// <returns>The collection that was enumerated</returns>
-		public static IEnumerable<T> Each<T>(this IEnumerable<T> collection, Action<T> callback)
-		{
-			foreach (T item in collection)
-			{
-				callback(item);
-			}
-
-			return collection;
-		}
-
-		public static bool EachUntilFalse<T>(this IEnumerable collection, Func<T, bool> callback)
-		{
-			foreach (T item in collection)
-			{
-				if(item == null)
-					continue;
-
-				if(callback(item) == false)
-					return false;
-			}
-
-			return true;
-		}
 
 		/// <summary>
 		/// Wraps an object that implements IDisposable in an enumeration to make it safe for use in LINQ expressions
@@ -70,82 +40,6 @@ namespace Magnum
 			}
 		}
 
-		/// <summary>
-		/// Gets the name of the member specified
-		/// </summary>
-		/// <typeparam name="T">The type referenced</typeparam>
-		/// <typeparam name="V">The type of the member referenced</typeparam>
-		/// <param name="expression">The expression referencing the member</param>
-		/// <returns>The name of the member referenced by the expression</returns>
-		public static string MemberName<T, V>(this Expression<Func<T, V>> expression)
-		{
-			var memberExpression = expression.GetMemberExpression();
-
-			return memberExpression.Member.Name;
-		}
-
-		public static MemberExpression GetMemberExpression<T,V>(this Expression<Func<T,V>> expression)
-		{
-          MemberExpression memberExpression = null;
-            if (expression.Body.NodeType == ExpressionType.Convert)
-            {
-                var body = (UnaryExpression) expression.Body;
-                memberExpression = body.Operand as MemberExpression;
-            }
-            else if (expression.Body.NodeType == ExpressionType.MemberAccess)
-            {
-                memberExpression = expression.Body as MemberExpression;
-            }
-
-            if (memberExpression == null) throw new ArgumentException("Expression is not a member access");
-            return memberExpression;
-		}
-
-		public static MemberExpression GetMemberExpression<T>(this Expression<Action<T>> expression)
-		{
-          MemberExpression memberExpression = null;
-            if (expression.Body.NodeType == ExpressionType.Convert)
-            {
-                var body = (UnaryExpression) expression.Body;
-                memberExpression = body.Operand as MemberExpression;
-            }
-            else if (expression.Body.NodeType == ExpressionType.MemberAccess)
-            {
-                memberExpression = expression.Body as MemberExpression;
-            }
-
-            if (memberExpression == null) throw new ArgumentException("Expression is not a member access");
-            return memberExpression;
-  
-		}
-
-		public static PropertyInfo GetMemberPropertyInfo<T, V>(this Expression<Func<T, V>> expression)
-		{
-			return expression.GetMemberExpression().Member as PropertyInfo;
-		}
-
-		/// <summary>
-		/// Gets the name of the member specified
-		/// </summary>
-		/// <typeparam name="T">The type referenced</typeparam>
-		/// <typeparam name="V">The type of the member referenced</typeparam>
-		/// <param name="expression">The expression referencing the member</param>
-		/// <returns>The name of the member referenced by the expression</returns>
-		public static string MemberName<T>(this Expression<Action<T>> expression)
-		{
-			var memberExpression = expression.GetMemberExpression();
-
-			return memberExpression.Member.Name;
-		}
-
-		public static string MemberName<T1, T2>(this Expression<Action<T1, T2>> expression)
-		{
-			var memberExpression = expression.Body as MemberExpression;
-			if (memberExpression == null)
-				throw new InvalidOperationException("Expression must be a member expression");
-
-			return memberExpression.Member.Name;
-		}
 
 		/// <summary>
 		/// Wraps an action expression with no arguments inside an expression that takes an 

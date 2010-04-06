@@ -21,7 +21,7 @@ namespace Magnum.Actions
 	/// An ActionQueue that uses the .NET ThreadPool and QueueUserWorkItem to execute
 	/// actions.
 	/// </summary>
-	[DebuggerDisplay("{Count} Actions, ThreadPoolActionQueue")]
+	[DebuggerDisplay("{GetType().Name} ( Count: {Count} )")]
 	public class ThreadPoolActionQueue :
 		AbstractActionQueue
 	{

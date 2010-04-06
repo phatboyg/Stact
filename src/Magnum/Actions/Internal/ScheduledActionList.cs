@@ -15,6 +15,7 @@ namespace Magnum.Actions.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 
 	public class ScheduledActionList
 	{

@@ -15,6 +15,7 @@ namespace Magnum.Reflection
 	using System;
 	using System.Reflection;
 	using System.Reflection.Emit;
+	using Extensions;
 	using Threading;
 
 	public static class InterfaceImplementationBuilder

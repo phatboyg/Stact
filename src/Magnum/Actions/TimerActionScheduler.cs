@@ -13,13 +13,14 @@
 namespace Magnum.Actions
 {
 	using System;
+	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
 	using Extensions;
 	using Internal;
 	using Logging;
 
-	[DebuggerDisplay("{Count} Actions, Next: {NextActionTime}")]
+	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
 	public class TimerActionScheduler :
 		ActionScheduler
 	{
@@ -38,11 +39,13 @@ namespace Magnum.Actions
 			_queue = queue;
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		protected int Count
 		{
 			get { return _actions.Count; }
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		protected string NextActionTime
 		{
 			get

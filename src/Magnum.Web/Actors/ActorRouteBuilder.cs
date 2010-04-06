@@ -20,6 +20,7 @@ namespace Magnum.Web.Actors
 	using Actions;
 	using Binding;
 	using Channels;
+	using Extensions;
 	using InterfaceExtensions;
 	using Reflection;
 

@@ -16,6 +16,7 @@ namespace Magnum.Collections
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 
 	[Serializable]
 	public class Cache<TKey, TValue> :

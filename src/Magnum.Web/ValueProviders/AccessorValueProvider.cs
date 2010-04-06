@@ -15,6 +15,7 @@ namespace Magnum.Web.ValueProviders
 	using System;
 	using System.Collections.Generic;
 	using System.Collections.Specialized;
+	using Extensions;
 
 	public class AccessorValueProvider :
 		ValueProvider

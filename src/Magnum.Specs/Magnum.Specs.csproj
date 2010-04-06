@@ -95,6 +95,7 @@
     <Compile Include="Activator\Generator_Specs.cs" />
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
+    <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
     <Compile Include="Guard_Specs.cs" />

@@ -15,6 +15,7 @@ namespace Magnum.Web.ValueProviders
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 
 	/// <summary>
 	/// Requests a value from an ordered list of value providers

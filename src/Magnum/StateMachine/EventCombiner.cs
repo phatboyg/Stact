@@ -17,6 +17,7 @@ namespace Magnum.StateMachine
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Extensions;
 	using Reflection;
 
 	/// <summary>

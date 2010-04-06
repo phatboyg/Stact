@@ -18,6 +18,7 @@ namespace Magnum.RulesEngine.Visualizers
 	using System.Drawing;
 	using System.Drawing.Imaging;
 	using System.Linq;
+	using Extensions;
 	using Graphing;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
