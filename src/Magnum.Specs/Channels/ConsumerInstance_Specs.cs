@@ -13,6 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
 	using Magnum.Actors;
@@ -34,7 +35,7 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Twice();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
 
 			var channel = new InstanceChannel<MyMessage>(provider);
 
@@ -54,11 +55,11 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Once();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Once();
 
 			KeyAccessor<MyMessage, Guid> messageKeyAccessor = x => x.Id;
 
-			var channel = new InstanceChannel<MyMessage>(new KeyedChannelProvider<MyMessage, Guid>(provider, messageKeyAccessor).GetChannel);
+			var channel = new InstanceChannel<MyMessage>(new KeyedChannelProvider<MyMessage, Guid>(provider, messageKeyAccessor));
 
 			channel.Send(message);
 			channel.Send(message);
@@ -76,11 +77,11 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Once();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Once();
 
 			KeyAccessor<int, int> messageKeyAccessor = x => x;
 
-			var channel = new InstanceChannel<int>(new KeyedChannelProvider<int, int>(provider, messageKeyAccessor).GetChannel);
+			var channel = new InstanceChannel<int>(new KeyedChannelProvider<int, int>(provider, messageKeyAccessor));
 
 
 			channel.Send(message);
@@ -99,32 +100,27 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Twice();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
 
-			var channel = new InstanceChannel<int>(new ThreadStaticChannelProvider<int>(provider).GetChannel);
+			var channel = new InstanceChannel<int>(new ThreadStaticChannelProvider<int>(provider));
 
 			Future<bool> first = new Future<bool>();
 			Future<bool> second = new Future<bool>();
+			var started = new Future<bool>();
 
 			ThreadPool.QueueUserWorkItem(x =>
 				{
-					long k;
-					for (int i = 0; i < 10000000; i++)
-					{
-						k = i*777;
-						
-					}
 					channel.Send(message);
+					started.Complete(true);
+
+					second.IsAvailable(5.Seconds());
 					first.Complete(true);
 				});
+
+			started.IsAvailable(5.Seconds());
+
 			ThreadPool.QueueUserWorkItem(x =>
 				{
-					long k;
-					for (int i = 0; i < 10000000; i++)
-					{
-						k = i * 777;
-
-					}
 					channel.Send(message);
 					second.Complete(true);
 				});

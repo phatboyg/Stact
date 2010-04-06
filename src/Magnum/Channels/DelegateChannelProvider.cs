@@ -12,35 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System.Collections.Generic;
+	using System;
 
-	public class KeyedChannelProvider<T, TKey> :
+	/// <summary>
+	/// Wraps an anonymous method in a ChannelProvider
+	/// </summary>
+	/// <typeparam name="T">The channel type</typeparam>
+	public class DelegateChannelProvider<T> :
 		ChannelProvider<T>
 	{
-		private readonly Dictionary<TKey, Channel<T>> _dictionary = new Dictionary<TKey, Channel<T>>();
-		private readonly KeyAccessor<T, TKey> _keyAccessor;
+		private readonly Func<T, Channel<T>> _channelProvider;
 
-		public KeyedChannelProvider(ChannelProvider<T> instanceProvider, KeyAccessor<T, TKey> keyAccessor)
+		public DelegateChannelProvider(Func<T, Channel<T>> channelProvider)
 		{
-			InstanceProvider = instanceProvider;
-			_keyAccessor = keyAccessor;
-		}
+			Guard.AgainstNull(channelProvider, "channelProvider");
 
-		public ChannelProvider<T> InstanceProvider { get; private set; }
+			_channelProvider = channelProvider;
+		}
 
 		public Channel<T> GetChannel(T message)
 		{
-			TKey key = _keyAccessor(message);
-
-			Channel<T> value;
-			if (_dictionary.TryGetValue(key, out value))
-				return value;
-
-			value = InstanceProvider.GetChannel(message);
-
-			_dictionary.Add(key, value);
-
-			return value;
+			return _channelProvider(message);
 		}
 	}
 }

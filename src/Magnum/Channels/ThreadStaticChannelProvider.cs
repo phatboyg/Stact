@@ -22,22 +22,25 @@ namespace Magnum.Channels
 	/// between calls since threads may change and ordering cannot be guaranteed
 	/// </summary>
 	/// <typeparam name="T">The message type of the channel</typeparam>
-	public class ThreadStaticChannelProvider<T>
+	public class ThreadStaticChannelProvider<T> :
+		ChannelProvider<T>
 	{
-		private readonly ChannelProvider<T> _instanceProvider;
-
 		[ThreadStatic]
-		private Channel<T> _instance;
+		private static Channel<T> _instance;
 
 		public ThreadStaticChannelProvider(ChannelProvider<T> instanceProvider)
 		{
-			_instanceProvider = instanceProvider;
+			InstanceProvider = instanceProvider;
 		}
+
+		public ChannelProvider<T> InstanceProvider { get; private set; }
 
 		public Channel<T> GetChannel(T message)
 		{
 			if (_instance == null)
-				_instance = _instanceProvider(message);
+			{
+				_instance = InstanceProvider.GetChannel(message);
+			}
 
 			return _instance;
 		}

@@ -20,16 +20,16 @@ namespace Magnum.Channels
 	public class InstanceChannel<T> :
 		Channel<T>
 	{
-		private readonly ChannelProvider<T> _instanceProvider;
-
-		public InstanceChannel(ChannelProvider<T> channelInstanceProvider)
+		public InstanceChannel(ChannelProvider<T> instanceProvider)
 		{
-			_instanceProvider = channelInstanceProvider;
+			Provider = instanceProvider;
 		}
+
+		public ChannelProvider<T> Provider { get; private set; }
 
 		public void Send(T message)
 		{
-			Channel<T> channel = _instanceProvider(message);
+			Channel<T> channel = Provider.GetChannel(message);
 			if (channel == null)
 				return;
 

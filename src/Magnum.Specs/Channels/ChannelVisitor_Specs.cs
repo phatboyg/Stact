@@ -31,7 +31,18 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_capture_the_instance_channel()
 		{
-			var channel = new InstanceChannel<int>(x => new ConsumerChannel<int>(new SynchronousActionQueue(), y => { }));
+			var provider = new DelegateChannelProvider<int>(x => new ConsumerChannel<int>(new SynchronousActionQueue(), y => { }));
+			var channel = new InstanceChannel<int>(provider);
+
+			new ChannelVisitor().Visit(channel);
+		}
+
+		[Test]
+		public void Should_capture_the_instance_channel_with_thread_provider()
+		{
+			var provider = new DelegateChannelProvider<int>(x => new ConsumerChannel<int>(new SynchronousActionQueue(), y => { }));
+			var threadProvider = new ThreadStaticChannelProvider<int>(provider);
+			var channel = new InstanceChannel<int>(threadProvider);
 
 			new ChannelVisitor().Visit(channel);
 		}

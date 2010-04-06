@@ -109,6 +109,10 @@
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Channels\ChannelProvider.cs" />
+    <Compile Include="Channels\DelegateChannelProvider.cs" />
+    <Compile Include="Channels\Interceptor.cs" />
+    <Compile Include="Channels\InterceptorChannel.cs" />
+    <Compile Include="Channels\InterceptorProvider.cs" />
     <Compile Include="Channels\KeyedChannelProvider.cs" />
     <Compile Include="Channels\DistinctIntervalChannel.cs" />
     <Compile Include="Channels\Filter.cs" />
