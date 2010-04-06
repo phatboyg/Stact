@@ -17,7 +17,6 @@ namespace Magnum
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Text;
-    using ObjectExtensions;
 
     public class Mapper<TSource, TTarget>
         where TTarget : new()

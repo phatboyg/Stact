@@ -14,7 +14,6 @@ namespace Magnum.Linq
 {
 	using System;
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
 	public static class LinqIndexExtensions
 	{

@@ -16,7 +16,6 @@ namespace Magnum.Specs
 	using System.Collections.Generic;
 	using Magnum.Extensions;
 	using NUnit.Framework;
-	using ObjectExtensions;
 
 	[TestFixture]
 	public class When_a_value_is_being_verified

@@ -79,6 +79,21 @@ namespace Magnum.Extensions
 			return GetMemberExpression(expression.Body);
 		}
 
+		/// <summary>
+		/// Wraps an action expression with no arguments inside an expression that takes an 
+		/// argument of the specified type (the argument is ignored, but the original expression is
+		/// invoked)
+		/// </summary>
+		/// <typeparam name="TArgument">The type of argument to accept in the wrapping expression</typeparam>
+		/// <param name="expression">The expression to wrap</param>
+		/// <returns></returns>
+		public static Expression<Action<TArgument>> WrapActionWithArgument<TArgument>(this Expression<Action> expression)
+		{
+			ParameterExpression parameter = Expression.Parameter(typeof (TArgument), "x");
+
+			return Expression.Lambda<Action<TArgument>>(Expression.Invoke(expression), parameter);
+		}
+
 		private static MemberExpression GetMemberExpression(Expression body)
 		{
 			Guard.AgainstNull(body, "body");
@@ -94,9 +109,9 @@ namespace Magnum.Extensions
 				memberExpression = body as MemberExpression;
 			}
 
-			if (memberExpression == null) 
+			if (memberExpression == null)
 				throw new ArgumentException("Expression is not a member access");
-			
+
 			return memberExpression;
 		}
 	}

@@ -10,17 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum
+namespace Magnum.Extensions
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
-	using System.Linq.Expressions;
-	using System.Reflection;
 
-	public static class ExtensionMethods
+	public static class ExtensionsToDisposable
 	{
-
 		/// <summary>
 		/// Wraps an object that implements IDisposable in an enumeration to make it safe for use in LINQ expressions
 		/// </summary>
@@ -38,22 +34,6 @@ namespace Magnum
 			{
 				target.Dispose();
 			}
-		}
-
-
-		/// <summary>
-		/// Wraps an action expression with no arguments inside an expression that takes an 
-		/// argument of the specified type (the argument is ignored, but the original expression is
-		/// invoked)
-		/// </summary>
-		/// <typeparam name="TArgument">The type of argument to accept in the wrapping expression</typeparam>
-		/// <param name="expression">The expression to wrap</param>
-		/// <returns></returns>
-		public static Expression<Action<TArgument>> WrapActionWithArgument<TArgument>(this Expression<Action> expression)
-		{
-			ParameterExpression parameter = Expression.Parameter(typeof (TArgument), "x");
-
-			return Expression.Lambda<Action<TArgument>>(Expression.Invoke(expression), parameter);
 		}
 	}
 }

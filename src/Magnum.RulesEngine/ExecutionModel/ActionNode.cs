@@ -14,6 +14,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 	using System.Linq.Expressions;
+	using Extensions;
 
 	/// <summary>
 	/// An ActionNode contains an action that should be invoked when the node is activated.

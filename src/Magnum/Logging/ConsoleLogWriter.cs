@@ -14,7 +14,6 @@ namespace Magnum.Logging
 {
 	using System;
 	using Extensions;
-	using ObjectExtensions;
 
 	public class ConsoleLogWriter :
 		ILogWriter

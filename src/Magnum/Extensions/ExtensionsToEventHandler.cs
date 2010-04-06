@@ -10,23 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.ObjectExtensions
+namespace Magnum.Extensions
 {
 	using System;
 
-	public static class ObjectExt
+	public static class ExtensionsToEventHandler
 	{
-		public static void MustBeInRange<T>(this T value, RangeBuilder<T> rangeBuilder)
+		/// <summary>
+		/// thanks, http://kohari.org/2009/02/07/eventhandler-extension-method/
+		/// </summary>
+		public static void Raise<T>(this EventHandler<T> handler, object sender, T args)
+			where T : EventArgs
 		{
-			Range<T> range = rangeBuilder;
-
-			value.MustBeInRange(range);
-		}
-
-		public static void MustBeInRange<T>(this T value, Range<T> range)
-		{
-			if (!range.Contains(value))
-				throw new ArgumentException();
+			EventHandler<T> evt = handler;
+			if (evt != null) evt(sender, args);
 		}
 	}
 }

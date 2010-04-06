@@ -13,17 +13,20 @@
 namespace Magnum.Extensions
 {
 	using System;
-	using System.Globalization;
 
-	public static class ExtensionsToIntX
+	public static class ExtensionsToRange
 	{
-		public static int FromHexToInt32(string text)
+		public static void MustBeInRange<T>(this T value, RangeBuilder<T> rangeBuilder)
 		{
-			int value;
-			if (int.TryParse(text, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out value))
-				return value;
+			Range<T> range = rangeBuilder;
 
-			throw new ArgumentException("'{0}' is not a valid hexidecimal value".FormatWith(text));
+			value.MustBeInRange(range);
+		}
+
+		public static void MustBeInRange<T>(this T value, Range<T> range)
+		{
+			if (!range.Contains(value))
+				throw new ArgumentException();
 		}
 	}
 }

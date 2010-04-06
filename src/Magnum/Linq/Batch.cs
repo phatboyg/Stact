@@ -17,7 +17,6 @@ namespace Magnum.Linq
 	using System.Diagnostics;
 	using System.Linq;
 	using Monads;
-	using ObjectExtensions;
 
 	public static class LinqBatchExtensions
 	{

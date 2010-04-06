@@ -16,7 +16,6 @@ namespace Magnum.Logging
 	using System.Diagnostics;
 	using System.Threading;
 	using Extensions;
-	using ObjectExtensions;
 
 	public class TraceLogWriter :
 		ILogWriter

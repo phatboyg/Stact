@@ -14,7 +14,6 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.Threading;
-	using ObjectExtensions;
 
 	/// <summary>
 	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
