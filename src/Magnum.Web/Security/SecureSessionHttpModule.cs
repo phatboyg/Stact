@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Security
+namespace Magnum.Web.Security
 {
 	using System;
 	using System.Configuration;
@@ -68,7 +68,7 @@ namespace Magnum.Security
 				{
 					cookie.HttpOnly = true;
 					if (cookie.Value.Length == 24)
-						cookie.Value += GetSessionIDCheck(cookie.Value, context.Request);
+						cookie.Value += GetSessionIdCheck(cookie.Value, context.Request);
 				});
 		}
 
@@ -82,7 +82,7 @@ namespace Magnum.Security
 				string id = cookie.Value.Substring(0, 24);
 				string check = cookie.Value.Substring(24);
 
-				string validation = GetSessionIDCheck(id, request);
+				string validation = GetSessionIdCheck(id, request);
 
 				if (String.CompareOrdinal(check, validation) != 0)
 					throw new AuthenticationException("Access denied");
@@ -104,9 +104,9 @@ namespace Magnum.Security
 				});
 		}
 
-		private string GetSessionIDCheck(string id, HttpRequest request)
+		private string GetSessionIdCheck(string id, HttpRequest request)
 		{
-			StringBuilder check = new StringBuilder(id, 512);
+			var check = new StringBuilder(id, 512);
 
 			string ip = request.UserHostAddress;
 			check.Append(ip.Substring(0, ip.IndexOf('.', ip.IndexOf('.') + 1)));
