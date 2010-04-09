@@ -18,15 +18,22 @@ namespace Magnum
 	using System.Text;
 	using Reflection;
 
-	public class FunctionTimer : IDisposable
+	public class FunctionTimerResult
 	{
-		private readonly Action<string> _action;
+		public string Text { get; set; }
+		public double ElapsedMilliseconds { get; set; }
+	}
+
+	public class FunctionTimer :
+		IDisposable
+	{
+		private readonly Action<FunctionTimerResult> _action;
 		private readonly string _description;
 		private readonly List<Stopwatch> _marks = new List<Stopwatch>(10);
 		private readonly Stopwatch _stopwatch;
 		private DateTime _started;
 
-		public FunctionTimer(string description, Action<string> action)
+		public FunctionTimer(string description, Action<FunctionTimerResult> action)
 		{
 			_description = description;
 			_action = action;
@@ -61,7 +68,7 @@ namespace Magnum
 		{
 			_stopwatch.Stop();
 
-			_action(ToString());
+			_action(new FunctionTimerResult {Text = ToString(), ElapsedMilliseconds = _stopwatch.ElapsedMilliseconds});
 		}
 
 		public override string ToString()
@@ -122,10 +129,10 @@ namespace Magnum
 		FunctionTimer
 		where T : class, new()
 	{
-		private readonly T _values;
 		private readonly FastProperties<T> _properties;
+		private readonly T _values;
 
-		public FunctionTimer(string description, Action<string> action)
+		public FunctionTimer(string description, Action<FunctionTimerResult> action)
 			: base(description, action)
 		{
 			_values = new T();

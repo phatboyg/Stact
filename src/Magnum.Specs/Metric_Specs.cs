@@ -20,9 +20,9 @@ namespace Magnum.Specs
     {
         private static readonly ILog _log = LogManager.GetLogger("Default");
 
-        private static void VerifyCalled(string text)
+        private static void VerifyCalled(FunctionTimerResult result)
         {
-            Assert.AreEqual(5, text.Split(' ').Length, "Expected two values and the description past the date/time");
+            Assert.AreEqual(5, result.Text.Split(' ').Length, "Expected two values and the description past the date/time");
         }
 
         [Test]
@@ -45,9 +45,9 @@ namespace Magnum.Specs
     [TestFixture]
     public class When_using_a_class_derived_from_the_tracker
     {
-        private static void VerifyCalled(string text)
+        private static void VerifyCalled(FunctionTimerResult result)
         {
-            string[] columns = text.Split(' ');
+            string[] columns = result.Text.Split(' ');
 
             Assert.AreEqual(6, columns.Length, "Expected two values and the description past the date/time");
         }

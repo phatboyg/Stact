@@ -125,7 +125,10 @@
     <Compile Include="Channels\KeyAccessor.cs" />
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
+    <Compile Include="Channels\PublishSubscribeChannel.cs" />
+    <Compile Include="Channels\SynchronizedChannel.cs" />
     <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
+    <Compile Include="Channels\TranformChannel.cs" />
     <Compile Include="Collections\Algorithms.cs" />
     <Compile Include="Collections\Bag.cs" />
     <Compile Include="Collections\BigList.cs" />

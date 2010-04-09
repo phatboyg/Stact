@@ -62,6 +62,8 @@
     <Compile Include="Actors\Echo\EchoInputModel.cs" />
     <Compile Include="Actors\Echo\EchoOutputModel.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\Asynchro\AsynchroController.cs" />
+    <Compile Include="Controllers\Asynchro\AsynchroIndexViewModel.cs" />
     <Compile Include="Controllers\TestEcho\TestEchoController.cs" />
     <Compile Include="Controllers\TestEcho\TestEchoViewModel.cs" />
     <Compile Include="Controllers\TraceController.cs" />
@@ -73,6 +75,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Views\Asynchro\Index.aspx" />
     <Content Include="Views\TestEcho\Index.aspx" />
     <Content Include="Web.config" />
     <Content Include="Scripts\jquery-1.4.1.js" />

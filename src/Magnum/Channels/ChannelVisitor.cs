@@ -112,6 +112,24 @@ namespace Magnum.Channels
 			return channel;
 		}
 
+		protected virtual Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		{
+			Trace.WriteLine("PublishSubscribeChannel<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Subscribers.Length));
+
+			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
+
+			return channel;
+		}
+
+		protected virtual Channel<TInput> Visitor<TInput, TOutput>(TranformChannel<TInput, TOutput> channel)
+		{
+			Trace.WriteLine("TransformChannel<{0}>, Output: {1}".FormatWith(typeof (TInput).Name, typeof (TOutput).Name));
+
+			Visit(channel.Output);
+
+			return channel;
+		}
+
 		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
 		{
 			Trace.WriteLine("Channel<{0}>".FormatWith(typeof (T).Name));

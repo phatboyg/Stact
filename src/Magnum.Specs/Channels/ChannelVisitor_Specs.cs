@@ -58,5 +58,14 @@ namespace Magnum.Specs.Channels
 
 			new ChannelVisitor().Visit(channel);
 		}
+
+		[Test]
+		public void Should_capture_the_transform_channel_types()
+		{
+			var channel = new ConsumerChannel<string>(new SynchronousActionQueue(), x => { });
+			var transform = new TranformChannel<int, string>(new SynchronousActionQueue(), channel, x => x.ToString());
+
+			new ChannelVisitor().Visit(transform);
+		}
 	}
 }

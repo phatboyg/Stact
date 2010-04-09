@@ -48,6 +48,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,7 @@
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
+    <Compile Include="Channels\ChannelPerformance_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Activator\Generator_Specs.cs" />
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
+    <Compile Include="Data\TransactionalWorker_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
