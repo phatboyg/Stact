@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class DecimalBinder :
-		ObjectBinder<decimal>
+		ValueTypeBinder<decimal>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out decimal result)
 		{
-			return XmlConvert.ToDecimal(context.ReadElementAsString());
+			return decimal.TryParse(text, out result);
+		}
+
+		protected override decimal UseXmlConvert(string text)
+		{
+			return XmlConvert.ToDecimal(text);
 		}
 	}
 }

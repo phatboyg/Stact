@@ -13,7 +13,7 @@
 namespace Magnum.Metrics.Monitor
 {
 	using System;
-	using DateTimeExtensions;
+	using Extensions;
 
 	public class SuccessRateMonitor :
 		MonitorBase

@@ -12,14 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Binding
 {
-	using Logging;
+	using Extensions;
 	using Reflection;
 
 	public class FastObjectBinder<T> :
 		ObjectBinder<T>
 	{
-		private static readonly ILogger _log = Logger.GetLogger<FastObjectBinder<T>>();
-
 		private readonly ObjectPropertyBinderList<T> _properties;
 
 		public FastObjectBinder()
@@ -33,7 +31,7 @@ namespace Magnum.Web.Binding
 
 			_properties.Each(property =>
 				{
-					object value = context.Bind(property.Property);
+					object value = context.Bind(property);
 
 					property.SetValue(instance, value);
 				});

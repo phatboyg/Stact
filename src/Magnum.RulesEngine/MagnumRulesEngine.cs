@@ -15,6 +15,7 @@ namespace Magnum.RulesEngine
 	using System;
 	using System.Collections.Generic;
 	using ExecutionModel;
+	using Extensions;
 	using SemanticModel;
 
 	[Serializable]

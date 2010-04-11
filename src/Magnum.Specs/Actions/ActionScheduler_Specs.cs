@@ -14,9 +14,9 @@ namespace Magnum.Specs.Actions
 {
 	using System;
 	using System.Diagnostics;
-	using DateTimeExtensions;
 	using Magnum.Actions;
 	using Magnum.Actors;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
 

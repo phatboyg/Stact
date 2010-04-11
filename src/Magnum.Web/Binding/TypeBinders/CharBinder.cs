@@ -15,15 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class CharBinder :
-		ObjectBinder<char>
+		ValueTypeBinder<char>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out char result)
 		{
-			string s = context.ReadElementAsString();
-			if (string.IsNullOrEmpty(s))
-				return default(char);
+			return char.TryParse(text, out result);
+		}
 
-			return XmlConvert.ToChar(s);
+		protected override char UseXmlConvert(string text)
+		{
+			return XmlConvert.ToChar(text);
 		}
 	}
 }

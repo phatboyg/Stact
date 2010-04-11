@@ -39,12 +39,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 2\\Assemblies\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\..\lib\ASP.NET MVC 2\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -65,6 +62,8 @@
     <Compile Include="Actors\Echo\EchoInputModel.cs" />
     <Compile Include="Actors\Echo\EchoOutputModel.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\TestEcho\TestEchoController.cs" />
+    <Compile Include="Controllers\TestEcho\TestEchoViewModel.cs" />
     <Compile Include="Controllers\TraceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -74,6 +73,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Views\TestEcho\Index.aspx" />
     <Content Include="Web.config" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />

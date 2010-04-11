@@ -16,6 +16,7 @@ namespace Magnum.StateMachine
 	using System.Collections;
 	using System.Collections.Generic;
 	using Collections;
+	using Extensions;
 
 	public interface IEventActionExceptionHandler<T>
 		where T : StateMachine

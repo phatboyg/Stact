@@ -13,12 +13,12 @@
 namespace Sample.WebActors.Actors.Echo
 {
 	using Magnum.Channels;
-	using Magnum.Web.Actors;
 
-	public class EchoInputModel :
-		HasOutputChannel<EchoOutputModel>
+	public class EchoInputModel
 	{
 		public string Text { get; set; }
+		public string UserAgent { get; set; }
+
 		public Channel<EchoOutputModel> OutputChannel { get; set; }
 	}
 }

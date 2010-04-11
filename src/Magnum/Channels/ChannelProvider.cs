@@ -12,11 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	public interface ChannelProvider
+	{
+	}
+
+
 	/// <summary>
-	/// Given a message, returns a channel
+	/// Used by dispatching channels to retrieve the appropriate channel for
+	/// a message.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	/// <returns></returns>
-	public delegate Channel<T> ChannelProvider<T>(T message);
+	/// <typeparam name="T">The channel type</typeparam>
+	public interface ChannelProvider<T>
+		: ChannelProvider
+	{
+		/// <summary>
+		/// Get a channel for the message
+		/// </summary>
+		/// <param name="message">The message to use to select the channel</param>
+		/// <returns>The channel that should process the message, or null</returns>
+		Channel<T> GetChannel(T message);
+	}
 }

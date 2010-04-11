@@ -14,13 +14,12 @@ namespace Magnum.Web
 {
 	using System;
 	using System.Linq.Expressions;
-	using System.Web.Routing;
 	using Channels;
 
 	public interface RouteBuilder
 	{
-		void BuildRoute(Type actorType, Action<Route> routeAction);
+		void BuildRoute<TActor, TInput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor);
 
-		void BuildRoute<TActor, TChannel>(Expression<Func<TActor, Channel<TChannel>>> channelExpression, Action<Route> routeAction);
+		void BuildRoute<TActor>(Func<TActor> getActor);
 	}
 }

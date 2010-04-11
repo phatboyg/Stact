@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class SByteBinder :
-		ObjectBinder<sbyte>
+		ValueTypeBinder<sbyte>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out sbyte result)
 		{
-			return XmlConvert.ToSByte(context.ReadElementAsString());
+			return sbyte.TryParse(text, out result);
+		}
+
+		protected override sbyte UseXmlConvert(string text)
+		{
+			return XmlConvert.ToSByte(text);
 		}
 	}
 }

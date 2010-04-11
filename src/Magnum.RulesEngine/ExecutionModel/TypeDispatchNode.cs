@@ -14,7 +14,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 	using System.Collections.Generic;
-	using CollectionExtensions;
+	using Extensions;
 
 	[Serializable]
 	public class TypeDispatchNode :
@@ -39,7 +39,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public bool Visit(NodeVisitor visitor)
 		{
-			return visitor.Visit(this, () => _types.Values.EachUntilFalse<Node>(x => x.Visit(visitor)));
+			return visitor.Visit(this, () => _types.Values.WhileTrue<Node>(x => x.Visit(visitor)));
 		}
 
 		public void Add<T>(Activation<T> successor)

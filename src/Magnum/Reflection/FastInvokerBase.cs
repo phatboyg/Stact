@@ -16,6 +16,7 @@ namespace Magnum.Reflection
 	using System.Linq;
 	using System.Reflection;
 	using Collections;
+	using Extensions;
 
 	public abstract class FastInvokerBase
 	{
@@ -33,16 +34,6 @@ namespace Magnum.Reflection
 		}
 
 		public Type ObjectType { get; private set; }
-
-		protected static MethodInfo GetGenericMethodFromArguments(MethodInfo method, object[] args)
-		{
-			method = new[] {method.GetGenericMethodDefinition()}
-				.MatchingArguments(args)
-				.First()
-				.ToSpecializedMethod(args);
-
-			return method;
-		}
 
 		protected static int GetArgumentHashCode(int seed, object[] args)
 		{

@@ -14,6 +14,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Extensions;
 	using SemanticModel;
 
 	public class FindConditionVisitor :

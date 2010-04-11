@@ -10,20 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Engine_Specs
+namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq.Expressions;
-	using Magnum;
-	using Magnum.DateTimeExtensions;
-	using Magnum.RulesEngine;
-	using Magnum.RulesEngine.ExecutionModel;
-	using Magnum.RulesEngine.SemanticModel;
-	using Magnum.RulesEngine.Specs.Model;
-	using Magnum.TestFramework;
+	using ExecutionModel;
+	using Extensions;
+	using Model;
 	using NUnit.Framework;
+	using SemanticModel;
+	using TestFramework;
 
 	public class Given_a_complete_order
 	{

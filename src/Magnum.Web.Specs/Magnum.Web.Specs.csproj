@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Binding_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestModelBinderContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">

@@ -14,6 +14,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
 	using System.Linq.Expressions;
+	using Extensions;
 
 	/// <summary>
 	/// A generic condition that has a single input type (alpha node)

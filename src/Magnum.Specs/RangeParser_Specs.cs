@@ -17,6 +17,7 @@ namespace Magnum.Specs
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Parsers;
 	using TestFramework;

@@ -12,14 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.WebActors.Actors.Echo
 {
+	using System.Threading;
 	using Magnum.Actions;
 	using Magnum.Channels;
+	using Magnum.Logging;
 
 	/// <summary>
 	/// A simple actor that echoes the input to the output channel
 	/// </summary>
 	public class EchoActor
 	{
+		private static readonly ILogger _log = Logger.GetLogger<EchoActor>();
+
 		private readonly ActionQueue _queue;
 
 		public EchoActor(ActionQueue queue)
@@ -33,9 +37,12 @@ namespace Sample.WebActors.Actors.Echo
 
 		private void ProcessRequest(EchoInputModel inputModel)
 		{
+			_log.Debug(x => x.Write("Echo[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, inputModel.Text));
+
 			inputModel.OutputChannel.Send(new EchoOutputModel
 				{
 					Text = inputModel.Text,
+					UserAgent = inputModel.UserAgent,
 				});
 		}
 	}

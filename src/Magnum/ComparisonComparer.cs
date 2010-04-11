@@ -14,15 +14,15 @@ namespace Magnum
 {
 	using System;
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
-	public class ComparisonComparer<T> : IComparer<T>
+	public class ComparisonComparer<T> :
+		IComparer<T>
 	{
-		readonly Comparison<T> _comparison;
+		private readonly Comparison<T> _comparison;
 
 		public ComparisonComparer(Comparison<T> comparison)
 		{
-			comparison.MustNotBeNull("comparison");
+			Guard.AgainstNull(comparison, "comparison");
 
 			_comparison = comparison;
 		}
@@ -34,9 +34,9 @@ namespace Magnum
 
 		public static Comparison<T> CreateComparison(IComparer<T> comparer)
 		{
-			comparer.MustNotBeNull("comparer");
+			Guard.AgainstNull(comparer, "comparer");
 
-			return (x, y) => comparer.Compare(x, y);
+			return comparer.Compare;
 		}
 	}
 }

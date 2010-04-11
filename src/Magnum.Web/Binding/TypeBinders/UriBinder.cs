@@ -16,24 +16,24 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Runtime.Serialization;
 
 	public class UriBinder :
-		ObjectBinder<Uri>
+		ValueTypeBinder<Uri>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out Uri result)
 		{
-			string uriString = context.ReadElementAsString();
-			if (uriString == null)
-				return null;
-
 			try
 			{
-				Uri uri = new Uri(uriString);
-
-				return uri;
+				result = new Uri(text);
+				return true;
 			}
 			catch (UriFormatException ex)
 			{
-				throw new SerializationException("The Uri is in an invalid format: " + uriString, ex);
+				throw new SerializationException("The Uri is in an invalid format: " + text, ex);
 			}
+		}
+
+		protected override Uri UseXmlConvert(string text)
+		{
+			throw new NotImplementedException("No other way to convert a Uri");
 		}
 	}
 }

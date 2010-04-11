@@ -13,6 +13,7 @@
 namespace Magnum.RulesEngine.ExecutionModel
 {
 	using System;
+	using Extensions;
 
 	[Serializable]
 	public class JoinNode<T> :

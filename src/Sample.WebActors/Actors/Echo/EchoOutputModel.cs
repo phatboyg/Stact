@@ -15,5 +15,7 @@ namespace Sample.WebActors.Actors.Echo
 	public class EchoOutputModel
 	{
 		public string Text { get; set; }
+
+		public string UserAgent { get; set; }
 	}
 }

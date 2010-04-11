@@ -14,7 +14,6 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.Threading;
-	using ObjectExtensions;
 
 	/// <summary>
 	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
@@ -26,23 +25,25 @@ namespace Magnum.Channels
 		IAsyncResult
 	{
 		private readonly AsyncCallback _callback;
-		private readonly Channel<T> _output;
+
 		private readonly object _state;
 		private volatile bool _completed;
 
 		public AsyncResultChannel(Channel<T> output, AsyncCallback callback, object state)
 		{
-			_output.MustNotBeNull("output");
-			_callback.MustNotBeNull("callback");
+			Guard.AgainstNull(output, "output");
+			Guard.AgainstNull(callback, "callback");
 
-			_output = output;
+			Output = output;
 			_callback = callback;
 			_state = state;
 		}
 
+		public Channel<T> Output { get; private set; }
+
 		public void Send(T message)
 		{
-			_output.Send(message);
+			Output.Send(message);
 
 			Complete();
 		}

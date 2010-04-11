@@ -15,7 +15,7 @@ namespace Magnum.StateMachine
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using CollectionExtensions;
+	using Extensions;
 	using Graphing;
 	using Reflection;
 

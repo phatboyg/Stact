@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class UIntBinder :
-		ObjectBinder<uint>
+		ValueTypeBinder<uint>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out uint result)
 		{
-			return XmlConvert.ToUInt32(context.ReadElementAsString());
+			return uint.TryParse(text, out result);
+		}
+
+		protected override uint UseXmlConvert(string text)
+		{
+			return XmlConvert.ToUInt32(text);
 		}
 	}
 }

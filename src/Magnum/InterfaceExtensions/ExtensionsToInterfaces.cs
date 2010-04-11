@@ -194,13 +194,5 @@ namespace Magnum.InterfaceExtensions
 		{
 			return instance.GetType().ImplementsGeneric(targetType);
 		}
-
-		public static IEnumerable<Type> GetAllInterfaces(this Type type)
-		{
-			foreach (Type interfaceType in type.GetInterfaces())
-			{
-				yield return interfaceType;
-			}
-		}
 	}
 }

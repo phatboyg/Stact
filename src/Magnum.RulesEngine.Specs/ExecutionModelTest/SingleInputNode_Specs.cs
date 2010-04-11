@@ -15,7 +15,7 @@ namespace Magnum.RulesEngine.Specs.ExecutionModelTest
 	using System;
 	using System.Diagnostics;
 	using System.Linq.Expressions;
-	using DateTimeExtensions;
+	using Extensions;
 	using Model;
 	using NUnit.Framework;
 	using TestFramework;

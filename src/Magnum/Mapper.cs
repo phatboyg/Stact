@@ -17,7 +17,6 @@ namespace Magnum
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Text;
-    using ObjectExtensions;
 
     public class Mapper<TSource, TTarget>
         where TTarget : new()
@@ -152,8 +151,8 @@ namespace Magnum
 
             public MapAction<TProperty> To<TTargetProperty>(Expression<Func<TTarget, TTargetProperty>> expression)
             {
-                var body = expression.Body as MemberExpression;
-                body.MustNotBeNull("expression");
+            	Guard.AgainstNull(expression);
+            	var body = Guard.IsTypeOf<MemberExpression>(expression.Body);
 
                 Type t = body.Member.DeclaringType;
                 PropertyInfo prop = t.GetProperty(body.Member.Name,

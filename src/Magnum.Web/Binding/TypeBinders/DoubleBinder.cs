@@ -15,11 +15,16 @@ namespace Magnum.Web.Binding.TypeBinders
 	using System.Xml;
 
 	public class DoubleBinder :
-		ObjectBinder<double>
+		ValueTypeBinder<double>
 	{
-		public object Bind(BinderContext context)
+		protected override bool ParseType(string text, out double result)
 		{
-			return XmlConvert.ToDouble(context.ReadElementAsString());
+			return double.TryParse(text, out result);
+		}
+
+		protected override double UseXmlConvert(string text)
+		{
+			return XmlConvert.ToDouble(text);
 		}
 	}
 }

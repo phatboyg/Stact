@@ -13,10 +13,13 @@
 namespace Magnum.Actions
 {
 	using System;
+	using System.ComponentModel;
+	using System.Diagnostics;
 	using System.Threading;
 	using Internal;
 	using Logging;
 
+	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]
 	public class ThreadActionQueue :
 		AbstractActionQueue
 	{
@@ -35,6 +38,18 @@ namespace Magnum.Actions
 			_thread = CreateThread();
 
 			_thread.Start();
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		protected int ThreadId
+		{
+			get
+			{
+				if (_thread != null)
+					return _thread.ManagedThreadId;
+
+				return -1;
+			}
 		}
 
 		protected override bool Active

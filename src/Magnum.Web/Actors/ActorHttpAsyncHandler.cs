@@ -13,27 +13,29 @@
 namespace Magnum.Web.Actors
 {
 	using System;
+	using System.Threading;
 	using System.Web;
 	using Channels;
+	using Logging;
 
 	/// <summary>
 	/// A handler is bound to the route by input type, which is the only thing used to build
 	/// the route. 
 	/// </summary>
 	/// <typeparam name="TInput">The input model for the request</typeparam>
-	/// <typeparam name="TOutput">The output model for the response</typeparam>
-	public class ActorHttpAsyncHandler<TInput, TOutput> :
+	public class ActorHttpAsyncHandler<TInput> :
 		IHttpAsyncHandler
-		where TInput : HasOutputChannel<TOutput>
 	{
+		private static readonly ILogger _log = Logger.GetLogger<ActorHttpAsyncHandler<TInput>>();
+
+		private readonly ActorRequestContext _context;
 		private readonly Channel<TInput> _input;
 		private readonly TInput _inputModel;
-		private readonly Channel<TOutput> _output;
 
-		public ActorHttpAsyncHandler(TInput inputModel, Channel<TInput> input, Channel<TOutput> output)
+		public ActorHttpAsyncHandler(ActorRequestContext context, TInput inputModel, Channel<TInput> input)
 		{
+			_context = context;
 			_input = input;
-			_output = output;
 			_inputModel = inputModel;
 		}
 
@@ -49,12 +51,13 @@ namespace Magnum.Web.Actors
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
-			var outputChannel = new AsyncResultChannel<TOutput>(_output, cb, extraData);
+			_log.Debug(x => x.Write("Request[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof (TInput).FullName));
 
-			_inputModel.OutputChannel = outputChannel;
+			_context.SetCallback(cb, extraData);
+
 			_input.Send(_inputModel);
 
-			return outputChannel;
+			return _context;
 		}
 
 		public void EndProcessRequest(IAsyncResult result)

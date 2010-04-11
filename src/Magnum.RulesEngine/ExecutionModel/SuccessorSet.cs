@@ -16,6 +16,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 
 	[Serializable]
 	public class SuccessorSet<T> :
@@ -46,7 +47,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public bool Visit(NodeVisitor visitor)
 		{
-			return _successors.EachUntilFalse<Node>(x => x.Visit(visitor));
+			return _successors.WhileTrue<Node>(x => x.Visit(visitor));
 		}
 
 		public void Add(Activation<T> activation)

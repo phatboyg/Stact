@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -105,11 +104,16 @@
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelCache.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
+    <Compile Include="Channels\ChannelVisitor.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Channels\ChannelProvider.cs" />
-    <Compile Include="Channels\DictionaryChannelCache.cs" />
+    <Compile Include="Channels\DelegateChannelProvider.cs" />
+    <Compile Include="Channels\Interceptor.cs" />
+    <Compile Include="Channels\InterceptorChannel.cs" />
+    <Compile Include="Channels\InterceptorProvider.cs" />
+    <Compile Include="Channels\KeyedChannelProvider.cs" />
     <Compile Include="Channels\DistinctIntervalChannel.cs" />
     <Compile Include="Channels\Filter.cs" />
     <Compile Include="Channels\InstanceChannel.cs" />
@@ -121,8 +125,7 @@
     <Compile Include="Channels\KeyAccessor.cs" />
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
-    <Compile Include="Check.cs" />
-    <Compile Include="CollectionExtensions\ComparerExtensions.cs" />
+    <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
     <Compile Include="Collections\Algorithms.cs" />
     <Compile Include="Collections\Bag.cs" />
     <Compile Include="Collections\BigList.cs" />
@@ -185,7 +188,6 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="Concurrency\SingleLinkNode.cs" />
     <Compile Include="Configuration\Client\IReadOnlySettings.cs" />
     <Compile Include="Configuration\Client\IReadWriteSettings.cs" />
     <Compile Include="Configuration\Client\ISetting.cs" />
@@ -208,12 +210,21 @@
     <Compile Include="Data\NullUnitOfWork.cs" />
     <Compile Include="Data\ITransaction.cs" />
     <Compile Include="Data\UnitOfWork.cs" />
-    <Compile Include="DateTimeExtensions\DateTimeExtensions.cs" />
-    <Compile Include="CollectionExtensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\ExtensionsToAttributes.cs" />
+    <Compile Include="Extensions\ExtensionsToDateTime.cs" />
+    <Compile Include="Extensions\ExtensionsToDictionary.cs" />
     <Compile Include="EventStreamProcessing\ObjectParser.cs" />
     <Compile Include="EventStreamProcessing\Parser.cs" />
     <Compile Include="EventStreamProcessing\PatternBasedObjectParser.cs" />
     <Compile Include="EventStreamProcessing\Result.cs" />
+    <Compile Include="Extensions\ExtensionsToDisposable.cs" />
+    <Compile Include="Extensions\ExtensionsToEnumerable.cs" />
+    <Compile Include="Extensions\ExtensionsToEventHandler.cs" />
+    <Compile Include="Extensions\ExtensionsToExpression.cs" />
+    <Compile Include="Extensions\ExtensionsToIntX.cs" />
+    <Compile Include="Extensions\ExtensionsToObject.cs" />
+    <Compile Include="Extensions\ExtensionsToRange.cs" />
+    <Compile Include="Extensions\ExtensionsToString.cs" />
     <Compile Include="Graphing\Edge.cs" />
     <Compile Include="Graphing\Vertex.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
@@ -242,6 +253,7 @@
     <Compile Include="Reflection\FastActivator.3.cs" />
     <Compile Include="Reflection\FastActivator.1.cs" />
     <Compile Include="Reflection\FastActivatorException.cs" />
+    <Compile Include="Reflection\InterfaceImplementationBuilder.cs" />
     <Compile Include="Reflection\TypeSpecializationExtensions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />
@@ -278,7 +290,6 @@
     <Compile Include="Monads\Parser\MonadParserExtensions.cs" />
     <Compile Include="Monads\Parser\Parser.cs" />
     <Compile Include="Monads\Parser\Result.cs" />
-    <Compile Include="ObjectExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
     <Compile Include="Parsers\RangeElement.cs" />
     <Compile Include="Parsers\ExtensionsToRangeParser.cs" />
@@ -309,7 +320,6 @@
     <Compile Include="Pipeline\SegmentUnbinder.cs" />
     <Compile Include="Pipeline\SubscriptionScope.cs" />
     <Compile Include="Pipeline\Visitors\ClonePipelineVisitor.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Pipeline\Segments\EndSegment.cs" />
     <Compile Include="Pipeline\Segments\FilterSegment.cs" />
     <Compile Include="Pipeline\Segments\InputSegment.cs" />
@@ -334,7 +344,6 @@
     <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
-    <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\BasicEventAction.cs" />
@@ -356,7 +365,6 @@
     <Compile Include="Data\IAggregateRoot.cs" />
     <Compile Include="Data\IRepositoryFactory.cs" />
     <Compile Include="LinkedComparer.cs" />
-    <Compile Include="ObjectExtensions\ObjectExtensions.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="RangeBuilder.cs" />
     <Compile Include="RangeEnumerator.cs" />
@@ -366,7 +374,7 @@
     <Compile Include="Data\InMemoryRepository.cs" />
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="FunctionTimer.cs" />
-    <Compile Include="DateTimeExtensions\TimeSpanExtensions.cs" />
+    <Compile Include="Extensions\ExtensionsToTimeSpan.cs" />
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />
     <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />

@@ -17,37 +17,75 @@ namespace Magnum.Web.Actors
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Web.Routing;
+	using Actions;
+	using Binding;
 	using Channels;
+	using Extensions;
 	using InterfaceExtensions;
+	using Reflection;
 
 	public class ActorRouteBuilder :
 		RouteBuilder
 	{
-		public void BuildRoute(Type actorType, Action<Route> routeAction)
+		private readonly Action<Route> _addRoute;
+		private readonly ModelBinder _modelBinder;
+		private readonly string _prefix;
+
+		public ActorRouteBuilder(string prefix, ModelBinder modelBinder, Action<Route> addRoute)
 		{
-			string prefix = "actor/";
+			_addRoute = addRoute;
+			_prefix = prefix;
+			_modelBinder = modelBinder;
+		}
 
-			string actorName = actorType.Name;
+		public void BuildRoute<TActor, TInput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor)
+		{
+			PropertyInfo property = channelAccessor.GetMemberPropertyInfo();
 
-			string actor = actorName.EndsWith("Actor") ? actorName.Substring(0, actorName.Length - 5) : actorName;
+			Func<TActor, Channel<TInput>> compiled = channelAccessor.Compile();
+
+			Func<Channel<TInput>> getChannel = () => compiled(getActor());
+
+			ActorBinder binder = new BasicActorBinder<TInput>(_modelBinder, getChannel);
+			var routeHandler = new ActorRouteHandler(binder, () => new ThreadPoolActionQueue());
+
+			string url = GetUrl(typeof (TActor).Name, property.Name);
+
+			var route = new Route(url, routeHandler);
+
+			_addRoute(route);
+		}
+
+
+		public void BuildRoute<TActor>(Func<TActor> getActor)
+		{
+			Type actorType = typeof (TActor);
 
 			actorType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
 				.Where(x => x.Implements<Channel>())
 				.Each(property =>
 					{
-						string channel = property.Name.EndsWith("Channel") ? property.Name.Substring(0, property.Name.Length - 7) : property.Name;
+						Type inputType = property.PropertyType.GetDeclaredTypeForGeneric(typeof (Channel<>));
 
-						string url = string.Format("{0}{1}/{2}", prefix, actor, channel);
-
-						var route = new Route(url, new ActorRouteHandler());
-
-						routeAction(route);
+						this.FastInvoke(new[] {actorType, inputType}, "BuildRoute", new object[] {getActor, property});
 					});
 		}
 
-		public void BuildRoute<TActor, TChannel>(Expression<Func<TActor, Channel<TChannel>>> channelExpression, Action<Route> routeAction)
+		public void BuildRoute<TActor, TInput>(Func<TActor> getActor, PropertyInfo property)
 		{
-			//throw new NotImplementedException();
+			Type outputType = typeof (TInput).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+				.Where(x => x.Implements<Channel>())
+				.Select(x => x.PropertyType).Single();
+
+			throw new NotImplementedException();
+		}
+
+		private string GetUrl(string actorName, string propertyName)
+		{
+			string actor = actorName.EndsWith("Actor") ? actorName.Substring(0, actorName.Length - 5) : actorName;
+			string channel = propertyName.EndsWith("Channel") ? propertyName.Substring(0, propertyName.Length - 7) : propertyName;
+
+			return string.Format("{0}{1}/{2}", _prefix, actor, channel);
 		}
 	}
 }

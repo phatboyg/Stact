@@ -28,7 +28,7 @@ namespace Magnum.Channels
 	{
 		private readonly IMessageDictionary<TKey, T> _messages;
 		private readonly ActionQueue _queue;
-		private readonly Channel<IDictionary<TKey, T>> _output;
+
 		private bool _disposed;
 		private ScheduledAction _scheduledAction;
 
@@ -44,11 +44,16 @@ namespace Magnum.Channels
 		{
 			_messages = new MessageDictionary<TKey, T>(getKey);
 
+			Interval = interval;
 			_queue = queue;
-			_output = output;
+			Output = output;
 
 			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessagesToOutputChannel);
 		}
+
+		public Channel<IDictionary<TKey, T>> Output { get; private set; }
+
+		public TimeSpan Interval { get; private set; }
 
 		public void Send(T message)
 		{
@@ -75,7 +80,7 @@ namespace Magnum.Channels
 
 		private void SendMessagesToOutputChannel()
 		{
-			_output.Send(_messages.RemoveAll());
+			Output.Send(_messages.RemoveAll());
 		}
 
 		~DistinctIntervalChannel()

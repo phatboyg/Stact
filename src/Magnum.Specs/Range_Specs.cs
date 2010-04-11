@@ -16,7 +16,7 @@ namespace Magnum.Specs
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using DateTimeExtensions;
+    using Magnum.Extensions;
     using NUnit.Framework;
 
     [TestFixture]

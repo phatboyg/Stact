@@ -23,7 +23,6 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly Channel<T> _output;
 		private readonly ActionQueue _queue;
 		private bool _disposed;
 		private T _lastMessage;
@@ -39,10 +38,15 @@ namespace Magnum.Channels
 		public LastIntervalChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Channel<T> output)
 		{
 			_queue = queue;
-			_output = output;
+			Output = output;
+			Interval = interval;
 
 			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessageToOutputChannel);
 		}
+
+		public TimeSpan Interval { get; private set; }
+
+		public Channel<T> Output { get; private set; }
 
 		public void Send(T message)
 		{
@@ -69,7 +73,7 @@ namespace Magnum.Channels
 
 		private void SendMessageToOutputChannel()
 		{
-			_output.Send(_lastMessage);
+			Output.Send(_lastMessage);
 		}
 
 		~LastIntervalChannel()

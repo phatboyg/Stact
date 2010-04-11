@@ -13,9 +13,15 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
+	using System.Diagnostics;
+	using System.Linq;
+	using System.Threading;
+	using Magnum.Actors;
 	using Magnum.Channels;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Rhino.Mocks;
+	using TestFramework;
 
 	[TestFixture]
 	public class Sending_a_message_to_an_instance_consumer
@@ -29,7 +35,7 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Twice();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
 
 			var channel = new InstanceChannel<MyMessage>(provider);
 
@@ -49,16 +55,13 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Once();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Once();
 
 			KeyAccessor<MyMessage, Guid> messageKeyAccessor = x => x.Id;
 
-			ChannelCache<MyMessage> cache = new DictionaryChannelCache<MyMessage, Guid>(provider, messageKeyAccessor);
+			var channel = new InstanceChannel<MyMessage>(new KeyedChannelProvider<MyMessage, Guid>(provider, messageKeyAccessor));
 
-			Channel<MyMessage> channel = cache.Get(message);
 			channel.Send(message);
-
-			channel = cache.Get(message);
 			channel.Send(message);
 
 			provider.VerifyAllExpectations();
@@ -74,17 +77,56 @@ namespace Magnum.Specs.Channels
 			result.Expect(x => x.Send(message)).Repeat.Twice();
 
 			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
-			provider.Expect(x => x(message)).Return(result).Repeat.Once();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Once();
 
 			KeyAccessor<int, int> messageKeyAccessor = x => x;
 
-			ChannelCache<int> cache = new DictionaryChannelCache<int, int>(provider, messageKeyAccessor);
+			var channel = new InstanceChannel<int>(new KeyedChannelProvider<int, int>(provider, messageKeyAccessor));
 
-			Channel<int> channel = cache.Get(message);
+
+			channel.Send(message);
 			channel.Send(message);
 
-			channel = cache.Get(message);
-			channel.Send(message);
+			provider.VerifyAllExpectations();
+			result.VerifyAllExpectations();
+		}
+
+		[Test, Category("Slow")]
+		public void Should_work_for_thread_static_instances()
+		{
+			int message = 27;
+
+			var result = MockRepository.GenerateMock<Channel<int>>();
+			result.Expect(x => x.Send(message)).Repeat.Twice();
+
+			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
+			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
+
+			var channel = new InstanceChannel<int>(new ThreadStaticChannelProvider<int>(provider));
+
+			Future<bool> first = new Future<bool>();
+			Future<bool> second = new Future<bool>();
+			var started = new Future<bool>();
+
+			ThreadPool.QueueUserWorkItem(x =>
+				{
+					channel.Send(message);
+					started.Complete(true);
+
+					second.IsAvailable(5.Seconds());
+					first.Complete(true);
+				});
+
+			started.IsAvailable(5.Seconds());
+
+			ThreadPool.QueueUserWorkItem(x =>
+				{
+					channel.Send(message);
+					second.Complete(true);
+				});
+
+			first.IsAvailable(5.Seconds()).ShouldBeTrue();
+			second.IsAvailable(5.Seconds()).ShouldBeTrue();
 
 			provider.VerifyAllExpectations();
 			result.VerifyAllExpectations();

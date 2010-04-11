@@ -1,9 +1,9 @@
 namespace Magnum.Calendar.Holidays
 {
     using System;
-    using Magnum.DateTimeExtensions;
+    using Extensions;
 
-    public class MemorialDayObservedCheck :
+	public class MemorialDayObservedCheck :
         BaseCheck
     {
         public override bool Check(DateTime dateToCheck)

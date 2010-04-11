@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Pipeline
 {
 	using Consumers;
-	using DateTimeExtensions;
+	using Magnum.Extensions;
 	using Messages;
 	using NUnit.Framework;
 

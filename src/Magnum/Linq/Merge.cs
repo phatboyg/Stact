@@ -14,15 +14,14 @@ namespace Magnum.Linq
 {
 	using System;
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
 	public static class LinqMergeExtensions
 	{
 		public static IEnumerable<TResult> Merge<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 		{
-			first.MustNotBeNull("first");
-			second.MustNotBeNull("second");
-			resultSelector.MustNotBeNull("resultSelector");
+			Guard.AgainstNull(first, "first");
+			Guard.AgainstNull(second, "second");
+			Guard.AgainstNull(resultSelector, "resultSelector");
 
 			using (var e1 = first.GetEnumerator())
 			using (var e2 = second.GetEnumerator())
@@ -38,9 +37,9 @@ namespace Magnum.Linq
 
 		public static IEnumerable<TResult> MergeBalanced<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 		{
-			first.MustNotBeNull("first");
-			second.MustNotBeNull("second");
-			resultSelector.MustNotBeNull("resultSelector");
+			Guard.AgainstNull(first, "first");
+			Guard.AgainstNull(second, "second");
+			Guard.AgainstNull(resultSelector, "resultSelector");
 
 			using (var e1 = first.GetEnumerator())
 			using (var e2 = second.GetEnumerator())
@@ -59,9 +58,9 @@ namespace Magnum.Linq
 
 		public static IEnumerable<TResult> MergePadded<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 		{
-			first.MustNotBeNull("first");
-			second.MustNotBeNull("second");
-			resultSelector.MustNotBeNull("resultSelector");
+			Guard.AgainstNull(first, "first");
+			Guard.AgainstNull(second, "second");
+			Guard.AgainstNull(resultSelector, "resultSelector");
 
 			using (var e1 = first.GetEnumerator())
 			using (var e2 = second.GetEnumerator())

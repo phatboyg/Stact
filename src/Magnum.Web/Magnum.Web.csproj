@@ -32,11 +32,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web.Routing">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -46,39 +53,31 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Actors\ActorBinder.cs" />
     <Compile Include="Actors\ActorHttpAsyncHandler.cs" />
+    <Compile Include="Actors\ActorRequestContext.cs" />
     <Compile Include="Actors\ActorRouteBuilder.cs" />
     <Compile Include="Actors\ActorRouteHandler.cs" />
-    <Compile Include="Actors\HasOutputChannel.cs" />
+    <Compile Include="Actors\BasicActorBinder.cs" />
+    <Compile Include="Abstractions\HttpResponseContentWriter.cs" />
+    <Compile Include="Abstractions\JsonObjectWriter.cs" />
+    <Compile Include="Actors\HttpActorRequestContext.cs" />
+    <Compile Include="Abstractions\ObjectWriter.cs" />
+    <Compile Include="Abstractions\MediaType.cs" />
+    <Compile Include="Abstractions\ContentWriter.cs" />
     <Compile Include="Binding\FastModelBinder.cs" />
     <Compile Include="Binding\ModelBinderContext.cs" />
     <Compile Include="Binding\ObjectPropertyBinder.cs" />
-    <Compile Include="Binding\DictionaryObjectPropertyBinderCache.cs" />
-    <Compile Include="Binding\FastBinderContext.cs" />
-    <Compile Include="Binding\ExtensionsForType.cs" />
-    <Compile Include="Binding\ObjectPropertyBinderCache.cs" />
+    <Compile Include="Binding\InstanceBinderContext.cs" />
     <Compile Include="Binding\BinderContext.cs" />
-    <Compile Include="Binding\InterfaceImplementationBuilder.cs" />
     <Compile Include="Binding\ObjectBinder.cs" />
-    <Compile Include="Binding\IObjectFieldCache.cs" />
-    <Compile Include="Binding\IObjectSerializer.cs" />
-    <Compile Include="Binding\ISerializerContext.cs" />
-    <Compile Include="Binding\IXmlSerializer.cs" />
     <Compile Include="Binding\ModelBinder.cs" />
-    <Compile Include="Binding\NamespaceTable.cs" />
-    <Compile Include="Binding\NonClosingStream.cs" />
     <Compile Include="Binding\FastObjectBinder.cs" />
-    <Compile Include="Binding\ObjectField.cs" />
-    <Compile Include="Binding\ObjectFieldCache.cs" />
     <Compile Include="Binding\ObjectPropertyBinderList.cs" />
-    <Compile Include="Binding\ObjectSerializer.cs" />
-    <Compile Include="Binding\SerializeObjectProperty.cs" />
-    <Compile Include="Binding\SerializeObjectPropertyCache.cs" />
-    <Compile Include="Binding\SerializerContext.cs" />
-    <Compile Include="Binding\SerializerTypeMapper.cs" />
     <Compile Include="Binding\TypeBinders\ArrayBinder.cs" />
     <Compile Include="Binding\TypeBinders\BooleanBinder.cs" />
     <Compile Include="Binding\TypeBinders\ByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ChannelBinder.cs" />
     <Compile Include="Binding\TypeBinders\CharBinder.cs" />
     <Compile Include="Binding\TypeBinders\DateTimeBinder.cs" />
     <Compile Include="Binding\TypeBinders\DateTimeOffsetBinder.cs" />
@@ -100,35 +99,18 @@
     <Compile Include="Binding\TypeBinders\ULongBinder.cs" />
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
-    <Compile Include="Binding\TypeSerializers\ArraySerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\BooleanSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\ByteSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\CharSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\DateTimeOffsetSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\DateTimeSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\DecimalSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\DictionarySerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\DoubleSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\EnumerableSerializerBase.cs" />
-    <Compile Include="Binding\TypeSerializers\EnumSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\FloatSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\GuidSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\IntSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\ListSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\LongSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\SByteSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\SerializerBase.cs" />
-    <Compile Include="Binding\TypeSerializers\ShortSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\StringSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\TimeSpanSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\UIntSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\ULongSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\UriSerializer.cs" />
-    <Compile Include="Binding\TypeSerializers\UShortSerializer.cs" />
-    <Compile Include="DictionaryValueProvider.cs" />
-    <Compile Include="NestedValueProvider.cs" />
+    <Compile Include="Actors\ObjectResponseChannel.cs" />
+    <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
+    <Compile Include="Security\SecureSessionHttpModule.cs" />
+    <Compile Include="ValueProviders\AccessorValueProvider.cs" />
+    <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
+    <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />
+    <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
+    <Compile Include="ValueProviders\MultipleValueProvider.cs" />
+    <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="RouteBuilder.cs" />
-    <Compile Include="ValueProvider.cs" />
+    <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">

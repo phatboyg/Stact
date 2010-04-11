@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Magnum.Calendar
 {
     using System.Collections;
-    using DateTimeExtensions;
+    using Extensions;
 
-    public class DefaultCalendar
+	public class DefaultCalendar
     {
         private static readonly IList<IDateSpecification> _dateSpecifications;
 

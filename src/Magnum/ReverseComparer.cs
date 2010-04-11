@@ -13,15 +13,14 @@
 namespace Magnum
 {
 	using System.Collections.Generic;
-	using ObjectExtensions;
 
 	public class ReverseComparer<T> : IComparer<T>
 	{
-		readonly IComparer<T> _originalComparer;
+		private readonly IComparer<T> _originalComparer;
 
 		public ReverseComparer(IComparer<T> original)
 		{
-			original.MustNotBeNull("original");
+			Guard.AgainstNull(original, "original");
 
 			_originalComparer = original;
 		}

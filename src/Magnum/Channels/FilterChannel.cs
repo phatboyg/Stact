@@ -26,6 +26,7 @@ namespace Magnum.Channels
 	{
 		private readonly Filter<T> _filter;
 		private readonly Channel<T> _output;
+
 		private readonly ActionQueue _queue;
 
 		/// <summary>
@@ -39,6 +40,11 @@ namespace Magnum.Channels
 			_queue = queue;
 			_output = output;
 			_filter = filter;
+		}
+
+		public Channel<T> Output
+		{
+			get { return _output; }
 		}
 
 		public void Send(T message)

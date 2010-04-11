@@ -6,16 +6,30 @@ using System.Web.Mvc;
 
 namespace Sample.WebActors.Controllers
 {
-    public class TraceController : Controller
+	using System.Text;
+	using Magnum.Web.ValueProviders;
+
+	public class TraceController : Controller
     {
         //
         // GET: /Trace/
 
         public ActionResult Index()
         {
-        	string userAgent = this.ControllerContext.RequestContext.HttpContext.Request["HTTP_USER_AGENT"];
+			StringBuilder output = new StringBuilder();
 
-        	return Content("User Agent: " + userAgent);
+        	output.Append("<html><body><ul>");
+
+        	var provider = new RequestContextValueProvider(this.ControllerContext.RequestContext);
+
+			provider.GetAll((key, value) =>
+				{
+					output.AppendFormat("<li>{0}<br />{1}</li>", key, value);
+				});
+
+        	output.Append("</ul></body></html>");
+
+        	return Content(output.ToString());
         }
 
     }

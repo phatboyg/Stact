@@ -21,7 +21,7 @@ namespace Magnum.Policies
 
 		public ExceptionPolicy(Action<Action> policy)
 		{
-			Guard.Against.Null(policy, "policy cannot be null");
+			Guard.AgainstNull(policy, "policy");
 
 			_policy = policy;
 		}

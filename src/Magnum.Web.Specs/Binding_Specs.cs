@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Specs
 {
+	using System;
 	using System.Collections.Generic;
 	using Binding;
 	using NUnit.Framework;
-	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
@@ -31,15 +31,17 @@ namespace Magnum.Web.Specs
 				{
 					{"StringValue", "Value"},
 					{"IntValue", "47"},
+					{"Created", "2010-03-01 12:34:56.123"},
+					{"Duration", "12:34:56.123"},
+					{"SubClass_Street", "123 American Way"},
+					{"SubClass_City", "Tulsa"},
+					{"SubClass_State", "OK"},
 				};
 
 			ModelBinder binder = new FastModelBinder();
+			ModelBinderContext context = new TestModelBinderContext(_dictionary);
 
-
-			var binderContext = MockRepository.GenerateMock<ModelBinderContext>();
-			binderContext.Stub(x => x.Values).Return(new DictionaryValueProvider(_dictionary));
-
-			object obj = binder.Bind(typeof (BinderTestClass), binderContext);
+			object obj = binder.Bind(typeof (BinderTestClass), context);
 
 			_result = obj as BinderTestClass;
 		}
@@ -48,6 +50,34 @@ namespace Magnum.Web.Specs
 		{
 			public string StringValue { get; set; }
 			public int IntValue { get; set; }
+			public DateTime Created { get; set; }
+			public TimeSpan Duration { get; set; }
+			public BinderSubClass SubClass { get; set; }
+		}
+
+		private class BinderSubClass
+		{
+			public string Street { get; set; }
+			public string City { get; set; }
+			public string State { get; set; }
+		}
+
+		[Test]
+		public void Should_bind_the_subclass_city()
+		{
+			_result.SubClass.City.ShouldEqual("Tulsa");
+		}
+
+		[Test]
+		public void Should_bind_the_subclass_state()
+		{
+			_result.SubClass.State.ShouldEqual("OK");
+		}
+
+		[Test]
+		public void Should_bind_the_subclass_string()
+		{
+			_result.SubClass.Street.ShouldEqual("123 American Way");
 		}
 
 		[Test]
@@ -57,15 +87,32 @@ namespace Magnum.Web.Specs
 		}
 
 		[Test]
+		public void Should_properly_bind_a_integer_value()
+		{
+			_result.IntValue.ShouldEqual(47);
+		}
+
+		[Test]
 		public void Should_properly_bind_a_string_value()
 		{
 			_result.StringValue.ShouldEqual("Value");
 		}
+		[Test]
+		public void Should_bind_datetime()
+		{
+			_result.Created.ShouldEqual(new DateTime(2010, 3, 1, 12, 34, 56, 123));
+		}
 
 		[Test]
-		public void Should_properly_bind_a_integer_value()
+		public void Should_bind_timespan()
 		{
-			_result.IntValue.ShouldEqual(47);
+			_result.Duration.ShouldEqual(new TimeSpan(0, 12, 34, 56, 123));
+		}
+
+		[Test]
+		public void Should_property_bind_the_subclass_property()
+		{
+			_result.SubClass.ShouldNotBeNull();
 		}
 	}
 }

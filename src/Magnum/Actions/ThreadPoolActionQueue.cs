@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actions
 {
+	using System.Diagnostics;
 	using System.Threading;
 	using Internal;
 	using Logging;
@@ -20,6 +21,7 @@ namespace Magnum.Actions
 	/// An ActionQueue that uses the .NET ThreadPool and QueueUserWorkItem to execute
 	/// actions.
 	/// </summary>
+	[DebuggerDisplay("{GetType().Name} ( Count: {Count} )")]
 	public class ThreadPoolActionQueue :
 		AbstractActionQueue
 	{

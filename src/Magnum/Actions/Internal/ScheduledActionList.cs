@@ -15,6 +15,7 @@ namespace Magnum.Actions.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 
 	public class ScheduledActionList
 	{
@@ -24,6 +25,11 @@ namespace Magnum.Actions.Internal
 		public ScheduledActionList()
 		{
 			_actions = new SortedList<DateTime, List<ExecuteScheduledAction>>();
+		}
+
+		public int Count
+		{
+			get { lock (_lock) return _actions.Count; }
 		}
 
 		public ExecuteScheduledAction[] GetExpiredActions(DateTime now)
@@ -55,9 +61,9 @@ namespace Magnum.Actions.Internal
 				if (_actions.Count == 0)
 					return false;
 
-				foreach (KeyValuePair<DateTime, List<ExecuteScheduledAction>> pair in _actions)
+				foreach (var pair in _actions)
 				{
-					if(now >= pair.Key)
+					if (now >= pair.Key)
 						return true;
 
 					scheduledAt = pair.Key;
@@ -79,7 +85,7 @@ namespace Magnum.Actions.Internal
 				}
 				else
 				{
-					list = new List<ExecuteScheduledAction> { action };
+					list = new List<ExecuteScheduledAction> {action};
 					_actions[action.ScheduledAt] = list;
 				}
 			}

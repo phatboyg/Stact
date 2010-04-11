@@ -18,6 +18,7 @@ namespace Magnum.StateMachine
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Runtime.Serialization;
+	using Extensions;
 
 	[DebuggerDisplay("Current State = {CurrentState.Name}")]
 	public class StateMachine<T> :

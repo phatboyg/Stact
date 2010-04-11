@@ -15,6 +15,7 @@ namespace Magnum.Pipeline
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Extensions;
     using Reflection;
     using Segments;
 
