@@ -14,6 +14,7 @@ namespace Magnum.Actions.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Threading;
 	using Logging;
 
@@ -120,6 +121,7 @@ namespace Magnum.Actions.Internal
 			Action[] actions = DequeueAll();
 			if (actions == null)
 				return false;
+//			Trace.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] executing " + actions.Length + " actions");
 
 			ExecuteActions(actions);
 
@@ -151,6 +153,7 @@ namespace Magnum.Actions.Internal
 		{
 			while (_actions.Count == 0 && !_executingAllActions)
 			{
+//				Trace.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] waiting for actions to execute");
 				Monitor.Wait(_lock);
 			}
 

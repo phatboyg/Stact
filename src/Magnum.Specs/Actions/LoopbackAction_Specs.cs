@@ -13,6 +13,7 @@
 namespace Magnum.Specs.Actions
 {
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Threading;
 	using Magnum.Actions;
 	using Magnum.Actors;
@@ -23,26 +24,31 @@ namespace Magnum.Specs.Actions
 	[TestFixture]
 	public class When_sending_actions_back_into_itself
 	{
-		[Test]
+		[Test, Category("Slow"), Explicit]
 		public void Should_properly_release_one_waiting_writer()
 		{
 			const int writerCount = 10;
-			const int messageCount = 100;
+			const int messageCount = 1000;
 
 			var complete = new Future<bool>();
 			int total = 0;
 
-			ActionQueue reader = new ThreadPoolActionQueue(100, 60000);
+
+			ActionQueue reader = new ThreadActionQueue(100, 60000);
+
+			Thread.Sleep(100);
+
+			Stopwatch timer = Stopwatch.StartNew();
 
 			var writers = new List<ActionQueue>();
 			for (int i = 0; i < writerCount; i++)
 			{
-				ActionQueue queue = new ThreadPoolActionQueue(100, 1000);
+				ActionQueue queue = new ThreadPoolActionQueue(messageCount, 1000);
 				for (int j = 0; j < messageCount; j++)
 				{
 					queue.Enqueue(() =>
 						{
-							Thread.Sleep(10);
+							SuperSleeper.Wait(1);
 
 							reader.Enqueue(() =>
 								{
@@ -52,9 +58,28 @@ namespace Magnum.Specs.Actions
 								});
 						});
 				}
+
+				writers.Add(queue);
 			}
 
-			complete.IsAvailable(10.Seconds()).ShouldBeTrue();
+			complete.IsAvailable(20.Seconds()).ShouldBeTrue();
+
+			timer.Stop();
+
+			Trace.WriteLine("Elapsed time: " + timer.ElapsedMilliseconds + "ms (expected " + writerCount * messageCount + ")");
+		}
+
+		private static class SuperSleeper
+		{
+			private static long _ticksPerMs = Stopwatch.Frequency/1000;
+
+			public static void Wait(long ms)
+			{
+				long finishAt = Stopwatch.GetTimestamp() + ms * _ticksPerMs;
+				while (Stopwatch.GetTimestamp() < finishAt)
+				{
+				}
+			}
 		}
 	}
 }
