@@ -147,6 +147,16 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
+		protected virtual int ActionsAreAvailable()
+		{
+			while (_actions.Count == 0 && !_executingAllActions)
+			{
+				Monitor.Wait(_lock);
+			}
+
+			return _actions.Count;
+		}
+
 		private void ExecuteActions(IEnumerable<Action> actions)
 		{
 			foreach (Action action in actions)
@@ -169,10 +179,12 @@ namespace Magnum.Actions.Internal
 		{
 			lock (_lock)
 			{
-				if (ActionsAreAvailable())
+				if (ActionsAreAvailable() > 0)
 				{
 					Action[] results = _actions.ToArray();
 					_actions.Clear();
+
+					Monitor.PulseAll(_lock);
 
 					return results;
 				}
@@ -181,34 +193,37 @@ namespace Magnum.Actions.Internal
 			}
 		}
 
-		private bool ActionsAreAvailable()
-		{
-			while (_actions.Count == 0 && !_executingAllActions)
-			{
-				Monitor.Wait(_lock);
-			}
-
-			return _actions.Count > 0;
-		}
-
-
 		private bool IsSpaceAvailable(int needed)
 		{
 			if (_notAcceptingActions)
 				throw new ActionQueueException("The queue is no longer accepting actions");
 
-			if (_queueLimit <= 0 || _actions.Count + needed <= _queueLimit)
-				return true;
+			const int attempts = 100;
 
-			if (_queueTimeout <= 0)
+			int timeout = _queueTimeout/attempts;
+			int attempt = 0;
+
+			for (; attempt < attempts && _queueLimit > 0 && _actions.Count + needed > _queueLimit; attempt++)
+			{
+				if (_queueTimeout <= 0)
+				{
+					throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
+				}
+
+				Monitor.Wait(_lock, timeout);
+				if (_notAcceptingActions)
+					return false;
+
+				if (_queueLimit <= 0 || _actions.Count + needed <= _queueLimit)
+				{
+					return true;
+				}
+			}
+
+			if (attempt == attempts)
+			{
 				throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
-
-			Monitor.Wait(_lock, _queueTimeout);
-			if (_notAcceptingActions)
-				return false;
-
-			if (_queueLimit > 0 && _actions.Count + needed > _queueLimit)
-				throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
+			}
 
 			return true;
 		}

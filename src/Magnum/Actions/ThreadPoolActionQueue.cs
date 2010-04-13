@@ -70,6 +70,13 @@ namespace Magnum.Actions
 			QueueWorkItem();
 		}
 
+		protected override int ActionsAreAvailable()
+		{
+			int count = base.ActionsAreAvailable();
+
+			return 1;
+		}
+
 		private void Execute(object state)
 		{
 			Execute();
