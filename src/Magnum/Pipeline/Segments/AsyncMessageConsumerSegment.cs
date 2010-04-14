@@ -14,8 +14,7 @@ namespace Magnum.Pipeline.Segments
 {
 	using System;
 	using System.Collections.Generic;
-	using Actors;
-	using Actors.CommandQueues;
+	using Actions;
 
 	[Serializable]
 	public abstract class AsyncMessageConsumerSegment :
@@ -36,7 +35,7 @@ namespace Magnum.Pipeline.Segments
 		where TConsumer : IAsyncConsumer<TMessage>
 	{
 		private readonly Func<TConsumer> _getConsumer;
-		private readonly CommandQueue _commandQueue = new ThreadPoolCommandQueue();
+		private readonly ActionQueue _queue = new ThreadPoolActionQueue();
 
 		public AsyncMessageConsumerSegment(TConsumer consumer)
 			: base(typeof (TMessage), typeof (TConsumer))
@@ -55,7 +54,7 @@ namespace Magnum.Pipeline.Segments
 			TMessage msg = message as TMessage;
 			if (msg != null)
 			{
-				yield return x => _commandQueue.Enqueue(() => _getConsumer().Consume(x as TMessage));
+				yield return x => _queue.Enqueue(() => _getConsumer().Consume(x as TMessage));
 			}
 		}
 	}

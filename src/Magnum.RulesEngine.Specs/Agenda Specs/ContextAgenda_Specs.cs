@@ -13,7 +13,7 @@
 namespace BetaMemory_Specs
 {
 	using System.Diagnostics;
-	using Magnum.Actors;
+	using Magnum.Channels;
 	using Magnum.RulesEngine;
 	using Magnum.RulesEngine.ExecutionModel;
 	using Magnum.RulesEngine.Specs.Model;
@@ -65,7 +65,7 @@ namespace BetaMemory_Specs
 
 			_session.Run();
 
-			_primaryCalled.IsAvailable().ShouldBeTrue();
+			_primaryCalled.IsCompleted.ShouldBeTrue();
 		}
 
 		[Test]
@@ -81,7 +81,7 @@ namespace BetaMemory_Specs
 
 			_session.Run();
 
-			_primaryCalled.IsAvailable().ShouldBeTrue();
+			_primaryCalled.IsCompleted.ShouldBeTrue();
 		}
 
 		[Test]
@@ -129,8 +129,8 @@ namespace BetaMemory_Specs
 			tree.Activate(_context);
 			_session.Run();
 
-			_primaryCalled.IsAvailable().ShouldBeTrue();
-			_secondaryCalled.IsAvailable().ShouldBeFalse();
+			_primaryCalled.IsCompleted.ShouldBeTrue();
+			_secondaryCalled.IsCompleted.ShouldBeFalse();
 		}
 
 		[Test]

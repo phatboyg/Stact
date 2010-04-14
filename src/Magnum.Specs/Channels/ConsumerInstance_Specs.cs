@@ -13,10 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
-	using System.Diagnostics;
-	using System.Linq;
 	using System.Threading;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -113,11 +110,11 @@ namespace Magnum.Specs.Channels
 					channel.Send(message);
 					started.Complete(true);
 
-					second.IsAvailable(5.Seconds());
+					second.WaitUntilCompleted(5.Seconds());
 					first.Complete(true);
 				});
 
-			started.IsAvailable(5.Seconds());
+			started.WaitUntilCompleted(5.Seconds());
 
 			ThreadPool.QueueUserWorkItem(x =>
 				{
@@ -125,8 +122,8 @@ namespace Magnum.Specs.Channels
 					second.Complete(true);
 				});
 
-			first.IsAvailable(5.Seconds()).ShouldBeTrue();
-			second.IsAvailable(5.Seconds()).ShouldBeTrue();
+			first.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+			second.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 
 			provider.VerifyAllExpectations();
 			result.VerifyAllExpectations();

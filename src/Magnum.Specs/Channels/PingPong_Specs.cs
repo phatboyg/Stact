@@ -13,7 +13,6 @@
 namespace Magnum.Specs.Channels
 {
 	using Magnum.Actions;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -93,8 +92,8 @@ namespace Magnum.Specs.Channels
 
 			pinger.Ping(ponger.PongChannel);
 
-			ponger.Pinged.IsAvailable(1.Seconds()).ShouldBeTrue();
-			pinger.Ponged.IsAvailable(1.Seconds()).ShouldBeTrue();
+			ponger.Pinged.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
+			pinger.Ponged.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 }

@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Actors
 {
 	using System.Diagnostics;
-	using Magnum.Actors.CommandQueues;
+	using Magnum.Actions;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -75,11 +75,11 @@ namespace Magnum.Specs.Actors
 
 	public abstract class ActorImpl : IActor
 	{
-		private readonly ThreadPoolCommandQueue _queue;
+		private readonly ActionQueue _queue;
 
 		protected ActorImpl()
 		{
-			_queue = new ThreadPoolCommandQueue();
+			_queue = new ThreadPoolActionQueue();
 		}
 
 		public void Call<T>(IActor caller, T method)

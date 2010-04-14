@@ -14,10 +14,8 @@ namespace Magnum.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using Magnum.Actors;
-	using Magnum.Actors.Channels;
-	using Magnum.Actors.CommandQueues;
-	using Magnum.Actors.Schedulers;
+	using Magnum.Actions;
+	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 
@@ -25,58 +23,57 @@ namespace Magnum.Specs.Actors
 	public class Publishing_a_message_on_a_channel
 	{
 		[Test]
-		public void Should_return_false_if_there_are_no_subscribers()
-		{
-			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
-
-			UserUpdate update = new UserUpdate();
-
-			var result = channel.Publish(update);
-
-			Assert.IsFalse(result);
-		}
-
-		[Test]
 		public void Should_filter_out_unwanted_messages()
 		{
-			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
+			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
-			UserUpdate update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
-
-			CommandQueue queue = new SynchronousCommandQueue();
+			ActionQueue queue = new SynchronousActionQueue();
 
 			var future = new Future<UserUpdate>();
 
-			channel.Subscribe(queue, future.Complete, message => message.LastActivity > DateTime.Now);
+			var filter = new FilterChannel<UserUpdate>(queue, future, x => x.LastActivity > DateTime.Now);
 
-			var result = channel.Publish(update);
-			Assert.IsTrue(result);
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new[] {filter});
 
-			Assert.IsFalse(future.IsAvailable(1.Seconds()));
+			channel.Send(update);
+
+			Assert.IsFalse(future.WaitUntilCompleted(1.Seconds()));
+		}
+
+		[Test]
+		public void Should_return_false_if_there_are_no_subscribers()
+		{
+			ActionQueue queue = new SynchronousActionQueue();
+
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new Channel<UserUpdate>[] {});
+
+			var update = new UserUpdate();
+
+			channel.Send(update);
+
+			// exception here? or just ignore
 		}
 
 		[Test]
 		public void Should_schedule_events()
 		{
-			Channel<UserUpdate> channel = new SynchronousChannel<UserUpdate>();
-
 			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
-			CommandQueue queue = new SynchronousCommandQueue();
-
-			var scheduler = new ThreadPoolScheduler();
+			ActionQueue queue = new SynchronousActionQueue();
 
 			var future = new Future<UserUpdate>();
 
-			channel.Subscribe(queue, future.Complete);
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new Channel<UserUpdate>[] {future});
 
-			scheduler.Schedule(1000, () => channel.Publish(update));
+			var scheduler = new TimerActionScheduler(queue);
+
+			scheduler.Schedule(1000, queue, () => channel.Send(update));
 
 			Thread.Sleep(500);
 
-			Assert.IsFalse(future.IsAvailable(0.Seconds()));
+			Assert.IsFalse(future.WaitUntilCompleted(0.Seconds()));
 
-			Assert.IsTrue(future.IsAvailable(1.Seconds()));
+			Assert.IsTrue(future.WaitUntilCompleted(1.Seconds()));
 		}
 	}
 

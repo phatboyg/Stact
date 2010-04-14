@@ -15,7 +15,6 @@ namespace Magnum.Specs.Channels
 	using System;
 	using Collections;
 	using Magnum.Actions;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using NUnit.Framework;
 	using TestFramework;
@@ -57,7 +56,7 @@ namespace Magnum.Specs.Channels
 
 			consumer.CommandChannel.Send(new MyCommand());
 
-			consumer.Called.IsAvailable().ShouldBeTrue();
+			consumer.Called.IsCompleted.ShouldBeTrue();
 		}
 
 		[Test]

@@ -15,7 +15,7 @@ namespace Magnum.Specs.Actions
 	using System;
 	using System.Threading;
 	using Magnum.Actions;
-	using Magnum.Actors;
+	using Magnum.Channels;
 	using Magnum.Extensions;
 	using Magnum.Logging;
 	using NUnit.Framework;
@@ -38,7 +38,7 @@ namespace Magnum.Specs.Actions
 
 			queue.ExecuteAll(10.Seconds());
 
-			called.IsAvailable().ShouldBeFalse();
+			called.IsCompleted.ShouldBeFalse();
 		}
 	}
 
@@ -60,7 +60,7 @@ namespace Magnum.Specs.Actions
 
 			queue.ExecuteAll(8.Seconds());
 
-			called.IsAvailable().ShouldBeTrue();
+			called.IsCompleted.ShouldBeTrue();
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace Magnum.Specs.Actions
 
 			queue.ExecuteAll(12.Seconds());
 
-			called.IsAvailable().ShouldBeTrue();
+			called.IsCompleted.ShouldBeTrue();
 		}
 	}
 }

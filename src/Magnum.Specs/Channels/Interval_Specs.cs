@@ -14,7 +14,6 @@ namespace Magnum.Specs.Channels
 {
 	using System.Collections.Generic;
 	using Magnum.Actions;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -39,7 +38,7 @@ namespace Magnum.Specs.Channels
 				channel.Send(new MyMessage());
 			}
 
-			called.IsAvailable(4.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(4.Seconds()).ShouldBeTrue();
 
 			channel.Dispose();
 

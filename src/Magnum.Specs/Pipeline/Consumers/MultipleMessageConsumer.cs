@@ -12,31 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Pipeline.Consumers
 {
-    using Magnum.Actors;
-    using Magnum.Pipeline;
-    using Messages;
+	using Magnum.Channels;
+	using Magnum.Pipeline;
+	using Messages;
 
-    public class MultipleMessageConsumer :
-        IConsumer<ClaimModified>,
-        IConsumer<ClaimCreated>
-    {
-        public Future<ClaimModified> ClaimModifiedCalled { get; private set; }
-        public Future<ClaimCreated> ClaimCreatedCalled { get; private set; }
+	public class MultipleMessageConsumer :
+		IConsumer<ClaimModified>,
+		IConsumer<ClaimCreated>
+	{
+		public MultipleMessageConsumer()
+		{
+			ClaimModifiedCalled = new Future<ClaimModified>();
+			ClaimCreatedCalled = new Future<ClaimCreated>();
+		}
 
-        public MultipleMessageConsumer()
-        {
-            ClaimModifiedCalled = new Future<ClaimModified>();
-            ClaimCreatedCalled = new Future<ClaimCreated>();
-        }
+		public Future<ClaimModified> ClaimModifiedCalled { get; private set; }
+		public Future<ClaimCreated> ClaimCreatedCalled { get; private set; }
 
-        public void Consume(ClaimModified message)
-        {
-            ClaimModifiedCalled.Complete(message);
-        }
+		public void Consume(ClaimCreated message)
+		{
+			ClaimCreatedCalled.Complete(message);
+		}
 
-        public void Consume(ClaimCreated message)
-        {
-            ClaimCreatedCalled.Complete(message);
-        }
-    }
+		public void Consume(ClaimModified message)
+		{
+			ClaimModifiedCalled.Complete(message);
+		}
+	}
 }

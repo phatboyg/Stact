@@ -70,7 +70,7 @@ namespace Magnum.Specs.Pipeline
         {
             Input.Send(new ClaimModified());
 
-            Assert.IsTrue(Consumer.ClaimModifiedCalled.IsAvailable());
+            Assert.IsTrue(Consumer.ClaimModifiedCalled.IsCompleted);
         }
     }
 
@@ -93,7 +93,7 @@ namespace Magnum.Specs.Pipeline
         {
             Input.Send(new ClaimModified());
 
-            Assert.IsTrue(Consumer.ClaimModifiedCalled.IsAvailable());
+            Assert.IsTrue(Consumer.ClaimModifiedCalled.IsCompleted);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Magnum.Specs.Pipeline
         {
             Input.Send(new ClaimCreated());
 
-            Assert.IsTrue(Consumer.ClaimCreatedCalled.IsAvailable());
+            Assert.IsTrue(Consumer.ClaimCreatedCalled.IsCompleted);
         }
     }
 }

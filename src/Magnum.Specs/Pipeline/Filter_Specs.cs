@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Pipeline
 {
     using System;
-    using Magnum.Actors;
+    using Magnum.Channels;
     using Magnum.Pipeline;
     using Magnum.Pipeline.Segments;
     using NUnit.Framework;
@@ -32,7 +32,7 @@ namespace Magnum.Specs.Pipeline
 
             filter.Send(new SubClass());
 
-            received.IsAvailable(TimeSpan.Zero).ShouldBeTrue();
+            received.WaitUntilCompleted(TimeSpan.Zero).ShouldBeTrue();
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Magnum.Specs.Pipeline
 
             filter.Send(new BaseClass());
 
-            received.IsAvailable(TimeSpan.Zero).ShouldBeFalse();
+            received.WaitUntilCompleted(TimeSpan.Zero).ShouldBeFalse();
         }
 
         private class BaseClass

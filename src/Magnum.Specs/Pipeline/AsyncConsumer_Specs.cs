@@ -37,13 +37,13 @@ namespace Magnum.Specs.Pipeline
 		[Test]
 		public void Should_return_immediately_while_the_consumer_still_executes()
 		{
-			Assert.IsFalse(_consumer.ClaimModifiedCalled.IsAvailable());
+			Assert.IsFalse(_consumer.ClaimModifiedCalled.IsCompleted);
 		}
 
 		[Test]
 		public void Should_complete_eventually()
 		{
-			Assert.IsTrue(_consumer.ClaimModifiedCalled.IsAvailable(8.Seconds()));
+			Assert.IsTrue(_consumer.ClaimModifiedCalled.WaitUntilCompleted(8.Seconds()));
 		}
 	}
 }

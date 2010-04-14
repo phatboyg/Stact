@@ -14,18 +14,12 @@ namespace Magnum.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actors.Schedulers;
+	using Magnum.Actions;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class PingPong_Demo
 	{
-		private PingActor _ping;
-		private PingActor _ping2;
-		private PingActor _ping3;
-		private PingActor _ping4;
-		private Pong _pong;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -35,6 +29,12 @@ namespace Magnum.Specs.Actors.PingPongDemo
 			_ping4 = new PingActor();
 			_pong = new PongActor();
 		}
+
+		private PingActor _ping;
+		private PingActor _ping2;
+		private PingActor _ping3;
+		private PingActor _ping4;
+		private Pong _pong;
 
 		[Test, Explicit, Category("Demo")]
 		public void Demo()
@@ -53,8 +53,8 @@ namespace Magnum.Specs.Actors.PingPongDemo
 		[Test, Explicit, Category("Demo")]
 		public void Timer_Based_Demo()
 		{
-			ThreadPoolScheduler scheduler = new ThreadPoolScheduler();
-			scheduler.Schedule(0, 1000, () =>
+			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
+			scheduler.Schedule(0, 1000, new SynchronousActionQueue(), () =>
 				{
 					Trace.WriteLine("Starting it up");
 					_ping.Start(10, _pong);

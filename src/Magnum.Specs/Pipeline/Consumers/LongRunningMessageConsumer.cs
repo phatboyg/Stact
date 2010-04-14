@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Pipeline.Consumers
 {
 	using System.Threading;
-	using Magnum.Actors;
+	using Magnum.Channels;
 	using Magnum.Pipeline;
 	using Messages;
 

@@ -12,19 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actors.PingPongDemo
 {
-	using Magnum.Actors;
-	using Magnum.Actors.CommandQueues;
+	using Magnum.Actions;
 
 	public class PongActor :
-		Actor,
 		Pong
 	{
 		private int _pingCount;
-		protected CommandQueue _queue;
+		protected ActionQueue _queue;
 
 		public PongActor()
 		{
-			_queue = new ThreadPoolCommandQueue();
+			_queue = new ThreadPoolActionQueue();
 		}
 
 		public void Ping(Ping ping)

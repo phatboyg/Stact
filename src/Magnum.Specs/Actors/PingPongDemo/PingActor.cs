@@ -14,21 +14,19 @@ namespace Magnum.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actors;
-	using Magnum.Actors.CommandQueues;
+	using Magnum.Actions;
 
 	public class PingActor :
-		Actor,
 		Ping
 	{
 		private int _initialCount;
 		private int _pingCount;
-		protected CommandQueue _queue;
+		protected ActionQueue _queue;
 		private Stopwatch _watch;
 
 		public PingActor()
 		{
-			_queue = new ThreadPoolCommandQueue();
+			_queue = new ThreadPoolActionQueue();
 		}
 
 		public void Pong(Pong pong)

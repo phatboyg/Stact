@@ -15,7 +15,7 @@ namespace Magnum.Specs.Actions
 	using System;
 	using System.Diagnostics;
 	using Magnum.Actions;
-	using Magnum.Actors;
+	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
@@ -33,7 +33,7 @@ namespace Magnum.Specs.Actions
 
 			scheduler.Schedule(TimeSpan.Zero, queue, () => called.Complete(true));
 
-			called.IsAvailable(1.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 
@@ -50,9 +50,9 @@ namespace Magnum.Specs.Actions
 
 			scheduler.Schedule(100.Milliseconds(), queue, () => called.Complete(true));
 
-			called.IsAvailable(0.Seconds()).ShouldBeFalse();
+			called.IsCompleted.ShouldBeFalse();
 
-			called.IsAvailable(1.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 
@@ -71,7 +71,7 @@ namespace Magnum.Specs.Actions
 			scheduler.Schedule(2.Seconds(), queue, () => { });
 			scheduler.Schedule(0.Seconds(), queue, () => called.Complete(true));
 
-			called.IsAvailable(1.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 
@@ -90,7 +90,7 @@ namespace Magnum.Specs.Actions
 
 			scheduler.Disable();
 
-			called.IsAvailable(2.Seconds()).ShouldBeFalse();
+			called.WaitUntilCompleted(2.Seconds()).ShouldBeFalse();
 		}
 	}
 
@@ -108,7 +108,7 @@ namespace Magnum.Specs.Actions
 			scheduler.Schedule(200.Milliseconds(), queue, () => { throw new InvalidOperationException("Bugger!"); });
 			scheduler.Schedule(400.Milliseconds(), queue, () => called.Complete(true));
 
-			called.IsAvailable(1.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 
@@ -142,11 +142,11 @@ namespace Magnum.Specs.Actions
 					}
 				});
 
-			called.IsAvailable(5.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 
 			elapsed.Stop();
 
-			failed.IsAvailable(200.Milliseconds()).ShouldBeFalse();
+			failed.WaitUntilCompleted(200.Milliseconds()).ShouldBeFalse();
 
 			Trace.WriteLine("Time Period: " + elapsed.ElapsedMilliseconds);
 		}

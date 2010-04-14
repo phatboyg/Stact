@@ -14,8 +14,7 @@ namespace Magnum.Specs.Actors
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actors;
-	using Magnum.Actors.CommandQueues;
+	using Magnum.Actions;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -57,14 +56,13 @@ namespace Magnum.Specs.Actors
 	{
 		private readonly string _name;
 		private IPingPongPlayer _actorProxy;
-		private CommandQueue _queue = new ThreadPoolCommandQueue();
+		private ActionQueue _queue = new ThreadPoolActionQueue();
 		private Stopwatch _watch = Stopwatch.StartNew();
 
 		public PingPongPlayer(string name)
 		{
 			_name = name;
 
-			_queue.Run();
 			_actorProxy = new PingPongPlayerProxy(this);
 		}
 

@@ -14,7 +14,6 @@ namespace Magnum.Specs.Channels
 {
 	using System;
 	using Magnum.Actions;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -32,7 +31,7 @@ namespace Magnum.Specs.Channels
 
 			actor.MessageChannel.Send(message);
 
-			actor.Future.IsAvailable(1.Seconds()).ShouldBeTrue();
+			actor.Future.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 			actor.Future.Value.ShouldEqual(message);
 		}
 
@@ -45,7 +44,7 @@ namespace Magnum.Specs.Channels
 
 			actor.LambdaMessageChannel.Send(message);
 
-			actor.Future.IsAvailable(1.Seconds()).ShouldBeTrue();
+			actor.Future.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 			actor.Future.Value.ShouldEqual(message);
 		}
 	}

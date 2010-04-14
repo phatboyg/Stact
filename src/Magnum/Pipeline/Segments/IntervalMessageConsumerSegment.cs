@@ -14,9 +14,7 @@ namespace Magnum.Pipeline.Segments
 {
 	using System;
 	using System.Collections.Generic;
-	using Actors;
-	using Actors.CommandQueues;
-	using Actors.Schedulers;
+	using Actions;
 
 	[Serializable]
 	public abstract class IntervalMessageConsumerSegment :
@@ -43,10 +41,10 @@ namespace Magnum.Pipeline.Segments
 		private readonly object _lock = new object();
 
 		[NonSerialized]
-		private readonly CommandQueue _commandQueue = new ThreadPoolCommandQueue();
+		private readonly ActionQueue _queue = new ThreadPoolActionQueue();
 
 		[NonSerialized]
-		private readonly Scheduler _scheduler = new ThreadPoolScheduler();
+		private readonly ActionScheduler _scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
 
 		[NonSerialized]
 		private List<TMessage> _pending;
@@ -87,12 +85,12 @@ namespace Magnum.Pipeline.Segments
 			TMessage msg = message as TMessage;
 			if (msg != null)
 			{
-				yield return x => _commandQueue.Enqueue(() =>
+				yield return x => _queue.Enqueue(() =>
 					{
 						if (_pending == null)
 						{
 							_pending = new List<TMessage>();
-							_scheduler.Schedule(_interval, () => _commandQueue.Enqueue(DeliverToConsumer));
+							_scheduler.Schedule(_interval, _queue, DeliverToConsumer);
 						}
 
 						_pending.Add(x as TMessage);

@@ -16,7 +16,7 @@ namespace Magnum.Specs.Actions
 	using System.Diagnostics;
 	using System.Threading;
 	using Magnum.Actions;
-	using Magnum.Actors;
+	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
@@ -24,6 +24,19 @@ namespace Magnum.Specs.Actions
 	[TestFixture]
 	public class When_sending_actions_back_into_itself
 	{
+		private static class SuperSleeper
+		{
+			private static long _ticksPerMs = Stopwatch.Frequency/1000;
+
+			public static void Wait(long ms)
+			{
+				long finishAt = Stopwatch.GetTimestamp() + ms*_ticksPerMs;
+				while (Stopwatch.GetTimestamp() < finishAt)
+				{
+				}
+			}
+		}
+
 		[Test, Category("Slow"), Explicit]
 		public void Should_properly_release_one_waiting_writer()
 		{
@@ -62,24 +75,11 @@ namespace Magnum.Specs.Actions
 				writers.Add(queue);
 			}
 
-			complete.IsAvailable(20.Seconds()).ShouldBeTrue();
+			complete.WaitUntilCompleted(20.Seconds()).ShouldBeTrue();
 
 			timer.Stop();
 
-			Trace.WriteLine("Elapsed time: " + timer.ElapsedMilliseconds + "ms (expected " + writerCount * messageCount + ")");
-		}
-
-		private static class SuperSleeper
-		{
-			private static long _ticksPerMs = Stopwatch.Frequency/1000;
-
-			public static void Wait(long ms)
-			{
-				long finishAt = Stopwatch.GetTimestamp() + ms * _ticksPerMs;
-				while (Stopwatch.GetTimestamp() < finishAt)
-				{
-				}
-			}
+			Trace.WriteLine("Elapsed time: " + timer.ElapsedMilliseconds + "ms (expected " + writerCount*messageCount + ")");
 		}
 	}
 }

@@ -14,7 +14,6 @@ namespace Magnum.Specs.Channels
 {
 	using System.Diagnostics;
 	using Magnum.Actions;
-	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -46,10 +45,9 @@ namespace Magnum.Specs.Channels
 
 			using (var timer = new FunctionTimer("Throughput", x =>
 				{
-					Trace.WriteLine("Time to execute: " + (int)x.ElapsedMilliseconds + "ms");
+					Trace.WriteLine("Time to execute: " + (int) x.ElapsedMilliseconds + "ms");
 
-					Trace.WriteLine("Per second throughput: " + (int)(limit / (x.ElapsedMilliseconds / 1000)));
-
+					Trace.WriteLine("Per second throughput: " + (int) (limit/(x.ElapsedMilliseconds/1000)));
 				}))
 			{
 				for (int i = 1; i <= limit; i++)
@@ -63,7 +61,7 @@ namespace Magnum.Specs.Channels
 
 				timer.Mark();
 
-				complete.IsAvailable(30.Seconds()).ShouldBeTrue();
+				complete.WaitUntilCompleted(30.Seconds()).ShouldBeTrue();
 			}
 		}
 	}

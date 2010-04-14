@@ -17,7 +17,9 @@ namespace Magnum.Actions
 	public interface ActionScheduler
 	{
 		ScheduledAction Schedule(TimeSpan interval, ActionQueue queue, Action action);
+		ScheduledAction Schedule(int interval, ActionQueue queue, Action action);
 		ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, ActionQueue queue, Action action);
+		ScheduledAction Schedule(int interval, int periodicInterval, ActionQueue queue, Action action);
 
 		void Disable();
 	}

@@ -65,12 +65,22 @@ namespace Magnum.Actions
 			get { return _now(); }
 		}
 
+		public ScheduledAction Schedule(int interval, ActionQueue queue, Action action)
+		{
+			return Schedule(interval.Milliseconds(), queue, action);
+		}
+
 		public ScheduledAction Schedule(TimeSpan interval, ActionQueue queue, Action action)
 		{
 			var scheduled = new SingleScheduledAction(GetScheduledTime(interval), queue, action);
 			Schedule(scheduled);
 
 			return scheduled;
+		}
+
+		public ScheduledAction Schedule(int interval, int periodicInterval, ActionQueue queue, Action action)
+		{
+			return Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), queue, action);
 		}
 
 		public ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, ActionQueue queue, Action action)
