@@ -3,9 +3,9 @@ namespace Magnum.Cryptography
     using System.IO;
     using System.Security.Cryptography;
     using System.Text;
-    using StreamExtensions;
+    using Extensions;
 
-    public class DpapiCryptographyService :
+	public class DpapiCryptographyService :
         ICryptographyService
     {
 

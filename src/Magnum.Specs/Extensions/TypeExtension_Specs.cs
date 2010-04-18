@@ -12,26 +12,115 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Extensions
 {
-	using InterfaceExtensions;
+	using System;
+	using Magnum.Channels;
+	using Magnum.Extensions;
 	using NUnit.Framework;
+	using TestFramework;
 
 	[TestFixture]
 	public class An_object_that_implements_a_generic_interface
 	{
-		public interface IGeneric<T>
+		private interface INotGeneric
+		{			
+		}
+
+		private interface IGeneric<T>
 		{
 		}
 
-		public class GenericClass : IGeneric<int>
+		private class GenericClass : 
+			IGeneric<int>,
+			INotGeneric
 		{
+		}
+
+		private class GenericSubClass :
+			GenericClass
+		{
+		}
+
+		private class GenericBaseClass<T> :
+			IGeneric<T>
+		{
+			
+		}
+
+		private class NonGenericSubClass :
+			GenericBaseClass<int>
+		{	
 		}
 
 		[Test]
-		public void Should_match_the_generic_interface_type_check()
+		public void Should_match_a_regular_interface_using_the_generic_argument()
 		{
-			var genericClass = new GenericClass();
+			typeof (GenericClass).Implements<INotGeneric>().ShouldBeTrue();
+		}
 
-			Assert.IsTrue(genericClass.Implements(typeof (IGeneric<>)));
+		[Test]
+		public void Should_match_a_regular_interface_using_the_type_argument()
+		{
+			typeof (GenericClass).Implements(typeof (INotGeneric)).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_a_regular_interface_on_an_object()
+		{
+			new GenericClass().Implements<INotGeneric>().ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_a_regular_interface_by_type_argument_on_an_object()
+		{
+			new GenericClass().Implements(typeof (INotGeneric)).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_a_regular_interface_using_the_generic_argument_on_a_subclass()
+		{
+			typeof (GenericSubClass).Implements<INotGeneric>().ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_a_regular_interface_using_the_type_argument_on_a_subclass()
+		{
+			typeof(GenericSubClass).Implements(typeof(INotGeneric)).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_not_match_a_regular_interface_that_is_not_implemented()
+		{
+			typeof (GenericClass).Implements<IDisposable>().ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_match_a_generic_interface()
+		{
+			typeof (GenericClass).Implements<IGeneric<int>>().ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_an_open_generic_interface()
+		{
+			typeof (GenericClass).Implements(typeof (IGeneric<>)).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_an_open_generic_interface_in_a_base_class()
+		{
+			typeof (NonGenericSubClass).Implements(typeof (IGeneric<>)).ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_match_a_generic_base_class_implementation_of_the_interface()
+		{
+			typeof (NonGenericSubClass).Implements<IGeneric<int>>().ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_not_match_a_generic_interface_that_is_not_implemented()
+		{
+			typeof (NonGenericSubClass).Implements(typeof (Channel<int>)).ShouldBeFalse();
 		}
 	}
 }

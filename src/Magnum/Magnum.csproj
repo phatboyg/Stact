@@ -200,6 +200,8 @@
     <Compile Include="Extensions\ExtensionsToEnumerable.cs" />
     <Compile Include="Extensions\ExtensionsToEventHandler.cs" />
     <Compile Include="Extensions\ExtensionsToExpression.cs" />
+    <Compile Include="Extensions\ExtensionsToGenerics.cs" />
+    <Compile Include="Extensions\ExtensionsToInterfaces.cs" />
     <Compile Include="Extensions\ExtensionsToIntX.cs" />
     <Compile Include="Extensions\ExtensionsToObject.cs" />
     <Compile Include="Extensions\ExtensionsToRange.cs" />
@@ -359,7 +361,7 @@
     <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
-    <Compile Include="StreamExtensions\ExtensionsToStream.cs" />
+    <Compile Include="Extensions\ExtensionsToStream.cs" />
     <Compile Include="SystemUtil.cs" />
     <Compile Include="Threading\AsyncExecutor.cs" />
     <Compile Include="Threading\AsyncResult.cs" />
@@ -379,6 +381,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="StreamExtensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

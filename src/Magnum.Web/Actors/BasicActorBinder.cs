@@ -20,7 +20,7 @@ namespace Magnum.Web.Actors
 	using Abstractions;
 	using Binding;
 	using Channels;
-	using StreamExtensions;
+	using Extensions;
 	using ValueProviders;
 
 	public class BasicActorBinder<TInput> :
