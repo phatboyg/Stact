@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Extensions
 {
+	using System.Text;
+
 	public static class ExtensionsToString
 	{
 		/// <summary>
@@ -53,6 +55,16 @@ namespace Magnum.Extensions
 		public static string FormatWith(this string format, params object[] args)
 		{
 			return format.IsEmpty() ? format : string.Format(format, args);
+		}
+
+		/// <summary>
+		/// Returns the UTF-8 encoded string from the specified byte array
+		/// </summary>
+		/// <param name="data">The byte array</param>
+		/// <returns>The UTF-8 string</returns>
+		public static string ToUtf8String(this byte[] data)
+		{
+			return Encoding.UTF8.GetString(data);
 		}
 	}
 }

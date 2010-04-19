@@ -17,7 +17,7 @@ namespace Magnum.Web.ValueProviders
 	using System.Web.Routing;
 
 	/// <summary>
-	/// Maps access to the RequestContext for model binding
+	///   Maps access to the RequestContext for model binding
 	/// </summary>
 	public class RequestContextValueProvider :
 		ValueProvider
@@ -30,6 +30,7 @@ namespace Magnum.Web.ValueProviders
 				{
 					new DictionaryValueProvider(requestContext.RouteData.Values),
 					GetCookieCollection(requestContext.HttpContext.Request),
+					new JsonValueProvider(requestContext.HttpContext.Request),
 					GetFormCollection(requestContext.HttpContext.Request),
 					GetQueryStringCollection(requestContext.HttpContext.Request),
 					GetFileCollection(requestContext.HttpContext.Request),

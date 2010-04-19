@@ -100,6 +100,7 @@
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
     <Compile Include="Data\TransactionalWorker_Specs.cs" />
+    <Compile Include="Extensions\GenericExtension_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />

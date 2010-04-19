@@ -16,7 +16,7 @@ namespace Magnum.Reflection
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using InterfaceExtensions;
+	using Extensions;
 	using Linq;
 
 	public static class ArgumentMatchingExtensions

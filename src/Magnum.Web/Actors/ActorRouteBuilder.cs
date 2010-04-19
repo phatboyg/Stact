@@ -21,7 +21,6 @@ namespace Magnum.Web.Actors
 	using Binding;
 	using Channels;
 	using Extensions;
-	using InterfaceExtensions;
 	using Reflection;
 
 	public class ActorRouteBuilder :
@@ -65,7 +64,7 @@ namespace Magnum.Web.Actors
 				.Where(x => x.Implements<Channel>())
 				.Each(property =>
 					{
-						Type inputType = property.PropertyType.GetDeclaredTypeForGeneric(typeof (Channel<>));
+						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
 
 						this.FastInvoke(new[] {actorType, inputType}, "BuildRoute", new object[] {getActor, property});
 					});

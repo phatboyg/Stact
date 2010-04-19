@@ -104,8 +104,10 @@
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="ValueProviders\AccessorValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
+    <Compile Include="ValueProviders\EmptyValueProvider.cs" />
     <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />
     <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
+    <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\MultipleValueProvider.cs" />
     <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="RouteBuilder.cs" />
