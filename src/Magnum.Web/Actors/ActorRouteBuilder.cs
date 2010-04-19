@@ -21,7 +21,6 @@ namespace Magnum.Web.Actors
 	using Binding;
 	using Channels;
 	using Extensions;
-	using InterfaceExtensions;
 	using Reflection;
 
 	public class ActorRouteBuilder :

@@ -239,7 +239,6 @@
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
-    <Compile Include="InterfaceExtensions\ExtensionsToInterfaces.cs" />
     <Compile Include="Reflection\FastInvoker.1.cs" />
     <Compile Include="Reflection\FastInvokerBase.cs" />
     <Compile Include="Reflection\FastInvokerExtensions.cs" />
@@ -381,7 +380,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="StreamExtensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
