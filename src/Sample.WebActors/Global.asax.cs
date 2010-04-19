@@ -26,21 +26,21 @@ namespace Sample.WebActors
 		{
 			AreaRegistration.RegisterAllAreas();
 
+			RouteTable.Routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			new Bootstrapper().Bootstrap(RouteTable.Routes);
-
 
 			RegisterRoutes(RouteTable.Routes);
 		}
 
 		public static void RegisterRoutes(RouteCollection routes)
 		{
-			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+			routes.MapRoute("Benchmark", "Benchmark/Submit", new {controller = "Benchmark", action="Submit"});
 
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters
-				new {controller = "Home", action = "Index", id = ""} // Parameter defaults
+				new {controller = "Home", action = "Index", id = UrlParameter.Optional} // Parameter defaults
 				);
 		}
 	}

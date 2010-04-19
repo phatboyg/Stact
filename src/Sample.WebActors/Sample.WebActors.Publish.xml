@@ -1,0 +1,33 @@
+<publishData>
+  <publishTarget publishUrl="D:\Home\WebActors\">
+    <file relUrl="Scripts/jquery.validate.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/MicrosoftAjax.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="bin/Sample.WebActors.dll" publishTime="04/16/2010 16:38:24" />
+    <file relUrl="Views/Benchmark/Index.aspx" publishTime="04/16/2010 16:37:39" />
+    <file relUrl="bin/Magnum.pdb" publishTime="04/16/2010 15:34:37" />
+    <file relUrl="Scripts/MicrosoftAjax.debug.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery-1.4.1.min-vsdoc.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Web.config" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Views/Asynchro/Index.aspx" publishTime="04/08/2010 23:07:39" />
+    <file relUrl="Views/TestEcho/Index.aspx" publishTime="04/01/2010 16:15:00" />
+    <file relUrl="Scripts/MicrosoftMvcAjax.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery-1.4.1.min.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/MicrosoftMvcValidation.debug.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery-1.4.1.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery-1.4.1-vsdoc.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Global.asax" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="bin/Magnum.dll" publishTime="04/16/2010 15:34:37" />
+    <file relUrl="Scripts/MicrosoftMvcValidation.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery.validate.min.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery.validate-vsdoc.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="bin/Sample.WebActors.pdb" publishTime="04/16/2010 16:38:23" />
+    <file relUrl="bin/Magnum.Web.pdb" publishTime="04/16/2010 15:34:39" />
+    <file relUrl="bin/Magnum.xml" publishTime="04/16/2010 15:34:36" />
+    <file relUrl="Views/Web.config" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="bin/Magnum.Web.dll" publishTime="04/16/2010 15:34:39" />
+    <file relUrl="Scripts/MicrosoftMvcAjax.debug.js" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Content/Site.css" publishTime="03/29/2010 08:26:53" />
+    <file relUrl="Scripts/jquery.validate.min-vsdoc.js" publishTime="03/29/2010 08:26:53" />
+  </publishTarget>
+  <publishTarget publishUrl="C:\inetpub\wwwroot\WebActors\" />
+</publishData>

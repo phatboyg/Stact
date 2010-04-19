@@ -33,6 +33,7 @@ namespace Sample.WebActors
 			var actor = new EchoActor(new ThreadPoolActionQueue());
 
 			routeBuilder.BuildRoute(() => actor, x => x.EchoChannel);
+
 		}
 	}
 }
