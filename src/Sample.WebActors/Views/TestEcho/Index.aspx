@@ -7,6 +7,7 @@
 	<title>Echo Test Form</title>
 
 	<script language="javascript" type="text/javascript" src="../../Scripts/jquery-1.4.1.js"></script>
+	<script language="javascript" type="text/javascript" src="../../Scripts/json2.js"></script>
 
 </head>
 <body>
@@ -28,18 +29,25 @@
 	<script type="text/javascript" charset="utf-8">
 
 		function submitForm() {
-			var message = { "Text": $('#Text').val() };
+		    var message = { "Text": $('#Text').val() };
+
+		    var json = JSON.stringify(message);
 
 			$('#status').html("Sending...").show();
-
-			$.getJSON("http://localhost:6621/Actors/Echo/Echo", message, function(json, textStatus) {
-				if (textStatus == "success") {
-					$('#response').html(json.Text).show();
-					$('#status').html('');
-				}
-				else
-					$('#status').html("Epic Fail: " + textStatus).show();
-			}, function() { alert('fail!'); });
+			$.ajax({
+			    url: "http://localhost:6621/Actors/Echo/Echo",
+			    type: "POST",
+			    dataType: 'json',
+			    data: json,
+			    contentType: "application/json; charset=utf-8",
+			    success: function(json) {
+			        $('#response').html(json.Text).show();
+			        $('#status').html('');
+			    },
+			    error: function() {
+			        $('#status').html("Epic Fail: " + textStatus).show();
+			    } 
+			});
 		}
 
 		$(document).ready(function() {

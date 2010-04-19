@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
+	using System.Diagnostics;
 	using System.Web;
 	using System.Web.Routing;
 	using Actions;
@@ -30,9 +31,19 @@ namespace Magnum.Web.Actors
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
-			var context = new HttpActorRequestContext(_queueProvider(), requestContext);
+			Stopwatch timer = Stopwatch.StartNew();
+			try
+			{
+				var context = new HttpActorRequestContext(_queueProvider(), requestContext);
 
-			return _binder.GetHandler(context);
+				return _binder.GetHandler(context);
+			}
+			finally
+			{
+				timer.Stop();
+
+				Trace.WriteLine("Binding Time: " + timer.ElapsedMilliseconds + "ms");
+			}
 		}
 	}
 }

@@ -75,6 +75,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Views\Asynchro\Index.aspx" />
     <Content Include="Views\TestEcho\Index.aspx" />
     <Content Include="Web.config" />
