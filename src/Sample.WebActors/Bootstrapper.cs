@@ -14,7 +14,9 @@ namespace Sample.WebActors
 {
 	using System.Web.Routing;
 	using Actors.Echo;
+	using Actors.Query;
 	using Magnum.Actions;
+	using Magnum.Channels;
 	using Magnum.Logging;
 	using Magnum.Web;
 	using Magnum.Web.Actors;
@@ -28,12 +30,27 @@ namespace Sample.WebActors
 
 			ModelBinder modelBinder = new FastModelBinder();
 
+
 			RouteBuilder routeBuilder = new ActorRouteBuilder("actors/", modelBinder, routeCollection.Add);
 
-			var actor = new EchoActor(new ThreadPoolActionQueue());
+			RegisterActor(routeBuilder);
+			RegisterActor2(routeBuilder);
+		}
 
-			routeBuilder.BuildRoute(() => actor, x => x.EchoChannel);
+		private void RegisterActor(RouteBuilder routeBuilder)
+		{
+			var inputProvider = new DelegateChannelProvider<EchoInputModel>(x => new EchoActor(new ThreadPoolActionQueue()).EchoChannel);
+			var provider = new ThreadStaticChannelProvider<EchoInputModel>(inputProvider);
 
+			routeBuilder.BuildRoute<EchoActor, EchoInputModel>(x => x.EchoChannel, provider);
+		}
+
+		private void RegisterActor2(RouteBuilder routeBuilder)
+		{
+			var inputProvider = new DelegateChannelProvider<QueryInputModel>(x => new QueryActor(new ThreadPoolActionQueue()).GetCityChannel);
+			var provider = new ThreadStaticChannelProvider<QueryInputModel>(inputProvider);
+
+			routeBuilder.BuildRoute<QueryActor, QueryInputModel>(x => x.GetCityChannel, provider);
 		}
 	}
 }

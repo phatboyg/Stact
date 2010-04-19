@@ -76,5 +76,23 @@ namespace Magnum.Extensions
 			}
 			return ret;
 		}
+
+		/// <summary>
+		/// Converts an object to the strongly typed version of a dictionary
+		/// </summary>
+		/// <typeparam name="TResult"></typeparam>
+		/// <param name="dictionary"></param>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public static TResult StrongGet<TResult>(this IDictionary<string, object> dictionary, string key)
+		{
+			object result;
+			if (dictionary.TryGetValue(key, out result))
+			{
+				return (TResult) result;
+			}
+
+			return default(TResult);
+		}
 	}
 }

@@ -61,6 +61,10 @@
     <Compile Include="Actors\Echo\EchoActor.cs" />
     <Compile Include="Actors\Echo\EchoInputModel.cs" />
     <Compile Include="Actors\Echo\EchoOutputModel.cs" />
+    <Compile Include="Actors\Query\QueryActor.cs" />
+    <Compile Include="Actors\Query\QueryInputModel.cs" />
+    <Compile Include="Actors\Query\QueryOutputModel.cs" />
+    <Compile Include="ActorUrlExtensions.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Controllers\Asynchro\AsynchroController.cs" />
     <Compile Include="Controllers\Asynchro\AsynchroIndexViewModel.cs" />

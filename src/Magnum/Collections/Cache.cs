@@ -34,6 +34,11 @@ namespace Magnum.Collections
 		{
 		}
 
+		public Cache(IEqualityComparer<TKey> comparer)
+			: this(new Dictionary<TKey, TValue>(comparer))
+		{
+		}
+
 		public Cache(IDictionary<TKey, TValue> dictionary)
 		{
 			_values = dictionary;

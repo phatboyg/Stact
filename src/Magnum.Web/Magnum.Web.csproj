@@ -57,6 +57,7 @@
     <Compile Include="Actors\ActorHttpAsyncHandler.cs" />
     <Compile Include="Actors\ActorRequestContext.cs" />
     <Compile Include="Actors\ActorRouteBuilder.cs" />
+    <Compile Include="Actors\ActorRouteGenerator.cs" />
     <Compile Include="Actors\ActorRouteHandler.cs" />
     <Compile Include="Actors\BasicActorBinder.cs" />
     <Compile Include="Abstractions\HttpResponseContentWriter.cs" />

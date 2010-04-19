@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System;
 	using System.Web;
 	using Binding;
 	using Channels;
@@ -20,20 +19,20 @@ namespace Magnum.Web.Actors
 	public class BasicActorBinder<TInput> :
 		ActorBinder
 	{
-		private readonly Func<Channel<TInput>> _getInputChannel;
+		private readonly ChannelProvider<TInput> _channelProvider;
 		private readonly ModelBinder _modelBinder;
 
-		public BasicActorBinder(ModelBinder modelBinder, Func<Channel<TInput>> getInputChannel)
+		public BasicActorBinder(ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
 		{
 			_modelBinder = modelBinder;
-			_getInputChannel = getInputChannel;
+			_channelProvider = channelProvider;
 		}
 
 		public IHttpAsyncHandler GetHandler(ActorRequestContext context)
 		{
 			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
 
-			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _getInputChannel());
+			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _channelProvider.GetChannel(inputModel));
 
 			return handler;
 		}

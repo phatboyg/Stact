@@ -206,6 +206,7 @@
     <Compile Include="Extensions\ExtensionsToObject.cs" />
     <Compile Include="Extensions\ExtensionsToRange.cs" />
     <Compile Include="Extensions\ExtensionsToString.cs" />
+    <Compile Include="Extensions\ExtensionsToType.cs" />
     <Compile Include="Graphing\Edge.cs" />
     <Compile Include="Graphing\Vertex.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

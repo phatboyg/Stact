@@ -10,16 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web
+namespace Magnum.Extensions
 {
 	using System;
-	using System.Linq.Expressions;
-	using Channels;
+	using Reflection;
 
-	public interface RouteBuilder
+	public static class ExtensionsToType
 	{
-		void BuildRoute<TActor, TInput>(Expression<Func<TActor, Channel<TInput>>> channelAccessor, ChannelProvider<TInput> provider);
+		public static object GetDefaultValue(this Type type)
+		{
+			return type.AllowsNullValue() ? null : FastActivator.Create(type);
+		}
 
-		void BuildRoute<TActor>(Func<TActor> getActor);
+		public static bool AllowsNullValue(this Type type)
+		{
+			return (!type.IsValueType || type.IsNullableValueType());
+		}
+
+		public static bool IsNullableValueType(this Type type)
+		{
+			return Nullable.GetUnderlyingType(type) != null;
+		}
+
+		public static bool IsCompatibleWith<T>(this object value)
+		{
+			return (value is T || (value == null && typeof (T).AllowsNullValue()));
+		}
 	}
 }

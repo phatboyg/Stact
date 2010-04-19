@@ -110,13 +110,11 @@ namespace Magnum.Extensions
 				if (matchedType != null)
 					return true;
 			}
-			else
+
+			if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == interfaceType)
 			{
-				if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == interfaceType)
-				{
-					matchedType = objectType;
-					return true;
-				}
+				matchedType = objectType;
+				return true;
 			}
 
 			Type baseType = objectType.BaseType;

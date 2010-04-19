@@ -37,24 +37,21 @@ namespace Magnum.Web.Actors
 			_modelBinder = modelBinder;
 		}
 
-		public void BuildRoute<TActor, TInput>(Func<TActor> getActor, Expression<Func<TActor, Channel<TInput>>> channelAccessor)
+		public void BuildRoute<TActor, TInput>(Expression<Func<TActor, Channel<TInput>>> channelAccessor, ChannelProvider<TInput> provider)
 		{
-			PropertyInfo property = channelAccessor.GetMemberPropertyInfo();
-
-			Func<TActor, Channel<TInput>> compiled = channelAccessor.Compile();
-
-			Func<Channel<TInput>> getChannel = () => compiled(getActor());
-
-			ActorBinder binder = new BasicActorBinder<TInput>(_modelBinder, getChannel);
+			ActorBinder binder = new BasicActorBinder<TInput>(_modelBinder, provider);
 			var routeHandler = new ActorRouteHandler(binder, () => new ThreadPoolActionQueue());
 
-			string url = GetUrl(typeof (TActor).Name, property.Name);
+			RouteValueDictionary routeValueDictionary = ActorRouteGenerator.GetRouteValuesForActor(channelAccessor);
 
-			var route = new Route(url, routeHandler);
+			string url = GetUrl(routeValueDictionary);
+
+			url = _prefix + "{Actor}/{Channel}";
+
+			var route = new Route(url, new RouteValueDictionary(), routeValueDictionary, routeHandler);
 
 			_addRoute(route);
 		}
-
 
 		public void BuildRoute<TActor>(Func<TActor> getActor)
 		{
@@ -64,7 +61,7 @@ namespace Magnum.Web.Actors
 				.Where(x => x.Implements<Channel>())
 				.Each(property =>
 					{
-						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
+						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof (Channel<>)).Single();
 
 						this.FastInvoke(new[] {actorType, inputType}, "BuildRoute", new object[] {getActor, property});
 					});
@@ -79,12 +76,16 @@ namespace Magnum.Web.Actors
 			throw new NotImplementedException();
 		}
 
-		private string GetUrl(string actorName, string propertyName)
+		private string GetUrl(RouteValueDictionary routeValueDictionary)
 		{
-			string actor = actorName.EndsWith("Actor") ? actorName.Substring(0, actorName.Length - 5) : actorName;
-			string channel = propertyName.EndsWith("Channel") ? propertyName.Substring(0, propertyName.Length - 7) : propertyName;
+			var actorName = routeValueDictionary.StrongGet<string>("Actor");
+			var channelName = routeValueDictionary.StrongGet<string>("Channel");
 
-			return string.Format("{0}{1}/{2}", _prefix, actor, channel);
+			Guard.AgainstEmpty(actorName, "Actor");
+			Guard.AgainstEmpty(channelName, "Channel");
+
+
+			return string.Format("{0}{1}/{2}", _prefix, actorName, channelName);
 		}
 	}
 }
