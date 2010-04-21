@@ -26,6 +26,7 @@
 		<input type="button" id="Send" name="Send" value="Send" />
 		<div>Submission Url: <%= Url.Actor<EchoActor>(x => x.EchoChannel) %></div>
 		<div>Other Submission Url: <%= Url.Actor<QueryActor>(x => x.GetCityChannel) %></div>
+		<div>Another Url: <%= Url.Actor<QueryActor>(x => x.GetAreaCodeChannel) %></div>
 		<div id="status">
 		</div>
 		<% } %>

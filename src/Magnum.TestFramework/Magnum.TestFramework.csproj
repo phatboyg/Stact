@@ -61,7 +61,7 @@
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="AssertionsForRouting.cs" />
-    <Compile Include="ExtensionMethodsForAssertions.cs" />
+    <Compile Include="AssertionsForObjects.cs" />
     <Compile Include="GivenAttribute.cs" />
     <Compile Include="LogSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

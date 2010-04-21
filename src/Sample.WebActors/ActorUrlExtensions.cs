@@ -20,7 +20,7 @@ namespace Sample.WebActors
 	using Magnum;
 	using Magnum.Channels;
 	using Magnum.Extensions;
-	using Magnum.Web.Actors;
+	using Magnum.Web.Actors.Configuration;
 
 	public static class ActorUrlExtensions
 	{

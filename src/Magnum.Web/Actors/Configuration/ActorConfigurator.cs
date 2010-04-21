@@ -10,24 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Configuration
 {
+	using System;
+	using System.Linq.Expressions;
+
 	/// <summary>
-	/// Configures the actors into the routing collection
+	/// Configures the attributes of the actor being added
 	/// </summary>
-	public interface RouteConfigurator
+	public interface ActorConfigurator
 	{
 		/// <summary>
-		/// Specifies the base path to prefix the URL for the actor (eg; "Actors" to get /Actors/{Actor}/{Channel})
+		/// Configures all channels available on the actor
 		/// </summary>
-		/// <param name="basePath"></param>
-		void UseBasePath(string basePath);
+		/// <returns>The configurator</returns>
+		ActorConfigurator All();
 
 		/// <summary>
-		/// Add an actor to be added to the route collection
+		/// Specifies that only one instance of the actor should be created per thread,
+		/// keeping the object count low but possibly limiting concurrency
 		/// </summary>
-		/// <typeparam name="TActor"></typeparam>
-		ActorRouteConfigurator Add<TActor>()
-			where TActor : class;
+		/// <returns>The configurator</returns>
+		ActorConfigurator PerThread();
+	}
+
+	public interface ActorConfigurator<TActor> :
+		ActorConfigurator
+	{
+		ActorConfigurator<TActor> Channel<TChannel>(Expression<Func<TActor, TChannel>> expression);
 	}
 }

@@ -10,14 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Configuration
 {
-	using System.Reflection;
-	using Channels;
-
-	public interface AddRouteConfigurator :
-		RouteConfigurator
+	/// <summary>
+	/// Configures the actors into the routing collection
+	/// </summary>
+	public interface RouteConfigurator
 	{
-		void AddRoute<TActor, TInput>(ChannelProvider<TInput> provider, PropertyInfo property);
+		/// <summary>
+		/// Specifies the base path to prefix the URL for the actor (eg; "Actors" to get /Actors/{Actor}/{Channel})
+		/// </summary>
+		/// <param name="basePath"></param>
+		void UseBasePath(string basePath);
+
+		/// <summary>
+		/// Add an actor to be added to the route collection
+		/// </summary>
+		/// <typeparam name="TActor"></typeparam>
+		ActorConfigurator<TActor> Add<TActor>()
+			where TActor : class;
 	}
 }

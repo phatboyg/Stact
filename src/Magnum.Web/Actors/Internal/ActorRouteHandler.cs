@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Internal
 {
 	using System.Web;
 	using System.Web.Routing;
@@ -39,8 +39,10 @@ namespace Magnum.Web.Actors
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
+			// NOTE this feels a bit dirty, would like to maybe have a context provider or something
 			var context = new HttpActorRequestContext(_queueProvider(), requestContext);
 
+			// NOTE this rocks, need to make sure we are thread safe
 			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
 
 			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _channelProvider.GetChannel(inputModel));

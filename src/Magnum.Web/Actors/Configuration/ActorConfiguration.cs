@@ -10,27 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Configuration
 {
-	using Actions;
-	using Reflection;
-
-	public class TransientActorInstanceProvider<TActor> :
-		ActorInstanceProvider<TActor>
-		where TActor : class
+	public interface ActorConfiguration<TActor> :
+		ActorConfigurator<TActor>
 	{
-		private readonly ActionQueueProvider _queueProvider;
-
-		public TransientActorInstanceProvider(ActionQueueProvider queueProvider)
-		{
-			_queueProvider = queueProvider;
-		}
-
-		public TActor GetActor()
-		{
-			ActionQueue queue = _queueProvider();
-
-			return FastActivator<TActor>.Create(queue);
-		}
 	}
 }

@@ -10,16 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web
+namespace Magnum.Web.Actors.Internal
 {
 	using System;
-	using System.Linq.Expressions;
-	using Channels;
+	using Binding;
 
-	public interface RouteBuilder
+	public interface ActorRequestContext :
+		ModelBinderContext,
+		IAsyncResult
 	{
-		void BuildRoute<TActor, TInput>(Expression<Func<TActor, Channel<TInput>>> channelAccessor, ChannelProvider<TInput> provider);
-
-		void BuildRoute<TActor>(Func<TActor> getActor);
+		void SetCallback(AsyncCallback callback, object state);
 	}
 }

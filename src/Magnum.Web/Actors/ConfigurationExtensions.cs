@@ -14,14 +14,20 @@ namespace Magnum.Web.Actors
 {
 	using System;
 	using System.Web.Routing;
+	using Configuration;
 
 	public static class ConfigurationExtensions
 	{
-		public static void ConfigureActors(this RouteCollection routes, Action<RouteConfigurator> configureAction)
+		/// <summary>
+		/// Creates a configuration context to allow actors to be added to the routing table
+		/// </summary>
+		/// <param name="routes">The route collection to update</param>
+		/// <param name="configure">The configuration action</param>
+		public static void ConfigureActors(this RouteCollection routes, Action<RouteConfigurator> configure)
 		{
-			var configurator = new RoutingRouteConfigurator(routes);
+			var configurator = new WebRoutingRouteConfiguration(routes);
 
-			configureAction(configurator);
+			configure(configurator);
 
 			configurator.Apply();
 		}

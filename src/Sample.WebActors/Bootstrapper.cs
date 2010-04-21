@@ -15,10 +15,7 @@ namespace Sample.WebActors
 	using System.Web.Routing;
 	using Actors.Echo;
 	using Actors.Query;
-	using Magnum.Actions;
-	using Magnum.Channels;
 	using Magnum.Logging;
-	using Magnum.Web;
 	using Magnum.Web.Actors;
 
 	public class Bootstrapper
@@ -31,25 +28,13 @@ namespace Sample.WebActors
 				{
 					x.UseBasePath("actors");
 
-					x.Add<EchoActor>().All();
-					x.Add<QueryActor>().All();
+					x.Add<EchoActor>()
+						.All()
+						.PerThread();
+
+					x.Add<QueryActor>()
+						.Channel(c => c.GetCityChannel);
 				});
-		}
-
-		private void RegisterActor(RouteBuilder routeBuilder)
-		{
-			var inputProvider = new DelegateChannelProvider<EchoInputModel>(x => new EchoActor(new ThreadPoolActionQueue()).EchoChannel);
-			var provider = new ThreadStaticChannelProvider<EchoInputModel>(inputProvider);
-
-			routeBuilder.BuildRoute<EchoActor, EchoInputModel>(x => x.EchoChannel, provider);
-		}
-
-		private void RegisterActor2(RouteBuilder routeBuilder)
-		{
-			var inputProvider = new DelegateChannelProvider<QueryInputModel>(x => new QueryActor(new ThreadPoolActionQueue()).GetCityChannel);
-			var provider = new ThreadStaticChannelProvider<QueryInputModel>(inputProvider);
-
-			routeBuilder.BuildRoute<QueryActor, QueryInputModel>(x => x.GetCityChannel, provider);
 		}
 	}
 }

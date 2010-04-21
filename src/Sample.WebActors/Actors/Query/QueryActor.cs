@@ -32,6 +32,7 @@ namespace Sample.WebActors.Actors.Query
 		}
 
 		public Channel<QueryInputModel> GetCityChannel { get; private set; }
+		public Channel<QueryInputModel> GetAreaCodeChannel { get; private set; }
 
 		private void ProcessRequest(QueryInputModel inputModel)
 		{

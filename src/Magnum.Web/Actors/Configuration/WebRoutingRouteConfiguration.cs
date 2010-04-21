@@ -10,8 +10,9 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Configuration
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.Web.Routing;
@@ -19,15 +20,16 @@ namespace Magnum.Web.Actors
 	using Binding;
 	using Channels;
 	using Extensions;
+	using Internal;
 
-	public class RoutingRouteConfigurator :
-		AddRouteConfigurator
+	public class WebRoutingRouteConfiguration :
+		RouteConfiguration
 	{
+		private readonly List<Action<RouteConfiguration>> _actors = new List<Action<RouteConfiguration>>();
+		private readonly ModelBinder _modelBinder = new FastModelBinder();
 		private readonly RouteCollection _routeCollection;
-		private List<ApplyActorRouteConfigurator> _actors = new List<ApplyActorRouteConfigurator>();
-		private ModelBinder _modelBinder = new FastModelBinder();
 
-		public RoutingRouteConfigurator(RouteCollection routeCollection)
+		public WebRoutingRouteConfiguration(RouteCollection routeCollection)
 		{
 			_routeCollection = routeCollection;
 			BasePath = "";
@@ -38,15 +40,6 @@ namespace Magnum.Web.Actors
 		public void UseBasePath(string basePath)
 		{
 			BasePath = basePath ?? "";
-		}
-
-		public ActorRouteConfigurator Add<TActor>()
-			where TActor : class
-		{
-			var actorRouteConfigurator = new DefaultActorRouteConfigurator<TActor>();
-			_actors.Add(actorRouteConfigurator);
-
-			return actorRouteConfigurator;
 		}
 
 		public void AddRoute<TActor, TInput>(ChannelProvider<TInput> provider, PropertyInfo property)
@@ -62,20 +55,18 @@ namespace Magnum.Web.Actors
 			_routeCollection.Add(route);
 		}
 
-		public void Apply()
+		public ActorConfigurator<TActor> Add<TActor>()
+			where TActor : class
 		{
-			_actors.Each(x => x.Apply(this));
+			var actorRouteConfigurator = new StandardActorConfiguration<TActor>();
+			_actors.Add(actorRouteConfigurator.Apply);
+
+			return actorRouteConfigurator;
 		}
 
-		private string GetUrl(RouteValueDictionary routeValueDictionary)
+		public void Apply()
 		{
-			var actorName = routeValueDictionary.StrongGet<string>("Actor");
-			var channelName = routeValueDictionary.StrongGet<string>("Channel");
-
-			Guard.AgainstEmpty(actorName, "Actor");
-			Guard.AgainstEmpty(channelName, "Channel");
-
-			return string.Format("{0}/{1}/{2}", BasePath.TrimEnd('/'), actorName.Trim('/'), channelName.Trim('/'));
+			_actors.Each(x => x(this));
 		}
 	}
 }

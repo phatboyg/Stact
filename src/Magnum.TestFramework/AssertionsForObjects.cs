@@ -17,7 +17,7 @@ namespace Magnum.TestFramework
 	using System.Collections.Generic;
 	using NUnit.Framework;
 
-	public static class ExtensionMethodsForAssertions
+	public static class AssertionsForObjects
 	{
 		public static bool ShouldBeTrue(this bool value)
 		{

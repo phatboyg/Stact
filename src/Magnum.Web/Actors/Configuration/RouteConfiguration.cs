@@ -10,15 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Web.Actors.Configuration
 {
-	using System;
-	using Binding;
+	using System.Reflection;
+	using Channels;
 
-	public interface ActorRequestContext :
-		ModelBinderContext,
-		IAsyncResult
+	/// <summary>
+	/// The configuration is used after the routes have been configured to apply the requested changes
+	/// </summary>
+	public interface RouteConfiguration :
+		RouteConfigurator
 	{
-		void SetCallback(AsyncCallback callback, object state);
+		/// <summary>
+		/// Add a route to the routing collection
+		/// </summary>
+		/// <typeparam name="TActor"></typeparam>
+		/// <typeparam name="TInput"></typeparam>
+		/// <param name="provider"></param>
+		/// <param name="property"></param>
+		void AddRoute<TActor, TInput>(ChannelProvider<TInput> provider, PropertyInfo property);
 	}
 }
