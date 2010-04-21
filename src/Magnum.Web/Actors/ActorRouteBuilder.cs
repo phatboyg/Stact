@@ -39,8 +39,7 @@ namespace Magnum.Web.Actors
 
 		public void BuildRoute<TActor, TInput>(Expression<Func<TActor, Channel<TInput>>> channelAccessor, ChannelProvider<TInput> provider)
 		{
-			ActorBinder binder = new BasicActorBinder<TInput>(_modelBinder, provider);
-			var routeHandler = new ActorRouteHandler(binder, () => new ThreadPoolActionQueue());
+			var routeHandler = new ActorRouteHandler<TInput>(() => new ThreadPoolActionQueue(), _modelBinder, provider);
 
 			RouteValueDictionary routeValueDictionary = ActorRouteGenerator.GetRouteValuesForActor(channelAccessor);
 

@@ -12,33 +12,25 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System;
-	using Abstractions;
 	using Actions;
-	using Channels;
+	using Reflection;
 
-	public class ObjectResponseChannel<T> :
-		Channel<T>
+	public class TransientActorInstanceProvider<TActor> :
+		ActorInstanceProvider<TActor>
+		where TActor : class
 	{
-		private readonly Action<Channel<T>> _completed;
-		private readonly ActionQueue _queue;
-		private readonly ObjectWriter _writer;
+		private readonly ActionQueueProvider _queueProvider;
 
-		public ObjectResponseChannel(ObjectWriter writer, ActionQueue queue, Action<Channel<T>> completed)
+		public TransientActorInstanceProvider(ActionQueueProvider queueProvider)
 		{
-			_writer = writer;
-			_queue = queue;
-			_completed = completed;
+			_queueProvider = queueProvider;
 		}
 
-		public void Send(T message)
+		public TActor GetActor()
 		{
-			_queue.Enqueue(() =>
-				{
-					_writer.Write(message);
+			ActionQueue queue = _queueProvider();
 
-					_completed(this);
-				});
+			return FastActivator<TActor>.Create(queue);
 		}
 	}
 }

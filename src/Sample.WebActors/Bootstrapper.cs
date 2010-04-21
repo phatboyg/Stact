@@ -20,7 +20,6 @@ namespace Sample.WebActors
 	using Magnum.Logging;
 	using Magnum.Web;
 	using Magnum.Web.Actors;
-	using Magnum.Web.Binding;
 
 	public class Bootstrapper
 	{
@@ -28,13 +27,13 @@ namespace Sample.WebActors
 		{
 			TraceLogProvider.Configure(LogLevel.Debug);
 
-			ModelBinder modelBinder = new FastModelBinder();
+			routeCollection.ConfigureActors(x =>
+				{
+					x.UseBasePath("actors");
 
-
-			RouteBuilder routeBuilder = new ActorRouteBuilder("actors/", modelBinder, routeCollection.Add);
-
-			RegisterActor(routeBuilder);
-			RegisterActor2(routeBuilder);
+					x.Add<EchoActor>().All();
+					x.Add<QueryActor>().All();
+				});
 		}
 
 		private void RegisterActor(RouteBuilder routeBuilder)

@@ -116,6 +116,7 @@
     <Compile Include="Collections\ListBase.cs" />
     <Compile Include="Collections\MultiDictionary.cs" />
     <Compile Include="Collections\MultiDictionaryBase.cs" />
+    <Compile Include="Collections\ObjectToDictionary.cs" />
     <Compile Include="Collections\OrderedBag.cs" />
     <Compile Include="Collections\OrderedDictionary.cs" />
     <Compile Include="Collections\OrderedMultiDictionary.cs" />

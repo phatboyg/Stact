@@ -62,7 +62,7 @@ namespace Magnum.Web.Actors
 
 		public Channel<T> GetChannel<T>()
 		{
-			return new ObjectResponseChannel<T>(_objectWriter, _queue, Complete);
+			return new ObjectWriterChannel<T>(_queue, _objectWriter, Complete);
 		}
 
 		public void SetCallback(AsyncCallback callback, object state)

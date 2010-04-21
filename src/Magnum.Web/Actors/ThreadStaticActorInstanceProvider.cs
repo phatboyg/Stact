@@ -10,34 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Sample.WebActors.Actors.Echo
+namespace Magnum.Web.Actors
 {
-	using Magnum.Actions;
-	using Magnum.Channels;
+	using System;
 
 	/// <summary>
-	/// A simple actor that echoes the input to the output channel
+	/// Maintains only one instance of an actor per thread
 	/// </summary>
-	public class EchoActor
+	/// <typeparam name="TActor">The actor type</typeparam>
+	public class ThreadStaticActorInstanceProvider<TActor> :
+		ActorInstanceProvider<TActor>
+		where TActor : class
 	{
-		private readonly ActionQueue _queue;
+		[ThreadStatic]
+		private static TActor _instance;
 
-		public EchoActor(ActionQueue queue)
+		public ThreadStaticActorInstanceProvider(ActorInstanceProvider<TActor> instanceProvider)
 		{
-			_queue = queue;
-
-			EchoChannel = new ConsumerChannel<EchoInputModel>(_queue, ProcessRequest);
+			InstanceProvider = instanceProvider;
 		}
 
-		public Channel<EchoInputModel> EchoChannel { get; private set; }
+		public ActorInstanceProvider<TActor> InstanceProvider { get; private set; }
 
-		private void ProcessRequest(EchoInputModel inputModel)
+		public TActor GetActor()
 		{
-			inputModel.OutputChannel.Send(new EchoOutputModel
-				{
-					Text = inputModel.Text,
-					UserAgent = inputModel.UserAgent,
-				});
+			if (_instance == null)
+			{
+				_instance = InstanceProvider.GetActor();
+			}
+
+			return _instance;
 		}
 	}
 }

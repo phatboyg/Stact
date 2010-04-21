@@ -42,6 +42,11 @@ namespace Magnum.Web.Abstractions
 			}
 		}
 
+		/// <summary>
+		/// Writes the object as a JSON response if the request is an Ajax request, otherwise the
+		/// response is wrapped in an HTML text area for displaying to the user.
+		/// </summary>
+		/// <param name="obj"></param>
 		public void Write(object obj)
 		{
 			string json = Serializer.Serialize(obj);
@@ -55,7 +60,7 @@ namespace Magnum.Web.Abstractions
 				// For proper jquery.form plugin support of file uploads
 				// See the discussion on the File Uploads sample at http://malsup.com/jquery/form/#code-samples
 
-				string html = "<html><body><textarea rows=\"10\" cols=\"80\">" + json + "</textarea></body></html>";
+				string html = "<html><body><textarea rows=\"10\" cols=\"80\">" + HttpUtility.HtmlEncode(json) + "</textarea></body></html>";
 				_writer.Write(MediaType.Html.ToString(), html);
 			}
 		}

@@ -12,10 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System.Web;
-
-	public interface ActorBinder
+	public interface ApplyActorRouteConfigurator :
+		ActorRouteConfigurator
 	{
-		IHttpAsyncHandler GetHandler(ActorRequestContext context);
+		void Apply(AddRouteConfigurator configurator);
 	}
 }

@@ -12,29 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System.Web;
-	using Binding;
-	using Channels;
+	using System;
+	using System.Web.Routing;
 
-	public class BasicActorBinder<TInput> :
-		ActorBinder
+	public static class ConfigurationExtensions
 	{
-		private readonly ChannelProvider<TInput> _channelProvider;
-		private readonly ModelBinder _modelBinder;
-
-		public BasicActorBinder(ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
+		public static void ConfigureActors(this RouteCollection routes, Action<RouteConfigurator> configureAction)
 		{
-			_modelBinder = modelBinder;
-			_channelProvider = channelProvider;
-		}
+			var configurator = new RoutingRouteConfigurator(routes);
 
-		public IHttpAsyncHandler GetHandler(ActorRequestContext context)
-		{
-			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
+			configureAction(configurator);
 
-			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _channelProvider.GetChannel(inputModel));
-
-			return handler;
+			configurator.Apply();
 		}
 	}
 }

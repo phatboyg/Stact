@@ -10,17 +10,19 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Binding
+namespace Magnum.Web.Actors
 {
-	using Channels;
-	using ValueProviders;
-
 	/// <summary>
-	/// Context for binding to a model
+	/// A builder abstraction for creating actor instances when needed
 	/// </summary>
-	public interface ModelBinderContext :
-		ValueProvider
+	/// <typeparam name="TActor">The actor type</typeparam>
+	public interface ActorInstanceProvider<TActor>
+		where TActor : class
 	{
-		Channel<T> GetChannel<T>();
+		/// <summary>
+		/// Returns an instance of an actor
+		/// </summary>
+		/// <returns></returns>
+		TActor GetActor();
 	}
 }

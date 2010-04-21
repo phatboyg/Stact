@@ -10,17 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Binding
+namespace Magnum.Web.Actors
 {
+	using System.Reflection;
 	using Channels;
-	using ValueProviders;
 
-	/// <summary>
-	/// Context for binding to a model
-	/// </summary>
-	public interface ModelBinderContext :
-		ValueProvider
+	public interface AddRouteConfigurator :
+		RouteConfigurator
 	{
-		Channel<T> GetChannel<T>();
+		void AddRoute<TActor, TInput>(ChannelProvider<TInput> provider, PropertyInfo property);
 	}
 }

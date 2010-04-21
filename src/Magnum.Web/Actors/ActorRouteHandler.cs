@@ -12,38 +12,40 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors
 {
-	using System.Diagnostics;
 	using System.Web;
 	using System.Web.Routing;
 	using Actions;
+	using Binding;
+	using Channels;
 
-	public class ActorRouteHandler :
+	/// <summary>
+	/// ASP.NET Routing Handler for binding models
+	/// </summary>
+	/// <typeparam name="TInput"></typeparam>
+	public class ActorRouteHandler<TInput> :
 		IRouteHandler
 	{
-		private readonly ActorBinder _binder;
+		private readonly ChannelProvider<TInput> _channelProvider;
+		private readonly ModelBinder _modelBinder;
 		private readonly ActionQueueProvider _queueProvider;
 
-		public ActorRouteHandler(ActorBinder binder, ActionQueueProvider queueProvider)
+		public ActorRouteHandler(ActionQueueProvider queueProvider, ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
 		{
-			_binder = binder;
+			_modelBinder = modelBinder;
+			_channelProvider = channelProvider;
+
 			_queueProvider = queueProvider;
 		}
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
-			Stopwatch timer = Stopwatch.StartNew();
-			try
-			{
-				var context = new HttpActorRequestContext(_queueProvider(), requestContext);
+			var context = new HttpActorRequestContext(_queueProvider(), requestContext);
 
-				return _binder.GetHandler(context);
-			}
-			finally
-			{
-				timer.Stop();
+			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);
 
-				Trace.WriteLine("Binding Time: " + timer.ElapsedMilliseconds + "ms");
-			}
+			var handler = new ActorHttpAsyncHandler<TInput>(context, inputModel, _channelProvider.GetChannel(inputModel));
+
+			return handler;
 		}
 	}
 }

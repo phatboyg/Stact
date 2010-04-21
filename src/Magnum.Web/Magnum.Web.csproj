@@ -53,19 +53,28 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Actors\ActorBinder.cs" />
+    <Compile Include="Actors\ActorChannelProvider.cs" />
     <Compile Include="Actors\ActorHttpAsyncHandler.cs" />
+    <Compile Include="Actors\ActorInstanceProvider.cs" />
     <Compile Include="Actors\ActorRequestContext.cs" />
     <Compile Include="Actors\ActorRouteBuilder.cs" />
+    <Compile Include="Actors\ActorRouteConfigurator.cs" />
     <Compile Include="Actors\ActorRouteGenerator.cs" />
     <Compile Include="Actors\ActorRouteHandler.cs" />
-    <Compile Include="Actors\BasicActorBinder.cs" />
     <Compile Include="Abstractions\HttpResponseContentWriter.cs" />
     <Compile Include="Abstractions\JsonObjectWriter.cs" />
+    <Compile Include="Actors\AddRouteConfigurator.cs" />
+    <Compile Include="Actors\ApplyActorRouteConfigurator.cs" />
+    <Compile Include="Actors\ConfigurationExtensions.cs" />
+    <Compile Include="Actors\DefaultActorRouteConfigurator.cs" />
     <Compile Include="Actors\HttpActorRequestContext.cs" />
     <Compile Include="Abstractions\ObjectWriter.cs" />
     <Compile Include="Abstractions\MediaType.cs" />
     <Compile Include="Abstractions\ContentWriter.cs" />
+    <Compile Include="Actors\RouteConfigurator.cs" />
+    <Compile Include="Actors\RoutingRouteConfigurator.cs" />
+    <Compile Include="Actors\ThreadStaticActorInstanceProvider.cs" />
+    <Compile Include="Actors\TransientActorInstanceProvider.cs" />
     <Compile Include="Binding\FastModelBinder.cs" />
     <Compile Include="Binding\ModelBinderContext.cs" />
     <Compile Include="Binding\ObjectPropertyBinder.cs" />
@@ -100,7 +109,7 @@
     <Compile Include="Binding\TypeBinders\ULongBinder.cs" />
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
-    <Compile Include="Actors\ObjectResponseChannel.cs" />
+    <Compile Include="Actors\ObjectWriterChannel.cs" />
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="ValueProviders\AccessorValueProvider.cs" />
