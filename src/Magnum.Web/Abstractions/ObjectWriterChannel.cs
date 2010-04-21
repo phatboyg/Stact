@@ -13,8 +13,8 @@
 namespace Magnum.Web.Abstractions
 {
 	using System;
-	using Actions;
 	using Channels;
+	using Fibers;
 
 	/// <summary>
 	/// Provides a channel that can be used to write an object out to the ObjectWriter,
@@ -25,13 +25,13 @@ namespace Magnum.Web.Abstractions
 		Channel<T>
 	{
 		private readonly Action<Channel<T>> _completed;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private readonly ObjectWriter _writer;
 
-		public ObjectWriterChannel(ActionQueue queue, ObjectWriter writer, Action<Channel<T>> completed)
+		public ObjectWriterChannel(Fiber fiber, ObjectWriter writer, Action<Channel<T>> completed)
 		{
 			_writer = writer;
-			_queue = queue;
+			_fiber = fiber;
 			_completed = completed;
 		}
 
@@ -42,7 +42,7 @@ namespace Magnum.Web.Abstractions
 		/// <param name="message"></param>
 		public void Send(T message)
 		{
-			_queue.Enqueue(() =>
+			_fiber.Enqueue(() =>
 				{
 					_writer.Write(message);
 

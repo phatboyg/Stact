@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System.Diagnostics;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -31,13 +31,13 @@ namespace Magnum.Specs.Channels
 		[Test, Explicit]
 		public void Should_be_fast()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
+			Fiber fiber = new ThreadPoolFiber();
 
 			const int limit = 5000000;
 
 			var complete = new Future<int>();
 
-			Channel<MsgStruct> channel = new ConsumerChannel<MsgStruct>(queue, message =>
+			Channel<MsgStruct> channel = new ConsumerChannel<MsgStruct>(fiber, message =>
 				{
 					if (message.Count == limit)
 						complete.Complete(limit);

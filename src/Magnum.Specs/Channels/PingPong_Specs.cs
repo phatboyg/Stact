@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -32,15 +32,15 @@ namespace Magnum.Specs.Channels
 
 		private class Pinger
 		{
-			private readonly ThreadPoolActionQueue _queue;
+			private readonly ThreadPoolFiber _fiber;
 
 			public Pinger()
 			{
-				_queue = new ThreadPoolActionQueue();
+				_fiber = new ThreadPoolFiber();
 
 				Ponged = new Future<Pong>();
 
-				PongChannel = new ConsumerChannel<Pong>(_queue, HandlePong);
+				PongChannel = new ConsumerChannel<Pong>(_fiber, HandlePong);
 			}
 
 			public Future<Pong> Ponged { get; private set; }
@@ -62,15 +62,15 @@ namespace Magnum.Specs.Channels
 
 		private class Ponger
 		{
-			private readonly ThreadPoolActionQueue _queue;
+			private readonly ThreadPoolFiber _fiber;
 
 			public Ponger()
 			{
-				_queue = new ThreadPoolActionQueue();
+				_fiber = new ThreadPoolFiber();
 
 				Pinged = new Future<Ping>();
 
-				PongChannel = new ConsumerChannel<Ping>(_queue, HandlePing);
+				PongChannel = new ConsumerChannel<Ping>(_fiber, HandlePing);
 			}
 
 			public Future<Ping> Pinged { get; private set; }

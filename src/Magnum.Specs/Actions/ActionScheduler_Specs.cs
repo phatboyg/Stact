@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actions
 {
 	using System;
 	using System.Diagnostics;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -26,12 +26,12 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_run_the_action_immediately()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(TimeSpan.Zero, queue, () => called.Complete(true));
+			scheduler.Schedule(TimeSpan.Zero, fiber, () => called.Complete(true));
 
 			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
@@ -43,12 +43,12 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_wait_until_the_appropriate_time_for_the_action_to_execute()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(100.Milliseconds(), queue, () => called.Complete(true));
+			scheduler.Schedule(100.Milliseconds(), fiber, () => called.Complete(true));
 
 			called.IsCompleted.ShouldBeFalse();
 
@@ -63,13 +63,13 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_run_the_new_action_immediately()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(2.Seconds(), queue, () => { });
-			scheduler.Schedule(0.Seconds(), queue, () => called.Complete(true));
+			scheduler.Schedule(2.Seconds(), fiber, () => { });
+			scheduler.Schedule(0.Seconds(), fiber, () => called.Complete(true));
 
 			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
@@ -81,12 +81,12 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_not_run_any_pending_actions()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(1.Seconds(), queue, () => called.Complete(true));
+			scheduler.Schedule(1.Seconds(), fiber, () => called.Complete(true));
 
 			scheduler.Disable();
 
@@ -100,13 +100,13 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_not_stall_the_scheduler()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(200.Milliseconds(), queue, () => { throw new InvalidOperationException("Bugger!"); });
-			scheduler.Schedule(400.Milliseconds(), queue, () => called.Complete(true));
+			scheduler.Schedule(200.Milliseconds(), fiber, () => { throw new InvalidOperationException("Bugger!"); });
+			scheduler.Schedule(400.Milliseconds(), fiber, () => called.Complete(true));
 
 			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
@@ -118,8 +118,8 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_run_the_action_until_disabled()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
-			ActionScheduler scheduler = new TimerActionScheduler(new ThreadPoolActionQueue());
+			Fiber fiber = new ThreadPoolFiber();
+			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
 
 			Stopwatch elapsed = Stopwatch.StartNew();
 
@@ -128,7 +128,7 @@ namespace Magnum.Specs.Actions
 			var failed = new Future<bool>();
 
 			ScheduledAction scheduledAction = null;
-			scheduledAction = scheduler.Schedule(TimeSpan.Zero, 100.Milliseconds(), queue, () =>
+			scheduledAction = scheduler.Schedule(TimeSpan.Zero, 100.Milliseconds(), fiber, () =>
 				{
 					count++;
 					if (count == 10)

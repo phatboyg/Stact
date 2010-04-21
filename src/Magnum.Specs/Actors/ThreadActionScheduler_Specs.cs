@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -23,7 +23,7 @@ namespace Magnum.Specs.Actors
 		[Test]
 		public void Schedule()
 		{
-			var queue = new SynchronousActionQueue();
+			var fiber = new SynchronousFiber();
 
 			var count = 0;
 			var reset = new AutoResetEvent(false);
@@ -35,17 +35,17 @@ namespace Magnum.Specs.Actors
 					reset.Set();
 				};
 
-			var thread = new TimerActionScheduler(queue);
-			thread.Schedule(50, queue, three);
-			thread.Schedule(1, queue, two);
-			thread.Schedule(1, queue, two);
+			var thread = new TimerFiberScheduler(fiber);
+			thread.Schedule(50, fiber, three);
+			thread.Schedule(1, fiber, two);
+			thread.Schedule(1, fiber, two);
 			Assert.IsTrue(reset.WaitOne(10000, false));
 		}
 
 		[Test]
 		public void Schedule1000In1ms()
 		{
-			var queue = new SynchronousActionQueue();
+			var fiber = new SynchronousFiber();
 
 			var count = 0;
 			var reset = new AutoResetEvent(false);
@@ -58,11 +58,11 @@ namespace Magnum.Specs.Actors
 					}
 				};
 
-			var thread = new TimerActionScheduler(queue);
+			var thread = new TimerFiberScheduler(fiber);
 			{
 				for (var i = 0; i < 1000; i++)
 				{
-					thread.Schedule(i, queue,one);
+					thread.Schedule(i, fiber,one);
 				}
 				Assert.IsTrue(reset.WaitOne(1200, false));
 			}

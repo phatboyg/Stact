@@ -14,7 +14,7 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.Collections.Generic;
-	using Actions;
+	using Fibers;
 	using Internal;
 
 	/// <summary>
@@ -27,7 +27,7 @@ namespace Magnum.Channels
 		IDisposable
 	{
 		private readonly IMessageDictionary<TKey, T> _messages;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
 		private bool _disposed;
 		private ScheduledAction _scheduledAction;
@@ -35,20 +35,20 @@ namespace Magnum.Channels
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
-		/// <param name="queue">The queue where consumer actions should be enqueued</param>
+		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
 		/// <param name="getKey">Returns the key for the message</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
-		public DistinctIntervalChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
+		public DistinctIntervalChannel(Fiber fiber, FiberScheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
 		{
 			_messages = new MessageDictionary<TKey, T>(getKey);
 
 			Interval = interval;
-			_queue = queue;
+			_fiber = fiber;
 			Output = output;
 
-			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessagesToOutputChannel);
+			_scheduledAction = scheduler.Schedule(interval, interval, fiber, SendMessagesToOutputChannel);
 		}
 
 		public Channel<IDictionary<TKey, T>> Output { get; private set; }
@@ -57,7 +57,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() => _messages.Add(message));
+			_fiber.Enqueue(() => _messages.Add(message));
 		}
 
 		public void Dispose()

@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actions
 {
 	using System;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using Magnum.Logging;
@@ -28,15 +28,15 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_prevent_new_actions_from_being_queued()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
+			Fiber fiber = new ThreadPoolFiber();
 
 			var called = new Future<bool>();
 
-			queue.StopAcceptingActions();
+			fiber.StopAcceptingActions();
 
-			Assert.Throws<ActionQueueException>(() => queue.Enqueue(() => called.Complete(true)));
+			Assert.Throws<FiberException>(() => fiber.Enqueue(() => called.Complete(true)));
 
-			queue.ExecuteAll(10.Seconds());
+			fiber.ExecuteAll(10.Seconds());
 
 			called.IsCompleted.ShouldBeFalse();
 		}
@@ -50,15 +50,15 @@ namespace Magnum.Specs.Actions
 		{
 			TraceLogProvider.Configure(LogLevel.Debug);
 
-			ActionQueue queue = new ThreadPoolActionQueue();
+			Fiber fiber = new ThreadPoolFiber();
 
-			queue.Enqueue(() => Thread.Sleep(1000));
+			fiber.Enqueue(() => Thread.Sleep(1000));
 
 			var called = new Future<bool>();
 
-			queue.Enqueue(() => called.Complete(true));
+			fiber.Enqueue(() => called.Complete(true));
 
-			queue.ExecuteAll(8.Seconds());
+			fiber.ExecuteAll(8.Seconds());
 
 			called.IsCompleted.ShouldBeTrue();
 		}
@@ -72,7 +72,7 @@ namespace Magnum.Specs.Actions
 		{
 			var action = MockRepository.GenerateMock<Action>();
 
-			var queue = new ThreadPoolActionQueue(2, 0);
+			var queue = new ThreadPoolFiber(2, 0);
 			queue.Enqueue(action);
 			queue.Enqueue(action);
 
@@ -81,7 +81,7 @@ namespace Magnum.Specs.Actions
 				queue.Enqueue(action);
 				Assert.Fail("Should have thrown an exception");
 			}
-			catch (ActionQueueException ex)
+			catch (FiberException ex)
 			{
 				ex.Message.Contains("Insufficient").ShouldBeTrue();
 			}
@@ -94,15 +94,15 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_result_in_no_waiting_actions_in_the_queue()
 		{
-			ActionQueue queue = new ThreadActionQueue();
+			Fiber fiber = new ThreadFiber();
 
-			queue.Enqueue(() => Thread.Sleep(1000));
+			fiber.Enqueue(() => Thread.Sleep(1000));
 
 			var called = new Future<bool>();
 
-			queue.Enqueue(() => called.Complete(true));
+			fiber.Enqueue(() => called.Complete(true));
 
-			queue.ExecuteAll(12.Seconds());
+			fiber.ExecuteAll(12.Seconds());
 
 			called.IsCompleted.ShouldBeTrue();
 		}

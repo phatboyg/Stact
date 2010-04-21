@@ -10,29 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions
+namespace Magnum.Fibers
 {
 	using System;
 	using System.Runtime.Serialization;
 
-	public class ActionQueueException :
+	public class FiberException :
 		Exception
 	{
-		public ActionQueueException()
+		public FiberException()
 		{
 		}
 
-		public ActionQueueException(string message)
+		public FiberException(string message)
 			: base(message)
 		{
 		}
 
-		public ActionQueueException(string message, Exception innerException)
+		public FiberException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 
-		protected ActionQueueException(SerializationInfo info, StreamingContext context)
+		protected FiberException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

@@ -14,9 +14,9 @@ namespace Magnum.Web.Actors.Internal
 {
 	using System.Web;
 	using System.Web.Routing;
-	using Actions;
 	using Binding;
 	using Channels;
+	using Fibers;
 
 	/// <summary>
 	/// ASP.NET Routing Handler for binding models
@@ -27,20 +27,20 @@ namespace Magnum.Web.Actors.Internal
 	{
 		private readonly ChannelProvider<TInput> _channelProvider;
 		private readonly ModelBinder _modelBinder;
-		private readonly ActionQueueProvider _queueProvider;
+		private readonly FiberProvider _fiberProvider;
 
-		public ActorRouteHandler(ActionQueueProvider queueProvider, ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
+		public ActorRouteHandler(FiberProvider fiberProvider, ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
 		{
 			_modelBinder = modelBinder;
 			_channelProvider = channelProvider;
 
-			_queueProvider = queueProvider;
+			_fiberProvider = fiberProvider;
 		}
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
 			// NOTE this feels a bit dirty, would like to maybe have a context provider or something
-			var context = new HttpActorRequestContext(_queueProvider(), requestContext);
+			var context = new HttpActorRequestContext(_fiberProvider(), requestContext);
 
 			// NOTE this rocks, need to make sure we are thread safe
 			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);

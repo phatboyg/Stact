@@ -12,11 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using Actions;
+	using Fibers;
 
 	/// <summary>
 	/// A channel that selectively accepts a message and enqueues the consumer method via the
-	/// specified ActionQueue.
+	/// specified Fiber.
 	/// Note that the filter function is called as part of the queued action, so threading
 	/// is not an issue.
 	/// </summary>
@@ -27,17 +27,17 @@ namespace Magnum.Channels
 		private readonly Filter<T> _filter;
 		private readonly Channel<T> _output;
 
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
-		/// <param name="queue">The queue where consumer actions should be enqueued</param>
+		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
 		/// <param name="filter">The filter to determine if the message can be consumed</param>
-		public FilterChannel(ActionQueue queue, Channel<T> output, Filter<T> filter)
+		public FilterChannel(Fiber fiber, Channel<T> output, Filter<T> filter)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_output = output;
 			_filter = filter;
 		}
@@ -49,7 +49,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() =>
+			_fiber.Enqueue(() =>
 				{
 					if (_filter(message))
 						_output.Send(message);

@@ -14,7 +14,7 @@ namespace Magnum.Specs.Channels
 {
 	using System;
 	using Collections;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using NUnit.Framework;
 	using TestFramework;
@@ -29,14 +29,14 @@ namespace Magnum.Specs.Channels
 
 		private class MyConsumer
 		{
-			private readonly ActionQueue _queue;
+			private readonly Fiber _fiber;
 
-			public MyConsumer(ActionQueue queue)
+			public MyConsumer(Fiber fiber)
 			{
-				_queue = queue;
+				_fiber = fiber;
 
 				Called = new Future<MyCommand>();
-				CommandChannel = new ConsumerChannel<MyCommand>(_queue, HandleMyCommand);
+				CommandChannel = new ConsumerChannel<MyCommand>(_fiber, HandleMyCommand);
 			}
 
 			public Future<MyCommand> Called { get; private set; }
@@ -52,7 +52,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_be_able_to_call_the_consumer_directly()
 		{
-			var consumer = new MyConsumer(new SynchronousActionQueue());
+			var consumer = new MyConsumer(new SynchronousFiber());
 
 			consumer.CommandChannel.Send(new MyCommand());
 
@@ -88,16 +88,16 @@ namespace Magnum.Specs.Channels
 		private readonly IConsumerDictionary<TKey, TConsumer> _dictionary;
 		private readonly ChannelAccessor<TConsumer, TMessage> _getChannel;
 		private readonly KeyAccessor<TMessage, TKey> _getKey;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
-		public ConsumerPool(ActionQueue queue, IConsumerDictionary<TKey, TConsumer> dictionary, KeyAccessor<TMessage, TKey> getKey, ChannelAccessor<TConsumer, TMessage> getChannel)
+		public ConsumerPool(Fiber fiber, IConsumerDictionary<TKey, TConsumer> dictionary, KeyAccessor<TMessage, TKey> getKey, ChannelAccessor<TConsumer, TMessage> getChannel)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_dictionary = dictionary;
 			_getKey = getKey;
 			_getChannel = getChannel;
 
-			InputChannel = new ConsumerChannel<TMessage>(queue, Dispatch);
+			InputChannel = new ConsumerChannel<TMessage>(fiber, Dispatch);
 		}
 
 		public Channel<TMessage> InputChannel { get; private set; }

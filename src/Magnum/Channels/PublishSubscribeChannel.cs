@@ -15,8 +15,8 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Actions;
 	using Extensions;
+	using Fibers;
 	using Logging;
 
 	/// <summary>
@@ -28,12 +28,12 @@ namespace Magnum.Channels
 	{
 		private static readonly ILogger _log = Logger.GetLogger<PublishSubscribeChannel<T>>();
 
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private readonly Channel<T>[] _subscribers;
 
-		public PublishSubscribeChannel(ActionQueue queue, IEnumerable<Channel<T>> subscribers)
+		public PublishSubscribeChannel(Fiber fiber, IEnumerable<Channel<T>> subscribers)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_subscribers = subscribers.ToArray();
 		}
 
@@ -44,7 +44,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() =>
+			_fiber.Enqueue(() =>
 				{
 					_subscribers.Each(subscriber =>
 						{

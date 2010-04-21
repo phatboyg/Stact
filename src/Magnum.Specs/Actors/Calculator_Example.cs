@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Actors
 {
 	using System.Diagnostics;
-	using Magnum.Actions;
+	using Fibers;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -75,16 +75,16 @@ namespace Magnum.Specs.Actors
 
 	public abstract class ActorImpl : IActor
 	{
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
 		protected ActorImpl()
 		{
-			_queue = new ThreadPoolActionQueue();
+			_fiber = new ThreadPoolFiber();
 		}
 
 		public void Call<T>(IActor caller, T method)
 		{
-			_queue.Enqueue(() => Dispatch(caller, method));
+			_fiber.Enqueue(() => Dispatch(caller, method));
 		}
 
 		public void Dispatch<T>(IActor caller, T method)

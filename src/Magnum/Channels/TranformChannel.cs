@@ -13,7 +13,7 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Actions;
+	using Fibers;
 
 	/// <summary>
 	/// Tranforms a message from one type to another
@@ -24,11 +24,11 @@ namespace Magnum.Channels
 		Channel<TInput>
 	{
 		private readonly Func<TInput, TOutput> _converter;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
-		public TranformChannel(ActionQueue queue, Channel<TOutput> output, Func<TInput, TOutput> converter)
+		public TranformChannel(Fiber fiber, Channel<TOutput> output, Func<TInput, TOutput> converter)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			Output = output;
 			_converter = converter;
 		}
@@ -37,7 +37,7 @@ namespace Magnum.Channels
 
 		public void Send(TInput message)
 		{
-			_queue.Enqueue(() => Output.Send(_converter(message)));
+			_fiber.Enqueue(() => Output.Send(_converter(message)));
 		}
 	}
 }

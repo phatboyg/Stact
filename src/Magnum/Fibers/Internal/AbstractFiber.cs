@@ -10,18 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions.Internal
+namespace Magnum.Fibers.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Threading;
 	using Logging;
 
-	public abstract class AbstractActionQueue :
-		ActionQueue
+	public abstract class AbstractFiber :
+		Fiber
 	{
-		private static readonly ILogger _log = Logger.GetLogger<AbstractActionQueue>();
+		private static readonly ILogger _log = Logger.GetLogger<AbstractFiber>();
 
 		private readonly List<Action> _actions = new List<Action>();
 		private readonly object _lock = new object();
@@ -31,7 +30,7 @@ namespace Magnum.Actions.Internal
 		private bool _executingAllActions;
 		private bool _notAcceptingActions;
 
-		protected AbstractActionQueue(int queueLimit, int queueTimeout)
+		protected AbstractFiber(int queueLimit, int queueTimeout)
 		{
 			_queueLimit = queueLimit;
 			_queueTimeout = queueTimeout;
@@ -91,7 +90,7 @@ namespace Magnum.Actions.Internal
 				{
 					timeout = giveUpAt - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
-						throw new ActionQueueException("Timeout expired waiting for queue to execute all pending actions");
+						throw new FiberException("Timeout expired waiting for all pending actions to complete");
 
 					Monitor.Wait(_lock, timeout);
 				}
@@ -199,7 +198,7 @@ namespace Magnum.Actions.Internal
 		private bool IsSpaceAvailable(int needed)
 		{
 			if (_notAcceptingActions)
-				throw new ActionQueueException("The queue is no longer accepting actions");
+				throw new FiberException("The fiber is no longer accepting actions");
 
 			const int attempts = 100;
 
@@ -210,7 +209,7 @@ namespace Magnum.Actions.Internal
 			{
 				if (_queueTimeout <= 0)
 				{
-					throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
+					throw new FiberOverrunException(needed, _actions.Count, _queueLimit);
 				}
 
 				Monitor.Wait(_lock, timeout);
@@ -225,7 +224,7 @@ namespace Magnum.Actions.Internal
 
 			if (attempt == attempts)
 			{
-				throw new ActionQueueFullException(needed, _actions.Count, _queueLimit);
+				throw new FiberOverrunException(needed, _actions.Count, _queueLimit);
 			}
 
 			return true;

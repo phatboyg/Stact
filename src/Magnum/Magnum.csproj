@@ -45,19 +45,19 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Actions\Internal\AbstractActionQueue.cs" />
-    <Compile Include="Actions\ActionQueue.cs" />
-    <Compile Include="Actions\ActionQueueException.cs" />
-    <Compile Include="Actions\ActionQueueFullException.cs" />
-    <Compile Include="Actions\ActionScheduler.cs" />
-    <Compile Include="Actions\ScheduledAction.cs" />
-    <Compile Include="Actions\Internal\ExecuteScheduledAction.cs" />
-    <Compile Include="Actions\Internal\ScheduledActionList.cs" />
-    <Compile Include="Actions\Internal\SingleScheduledAction.cs" />
-    <Compile Include="Actions\SynchronousActionQueue.cs" />
-    <Compile Include="Actions\ThreadActionQueue.cs" />
-    <Compile Include="Actions\ThreadPoolActionQueue.cs" />
-    <Compile Include="Actions\TimerActionScheduler.cs" />
+    <Compile Include="Fibers\Internal\AbstractFiber.cs" />
+    <Compile Include="Fibers\Fiber.cs" />
+    <Compile Include="Fibers\FiberException.cs" />
+    <Compile Include="Fibers\FiberOverrunException.cs" />
+    <Compile Include="Fibers\FiberScheduler.cs" />
+    <Compile Include="Fibers\ScheduledAction.cs" />
+    <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />
+    <Compile Include="Fibers\Internal\ScheduledActionList.cs" />
+    <Compile Include="Fibers\Internal\SingleScheduledAction.cs" />
+    <Compile Include="Fibers\SynchronousFiber.cs" />
+    <Compile Include="Fibers\ThreadFiber.cs" />
+    <Compile Include="Fibers\ThreadPoolFiber.cs" />
+    <Compile Include="Fibers\TimerFiberScheduler.cs" />
     <Compile Include="Calendar\CheckResult.cs" />
     <Compile Include="Calendar\Holidays\BaseCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Calendar\Holidays\MemorialDayObservedCheck.cs" />
     <Compile Include="Calendar\DefaultCalendar.cs" />
     <Compile Include="Calendar\Months.cs" />
-    <Compile Include="Actions\ActionQueueProvider.cs" />
+    <Compile Include="Fibers\FiberProvider.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelCache.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
@@ -381,6 +381,7 @@
     <Content Include="Collections\A Note About This Folder.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Actions\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -17,9 +17,9 @@ namespace Magnum.Web.Actors.Configuration
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Actions;
 	using Channels;
 	using Extensions;
+	using Fibers;
 	using Internal;
 	using Logging;
 	using Reflection;
@@ -32,12 +32,12 @@ namespace Magnum.Web.Actors.Configuration
 		private ActorInstanceProvider<TActor> _actorInstanceProvider;
 
 		private Action<RouteConfiguration> _configure;
-		private ActionQueueProvider _queueProvider;
+		private FiberProvider _fiberProvider;
 
 		public StandardActorConfiguration()
 		{
-			_queueProvider = ThreadPoolQueueProvider;
-			_actorInstanceProvider = new TransientActorInstanceProvider<TActor>(_queueProvider);
+			_fiberProvider = ThreadPoolFiberProvider;
+			_actorInstanceProvider = new TransientActorInstanceProvider<TActor>(_fiberProvider);
 			_configure = DefaultConfigureAction;
 		}
 
@@ -117,9 +117,9 @@ namespace Magnum.Web.Actors.Configuration
 			throw new InvalidOperationException("No channels have been specified for the actor: " + typeof (TActor).Name);
 		}
 
-		private static ActionQueue ThreadPoolQueueProvider()
+		private static Fiber ThreadPoolFiberProvider()
 		{
-			return new ThreadPoolActionQueue();
+			return new ThreadPoolFiber();
 		}
 	}
 }

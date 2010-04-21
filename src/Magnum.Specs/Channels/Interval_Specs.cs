@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System.Collections.Generic;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -25,8 +25,8 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_deliver_the_messages_at_once()
 		{
-			var queue = new SynchronousActionQueue();
-			var scheduler = new TimerActionScheduler(new SynchronousActionQueue());
+			var queue = new SynchronousFiber();
+			var scheduler = new TimerFiberScheduler(new SynchronousFiber());
 
 			var called = new Future<ICollection<MyMessage>>();
 			var consumer = new ConsumerChannel<ICollection<MyMessage>>(queue, called.Complete);

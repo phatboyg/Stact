@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions
+namespace Magnum.Fibers
 {
 	using System;
 	using System.ComponentModel;
@@ -20,19 +20,19 @@ namespace Magnum.Actions
 	using Logging;
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]
-	public class ThreadActionQueue :
-		AbstractActionQueue
+	public class ThreadFiber :
+		AbstractFiber
 	{
-		private readonly ILogger _log = Logger.GetLogger<ThreadActionQueue>();
+		private readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
 		private readonly Thread _thread;
 		private bool _isActive;
 
-		public ThreadActionQueue()
+		public ThreadFiber()
 			: this(-1, Timeout.Infinite)
 		{
 		}
 
-		public ThreadActionQueue(int queueLimit, int queueTimeout)
+		public ThreadFiber(int queueLimit, int queueTimeout)
 			: base(queueLimit, queueTimeout)
 		{
 			_thread = CreateThread();

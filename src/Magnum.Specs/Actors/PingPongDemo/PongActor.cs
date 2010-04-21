@@ -12,22 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actors.PingPongDemo
 {
-	using Magnum.Actions;
+	using Fibers;
 
 	public class PongActor :
 		Pong
 	{
 		private int _pingCount;
-		protected ActionQueue _queue;
+		protected Fiber _fiber;
 
 		public PongActor()
 		{
-			_queue = new ThreadPoolActionQueue();
+			_fiber = new ThreadPoolFiber();
 		}
 
 		public void Ping(Ping ping)
 		{
-			_queue.Enqueue(() => Consume(ping));
+			_fiber.Enqueue(() => Consume(ping));
 		}
 
 		private void Consume(Ping ping)

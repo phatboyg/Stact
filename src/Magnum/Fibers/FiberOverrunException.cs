@@ -10,34 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions
+namespace Magnum.Fibers
 {
 	using System;
 	using System.Runtime.Serialization;
 
-	public class ActionQueueFullException :
-		ActionQueueException
+	public class FiberOverrunException :
+		FiberException
 	{
-		public ActionQueueFullException()
+		public FiberOverrunException()
 		{
 		}
 
-		public ActionQueueFullException(int needed, int count, int limit)
+		public FiberOverrunException(int needed, int count, int limit)
 			: base(string.Format("Insufficient space in queue, requested {0}, currently {1} of {2} used", needed, count, limit))
 		{
 		}
 
-		public ActionQueueFullException(string message)
+		public FiberOverrunException(string message)
 			: base(message)
 		{
 		}
 
-		public ActionQueueFullException(string message, Exception innerException)
+		public FiberOverrunException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 
-		protected ActionQueueFullException(SerializationInfo info, StreamingContext context)
+		protected FiberOverrunException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

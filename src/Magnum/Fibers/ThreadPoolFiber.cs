@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions
+namespace Magnum.Fibers
 {
 	using System.Diagnostics;
 	using System.Threading;
@@ -18,33 +18,33 @@ namespace Magnum.Actions
 	using Logging;
 
 	/// <summary>
-	/// An ActionQueue that uses the .NET ThreadPool and QueueUserWorkItem to execute
+	/// An Fiber that uses the .NET ThreadPool and QueueUserWorkItem to execute
 	/// actions.
 	/// </summary>
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count} )")]
-	public class ThreadPoolActionQueue :
-		AbstractActionQueue
+	public class ThreadPoolFiber :
+		AbstractFiber
 	{
-		private static readonly ILogger _log = Logger.GetLogger<ThreadPoolActionQueue>();
+		private static readonly ILogger _log = Logger.GetLogger<ThreadPoolFiber>();
 
 		private bool _executorQueued;
 
 		/// <summary>
-		/// Constructs a new ThreadPoolActionQueue using the default queue settings
+		/// Constructs a new ThreadPoolFiber using the default queue settings
 		/// of unlimited actions with an infinite timeout to add new actions
 		/// </summary>
-		public ThreadPoolActionQueue()
+		public ThreadPoolFiber()
 			: this(-1, Timeout.Infinite)
 		{
 		}
 
 		/// <summary>
-		/// Constructs a new ThreadPoolActionQueue using the specified settings for the
+		/// Constructs a new ThreadPoolFiber using the specified settings for the
 		/// queue
 		/// </summary>
 		/// <param name="queueLimit">The maximum number of actions that can be waiting in the queue</param>
 		/// <param name="queueTimeout">The timeout to wait when adding actions when the queue if full before throwing an exception</param>
-		public ThreadPoolActionQueue(int queueLimit, int queueTimeout)
+		public ThreadPoolFiber(int queueLimit, int queueTimeout)
 			: base(queueLimit, queueTimeout)
 		{
 		}
@@ -85,7 +85,7 @@ namespace Magnum.Actions
 		private void QueueWorkItem()
 		{
 			if (!ThreadPool.QueueUserWorkItem(Execute))
-				throw new ActionQueueException("QueueUserWorkItem did not accept our execute method");
+				throw new FiberException("QueueUserWorkItem did not accept our execute method");
 
 			_executorQueued = true;
 		}

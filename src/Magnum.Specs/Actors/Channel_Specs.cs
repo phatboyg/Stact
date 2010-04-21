@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -27,13 +27,13 @@ namespace Magnum.Specs.Actors
 		{
 			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
-			ActionQueue queue = new SynchronousActionQueue();
+			Fiber fiber = new SynchronousFiber();
 
 			var future = new Future<UserUpdate>();
 
-			var filter = new FilterChannel<UserUpdate>(queue, future, x => x.LastActivity > DateTime.Now);
+			var filter = new FilterChannel<UserUpdate>(fiber, future, x => x.LastActivity > DateTime.Now);
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new[] {filter});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new[] {filter});
 
 			channel.Send(update);
 
@@ -43,9 +43,9 @@ namespace Magnum.Specs.Actors
 		[Test]
 		public void Should_return_false_if_there_are_no_subscribers()
 		{
-			ActionQueue queue = new SynchronousActionQueue();
+			Fiber fiber = new SynchronousFiber();
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new Channel<UserUpdate>[] {});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new Channel<UserUpdate>[] {});
 
 			var update = new UserUpdate();
 
@@ -59,15 +59,15 @@ namespace Magnum.Specs.Actors
 		{
 			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
 
-			ActionQueue queue = new SynchronousActionQueue();
+			Fiber fiber = new SynchronousFiber();
 
 			var future = new Future<UserUpdate>();
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(queue, new Channel<UserUpdate>[] {future});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new Channel<UserUpdate>[] {future});
 
-			var scheduler = new TimerActionScheduler(queue);
+			var scheduler = new TimerFiberScheduler(fiber);
 
-			scheduler.Schedule(1000, queue, () => channel.Send(update));
+			scheduler.Schedule(1000, fiber, () => channel.Send(update));
 
 			Thread.Sleep(500);
 

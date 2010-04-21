@@ -14,7 +14,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -53,8 +53,8 @@ namespace Magnum.Specs.Actors.PingPongDemo
 		[Test, Explicit, Category("Demo")]
 		public void Timer_Based_Demo()
 		{
-			ActionScheduler scheduler = new TimerActionScheduler(new SynchronousActionQueue());
-			scheduler.Schedule(0, 1000, new SynchronousActionQueue(), () =>
+			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
+			scheduler.Schedule(0, 1000, new SynchronousFiber(), () =>
 				{
 					Trace.WriteLine("Starting it up");
 					_ping.Start(10, _pong);

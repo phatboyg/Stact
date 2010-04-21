@@ -13,7 +13,7 @@
 namespace Magnum.Channels
 {
 	using System.Threading;
-	using Actions;
+	using Fibers;
 
 	/// <summary>
 	/// Using the specified SynchronizationContext, messages sent through this channel
@@ -25,13 +25,13 @@ namespace Magnum.Channels
 		Channel<T>
 	{
 		private readonly Channel<T> _output;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private readonly object _state;
 		private readonly SynchronizationContext _synchronizationContext;
 
-		public SynchronizedChannel(ActionQueue queue, Channel<T> output, SynchronizationContext synchronizationContext)
+		public SynchronizedChannel(Fiber fiber, Channel<T> output, SynchronizationContext synchronizationContext)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_output = output;
 			_state = 0;
 			_synchronizationContext = synchronizationContext;
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() => _synchronizationContext.Send(x => _output.Send(message), _state));
+			_fiber.Enqueue(() => _synchronizationContext.Send(x => _output.Send(message), _state));
 		}
 	}
 }

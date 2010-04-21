@@ -16,8 +16,8 @@ namespace Magnum.Web.Actors.Internal
 	using System.Threading;
 	using System.Web.Routing;
 	using Abstractions;
-	using Actions;
 	using Channels;
+	using Fibers;
 	using Logging;
 	using Reflection;
 	using ValueProviders;
@@ -29,16 +29,16 @@ namespace Magnum.Web.Actors.Internal
 
 		private readonly ContentWriter _contentWriter;
 		private readonly ObjectWriter _objectWriter;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private readonly ValueProvider _valueProvider;
 		private AsyncCallback _callback;
 		private volatile bool _completed;
 		private Type _responseType;
 		private object _state;
 
-		public HttpActorRequestContext(ActionQueue queue, RequestContext requestContext)
+		public HttpActorRequestContext(Fiber fiber, RequestContext requestContext)
 		{
-			_queue = queue;
+			_fiber = fiber;
 
 			_valueProvider = new RequestContextValueProvider(requestContext);
 			_contentWriter = new HttpResponseContentWriter(requestContext.HttpContext.Response);
@@ -62,7 +62,7 @@ namespace Magnum.Web.Actors.Internal
 
 		public Channel<T> GetChannel<T>()
 		{
-			return new ObjectWriterChannel<T>(_queue, _objectWriter, Complete);
+			return new ObjectWriterChannel<T>(_fiber, _objectWriter, Complete);
 		}
 
 		public void SetCallback(AsyncCallback callback, object state)

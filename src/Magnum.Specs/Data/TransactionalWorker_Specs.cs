@@ -17,7 +17,7 @@ namespace Magnum.Specs.Data
 	using System.Security.AccessControl;
 	using System.Threading;
 	using System.Transactions;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 
@@ -27,7 +27,7 @@ namespace Magnum.Specs.Data
 		[Test]
 		public void Should_be_passable_to_another_action_queue()
 		{
-			ActionQueue queue = new ThreadPoolActionQueue();
+			Fiber fiber = new ThreadPoolFiber();
 
 
 			var timer = Stopwatch.StartNew();
@@ -47,7 +47,7 @@ namespace Magnum.Specs.Data
 							Trace.WriteLine("Completed");		
 						};
 
-					queue.Enqueue(() =>
+					fiber.Enqueue(() =>
 						{
 							dep.Start();
 							try

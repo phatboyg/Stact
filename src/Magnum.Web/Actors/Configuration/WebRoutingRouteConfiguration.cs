@@ -16,10 +16,10 @@ namespace Magnum.Web.Actors.Configuration
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.Web.Routing;
-	using Actions;
 	using Binding;
 	using Channels;
 	using Extensions;
+	using Fibers;
 	using Internal;
 
 	public class WebRoutingRouteConfiguration :
@@ -44,7 +44,7 @@ namespace Magnum.Web.Actors.Configuration
 
 		public void AddRoute<TActor, TInput>(ChannelProvider<TInput> provider, PropertyInfo property)
 		{
-			var routeHandler = new ActorRouteHandler<TInput>(() => new ThreadPoolActionQueue(), _modelBinder, provider);
+			var routeHandler = new ActorRouteHandler<TInput>(() => new ThreadPoolFiber(), _modelBinder, provider);
 
 			RouteValueDictionary routeValueDictionary = ActorRouteGenerator.GetRouteValuesForActor<TActor>(property);
 

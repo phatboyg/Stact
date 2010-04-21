@@ -13,7 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -53,15 +53,15 @@ namespace Magnum.Specs.Channels
 	public class SomeActorInstance
 	{
 		private readonly Future<MyMessage> _future;
-		private readonly ThreadPoolActionQueue _queue;
+		private readonly ThreadPoolFiber _fiber;
 
 		public SomeActorInstance()
 		{
-			_queue = new ThreadPoolActionQueue();
+			_fiber = new ThreadPoolFiber();
 			_future = new Future<MyMessage>();
 
-			MessageChannel = new ConsumerChannel<MyMessage>(_queue, Consume);
-			LambdaMessageChannel = new ConsumerChannel<MyMessage>(_queue, message => _future.Complete(message));
+			MessageChannel = new ConsumerChannel<MyMessage>(_fiber, Consume);
+			LambdaMessageChannel = new ConsumerChannel<MyMessage>(_fiber, message => _future.Complete(message));
 		}
 
 		public Future<MyMessage> Future

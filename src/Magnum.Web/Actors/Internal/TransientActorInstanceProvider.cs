@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors.Internal
 {
-	using Actions;
+	using Fibers;
 	using Reflection;
 
 	/// <summary>
@@ -23,18 +23,18 @@ namespace Magnum.Web.Actors.Internal
 		ActorInstanceProvider<TActor>
 		where TActor : class
 	{
-		private readonly ActionQueueProvider _queueProvider;
+		private readonly FiberProvider _fiberProvider;
 
-		public TransientActorInstanceProvider(ActionQueueProvider queueProvider)
+		public TransientActorInstanceProvider(FiberProvider fiberProvider)
 		{
-			_queueProvider = queueProvider;
+			_fiberProvider = fiberProvider;
 		}
 
 		public TActor GetActor()
 		{
-			ActionQueue queue = _queueProvider();
+			Fiber fiber = _fiberProvider();
 
-			return FastActivator<TActor>.Create(queue);
+			return FastActivator<TActor>.Create(fiber);
 		}
 	}
 }

@@ -12,33 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using Actions;
+	using Fibers;
 
 	/// <summary>
 	/// A channel that accepts a message and enqueues the consumer method via the
-	/// specified ActionQueue
+	/// specified Fiber
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
 	public class ConsumerChannel<T> :
 		Channel<T>
 	{
 		private readonly Consumer<T> _consumer;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
-		/// <param name="queue">The queue where consumer actions should be enqueued</param>
+		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="consumer">The method to call when a message is sent to the channel</param>
-		public ConsumerChannel(ActionQueue queue, Consumer<T> consumer)
+		public ConsumerChannel(Fiber fiber, Consumer<T> consumer)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_consumer = consumer;
 		}
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() => _consumer(message));
+			_fiber.Enqueue(() => _consumer(message));
 		}
 	}
 }

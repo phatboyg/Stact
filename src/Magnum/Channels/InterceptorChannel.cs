@@ -13,18 +13,18 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Actions;
+	using Fibers;
 
 	public class InterceptorChannel<T> :
 		Channel<T>
 	{
 		private readonly Channel<T> _output;
 
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
-		public InterceptorChannel(ActionQueue queue, Channel<T> output, InterceptorProvider<T> interceptorProvider)
+		public InterceptorChannel(Fiber fiber, Channel<T> output, InterceptorProvider<T> interceptorProvider)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			_output = output;
 			InterceptorProvider = interceptorProvider;
 		}
@@ -38,7 +38,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() =>
+			_fiber.Enqueue(() =>
 				{
 					Interceptor<T> intercepter = null;
 					try

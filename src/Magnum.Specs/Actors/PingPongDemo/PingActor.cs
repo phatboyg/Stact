@@ -14,24 +14,24 @@ namespace Magnum.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 
 	public class PingActor :
 		Ping
 	{
 		private int _initialCount;
 		private int _pingCount;
-		protected ActionQueue _queue;
+		protected Fiber _fiber;
 		private Stopwatch _watch;
 
 		public PingActor()
 		{
-			_queue = new ThreadPoolActionQueue();
+			_fiber = new ThreadPoolFiber();
 		}
 
 		public void Pong(Pong pong)
 		{
-			_queue.Enqueue(() => Consume(pong));
+			_fiber.Enqueue(() => Consume(pong));
 		}
 
 		public void Start(int count, Pong pong)

@@ -15,7 +15,7 @@ namespace Magnum.Specs.Actions
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -47,19 +47,19 @@ namespace Magnum.Specs.Actions
 			int total = 0;
 
 
-			ActionQueue reader = new ThreadActionQueue(100, 60000);
+			Fiber reader = new ThreadFiber(100, 60000);
 
 			Thread.Sleep(100);
 
 			Stopwatch timer = Stopwatch.StartNew();
 
-			var writers = new List<ActionQueue>();
+			var writers = new List<Fiber>();
 			for (int i = 0; i < writerCount; i++)
 			{
-				ActionQueue queue = new ThreadPoolActionQueue(messageCount, 1000);
+				Fiber fiber = new ThreadPoolFiber(messageCount, 1000);
 				for (int j = 0; j < messageCount; j++)
 				{
-					queue.Enqueue(() =>
+					fiber.Enqueue(() =>
 						{
 							SuperSleeper.Wait(1);
 
@@ -72,7 +72,7 @@ namespace Magnum.Specs.Actions
 						});
 				}
 
-				writers.Add(queue);
+				writers.Add(fiber);
 			}
 
 			complete.WaitUntilCompleted(20.Seconds()).ShouldBeTrue();

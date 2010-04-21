@@ -15,7 +15,7 @@ namespace Magnum.Specs.Channels
 	using System;
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Actions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -47,7 +47,7 @@ namespace Magnum.Specs.Channels
 			int limit = 20;
 			var provider = new DelegateChannelProvider<TestMessage>(m =>
 				{
-					var consumer = new ConsumerChannel<TestMessage>(new SynchronousActionQueue(), message =>
+					var consumer = new ConsumerChannel<TestMessage>(new SynchronousFiber(), message =>
 						{
 							int value = Interlocked.Increment(ref count);
 							Trace.WriteLine("Value: " + value);

@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actions
+namespace Magnum.Fibers
 {
 	using System;
 	using System.ComponentModel;
@@ -21,22 +21,22 @@ namespace Magnum.Actions
 	using Logging;
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
-	public class TimerActionScheduler :
-		ActionScheduler
+	public class TimerFiberScheduler :
+		FiberScheduler
 	{
-		private static readonly ILogger _log = Logger.GetLogger<TimerActionScheduler>();
+		private static readonly ILogger _log = Logger.GetLogger<TimerFiberScheduler>();
 
 		private readonly ScheduledActionList _actions = new ScheduledActionList();
 		private readonly object _lock = new object();
 		private readonly Func<DateTime> _now = () => SystemUtil.UtcNow;
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private readonly TimeSpan _timerInterval = -1.Milliseconds();
 		private bool _disabled;
 		private Timer _timer;
 
-		public TimerActionScheduler(ActionQueue queue)
+		public TimerFiberScheduler(Fiber fiber)
 		{
-			_queue = queue;
+			_fiber = fiber;
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -65,28 +65,28 @@ namespace Magnum.Actions
 			get { return _now(); }
 		}
 
-		public ScheduledAction Schedule(int interval, ActionQueue queue, Action action)
+		public ScheduledAction Schedule(int interval, Fiber fiber, Action action)
 		{
-			return Schedule(interval.Milliseconds(), queue, action);
+			return Schedule(interval.Milliseconds(), fiber, action);
 		}
 
-		public ScheduledAction Schedule(TimeSpan interval, ActionQueue queue, Action action)
+		public ScheduledAction Schedule(TimeSpan interval, Fiber fiber, Action action)
 		{
-			var scheduled = new SingleScheduledAction(GetScheduledTime(interval), queue, action);
+			var scheduled = new SingleScheduledAction(GetScheduledTime(interval), fiber, action);
 			Schedule(scheduled);
 
 			return scheduled;
 		}
 
-		public ScheduledAction Schedule(int interval, int periodicInterval, ActionQueue queue, Action action)
+		public ScheduledAction Schedule(int interval, int periodicInterval, Fiber fiber, Action action)
 		{
-			return Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), queue, action);
+			return Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, action);
 		}
 
-		public ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, ActionQueue queue, Action action)
+		public ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action)
 		{
 			SingleScheduledAction scheduled = null;
-			scheduled = new SingleScheduledAction(GetScheduledTime(interval), queue, () =>
+			scheduled = new SingleScheduledAction(GetScheduledTime(interval), fiber, () =>
 				{
 					try
 					{
@@ -122,7 +122,7 @@ namespace Magnum.Actions
 
 		public void Schedule(ExecuteScheduledAction action)
 		{
-			_queue.Enqueue(() =>
+			_fiber.Enqueue(() =>
 				{
 					_actions.Add(action);
 
@@ -147,7 +147,7 @@ namespace Magnum.Actions
 					}
 					else
 					{
-						_timer = new Timer(x => _queue.Enqueue(ExecuteExpiredActions), this, dueTime, _timerInterval);
+						_timer = new Timer(x => _fiber.Enqueue(ExecuteExpiredActions), this, dueTime, _timerInterval);
 					}
 				}
 			}

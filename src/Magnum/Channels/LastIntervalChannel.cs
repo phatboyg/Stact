@@ -13,7 +13,7 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Actions;
+	using Fibers;
 
 	/// <summary>
 	/// A channel that sends the most recent message to the consumer every interval
@@ -23,7 +23,7 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 		private bool _disposed;
 		private T _lastMessage;
 		private ScheduledAction _scheduledAction;
@@ -31,17 +31,17 @@ namespace Magnum.Channels
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
-		/// <param name="queue">The queue where consumer actions should be enqueued</param>
+		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
-		public LastIntervalChannel(ActionQueue queue, ActionScheduler scheduler, TimeSpan interval, Channel<T> output)
+		public LastIntervalChannel(Fiber fiber, FiberScheduler scheduler, TimeSpan interval, Channel<T> output)
 		{
-			_queue = queue;
+			_fiber = fiber;
 			Output = output;
 			Interval = interval;
 
-			_scheduledAction = scheduler.Schedule(interval, interval, queue, SendMessageToOutputChannel);
+			_scheduledAction = scheduler.Schedule(interval, interval, fiber, SendMessageToOutputChannel);
 		}
 
 		public TimeSpan Interval { get; private set; }
@@ -50,7 +50,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_queue.Enqueue(() => _lastMessage = message);
+			_fiber.Enqueue(() => _lastMessage = message);
 		}
 
 		public void Dispose()
