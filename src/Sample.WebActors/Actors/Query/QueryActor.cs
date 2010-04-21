@@ -14,21 +14,21 @@ namespace Sample.WebActors.Actors.Query
 {
 	using System.Threading;
 	using Echo;
-	using Magnum.Actions;
 	using Magnum.Channels;
+	using Magnum.Fibers;
 	using Magnum.Logging;
 
 	public class QueryActor
 	{
 		private static readonly ILogger _log = Logger.GetLogger<EchoActor>();
 
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
-		public QueryActor(ActionQueue queue)
+		public QueryActor(Fiber fiber)
 		{
-			_queue = queue;
+			_fiber = fiber;
 
-			GetCityChannel = new ConsumerChannel<QueryInputModel>(_queue, ProcessRequest);
+			GetCityChannel = new ConsumerChannel<QueryInputModel>(_fiber, ProcessRequest);
 		}
 
 		public Channel<QueryInputModel> GetCityChannel { get; private set; }

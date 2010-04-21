@@ -16,9 +16,9 @@ namespace Sample.WebActors.Controllers.Asynchro
 	using System.Threading;
 	using System.Web.Mvc;
 	using Magnum;
-	using Magnum.Actions;
 	using Magnum.Channels;
 	using Magnum.Extensions;
+	using Magnum.Fibers;
 
 	public class AsynchroController :
 		AsyncController
@@ -27,7 +27,7 @@ namespace Sample.WebActors.Controllers.Asynchro
 		{
 			AsyncManager.OutstandingOperations.Increment(2);
 
-			Channel<QueryContent> channel = new ConsumerChannel<QueryContent>(new ThreadPoolActionQueue(), QueryService);
+			Channel<QueryContent> channel = new ConsumerChannel<QueryContent>(new ThreadPoolFiber(), QueryService);
 
 			channel.Send(new QueryContent(37, message =>
 				{
@@ -58,8 +58,8 @@ namespace Sample.WebActors.Controllers.Asynchro
 			{
 				Id = id;
 
-				var queue = new ThreadPoolActionQueue();
-				Channel<MyContent> channel = new ConsumerChannel<MyContent>(new SynchronousActionQueue(), callback);
+				var queue = new ThreadPoolFiber();
+				Channel<MyContent> channel = new ConsumerChannel<MyContent>(new SynchronousFiber(), callback);
 
 				if (SynchronizationContext.Current != null)
 				{

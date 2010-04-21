@@ -12,21 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.WebActors.Actors.Echo
 {
-	using Magnum.Actions;
 	using Magnum.Channels;
+	using Magnum.Fibers;
 
 	/// <summary>
 	/// A simple actor that echoes the input to the output channel
 	/// </summary>
 	public class EchoActor
 	{
-		private readonly ActionQueue _queue;
+		private readonly Fiber _fiber;
 
-		public EchoActor(ActionQueue queue)
+		public EchoActor(Fiber fiber)
 		{
-			_queue = queue;
+			_fiber = fiber;
 
-			EchoChannel = new ConsumerChannel<EchoInputModel>(_queue, ProcessRequest);
+			EchoChannel = new ConsumerChannel<EchoInputModel>(_fiber, ProcessRequest);
 		}
 
 		public Channel<EchoInputModel> EchoChannel { get; private set; }

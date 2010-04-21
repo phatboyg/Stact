@@ -13,9 +13,9 @@
 namespace Magnum.Web.Specs
 {
 	using System.Web.Routing;
-	using Actions;
 	using Actors;
 	using Channels;
+	using Fibers;
 	using NUnit.Framework;
 	using TestFramework;
 
@@ -36,7 +36,7 @@ namespace Magnum.Web.Specs
 
 			routes.Count.ShouldEqual(1);
 
-			routes.ShouldRoute("~/a/Test/RunTest", new { Actor = "Test", Channel = "RunTest" });
+			routes.ShouldRoute("~/a/Test/RunTest", new {Actor = "Test", Channel = "RunTest"});
 		}
 	}
 
@@ -48,7 +48,7 @@ namespace Magnum.Web.Specs
 	{
 		public TestActor()
 		{
-			RunTest = new ConsumerChannel<TestInput>(new SynchronousActionQueue(), x => { });
+			RunTest = new ConsumerChannel<TestInput>(new SynchronousFiber(), x => { });
 		}
 
 		public Channel<TestInput> RunTest { get; set; }
