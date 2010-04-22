@@ -60,8 +60,12 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="AssertionsForBoolean.cs" />
+    <Compile Include="AssertionsForCollections.cs" />
+    <Compile Include="AssertionsForComparable.cs" />
     <Compile Include="AssertionsForRouting.cs" />
     <Compile Include="AssertionsForObjects.cs" />
+    <Compile Include="AssertionsForString.cs" />
     <Compile Include="GivenAttribute.cs" />
     <Compile Include="LogSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

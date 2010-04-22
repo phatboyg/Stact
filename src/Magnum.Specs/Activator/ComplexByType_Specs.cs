@@ -63,7 +63,7 @@ namespace Magnum.Specs.Activator
 
 			var typed = (ClassWithMultipleComplexConstructors) instance;
 
-			typed.Value.ShouldEqual(value);
+			typed.Value.ShouldBeEqualTo(value);
 			typed.Name.ShouldEqual(name);
 			typed.Count.ShouldEqual(count);
 			typed.Description.ShouldEqual(description);
