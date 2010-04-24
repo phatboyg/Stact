@@ -17,8 +17,6 @@ namespace Magnum.Channels
 	using Extensions;
 	using Fibers;
 
-
-
 	public class DefaultMailbox<T> :
 		Mailbox<T>
 	{

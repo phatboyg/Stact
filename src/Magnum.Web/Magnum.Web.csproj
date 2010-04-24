@@ -53,6 +53,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ActorHttpAsyncHandler.cs" />
     <Compile Include="Actors\ActorInstanceProvider.cs" />

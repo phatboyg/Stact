@@ -45,6 +45,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Channels\ChannelRouter.cs" />
     <Compile Include="Channels\ConditionalConsumer.cs" />
     <Compile Include="Channels\DefaultMailbox.cs" />
     <Compile Include="Channels\Mailbox.cs" />

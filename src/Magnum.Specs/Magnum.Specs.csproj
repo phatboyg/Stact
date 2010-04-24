@@ -55,7 +55,6 @@
     <Compile Include="Actions\ActionQueue_Specs.cs" />
     <Compile Include="Actions\ActionScheduler_Specs.cs" />
     <Compile Include="Actions\LoopbackAction_Specs.cs" />
-    <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Actors\Channel_Specs.cs" />
     <Compile Include="Actors\PingPongDemo\Ping.cs" />
