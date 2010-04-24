@@ -12,38 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
-	using System.Collections.Generic;
-	using Fibers;
 	using Magnum.Channels;
-	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
 
 	[TestFixture]
-	public class Sending_to_an_interval_subscriber
+	public class Passing_a_message_to_a_conditional_consumer
 	{
 		[Test]
-		public void Should_deliver_the_messages_at_once()
+		public void Should_return_null_if_not_interested()
 		{
-			var queue = new SynchronousFiber();
-			var scheduler = new TimerScheduler(new SynchronousFiber());
+			ConditionalConsumer<int> subject = message =>
+				{
+					return null;
+				};
 
-			var called = new Future<ICollection<MyMessage>>();
-			var consumer = new ConsumerChannel<ICollection<MyMessage>>(queue, called.Complete);
 
-			var channel = new IntervalChannel<MyMessage>(queue, scheduler, 2.Seconds(), consumer);
+			var consumer = subject(27);
 
-			for (int i = 0; i < 5; i++)
+			if (consumer != null)
 			{
-				channel.Send(new MyMessage());
+				Assert.Fail("Should not have received a consumer");
 			}
-
-			called.WaitUntilCompleted(4.Seconds()).ShouldBeTrue();
-
-			channel.Dispose();
-
-			called.Value.ShouldNotBeNull();
-			called.Value.Count.ShouldEqual(5);
 		}
 	}
 }

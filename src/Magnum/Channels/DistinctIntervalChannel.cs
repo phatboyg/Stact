@@ -40,7 +40,7 @@ namespace Magnum.Channels
 		/// <param name="interval">The interval between calls to the consumer</param>
 		/// <param name="getKey">Returns the key for the message</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
-		public DistinctIntervalChannel(Fiber fiber, FiberScheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
+		public DistinctIntervalChannel(Fiber fiber, Scheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
 		{
 			_messages = new MessageDictionary<TKey, T>(getKey);
 

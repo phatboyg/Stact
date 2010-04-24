@@ -45,11 +45,15 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Channels\ConditionalConsumer.cs" />
+    <Compile Include="Channels\DefaultMailbox.cs" />
+    <Compile Include="Channels\Mailbox.cs" />
+    <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Fibers\Internal\AbstractFiber.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
     <Compile Include="Fibers\FiberOverrunException.cs" />
-    <Compile Include="Fibers\FiberScheduler.cs" />
+    <Compile Include="Fibers\Scheduler.cs" />
     <Compile Include="Fibers\ScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ScheduledActionList.cs" />
@@ -57,7 +61,7 @@
     <Compile Include="Fibers\SynchronousFiber.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
     <Compile Include="Fibers\ThreadPoolFiber.cs" />
-    <Compile Include="Fibers\TimerFiberScheduler.cs" />
+    <Compile Include="Fibers\TimerScheduler.cs" />
     <Compile Include="Calendar\CheckResult.cs" />
     <Compile Include="Calendar\Holidays\BaseCheck.cs" />
     <Compile Include="Calendar\Holidays\ChristmasDayCheck.cs" />

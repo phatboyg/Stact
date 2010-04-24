@@ -53,7 +53,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 		[Test, Explicit, Category("Demo")]
 		public void Timer_Based_Demo()
 		{
-			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
+			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 			scheduler.Schedule(0, 1000, new SynchronousFiber(), () =>
 				{
 					Trace.WriteLine("Starting it up");

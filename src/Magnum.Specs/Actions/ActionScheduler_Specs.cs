@@ -27,7 +27,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_action_immediately()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
+			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
 
@@ -44,7 +44,7 @@ namespace Magnum.Specs.Actions
 		public void Should_wait_until_the_appropriate_time_for_the_action_to_execute()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new SynchronousFiber());
+			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
 
@@ -64,7 +64,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_new_action_immediately()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
+			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
@@ -82,7 +82,7 @@ namespace Magnum.Specs.Actions
 		public void Should_not_run_any_pending_actions()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
+			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
@@ -101,7 +101,7 @@ namespace Magnum.Specs.Actions
 		public void Should_not_stall_the_scheduler()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
+			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
 
 			var called = new Future<bool>();
 
@@ -119,7 +119,7 @@ namespace Magnum.Specs.Actions
 		public void Should_run_the_action_until_disabled()
 		{
 			Fiber fiber = new ThreadPoolFiber();
-			FiberScheduler scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
+			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
 
 			Stopwatch elapsed = Stopwatch.StartNew();
 

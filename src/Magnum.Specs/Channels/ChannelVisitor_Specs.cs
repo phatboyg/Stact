@@ -22,7 +22,7 @@ namespace Magnum.Specs.Channels
 		public void Should_capture_the_interval_channel()
 		{
 			var channel = new ConsumerChannel<ICollection<int>>(new SynchronousFiber(), x => { });
-			var scheduler = new TimerFiberScheduler(new SynchronousFiber());
+			var scheduler = new TimerScheduler(new SynchronousFiber());
 			var interval = new IntervalChannel<int>(new SynchronousFiber(), scheduler, 5.Minutes(), channel);
 
 			new ChannelVisitor().Visit(interval);

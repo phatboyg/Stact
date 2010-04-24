@@ -35,7 +35,7 @@ namespace Magnum.Specs.Actors
 					reset.Set();
 				};
 
-			var thread = new TimerFiberScheduler(fiber);
+			var thread = new TimerScheduler(fiber);
 			thread.Schedule(50, fiber, three);
 			thread.Schedule(1, fiber, two);
 			thread.Schedule(1, fiber, two);
@@ -58,7 +58,7 @@ namespace Magnum.Specs.Actors
 					}
 				};
 
-			var thread = new TimerFiberScheduler(fiber);
+			var thread = new TimerScheduler(fiber);
 			{
 				for (var i = 0; i < 1000; i++)
 				{

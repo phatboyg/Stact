@@ -35,7 +35,7 @@ namespace Magnum.Channels
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
-		public LastIntervalChannel(Fiber fiber, FiberScheduler scheduler, TimeSpan interval, Channel<T> output)
+		public LastIntervalChannel(Fiber fiber, Scheduler scheduler, TimeSpan interval, Channel<T> output)
 		{
 			_fiber = fiber;
 			Output = output;

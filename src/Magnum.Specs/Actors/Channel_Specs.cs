@@ -65,7 +65,7 @@ namespace Magnum.Specs.Actors
 
 			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new Channel<UserUpdate>[] {future});
 
-			var scheduler = new TimerFiberScheduler(fiber);
+			var scheduler = new TimerScheduler(fiber);
 
 			scheduler.Schedule(1000, fiber, () => channel.Send(update));
 

@@ -52,7 +52,7 @@ namespace Sample.WebActors.Actors.Auction
 	public class AuctionActor
 	{
 		private readonly decimal _openingBid;
-		private readonly FiberScheduler _scheduler;
+		private readonly Scheduler _scheduler;
 		private Channel<AuctionCompleted> _bidderCompleted;
 		private Channel<Outbid> _bidderOutbid;
 		private decimal _bidIncrement;
@@ -60,7 +60,7 @@ namespace Sample.WebActors.Actors.Auction
 		private Fiber _fiber;
 		private decimal _highestBid;
 
-		public AuctionActor(Fiber fiber, FiberScheduler scheduler, DateTime expiresAt, decimal openingBid, decimal bidIncrement)
+		public AuctionActor(Fiber fiber, Scheduler scheduler, DateTime expiresAt, decimal openingBid, decimal bidIncrement)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;

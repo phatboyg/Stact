@@ -58,6 +58,7 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\Auction\AuctionActor.cs" />
     <Compile Include="Actors\Echo\EchoActor.cs" />
     <Compile Include="Actors\Echo\EchoInputModel.cs" />
     <Compile Include="Actors\Echo\EchoOutputModel.cs" />
@@ -81,6 +82,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\json2.js" />
+    <Content Include="Views\Asynchro\IndexCompleted.aspx" />
     <Content Include="Views\Asynchro\Index.aspx" />
     <Content Include="Views\Benchmark\Index.aspx" />
     <Content Include="Views\TestEcho\Index.aspx" />

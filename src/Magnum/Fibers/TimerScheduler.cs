@@ -21,22 +21,26 @@ namespace Magnum.Fibers
 	using Logging;
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
-	public class TimerFiberScheduler :
-		FiberScheduler
+	public class TimerScheduler :
+		Scheduler
 	{
-		private static readonly ILogger _log = Logger.GetLogger<TimerFiberScheduler>();
+		private static readonly ILogger _log = Logger.GetLogger<TimerScheduler>();
 
 		private readonly ScheduledActionList _actions = new ScheduledActionList();
-		private readonly object _lock = new object();
-		private readonly Func<DateTime> _now = () => SystemUtil.UtcNow;
 		private readonly Fiber _fiber;
-		private readonly TimeSpan _timerInterval = -1.Milliseconds();
+		private readonly object _lock = new object();
+		private readonly TimeSpan _noPeriod = -1.Milliseconds();
 		private bool _disabled;
 		private Timer _timer;
 
-		public TimerFiberScheduler(Fiber fiber)
+		public TimerScheduler(Fiber fiber)
 		{
 			_fiber = fiber;
+		}
+
+		private static DateTime Now
+		{
+			get { return SystemUtil.UtcNow; }
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -50,19 +54,12 @@ namespace Magnum.Fibers
 		{
 			get
 			{
-				DateTime now = Now;
-
 				DateTime scheduledAt;
-				if (_actions.GetNextScheduledActionTime(now, out scheduledAt))
+				if (_actions.GetNextScheduledActionTime(Now, out scheduledAt))
 					return scheduledAt.ToString();
 
 				return "None";
 			}
-		}
-
-		private DateTime Now
-		{
-			get { return _now(); }
 		}
 
 		public ScheduledAction Schedule(int interval, Fiber fiber, Action action)
@@ -120,13 +117,13 @@ namespace Magnum.Fibers
 			}
 		}
 
-		public void Schedule(ExecuteScheduledAction action)
+		private void Schedule(ExecuteScheduledAction action)
 		{
 			_fiber.Enqueue(() =>
 				{
 					_actions.Add(action);
 
-					ScheduleTimer();
+					ExecuteExpiredActions();
 				});
 		}
 
@@ -143,11 +140,11 @@ namespace Magnum.Fibers
 
 					if (_timer != null)
 					{
-						_timer.Change(dueTime, _timerInterval);
+						_timer.Change(dueTime, _noPeriod);
 					}
 					else
 					{
-						_timer = new Timer(x => _fiber.Enqueue(ExecuteExpiredActions), this, dueTime, _timerInterval);
+						_timer = new Timer(x => _fiber.Enqueue(ExecuteExpiredActions), this, dueTime, _noPeriod);
 					}
 				}
 			}
@@ -177,7 +174,7 @@ namespace Magnum.Fibers
 			ScheduleTimer();
 		}
 
-		private DateTime GetScheduledTime(TimeSpan interval)
+		private static DateTime GetScheduledTime(TimeSpan interval)
 		{
 			return Now + interval;
 		}

@@ -44,7 +44,7 @@ namespace Magnum.Pipeline.Segments
 		private readonly Fiber _fiber = new ThreadPoolFiber();
 
 		[NonSerialized]
-		private readonly FiberScheduler _scheduler = new TimerFiberScheduler(new ThreadPoolFiber());
+		private readonly Scheduler _scheduler = new TimerScheduler(new ThreadPoolFiber());
 
 		[NonSerialized]
 		private List<TMessage> _pending;
