@@ -121,7 +121,7 @@ namespace Magnum.Channels
 			return channel;
 		}
 
-		protected virtual Channel<TInput> Visitor<TInput, TOutput>(TranformChannel<TInput, TOutput> channel)
+		protected virtual Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
 		{
 			Trace.WriteLine("TransformChannel<{0}>, Output: {1}".FormatWith(typeof (TInput).Name, typeof (TOutput).Name));
 

@@ -68,6 +68,7 @@
     <Compile Include="Calendar\IsHoliday_Specs.cs" />
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
+    <Compile Include="Channels\Aggregator_Specs.cs" />
     <Compile Include="Channels\ChannelPerformance_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />

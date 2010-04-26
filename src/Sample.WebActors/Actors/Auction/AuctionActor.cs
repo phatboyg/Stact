@@ -87,7 +87,7 @@ namespace Sample.WebActors.Actors.Auction
 			_router.Send(message);
 		}
 
-		public void Send<T>(T message, Actor replyTo)
+		public void Send<T>(T message, RequestResponseChannel replyTo)
 		{
 			_router.Send(message);
 		}

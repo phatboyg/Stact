@@ -15,26 +15,31 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Extensions;
 	using Fibers;
 	using Logging;
 
 	/// <summary>
-	/// Publishes a messages to multiple channels
+	///   Publishes a messages to multiple channels
 	/// </summary>
-	/// <typeparam name="T">Channel type</typeparam>
+	/// <typeparam name = "T">Channel type</typeparam>
 	public class PublishSubscribeChannel<T> :
 		Channel<T>
 	{
 		private static readonly ILogger _log = Logger.GetLogger<PublishSubscribeChannel<T>>();
 
 		private readonly Fiber _fiber;
+
 		private readonly Channel<T>[] _subscribers;
 
 		public PublishSubscribeChannel(Fiber fiber, IEnumerable<Channel<T>> subscribers)
 		{
 			_fiber = fiber;
 			_subscribers = subscribers.ToArray();
+		}
+
+		public Fiber Fiber
+		{
+			get { return _fiber; }
 		}
 
 		public Channel<T>[] Subscribers
@@ -44,20 +49,22 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Enqueue(() => SendMessageToSubscribers(message));
+		}
+
+		private void SendMessageToSubscribers(T message)
+		{
+			foreach (Channel<T> channel in _subscribers)
+			{
+				try
 				{
-					_subscribers.Each(subscriber =>
-						{
-							try
-							{
-								subscriber.Send(message);
-							}
-							catch (Exception ex)
-							{
-								_log.Error(ex, "Subscriber exception on Send");
-							}
-						});
-				});
+					channel.Send(message);
+				}
+				catch (Exception ex)
+				{
+					_log.Error(ex, "Subscriber exception on Send");
+				}
+			}
 		}
 	}
 }

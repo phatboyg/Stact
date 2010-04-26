@@ -15,44 +15,40 @@ namespace Magnum.Channels
 	using Fibers;
 
 	/// <summary>
-	/// A channel that selectively accepts a message and enqueues the consumer method via the
-	/// specified Fiber.
-	/// Note that the filter function is called as part of the queued action, so threading
-	/// is not an issue.
+	///   A channel that selectively accepts a message and enqueues the consumer method via the
+	///   specified Fiber.
+	///   Note that the filter function is called as part of the queued action, so threading
+	///   is not an issue.
 	/// </summary>
-	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
+	/// <typeparam name = "T">The type of message delivered on the channel</typeparam>
 	public class FilterChannel<T> :
 		Channel<T>
 	{
-		private readonly Filter<T> _filter;
-		private readonly Channel<T> _output;
-
 		private readonly Fiber _fiber;
 
 		/// <summary>
-		/// Constructs a channel
+		///   Constructs a channel
 		/// </summary>
-		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
-		/// <param name="output">The method to call when a message is sent to the channel</param>
-		/// <param name="filter">The filter to determine if the message can be consumed</param>
+		/// <param name = "fiber">The queue where consumer actions should be enqueued</param>
+		/// <param name = "output">The method to call when a message is sent to the channel</param>
+		/// <param name = "filter">The filter to determine if the message can be consumed</param>
 		public FilterChannel(Fiber fiber, Channel<T> output, Filter<T> filter)
 		{
 			_fiber = fiber;
-			_output = output;
-			_filter = filter;
+			Output = output;
+			Filter = filter;
 		}
 
-		public Channel<T> Output
-		{
-			get { return _output; }
-		}
+		public Filter<T> Filter { get; private set; }
+
+		public Channel<T> Output { get; private set; }
 
 		public void Send(T message)
 		{
 			_fiber.Enqueue(() =>
 				{
-					if (_filter(message))
-						_output.Send(message);
+					if (Filter(message))
+						Output.Send(message);
 				});
 		}
 	}

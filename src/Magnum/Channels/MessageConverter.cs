@@ -12,15 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-
-	/// <summary>
-	///   A conditional consumer is given a message to evaluate, after which it
-	///   can determine if it is interested in the message and return an action
-	///   to process the message or null
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	/// <param name = "message">The message</param>
-	/// <returns>An action to consume the message, or null</returns>
-	public delegate Consumer<T> ConditionalConsumer<T>(T message);
+	public delegate TOutput MessageConverter<TInput, TOutput>(TInput message);
 }

@@ -29,7 +29,7 @@ namespace Magnum.Channels
 		/// </summary>
 		/// <typeparam name = "T">The requested message type</typeparam>
 		/// <param name = "consumer">The consumer</param>
-		void Receive(ConditionalConsumer<T> consumer);
+		void Receive(SelectiveConsumer<T> consumer);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive(ConditionalConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
+		void Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -49,6 +49,6 @@ namespace Magnum.Channels
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive(ConditionalConsumer<T> consumer, int timeout, Action timeoutCallback);
+		void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
 	}
 }

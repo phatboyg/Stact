@@ -10,12 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Channels
 {
-	using Channels;
-
-	public interface Actor :
-		RequestResponseChannel
+	public static class ExtensionsForChannels
 	{
+		public static BinderScope CreateBinderScope<T>(this Channel<T> channel)
+		{
+			return new ChannelBinderScope<T>(channel);
+		}
 	}
 }

@@ -10,29 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Channels
+namespace Magnum.Channels
 {
-	using Magnum.Channels;
-	using NUnit.Framework;
+	using System;
+	using System.Threading;
 
-	[TestFixture]
-	public class Passing_a_message_to_a_conditional_consumer
+	public class ChannelAdapter<T> :
+		Channel<T>
 	{
-		[Test]
-		public void Should_return_null_if_not_interested()
+		private Channel<T> _output;
+
+		public ChannelAdapter(Channel<T> output)
 		{
-			SelectiveConsumer<int> subject = message =>
-				{
-					return null;
-				};
+			_output = output;
+		}
 
+		public Channel<T> Output
+		{
+			get { return _output; }
+		}
 
-			var consumer = subject(27);
+		public void Send(T message)
+		{
+			Output.Send(message);
+		}
 
-			if (consumer != null)
-			{
-				Assert.Fail("Should not have received a consumer");
-			}
+		public void ChangeOutputChannel(Channel<T> original, Channel<T> replacement)
+		{
+			Interlocked.CompareExchange(ref _output, replacement, original);
+			if (_output != replacement)
+				throw new InvalidOperationException("The channel has been modified since it was last requested");
 		}
 	}
 }

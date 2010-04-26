@@ -10,12 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Actors
+namespace Magnum.Channels
 {
-	using Channels;
-
-	public interface Actor :
-		RequestResponseChannel
+	/// <summary>
+	/// Implements a channel shunt, discarding any message that is send without action
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class ShuntChannel<T> :
+		Channel<T>
 	{
+		public void Send(T message)
+		{
+		}
 	}
 }

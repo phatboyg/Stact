@@ -45,10 +45,21 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Channels\AddChannelBinder.cs" />
+    <Compile Include="Channels\BinderScope.cs" />
+    <Compile Include="Channels\ChannelAdapter.cs" />
+    <Compile Include="Channels\ChannelBinderScope.cs" />
     <Compile Include="Channels\ChannelRouter.cs" />
-    <Compile Include="Channels\ConditionalConsumer.cs" />
+    <Compile Include="Channels\ExtensionsForChannels.cs" />
+    <Compile Include="Channels\MessageConverter.cs" />
+    <Compile Include="Channels\RemoveChannelBinder.cs" />
+    <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Channels\DefaultMailbox.cs" />
     <Compile Include="Channels\Mailbox.cs" />
+    <Compile Include="Channels\RequestResponseChannel.cs" />
+    <Compile Include="Channels\SendException.cs" />
+    <Compile Include="Channels\ShuntChannel.cs" />
+    <Compile Include="Channels\SubscriberSendException.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Fibers\Internal\AbstractFiber.cs" />
     <Compile Include="Fibers\Fiber.cs" />
@@ -109,7 +120,7 @@
     <Compile Include="Channels\SynchronizedChannel.cs" />
     <Compile Include="Channels\ThreadPoolChannel.cs" />
     <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
-    <Compile Include="Channels\TranformChannel.cs" />
+    <Compile Include="Channels\ConvertChannel.cs" />
     <Compile Include="Collections\Algorithms.cs" />
     <Compile Include="Collections\Bag.cs" />
     <Compile Include="Collections\BigList.cs" />

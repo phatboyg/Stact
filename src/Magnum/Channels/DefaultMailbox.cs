@@ -21,7 +21,7 @@ namespace Magnum.Channels
 		Mailbox<T>
 	{
 		private readonly Fiber _fiber;
-		private readonly IList<ConditionalConsumer<T>> _receivers;
+		private readonly IList<SelectiveConsumer<T>> _receivers;
 		private readonly Scheduler _scheduler;
 		private readonly IList<T> _waitingMessages;
 
@@ -30,7 +30,7 @@ namespace Magnum.Channels
 			_fiber = fiber;
 			_scheduler = scheduler;
 
-			_receivers = new List<ConditionalConsumer<T>>();
+			_receivers = new List<SelectiveConsumer<T>>();
 			_waitingMessages = new List<T>();
 		}
 
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 			_fiber.Enqueue(() => HandleSend(message));
 		}
 
-		public void Receive(ConditionalConsumer<T> consumer)
+		public void Receive(SelectiveConsumer<T> consumer)
 		{
 			if (ReceiveWaitingMessage(consumer))
 				return;
@@ -47,13 +47,13 @@ namespace Magnum.Channels
 			_receivers.Add(consumer);
 		}
 
-		public void Receive(ConditionalConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		public void Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			if (ReceiveWaitingMessage(consumer))
 				return;
 
 			ScheduledAction scheduledAction = null;
-			ConditionalConsumer<T> consumerProxy = msg =>
+			SelectiveConsumer<T> consumerProxy = msg =>
 				{
 					Consumer<T> c = consumer(msg);
 					if (c == null)
@@ -77,7 +77,7 @@ namespace Magnum.Channels
 			_receivers.Add(consumerProxy);
 		}
 
-		public void Receive(ConditionalConsumer<T> consumer, int timeout, Action timeoutCallback)
+		public void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
 		{
 			Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
@@ -90,11 +90,11 @@ namespace Magnum.Channels
 			_waitingMessages.Add(message);
 		}
 
-		private bool ReceiveWaitingMessage(ConditionalConsumer<T> conditionalConsumer)
+		private bool ReceiveWaitingMessage(SelectiveConsumer<T> selectiveConsumer)
 		{
 			for (int i = 0; i < _waitingMessages.Count; i++)
 			{
-				Consumer<T> consumer = conditionalConsumer(_waitingMessages[i]);
+				Consumer<T> consumer = selectiveConsumer(_waitingMessages[i]);
 				if (consumer == null)
 					continue;
 
@@ -111,7 +111,7 @@ namespace Magnum.Channels
 		{
 			for (int i = 0; i < _receivers.Count; i++)
 			{
-				ConditionalConsumer<T> receiver = _receivers[i];
+				SelectiveConsumer<T> receiver = _receivers[i];
 
 				Consumer<T> consumer = receiver(message);
 				if (consumer == null)
