@@ -79,6 +79,7 @@
     <Compile Include="Channels\Mailbox_Specs.cs" />
     <Compile Include="Channels\PingPong_Specs.cs" />
     <Compile Include="Channels\ThreadPoolChannel_Specs.cs" />
+    <Compile Include="Channels\UntypedChannelSubscription_Specs.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddFileCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddRemoteRepositoryCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />

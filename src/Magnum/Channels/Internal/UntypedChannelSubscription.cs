@@ -10,28 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
-	/// <summary>
-	/// Implements a channel shunt, discarding any message that is send without action
-	/// </summary>
-	public class ShuntChannel :
-		UntypedChannel
-	{
-		public void Send<T>(T message)
-		{
-		}
-	}
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// Implements a channel shunt, discarding any message that is send without action
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ShuntChannel<T> :
-		Channel<T>
+	public class UntypedChannelSubscription :
+		ChannelSubscription
 	{
-		public void Send(T message)
+		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
+		private readonly UntypedChannel _channel;
+
+		public UntypedChannelSubscription(UntypedChannel channel)
 		{
+			_channel = channel;
+		}
+
+		public void Dispose()
+		{
+			//new RemoveChannelSubscribers(_boundChannels).RemoveFrom(_channel);
+
+			_boundChannels.Clear();
+		}
+
+		public void Add<TChannel>(Channel<TChannel> channel)
+		{
+			new AddChannelSubscriber<TChannel>(channel).AddTo(_channel);
+
+			_boundChannels.Add(channel);
 		}
 	}
 }

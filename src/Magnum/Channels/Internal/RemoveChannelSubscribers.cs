@@ -15,21 +15,21 @@ namespace Magnum.Channels.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
 	using Fibers;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
+	using Reflection;
 
-	public class RemoveChannelBinder :
+	public class RemoveChannelSubscribers :
 		ChannelVisitor
 	{
 		private readonly HashSet<Channel> _channels;
 
-		public RemoveChannelBinder(IEnumerable<Channel> channels)
+		public RemoveChannelSubscribers(IEnumerable<Channel> channels)
 		{
 			_channels = new HashSet<Channel>(channels);
 		}
 
-		public void Unbind<T>(Channel<T> channel)
+		public void RemoveFrom<T>(Channel<T> channel)
 		{
 			Channel<T> result = Visit(channel);
 
@@ -39,7 +39,7 @@ namespace Magnum.Channels.Internal
 
 		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
-			Channel<T> result = this.FastInvoke<RemoveChannelBinder, Channel<T>>("Visitor", channel);
+			Channel<T> result = this.FastInvoke<RemoveChannelSubscribers, Channel<T>>("Visitor", channel);
 
 			return result;
 		}
@@ -85,8 +85,8 @@ namespace Magnum.Channels.Internal
 				return null;
 			}
 
-			var output = Visit(channel.Output);
-			if(output == null)
+			Channel<TOutput> output = Visit(channel.Output);
+			if (output == null)
 				return null;
 
 			if (output != channel.Output)
@@ -98,11 +98,11 @@ namespace Magnum.Channels.Internal
 		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
 			bool changed;
-			var subscribers = VisitSubscribers(channel.Subscribers, out changed).ToArray();
+			Channel<T>[] subscribers = VisitSubscribers(channel.Subscribers, out changed).ToArray();
 			if (subscribers.Length == 1)
 				return subscribers[0];
 
-			if(changed)
+			if (changed)
 				return new PublishSubscribeChannel<T>(subscribers);
 
 			return channel;
@@ -110,13 +110,13 @@ namespace Magnum.Channels.Internal
 
 		private Channel<T>[] VisitSubscribers<T>(IEnumerable<Channel<T>> subscribers, out bool changed)
 		{
-			List<Channel<T>> results = new List<Channel<T>>();
+			var results = new List<Channel<T>>();
 
 			changed = false;
-			foreach (Channel<T> subscriber in subscribers)
+			foreach (var subscriber in subscribers)
 			{
 				Channel<T> result = Visit(subscriber);
-				if(result == null)
+				if (result == null)
 				{
 					changed = true;
 					continue;

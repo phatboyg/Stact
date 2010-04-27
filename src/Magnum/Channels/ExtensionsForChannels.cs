@@ -16,9 +16,14 @@ namespace Magnum.Channels
 
 	public static class ExtensionsForChannels
 	{
-		public static BinderScope CreateBinderScope<T>(this Channel<T> channel)
+		public static ChannelSubscription Subscribe<T>(this Channel<T> channel)
 		{
-			return new ChannelBinderScope<T>(channel);
+			return new TypedChannelSubscription<T>(channel);
+		}
+
+		public static ChannelSubscription Subscribe(this UntypedChannel channel)
+		{
+			return new UntypedChannelSubscription(channel);
 		}
 	}
 }

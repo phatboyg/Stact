@@ -12,11 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Internal
 {
-	using System;
+	using System.Collections.Generic;
 
-	public interface BinderScope :
-		IDisposable
+	public class TypedChannelSubscription<T> :
+		ChannelSubscription
 	{
-		void Add<TChannel>(Channel<TChannel> channel);
+		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
+		private readonly Channel<T> _channel;
+
+		public TypedChannelSubscription(Channel<T> channel)
+		{
+			_channel = channel;
+		}
+
+		public void Dispose()
+		{
+			new RemoveChannelSubscribers(_boundChannels).RemoveFrom(_channel);
+
+			_boundChannels.Clear();
+		}
+
+		public void Add<TChannel>(Channel<TChannel> channel)
+		{
+			new AddChannelSubscriber<TChannel>(channel).AddTo(_channel);
+
+			_boundChannels.Add(channel);
+		}
 	}
 }

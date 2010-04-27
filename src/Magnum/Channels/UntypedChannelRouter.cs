@@ -15,41 +15,47 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Extensions;
-	using Reflection;
+	using Logging;
 
-	public class ChannelRouter :
+	public class UntypedChannelRouter :
 		UntypedChannel
 	{
-		private readonly Dictionary<Type, Channel> _channels;
+		private static readonly ILogger _log = Logger.GetLogger<UntypedChannelRouter>();
 
-		public ChannelRouter(IEnumerable<Channel> channels)
+		private readonly UntypedChannel[] _subscribers;
+
+		public UntypedChannelRouter(IEnumerable<UntypedChannel> subscribers)
 		{
-			Guard.AgainstNull(channels, "channels");
+			Guard.AgainstNull(subscribers, "subscribers");
 
-			_channels = new Dictionary<Type, Channel>();
+			_subscribers = subscribers.ToArray();
+		}
 
-			channels.Each(channel =>
-				{
-					Guard.AgainstNull(channel, "channel");
+		public UntypedChannelRouter(UntypedChannel[] subscribers)
+		{
+			Guard.AgainstNull(subscribers, "subscribers");
 
-					Type type = channel.GetType();
-					Guard.IsTrue(x => x.Implements(typeof (Channel<>)), type, "Objects must implement Channel<T>: " + type.Name);
+			_subscribers = subscribers;
+		}
 
-					Type channelType = type.GetGenericTypeDeclarations(typeof (Channel<>)).Single();
-					_channels.Add(channelType, channel);
-				});
+		public UntypedChannel[] Subscribers
+		{
+			get { return _subscribers; }
 		}
 
 		public void Send<T>(T message)
 		{
-			_channels.Each(channel =>
+			foreach (UntypedChannel subscriber in _subscribers)
+			{
+				try
 				{
-					if (channel.GetType().IsAssignableFrom(typeof (T)))
-					{
-						channel.Value.FastInvoke(new[] {channel.Key}, "Send", message);
-					}
-				});
+					subscriber.Send(message);
+				}
+				catch (Exception ex)
+				{
+					_log.Error(ex, "Subscriber exception on Send");
+				}
+			}
 		}
 	}
 }

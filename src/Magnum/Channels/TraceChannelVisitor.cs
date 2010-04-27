@@ -110,6 +110,27 @@ namespace Magnum.Channels
 			return base.Visitor(channel);
 		}
 
+		protected override UntypedChannel Visitor(UntypedChannel channel)
+		{
+			Trace.WriteLine("UntypedChannel: {0}".FormatWith(channel.GetType().Name));
+
+			return base.Visitor(channel);
+		}
+
+		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
+		{
+			Trace.WriteLine("UntypedChannelRouter: {0} subscribers".FormatWith(channel.Subscribers.Length));
+
+			return base.Visitor(channel);
+		}
+
+		protected override UntypedChannel Visitor<T>(TypedChannelAdapter<T> channel)
+		{
+			Trace.WriteLine("TypedChannelAdapter<{0}>".FormatWith(typeof(T).Name));
+
+			return base.Visitor<T>(channel);
+		}
+
 		protected override ChannelProvider<T> Visitor<T>(ChannelProvider<T> provider)
 		{
 			Trace.WriteLine("ChannelProvider<{0}>".FormatWith(typeof (T).Name));

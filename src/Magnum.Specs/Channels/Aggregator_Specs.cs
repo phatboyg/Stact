@@ -68,7 +68,7 @@ namespace Magnum.Specs.Channels
 
 			var future = new Future<TestMessage>();
 
-			using (var scope = adapter.CreateBinderScope())
+			using (var scope = adapter.Subscribe())
 			{
 				var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
 
@@ -92,7 +92,7 @@ namespace Magnum.Specs.Channels
 			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
 			var adapter = new ChannelAdapter<TestMessage>(subs);
 
-			using (var scope = adapter.CreateBinderScope())
+			using (var scope = adapter.Subscribe())
 			{
 				var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 				scope.Add(second);
@@ -115,7 +115,7 @@ namespace Magnum.Specs.Channels
 			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
 			var adapter = new ChannelAdapter<TestMessage>(subs);
 
-			using (var scope = adapter.CreateBinderScope())
+			using (var scope = adapter.Subscribe())
 			{
 				var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);
 				scope.Add(second);
@@ -137,11 +137,11 @@ namespace Magnum.Specs.Channels
 
 			var adapter = new ChannelAdapter<TestMessage>(new ShuntChannel<TestMessage>());
 
-			var firstScope = adapter.CreateBinderScope();
+			var firstScope = adapter.Subscribe();
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
 			firstScope.Add(first);
 
-			var secondScope = adapter.CreateBinderScope();
+			var secondScope = adapter.Subscribe();
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 			secondScope.Add(second);
 
@@ -162,7 +162,7 @@ namespace Magnum.Specs.Channels
 
 			var future = new Future<TestMessage>();
 
-			using (var scope = adapter.CreateBinderScope())
+			using (var scope = adapter.Subscribe())
 			{
 				var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
 

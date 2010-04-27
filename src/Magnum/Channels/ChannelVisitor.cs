@@ -27,6 +27,13 @@ namespace Magnum.Channels
 			return result;
 		}
 
+		public virtual UntypedChannel Visit(UntypedChannel channel)
+		{
+			UntypedChannel result = this.FastInvoke<ChannelVisitor, UntypedChannel>("Visitor", channel);
+
+			return result;
+		}
+
 		public virtual ChannelProvider<T> Visit<T>(ChannelProvider<T> provider)
 		{
 			ChannelProvider<T> result = this.FastInvoke<ChannelVisitor, ChannelProvider<T>>("Visitor", provider);
@@ -57,7 +64,6 @@ namespace Magnum.Channels
 
 			return channel;
 		}
-
 
 		protected virtual Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
@@ -127,6 +133,34 @@ namespace Magnum.Channels
 		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
 		{
 			_log.Warn(x => x.Write("Unknown channel implementation found: {0}", channel.GetType().FullName));
+
+			return channel;
+		}
+
+		protected virtual UntypedChannel Visitor(UntypedChannel channel)
+		{
+			_log.Warn(x => x.Write("Unknown untyped channel implementation found: {0}", channel.GetType().FullName));
+
+			return channel;
+		}
+
+		protected virtual UntypedChannel Visitor(UntypedChannelAdapter channel)
+		{
+			Visit(channel.Output);
+
+			return channel;
+		}
+
+		protected virtual UntypedChannel Visitor(UntypedChannelRouter channel)
+		{
+			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
+
+			return channel;
+		}
+
+		protected virtual UntypedChannel Visitor<T>(TypedChannelAdapter<T> channel)
+		{
+			Visit(channel.Output);
 
 			return channel;
 		}

@@ -12,26 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	/// <summary>
-	/// Implements a channel shunt, discarding any message that is send without action
-	/// </summary>
-	public class ShuntChannel :
-		UntypedChannel
-	{
-		public void Send<T>(T message)
-		{
-		}
-	}
+	using System;
+	using Reflection;
 
 	/// <summary>
-	/// Implements a channel shunt, discarding any message that is send without action
+	/// Converts an untyped channel to a typed channel, passing only messages
+	/// which can be assigned to the channel type and discarding all others
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ShuntChannel<T> :
-		Channel<T>
+	/// <typeparam name="TOutput">The output channel type</typeparam>
+	public class TypedChannelAdapter<TOutput> :
+		UntypedChannel
 	{
-		public void Send(T message)
+		public TypedChannelAdapter(Channel<TOutput> output)
 		{
+			Output = output;
+			OutputType = typeof (TOutput);
+		}
+
+		public Channel<TOutput> Output { get; private set; }
+
+		public Type OutputType { get; private set; }
+
+		public void Send<T>(T message)
+		{
+			if (OutputType.IsAssignableFrom(typeof (T)))
+			{
+				Output.FastInvoke(new[] {OutputType}, "Send", message);
+			}
 		}
 	}
 }
