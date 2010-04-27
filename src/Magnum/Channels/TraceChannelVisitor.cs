@@ -98,7 +98,7 @@ namespace Magnum.Channels
 
 		protected override Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
 		{
-			Trace.WriteLine("TransformChannel<{0}>, Output: {1}".FormatWith(typeof (TInput).Name, typeof (TOutput).Name));
+			Trace.WriteLine("ConvertChannel<{0}>, Output: {1}".FormatWith(typeof (TInput).Name, typeof (TOutput).Name));
 
 			return base.Visitor(channel);
 		}

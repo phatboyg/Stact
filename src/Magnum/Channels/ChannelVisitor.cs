@@ -58,6 +58,7 @@ namespace Magnum.Channels
 			return channel;
 		}
 
+
 		protected virtual Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
 			Visit(channel.Output);

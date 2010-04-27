@@ -15,6 +15,7 @@ namespace Magnum.Channels.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Fibers;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
 
@@ -43,9 +44,14 @@ namespace Magnum.Channels.Internal
 			return result;
 		}
 
-
 		protected override Channel<T> Visitor<T>(Channel<T> channel)
 		{
+			if (_channels.Contains(channel))
+			{
+				_channels.Remove(channel);
+				return null;
+			}
+
 			return channel;
 		}
 
@@ -71,6 +77,24 @@ namespace Magnum.Channels.Internal
 			return channel;
 		}
 
+		protected override Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
+		{
+			if (_channels.Contains(channel.Output))
+			{
+				_channels.Remove(channel.Output);
+				return null;
+			}
+
+			var output = Visit(channel.Output);
+			if(output == null)
+				return null;
+
+			if (output != channel.Output)
+				return new ConvertChannel<TInput, TOutput>(new SynchronousFiber(), output, channel.Converter);
+
+			return channel;
+		}
+
 		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
 			bool changed;
@@ -92,11 +116,16 @@ namespace Magnum.Channels.Internal
 			foreach (Channel<T> subscriber in subscribers)
 			{
 				Channel<T> result = Visit(subscriber);
-
-				if(_channels.Contains(result))
+				if(result == null)
 				{
 					changed = true;
+					continue;
+				}
+
+				if (_channels.Contains(result))
+				{
 					_channels.Remove(result);
+					changed = true;
 					continue;
 				}
 

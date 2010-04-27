@@ -14,8 +14,9 @@ namespace Magnum.Channels.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
+	using Extensions;
+	using Fibers;
+	using Reflection;
 
 	public class AddChannelBinder<TChannel> :
 		ChannelVisitor
@@ -53,9 +54,9 @@ namespace Magnum.Channels.Internal
 			Channel<T> replacement = Visit(original);
 
 
-			if (!_added && typeof(T) == typeof(TChannel))
+			if (!_added && typeof (T) == typeof (TChannel))
 			{
-				replacement = new PublishSubscribeChannel<T>(new[] {replacement, (Channel<T>) _newChannel});
+				replacement = new PublishSubscribeChannel<T>(new[] {replacement, GetChannel<T>()});
 				_added = true;
 			}
 
@@ -72,7 +73,7 @@ namespace Magnum.Channels.Internal
 			if (typeof (T) == typeof (TChannel))
 			{
 				_added = true;
-				return (Channel<T>) _newChannel;
+				return GetChannel<T>();
 			}
 
 			return channel;
@@ -80,12 +81,20 @@ namespace Magnum.Channels.Internal
 
 		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
-			if (typeof (T) == typeof (TChannel))
+			if (IsCompatibleType(typeof (T)))
 			{
 				return new PublishSubscribeChannel<T>(VisitSubscribers(channel.Subscribers));
 			}
 
 			return channel;
+		}
+
+		private Channel<T> GetChannel<T>()
+		{
+			if (typeof (T) == typeof (TChannel))
+				return (Channel<T>) _newChannel;
+
+			return new ConvertChannel<T, TChannel>(new SynchronousFiber(), _newChannel);
 		}
 
 		private IEnumerable<Channel<T>> VisitSubscribers<T>(IEnumerable<Channel<T>> recipients)
@@ -94,7 +103,7 @@ namespace Magnum.Channels.Internal
 			{
 				Channel<T> newRecipient = Visit(recipient);
 
-				if (newRecipient == (Channel<T>) _newChannel)
+				if (newRecipient == _newChannel)
 					throw new InvalidOperationException("The channel has already been added to the network");
 
 				if (newRecipient != null)
@@ -104,8 +113,13 @@ namespace Magnum.Channels.Internal
 			if (!_added)
 			{
 				_added = true;
-				yield return (Channel<T>) _newChannel;
+				yield return GetChannel<T>();
 			}
+		}
+
+		private static bool IsCompatibleType(Type type)
+		{
+			return typeof (TChannel).IsAssignableFrom(type);
 		}
 	}
 }

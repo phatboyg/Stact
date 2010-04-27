@@ -52,7 +52,12 @@ namespace Magnum.Specs.Channels
 			future.IsCompleted.ShouldBeTrue();
 		}
 
-		private class TestMessage
+		private interface ITestMessage
+		{
+		}
+
+		private class TestMessage :
+			ITestMessage
 		{
 		}
 
@@ -91,6 +96,30 @@ namespace Magnum.Specs.Channels
 			{
 				var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 				scope.Add(second);
+				new TraceChannelVisitor().Visit(adapter);
+
+				adapter.Send(new TestMessage());
+			}
+
+			firstFuture.IsCompleted.ShouldBeTrue();
+			secondFuture.IsCompleted.ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_add_a_consumer_that_is_assignable_to_the_type()
+		{
+			var firstFuture = new Future<TestMessage>();
+			var secondFuture = new Future<ITestMessage>();
+
+			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
+			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
+			var adapter = new ChannelAdapter<TestMessage>(subs);
+
+			using (var scope = adapter.CreateBinderScope())
+			{
+				var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);
+				scope.Add(second);
+
 				new TraceChannelVisitor().Visit(adapter);
 
 				adapter.Send(new TestMessage());

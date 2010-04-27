@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using System;
+	using System.Linq.Expressions;
 	using Fibers;
 
 	/// <summary>
@@ -31,6 +33,13 @@ namespace Magnum.Channels
 			Converter = converter;
 		}
 
+		public ConvertChannel(Fiber fiber, Channel<TOutput> output)
+		{
+			_fiber = fiber;
+			Output = output;
+			Converter = CreateDefaultConverter();
+		}
+
 		public MessageConverter<TInput, TOutput> Converter { get; private set; }
 
 		public Channel<TOutput> Output { get; private set; }
@@ -43,6 +52,18 @@ namespace Magnum.Channels
 
 					Output.Send(outputMessage);
 				});
+		}
+
+		private static MessageConverter<TInput, TOutput> CreateDefaultConverter()
+		{
+			Type inputType = typeof (TInput);
+			Type outType = typeof (TOutput);
+
+			ParameterExpression input = Expression.Parameter(inputType, "input");
+			UnaryExpression convert = inputType.IsValueType ? Expression.Convert(input, outType) : Expression.TypeAs(input, outType);
+			Expression<MessageConverter<TInput, TOutput>> lambda = Expression.Lambda<MessageConverter<TInput, TOutput>>(convert, new[] {input});
+
+			return lambda.Compile();
 		}
 	}
 }
