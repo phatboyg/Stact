@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using Internal;
+
 	public static class ExtensionsForChannels
 	{
 		public static BinderScope CreateBinderScope<T>(this Channel<T> channel)

@@ -10,15 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Extensions;
-	using Reflection;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
 
-	public class RemoveChannelBinder
+	public class RemoveChannelBinder :
+		ChannelVisitor
 	{
 		private readonly HashSet<Channel> _channels;
 
@@ -35,7 +36,7 @@ namespace Magnum.Channels
 				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
 		}
 
-		protected virtual Channel<T> Visit<T>(Channel<T> channel)
+		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
 			Channel<T> result = this.FastInvoke<RemoveChannelBinder, Channel<T>>("Visitor", channel);
 
@@ -43,12 +44,12 @@ namespace Magnum.Channels
 		}
 
 
-		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
+		protected override Channel<T> Visitor<T>(Channel<T> channel)
 		{
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(ChannelAdapter<T> channel)
+		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
 			Channel<T> output = channel.Output;
 
@@ -70,12 +71,15 @@ namespace Magnum.Channels
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
 			bool changed;
 			var subscribers = VisitSubscribers(channel.Subscribers, out changed).ToArray();
+			if (subscribers.Length == 1)
+				return subscribers[0];
+
 			if(changed)
-				return new PublishSubscribeChannel<T>(channel.Fiber, subscribers);
+				return new PublishSubscribeChannel<T>(subscribers);
 
 			return channel;
 		}

@@ -10,14 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Extensions;
-	using Reflection;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
 
-	public class AddChannelBinder<TChannel>
+	public class AddChannelBinder<TChannel> :
+		ChannelVisitor
 	{
 		private readonly Channel<TChannel> _newChannel;
 		private bool _added;
@@ -35,35 +36,38 @@ namespace Magnum.Channels
 				throw new InvalidOperationException("The binding operation failed: {0} to {1}".FormatWith(typeof (T).Name, typeof (TChannel).Name));
 		}
 
-		protected virtual Channel<T> Visit<T>(Channel<T> channel)
+		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
-			Channel<T> result = this.FastInvoke<AddChannelBinder<TChannel>, Channel<T>>("Visitor", channel);
-
-			return result;
+			return this.FastInvoke<AddChannelBinder<TChannel>, Channel<T>>("Visitor", channel);
 		}
 
-		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
+		protected override Channel<T> Visitor<T>(Channel<T> channel)
 		{
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(ChannelAdapter<T> channel)
+		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
-			//Guard.IsTrue(x => x.IsAssignableFrom(typeof(TChannel)), typeof(T), "Type {0} is not assignable to {1}".FormatWith(typeof(T).Name, typeof(TChannel).Name));
+			Channel<T> original = channel.Output;
 
-			Channel<T> originalOutput = channel.Output;
+			Channel<T> replacement = Visit(original);
 
-			Channel<T> output = Visit(originalOutput);
 
-			if (originalOutput != output)
+			if (!_added && typeof(T) == typeof(TChannel))
 			{
-				channel.ChangeOutputChannel(originalOutput, output);
+				replacement = new PublishSubscribeChannel<T>(new[] {replacement, (Channel<T>) _newChannel});
+				_added = true;
+			}
+
+			if (original != replacement)
+			{
+				channel.ChangeOutputChannel(original, replacement);
 			}
 
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(ShuntChannel<T> channel)
+		protected override Channel<T> Visitor<T>(ShuntChannel<T> channel)
 		{
 			if (typeof (T) == typeof (TChannel))
 			{
@@ -74,11 +78,11 @@ namespace Magnum.Channels
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
 			if (typeof (T) == typeof (TChannel))
 			{
-				return new PublishSubscribeChannel<T>(channel.Fiber, VisitSubscribers(channel.Subscribers));
+				return new PublishSubscribeChannel<T>(VisitSubscribers(channel.Subscribers));
 			}
 
 			return channel;

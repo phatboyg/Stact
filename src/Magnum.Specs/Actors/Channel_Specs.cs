@@ -33,7 +33,7 @@ namespace Magnum.Specs.Actors
 
 			var filter = new FilterChannel<UserUpdate>(fiber, future, x => x.LastActivity > DateTime.Now);
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new[] {filter});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(new[] {filter});
 
 			channel.Send(update);
 
@@ -45,7 +45,7 @@ namespace Magnum.Specs.Actors
 		{
 			Fiber fiber = new SynchronousFiber();
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new Channel<UserUpdate>[] {});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(new Channel<UserUpdate>[] {});
 
 			var update = new UserUpdate();
 
@@ -63,7 +63,7 @@ namespace Magnum.Specs.Actors
 
 			var future = new Future<UserUpdate>();
 
-			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(fiber, new Channel<UserUpdate>[] {future});
+			Channel<UserUpdate> channel = new PublishSubscribeChannel<UserUpdate>(new Channel<UserUpdate>[] {future});
 
 			var scheduler = new TimerScheduler(fiber);
 

@@ -27,19 +27,16 @@ namespace Magnum.Channels
 	{
 		private static readonly ILogger _log = Logger.GetLogger<PublishSubscribeChannel<T>>();
 
-		private readonly Fiber _fiber;
-
 		private readonly Channel<T>[] _subscribers;
 
-		public PublishSubscribeChannel(Fiber fiber, IEnumerable<Channel<T>> subscribers)
+		public PublishSubscribeChannel(IEnumerable<Channel<T>> subscribers)
 		{
-			_fiber = fiber;
 			_subscribers = subscribers.ToArray();
 		}
 
-		public Fiber Fiber
+		public PublishSubscribeChannel(Channel<T>[] subscribers)
 		{
-			get { return _fiber; }
+			_subscribers = subscribers;
 		}
 
 		public Channel<T>[] Subscribers
@@ -48,11 +45,6 @@ namespace Magnum.Channels
 		}
 
 		public void Send(T message)
-		{
-			_fiber.Enqueue(() => SendMessageToSubscribers(message));
-		}
-
-		private void SendMessageToSubscribers(T message)
 		{
 			foreach (Channel<T> channel in _subscribers)
 			{

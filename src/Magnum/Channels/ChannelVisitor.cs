@@ -12,12 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System.Diagnostics;
 	using Extensions;
+	using Logging;
 	using Reflection;
 
 	public class ChannelVisitor
 	{
+		private readonly ILogger _log = Logger.GetLogger<ChannelVisitor>();
+
 		public virtual Channel<T> Visit<T>(Channel<T> channel)
 		{
 			Channel<T> result = this.FastInvoke<ChannelVisitor, Channel<T>>("Visitor", channel);
@@ -41,15 +43,23 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(ConsumerChannel<T> channel)
 		{
-			Trace.WriteLine("ConsumerChannel<{0}>".FormatWith(typeof (T).Name));
+			return channel;
+		}
 
+		protected virtual Channel<T> Visitor<T>(ShuntChannel<T> channel)
+		{
 			return channel;
 		}
 
 		protected virtual Channel<T> Visitor<T>(FilterChannel<T> channel)
 		{
-			Trace.WriteLine("FilterChannel<{0}>".FormatWith(typeof (T).Name));
+			Visit(channel.Output);
 
+			return channel;
+		}
+
+		protected virtual Channel<T> Visitor<T>(ChannelAdapter<T> channel)
+		{
 			Visit(channel.Output);
 
 			return channel;
@@ -57,8 +67,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(InstanceChannel<T> channel)
 		{
-			Trace.WriteLine("InstanceChannel<{0}>".FormatWith(typeof (T).Name));
-
 			Visit(channel.Provider);
 
 			return channel;
@@ -66,8 +74,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(IntervalChannel<T> channel)
 		{
-			Trace.WriteLine("IntervalChannel<{0}>, Interval = {1}".FormatWith(typeof (T).Name, channel.Interval));
-
 			Visit(channel.Output);
 
 			return channel;
@@ -75,8 +81,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(InterceptorChannel<T> channel)
 		{
-			Trace.WriteLine("InterceptorChannel<{0}>".FormatWith(typeof (T).Name));
-
 			Visit(channel.Output);
 
 			Visit(channel.InterceptorProvider);
@@ -86,9 +90,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
 		{
-			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}, Interval = {2}".FormatWith(typeof (T).Name, typeof (TKey).Name,
-				channel.Interval));
-
 			Visit(channel.Output);
 
 			return channel;
@@ -96,8 +97,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(LastIntervalChannel<T> channel)
 		{
-			Trace.WriteLine("LastIntervalChannel<{0}>, Interval = {1}".FormatWith(typeof (T).Name, channel.Interval));
-
 			Visit(channel.Output);
 
 			return channel;
@@ -105,8 +104,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(AsyncResultChannel<T> channel)
 		{
-			Trace.WriteLine("AsyncResultChannel<{0}>, {1}".FormatWith(typeof (T).Name, channel.IsCompleted ? "Complete" : "Pending"));
-
 			Visit(channel.Output);
 
 			return channel;
@@ -114,8 +111,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
-			Trace.WriteLine("PublishSubscribeChannel<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Subscribers.Length));
-
 			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
 
 			return channel;
@@ -123,8 +118,6 @@ namespace Magnum.Channels
 
 		protected virtual Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
 		{
-			Trace.WriteLine("TransformChannel<{0}>, Output: {1}".FormatWith(typeof (TInput).Name, typeof (TOutput).Name));
-
 			Visit(channel.Output);
 
 			return channel;
@@ -132,29 +125,23 @@ namespace Magnum.Channels
 
 		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
 		{
-			Trace.WriteLine("Channel<{0}>".FormatWith(typeof (T).Name));
+			_log.Warn(x => x.Write("Unknown channel implementation found: {0}", channel.GetType().FullName));
 
 			return channel;
 		}
 
 		protected virtual ChannelProvider<T> Visitor<T>(ChannelProvider<T> provider)
 		{
-			Trace.WriteLine("ChannelProvider<{0}>".FormatWith(typeof (T).Name));
-
 			return provider;
 		}
 
 		protected virtual ChannelProvider<T> Visitor<T>(DelegateChannelProvider<T> provider)
 		{
-			Trace.WriteLine("DelegateChannelProvider<{0}>".FormatWith(typeof (T).Name));
-
 			return provider;
 		}
 
 		protected virtual ChannelProvider<T> Visitor<T, TKey>(KeyedChannelProvider<T, TKey> provider)
 		{
-			Trace.WriteLine("KeyedChannelProvider<{0}>, Key = {1}".FormatWith(typeof (T).Name, typeof (TKey).Name));
-
 			Visit(provider.InstanceProvider);
 
 			return provider;
@@ -162,8 +149,6 @@ namespace Magnum.Channels
 
 		protected virtual ChannelProvider<T> Visitor<T>(ThreadStaticChannelProvider<T> provider)
 		{
-			Trace.WriteLine("ThreadStaticChannelProvider<{0}>".FormatWith(typeof (T).Name));
-
 			Visit(provider.InstanceProvider);
 
 			return provider;
@@ -171,8 +156,6 @@ namespace Magnum.Channels
 
 		protected virtual InterceptorProvider<T> Visitor<T>(InterceptorProvider<T> provider)
 		{
-			Trace.WriteLine("InterceptorProvider<{0}>".FormatWith(typeof (T).Name));
-
 			return provider;
 		}
 	}

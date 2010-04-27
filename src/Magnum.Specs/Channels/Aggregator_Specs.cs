@@ -16,6 +16,7 @@ namespace Magnum.Specs.Channels
 	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
+	using Magnum.Logging;
 	using NUnit.Framework;
 	using TestFramework;
 
@@ -32,6 +33,11 @@ namespace Magnum.Specs.Channels
 			_timeout = 100.Milliseconds();
 		}
 
+		[TestFixtureSetUp]
+		public void SetupAll()
+		{
+			TraceLogProvider.Configure(LogLevel.Debug);
+		}
 
 		[Test]
 		public void Should_send_to_a_adapter_consumer_chain()
@@ -63,6 +69,8 @@ namespace Magnum.Specs.Channels
 
 				scope.Add(consumer);
 
+				new TraceChannelVisitor().Visit(adapter);
+
 				adapter.Send(new TestMessage());
 			}
 
@@ -76,18 +84,45 @@ namespace Magnum.Specs.Channels
 			var secondFuture = new Future<TestMessage>();
 
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var subs = new PublishSubscribeChannel<TestMessage>(_fiber, new[] {first});
+			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
 			var adapter = new ChannelAdapter<TestMessage>(subs);
 
 			using (var scope = adapter.CreateBinderScope())
 			{
 				var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 				scope.Add(second);
+				new TraceChannelVisitor().Visit(adapter);
 
 				adapter.Send(new TestMessage());
 			}
 
 			firstFuture.IsCompleted.ShouldBeTrue();
+			secondFuture.IsCompleted.ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_manage_interleaved_changes_the_the_chain()
+		{
+			var firstFuture = new Future<TestMessage>();
+			var secondFuture = new Future<TestMessage>();
+
+			var adapter = new ChannelAdapter<TestMessage>(new ShuntChannel<TestMessage>());
+
+			var firstScope = adapter.CreateBinderScope();
+			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
+			firstScope.Add(first);
+
+			var secondScope = adapter.CreateBinderScope();
+			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
+			secondScope.Add(second);
+
+			firstScope.Dispose();
+
+			new TraceChannelVisitor().Visit(adapter);
+
+			adapter.Send(new TestMessage());
+
+			firstFuture.IsCompleted.ShouldBeFalse();
 			secondFuture.IsCompleted.ShouldBeTrue();
 		}
 
@@ -104,6 +139,8 @@ namespace Magnum.Specs.Channels
 
 				scope.Add(consumer);
 			}
+
+			new TraceChannelVisitor().Visit(adapter);
 
 			adapter.Send(new TestMessage());
 
