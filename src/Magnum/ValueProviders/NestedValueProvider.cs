@@ -10,43 +10,35 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Specs
+namespace Magnum.ValueProviders
 {
 	using System;
-	using System.Collections.Generic;
-	using Binding;
-	using Channels;
-	using Magnum.ValueProviders;
-	using Rhino.Mocks;
 
-	public class TestModelBinderContext :
-		ModelBinderContext
+	public class NestedValueProvider :
+		ValueProvider
 	{
-		private readonly DictionaryValueProvider _provider;
+		private readonly ValueProvider _parent;
+		private readonly string _prefix;
 
-		public TestModelBinderContext(IDictionary<string, object> dictionary)
+		public NestedValueProvider(ValueProvider parent, string prefix)
 		{
-			_provider = new DictionaryValueProvider(dictionary);
+			_parent = parent;
+			_prefix = prefix;
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction);
+			return _parent.GetValue(_prefix + key, matchingValueAction);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction, missingValueAction);
+			return _parent.GetValue(_prefix + key, matchingValueAction, missingValueAction);
 		}
 
 		public void GetAll(Action<string, object> valueAction)
 		{
-			_provider.GetAll(valueAction);
-		}
-
-		public Channel<T> GetChannel<T>()
-		{
-			return MockRepository.GenerateMock<Channel<T>>();
+			_parent.GetAll(valueAction);
 		}
 	}
 }

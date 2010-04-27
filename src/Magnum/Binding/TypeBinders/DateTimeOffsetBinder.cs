@@ -10,24 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.Binding.TypeBinders
 {
 	using System;
-	using Magnum.ValueProviders;
+	using System.Xml;
 
-	public static class ExtensionsForValueProviders
+	public class DateTimeOffsetBinder :
+		ValueTypeBinder<DateTimeOffset>
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
-
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
+		protected override bool ConvertType(object value, out DateTimeOffset result)
 		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
+			if (base.ConvertType(value, out result))
+				return true;
+
+			if (value is DateTime)
+			{
+				result = new DateTimeOffset((DateTime) value);
+				return true;
+			}
+
+			return false;
 		}
 
-		private static bool IsAjaxRequest(object value)
+		protected override bool ParseType(string text, out DateTimeOffset result)
 		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
+			return DateTimeOffset.TryParse(text, out result);
+		}
+
+		protected override DateTimeOffset UseXmlConvert(string text)
+		{
+			return XmlConvert.ToDateTimeOffset(text);
 		}
 	}
 }

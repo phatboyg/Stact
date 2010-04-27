@@ -10,24 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.Actors.Internal
 {
 	using System;
-	using Magnum.ValueProviders;
 
-	public static class ExtensionsForValueProviders
+	/// <summary>
+	///   Maintains only one instance of an actor per thread
+	/// </summary>
+	/// <typeparam name = "TActor">The actor type</typeparam>
+	public class ThreadStaticActorFactory<TActor> :
+		ActorFactory<TActor>
+		where TActor : class
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
+		[ThreadStatic]
+		private static TActor _instance;
 
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
+		public ThreadStaticActorFactory(ActorFactory<TActor> factory)
 		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
+			Factory = factory;
 		}
 
-		private static bool IsAjaxRequest(object value)
+		public ActorFactory<TActor> Factory { get; private set; }
+
+		public TActor GetActor()
 		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
+			return _instance ?? (_instance = Factory.GetActor());
 		}
 	}
 }

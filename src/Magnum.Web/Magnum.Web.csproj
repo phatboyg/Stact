@@ -53,10 +53,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Actors\Actor.cs" />
-    <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ActorHttpAsyncHandler.cs" />
-    <Compile Include="Actors\ActorInstanceProvider.cs" />
     <Compile Include="Actors\Internal\ActorRequestContext.cs" />
     <Compile Include="Actors\Configuration\ActorConfigurator.cs" />
     <Compile Include="Actors\Configuration\ActorRouteGenerator.cs" />
@@ -73,55 +70,12 @@
     <Compile Include="Abstractions\ContentWriter.cs" />
     <Compile Include="Actors\Configuration\RouteConfigurator.cs" />
     <Compile Include="Actors\Configuration\WebRoutingRouteConfiguration.cs" />
-    <Compile Include="Actors\Internal\ThreadStaticActorInstanceProvider.cs" />
-    <Compile Include="Actors\Internal\TransientActorInstanceProvider.cs" />
-    <Compile Include="Binding\FastModelBinder.cs" />
-    <Compile Include="Binding\ModelBinderContext.cs" />
-    <Compile Include="Binding\ObjectPropertyBinder.cs" />
-    <Compile Include="Binding\InstanceBinderContext.cs" />
-    <Compile Include="Binding\BinderContext.cs" />
-    <Compile Include="Binding\ObjectBinder.cs" />
-    <Compile Include="Binding\ModelBinder.cs" />
-    <Compile Include="Binding\FastObjectBinder.cs" />
-    <Compile Include="Binding\ObjectPropertyBinderList.cs" />
-    <Compile Include="Binding\TypeBinders\ArrayBinder.cs" />
-    <Compile Include="Binding\TypeBinders\BooleanBinder.cs" />
-    <Compile Include="Binding\TypeBinders\ByteBinder.cs" />
-    <Compile Include="Binding\TypeBinders\ChannelBinder.cs" />
-    <Compile Include="Binding\TypeBinders\CharBinder.cs" />
-    <Compile Include="Binding\TypeBinders\DateTimeBinder.cs" />
-    <Compile Include="Binding\TypeBinders\DateTimeOffsetBinder.cs" />
-    <Compile Include="Binding\TypeBinders\DecimalBinder.cs" />
-    <Compile Include="Binding\TypeBinders\DictionaryBinder.cs" />
-    <Compile Include="Binding\TypeBinders\DoubleBinder.cs" />
-    <Compile Include="Binding\TypeBinders\EnumBinder.cs" />
-    <Compile Include="Binding\TypeBinders\EnumerableBinderBase.cs" />
-    <Compile Include="Binding\TypeBinders\FloatBinder.cs" />
-    <Compile Include="Binding\TypeBinders\GuidBinder.cs" />
-    <Compile Include="Binding\TypeBinders\IntBinder.cs" />
-    <Compile Include="Binding\TypeBinders\ListBinder.cs" />
-    <Compile Include="Binding\TypeBinders\LongBinder.cs" />
-    <Compile Include="Binding\TypeBinders\SByteBinder.cs" />
-    <Compile Include="Binding\TypeBinders\ShortBinder.cs" />
-    <Compile Include="Binding\TypeBinders\StringBinder.cs" />
-    <Compile Include="Binding\TypeBinders\TimeSpanBinder.cs" />
-    <Compile Include="Binding\TypeBinders\UIntBinder.cs" />
-    <Compile Include="Binding\TypeBinders\ULongBinder.cs" />
-    <Compile Include="Binding\TypeBinders\UriBinder.cs" />
-    <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Abstractions\ObjectWriterChannel.cs" />
-    <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
-    <Compile Include="ValueProviders\AccessorValueProvider.cs" />
-    <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
-    <Compile Include="ValueProviders\EmptyValueProvider.cs" />
     <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />
     <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
     <Compile Include="ValueProviders\JsonValueProvider.cs" />
-    <Compile Include="ValueProviders\MultipleValueProvider.cs" />
-    <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
-    <Compile Include="ValueProviders\ValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">

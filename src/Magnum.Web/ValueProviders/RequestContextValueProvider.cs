@@ -15,6 +15,7 @@ namespace Magnum.Web.ValueProviders
 	using System;
 	using System.Web;
 	using System.Web.Routing;
+	using Magnum.ValueProviders;
 
 	/// <summary>
 	///   Maps access to the RequestContext for model binding

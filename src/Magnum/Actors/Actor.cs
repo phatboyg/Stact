@@ -10,24 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.Actors
 {
-	using System;
-	using Magnum.ValueProviders;
+	using Channels;
 
-	public static class ExtensionsForValueProviders
+	public interface Actor :
+		RequestResponseChannel
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
-
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
-		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
-		}
-
-		private static bool IsAjaxRequest(object value)
-		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
-		}
 	}
 }

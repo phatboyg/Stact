@@ -19,6 +19,7 @@ namespace Magnum.Web.Actors.Internal
 	using Channels;
 	using Fibers;
 	using Logging;
+	using Magnum.ValueProviders;
 	using Reflection;
 	using ValueProviders;
 

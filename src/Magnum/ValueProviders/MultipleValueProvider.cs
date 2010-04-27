@@ -10,43 +10,43 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.Specs
+namespace Magnum.ValueProviders
 {
 	using System;
 	using System.Collections.Generic;
-	using Binding;
-	using Channels;
-	using Magnum.ValueProviders;
-	using Rhino.Mocks;
+	using System.Linq;
+	using Extensions;
 
-	public class TestModelBinderContext :
-		ModelBinderContext
+	/// <summary>
+	///   Requests a value from an ordered list of value providers
+	/// </summary>
+	public class MultipleValueProvider :
+		ValueProvider
 	{
-		private readonly DictionaryValueProvider _provider;
+		private readonly IList<ValueProvider> _providers;
 
-		public TestModelBinderContext(IDictionary<string, object> dictionary)
+		public MultipleValueProvider(IEnumerable<ValueProvider> providers)
 		{
-			_provider = new DictionaryValueProvider(dictionary);
+			_providers = new List<ValueProvider>(providers);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction);
+			return _providers.Any(x => x.GetValue(key, matchingValueAction));
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction, missingValueAction);
+			if (_providers.Any(x => x.GetValue(key, matchingValueAction)))
+				return true;
+
+			missingValueAction();
+			return false;
 		}
 
 		public void GetAll(Action<string, object> valueAction)
 		{
-			_provider.GetAll(valueAction);
-		}
-
-		public Channel<T> GetChannel<T>()
-		{
-			return MockRepository.GenerateMock<Channel<T>>();
+			_providers.Each(provider => provider.GetAll(valueAction));
 		}
 	}
 }

@@ -19,6 +19,7 @@ namespace Magnum.Web.ValueProviders
 	using System.Web.Routing;
 	using Collections;
 	using Extensions;
+	using Magnum.ValueProviders;
 
 	public class HttpRequestValueProvider :
 		ValueProvider

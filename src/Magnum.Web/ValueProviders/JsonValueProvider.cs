@@ -20,6 +20,7 @@ namespace Magnum.Web.ValueProviders
 	using System.Web.Script.Serialization;
 	using Abstractions;
 	using Extensions;
+	using Magnum.ValueProviders;
 
 	public class JsonValueProvider :
 		ValueProvider

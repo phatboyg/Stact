@@ -10,24 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.Actors.Internal
 {
-	using System;
-	using Magnum.ValueProviders;
+	using Fibers;
+	using Reflection;
 
-	public static class ExtensionsForValueProviders
+	/// <summary>
+	///   Creates a new instance of an actor for each call
+	/// </summary>
+	/// <typeparam name = "TActor"></typeparam>
+	public class TransientActorFactory<TActor> :
+		ActorFactory<TActor>
+		where TActor : class
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
+		private readonly FiberProvider _fiberProvider;
 
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
+		public TransientActorFactory(FiberProvider fiberProvider)
 		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
+			_fiberProvider = fiberProvider;
 		}
 
-		private static bool IsAjaxRequest(object value)
+		public TActor GetActor()
 		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
+			Fiber fiber = _fiberProvider();
+
+			return FastActivator<TActor>.Create(fiber);
 		}
 	}
 }

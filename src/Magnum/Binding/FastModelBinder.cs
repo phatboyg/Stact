@@ -10,24 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.Binding
 {
 	using System;
-	using Magnum.ValueProviders;
 
-	public static class ExtensionsForValueProviders
+	/// <summary>
+	/// A fast model binder for quickly applying values to properties
+	/// </summary>
+	public class FastModelBinder :
+		ModelBinder
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
-
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
+		public object Bind(Type type, ModelBinderContext context)
 		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
+			return new InstanceBinderContext(context).Bind(type);
 		}
 
-		private static bool IsAjaxRequest(object value)
+		public T Bind<T>(ModelBinderContext context)
 		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
+			return (T) Bind(typeof (T), context);
 		}
 	}
 }

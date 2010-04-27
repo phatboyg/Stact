@@ -22,6 +22,8 @@ namespace Magnum.Web.Actors.Configuration
 	using Fibers;
 	using Internal;
 	using Logging;
+	using Magnum.Actors;
+	using Magnum.Actors.Internal;
 	using Reflection;
 
 	public class StandardActorConfiguration<TActor> :
@@ -29,15 +31,15 @@ namespace Magnum.Web.Actors.Configuration
 		where TActor : class
 	{
 		private static readonly ILogger _log = Logger.GetLogger<StandardActorConfiguration<TActor>>();
-		private ActorInstanceProvider<TActor> _actorInstanceProvider;
+		private ActorFactory<TActor> _actorFactory;
 
 		private Action<RouteConfiguration> _configure;
-		private FiberProvider _fiberProvider;
+		private readonly FiberProvider _fiberProvider;
 
 		public StandardActorConfiguration()
 		{
 			_fiberProvider = ThreadPoolFiberProvider;
-			_actorInstanceProvider = new TransientActorInstanceProvider<TActor>(_fiberProvider);
+			_actorFactory = new TransientActorFactory<TActor>(_fiberProvider);
 			_configure = DefaultConfigureAction;
 		}
 
@@ -73,10 +75,10 @@ namespace Magnum.Web.Actors.Configuration
 
 		public ActorConfigurator PerThread()
 		{
-			if (_actorInstanceProvider.GetType() == typeof (ThreadStaticActorInstanceProvider<TActor>))
+			if (_actorFactory.GetType() == typeof (ThreadStaticActorFactory<TActor>))
 				return this;
 
-			_actorInstanceProvider = new ThreadStaticActorInstanceProvider<TActor>(_actorInstanceProvider);
+			_actorFactory = new ThreadStaticActorFactory<TActor>(_actorFactory);
 			return this;
 		}
 
@@ -107,7 +109,7 @@ namespace Magnum.Web.Actors.Configuration
 
 		private void AddRoute<TInput>(RouteConfiguration configuration, PropertyInfo property)
 		{
-			var channelProvider = new ActorChannelProvider<TActor, TInput>(_actorInstanceProvider, property);
+			var channelProvider = new ActorChannelProvider<TActor, TInput>(_actorFactory, property);
 
 			configuration.AddRoute<TActor, TInput>(channelProvider, property);
 		}

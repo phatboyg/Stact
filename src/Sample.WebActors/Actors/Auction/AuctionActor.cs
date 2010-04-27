@@ -14,6 +14,7 @@ namespace Sample.WebActors.Actors.Auction
 {
 	using System;
 	using Magnum;
+	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Fibers;
 	using Magnum.Web.Actors;

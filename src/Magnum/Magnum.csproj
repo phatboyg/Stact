@@ -45,6 +45,46 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\ActorFactory.cs" />
+    <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
+    <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
+    <Compile Include="Actors\Internal\TransientActorFactory.cs" />
+    <Compile Include="Binding\BinderContext.cs" />
+    <Compile Include="Binding\FastModelBinder.cs" />
+    <Compile Include="Binding\FastObjectBinder.cs" />
+    <Compile Include="Binding\InstanceBinderContext.cs" />
+    <Compile Include="Binding\ModelBinder.cs" />
+    <Compile Include="Binding\ModelBinderContext.cs" />
+    <Compile Include="Binding\ObjectBinder.cs" />
+    <Compile Include="Binding\ObjectPropertyBinder.cs" />
+    <Compile Include="Binding\ObjectPropertyBinderList.cs" />
+    <Compile Include="Binding\TypeBinders\ArrayBinder.cs" />
+    <Compile Include="Binding\TypeBinders\BooleanBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ChannelBinder.cs" />
+    <Compile Include="Binding\TypeBinders\CharBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DateTimeBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DateTimeOffsetBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DecimalBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DictionaryBinder.cs" />
+    <Compile Include="Binding\TypeBinders\DoubleBinder.cs" />
+    <Compile Include="Binding\TypeBinders\EnumBinder.cs" />
+    <Compile Include="Binding\TypeBinders\EnumerableBinderBase.cs" />
+    <Compile Include="Binding\TypeBinders\FloatBinder.cs" />
+    <Compile Include="Binding\TypeBinders\GuidBinder.cs" />
+    <Compile Include="Binding\TypeBinders\IntBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ListBinder.cs" />
+    <Compile Include="Binding\TypeBinders\LongBinder.cs" />
+    <Compile Include="Binding\TypeBinders\SByteBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ShortBinder.cs" />
+    <Compile Include="Binding\TypeBinders\StringBinder.cs" />
+    <Compile Include="Binding\TypeBinders\TimeSpanBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UIntBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ULongBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UriBinder.cs" />
+    <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
+    <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Channels\Internal\AddChannelBinder.cs" />
     <Compile Include="Channels\Internal\BinderScope.cs" />
     <Compile Include="Channels\ChannelAdapter.cs" />
@@ -57,9 +97,7 @@
     <Compile Include="Channels\DefaultMailbox.cs" />
     <Compile Include="Channels\Mailbox.cs" />
     <Compile Include="Channels\RequestResponseChannel.cs" />
-    <Compile Include="Channels\SendException.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
-    <Compile Include="Channels\SubscriberSendException.cs" />
     <Compile Include="Channels\TraceChannelVisitor.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Fibers\Internal\AbstractFiber.cs" />
@@ -392,6 +430,12 @@
     <Compile Include="ThreadUtil.cs" />
     <Compile Include="Context\TypedKey.cs" />
     <Compile Include="Tree\Tree.cs" />
+    <Compile Include="ValueProviders\AccessorValueProvider.cs" />
+    <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
+    <Compile Include="ValueProviders\EmptyValueProvider.cs" />
+    <Compile Include="ValueProviders\MultipleValueProvider.cs" />
+    <Compile Include="ValueProviders\NestedValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProvider.cs" />
     <Compile Include="WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>

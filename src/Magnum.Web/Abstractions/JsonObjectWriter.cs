@@ -14,6 +14,7 @@ namespace Magnum.Web.Abstractions
 {
 	using System.Web;
 	using System.Web.Script.Serialization;
+	using Magnum.ValueProviders;
 	using ValueProviders;
 
 	/// <summary>

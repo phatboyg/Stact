@@ -10,24 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.ValueProviders
 {
 	using System;
-	using Magnum.ValueProviders;
 
-	public static class ExtensionsForValueProviders
+	public interface ValueProvider
 	{
-		private const string XmlHttpRequestValue = "XMLHttpRequest";
-		private const string XRequestedWithHeader = "X-Requested-With";
+		bool GetValue(string key, Func<object, bool> matchingValueAction);
+		bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction);
 
-		public static bool IsAjaxRequest(this ValueProvider valueProvider)
-		{
-			return valueProvider.GetValue(XRequestedWithHeader, IsAjaxRequest);
-		}
-
-		private static bool IsAjaxRequest(object value)
-		{
-			return XmlHttpRequestValue.Equals(value as string, StringComparison.InvariantCultureIgnoreCase);
-		}
+		void GetAll(Action<string, object> valueAction);
 	}
 }
