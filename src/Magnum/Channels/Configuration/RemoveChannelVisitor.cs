@@ -143,7 +143,15 @@ namespace Magnum.Channels.Configuration
 				results.Add(newSubscriber);
 			}
 
-			return changed ? new UntypedChannelRouter(results) : channel;
+			if(results.Count == 0)
+				return null;
+
+			if (changed)
+			{
+				return new UntypedChannelRouter(results);
+			}
+
+			return channel;
 		}
 
 		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
