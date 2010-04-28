@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Internal
 {
-	using System;
 	using System.Collections.Generic;
 	using Extensions;
 
@@ -21,31 +20,39 @@ namespace Magnum.Channels.Internal
 	{
 		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
 		private readonly UntypedChannel _channel;
-		private readonly List<Action> _completeActions = new List<Action>();
+		private readonly List<UntypedConfigurator> _configurators = new List<UntypedConfigurator>();
 
 		public UntypedSubscriptionConfigurator(UntypedChannel channel)
 		{
 			_channel = channel;
 		}
 
-		public void Add<TChannel>(Channel<TChannel> channel)
+		public ChannelSubscriptionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel)
 		{
-			_completeActions.Add(() =>
-				{
-					new AddChannelSubscriber<TChannel>(channel).AddTo(_channel);
+			var configurator = new UntypedChannelSubscriptionConfigurator<TChannel>(channel);
 
-					_boundChannels.Add(channel);
-				});
+			_configurators.Add(configurator);
+
+			return configurator;
 		}
 
 		public ChannelSubscriptionConfigurator<T> Consume<T>()
 		{
-			throw new NotImplementedException();
+			var configurator = new UntypedChannelSubscriptionConfigurator<T>();
+
+			_configurators.Add(configurator);
+
+			return configurator;
 		}
 
 		public ChannelSubscription Complete()
 		{
-			_completeActions.Each(x => x());
+			_configurators.Each(configurator =>
+				{
+					IEnumerable<Channel> addedChannels = configurator.Configure(_channel);
+
+					addedChannels.Each(channel => _boundChannels.Add(channel));
+				});
 
 			return new UntypedChannelSubscription(_channel, _boundChannels);
 		}

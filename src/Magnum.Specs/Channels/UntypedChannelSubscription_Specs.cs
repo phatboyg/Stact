@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
+	using System.Diagnostics;
 	using Fibers;
 	using Magnum.Channels;
 	using NUnit.Framework;
@@ -22,42 +23,55 @@ namespace Magnum.Specs.Channels
 	{
 		private class TestConsumer
 		{
+			public TestConsumer()
+			{
+				InputChannel = new ConsumerChannel<TestMessage>(new SynchronousFiber(), x => Future.Complete(x));
+			}
+
 			public Channel<TestMessage> InputChannel { get; private set; }
+			public static Future<TestMessage> Future { get; set; }
 		}
 
 		private class TestMessage
 		{
 		}
 
-		[Test, Explicit]
+		[Test]
 		public void Should_add_a_provider_based_consumer()
 		{
 			var input = new UntypedChannelAdapter(new SynchronousFiber());
 
 			var futureA = new Future<TestMessage>();
+			var futureB = new Future<TestMessage>();
+			var futureC = new Future<TestMessage>();
+			
+			TestConsumer.Future = futureA;
 
-			using (ChannelSubscription subscription = input.Subscribe(x =>
+			using (input.Subscribe(x =>
 				{
-					// TODO move this up to a nested closure inside the Subscribe() method to build the entries 
-					// and then execute them before returning the disposable subscription info
 					x.Consume<TestMessage>()
 						.Using<TestConsumer>(y => y.InputChannel)
-						.ObtainedBy(message => new TestConsumer());
+						.ObtainedBy(() => new TestConsumer());
 
 					x.Consume<TestMessage>()
-						.Using(message => { });
+						.Using(message => { futureB.Complete(message); });
 
 					x.Consume<TestMessage>()
-						.Using(message => { return m => { }; });
+						.Using(message => { return m => { futureC.Complete(m); }; });
 				}))
 			{
+				Trace.WriteLine("Complete network:");
+				new TraceChannelVisitor().Visit(input);
+
+				input.Send(new TestMessage());
 			}
 
+			Trace.WriteLine("Empty network:");
 			new TraceChannelVisitor().Visit(input);
 
-			input.Send(new TestMessage());
-
-			futureA.IsCompleted.ShouldBeFalse();
+			futureA.IsCompleted.ShouldBeTrue();
+			futureB.IsCompleted.ShouldBeTrue();
+			futureC.IsCompleted.ShouldBeTrue();
 		}
 
 		[Test]
@@ -71,7 +85,7 @@ namespace Magnum.Specs.Channels
 			var futureB = new Future<TestMessage>();
 			var consumerB = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureB.Complete);
 
-			using (ChannelSubscription subscription = input.Subscribe(x =>
+			using (input.Subscribe(x =>
 				{
 					x.Add(consumerA);
 					x.Add(consumerB);

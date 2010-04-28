@@ -12,17 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Internal
 {
-	using System;
-
+	/// <summary>
+	/// A fluent syntax for defining subscriptions against a channel network
+	/// </summary>
 	public interface SubscriptionConfigurator
 	{
-		void Add<TChannel>(Channel<TChannel> channel);
+		/// <summary>
+		/// Adds a channel directly without any modification
+		/// </summary>
+		/// <typeparam name="TChannel">The channel type</typeparam>
+		/// <param name="channel">The channel instance</param>
+		ChannelSubscriptionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel);
 
-
+		/// <summary>
+		/// Configures a new consumer
+		/// </summary>
+		/// <typeparam name="TChannel">The channel type</typeparam>
+		/// <returns>A chainable method to configure additional options</returns>
 		ChannelSubscriptionConfigurator<TChannel> Consume<TChannel>();
 	}
 
 
+	/// <summary>
+	/// A fluent syntax for configuration the options of a channel subscription
+	/// </summary>
+	/// <typeparam name="TChannel">The channel type</typeparam>
 	public interface ChannelSubscriptionConfigurator<TChannel>
 	{
 		/// <summary>
@@ -31,18 +45,12 @@ namespace Magnum.Channels.Internal
 		/// <typeparam name="TConsumer"></typeparam>
 		/// <param name="channelAccessor"></param>
 		/// <returns></returns>
-		ConsumerSubscriptionConfigurator<TConsumer, TChannel> Using<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor);
+		ConsumerConfigurator<TConsumer, TChannel> Using<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor);
 
 
 		ChannelSubscriptionConfigurator<TChannel> Using(SelectiveConsumer<TChannel> consumer);
 
 
 		ChannelSubscriptionConfigurator<TChannel> Using(Consumer<TChannel> consumer);
-	}
-
-	public interface ConsumerSubscriptionConfigurator<TConsumer, TChannel>
-	{
-		ConsumerSubscriptionConfigurator<TConsumer, TChannel> ObtainedBy(Func<TChannel, TConsumer> consumerFactory);
-		
 	}
 }
