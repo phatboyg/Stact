@@ -50,11 +50,6 @@ namespace Magnum.Channels.Internal
 			return this.FastInvoke<AddChannelSubscriber<TChannel>, Channel<T>>("Visitor", channel);
 		}
 
-		protected override Channel<T> Visitor<T>(Channel<T> channel)
-		{
-			return channel;
-		}
-
 		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
 			Channel<T> original = channel.Output;

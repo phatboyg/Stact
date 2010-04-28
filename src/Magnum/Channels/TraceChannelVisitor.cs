@@ -117,6 +117,13 @@ namespace Magnum.Channels
 			return base.Visitor(channel);
 		}
 
+		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
+		{
+			Trace.WriteLine("UntypedChannelAdapter");
+
+			return base.Visitor(channel);
+		}
+
 		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
 		{
 			Trace.WriteLine("UntypedChannelRouter: {0} subscribers".FormatWith(channel.Subscribers.Length));

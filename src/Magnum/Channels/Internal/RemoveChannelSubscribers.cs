@@ -31,7 +31,15 @@ namespace Magnum.Channels.Internal
 
 		public void RemoveFrom<T>(Channel<T> channel)
 		{
-			Channel<T> result = Visit(channel);
+			Visit(channel);
+
+			if (_channels.Count > 0)
+				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
+		}
+
+		public void RemoveFrom(UntypedChannel channel)
+		{
+			Visit(channel);
 
 			if (_channels.Count > 0)
 				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
@@ -95,6 +103,74 @@ namespace Magnum.Channels.Internal
 			return channel;
 		}
 
+		protected override UntypedChannel Visitor<T>(TypedChannelAdapter<T> channel)
+		{
+			Channel<T> original = channel.Output;
+
+			Channel<T> replacement = Visit(original);
+
+			if (_channels.Contains(replacement))
+			{
+				_channels.Remove(replacement);
+				return null;
+			}
+
+			return original != replacement ? new TypedChannelAdapter<T>(replacement) : channel;
+		}
+
+		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
+		{
+			var results = new List<UntypedChannel>();
+			bool changed = false;
+
+			foreach (UntypedChannel subscriber in channel.Subscribers)
+			{
+				UntypedChannel newSubscriber = Visit(subscriber);
+
+				if (_channels.Contains(newSubscriber))
+				{
+					_channels.Remove(newSubscriber);
+					newSubscriber = null;
+				}
+
+				if (newSubscriber == null || newSubscriber != subscriber)
+				{
+					changed = true;
+					if (newSubscriber == null)
+						continue;
+				}
+
+				results.Add(newSubscriber);
+			}
+
+			return changed ? new UntypedChannelRouter(results) : channel;
+		}
+
+		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
+		{
+			UntypedChannel original = channel.Output;
+
+			UntypedChannel replacement = Visit(original);
+
+			if (_channels.Contains(replacement))
+			{
+				_channels.Remove(replacement);
+				replacement = null;
+			}
+
+			if (replacement == null)
+			{
+				replacement = new ShuntChannel();
+			}
+
+			if (replacement != original)
+			{
+				channel.ChangeOutputChannel(original, replacement);
+			}
+
+			return channel;
+		}
+
 		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
 		{
 			bool changed;
@@ -113,7 +189,7 @@ namespace Magnum.Channels.Internal
 			var results = new List<Channel<T>>();
 
 			changed = false;
-			foreach (var subscriber in subscribers)
+			foreach (Channel<T> subscriber in subscribers)
 			{
 				Channel<T> result = Visit(subscriber);
 				if (result == null)

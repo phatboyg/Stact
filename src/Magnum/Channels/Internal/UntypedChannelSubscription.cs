@@ -27,7 +27,7 @@ namespace Magnum.Channels.Internal
 
 		public void Dispose()
 		{
-			//new RemoveChannelSubscribers(_boundChannels).RemoveFrom(_channel);
+			new RemoveChannelSubscribers(_boundChannels).RemoveFrom(_channel);
 
 			_boundChannels.Clear();
 		}

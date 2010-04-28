@@ -34,6 +34,26 @@ namespace Magnum.Specs.Channels
 			futureB.IsCompleted.ShouldBeTrue();
 		}
 
+		[Test]
+		public void Should_remove_my_consumer()
+		{
+			var input = new UntypedChannelAdapter(new SynchronousFiber());
+
+			var futureA = new Future<TestMessage>();
+			var consumerA = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureA.Complete);
+
+			using (var subscription = input.Subscribe())
+			{
+				subscription.Add(consumerA);
+			}
+
+			new TraceChannelVisitor().Visit(input);
+
+			input.Send(new TestMessage());
+
+			futureA.IsCompleted.ShouldBeFalse();
+		}
+
 		private class TestMessage
 		{
 		}

@@ -80,8 +80,8 @@ namespace Sample.WebActors.Actors.Auction
 			scheduler.Schedule(expiresAt.ToUniversalTime() - SystemUtil.UtcNow, _fiber, EndAuction);
 		}
 
-		public Channel<Ask> AskChannel { get; set; }
-		public Channel<Bid> BidChannel { get; set; }
+		private Channel<Ask> AskChannel { get; set; }
+		private Channel<Bid> BidChannel { get; set; }
 
 		public void Send<T>(T message)
 		{
