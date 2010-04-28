@@ -32,4 +32,6 @@ namespace Magnum.Channels
 		/// <returns>The channel that should process the message, or null</returns>
 		Channel<T> GetChannel(T message);
 	}
+
+	public delegate Channel<T> ChannelFactory<T>(T message);
 }

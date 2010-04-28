@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-
 	/// <summary>
 	///   A conditional consumer is given a message to evaluate, after which it
 	///   can determine if it is interested in the message and return an action

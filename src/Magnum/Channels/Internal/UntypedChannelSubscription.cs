@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,31 +12,50 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Internal
 {
+	using System;
 	using System.Collections.Generic;
 
 	public class UntypedChannelSubscription :
 		ChannelSubscription
 	{
-		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
 		private readonly UntypedChannel _channel;
+		private readonly HashSet<Channel> _subscribers;
 
-		public UntypedChannelSubscription(UntypedChannel channel)
+		private bool _disposed;
+
+		public UntypedChannelSubscription(UntypedChannel channel, HashSet<Channel> subscribers)
 		{
 			_channel = channel;
+			_subscribers = subscribers;
 		}
 
 		public void Dispose()
 		{
-			new RemoveChannelSubscribers(_boundChannels).RemoveFrom(_channel);
-
-			_boundChannels.Clear();
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		public void Add<TChannel>(Channel<TChannel> channel)
+		private void RemoveSubscribers()
 		{
-			new AddChannelSubscriber<TChannel>(channel).AddTo(_channel);
+			new RemoveChannelSubscribers(_subscribers).RemoveFrom(_channel);
 
-			_boundChannels.Add(channel);
+			_subscribers.Clear();
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
+			{
+				RemoveSubscribers();
+			}
+
+			_disposed = true;
+		}
+
+		~UntypedChannelSubscription()
+		{
+			Dispose(false);
 		}
 	}
 }

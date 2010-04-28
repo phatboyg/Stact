@@ -12,18 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using System;
 	using Internal;
 
 	public static class ExtensionsForChannels
 	{
-		public static ChannelSubscription Subscribe<T>(this Channel<T> channel)
+		public static ChannelSubscription Subscribe<T>(this Channel<T> channel, Action<SubscriptionConfigurator> subscriberActions)
 		{
-			return new TypedChannelSubscription<T>(channel);
+			var subscriber = new TypedSubscriptionConfigurator<T>(channel);
+
+			subscriberActions(subscriber);
+
+			return subscriber.Complete();
 		}
 
-		public static ChannelSubscription Subscribe(this UntypedChannel channel)
+		public static ChannelSubscription Subscribe(this UntypedChannel channel, Action<SubscriptionConfigurator> subscriberActions)
 		{
-			return new UntypedChannelSubscription(channel);
+			var subscriber = new UntypedSubscriptionConfigurator(channel);
+
+			subscriberActions(subscriber);
+
+			return subscriber.Complete();
 		}
 	}
 }

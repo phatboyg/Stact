@@ -14,48 +14,40 @@ namespace Magnum.Channels.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Extensions;
 
-	public class TypedChannelSubscription<T> :
-		ChannelSubscription
+	public class TypedSubscriptionConfigurator<T> :
+		SubscriptionConfigurator
 	{
+		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
 		private readonly Channel<T> _channel;
-		private readonly HashSet<Channel> _subscribers;
+		private readonly List<Action> _completeActions = new List<Action>();
 
-		private bool _disposed;
-
-		public TypedChannelSubscription(Channel<T> channel, HashSet<Channel> subscribers)
+		public TypedSubscriptionConfigurator(Channel<T> channel)
 		{
 			_channel = channel;
-			_subscribers = subscribers;
 		}
 
-		public void Dispose()
+		public void Add<TChannel>(Channel<TChannel> channel)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
+			_completeActions.Add(() =>
+				{
+					new AddChannelSubscriber<TChannel>(channel).AddTo(_channel);
+
+					_boundChannels.Add(channel);
+				});
 		}
 
-		private void RemoveSubscribers()
+		public ChannelSubscriptionConfigurator<TChannel> Consume<TChannel>()
 		{
-			new RemoveChannelSubscribers(_subscribers).RemoveFrom(_channel);
-
-			_subscribers.Clear();
+			throw new NotImplementedException();
 		}
 
-		private void Dispose(bool disposing)
+		public ChannelSubscription Complete()
 		{
-			if (_disposed) return;
-			if (disposing)
-			{
-				RemoveSubscribers();
-			}
+			_completeActions.Each(x => x());
 
-			_disposed = true;
-		}
-
-		~TypedChannelSubscription()
-		{
-			Dispose(false);
+			return new TypedChannelSubscription<T>(_channel, _boundChannels);
 		}
 	}
 }

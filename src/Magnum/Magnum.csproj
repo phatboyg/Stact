@@ -85,11 +85,14 @@
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
+    <Compile Include="Channels\ChannelSubscription.cs" />
     <Compile Include="Channels\Internal\AddChannelSubscriber.cs" />
-    <Compile Include="Channels\Internal\ChannelSubscription.cs" />
+    <Compile Include="Channels\Internal\SubscriptionConfigurator.cs" />
     <Compile Include="Channels\ChannelAdapter.cs" />
     <Compile Include="Channels\Internal\TypedChannelSubscription.cs" />
+    <Compile Include="Channels\Internal\TypedSubscriptionConfigurator.cs" />
     <Compile Include="Channels\Internal\UntypedChannelSubscription.cs" />
+    <Compile Include="Channels\Internal\UntypedSubscriptionConfigurator.cs" />
     <Compile Include="Channels\UntypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannelRouter.cs" />
     <Compile Include="Channels\ExtensionsForChannels.cs" />
