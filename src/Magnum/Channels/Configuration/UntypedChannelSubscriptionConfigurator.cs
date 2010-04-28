@@ -29,7 +29,7 @@ namespace Magnum.Channels.Configuration
 
 		public IEnumerable<Channel> Configure(UntypedChannel channel)
 		{
-			Channel<TChannel> newChannel = ConsumerProvider();
+			Channel<TChannel> newChannel = GetConsumer();
 
 			new AddChannelVisitor<TChannel>(newChannel).AddTo(channel);
 

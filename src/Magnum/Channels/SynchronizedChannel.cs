@@ -24,22 +24,28 @@ namespace Magnum.Channels
 	public class SynchronizedChannel<T> :
 		Channel<T>
 	{
-		private readonly Channel<T> _output;
 		private readonly Fiber _fiber;
 		private readonly object _state;
 		private readonly SynchronizationContext _synchronizationContext;
 
 		public SynchronizedChannel(Fiber fiber, Channel<T> output, SynchronizationContext synchronizationContext)
+			: this(fiber, output, synchronizationContext, 0)
+		{
+		}
+
+		public SynchronizedChannel(Fiber fiber, Channel<T> output, SynchronizationContext synchronizationContext, object state)
 		{
 			_fiber = fiber;
-			_output = output;
-			_state = 0;
+			Output = output;
 			_synchronizationContext = synchronizationContext;
+			_state = state;
 		}
+
+		public Channel<T> Output { get; private set; }
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => _synchronizationContext.Send(x => _output.Send(message), _state));
+			_fiber.Enqueue(() => _synchronizationContext.Send(x => Output.Send(message), _state));
 		}
 	}
 }

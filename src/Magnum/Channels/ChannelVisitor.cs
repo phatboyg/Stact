@@ -95,6 +95,13 @@ namespace Magnum.Channels
 			return channel;
 		}
 
+		protected virtual Channel<T> Visitor<T>(SynchronizedChannel<T> channel)
+		{
+			Visit(channel.Output);
+
+			return channel;
+		}
+
 		protected virtual Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
 		{
 			Visit(channel.Output);

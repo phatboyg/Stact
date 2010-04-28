@@ -14,6 +14,7 @@ namespace Magnum.Channels.Configuration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using Fibers;
 
 	public class AbstractChannelSubscriptionConfigurator<TChannel> :
@@ -21,6 +22,7 @@ namespace Magnum.Channels.Configuration
 	{
 		private FiberProvider _fiberProvider = ThreadPoolFiberProvider;
 		private Func<Scheduler> _schedulerProvider = TimerSchedulerProvider;
+		private SynchronizationContext _synchronizationContext;
 
 		public AbstractChannelSubscriptionConfigurator()
 		{
@@ -32,7 +34,7 @@ namespace Magnum.Channels.Configuration
 			ConsumerProvider = () => channel;
 		}
 
-		protected Func<Channel<TChannel>> ConsumerProvider { get; private set; }
+		private Func<Channel<TChannel>> ConsumerProvider { get; set; }
 
 		public ConsumerConfigurator<TConsumer, TChannel> Using<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor)
 		{
@@ -66,13 +68,34 @@ namespace Magnum.Channels.Configuration
 			return configurator;
 		}
 
-		public ChannelSubscriptionConfigurator<IDictionary<TKey,TChannel>> Every<TKey>(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
+		public ChannelSubscriptionConfigurator<IDictionary<TKey, TChannel>> Every<TKey>(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			var configurator = new DistinctIntervalChannelSubscriptionConfigurator<TChannel, TKey>();
 
 			ConsumerProvider = () => new DistinctIntervalChannel<TChannel, TKey>(_fiberProvider(), _schedulerProvider(), interval, keyAccessor, configurator.ConsumerProvider());
 
 			return configurator;
+		}
+
+		protected Channel<TChannel> GetConsumer()
+		{
+			Channel<TChannel> channel = AddSynchronizationIfRequired(ConsumerProvider);
+
+			return channel;
+		}
+
+		private Channel<TChannel> AddSynchronizationIfRequired(Func<Channel<TChannel>> provider)
+		{
+			// TODO maybe start building out channels from the outside in (intercepter style) to ensure fibre model is matched
+			_synchronizationContext = _synchronizationContext ?? SynchronizationContext.Current;
+
+			if (_synchronizationContext == null)
+				return provider();
+
+			Fiber fiber = _fiberProvider();
+			_fiberProvider = () => new SynchronousFiber();
+
+			return new SynchronizedChannel<TChannel>(fiber, provider(), _synchronizationContext);
 		}
 
 		private static Fiber ThreadPoolFiberProvider()
