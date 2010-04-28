@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System;
 	using System.Collections.Generic;
@@ -18,13 +18,13 @@ namespace Magnum.Channels.Internal
 	using Fibers;
 	using Reflection;
 
-	public class AddChannelSubscriber<TChannel> :
+	public class AddChannelVisitor<TChannel> :
 		ChannelVisitor
 	{
 		private readonly Channel<TChannel> _newChannel;
 		private bool _added;
 
-		public AddChannelSubscriber(Channel<TChannel> newChannel)
+		public AddChannelVisitor(Channel<TChannel> newChannel)
 		{
 			_newChannel = newChannel;
 		}
@@ -47,7 +47,7 @@ namespace Magnum.Channels.Internal
 
 		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
-			return this.FastInvoke<AddChannelSubscriber<TChannel>, Channel<T>>("Visitor", channel);
+			return this.FastInvoke<AddChannelVisitor<TChannel>, Channel<T>>("Visitor", channel);
 		}
 
 		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)

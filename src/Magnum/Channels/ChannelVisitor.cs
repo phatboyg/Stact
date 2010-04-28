@@ -41,9 +41,9 @@ namespace Magnum.Channels
 			return result;
 		}
 
-		public virtual InterceptorProvider<T> Visit<T>(InterceptorProvider<T> provider)
+		public virtual InterceptorFactory<T> Visit<T>(InterceptorFactory<T> factory)
 		{
-			InterceptorProvider<T> result = this.FastInvoke<ChannelVisitor, InterceptorProvider<T>>("Visitor", provider);
+			InterceptorFactory<T> result = this.FastInvoke<ChannelVisitor, InterceptorFactory<T>>("Visitor", factory);
 
 			return result;
 		}
@@ -90,7 +90,7 @@ namespace Magnum.Channels
 		{
 			Visit(channel.Output);
 
-			Visit(channel.InterceptorProvider);
+			Visit(channel.InterceptorFactory);
 
 			return channel;
 		}
@@ -189,9 +189,9 @@ namespace Magnum.Channels
 			return provider;
 		}
 
-		protected virtual InterceptorProvider<T> Visitor<T>(InterceptorProvider<T> provider)
+		protected virtual InterceptorFactory<T> Visitor<T>(InterceptorFactory<T> factory)
 		{
-			return provider;
+			return factory;
 		}
 	}
 }

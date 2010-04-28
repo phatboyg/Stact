@@ -10,13 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	public interface MessageDictionary<TKey, TValue>
+	public class IntervalChannelSubscriptionConfigurator<TChannel> :
+		AbstractChannelSubscriptionConfigurator<ICollection<TChannel>>
 	{
-		void Add(TValue message);
-		IDictionary<TKey, TValue> RemoveAll();
 	}
 }

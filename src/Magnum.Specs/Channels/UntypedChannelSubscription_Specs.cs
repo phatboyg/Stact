@@ -28,8 +28,8 @@ namespace Magnum.Specs.Channels
 				InputChannel = new ConsumerChannel<TestMessage>(new SynchronousFiber(), x => Future.Complete(x));
 			}
 
-			public Channel<TestMessage> InputChannel { get; private set; }
 			public static Future<TestMessage> Future { get; set; }
+			public Channel<TestMessage> InputChannel { get; private set; }
 		}
 
 		private class TestMessage
@@ -44,7 +44,7 @@ namespace Magnum.Specs.Channels
 			var futureA = new Future<TestMessage>();
 			var futureB = new Future<TestMessage>();
 			var futureC = new Future<TestMessage>();
-			
+
 			TestConsumer.Future = futureA;
 
 			using (input.Subscribe(x =>
@@ -73,6 +73,7 @@ namespace Magnum.Specs.Channels
 			futureB.IsCompleted.ShouldBeTrue();
 			futureC.IsCompleted.ShouldBeTrue();
 		}
+
 
 		[Test]
 		public void Should_register_my_consumer()

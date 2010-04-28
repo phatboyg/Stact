@@ -166,11 +166,11 @@ namespace Magnum.Channels
 			return base.Visitor(provider);
 		}
 
-		protected override InterceptorProvider<T> Visitor<T>(InterceptorProvider<T> provider)
+		protected override InterceptorFactory<T> Visitor<T>(InterceptorFactory<T> factory)
 		{
-			Trace.WriteLine("InterceptorProvider<{0}>".FormatWith(typeof (T).Name));
+			Trace.WriteLine("InterceptorFactory<{0}>".FormatWith(typeof (T).Name));
 
-			return base.Visitor(provider);
+			return base.Visitor(factory);
 		}
 	}
 }

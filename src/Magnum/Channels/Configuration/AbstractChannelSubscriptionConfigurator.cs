@@ -10,15 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System;
+	using System.Collections.Generic;
 	using Fibers;
 
 	public class AbstractChannelSubscriptionConfigurator<TChannel> :
 		ChannelSubscriptionConfigurator<TChannel>
 	{
 		private FiberProvider _fiberProvider = ThreadPoolFiberProvider;
+		private Func<Scheduler> _schedulerProvider = TimerSchedulerProvider;
 
 		public AbstractChannelSubscriptionConfigurator()
 		{
@@ -55,9 +57,32 @@ namespace Magnum.Channels.Internal
 			return this;
 		}
 
+		public ChannelSubscriptionConfigurator<ICollection<TChannel>> Every(TimeSpan interval)
+		{
+			var configurator = new IntervalChannelSubscriptionConfigurator<TChannel>();
+
+			ConsumerProvider = () => new IntervalChannel<TChannel>(_fiberProvider(), _schedulerProvider(), interval, configurator.ConsumerProvider());
+
+			return configurator;
+		}
+
+		public ChannelSubscriptionConfigurator<IDictionary<TKey,TChannel>> Every<TKey>(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
+		{
+			var configurator = new DistinctIntervalChannelSubscriptionConfigurator<TChannel, TKey>();
+
+			ConsumerProvider = () => new DistinctIntervalChannel<TChannel, TKey>(_fiberProvider(), _schedulerProvider(), interval, keyAccessor, configurator.ConsumerProvider());
+
+			return configurator;
+		}
+
 		private static Fiber ThreadPoolFiberProvider()
 		{
 			return new ThreadPoolFiber();
+		}
+
+		private static Scheduler TimerSchedulerProvider()
+		{
+			return new TimerScheduler(new ThreadPoolFiber());
 		}
 
 		private static Channel<TChannel> NoConsumerProviderConfigured()

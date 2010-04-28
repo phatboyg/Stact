@@ -14,15 +14,16 @@ namespace Magnum.Fibers
 {
 	using System;
 	using Extensions;
-	using Logging;
 
+	/// <summary>
+	/// A synchronous fiber will execute an action immediately on the calling thread
+	/// without any protection from an exception
+	/// </summary>
 	public class SynchronousFiber :
 		Fiber
 	{
-		private readonly ILogger _log = Logger.GetLogger<SynchronousFiber>();
-
-		private bool _notAcceptingActions;
 		private bool _discardActions;
+		private bool _notAcceptingActions;
 
 		public void Enqueue(Action action)
 		{
@@ -32,14 +33,7 @@ namespace Magnum.Fibers
 			if (_discardActions)
 				return;
 
-			try
-			{
-				action();
-			}
-			catch (Exception ex)
-			{
-				_log.Error(ex);
-			}
+			action();
 		}
 
 		public void EnqueueMany(params Action[] actions)

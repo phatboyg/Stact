@@ -14,6 +14,7 @@ namespace Magnum.TestFramework
 {
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 	using NUnit.Framework;
 
 	public static class AssertionsForCollections
@@ -44,6 +45,47 @@ namespace Magnum.TestFramework
 			Assert.IsNotEmpty(collection);
 
 			return collection;
+		}
+
+		public static IEnumerable<T> ShouldEqual<T>(this IEnumerable<T> values, IEnumerable<T> expected)
+		{
+			Assert.IsNotNull(values, "Target enumeration cannot be null");
+			Assert.IsNotNull(expected, "Expected enumeration cannot be null");
+
+			var extraValues = new List<T>();
+			var missingValues = new List<T>();
+
+			using (IEnumerator<T> e1 = values.GetEnumerator())
+			using (IEnumerator<T> e2 = expected.GetEnumerator())
+			{
+				while (e1.MoveNext())
+				{
+					if (!e2.MoveNext())
+					{
+						extraValues.Add(e1.Current);
+					}
+					else
+					{
+						Assert.AreEqual(e2.Current, e1.Current);
+					}
+				}
+				while (e2.MoveNext())
+				{
+					missingValues.Add(e2.Current);
+				}
+			}
+
+			if (extraValues.Count > 0)
+			{
+				Assert.Fail("The target enumeration contained too many values: " + string.Join(", ", extraValues.Select(x => x.ToString()).ToArray()));
+			}
+
+			if (missingValues.Count > 0)
+			{
+				Assert.Fail("The target enumeration was missing values: " + string.Join(", ", missingValues.Select(x => x.ToString()).ToArray()));
+			}
+
+			return values;
 		}
 	}
 }

@@ -15,21 +15,27 @@ namespace Magnum.Channels
 	using System;
 	using Fibers;
 
+	/// <summary>
+	/// An interceptor channel can be placed in front of any other channel and provides
+	/// the ability to intercept sends to the wrapper channel and modify the message that
+	/// is sent. An additional method is also called once the message has been processed by
+	/// the wrapped channel
+	/// </summary>
+	/// <typeparam name="T">The channel type</typeparam>
 	public class InterceptorChannel<T> :
 		Channel<T>
 	{
+		private readonly Fiber _fiber;
 		private readonly Channel<T> _output;
 
-		private readonly Fiber _fiber;
-
-		public InterceptorChannel(Fiber fiber, Channel<T> output, InterceptorProvider<T> interceptorProvider)
+		public InterceptorChannel(Fiber fiber, Channel<T> output, InterceptorFactory<T> interceptorFactory)
 		{
 			_fiber = fiber;
 			_output = output;
-			InterceptorProvider = interceptorProvider;
+			InterceptorFactory = interceptorFactory;
 		}
 
-		public InterceptorProvider<T> InterceptorProvider { get; private set; }
+		public InterceptorFactory<T> InterceptorFactory { get; private set; }
 
 		public Channel<T> Output
 		{
@@ -38,26 +44,30 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
-				{
-					Interceptor<T> intercepter = null;
-					try
-					{
-						intercepter = InterceptorProvider.GetInterceptor(message);
+			_fiber.Enqueue(() => InterceptMessage(message));
+		}
 
-						T forward = intercepter.OnMessage(message);
+		private void InterceptMessage(T message)
+		{
+			Interceptor<T> intercepter = null;
+			try
+			{
+				intercepter = InterceptorFactory.GetInterceptor(message);
 
-						_output.Send(forward);
+				T forward = intercepter.OnSend(message);
 
-						intercepter.OnComplete();
-					}
-					catch (Exception ex)
-					{
-						if (intercepter != null)
-							intercepter.OnException(ex);
-						throw;
-					}
-				});
+				// NOTE that if the output channel is not a synchronous channel, the intercepter will not
+				// control the context of that channel and the processing of the message
+				_output.Send(forward);
+
+				intercepter.OnComplete();
+			}
+			catch (Exception ex)
+			{
+				if (intercepter != null)
+					intercepter.OnException(ex);
+				throw;
+			}
 		}
 	}
 }

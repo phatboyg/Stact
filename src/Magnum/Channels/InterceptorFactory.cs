@@ -17,7 +17,7 @@ namespace Magnum.Channels
 	/// handle the interception of messages on channels
 	/// </summary>
 	/// <typeparam name="T">The message type</typeparam>
-	public interface InterceptorProvider<T>
+	public interface InterceptorFactory<T>
 	{
 		/// <summary>
 		/// Returns an instance of an interceptor

@@ -21,7 +21,7 @@ namespace Magnum.Channels
 		/// </summary>
 		/// <param name="message">The message being delivered</param>
 		/// <returns>The message passed, a modified message, or null to discard the message</returns>
-		T OnMessage(T message);
+		T OnSend(T message);
 
 		/// <summary>
 		/// Called when an exception is returned during delivery to the output channel

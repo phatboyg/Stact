@@ -10,26 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	/// <summary>
-	/// Encapsulates a collection of messages
-	/// </summary>
-	/// <typeparam name="T">The message type</typeparam>
-	public interface IMessageList<T>
+	public interface UntypedConfigurator
 	{
-		/// <summary>
-		/// Adds a message to the list
-		/// </summary>
-		/// <param name="message"></param>
-		void Add(T message);
-
-		/// <summary>
-		/// Removes all messages from the list
-		/// </summary>
-		/// <returns>A list of messages that were removed from the list</returns>
-		IList<T> RemoveAll();
+		IEnumerable<Channel> Configure(UntypedChannel channel);
 	}
 }

@@ -13,7 +13,8 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Internal;
+	using System.Collections.Generic;
+	using Configuration;
 
 	public static class ExtensionsForChannels
 	{
@@ -33,6 +34,16 @@ namespace Magnum.Channels
 			subscriberActions(subscriber);
 
 			return subscriber.Complete();
+		}
+
+		public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
+		{
+			return new FlattenChannelVisitor().Flatten(channel);
+		}
+
+		public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
+		{
+			return new FlattenChannelVisitor().Flatten(channel);
 		}
 	}
 }

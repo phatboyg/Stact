@@ -25,7 +25,7 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly IMessageList<T> _messages;
+		private readonly MessageList<T> _messages;
 		private readonly Fiber _fiber;
 		private bool _disposed;
 		private ScheduledAction _scheduledAction;
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 		/// <param name="output">The method to call when a message is sent to the channel</param>
 		public IntervalChannel(Fiber fiber, Scheduler scheduler, TimeSpan interval, Channel<ICollection<T>> output)
 		{
-			_messages = new MessageList<T>();
+			_messages = new MessageListImpl<T>();
 
 			_fiber = fiber;
 			Output = output;

@@ -14,23 +14,22 @@ namespace Magnum.Channels.Internal
 {
 	using System.Collections.Generic;
 
-	public class MessageList<T> :
-		IMessageList<T>
+	/// <summary>
+	/// Encapsulates a collection of messages
+	/// </summary>
+	/// <typeparam name="T">The message type</typeparam>
+	public interface MessageList<T>
 	{
-		private List<T> _messages = new List<T>();
+		/// <summary>
+		/// Adds a message to the list
+		/// </summary>
+		/// <param name="message"></param>
+		void Add(T message);
 
-		public void Add(T message)
-		{
-			_messages.Add(message);
-		}
-
-		public IList<T> RemoveAll()
-		{
-			List<T> result = _messages;
-
-			_messages = new List<T>();
-
-			return result;
-		}
+		/// <summary>
+		/// Removes all messages from the list
+		/// </summary>
+		/// <returns>A list of messages that were removed from the list</returns>
+		IList<T> RemoveAll();
 	}
 }

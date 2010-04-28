@@ -71,6 +71,7 @@
     <Compile Include="Channels\Aggregator_Specs.cs" />
     <Compile Include="Channels\ChannelPerformance_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
+    <Compile Include="Channels\ChannelSubscription_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />
     <Compile Include="Channels\ConditionalConsumer_Specs.cs" />
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />

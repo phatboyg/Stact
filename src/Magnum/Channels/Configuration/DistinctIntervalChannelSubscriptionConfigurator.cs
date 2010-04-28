@@ -10,30 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	public class UntypedChannelSubscriptionConfigurator<TChannel> :
-		AbstractChannelSubscriptionConfigurator<TChannel>,
-		UntypedConfigurator
+	public class DistinctIntervalChannelSubscriptionConfigurator<TChannel, TKey> :
+		AbstractChannelSubscriptionConfigurator<IDictionary<TKey, TChannel>>
 	{
-		public UntypedChannelSubscriptionConfigurator()
-		{
-		}
-
-		public UntypedChannelSubscriptionConfigurator(Channel<TChannel> channel)
-			: base(channel)
-		{
-		}
-
-		public IEnumerable<Channel> Configure(UntypedChannel channel)
-		{
-			Channel<TChannel> newChannel = ConsumerProvider();
-
-			new AddChannelSubscriber<TChannel>(newChannel).AddTo(channel);
-
-			return new[] {newChannel};
-		}
 	}
 }

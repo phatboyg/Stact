@@ -26,7 +26,7 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly IMessageDictionary<TKey, T> _messages;
+		private readonly MessageDictionary<TKey, T> _messages;
 		private readonly Fiber _fiber;
 
 		private bool _disposed;
@@ -38,11 +38,11 @@ namespace Magnum.Channels
 		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="scheduler">The scheduler to use for scheduling calls to the consumer</param>
 		/// <param name="interval">The interval between calls to the consumer</param>
-		/// <param name="getKey">Returns the key for the message</param>
+		/// <param name="keyAccessor">Returns the key for the message</param>
 		/// <param name="output">The method to call when a message is sent to the channel</param>
-		public DistinctIntervalChannel(Fiber fiber, Scheduler scheduler, TimeSpan interval, Func<T, TKey> getKey, Channel<IDictionary<TKey, T>> output)
+		public DistinctIntervalChannel(Fiber fiber, Scheduler scheduler, TimeSpan interval, KeyAccessor<T, TKey> keyAccessor, Channel<IDictionary<TKey, T>> output)
 		{
-			_messages = new MessageDictionary<TKey, T>(getKey);
+			_messages = new MessageDictionaryImpl<TKey, T>(keyAccessor);
 
 			Interval = interval;
 			_fiber = fiber;

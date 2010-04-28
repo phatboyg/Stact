@@ -10,20 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System;
 	using System.Collections.Generic;
 
-	public class UntypedChannelSubscription :
+	public class TypedChannelSubscription<T> :
 		ChannelSubscription
 	{
-		private readonly UntypedChannel _channel;
+		private readonly Channel<T> _channel;
 		private readonly HashSet<Channel> _subscribers;
 
 		private bool _disposed;
 
-		public UntypedChannelSubscription(UntypedChannel channel, HashSet<Channel> subscribers)
+		public TypedChannelSubscription(Channel<T> channel, HashSet<Channel> subscribers)
 		{
 			_channel = channel;
 			_subscribers = subscribers;
@@ -37,7 +37,7 @@ namespace Magnum.Channels.Internal
 
 		private void RemoveSubscribers()
 		{
-			new RemoveChannelSubscribers(_subscribers).RemoveFrom(_channel);
+			new RemoveChannelVisitor(_subscribers).RemoveFrom(_channel);
 
 			_subscribers.Clear();
 		}
@@ -53,7 +53,7 @@ namespace Magnum.Channels.Internal
 			_disposed = true;
 		}
 
-		~UntypedChannelSubscription()
+		~TypedChannelSubscription()
 		{
 			Dispose(false);
 		}

@@ -14,8 +14,23 @@ namespace Magnum.Channels.Internal
 {
 	using System.Collections.Generic;
 
-	public interface UntypedConfigurator
+	public class MessageListImpl<T> :
+		MessageList<T>
 	{
-		IEnumerable<Channel> Configure(UntypedChannel channel);
+		private List<T> _messages = new List<T>();
+
+		public void Add(T message)
+		{
+			_messages.Add(message);
+		}
+
+		public IList<T> RemoveAll()
+		{
+			List<T> result = _messages;
+
+			_messages = new List<T>();
+
+			return result;
+		}
 	}
 }

@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Internal
+namespace Magnum.Channels.Configuration
 {
 	using System;
 	using System.Collections.Generic;
@@ -19,12 +19,12 @@ namespace Magnum.Channels.Internal
 	using Fibers;
 	using Reflection;
 
-	public class RemoveChannelSubscribers :
+	public class RemoveChannelVisitor :
 		ChannelVisitor
 	{
 		private readonly HashSet<Channel> _channels;
 
-		public RemoveChannelSubscribers(IEnumerable<Channel> channels)
+		public RemoveChannelVisitor(IEnumerable<Channel> channels)
 		{
 			_channels = new HashSet<Channel>(channels);
 		}
@@ -47,7 +47,7 @@ namespace Magnum.Channels.Internal
 
 		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
-			Channel<T> result = this.FastInvoke<RemoveChannelSubscribers, Channel<T>>("Visitor", channel);
+			Channel<T> result = this.FastInvoke<RemoveChannelVisitor, Channel<T>>("Visitor", channel);
 
 			return result;
 		}

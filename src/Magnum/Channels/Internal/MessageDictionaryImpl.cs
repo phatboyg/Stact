@@ -14,8 +14,31 @@ namespace Magnum.Channels.Internal
 {
 	using System.Collections.Generic;
 
-	public interface TypedConfigurator<TChannel>
+	public class MessageDictionaryImpl<TKey, TValue> :
+		MessageDictionary<TKey, TValue>
 	{
-		IEnumerable<Channel> Configure(Channel<TChannel> channel);
+		private readonly KeyAccessor<TValue, TKey> _keyAccessor;
+		private Dictionary<TKey, TValue> _messages = new Dictionary<TKey, TValue>();
+
+		public MessageDictionaryImpl(KeyAccessor<TValue, TKey> keyAccessor)
+		{
+			_keyAccessor = keyAccessor;
+		}
+
+		public void Add(TValue message)
+		{
+			TKey key = _keyAccessor(message);
+
+			_messages[key] = message;
+		}
+
+		public IDictionary<TKey, TValue> RemoveAll()
+		{
+			Dictionary<TKey, TValue> result = _messages;
+
+			_messages = new Dictionary<TKey, TValue>();
+
+			return result;
+		}
 	}
 }
