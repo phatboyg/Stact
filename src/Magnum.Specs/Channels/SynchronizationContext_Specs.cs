@@ -63,6 +63,8 @@ namespace Magnum.Specs.Channels
 			{
 				Trace.WriteLine("Subscribed on Thread: " + Thread.CurrentThread.ManagedThreadId);
 
+				SynchronizationContext.SetSynchronizationContext(null);
+
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
 						typeof (UntypedChannelAdapter),
@@ -80,7 +82,7 @@ namespace Magnum.Specs.Channels
 						input.Send(new TestMessage());
 					});
 
-				Assert.IsNotNull(SynchronizationContext.Current);
+				Assert.IsNull(SynchronizationContext.Current);
 
 				future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 			}
