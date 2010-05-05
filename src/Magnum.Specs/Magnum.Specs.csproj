@@ -48,6 +48,12 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -76,6 +82,7 @@
     <Compile Include="Channels\ConditionalConsumer_Specs.cs" />
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />
     <Compile Include="Channels\ConsumerPool_Specs.cs" />
+    <Compile Include="Channels\DubSeeEff_Specs.cs" />
     <Compile Include="Channels\Interval_Specs.cs" />
     <Compile Include="Channels\Mailbox_Specs.cs" />
     <Compile Include="Channels\PingPong_Specs.cs" />

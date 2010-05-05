@@ -36,8 +36,14 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -103,6 +109,8 @@
     <Compile Include="Channels\Configuration\UntypedConfigurator.cs" />
     <Compile Include="Channels\Configuration\UntypedSubscriptionConfigurator.cs" />
     <Compile Include="Channels\FlattenChannelVisitor.cs" />
+    <Compile Include="Channels\LocalWcfChannel.cs" />
+    <Compile Include="Channels\LocalWcfChannelService.cs" />
     <Compile Include="Channels\UntypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannelRouter.cs" />
     <Compile Include="Channels\ExtensionsForChannels.cs" />
@@ -116,6 +124,9 @@
     <Compile Include="Channels\TraceChannelVisitor.cs" />
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
+    <Compile Include="Channels\LocalWcfChannelProxy.cs" />
+    <Compile Include="Channels\LocalWcfChannelServiceHost.cs" />
+    <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Internal\AbstractFiber.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
