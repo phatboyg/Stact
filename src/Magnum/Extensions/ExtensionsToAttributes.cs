@@ -33,6 +33,18 @@ namespace Magnum.Extensions
 		}
 
 		/// <summary>
+		/// Determines if the target has the specified attribute
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="provider"></param>
+		/// <returns></returns>
+		public static bool HasAttribute<T>(this ICustomAttributeProvider provider)
+			where T : Attribute
+		{
+			return provider.GetAttribute<T>() != null;
+		}
+
+		/// <summary>
 		/// Calls the provided action for each instance of the specified attribute type for the object specified
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
