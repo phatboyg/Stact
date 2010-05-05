@@ -15,13 +15,13 @@ namespace Magnum.Channels
 	using System.ServiceModel;
 
 	/// <summary>
-	/// A single generic channel type used for local channels via WCF/named pipes
+	///   A single generic channel type used for local channels via WCF/named pipes
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	[ServiceContract(Namespace = "http://magnum-project.net/Channel.1")]
+	/// <typeparam name = "T"></typeparam>
+	[ServiceContract(Namespace = "http://magnum-project.net/LocalWcfChannel")]
 	public interface LocalWcfChannel<T>
 	{
-		[OperationContract(IsOneWay = true)]
+		[OperationContract(IsOneWay = true, IsInitiating = true, IsTerminating = false)]
 		void Send(T message);
 	}
 }

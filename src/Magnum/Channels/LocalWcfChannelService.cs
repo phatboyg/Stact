@@ -19,7 +19,7 @@ namespace Magnum.Channels
 	///   Handles the server end of a WCF channel connection
 	/// </summary>
 	/// <typeparam name = "T">The channel type</typeparam>
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
 	public class LocalWcfChannelService<T> :
 		LocalWcfChannel<T>
 	{

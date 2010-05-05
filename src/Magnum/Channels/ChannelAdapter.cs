@@ -20,6 +20,11 @@ namespace Magnum.Channels
 	{
 		private Channel<T> _output;
 
+		public ChannelAdapter()
+			: this(new ShuntChannel<T>())
+		{
+		}
+
 		public ChannelAdapter(Channel<T> output)
 		{
 			_output = output;
