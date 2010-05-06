@@ -26,7 +26,7 @@ namespace Magnum.Serialization
 
 		public TypeSerializer<T> GetTypeSerializer<T>(PropertyInfo property)
 		{
-			TypeSerializer<T> typeSerializer = _typeSerializerCache.GetTypeSerializer<T>(property);
+			TypeSerializer<T> typeSerializer = _typeSerializerCache.GetTypeSerializer<T>();
 
 			return new FastTextPropertySerializer<T>(typeSerializer, property);
 		}

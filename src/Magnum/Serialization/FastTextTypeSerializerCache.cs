@@ -21,16 +21,15 @@ namespace Magnum.Serialization
 	using Reflection;
 	using TypeSerializers;
 
-	public class FastTextTypeSerializerCache
+	public class FastTextTypeSerializerCache :
+		TypeSerializerCache
 	{
-		private readonly TypeSerializerCache _typeSerializerCache;
 		private static Cache<Type, FastTextTypeSerializer> _serializers;
 		private PropertyTypeSerializerCache _propertyTypeSerializerCache;
 
 		public FastTextTypeSerializerCache(TypeSerializerCache typeSerializerCache)
 		{
-			_typeSerializerCache = typeSerializerCache;
-			_propertyTypeSerializerCache = new FastTextPropertyTypeSerializerCache(typeSerializerCache);
+			_propertyTypeSerializerCache = new FastTextPropertyTypeSerializerCache(this);
 
 			_serializers = new Cache<Type, FastTextTypeSerializer>(CreateSerializerFor);
 
@@ -42,6 +41,16 @@ namespace Magnum.Serialization
 		public FastTextTypeSerializer this[Type type]
 		{
 			get { return _serializers[type]; }
+		}
+
+		public TypeSerializer<T> GetTypeSerializer<T>()
+		{
+			return _serializers[typeof (T)] as TypeSerializer<T>;
+		}
+
+		public void Each(Action<Type, TypeSerializer> action)
+		{
+			_serializers.Each((type, serializer) => action(type, serializer as TypeSerializer));
 		}
 
 		private FastTextTypeSerializer CreateSerializerFor(Type type, TypeSerializer serializer)
@@ -73,7 +82,7 @@ namespace Magnum.Serialization
 				return _serializers[nullableType];
 			}
 
-			var serializer = (TypeSerializer) FastActivator.Create(typeof(FastTextObjectSerializer<>), new[]{type}, new object[]{_propertyTypeSerializerCache});
+			var serializer = (TypeSerializer) FastActivator.Create(typeof (FastTextObjectSerializer<>), new[] {type}, new object[] {_propertyTypeSerializerCache});
 
 			return CreateSerializerFor(type, serializer);
 		}

@@ -24,14 +24,6 @@ namespace Magnum.Serialization
 	{
 		TypeSerializer<T> GetTypeSerializer<T>();
 
-		/// <summary>
-		/// Returns a type serializer for a property on a type
-		/// </summary>
-		/// <typeparam name="T">The type of serializer to return</typeparam>
-		/// <param name="property">The property that the serializer is associated with</param>
-		/// <returns>A type serializer for the type</returns>
-		TypeSerializer<T> GetTypeSerializer<T>(PropertyInfo property);
-
 		void Each(Action<Type, TypeSerializer> action);
 	}
 }

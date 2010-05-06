@@ -46,6 +46,26 @@ namespace Magnum.Specs.Serialization
 			text.ShouldEqual("{Int:47,Long:8675309,Dub:3.14159,Flt:1.234,Boo:true,Now:2010-03-01}");
 		}
 
+		[Test]
+		public void Should_handle_nested_types()
+		{
+			HeftyMessage message = new HeftyMessage
+				{
+					Int = 47,
+					Long = 8675309,
+					Dub = 3.14159,
+					Flt = 1.234f,
+					Boo = true,
+					Now = new DateTime(2010,3,1)
+				};
+
+			var parentMessage = new ParentClass {Body = message};
+
+			string text = _serializer.Serialize(parentMessage);
+
+			text.ShouldEqual("{Body:{Int:47,Long:8675309,Dub:3.14159,Flt:1.234,Boo:true,Now:2010-03-01}}");
+		}
+
 		[Test, Explicit]
 		public void Should_handle_serialization_quickly()
 		{
@@ -74,6 +94,11 @@ namespace Magnum.Specs.Serialization
 			Trace.WriteLine("elapsed time: " + timer.ElapsedMilliseconds + "ms");
 			Trace.WriteLine("messages/sec: " + (limit * 1000) / timer.ElapsedMilliseconds);
 
+		}
+
+		private class ParentClass
+		{
+			public HeftyMessage Body { get; set; }
 		}
 
 		private class TestMessage :

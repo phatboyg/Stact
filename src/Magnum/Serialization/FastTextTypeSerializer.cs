@@ -23,7 +23,8 @@ namespace Magnum.Serialization
 	}
 
 	public class FastTextTypeSerializer<T> :
-		FastTextTypeSerializer
+		FastTextTypeSerializer,
+		TypeSerializer<T>
 	{
 		private readonly TypeWriter<object> _serializer;
 		private readonly TypeSerializer<T> _typeSerializer;
@@ -69,6 +70,16 @@ namespace Magnum.Serialization
 
 					serialize(obj, output);
 				};
+		}
+
+		public TypeReader<T> GetReader()
+		{
+			return _typeSerializer.GetReader();
+		}
+
+		public TypeWriter<T> GetWriter()
+		{
+			return _typeSerializer.GetWriter();
 		}
 	}
 }
