@@ -23,7 +23,7 @@ namespace Magnum.Collections
 		IEnumerable<TValue>
 	{
 		private readonly object _locker = new object();
-		private readonly IDictionary<TKey, TValue> _values = new Dictionary<TKey, TValue>();
+		private readonly IDictionary<TKey, TValue> _values;
 		private Func<TValue, TKey> _keyConverter = DefaultKeyConverter;
 		private Action<TKey, TValue> _duplicateValueAddedCallback = DefaultDuplicateValueAddedCallback;
 		private Func<TKey, TValue> _missingValueProvider = ThrowOnMissingValue;
@@ -49,12 +49,16 @@ namespace Magnum.Collections
 		{
 		}
 
+		public Cache(Func<TKey, TValue> missingValueProvider, IEqualityComparer<TKey> comparer)
+			: this(new Dictionary<TKey, TValue>(comparer), missingValueProvider)
+		{
+		}
+
 		public Cache(IDictionary<TKey, TValue> dictionary, Func<TKey, TValue> missingValueProvider)
 			: this(dictionary)
 		{
 			_missingValueProvider = missingValueProvider;
 		}
-
 
 		public Func<TKey, TValue> MissingValueProvider
 		{
