@@ -179,6 +179,7 @@
     <Compile Include="Reflection\GenericTypeReflection_Specs.cs" />
     <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
     <Compile Include="Reflection\PropertyPerformance_Specs.cs" />
+    <Compile Include="Serialization\FastSerializerObjects_Specs.cs" />
     <Compile Include="Serialization\SerializationApi_Specs.cs" />
     <Compile Include="StateMachine\Anytime_Specs.cs" />
     <Compile Include="StateMachine\Combine_Specs.cs" />

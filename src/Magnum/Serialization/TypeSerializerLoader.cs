@@ -24,30 +24,21 @@ namespace Magnum.Serialization
 	{
 		private static readonly ILogger _log = Logger.GetLogger<TypeSerializerLoader>();
 
-		public IDictionary<Type, FastTextTypeSerializer> LoadBuiltInTypeSerializers()
+		public IDictionary<Type, TypeSerializer> LoadBuiltInTypeSerializers()
 		{
-			Dictionary<Type, FastTextTypeSerializer> serializers = Assembly.GetExecutingAssembly().GetTypes()
+			Dictionary<Type, TypeSerializer> serializers = Assembly.GetExecutingAssembly().GetTypes()
 				.Where(x => x.ImplementsGeneric(typeof(TypeSerializer<>)))
 				.Where(x => !x.ContainsGenericParameters)
 				.Where(x => !x.HasAttribute<NotAutomaticallyLoadedAttribute>())
 				.Select(x => new { Type = x, SerializedType = x.GetGenericTypeDeclarations(typeof(TypeSerializer<>)).First() })
-				.Select(x => new {x.SerializedType, Instance = FastActivator.Create(x.Type) as TypeSerializer})
-				.Select(x => new {x.SerializedType, Serializer = CreateSerializerFor(x.SerializedType, x.Instance)})
+				.Select(x => new {x.SerializedType, Serializer = FastActivator.Create(x.Type) as TypeSerializer})
+//				.Select(x => new {x.SerializedType, Serializer = CreateSerializerFor(x.SerializedType, x.Instance)})
 				.ToDictionary(x => x.SerializedType, x => x.Serializer);
 
-			_log.Debug(x => serializers.Each(s => x.Write("Loaded serializer for {0} ({1})", s.Key.Name, s.Value.GetType().Name)));
+			_log.Debug(x => serializers.Each(s => x.Write("Loaded serializer for {0} ({1})", s.Key.Name, s.Value.GetType().FullName)));
 
 			return serializers;
 		}
 
-		private FastTextTypeSerializer CreateSerializerFor(Type type, TypeSerializer serializer)
-		{
-			return this.FastInvoke<TypeSerializerLoader, FastTextTypeSerializer>(new[] {type}, "CreateSerializer", serializer);
-		}
-
-		private FastTextTypeSerializer CreateSerializer<T>(TypeSerializer<T> typeSerializer)
-		{
-			return new FastTextTypeSerializer<T>(typeSerializer);
-		}
 	}
 }

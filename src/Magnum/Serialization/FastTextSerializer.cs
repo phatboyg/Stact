@@ -29,6 +29,15 @@ namespace Magnum.Serialization
 		public const string QuoteString = "\"";
 		public const string DoubleQuoteString = "\"\"";
 		public static readonly char[] EscapeChars = new[] {QuoteChar, ItemSeperator, MapStartChar, MapEndChar, ListStartChar, ListEndChar,};
+		public const string ItemSeparatorString = ",";
+		public const string MapKeySeparatorString = ":";
+
+		public const string MapStartString = "{";
+		public const string MapEndString = "}";
+
+
+		[ThreadStatic]
+		private static TypeSerializerCache _typeSerializerCache;
 
 		[ThreadStatic]
 		private static FastTextTypeSerializerCache _typeSerializers;
@@ -70,9 +79,17 @@ namespace Magnum.Serialization
 		private static FastTextTypeSerializer GetTypeSerializer(Type type)
 		{
 			if (_typeSerializers == null)
-				_typeSerializers = new FastTextTypeSerializerCache();
+				_typeSerializers = new FastTextTypeSerializerCache(GetTypeSerializerCache());
 
 			return _typeSerializers[type];
+		}
+
+		private static TypeSerializerCache GetTypeSerializerCache()
+		{
+			if (_typeSerializerCache == null)
+				_typeSerializerCache = new DefaultTypeSerializerCache();
+
+			return _typeSerializerCache;
 		}
 	}
 }

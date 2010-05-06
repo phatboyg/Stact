@@ -108,7 +108,7 @@ namespace Magnum.Reflection
 			return type.MakeGenericType(genericTypes);
 		}
 
-		public static object Create(Type type, Type[] genericTypes, Type[] args)
+		public static object Create(Type type, Type[] genericTypes, object[] args)
 		{
 			Type genericType = GetGenericType(type, genericTypes);
 

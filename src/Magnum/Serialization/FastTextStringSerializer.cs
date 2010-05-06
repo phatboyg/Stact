@@ -15,7 +15,7 @@ namespace Magnum.Serialization
 	using Extensions;
 
 	[NotAutomaticallyLoaded]
-	public class QuotedStringSerializer :
+	public class FastTextStringSerializer :
 		TypeSerializer<string>
 	{
 		public TypeReader<string> GetReader()

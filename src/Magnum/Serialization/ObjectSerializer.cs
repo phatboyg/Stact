@@ -1,69 +1,61 @@
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Xml;
-	using Monads;
+	using System.Text;
 
 	public class ObjectSerializer<T> :
 		TypeSerializer<T>
 		where T : class
 	{
-	//	private readonly IEnumerable<SerializeObjectProperty<T>> _propertyCache;
 		private readonly Type _type;
+		private readonly PropertySerializerCache<T> _properties;
 
-		public ObjectSerializer(Func<Type, TypeSerializer> getSerializer)
+		public ObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
 		{
-		//	_propertyCache = new SerializeObjectPropertyCache<T>();
+			_type = typeof (T);
+			if (!_type.IsClass && !_type.IsInterface)
+				throw new ArgumentException("Only classes and interfaces can be serialized by an object serializer, not: " + _type.FullName);
 
-			_type = typeof(T);
+			_properties = new PropertySerializerCache<T>(typeSerializerCache);
 		}
 
-//		public IEnumerable<K<Action<XmlWriter>>> GetSerializationActions(ISerializerContext context, string localName, object value)
-//		{
-//			if (value == null)
-//				yield break;
-//
-//			yield return output => output(writer =>
-//			{
-//				bool isDocumentElement = writer.WriteState == WriteState.Start;
-//
-//				writer.WriteStartElement(prefix, localName, _ns);
-//
-//				if (isDocumentElement)
-//					context.WriteNamespaceInformationToXml(writer);
-//			});
-//
-//			foreach (SerializeObjectProperty<T> property in _propertyCache)
-//			{
-//				object obj = property.GetValue((T)value);
-//				if (obj == null)
-//					continue;
-//
-//				var serializeType = context.MapType(typeof(T), property.PropertyType, obj);
-//				IEnumerable<K<Action<XmlWriter>>> enumerable = context.SerializeObject(property.Name, serializeType, obj);
-//				foreach (K<Action<XmlWriter>> action in enumerable)
-//				{
-//					yield return action;
-//				}
-//			}
-//
-//			yield return output => output(writer => { writer.WriteEndElement(); });
-//		}
-
-		public TypeReader<T> GetReader()
+		public virtual TypeReader<T> GetReader()
 		{
-			throw new NotImplementedException();
+			// TODO
+			return text => default(T);
 		}
 
-		public TypeWriter<T> GetWriter()
+		public virtual TypeWriter<T> GetWriter()
 		{
 			return (value, output) =>
 				{
-					if(value == null)
+					if (value == null)
 						return;
 
-					
+					StringBuilder sb = new StringBuilder(1024);
+					string separator = null;
+
+					_properties.Each(serializer =>
+						{
+							serializer.Write(value, text => sb.Append(separator).Append(text));
+
+							separator = separator ?? FastTextSerializer.ItemSeparatorString;
+						});
+
+					output(sb.ToString());
 				};
 		}
 	}

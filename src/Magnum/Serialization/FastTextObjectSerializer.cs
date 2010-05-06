@@ -10,26 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization.TypeSerializers
+namespace Magnum.Serialization
 {
-	public class BooleanSerializer :
-		TypeSerializer<bool>
+	public class FastTextObjectSerializer<T> :
+		ObjectSerializer<T>
+		where T : class
 	{
-		public TypeReader<bool> GetReader()
+		public FastTextObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
+			: base(typeSerializerCache)
 		{
-			return value =>
-				{
-					bool result;
-					if (bool.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
-				};
 		}
 
-		public TypeWriter<bool> GetWriter()
+		public override TypeWriter<T> GetWriter()
 		{
-			return (value, output) => output(value.ToString().ToLowerInvariant());
+			TypeWriter<T> baseWriter = base.GetWriter();
+
+			return (value, output) =>
+				{
+					baseWriter(value, text =>
+						{
+							output(string.Concat(
+								FastTextSerializer.MapStartString,
+								text,
+								FastTextSerializer.MapEndString));
+						});
+				};
 		}
 	}
 }
