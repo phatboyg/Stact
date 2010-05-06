@@ -13,6 +13,7 @@
 namespace Magnum.Specs.Actions
 {
 	using System;
+	using System.Diagnostics;
 	using System.Threading;
 	using Fibers;
 	using Magnum.Channels;
@@ -52,15 +53,20 @@ namespace Magnum.Specs.Actions
 
 			Fiber fiber = new ThreadPoolFiber();
 
-			fiber.Enqueue(() => Thread.Sleep(1000));
-
 			var called = new Future<bool>();
 
+			10.Times(() => fiber.Enqueue(() => Thread.Sleep(100)));
 			fiber.Enqueue(() => called.Complete(true));
+
+			Stopwatch timer = Stopwatch.StartNew();
 
 			fiber.ExecuteAll(8.Seconds());
 
+			timer.Stop();
+
 			called.IsCompleted.ShouldBeTrue();
+
+			timer.ElapsedMilliseconds.ShouldBeLessThan(2000);
 		}
 	}
 

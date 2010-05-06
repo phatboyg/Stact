@@ -120,13 +120,15 @@ namespace Magnum.Fibers.Internal
 			Action[] actions = DequeueAll();
 			if (actions == null)
 				return false;
-//			Trace.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] executing " + actions.Length + " actions");
 
 			ExecuteActions(actions);
 
 			lock (_lock)
 			{
 				AfterExecute(_actions.Count > 0);
+
+				if(_actions.Count == 0)
+					Monitor.PulseAll(_lock);
 			}
 
 			return true;
