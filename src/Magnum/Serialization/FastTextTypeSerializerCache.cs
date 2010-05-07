@@ -25,7 +25,7 @@ namespace Magnum.Serialization
 		TypeSerializerCache
 	{
 		private static Cache<Type, FastTextTypeSerializer> _serializers;
-		private PropertyTypeSerializerCache _propertyTypeSerializerCache;
+		private readonly PropertyTypeSerializerCache _propertyTypeSerializerCache;
 
 		public FastTextTypeSerializerCache(TypeSerializerCache typeSerializerCache)
 		{
@@ -55,7 +55,8 @@ namespace Magnum.Serialization
 
 		private FastTextTypeSerializer CreateSerializerFor(Type type, TypeSerializer serializer)
 		{
-			return this.FastInvoke<FastTextTypeSerializerCache, FastTextTypeSerializer>(new[] {type}, "CreateSerializer", serializer);
+			return this.FastInvoke<FastTextTypeSerializerCache, FastTextTypeSerializer>(new[] {type}, "CreateSerializer",
+			                                                                            serializer);
 		}
 
 		private FastTextTypeSerializer CreateSerializer<T>(TypeSerializer<T> typeSerializer)
@@ -65,33 +66,40 @@ namespace Magnum.Serialization
 
 		private FastTextTypeSerializer CreateSerializerFor(Type type)
 		{
+			type = Nullable.GetUnderlyingType(type) ?? type;
+
 			if (type.IsEnum)
-			{
-				return (FastTextTypeSerializer) FastActivator.Create(typeof (EnumSerializer<>).MakeGenericType(type));
-			}
+				return CreateEnumSerializerFor(type);
 
 			if (typeof (IEnumerable).IsAssignableFrom(type))
-			{
-				return CreateEnumerableSerializerFor(type);
-			}
+				return CreateEnumerableSerializer(type);
 
-			if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>))
-			{
-				Type nullableType = type.GetGenericArguments().First();
+			return CreateObjectSerializerFor(type);
+		}
 
-				return _serializers[nullableType];
-			}
-
-			var serializer = (TypeSerializer) FastActivator.Create(typeof (FastTextObjectSerializer<>), new[] {type}, new object[] {_propertyTypeSerializerCache});
-
+		private FastTextTypeSerializer CreateObjectSerializerFor(Type type)
+		{
+			var serializer =
+				(TypeSerializer)
+				FastActivator.Create(typeof (FastTextObjectSerializer<>), new[] {type}, new object[] {_propertyTypeSerializerCache});
 			return CreateSerializerFor(type, serializer);
 		}
 
-		private static FastTextTypeSerializer CreateEnumerableSerializerFor(Type type)
+		private FastTextTypeSerializer CreateEnumSerializerFor(Type type)
+		{
+			return CreateSerializerFor(type, CreateGenericSerializer(typeof (EnumSerializer<>), type));
+		}
+
+		private static TypeSerializer CreateGenericSerializer(Type genericType, Type type)
+		{
+			return (TypeSerializer) FastActivator.Create(genericType.MakeGenericType(type));
+		}
+
+		private  FastTextTypeSerializer CreateEnumerableSerializer(Type type)
 		{
 			if (type.IsArray)
 			{
-				return (FastTextTypeSerializer) FastActivator.Create(typeof (ArraySerializer<>).MakeGenericType(type.GetElementType()));
+				return CreateSerializerFor(type, CreateGenericSerializer(typeof (ArraySerializer<>), type.GetElementType()));
 			}
 
 			Type[] genericArguments = type.GetDeclaredGenericArguments().ToArray();

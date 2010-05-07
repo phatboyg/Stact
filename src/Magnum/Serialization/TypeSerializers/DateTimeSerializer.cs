@@ -53,7 +53,7 @@ namespace Magnum.Serialization.TypeSerializers
 				return DateTime.MinValue;
 
 			if (text.Length <= DateTimeMillisecondsFormat.Length || text.Length >= DateTimeShortMillisecondsFormat.Length)
-				return XmlConvert.ToDateTime(text, XmlDateTimeSerializationMode.Local);
+				return XmlConvert.ToDateTime(text, XmlDateTimeSerializationMode.Utc);
 
 			if (text.Length == DateTimeFormat.Length)
 				return DateTime.ParseExact(text, DateTimeFormat, null, DateTimeStyles.AdjustToUniversal);
@@ -63,7 +63,7 @@ namespace Magnum.Serialization.TypeSerializers
 				int.Parse(text.Substring(5, 2)),
 				int.Parse(text.Substring(8, 2)),
 				0, 0, 0,
-				DateTimeKind.Local);
+				DateTimeKind.Utc);
 		}
 	}
 }

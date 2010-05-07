@@ -19,7 +19,7 @@ namespace Magnum.Serialization
 	public interface FastTextTypeSerializer
 	{
 		void Serialize<T>(T obj, TextWriter writer);
-		T Deserialize<T>(TextReader reader);
+		T Deserialize<T>(string text);
 	}
 
 	public class FastTextTypeSerializer<T> :
@@ -43,11 +43,9 @@ namespace Magnum.Serialization
 			_serializer(obj, writer.Write);
 		}
 
-		public T1 Deserialize<T1>(TextReader reader)
+		public TResult Deserialize<TResult>(string text)
 		{
-			string value = "";
-
-			return (T1)(object)_deserializer(value);
+			return (TResult)(object)_deserializer(text);
 		}
 
 		private static TypeWriter<object> CreateDefaultWriter(TypeSerializer<T> typeSerializer)

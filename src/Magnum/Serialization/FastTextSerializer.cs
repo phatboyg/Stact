@@ -63,17 +63,16 @@ namespace Magnum.Serialization
 
 		public T Deserialize<T>(string text)
 		{
-			using (var reader = new StringReader(text))
-			{
-				return Deserialize<T>(reader);
-			}
+			FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
+
+			return serializer.Deserialize<T>(text);
 		}
 
 		public T Deserialize<T>(TextReader reader)
 		{
 			FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
 
-			return serializer.Deserialize<T>(reader);
+			return serializer.Deserialize<T>(reader.ReadToEnd());
 		}
 
 		private static FastTextTypeSerializer GetTypeSerializer(Type type)
