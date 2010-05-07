@@ -12,12 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
-	public class ArraySerializer<T> :
+	using System.Collections.Generic;
+
+	public abstract class ArraySerializer<T, TElement> :
 		EnumerableSerializerBase<T>
 	{
-		public ArraySerializer()
-			: base(typeof (T[]))
+		private readonly TypeSerializer<TElement> _elementTypeSerializer;
+
+		public ArraySerializer(TypeSerializer<TElement> elementTypeSerializer)
+			: base(typeof (T[]), elementTypeSerializer)
 		{
+			_elementTypeSerializer = elementTypeSerializer;
+		}
+
+		public override TypeWriter<T> GetWriter()
+		{
+			TypeWriter<TElement> elementWriter = _elementTypeSerializer.GetWriter();
+
+			return (value, output) =>
+				{
+					foreach (TElement obj in ((IEnumerable<TElement>) value))
+					{
+						elementWriter(obj, output);
+					}
+				};
 		}
 	}
 }

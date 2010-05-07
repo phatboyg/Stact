@@ -409,6 +409,7 @@
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Serialization\DefaultTypeSerializerCache.cs" />
+    <Compile Include="Serialization\FastTextArraySerializer.cs" />
     <Compile Include="Serialization\FastTextObjectSerializer.cs" />
     <Compile Include="Serialization\FastTextPropertySerializer.cs" />
     <Compile Include="Serialization\FastTextPropertyTypeSerializerCache.cs" />

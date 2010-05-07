@@ -13,21 +13,20 @@
 namespace Magnum.Serialization
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Text;
 
 	public class ObjectSerializer<T> :
 		TypeSerializer<T>
 		where T : class
 	{
-		private readonly Type _type;
 		private readonly PropertySerializerCache<T> _properties;
+		private readonly Type _type;
 
 		public ObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
 		{
 			_type = typeof (T);
 			if (!_type.IsClass && !_type.IsInterface)
-				throw new ArgumentException("Only classes and interfaces can be serialized by an object serializer, not: " + _type.FullName);
+				throw new ArgumentException("Only classes and interfaces can be serialized by an object serializer, not: "
+				                            + _type.FullName);
 
 			_properties = new PropertySerializerCache<T>(typeSerializerCache);
 		}
@@ -45,17 +44,7 @@ namespace Magnum.Serialization
 					if (value == null)
 						return;
 
-					StringBuilder sb = new StringBuilder(1024);
-					string separator = null;
-
-					_properties.Each(serializer =>
-						{
-							serializer.Write(value, text => sb.Append(separator).Append(text));
-
-							separator = separator ?? FastTextSerializer.ItemSeparatorString;
-						});
-
-					output(sb.ToString());
+					_properties.Each(serializer => { serializer.Write(value, output); });
 				};
 		}
 	}

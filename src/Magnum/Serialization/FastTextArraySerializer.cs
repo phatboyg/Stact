@@ -13,25 +13,30 @@
 namespace Magnum.Serialization
 {
 	using System.Text;
+	using TypeSerializers;
 
-	public class FastTextObjectSerializer<T> :
-		ObjectSerializer<T>
-		where T : class
+	public class FastTextArraySerializer<T, TElement> :
+		ArraySerializer<T, TElement>
 	{
-		public FastTextObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
-			: base(typeSerializerCache)
+		public FastTextArraySerializer(TypeSerializer<TElement> elementTypeSerializer)
+			: base(elementTypeSerializer)
 		{
+		}
+
+		public override TypeReader<T> GetReader()
+		{
+			return value => { return default(T); };
 		}
 
 		public override TypeWriter<T> GetWriter()
 		{
-			TypeWriter<T> baseWriter = base.GetWriter();
+			var baseWriter = base.GetWriter();
 
 			return (value, output) =>
 				{
 					var sb = new StringBuilder(2048);
 
-					sb.Append(FastTextSerializer.MapStartString);
+					sb.Append(FastTextSerializer.ListStartChar);
 
 					bool addSeparator = false;
 
@@ -45,7 +50,7 @@ namespace Magnum.Serialization
 							sb.Append(text);
 						});
 
-					sb.Append(FastTextSerializer.MapEndString);
+					sb.Append(FastTextSerializer.ListEndChar);
 
 					output(sb.ToString());
 				};

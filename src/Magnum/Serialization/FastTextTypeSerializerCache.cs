@@ -95,21 +95,33 @@ namespace Magnum.Serialization
 			return (TypeSerializer) FastActivator.Create(genericType.MakeGenericType(type));
 		}
 
-		private  FastTextTypeSerializer CreateEnumerableSerializer(Type type)
+		private static TypeSerializer CreateGenericSerializer(Type genericType, Type type, params object[] args)
+		{
+			return (TypeSerializer) FastActivator.Create(genericType, new[] {type}, args);
+		}
+
+		private FastTextTypeSerializer CreateArraySerializer(Type type, Type elementType)
+		{
+			FastTextTypeSerializer elementSerializer = this[elementType];
+
+			object serializer = FastActivator.Create(typeof (FastTextArraySerializer<,>), new[] {type, elementType},
+			                                         new object[] {elementSerializer});
+
+
+			return CreateSerializerFor(type, (TypeSerializer) serializer);
+		}
+
+		private FastTextTypeSerializer CreateEnumerableSerializer(Type type)
 		{
 			if (type.IsArray)
-			{
-				return CreateSerializerFor(type, CreateGenericSerializer(typeof (ArraySerializer<>), type.GetElementType()));
-			}
+				return CreateArraySerializer(type, type.GetElementType());
 
 			Type[] genericArguments = type.GetDeclaredGenericArguments().ToArray();
 			if (genericArguments == null || genericArguments.Length == 0)
 			{
 				Type elementType = type.IsArray ? type.GetElementType() : typeof (object);
 
-				Type serializerType = typeof (ArraySerializer<>).MakeGenericType(elementType);
-
-				return (FastTextTypeSerializer) FastActivator.Create(serializerType);
+				return CreateArraySerializer(type, elementType);
 			}
 
 			if (type.ImplementsGeneric(typeof (IDictionary<,>)))

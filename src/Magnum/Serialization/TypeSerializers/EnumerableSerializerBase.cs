@@ -17,16 +17,18 @@ namespace Magnum.Serialization.TypeSerializers
 	using System.Xml;
 	using Magnum.Monads;
 
-	public class EnumerableSerializerBase<T> :
+	public abstract class EnumerableSerializerBase<T> :
 		TypeSerializer<T>
 	{
 		private Type _containerType;
+		private readonly TypeSerializer _elementTypeSerializer;
 		private string _ns;
 		private Type _type;
 
-		protected EnumerableSerializerBase(Type containerType)
+		protected EnumerableSerializerBase(Type containerType, TypeSerializer elementTypeSerializer)
 		{
 			_containerType = containerType;
+			_elementTypeSerializer = elementTypeSerializer;
 			_type = typeof (T);
 			_ns = _containerType.AssemblyQualifiedName;//.ToMessageName();
 		}
@@ -68,14 +70,8 @@ namespace Magnum.Serialization.TypeSerializers
 //			}
 //		}
 
-		public TypeReader<T> GetReader()
-		{
-			throw new NotImplementedException();
-		}
+		public abstract TypeReader<T> GetReader();
 
-		public TypeWriter<T> GetWriter()
-		{
-			throw new NotImplementedException();
-		}
+		public abstract TypeWriter<T> GetWriter();
 	}
 }
