@@ -19,28 +19,29 @@ namespace Magnum.Serialization
 	public class FastTextSerializer :
 		Serializer
 	{
-		public const char MapStartChar = '{';
+		public const string DoubleQuoteString = "\"\"";
+		public const string EmptyMap = "{}";
 		public const char ItemSeparator = ',';
-		public const char MapEndChar = '}';
+		public const string ItemSeparatorString = ",";
 
-		public const char ListStartChar = '[';
 		public const char ListEndChar = ']';
+		public const char ListStartChar = '[';
+		public const char MapEndChar = '}';
+		public const string MapEndString = "}";
+		public const char MapKeySeparator = ':';
+		public const string MapKeySeparatorString = ":";
+		public const char MapStartChar = '{';
+		public const string MapStartString = "{";
 		public const char QuoteChar = '"';
 		public const string QuoteString = "\"";
-		public const string DoubleQuoteString = "\"\"";
-		public static readonly char[] EscapeChars = new[] {QuoteChar, ItemSeparator, MapStartChar, MapEndChar, ListStartChar, ListEndChar,};
-		public const string ItemSeparatorString = ",";
-		public const string MapKeySeparatorString = ":";
 
-		public const string MapStartString = "{";
-		public const string MapEndString = "}";
+		public static readonly char[] EscapeChars = new[]
+			{QuoteChar, ItemSeparator, MapStartChar, MapEndChar, ListStartChar, ListEndChar,};
 
 
-		[ThreadStatic]
-		private static TypeSerializerCache _typeSerializerCache;
+		[ThreadStatic] private static TypeSerializerCache _typeSerializerCache;
 
-		[ThreadStatic]
-		private static FastTextTypeSerializerCache _typeSerializers;
+		[ThreadStatic] private static FastTextTypeSerializerCache _typeSerializers;
 
 
 		public void Serialize<T>(T obj, TextWriter writer)
@@ -63,14 +64,14 @@ namespace Magnum.Serialization
 
 		public T Deserialize<T>(string text)
 		{
-			FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
+			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
 
 			return serializer.Deserialize<T>(text);
 		}
 
 		public T Deserialize<T>(TextReader reader)
 		{
-			FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
+			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
 
 			return serializer.Deserialize<T>(reader.ReadToEnd());
 		}

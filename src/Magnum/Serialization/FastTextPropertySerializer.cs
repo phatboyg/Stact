@@ -32,7 +32,10 @@ namespace Magnum.Serialization
 
 		public TypeReader<T> GetReader()
 		{
-			throw new NotImplementedException();
+			return value =>
+				{
+					return _reader(value);
+				};
 		}
 
 		public TypeWriter<T> GetWriter()

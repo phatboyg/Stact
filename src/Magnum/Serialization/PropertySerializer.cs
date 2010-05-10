@@ -19,6 +19,7 @@ namespace Magnum.Serialization
 	public interface PropertySerializer<T>
 	{
 		void Write(T obj, Action<string> output);
+		void Read(T obj, string value);
 	}
 
 	public class PropertySerializer<T, TProperty> :
@@ -27,6 +28,7 @@ namespace Magnum.Serialization
 		private readonly FastProperty<T, TProperty> _property;
 		private readonly TypeSerializer<TProperty> _serializer;
 		private readonly TypeWriter<TProperty> _typeWriter;
+		private TypeReader<TProperty> _typeReader;
 
 		public PropertySerializer(PropertyInfo property, PropertyTypeSerializerCache typeSerializerCache)
 		{
@@ -35,6 +37,7 @@ namespace Magnum.Serialization
 			_serializer = typeSerializerCache.GetTypeSerializer<TProperty>(property);
 
 			_typeWriter = _serializer.GetWriter();
+			_typeReader = _serializer.GetReader();
 		}
 
 		public void Write(T obj, Action<string> output)
@@ -42,6 +45,13 @@ namespace Magnum.Serialization
 			TProperty value = _property.Get(obj);
 
 			_typeWriter(value, output);
+		}
+
+		public void Read(T obj, string value)
+		{
+			TProperty propertyValue = _typeReader(value);
+
+			_property.Set(obj, propertyValue);
 		}
 	}
 }

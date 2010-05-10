@@ -19,16 +19,22 @@ namespace Magnum.Serialization
 		where T : class
 	{
 		private readonly PropertySerializerCache<T> _properties;
-		private readonly Type _type;
 
 		public ObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
 		{
-			_type = typeof (T);
-			if (!_type.IsClass && !_type.IsInterface)
+			ObjectType = typeof (T);
+			if (!ObjectType.IsClass && !ObjectType.IsInterface)
 				throw new ArgumentException("Only classes and interfaces can be serialized by an object serializer, not: "
-				                            + _type.FullName);
+				                            + ObjectType.FullName);
 
 			_properties = new PropertySerializerCache<T>(typeSerializerCache);
+		}
+
+		public Type ObjectType { get; private set; }
+
+		public PropertySerializerCache<T> Properties
+		{
+			get { return _properties; }
 		}
 
 		public virtual TypeReader<T> GetReader()

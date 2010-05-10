@@ -180,6 +180,7 @@
     <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
     <Compile Include="Reflection\PropertyPerformance_Specs.cs" />
     <Compile Include="Serialization\Array_Specs.cs" />
+    <Compile Include="Serialization\Object_Specs.cs" />
     <Compile Include="Serialization\SimpleType_Specs.cs" />
     <Compile Include="Serialization\FastSerializerObjects_Specs.cs" />
     <Compile Include="Serialization\SerializationApi_Specs.cs" />
