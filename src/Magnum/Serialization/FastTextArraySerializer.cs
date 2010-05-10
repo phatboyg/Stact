@@ -12,48 +12,32 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization
 {
-	using System.Text;
-	using TypeSerializers;
+	using System.Collections.Generic;
 
-	public class FastTextArraySerializer<T, TElement> :
-		ArraySerializer<T, TElement>
+	public class FastTextArraySerializer<T> :
+		FastTextAbstractEnumerableSerializer<T>,
+		TypeSerializer<T[]>
 	{
-		public FastTextArraySerializer(TypeSerializer<TElement> elementTypeSerializer)
+		public FastTextArraySerializer(TypeSerializer<T> elementTypeSerializer)
 			: base(elementTypeSerializer)
 		{
 		}
 
-		public override TypeReader<T> GetReader()
+		public TypeReader<T[]> GetReader()
 		{
-			return value => { return default(T); };
+			return value =>
+				{
+					value = RemoveListChars(value);
+
+					List<T> elements = ListReader(value);
+
+					return elements.ToArray();
+				};
 		}
 
-		public override TypeWriter<T> GetWriter()
+		public TypeWriter<T[]> GetWriter()
 		{
-			var baseWriter = base.GetWriter();
-
-			return (value, output) =>
-				{
-					var sb = new StringBuilder(2048);
-
-					sb.Append(FastTextSerializer.ListStartChar);
-
-					bool addSeparator = false;
-
-					baseWriter(value, text =>
-						{
-							if (addSeparator)
-								sb.Append(FastTextSerializer.ItemSeparatorString);
-							else
-								addSeparator = true;
-
-							sb.Append(text);
-						});
-
-					sb.Append(FastTextSerializer.ListEndChar);
-
-					output(sb.ToString());
-				};
+			return ListWriter;
 		}
 	}
 }

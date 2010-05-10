@@ -12,25 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
-	using System;
 	using System.Collections.Generic;
 
-	public class ListSerializer<T> :
-		EnumerableSerializerBase<T>
+	public abstract class ListSerializer<T> :
+		AbstractListSerializer<T>,
+		TypeSerializer<IList<T>>
 	{
-		public ListSerializer(TypeSerializer elementTypeSerializer)
-			: base(typeof (List<T>), elementTypeSerializer)
+		public ListSerializer(TypeSerializer<T> elementTypeSerializer)
+			: base(elementTypeSerializer)
 		{
 		}
 
-		public override TypeReader<T> GetReader()
-		{
-			throw new NotImplementedException();
-		}
+		public abstract TypeReader<IList<T>> GetReader();
 
-		public override TypeWriter<T> GetWriter()
+		public virtual TypeWriter<IList<T>> GetWriter()
 		{
-			throw new NotImplementedException();
+			return ListWriter;
 		}
 	}
 }

@@ -104,7 +104,18 @@ namespace Magnum.Serialization
 		{
 			FastTextTypeSerializer elementSerializer = this[elementType];
 
-			object serializer = FastActivator.Create(typeof (FastTextArraySerializer<,>), new[] {type, elementType},
+			object serializer = FastActivator.Create(typeof (FastTextArraySerializer<>), new[] {elementType},
+			                                         new object[] {elementSerializer});
+
+
+			return CreateSerializerFor(type, (TypeSerializer) serializer);
+		}
+
+		private FastTextTypeSerializer CreateListSerializer(Type type, Type elementType)
+		{
+			FastTextTypeSerializer elementSerializer = this[elementType];
+
+			object serializer = FastActivator.Create(typeof (FastTextListSerializer<>), new[] {elementType},
 			                                         new object[] {elementSerializer});
 
 
@@ -133,9 +144,7 @@ namespace Magnum.Serialization
 
 			if (type.ImplementsGeneric(typeof (IList<>)) || type.ImplementsGeneric(typeof (IEnumerable<>)))
 			{
-				Type serializerType = typeof (ListSerializer<>).MakeGenericType(genericArguments[0]);
-
-				return (FastTextTypeSerializer) FastActivator.Create(serializerType);
+				return CreateListSerializer(type, genericArguments[0]);
 			}
 
 			throw new InvalidOperationException("The type of enumeration is not supported: " + type.FullName);

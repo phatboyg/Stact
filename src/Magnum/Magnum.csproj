@@ -409,7 +409,9 @@
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Serialization\DefaultTypeSerializerCache.cs" />
+    <Compile Include="Serialization\FastTextAbstractEnumerableSerializer.cs" />
     <Compile Include="Serialization\FastTextArraySerializer.cs" />
+    <Compile Include="Serialization\FastTextListSerializer.cs" />
     <Compile Include="Serialization\FastTextObjectSerializer.cs" />
     <Compile Include="Serialization\FastTextPropertySerializer.cs" />
     <Compile Include="Serialization\FastTextPropertyTypeSerializerCache.cs" />
@@ -421,7 +423,6 @@
     <Compile Include="Serialization\PropertySerializer.cs" />
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Serialization\PropertySerializerCache.cs" />
-    <Compile Include="Serialization\TypeDeserializers\ArrayDeserializer.cs" />
     <Compile Include="Serialization\TypeDeserializers\DictionaryDeserializer.cs" />
     <Compile Include="Serialization\TypeDeserializers\EnumerableDeserializerBase.cs" />
     <Compile Include="Serialization\TypeDeserializers\ListDeserializer.cs" />
@@ -429,7 +430,9 @@
     <Compile Include="Serialization\TypeSerializer.cs" />
     <Compile Include="Serialization\TypeSerializerCache.cs" />
     <Compile Include="Serialization\TypeSerializerLoader.cs" />
+    <Compile Include="Serialization\TypeSerializers\AbstractListSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\ArraySerializer.cs" />
+    <Compile Include="Serialization\TypeSerializers\ListSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\BooleanSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\ByteSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\CharSerializer.cs" />
@@ -438,12 +441,10 @@
     <Compile Include="Serialization\TypeSerializers\DecimalSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\DictionarySerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\DoubleSerializer.cs" />
-    <Compile Include="Serialization\TypeSerializers\EnumerableSerializerBase.cs" />
     <Compile Include="Serialization\TypeSerializers\EnumSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\FloatSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\GuidSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\IntSerializer.cs" />
-    <Compile Include="Serialization\TypeSerializers\ListSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\LongSerializer.cs" />
     <Compile Include="Serialization\FastTextStringSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\SByteSerializer.cs" />

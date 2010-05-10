@@ -20,7 +20,7 @@ namespace Magnum.Serialization
 		Serializer
 	{
 		public const char MapStartChar = '{';
-		public const char ItemSeperator = ',';
+		public const char ItemSeparator = ',';
 		public const char MapEndChar = '}';
 
 		public const char ListStartChar = '[';
@@ -28,7 +28,7 @@ namespace Magnum.Serialization
 		public const char QuoteChar = '"';
 		public const string QuoteString = "\"";
 		public const string DoubleQuoteString = "\"\"";
-		public static readonly char[] EscapeChars = new[] {QuoteChar, ItemSeperator, MapStartChar, MapEndChar, ListStartChar, ListEndChar,};
+		public static readonly char[] EscapeChars = new[] {QuoteChar, ItemSeparator, MapStartChar, MapEndChar, ListStartChar, ListEndChar,};
 		public const string ItemSeparatorString = ",";
 		public const string MapKeySeparatorString = ":";
 

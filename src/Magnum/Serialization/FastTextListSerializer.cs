@@ -10,18 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization.TypeDeserializers
+namespace Magnum.Serialization
 {
 	using System.Collections.Generic;
 
-	public class ArrayDeserializer<T> :
-		EnumerableDeserializerBase<T>
+	public class FastTextListSerializer<T> :
+		FastTextAbstractEnumerableSerializer<T>,
+		TypeSerializer<IList<T>>
 	{
-//		public override object Deserialize(IDeserializerContext context)
-//		{
-//			List<T> list = DeserializeAsList(context);
-		//
-			//return list == null ? new T[0] : list.ToArray();
-//		}
+		public FastTextListSerializer(TypeSerializer<T> elementTypeSerializer)
+			: base(elementTypeSerializer)
+		{
+		}
+
+		public TypeReader<IList<T>> GetReader()
+		{
+			return value =>
+				{
+					value = RemoveListChars(value);
+
+					List<T> elements = ListReader(value);
+
+					return elements;
+				};
+		}
+
+		public TypeWriter<IList<T>> GetWriter()
+		{
+			return ListWriter;
+		}
 	}
 }
