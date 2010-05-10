@@ -424,15 +424,10 @@
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Serialization\PropertySerializerCache.cs" />
     <Compile Include="Serialization\TypeDeserializers\DictionaryDeserializer.cs" />
-    <Compile Include="Serialization\TypeDeserializers\EnumerableDeserializerBase.cs" />
-    <Compile Include="Serialization\TypeDeserializers\ListDeserializer.cs" />
     <Compile Include="Serialization\TypeReader.cs" />
     <Compile Include="Serialization\TypeSerializer.cs" />
     <Compile Include="Serialization\TypeSerializerCache.cs" />
     <Compile Include="Serialization\TypeSerializerLoader.cs" />
-    <Compile Include="Serialization\TypeSerializers\AbstractListSerializer.cs" />
-    <Compile Include="Serialization\TypeSerializers\ArraySerializer.cs" />
-    <Compile Include="Serialization\TypeSerializers\ListSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\BooleanSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\ByteSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\CharSerializer.cs" />
