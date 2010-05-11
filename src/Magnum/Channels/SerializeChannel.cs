@@ -12,16 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System.ServiceModel;
+	using Fibers;
+	using Serialization;
 
-	/// <summary>
-	///   A single generic channel type used for local channels via WCF/named pipes
-	/// </summary>
-	/// <typeparam name = "T"></typeparam>
-	[ServiceContract(Namespace = "http://magnum-project.net/LocalWcfChannel")]
-	public interface LocalWcfChannel<T>
+	public class SerializeChannel<T> :
+		Channel<T>
 	{
-		[OperationContract(IsOneWay = true, IsInitiating = true, IsTerminating = false)]
-		void Send(T message);
+		private readonly Fiber _fiber;
+		private readonly Channel<string> _output;
+		private readonly Serializer _serializer;
+
+		public SerializeChannel(Fiber fiber, Serializer serializer, Channel<string> output)
+		{
+			_fiber = fiber;
+			_serializer = serializer;
+			_output = output;
+		}
+
+		public void Send(T message)
+		{
+			_fiber.Enqueue(() =>
+				{
+					string body = _serializer.Serialize(message);
+
+					_output.Send(body);
+				});
+		}
 	}
 }

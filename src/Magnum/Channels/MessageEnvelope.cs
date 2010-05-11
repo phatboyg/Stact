@@ -12,30 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System.ServiceModel;
-	using Fibers;
-
-	/// <summary>
-	///   Handles the server end of a WCF channel connection
-	/// </summary>
-	/// <typeparam name = "T">The channel type</typeparam>
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
-	public class LocalWcfChannelService<T> :
-		LocalWcfChannel<T>
+	public interface MessageEnvelope
 	{
-		private readonly Fiber _fiber;
+		string MessageType { get; }
 
-		public LocalWcfChannelService(Fiber fiber, Channel<T> output)
-		{
-			_fiber = fiber;
-			Output = output;
-		}
-
-		public Channel<T> Output { get; private set; }
-
-		public void Send(T message)
-		{
-			_fiber.Enqueue(() => Output.Send(message));
-		}
+		string Body { get; }
 	}
 }

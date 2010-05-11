@@ -12,39 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
 	using System.ServiceModel;
-	using Extensions;
 	using Fibers;
 
 	/// <summary>
-	///   A local net.pipe channel proxy
+	///   Handles the server end of a WCF channel connection
 	/// </summary>
 	/// <typeparam name = "T">The channel type</typeparam>
-	public class LocalWcfChannelProxy<T> :
-		Channel<T>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+	public class WcfChannelService<T> :
+		WcfChannel<T>
 	{
-		private readonly EndpointAddress _address;
 		private readonly Fiber _fiber;
-		private readonly WcfChannel<T> _proxy;
 
-		public LocalWcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
+		public WcfChannelService(Fiber fiber, Channel<T> output)
 		{
 			_fiber = fiber;
-			ServiceUri = serviceUri;
-			PipeName = pipeName;
-
-			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
+			Output = output;
 		}
 
-		public Uri ServiceUri { get; private set; }
-
-		public string PipeName { get; private set; }
+		public Channel<T> Output { get; private set; }
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => _proxy.Send(message));
+			_fiber.Enqueue(() => Output.Send(message));
 		}
 	}
 }

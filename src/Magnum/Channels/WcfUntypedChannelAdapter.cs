@@ -15,25 +15,30 @@ namespace Magnum.Channels
 	using System;
 	using System.ServiceModel;
 	using Fibers;
+	using Serialization;
 
-	public class LocalWcfChannelServiceHost<T> :
+	public class WcfUntypedChannelAdapter :
+		UntypedChannelAdapter,
 		IDisposable
 	{
-		private readonly string _pipeName;
-		private readonly LocalWcfChannelService<T> _service;
+		private readonly WcfChannelService<WcfMessageEnvelope> _service;
 		private readonly Uri _serviceUri;
+
 		private bool _disposed;
 		private ServiceHost _serviceHost;
 
-		public LocalWcfChannelServiceHost(Fiber fiber, Uri serviceUri, string pipeName, Channel<T> output)
+		public WcfUntypedChannelAdapter(Fiber fiber, Uri serviceUri, string pipeName)
+			: base(fiber)
 		{
 			_serviceUri = serviceUri;
-			_pipeName = pipeName;
 
-			_service = new LocalWcfChannelService<T>(fiber, output);
+			var channel = new DeserializeMessageEnvelopeChannel<WcfMessageEnvelope>(new SynchronousFiber(),
+			                                                                        new FastTextSerializer(), this);
+
+			_service = new WcfChannelService<WcfMessageEnvelope>(fiber, channel);
 
 			_serviceHost = new ServiceHost(_service, _serviceUri);
-			_serviceHost.AddServiceEndpoint(typeof (LocalWcfChannel<T>), new NetNamedPipeBinding(), _pipeName);
+			_serviceHost.AddServiceEndpoint(typeof (WcfChannel<WcfMessageEnvelope>), new NetNamedPipeBinding(), pipeName);
 			_serviceHost.Open();
 		}
 
@@ -52,6 +57,11 @@ namespace Magnum.Channels
 			}
 		}
 
+		~WcfUntypedChannelAdapter()
+		{
+			Dispose(false);
+		}
+
 		private void Dispose(bool disposing)
 		{
 			if (_disposed) return;
@@ -61,11 +71,6 @@ namespace Magnum.Channels
 			}
 
 			_disposed = true;
-		}
-
-		~LocalWcfChannelServiceHost()
-		{
-			Dispose(false);
 		}
 	}
 }

@@ -16,35 +16,46 @@ namespace Magnum.Channels
 	using System.ServiceModel;
 	using Extensions;
 	using Fibers;
+	using Serialization;
 
-	/// <summary>
-	///   A local net.pipe channel proxy
-	/// </summary>
-	/// <typeparam name = "T">The channel type</typeparam>
-	public class LocalWcfChannelProxy<T> :
-		Channel<T>
+	public class WcfUntypedChannel :
+		UntypedChannel
 	{
 		private readonly EndpointAddress _address;
 		private readonly Fiber _fiber;
-		private readonly WcfChannel<T> _proxy;
+		private readonly WcfChannel<WcfMessageEnvelope> _proxy;
 
-		public LocalWcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
+		public WcfUntypedChannel(Fiber fiber, Uri serviceUri, string pipeName)
 		{
 			_fiber = fiber;
+			Serializer = new FastTextSerializer();
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
 			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
+			_proxy =
+				System.ServiceModel.ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
+				                                                                                 _address);
 		}
+
+		public Serializer Serializer { get; private set; }
 
 		public Uri ServiceUri { get; private set; }
 
 		public string PipeName { get; private set; }
 
-		public void Send(T message)
+		public void Send<T>(T message)
 		{
-			_fiber.Enqueue(() => _proxy.Send(message));
+			_fiber.Enqueue(() =>
+				{
+					var envelope = new WcfMessageEnvelope
+						{
+							MessageType = typeof (T).AssemblyQualifiedName,
+							Body = Serializer.Serialize(message),
+						};
+
+					_proxy.Send(envelope);
+				});
 		}
 	}
 }

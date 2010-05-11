@@ -13,38 +13,40 @@
 namespace Magnum.Channels
 {
 	using System;
-	using System.ServiceModel;
-	using Extensions;
 	using Fibers;
+	using Reflection;
+	using Serialization;
 
-	/// <summary>
-	///   A local net.pipe channel proxy
-	/// </summary>
-	/// <typeparam name = "T">The channel type</typeparam>
-	public class LocalWcfChannelProxy<T> :
+	public class DeserializeMessageEnvelopeChannel<T> :
 		Channel<T>
+		where T : MessageEnvelope
 	{
-		private readonly EndpointAddress _address;
 		private readonly Fiber _fiber;
-		private readonly WcfChannel<T> _proxy;
+		private readonly UntypedChannel _output;
+		private readonly Serializer _serializer;
 
-		public LocalWcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
+		public DeserializeMessageEnvelopeChannel(Fiber fiber, Serializer serializer, UntypedChannel output)
 		{
 			_fiber = fiber;
-			ServiceUri = serviceUri;
-			PipeName = pipeName;
-
-			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
+			_serializer = serializer;
+			_output = output;
 		}
-
-		public Uri ServiceUri { get; private set; }
-
-		public string PipeName { get; private set; }
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => _proxy.Send(message));
+			_fiber.Enqueue(() =>
+				{
+					Type messageType = Type.GetType(message.MessageType, true, true);
+
+					this.FastInvoke(new[] {messageType}, "Deserialize", message.Body);
+				});
+		}
+
+		private void Deserialize<T>(string body)
+		{
+			var message = _serializer.Deserialize<T>(body);
+
+			_output.Send(message);
 		}
 	}
 }

@@ -24,6 +24,43 @@ namespace Magnum.Specs.Channels
 	[TestFixture]
 	public class Sending_a_message_through_a_wcf_channel
 	{
+		[Test, Category("Slow")]
+		public void Should_property_adapt_itself_to_a_channel_network()
+		{
+			TraceLogProvider.Configure(LogLevel.Debug);
+			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
+			log.Debug("Starting");
+
+			var serviceUri = new Uri("net.pipe://localhost/Pipe");
+			string pipeName = "Test";
+			using (var host = new WcfChannelAdapter<TestMessage>(new SynchronousFiber(), serviceUri, pipeName))
+			{
+				log.Debug("Host started");
+
+				var future = new Future<TestMessage>();
+
+				using (host.Subscribe(x =>
+					{
+						x.Consume<TestMessage>()
+							.Using(m =>
+								{
+									log.Debug(l => l.Write("Received: {0}", m.Value));
+									future.Complete(m);
+								});
+					}))
+				{
+					var client = new LocalWcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
+					log.Debug("Client started");
+
+					client.Send(new TestMessage("Hello!"));
+
+					future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+
+					log.Debug("Complete");
+				}
+			}
+		}
+
 		[DataContract]
 		public class TestMessage
 		{
@@ -38,87 +75,6 @@ namespace Magnum.Specs.Channels
 			public override string ToString()
 			{
 				return Value;
-			}
-		}
-
-		[Test, Category("Slow")]
-		public void Should_property_adapt_itself_to_a_channel_network()
-		{
-			TraceLogProvider.Configure(LogLevel.Debug);
-			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
-			log.Debug("Starting");
-
-			var input = new ChannelAdapter<TestMessage>();
-			var serviceUri = new Uri("net.pipe://localhost/Pipe");
-			string pipeName = "Test";
-			var host = new LocalWcfChannelServiceHost<TestMessage>(new SynchronousFiber(), serviceUri, pipeName, input);
-
-			log.Debug("Host started");
-			
-			var future = new Future<TestMessage>();
-
-			using (input.Subscribe(x =>
-				{
-					x.Consume<TestMessage>()
-						.Using(m =>
-							{
-								log.Debug(l => l.Write("Received: {0}", m.Value));
-								future.Complete(m);
-							});
-				}))
-			{
-				try
-				{
-					var client = new LocalWcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
-					log.Debug("Client started");
-
-					client.Send(new TestMessage("Hello!"));
-
-					future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
-
-					log.Debug("Complete");
-				}
-				finally
-				{
-					host.Stop();
-				}
-			}
-		}
-
-		[Test, Category("Slow")]
-		public void Should_work()
-		{
-			TraceLogProvider.Configure(LogLevel.Debug);
-
-			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
-
-			log.Debug("Starting");
-			var future = new Future<TestMessage>();
-			Channel<TestMessage> channel = new ConsumerChannel<TestMessage>(new SynchronousFiber(), x =>
-				{
-					log.Debug(l => l.Write("Received: {0}", x.Value));
-					future.Complete(x);
-				});
-
-			var serviceUri = new Uri("net.pipe://localhost/Pipe");
-			string pipeName = "Test";
-			var host = new LocalWcfChannelServiceHost<TestMessage>(new SynchronousFiber(), serviceUri, pipeName, channel);
-
-			log.Debug("Host started");
-			try
-			{
-				var client = new LocalWcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
-				log.Debug("Client started");
-
-				client.Send(new TestMessage("Hello!"));
-
-				future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
-
-				log.Debug("Complete");
-			}
-			finally
-			{
-				host.Stop();
 			}
 		}
 	}
