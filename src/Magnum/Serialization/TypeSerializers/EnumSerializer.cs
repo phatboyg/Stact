@@ -17,15 +17,6 @@ namespace Magnum.Serialization.TypeSerializers
 	public class EnumSerializer<T> :
 		TypeSerializer<T>
 	{
-		private static readonly string _namespace;
-		private static readonly Type _type;
-
-		static EnumSerializer()
-		{
-			_type = typeof (T);
-			_namespace = _type.AssemblyQualifiedName; // ToMessageName();
-		}
-
 		public TypeReader<T> GetReader()
 		{
 			return value =>

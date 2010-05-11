@@ -13,31 +13,22 @@
 namespace Magnum.Serialization
 {
 	using System;
-	using System.Reflection;
 	using Collections;
 
-	public class DefaultTypeSerializerCache :
+	/// <summary>
+	///   Wraps the cache for TypeSerializer implementations
+	/// </summary>
+	public class TypeSerializerCacheImpl :
 		TypeSerializerCache
 	{
 		private static readonly Cache<Type, TypeSerializer> _defaultSerializers;
 
-		static DefaultTypeSerializerCache()
+		static TypeSerializerCacheImpl()
 		{
 			_defaultSerializers = new Cache<Type, TypeSerializer>(new TypeSerializerLoader().LoadBuiltInTypeSerializers());
 		}
 
 		public TypeSerializer<T> GetTypeSerializer<T>()
-		{
-			return _defaultSerializers[typeof (T)] as TypeSerializer<T>;
-		}
-
-		/// <summary>
-		///   The default implmementation does not do any special handling of the property
-		/// </summary>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "property"></param>
-		/// <returns></returns>
-		public TypeSerializer<T> GetTypeSerializer<T>(PropertyInfo property)
 		{
 			return _defaultSerializers[typeof (T)] as TypeSerializer<T>;
 		}

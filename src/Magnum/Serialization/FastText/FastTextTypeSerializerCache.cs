@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization
+namespace Magnum.Serialization.FastText
 {
 	using System;
 	using System.Collections;
@@ -55,13 +55,7 @@ namespace Magnum.Serialization
 
 		private FastTextTypeSerializer CreateSerializerFor(Type type, TypeSerializer serializer)
 		{
-			return this.FastInvoke<FastTextTypeSerializerCache, FastTextTypeSerializer>(new[] {type}, "CreateSerializer",
-			                                                                            serializer);
-		}
-
-		private FastTextTypeSerializer CreateSerializer<T>(TypeSerializer<T> typeSerializer)
-		{
-			return new FastTextTypeSerializer<T>(typeSerializer);
+			return (FastTextTypeSerializer) FastActivator.Create(typeof (FastTextTypeSerializer<>), new[] {type}, new object[] {serializer});
 		}
 
 		private FastTextTypeSerializer CreateSerializerFor(Type type)

@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization
+namespace Magnum.Serialization.FastText
 {
 	using System;
 	using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Magnum.Serialization
 			if (value.IsEmpty())
 				return elements;
 
-			if (value[0] == FastTextSerializer.MapStartChar)
+			if (value[0] == FastTextSerializer.MapStart)
 			{
 				int index = 0;
 				int length = value.Length;
@@ -73,7 +73,7 @@ namespace Magnum.Serialization
 		{
 			var sb = new StringBuilder(2048);
 
-			sb.Append(FastTextSerializer.ListStartChar);
+			sb.Append(FastTextSerializer.ListStart);
 
 			bool addSeparator = false;
 
@@ -90,7 +90,7 @@ namespace Magnum.Serialization
 					});
 			}
 
-			sb.Append(FastTextSerializer.ListEndChar);
+			sb.Append(FastTextSerializer.ListEnd);
 
 			output(sb.ToString());
 		}
@@ -101,7 +101,7 @@ namespace Magnum.Serialization
 			int start = index;
 			int length = value.Length;
 
-			if (value[start] != FastTextSerializer.QuoteChar)
+			if (value[start] != FastTextSerializer.Quote)
 			{
 				index = value.IndexOf(separator, start);
 				if (index == -1)
@@ -112,7 +112,7 @@ namespace Magnum.Serialization
 
 			while (++index < length)
 			{
-				if (value[index] == FastTextSerializer.QuoteChar
+				if (value[index] == FastTextSerializer.Quote
 				    && (index + 1 >= length || value[index + 1] == separator))
 				{
 					index++;
@@ -128,7 +128,7 @@ namespace Magnum.Serialization
 			if (value.IsEmpty())
 				return null;
 
-			return value[0] == FastTextSerializer.ListStartChar ? value.Substring(1, value.Length - 2) : value;
+			return value[0] == FastTextSerializer.ListStart ? value.Substring(1, value.Length - 2) : value;
 		}
 	}
 }

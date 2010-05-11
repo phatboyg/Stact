@@ -10,11 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization
+namespace Magnum.Serialization.FastText
 {
 	using Extensions;
 
-	[NotAutomaticallyLoaded]
 	public class FastTextStringSerializer :
 		TypeSerializer<string>
 	{
@@ -25,7 +24,7 @@ namespace Magnum.Serialization
 					if (value.IsEmpty())
 						return value;
 
-					if (value[0] != FastTextSerializer.QuoteChar)
+					if (value[0] != FastTextSerializer.Quote)
 						return value;
 
 					return value.Substring(1, value.Length - 2)
@@ -44,8 +43,8 @@ namespace Magnum.Serialization
 					else
 					{
 						output(string.Concat(FastTextSerializer.QuoteString,
-							value.Replace(FastTextSerializer.QuoteString, FastTextSerializer.DoubleQuoteString),
-							FastTextSerializer.QuoteString));
+						                     value.Replace(FastTextSerializer.QuoteString, FastTextSerializer.DoubleQuoteString),
+						                     FastTextSerializer.QuoteString));
 					}
 				};
 		}

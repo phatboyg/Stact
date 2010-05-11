@@ -10,12 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Serialization
+namespace Magnum.Serialization.FastText
 {
-	using System;
+	using System.Collections.Generic;
 
-	public class NotAutomaticallyLoadedAttribute :
-		Attribute
+	public class FastTextArraySerializer<T> :
+		FastTextAbstractEnumerableSerializer<T>,
+		TypeSerializer<T[]>
 	{
+		public FastTextArraySerializer(TypeSerializer<T> elementTypeSerializer)
+			: base(elementTypeSerializer)
+		{
+		}
+
+		public TypeReader<T[]> GetReader()
+		{
+			return value =>
+				{
+					value = RemoveListChars(value);
+
+					List<T> elements = ListReader(value);
+
+					return elements.ToArray();
+				};
+		}
+
+		public TypeWriter<T[]> GetWriter()
+		{
+			return ListWriter;
+		}
 	}
 }
