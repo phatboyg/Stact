@@ -13,12 +13,11 @@
 namespace Magnum.Serialization.FastText
 {
 	using System;
-	using System.IO;
 	using System.Linq.Expressions;
 
 	public interface FastTextTypeSerializer
 	{
-		void Serialize<T>(T obj, TextWriter writer);
+		void Serialize<T>(T obj, Action<string> output);
 		T Deserialize<T>(string text);
 	}
 
@@ -38,9 +37,9 @@ namespace Magnum.Serialization.FastText
 			_deserializer = typeSerializer.GetReader();
 		}
 
-		public void Serialize<TObject>(TObject obj, TextWriter writer)
+		public void Serialize<TObject>(TObject obj, Action<string> output)
 		{
-			_serializer(obj, writer.Write);
+			_serializer(obj, output);
 		}
 
 		public TResult Deserialize<TResult>(string text)

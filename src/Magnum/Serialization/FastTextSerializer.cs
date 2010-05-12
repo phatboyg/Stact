@@ -30,7 +30,7 @@ namespace Magnum.Serialization
 		{
 			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
 
-			serializer.Serialize(obj, writer);
+			serializer.Serialize(obj, writer.Write);
 		}
 
 		public string Serialize<T>(T obj)

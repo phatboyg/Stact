@@ -452,6 +452,7 @@
     <Compile Include="Serialization\TypeSerializers\IntSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\LongSerializer.cs" />
     <Compile Include="Serialization\FastText\FastTextStringSerializer.cs" />
+    <Compile Include="Serialization\TypeSerializers\NullableSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\SByteSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\ShortSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\StringSerializer.cs" />

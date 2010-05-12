@@ -64,9 +64,7 @@ namespace Magnum.Serialization.FastText
 		{
 			Type underlyingType = Nullable.GetUnderlyingType(type);
 			if (underlyingType != null)
-			{
-				return this[underlyingType];
-			}
+				return CreateNullableSerializer(type, underlyingType);
 
 			if (type.IsEnum)
 				return CreateEnumSerializerFor(type);
@@ -82,6 +80,17 @@ namespace Magnum.Serialization.FastText
 			var serializer =
 				(TypeSerializer)
 				FastActivator.Create(typeof (FastTextObjectSerializer<>), new[] {type}, new object[] {_propertyTypeSerializerCache});
+			return CreateSerializerFor(type, serializer);
+		}
+
+		private FastTextTypeSerializer CreateNullableSerializer(Type type, Type underlyingType)
+		{
+			FastTextTypeSerializer underlyingTypeSerializer = this[underlyingType];
+
+			var serializer =
+				(TypeSerializer)
+				FastActivator.Create(typeof(NullableSerializer<>), new[] { underlyingType }, new object[] { underlyingTypeSerializer });
+
 			return CreateSerializerFor(type, serializer);
 		}
 

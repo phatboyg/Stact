@@ -89,6 +89,8 @@ namespace Magnum.Collections
 							TValue value = _missingValueProvider(key);
 							_values.Add(key, value);
 							_valueAddedCallback(key, value);
+
+							return value;
 						}
 					}
 				}

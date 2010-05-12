@@ -197,6 +197,16 @@ namespace Magnum.Specs.Serialization
 	}
 
 	[Scenario]
+	public class Serializing_a_nullable_int_object_property :
+		Given_a_property_on_an_object_of_type<int?>
+	{
+		public Serializing_a_nullable_int_object_property()
+			: base(27, "{Value:27}")
+		{
+		}
+	}
+
+	[Scenario]
 	public class Serializing_a_string_object_property :
 		Given_a_property_on_an_object_of_type<string>
 	{
