@@ -14,6 +14,7 @@ namespace Magnum.Specs.Serialization
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using TestFramework;
 
 	[Scenario]
@@ -46,7 +47,7 @@ namespace Magnum.Specs.Serialization
 	}
 
 	[Scenario]
-	public class When_serializing_a_list_of_ints :
+	public class When_serializing_a_ilist_of_ints :
 		With_the_fast_text_serializer
 	{
 		private string _body;
@@ -69,6 +70,35 @@ namespace Magnum.Specs.Serialization
 		public void Should_deserialize_to_the_proper_value()
 		{
 			var value = Subject.Deserialize<IList<int>>(_body);
+
+			value.ShouldEqual(_value);
+		}
+	}
+
+	[Scenario]
+	public class When_serializing_a_list_of_ints :
+		With_the_fast_text_serializer
+	{
+		private string _body;
+		private List<int> _value;
+
+		[When]
+		public void An_array_of_int_is_serialized()
+		{
+			_value = new List<int>{8, 6, 7, 5, 3, 0, 9};
+			_body = Subject.Serialize(_value);
+		}
+
+		[Then]
+		public void Should_create_the_proper_serialized_body()
+		{
+			_body.ShouldEqual("[8,6,7,5,3,0,9]");
+		}
+
+		[Then]
+		public void Should_deserialize_to_the_proper_value()
+		{
+			var value = Subject.Deserialize<List<int>>(_body);
 
 			value.ShouldEqual(_value);
 		}
@@ -192,6 +222,70 @@ namespace Magnum.Specs.Serialization
 		public void Should_deserialize_to_the_proper_value()
 		{
 			var value = Subject.Deserialize<string[]>(_body);
+
+			value.ShouldEqual(_value);
+		}
+	}
+
+	[Scenario]
+	public class When_serializing_a_byte_array :
+		With_the_fast_text_serializer
+	{
+		private string _body;
+		private byte[] _value;
+
+		[When]
+		public void An_array_of_string_is_serialized()
+		{
+			_value = new byte[16384];
+			for (int i = 0; i < 16384; i++)
+			{
+				_value[i] = (byte) (i%256);
+			}
+			_body = Subject.Serialize(_value);
+		}
+
+		[Then]
+		public void Should_create_the_proper_serialized_body()
+		{
+			string expected = "[" + string.Join(",", _value.Select(x => x.ToString()).ToArray()) + "]";
+
+			_body.ShouldEqual(expected);
+		}
+
+		[Then]
+		public void Should_deserialize_to_the_proper_value()
+		{
+			var value = Subject.Deserialize<byte[]>(_body);
+
+			value.ShouldEqual(_value);
+		}
+	}
+
+	[Scenario]
+	public class When_serializing_an_array_that_is_null :
+		With_the_fast_text_serializer
+	{
+		private string _body;
+		private byte[] _value;
+
+		[When]
+		public void An_array_of_string_is_serialized()
+		{
+			_value = null;
+			_body = Subject.Serialize(_value);
+		}
+
+		[Then]
+		public void Should_create_the_proper_serialized_body()
+		{
+			_body.ShouldEqual("");
+		}
+
+		[Then]
+		public void Should_deserialize_to_the_proper_value()
+		{
+			var value = Subject.Deserialize<byte[]>(_body);
 
 			value.ShouldEqual(_value);
 		}

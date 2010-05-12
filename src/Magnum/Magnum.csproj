@@ -416,6 +416,8 @@
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Serialization\FastText\FastTextDictionarySerializer.cs" />
+    <Compile Include="Serialization\FastText\FastTextIDictionarySerializer.cs" />
+    <Compile Include="Serialization\FastText\FastTextIListSerializer.cs" />
     <Compile Include="Serialization\FastText\FastTextKeyElementParser.cs" />
     <Compile Include="Serialization\FastText\FastTextParser.cs" />
     <Compile Include="Serialization\TypeSerializerCacheImpl.cs" />

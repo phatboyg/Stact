@@ -176,6 +176,35 @@ namespace Magnum.Specs.Serialization
 	}
 
 	[Scenario]
+	public class When_serializing_a_datetime_that_is_nullable_value :
+		With_the_fast_text_serializer
+	{
+		private string _body;
+		private DateTime? _value;
+
+		[When]
+		public void A_datetime_is_serialized()
+		{
+			_value = new DateTime(2010, 03, 27, 12, 34, 56, 147, DateTimeKind.Utc);
+			_body = Subject.Serialize(_value);
+		}
+
+		[Then]
+		public void Should_create_the_proper_serialized_body()
+		{
+			_body.ShouldEqual("2010-03-27T12:34:56.147Z");
+		}
+
+		[Then]
+		public void Should_deserialize_to_the_proper_value()
+		{
+			var value = Subject.Deserialize<DateTime?>(_body);
+
+			value.ShouldEqual(_value);
+		}
+	}
+
+	[Scenario]
 	public class When_serializing_a_decimal_value :
 		With_the_fast_text_serializer
 	{

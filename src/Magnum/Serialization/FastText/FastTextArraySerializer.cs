@@ -28,6 +28,8 @@ namespace Magnum.Serialization.FastText
 			return value =>
 				{
 					List<T> elements = ListReader(value);
+					if(elements == null)
+						return null;
 
 					return elements.ToArray();
 				};

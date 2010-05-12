@@ -16,7 +16,7 @@ namespace Magnum.Specs.Serialization
 	using TestFramework;
 
 	[Scenario]
-	public class When_serializing_a_dictionary_of_values :
+	public class When_serializing_an_idictionary_of_values :
 		With_the_fast_text_serializer
 	{
 		private string _body;
@@ -45,6 +45,41 @@ namespace Magnum.Specs.Serialization
 		public void Should_deserialize_to_the_proper_value()
 		{
 			var value = Subject.Deserialize<IDictionary<string,string>>(_body);
+
+			value.ShouldEqual(_value);
+		}
+	}
+
+	[Scenario]
+	public class When_serializing_a_dictionary_of_values :
+		With_the_fast_text_serializer
+	{
+		private string _body;
+		private Dictionary<string,string> _value;
+
+		[When]
+		public void A_dictionary_of_strings_is_serialized()
+		{
+			_value = new Dictionary<string, string>
+				{
+					{"1st", "First"},
+					{"2nd", "Second"},
+					{"3rd", "Third"},
+				};
+
+			_body = Subject.Serialize(_value);
+		}
+
+		[Then]
+		public void Should_create_the_proper_serialized_body()
+		{
+			_body.ShouldEqual("{1st:First,2nd:Second,3rd:Third}");
+		}
+
+		[Then]
+		public void Should_deserialize_to_the_proper_value()
+		{
+			var value = Subject.Deserialize<Dictionary<string,string>>(_body);
 
 			value.ShouldEqual(_value);
 		}

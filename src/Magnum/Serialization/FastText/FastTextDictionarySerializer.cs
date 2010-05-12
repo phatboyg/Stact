@@ -16,7 +16,7 @@ namespace Magnum.Serialization.FastText
 
 	public class FastTextDictionarySerializer<TKey, TValue> :
 		FastTextKeyElementParser<TKey, TValue>,
-		TypeSerializer<IDictionary<TKey, TValue>>
+		TypeSerializer<Dictionary<TKey, TValue>>
 	{
 		public FastTextDictionarySerializer(TypeSerializer<TKey> keyTypeSerializer,
 		                                    TypeSerializer<TValue> elementTypeSerializer)
@@ -24,7 +24,7 @@ namespace Magnum.Serialization.FastText
 		{
 		}
 
-		public TypeReader<IDictionary<TKey, TValue>> GetReader()
+		public TypeReader<Dictionary<TKey, TValue>> GetReader()
 		{
 			return value =>
 				{
@@ -34,7 +34,7 @@ namespace Magnum.Serialization.FastText
 				};
 		}
 
-		public TypeWriter<IDictionary<TKey, TValue>> GetWriter()
+		public TypeWriter<Dictionary<TKey, TValue>> GetWriter()
 		{
 			return DictionaryWriter;
 		}

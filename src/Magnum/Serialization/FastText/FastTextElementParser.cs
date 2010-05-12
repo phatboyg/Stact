@@ -39,7 +39,7 @@ namespace Magnum.Serialization.FastText
 			var elements = new List<TElement>();
 
 			if (value.IsEmpty())
-				return elements;
+				return null;
 
 			value = RemoveListChars(value);
 
@@ -74,6 +74,9 @@ namespace Magnum.Serialization.FastText
 
 		protected void ListWriter(IEnumerable<TElement> value, Action<string> output)
 		{
+			if(value == null)
+				return;
+
 			var sb = new StringBuilder(2048);
 
 			sb.Append(ListStart);
