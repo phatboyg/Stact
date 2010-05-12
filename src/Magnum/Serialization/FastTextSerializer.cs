@@ -20,24 +20,6 @@ namespace Magnum.Serialization
 	public class FastTextSerializer :
 		Serializer
 	{
-		public const string DoubleQuoteString = "\"\"";
-		public const string EmptyMap = "{}";
-		public const char ItemSeparator = ',';
-		public const string ItemSeparatorString = ",";
-
-		public const char ListEnd = ']';
-		public const char ListStart = '[';
-		public const char MapEnd = '}';
-		public const string MapEndString = "}";
-		public const char MapSeparator = ':';
-		public const string MapSeparatorString = ":";
-		public const char MapStart = '{';
-		public const string MapStartString = "{";
-		public const char Quote = '"';
-		public const string QuoteString = "\"";
-
-		public static readonly char[] EscapeChars = new[] {Quote, ItemSeparator, MapStart, MapEnd, ListStart, ListEnd};
-
 		[ThreadStatic]
 		private static TypeSerializerCache _typeSerializerCache;
 

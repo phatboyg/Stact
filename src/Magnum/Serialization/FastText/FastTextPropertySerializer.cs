@@ -45,7 +45,7 @@ namespace Magnum.Serialization.FastText
 						{
 							output(string.Concat(
 								_name,
-								FastTextSerializer.MapSeparatorString,
+								FastTextParser.MapSeparatorString,
 								text));
 						});
 				};

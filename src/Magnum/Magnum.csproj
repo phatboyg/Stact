@@ -415,8 +415,11 @@
     <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
+    <Compile Include="Serialization\FastText\FastTextDictionarySerializer.cs" />
+    <Compile Include="Serialization\FastText\FastTextKeyElementParser.cs" />
+    <Compile Include="Serialization\FastText\FastTextParser.cs" />
     <Compile Include="Serialization\TypeSerializerCacheImpl.cs" />
-    <Compile Include="Serialization\FastText\FastTextAbstractEnumerableSerializer.cs" />
+    <Compile Include="Serialization\FastText\FastTextElementParser.cs" />
     <Compile Include="Serialization\FastText\FastTextArraySerializer.cs" />
     <Compile Include="Serialization\FastText\FastTextListSerializer.cs" />
     <Compile Include="Serialization\FastText\FastTextObjectSerializer.cs" />
@@ -429,7 +432,6 @@
     <Compile Include="Serialization\PropertySerializer.cs" />
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Serialization\PropertySerializerCache.cs" />
-    <Compile Include="Serialization\TypeDeserializers\DictionaryDeserializer.cs" />
     <Compile Include="Serialization\TypeReader.cs" />
     <Compile Include="Serialization\TypeSerializer.cs" />
     <Compile Include="Serialization\TypeSerializerCache.cs" />

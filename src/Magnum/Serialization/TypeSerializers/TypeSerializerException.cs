@@ -46,7 +46,14 @@ namespace Magnum.Serialization.TypeSerializers
 
 		public static TypeSerializerException New<T>(TypeSerializer<T> serializer, string value, Exception innerException)
 		{
-			return new TypeSerializerException("Unable to convert {0} to an {1}".FormatWith(value, typeof (T).Name), innerException);
+			return new TypeSerializerException("Unable to convert {0} to an {1}".FormatWith(value, typeof (T).Name),
+			                                   innerException);
+		}
+
+		public static TypeSerializerException New<T>(string value, Exception innerException)
+		{
+			return new TypeSerializerException("Unable to convert {0} to an {1}".FormatWith(value, typeof (T).Name),
+			                                   innerException);
 		}
 	}
 }

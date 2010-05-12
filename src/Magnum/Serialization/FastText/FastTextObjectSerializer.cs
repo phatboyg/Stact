@@ -19,35 +19,40 @@ namespace Magnum.Serialization.FastText
 	using TypeSerializers;
 
 	public class FastTextObjectSerializer<T> :
-		ObjectSerializer<T>
+		FastTextParser,
+		TypeSerializer<T>
 		where T : class
 	{
+		private ObjectSerializer<T> _objectSerializer;
+		private PropertySerializerCache<T> _properties;
+
 		public FastTextObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
-			: base(typeSerializerCache)
 		{
+			_objectSerializer = new ObjectSerializer<T>(typeSerializerCache);
+			_properties = _objectSerializer.Properties;
 		}
 
-		public override TypeReader<T> GetReader()
+		public TypeReader<T> GetReader()
 		{
 			return StringToInstance;
 		}
 
-		public override TypeWriter<T> GetWriter()
+		public TypeWriter<T> GetWriter()
 		{
 			return (value, output) =>
 				{
 					var sb = new StringBuilder(2048);
 
-					sb.Append(FastTextSerializer.MapStartString);
+					sb.Append(MapStartString);
 
 					bool addSeparator = false;
 
-					Properties.Each(serializer =>
+					_properties.Each(serializer =>
 						{
 							serializer.Write(value, text =>
 								{
 									if (addSeparator)
-										sb.Append(FastTextSerializer.ItemSeparatorString);
+										sb.Append(ItemSeparatorString);
 									else
 										addSeparator = true;
 
@@ -55,178 +60,34 @@ namespace Magnum.Serialization.FastText
 								});
 						});
 
-					sb.Append(FastTextSerializer.MapEndString);
+					sb.Append(MapEndString);
 
 					output(sb.ToString());
 				};
 		}
 
-		private T StringToInstance(string value)
+		private T StringToInstance(string text)
 		{
-			if (value[0] != FastTextSerializer.MapStart)
-				throw new SerializationException(string.Format(
-					"Type definitions should start with a '{0}', expecting serialized type '{1}', got string starting with: {2}",
-					FastTextSerializer.MapStart, ObjectType.Name,
-					value.Substring(0, value.Length < 50 ? value.Length : 50)));
+			if (text[0] != MapStart)
+			{
+				string message =
+					string.Format("Types should start with a '{0}', expecting serialized type '{1}', got string starting with: {2}",
+					              MapStart, typeof (T).Name,
+					              text.Substring(0, text.Length < 50 ? text.Length : 50));
+				throw new SerializationException(message);
+			}
 
 			T instance = FastActivator<T>.Create();
 
 			try
 			{
-				if (value == FastTextSerializer.EmptyMap)
-					return instance;
-
-				int length = value.Length;
-				for (int index = 1; index < length; index++)
-				{
-					string propertyName = ReadMapKey(value, ref index);
-					index++;
-
-					string propertyValueString = ReadMapValue(value, ref index);
-
-					Properties.WithValue(propertyName, serializer => { serializer.Read(instance, propertyValueString); });
-				}
+				ReadMap(text, (key, value) => _properties.WithValue(key, serializer => serializer.Read(instance, value)));
 			}
 			catch (Exception ex)
 			{
-				throw TypeSerializerException.New(this, value, ex);
+				throw TypeSerializerException.New(this, text, ex);
 			}
 			return instance;
-		}
-
-		private static string ReadMapKey(string value, ref int index)
-		{
-			int start = index;
-			while (value[++index] != FastTextSerializer.MapSeparator)
-			{
-			}
-			return value.Substring(start, index - start);
-		}
-
-		private static string ReadMapValue(string value, ref int index)
-		{
-			int start = index;
-			int length = value.Length;
-			if (index == length)
-				return null;
-
-			string result;
-
-			char ch = value[index];
-			if (ch == FastTextSerializer.ItemSeparator || ch == FastTextSerializer.MapEnd)
-				return null;
-
-			if (TryReadListValue(value, ref index, out result))
-				return result;
-
-			if (TryReadMapValue(value, ref index, out result))
-				return result;
-
-			if (TryReadQuotedValue(value, ref index, out result))
-				return result;
-
-			while (++index < length)
-			{
-				ch = value[index];
-
-				if (ch == FastTextSerializer.ItemSeparator || ch == FastTextSerializer.MapEnd)
-					break;
-			}
-
-			return value.Substring(start, index - start);
-		}
-
-		private static bool TryReadListValue(string value, ref int index, out string result)
-		{
-			result = null;
-
-			char ch = value[index];
-			if (ch != FastTextSerializer.ListStart)
-				return false;
-
-			bool inQuote = false;
-			int depth = 1;
-
-			int start = index;
-			int length = value.Length;
-			while (++index < length && depth > 0)
-			{
-				ch = value[index];
-
-				if (ch == FastTextSerializer.Quote)
-					inQuote = !inQuote;
-
-				if (inQuote)
-					continue;
-
-				if (ch == FastTextSerializer.ListStart)
-					depth++;
-
-				if (ch == FastTextSerializer.ListEnd)
-					depth--;
-			}
-
-			result = value.Substring(start, index - start);
-			return true;
-		}
-
-		private static bool TryReadMapValue(string value, ref int index, out string result)
-		{
-			result = null;
-
-			char ch = value[index];
-			if (ch != FastTextSerializer.MapStart)
-				return false;
-
-			bool inQuote = false;
-			int depth = 1;
-
-			int start = index;
-			int length = value.Length;
-			while (++index < length && depth > 0)
-			{
-				ch = value[index];
-
-				if (ch == FastTextSerializer.Quote)
-					inQuote = !inQuote;
-
-				if (inQuote)
-					continue;
-
-				if (ch == FastTextSerializer.MapStart)
-					depth++;
-
-				if (ch == FastTextSerializer.MapEnd)
-					depth--;
-			}
-
-			result = value.Substring(start, index - start);
-			return true;
-		}
-
-		private static bool TryReadQuotedValue(string value, ref int index, out string result)
-		{
-			result = null;
-
-			if (value[index] != FastTextSerializer.Quote)
-				return false;
-
-			int start = index;
-			int length = value.Length;
-			while (++index < length)
-			{
-				if (value[index] != FastTextSerializer.Quote)
-					continue;
-
-				bool isDoubleQuote = index + 1 < length && value[index + 1] == FastTextSerializer.Quote;
-
-				++index; // skip quote/escaped quote
-				if (!isDoubleQuote)
-					break;
-			}
-
-			result = value.Substring(start, index - start);
-			return true;
 		}
 	}
 }

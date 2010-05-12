@@ -14,28 +14,29 @@ namespace Magnum.Serialization.FastText
 {
 	using System.Collections.Generic;
 
-	public class FastTextListSerializer<T> :
-		FastTextElementParser<T>,
-		TypeSerializer<IList<T>>
+	public class FastTextDictionarySerializer<TKey, TValue> :
+		FastTextKeyElementParser<TKey, TValue>,
+		TypeSerializer<IDictionary<TKey, TValue>>
 	{
-		public FastTextListSerializer(TypeSerializer<T> elementTypeSerializer)
-			: base(elementTypeSerializer)
+		public FastTextDictionarySerializer(TypeSerializer<TKey> keyTypeSerializer,
+		                                    TypeSerializer<TValue> elementTypeSerializer)
+			: base(keyTypeSerializer, elementTypeSerializer)
 		{
 		}
 
-		public TypeReader<IList<T>> GetReader()
+		public TypeReader<IDictionary<TKey, TValue>> GetReader()
 		{
 			return value =>
 				{
-					List<T> elements = ListReader(value);
+					Dictionary<TKey, TValue> values = DictionaryReader(value);
 
-					return elements;
+					return values;
 				};
 		}
 
-		public TypeWriter<IList<T>> GetWriter()
+		public TypeWriter<IDictionary<TKey, TValue>> GetWriter()
 		{
-			return ListWriter;
+			return DictionaryWriter;
 		}
 	}
 }

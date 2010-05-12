@@ -15,6 +15,7 @@ namespace Magnum.Serialization.FastText
 	using Extensions;
 
 	public class FastTextStringSerializer :
+		FastTextParser,
 		TypeSerializer<string>
 	{
 		public TypeReader<string> GetReader()
@@ -24,11 +25,11 @@ namespace Magnum.Serialization.FastText
 					if (value.IsEmpty())
 						return value;
 
-					if (value[0] != FastTextSerializer.Quote)
+					if (value[0] != Quote)
 						return value;
 
 					return value.Substring(1, value.Length - 2)
-						.Replace(FastTextSerializer.DoubleQuoteString, FastTextSerializer.QuoteString);
+						.Replace(DoubleQuoteString, QuoteString);
 				};
 		}
 
@@ -38,13 +39,13 @@ namespace Magnum.Serialization.FastText
 				{
 					if (value.IsEmpty())
 						output("");
-					else if (value.IndexOfAny(FastTextSerializer.EscapeChars) == -1)
+					else if (value.IndexOfAny(EscapeChars) == -1)
 						output(value);
 					else
 					{
-						output(string.Concat(FastTextSerializer.QuoteString,
-						                     value.Replace(FastTextSerializer.QuoteString, FastTextSerializer.DoubleQuoteString),
-						                     FastTextSerializer.QuoteString));
+						output(string.Concat(QuoteString,
+						                     value.Replace(QuoteString, DoubleQuoteString),
+						                     QuoteString));
 					}
 				};
 		}

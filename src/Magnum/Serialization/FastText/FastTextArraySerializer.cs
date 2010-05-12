@@ -15,7 +15,7 @@ namespace Magnum.Serialization.FastText
 	using System.Collections.Generic;
 
 	public class FastTextArraySerializer<T> :
-		FastTextAbstractEnumerableSerializer<T>,
+		FastTextElementParser<T>,
 		TypeSerializer<T[]>
 	{
 		public FastTextArraySerializer(TypeSerializer<T> elementTypeSerializer)
@@ -27,8 +27,6 @@ namespace Magnum.Serialization.FastText
 		{
 			return value =>
 				{
-					value = RemoveListChars(value);
-
 					List<T> elements = ListReader(value);
 
 					return elements.ToArray();
