@@ -22,11 +22,7 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					ushort result;
-					if (ushort.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
+					return ushort.Parse(value, CultureInfo.InvariantCulture);
 				};
 		}
 

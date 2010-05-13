@@ -37,7 +37,7 @@ namespace Magnum.Serialization.FastText
 		{
 			var elements = new Dictionary<TKey, TElement>();
 
-			if (text.IsEmpty())
+			if (string.IsNullOrEmpty(text))
 				return elements;
 
 			try
@@ -61,36 +61,25 @@ namespace Magnum.Serialization.FastText
 
 		protected void DictionaryWriter(IDictionary<TKey, TElement> value, Action<string> output)
 		{
-			var sb = new StringBuilder(2048);
-
-			sb.Append(MapStart);
+			output(MapStartString);
 
 			bool addSeparator = false;
 
 			foreach (var obj in value)
 			{
-				KeyWriter(obj.Key, text =>
-					{
-						if (addSeparator)
-							sb.Append(ItemSeparatorString);
-						else
-							addSeparator = true;
+				if (addSeparator)
+					output(ItemSeparatorString);
+				else
+					addSeparator = true;
 
-						sb.Append(text);
-					});
+				KeyWriter(obj.Key, output);
 
-				sb.Append(MapSeparatorString);
+				output(MapSeparatorString);
 
-				ElementWriter(obj.Value, text =>
-					{
-						//
-						sb.Append(text ?? MapNullValue);
-					});
+				ElementWriter(obj.Value, text => output(text ?? MapNullValue));
 			}
 
-			sb.Append(MapEnd);
-
-			output(sb.ToString());
+			output(MapEndString);
 		}
 	}
 }

@@ -35,7 +35,7 @@ namespace Magnum.Serialization
 
 		public string Serialize<T>(T obj)
 		{
-			var sb = new StringBuilder(2048);
+			var sb = new StringBuilder(4096);
 			using (var writer = new StringWriter(sb))
 			{
 				Serialize(obj, writer);

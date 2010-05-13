@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
-	using Extensions;
-
 	public class StringSerializer :
 		TypeSerializer<string>
 	{
@@ -26,7 +24,7 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return (value, output) =>
 				{
-					if (value.IsEmpty())
+					if (string.IsNullOrEmpty(value))
 						return;
 
 					output(value);
@@ -34,25 +32,3 @@ namespace Magnum.Serialization.TypeSerializers
 		}
 	}
 }
-
-//	public static string ToCsvField(this string text)
-//		{
-//			return string.IsNullOrEmpty(text) || text.IndexOfAny(TypeSerializer.EscapeChars) == -1
-//		       	? text
-//		       	: string.Concat
-//		       	  	(
-//		       	  		TypeSerializer.QuoteString,
-//		       	  		text.Replace(TypeSerializer.QuoteString, TypeSerializer.DoubleQuoteString),
-//		       	  		TypeSerializer.QuoteString
-//		       	  	);
-//		}
-//
-//		public static string FromCsvField(this string text)
-//		{
-//			const int startingQuotePos = 1;
-//			const int endingQuotePos = 2;
-//			return string.IsNullOrEmpty(text) || text[0] != TypeSerializer.QuoteChar
-//			       	? text
-//					: text.Substring(startingQuotePos, text.Length - endingQuotePos)
-//			       	  	.Replace(TypeSerializer.DoubleQuoteString, TypeSerializer.QuoteString);
-//		}

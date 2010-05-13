@@ -39,17 +39,90 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			TimeSpan timeOfDay = dateTime.TimeOfDay;
 			if (timeOfDay.Ticks == 0)
-				return dateTime.ToString(DateFormat);
+				return FormatDate(dateTime);
 
 			if (timeOfDay.Milliseconds == 0)
-				return dateTime.ToUniversalTime().ToString(DateTimeFormat);
+				return FormatDateTime(dateTime.ToUniversalTime());
 
-			return XmlConvert.ToString(dateTime.ToUniversalTime(), XmlDateTimeSerializationMode.Utc);
+			return FormatDateTimeMs(dateTime.ToUniversalTime());
+		}
+
+		private static string FormatDateTimeMs(DateTime dt)
+		{
+			var chars = new char[24];
+			Write4Chars(chars, 0, dt.Year);
+			chars[4] = '-';
+			Write2Chars(chars, 5, dt.Month);
+			chars[7] = '-';
+			Write2Chars(chars, 8, dt.Day);
+			chars[10] = 'T';
+			Write2Chars(chars, 11, dt.Hour);
+			chars[13] = ':';
+			Write2Chars(chars, 14, dt.Minute);
+			chars[16] = ':';
+			Write2Chars(chars, 17, dt.Second);
+			chars[19] = '.';
+			Write3Chars(chars, 20, dt.Millisecond);
+			chars[23] = 'Z';
+
+			return new string(chars);
+		}
+
+		private static string FormatDateTime(DateTime dt)
+		{
+			var chars = new char[20];
+			Write4Chars(chars, 0, dt.Year);
+			chars[4] = '-';
+			Write2Chars(chars, 5, dt.Month);
+			chars[7] = '-';
+			Write2Chars(chars, 8, dt.Day);
+			chars[10] = 'T';
+			Write2Chars(chars, 11, dt.Hour);
+			chars[13] = ':';
+			Write2Chars(chars, 14, dt.Minute);
+			chars[16] = ':';
+			Write2Chars(chars, 17, dt.Second);
+			chars[19] = 'Z';
+
+			return new string(chars);
+		}
+
+		private static string FormatDate(DateTime dt)
+		{
+			var chars = new char[10];
+			Write4Chars(chars, 0, dt.Year);
+			chars[4] = '-';
+			Write2Chars(chars, 5, dt.Month);
+			chars[7] = '-';
+			Write2Chars(chars, 8, dt.Day);
+
+			return new string(chars);
+		}
+
+		private static void Write2Chars(char[] chars, int offset, int value)
+		{
+			chars[offset++] = (char) (value/10 + '0');
+			chars[offset] = (char) (value%10 + '0');
+		}
+
+		private static void Write3Chars(char[] chars, int offset, int value)
+		{
+			chars[offset++] = (char)('0' + (value / 100));
+			chars[offset++] = (char)('0' + ((value / 10) % 10));
+			chars[offset] = (char)('0' + (value % 10));
+		}
+
+		private static void Write4Chars(char[] chars, int offset, int value)
+		{
+			chars[offset++] = (char)('0' + (value / 1000 % 10));
+			chars[offset++] = (char)('0' + (value / 100 % 10));
+			chars[offset++] = (char)('0' + ((value / 10) % 10));
+			chars[offset] = (char)('0' + (value % 10));
 		}
 
 		private static DateTime ParseShortestXsdDateTime(string text)
 		{
-			if (text.IsEmpty())
+			if(text == null || text.Length == 0)
 				return DateTime.MinValue;
 
 			if (text.Length <= DateTimeMillisecondsFormat.Length || text.Length >= DateTimeShortMillisecondsFormat.Length)

@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
+	using System.Globalization;
+
 	public class BooleanSerializer :
 		TypeSerializer<bool>
 	{
@@ -19,17 +21,13 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					bool result;
-					if (bool.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
+					return bool.Parse(value);
 				};
 		}
 
 		public TypeWriter<bool> GetWriter()
 		{
-			return (value, output) => output(value.ToString().ToLowerInvariant());
+			return (value, output) => output(value.ToString(CultureInfo.InvariantCulture).ToLowerInvariant());
 		}
 	}
 }

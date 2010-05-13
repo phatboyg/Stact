@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.FastText
 {
+	using System;
 	using System.Reflection;
 
 	public class FastTextPropertySerializer<T> :
@@ -41,13 +42,16 @@ namespace Magnum.Serialization.FastText
 		{
 			return (value, output) =>
 				{
-					_writer(value, text =>
+					Action<string> write = null;
+					write = text =>
 						{
-							output(string.Concat(
-								_name,
-								FastTextParser.MapSeparatorString,
-								text));
-						});
+							output(_name);
+							output(FastTextParser.MapSeparatorString);
+							output(text);
+
+							write = s => output(s);
+						};
+					_writer(value, text => write(text));
 				};
 		}
 	}

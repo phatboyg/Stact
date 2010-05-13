@@ -14,7 +14,6 @@ namespace Magnum.Serialization.TypeSerializers
 {
 	using System;
 	using System.Xml;
-	using Extensions;
 
 	public class DateTimeOffsetSerializer :
 		TypeSerializer<DateTimeOffset>
@@ -36,7 +35,7 @@ namespace Magnum.Serialization.TypeSerializers
 
 		private static DateTimeOffset ParseShortestXsdDateTime(string text)
 		{
-			if (text.IsEmpty())
+			if (text == null || text.Length == 0)
 				return DateTimeOffset.MinValue;
 
 			return XmlConvert.ToDateTimeOffset(text);

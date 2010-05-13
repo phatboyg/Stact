@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.FastText
 {
-	using Extensions;
-
 	public class FastTextStringSerializer :
 		FastTextParser,
 		TypeSerializer<string>
@@ -22,7 +20,7 @@ namespace Magnum.Serialization.FastText
 		{
 			return value =>
 				{
-					if (value.IsEmpty())
+					if (string.IsNullOrEmpty(value))
 						return value;
 
 					if (value[0] != Quote)
@@ -37,19 +35,16 @@ namespace Magnum.Serialization.FastText
 		{
 			return (value, output) =>
 				{
-					if(value == null)
+					if (string.IsNullOrEmpty(value))
 						return;
 
-					if (value.IsEmpty())
-						return;
-						
 					if (value.IndexOfAny(EscapeChars) == -1)
 						output(value);
 					else
 					{
-						output(string.Concat(QuoteString,
-						                     value.Replace(QuoteString, DoubleQuoteString),
-						                     QuoteString));
+						output(QuoteString);
+						output(value.Replace(QuoteString, DoubleQuoteString));
+						output(QuoteString);
 					}
 				};
 		}

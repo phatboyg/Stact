@@ -22,14 +22,10 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					if (value.IsEmpty())
+					if (string.IsNullOrEmpty(value))
 						return default(char);
 
-					char result;
-					if (char.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
+					return char.Parse(value);
 				};
 		}
 

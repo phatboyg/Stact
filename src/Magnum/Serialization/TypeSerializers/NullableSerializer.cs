@@ -34,7 +34,7 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					if (value.IsEmpty())
+					if (value == null || value.Length == 0)
 						return default(T?);
 
 					return _reader(value);

@@ -41,28 +41,29 @@ namespace Magnum.Serialization.FastText
 		{
 			return (value, output) =>
 				{
-					var sb = new StringBuilder(2048);
-
-					sb.Append(MapStartString);
+					output(MapStartString);
 
 					bool addSeparator = false;
 
 					_properties.Each(serializer =>
 						{
-							serializer.Write(value, text =>
-								{
-									if (addSeparator)
-										sb.Append(ItemSeparatorString);
-									else
-										addSeparator = true;
+							Action<string> write = null;
+							write = text =>
+							{
+								if (addSeparator)
+									output(ItemSeparatorString);
+								else
+									addSeparator = true;
 
-									sb.Append(text);
-								});
+								output(text);
+
+								write = s => output(s);
+							};
+
+							serializer.Write(value, text => write(text));
 						});
 
-					sb.Append(MapEndString);
-
-					output(sb.ToString());
+					output(MapEndString);
 				};
 		}
 

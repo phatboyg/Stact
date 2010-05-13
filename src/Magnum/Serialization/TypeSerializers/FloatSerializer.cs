@@ -21,11 +21,7 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					float result;
-					if (float.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
+					return float.Parse(value, CultureInfo.InvariantCulture);
 				};
 		}
 

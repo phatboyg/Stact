@@ -21,11 +21,7 @@ namespace Magnum.Serialization.TypeSerializers
 		{
 			return value =>
 				{
-					decimal result;
-					if (decimal.TryParse(value, out result))
-						return result;
-
-					throw TypeSerializerException.New(this, value);
+					return decimal.Parse(value, CultureInfo.InvariantCulture);
 				};
 		}
 

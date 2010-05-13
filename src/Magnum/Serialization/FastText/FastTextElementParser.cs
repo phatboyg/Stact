@@ -14,8 +14,6 @@ namespace Magnum.Serialization.FastText
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Text;
-	using Extensions;
 
 	public class FastTextElementParser<TElement> :
 		FastTextParser
@@ -38,7 +36,7 @@ namespace Magnum.Serialization.FastText
 		{
 			var elements = new List<TElement>();
 
-			if (value.IsEmpty())
+			if (string.IsNullOrEmpty(value))
 				return null;
 
 			value = RemoveListChars(value);
@@ -50,7 +48,7 @@ namespace Magnum.Serialization.FastText
 				do
 				{
 					string elementText = ReadMapValue(value, ref index);
-					TElement element = elementText.IsEmpty() ? default(TElement) : ElementReader(elementText);
+					TElement element = (string.IsNullOrEmpty(elementText)) ? default(TElement) : ElementReader(elementText);
 
 					elements.Add(element);
 				} while (++index < length);
@@ -61,9 +59,7 @@ namespace Magnum.Serialization.FastText
 				for (int index = 0; index < length; index++)
 				{
 					string elementText = ReadToChar(value, ref index, ItemSeparator);
-					//string clearText = StringReader(elementText);
-
-					TElement element = elementText.IsEmpty() ? default(TElement) : ElementReader(elementText);
+					TElement element = (string.IsNullOrEmpty(elementText)) ? default(TElement) : ElementReader(elementText);
 
 					elements.Add(element);
 				}
@@ -74,31 +70,24 @@ namespace Magnum.Serialization.FastText
 
 		protected void ListWriter(IEnumerable<TElement> value, Action<string> output)
 		{
-			if(value == null)
+			if (value == null)
 				return;
 
-			var sb = new StringBuilder(2048);
-
-			sb.Append(ListStart);
+			output(ListStartString);
 
 			bool addSeparator = false;
 
 			foreach (TElement obj in value)
 			{
-				ElementWriter(obj, text =>
-					{
-						if (addSeparator)
-							sb.Append(ItemSeparatorString);
-						else
-							addSeparator = true;
+				if (addSeparator)
+					output(ItemSeparatorString);
+				else
+					addSeparator = true;
 
-						sb.Append(text);
-					});
+				ElementWriter(obj, output);
 			}
 
-			sb.Append(ListEnd);
-
-			output(sb.ToString());
+			output(ListEndString);
 		}
 	}
 }

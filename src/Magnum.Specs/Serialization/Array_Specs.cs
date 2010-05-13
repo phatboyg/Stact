@@ -141,13 +141,13 @@ namespace Magnum.Specs.Serialization
 		private TestClass[] _value;
 
 		[When]
-		public void An_array_of_string_is_serialized()
+		public void An_array_of_objects_is_serialized()
 		{
 			_value = new[]
 				{
-					new TestClass {Id = new Guid("46e921bdb16d482f93bcdb9642cfe55d"), Name = "Alpha"},
-					new TestClass {Id = new Guid("af8ae4c846a64ec2a060acccf06e0eda"), Name = "Beta"},
-					new TestClass {Id = new Guid("832773fa604d490d904e0df5334683cd"), Name = "Gemma"},
+					new TestClass {Id = new Guid("46e921bdb16d482f93bcdb9642cfe55d"), Name = "Alpha", Keys = new[]{1,2,3}},
+					new TestClass {Id = new Guid("af8ae4c846a64ec2a060acccf06e0eda"), Name = "Beta", Keys = new[]{4,5,6}},
+					new TestClass {Id = new Guid("832773fa604d490d904e0df5334683cd"), Name = "Gemma", Keys = null},
 				};
 
 			_body = Subject.Serialize(_value);
@@ -156,7 +156,7 @@ namespace Magnum.Specs.Serialization
 		[Then]
 		public void Should_create_the_proper_serialized_body()
 		{
-			_body.ShouldEqual("[{Id:46e921bdb16d482f93bcdb9642cfe55d,Name:Alpha},{Id:af8ae4c846a64ec2a060acccf06e0eda,Name:Beta},{Id:832773fa604d490d904e0df5334683cd,Name:Gemma}]");
+			_body.ShouldEqual("[{Id:46e921bdb16d482f93bcdb9642cfe55d,Name:Alpha,Keys:[1,2,3]},{Id:af8ae4c846a64ec2a060acccf06e0eda,Name:Beta,Keys:[4,5,6]},{Id:832773fa604d490d904e0df5334683cd,Name:Gemma}]");
 		}
 
 		[Then]
@@ -171,12 +171,15 @@ namespace Magnum.Specs.Serialization
 		{
 			public Guid Id { get; set; }
 			public string Name { get; set; }
+			public int[] Keys { get; set; }
 
 			public bool Equals(TestClass other)
 			{
 				if (ReferenceEquals(null, other)) return false;
 				if (ReferenceEquals(this, other)) return true;
-				return other.Id.Equals(Id) && Equals(other.Name, Name);
+
+				return other.Id.Equals(Id) && Equals(other.Name, Name) 
+					&& ((Keys == null && other.Keys == null) || (Keys != null && other.Keys != null && Keys.SequenceEqual(other.Keys)));
 			}
 
 			public override bool Equals(object obj)
@@ -191,7 +194,10 @@ namespace Magnum.Specs.Serialization
 			{
 				unchecked
 				{
-					return (Id.GetHashCode()*397) ^ (Name != null ? Name.GetHashCode() : 0);
+					int result = Id.GetHashCode();
+					result = (result*397) ^ (Name != null ? Name.GetHashCode() : 0);
+					result = (result*397) ^ (Keys != null ? Keys.GetHashCode() : 0);
+					return result;
 				}
 			}
 		}

@@ -22,7 +22,9 @@ namespace Magnum.Serialization.FastText
 		public const char ItemSeparator = ',';
 		public const string ItemSeparatorString = ",";
 		public const char ListEnd = ']';
+		public const string ListEndString = "]";
 		public const char ListStart = '[';
+		public const string ListStartString = "[";
 		public const char MapEnd = '}';
 		public const string MapEndString = "}";
 		public const string MapNullValue = "\"\"";
@@ -63,7 +65,7 @@ namespace Magnum.Serialization.FastText
 
 		protected static string RemoveListChars(string value)
 		{
-			if (value.IsEmpty())
+			if (value == null || value.Length == 0)
 				return null;
 
 			return value[0] == ListStart ? value.Substring(1, value.Length - 2) : value;

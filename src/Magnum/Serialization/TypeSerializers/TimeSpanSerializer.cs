@@ -14,7 +14,6 @@ namespace Magnum.Serialization.TypeSerializers
 {
 	using System;
 	using System.Xml;
-	using Extensions;
 
 	public class TimeSpanSerializer :
 		TypeSerializer<TimeSpan>
@@ -36,7 +35,7 @@ namespace Magnum.Serialization.TypeSerializers
 
 		private static TimeSpan ParseShortestXsdDateTime(string text)
 		{
-			if (text.IsEmpty())
+			if (string.IsNullOrEmpty(text))
 				return TimeSpan.Zero;
 
 			return XmlConvert.ToTimeSpan(text);
