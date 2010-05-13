@@ -61,9 +61,9 @@ namespace Magnum.Serialization.FastText
 				for (int index = 0; index < length; index++)
 				{
 					string elementText = ReadToChar(value, ref index, ItemSeparator);
-					string clearText = StringReader(elementText);
+					//string clearText = StringReader(elementText);
 
-					TElement element = clearText.IsEmpty() ? default(TElement) : ElementReader(clearText);
+					TElement element = elementText.IsEmpty() ? default(TElement) : ElementReader(elementText);
 
 					elements.Add(element);
 				}

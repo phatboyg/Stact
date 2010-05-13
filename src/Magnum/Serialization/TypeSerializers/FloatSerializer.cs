@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
+	using System.Globalization;
+
 	public class FloatSerializer :
 		TypeSerializer<float>
 	{
@@ -29,7 +31,7 @@ namespace Magnum.Serialization.TypeSerializers
 
 		public TypeWriter<float> GetWriter()
 		{
-			return (value, output) => output(value.ToString());
+			return (value, output) => output(value.ToString(CultureInfo.InvariantCulture));
 		}
 	}
 }

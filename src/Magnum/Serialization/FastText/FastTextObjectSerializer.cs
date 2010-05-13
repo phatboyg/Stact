@@ -23,8 +23,8 @@ namespace Magnum.Serialization.FastText
 		TypeSerializer<T>
 		where T : class
 	{
-		private ObjectSerializer<T> _objectSerializer;
-		private PropertySerializerCache<T> _properties;
+		private readonly ObjectSerializer<T> _objectSerializer;
+		private readonly PropertySerializerCache<T> _properties;
 
 		public FastTextObjectSerializer(PropertyTypeSerializerCache typeSerializerCache)
 		{

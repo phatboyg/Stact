@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
+	using System.Globalization;
+
 #pragma warning disable 3009
 	public class UIntSerializer :
 		TypeSerializer<uint>
@@ -30,7 +32,7 @@ namespace Magnum.Serialization.TypeSerializers
 
 		public TypeWriter<uint> GetWriter()
 		{
-			return (value, output) => output(value.ToString());
+			return (value, output) => output(value.ToString(CultureInfo.InvariantCulture));
 		}
 	}
 

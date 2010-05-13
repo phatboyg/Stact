@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization.TypeSerializers
 {
+	using System.Globalization;
 	using Extensions;
 
 	public class CharSerializer :
@@ -34,7 +35,7 @@ namespace Magnum.Serialization.TypeSerializers
 
 		public TypeWriter<char> GetWriter()
 		{
-			return (value, output) => output(value.ToString());
+			return (value, output) => output(value.ToString(CultureInfo.InvariantCulture));
 		}
 	}
 }

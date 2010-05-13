@@ -22,12 +22,26 @@ namespace Magnum.Serialization
 	public class PropertySerializerCache<T> :
 		Cache<string, PropertySerializer<T>>
 	{
+		private int _count;
+		private PropertySerializer<T>[] _each;
+
 		public PropertySerializerCache(PropertyTypeSerializerCache typeSerializerCache)
 			: base(GetPropertySerializers(typeSerializerCache))
 		{
+			_each = GetAll();
+			_count = _each.Length;
 		}
 
-		private static Dictionary<string, PropertySerializer<T>> GetPropertySerializers(PropertyTypeSerializerCache typeSerializerCache)
+		public new void Each(Action<PropertySerializer<T>> callback)
+		{
+			for (int i = 0; i < _count; i++)
+			{
+				callback(_each[i]);
+			}
+		}
+
+		private static Dictionary<string, PropertySerializer<T>> GetPropertySerializers(
+			PropertyTypeSerializerCache typeSerializerCache)
 		{
 			return typeof (T).GetAllProperties()
 				.Where(x => x.GetGetMethod() != null)
@@ -36,10 +50,11 @@ namespace Magnum.Serialization
 				.ToDictionary(x => x.Name, x => x.Serializer);
 		}
 
-		private static PropertySerializer<T> CreatePropertySerializer(PropertyInfo property, PropertyTypeSerializerCache typeSerializerCache)
+		private static PropertySerializer<T> CreatePropertySerializer(PropertyInfo property,
+		                                                              PropertyTypeSerializerCache typeSerializerCache)
 		{
-			Type[] genericTypes = new[] {typeof (T), property.PropertyType};
-			object[] args = new object[] {property, typeSerializerCache};
+			var genericTypes = new[] {typeof (T), property.PropertyType};
+			var args = new object[] {property, typeSerializerCache};
 
 			return (PropertySerializer<T>) FastActivator.Create(typeof (PropertySerializer<,>), genericTypes, args);
 		}

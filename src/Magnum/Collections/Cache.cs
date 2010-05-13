@@ -24,8 +24,8 @@ namespace Magnum.Collections
 	{
 		private readonly object _locker = new object();
 		private readonly IDictionary<TKey, TValue> _values;
-		private Func<TValue, TKey> _keyConverter = DefaultKeyConverter;
 		private Action<TKey, TValue> _duplicateValueAddedCallback = DefaultDuplicateValueAddedCallback;
+		private Func<TValue, TKey> _keyConverter = DefaultKeyConverter;
 		private Func<TKey, TValue> _missingValueProvider = ThrowOnMissingValue;
 		private Action<TKey, TValue> _valueAddedCallback = DefaultValueAddedAction;
 
@@ -80,22 +80,21 @@ namespace Magnum.Collections
 		{
 			get
 			{
-				if (!_values.ContainsKey(key))
+				TValue value;
+				if (_values.TryGetValue(key, out value))
+					return value;
+
+				lock (_locker)
 				{
-					lock (_locker)
-					{
-						if (!_values.ContainsKey(key))
-						{
-							TValue value = _missingValueProvider(key);
-							_values.Add(key, value);
-							_valueAddedCallback(key, value);
+					if (_values.TryGetValue(key, out value))
+						return value;
 
-							return value;
-						}
-					}
+					value = _missingValueProvider(key);
+					_values.Add(key, value);
+					_valueAddedCallback(key, value);
+
+					return value;
 				}
-
-				return _values[key];
 			}
 			set
 			{
@@ -111,21 +110,11 @@ namespace Magnum.Collections
 			}
 		}
 
-		public void Add(TKey key, TValue value)
-		{
-			if (_values.ContainsKey(key))
-			{
-				_duplicateValueAddedCallback(key, value);
-			}
-
-			this[key] = value;
-		}
-
 		public TValue First
 		{
 			get
 			{
-				foreach (var pair in _values)
+				foreach (KeyValuePair<TKey, TValue> pair in _values)
 				{
 					return pair.Value;
 				}
@@ -142,6 +131,16 @@ namespace Magnum.Collections
 		public IEnumerator<TValue> GetEnumerator()
 		{
 			return _values.Values.GetEnumerator();
+		}
+
+		public void Add(TKey key, TValue value)
+		{
+			if (_values.ContainsKey(key))
+			{
+				_duplicateValueAddedCallback(key, value);
+			}
+
+			this[key] = value;
 		}
 
 		public void Fill(IEnumerable<TValue> values)
@@ -167,7 +166,7 @@ namespace Magnum.Collections
 
 		public void Each(Action<TValue> action)
 		{
-			foreach (var pair in _values)
+			foreach (KeyValuePair<TKey, TValue> pair in _values)
 			{
 				action(pair.Value);
 			}
@@ -175,7 +174,7 @@ namespace Magnum.Collections
 
 		public void Each(Action<TKey, TValue> action)
 		{
-			foreach (var pair in _values)
+			foreach (KeyValuePair<TKey, TValue> pair in _values)
 			{
 				action(pair.Key, pair.Value);
 			}
@@ -197,7 +196,7 @@ namespace Magnum.Collections
 
 		public TValue Find(Predicate<TValue> predicate)
 		{
-			foreach (var pair in _values)
+			foreach (KeyValuePair<TKey, TValue> pair in _values)
 			{
 				if (predicate(pair.Value))
 				{
@@ -233,9 +232,10 @@ namespace Magnum.Collections
 
 		public bool WithValue(TKey key, Action<TValue> callback)
 		{
-			if (Has(key))
+			TValue value;
+			if (_values.TryGetValue(key, out value))
 			{
-				callback(this[key]);
+				callback(value);
 				return true;
 			}
 

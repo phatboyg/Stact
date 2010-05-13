@@ -37,9 +37,13 @@ namespace Magnum.Serialization.FastText
 		{
 			return (value, output) =>
 				{
+					if(value == null)
+						return;
+
 					if (value.IsEmpty())
-						output("");
-					else if (value.IndexOfAny(EscapeChars) == -1)
+						return;
+						
+					if (value.IndexOfAny(EscapeChars) == -1)
 						output(value);
 					else
 					{

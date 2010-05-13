@@ -27,13 +27,18 @@ namespace Magnum.Serialization.FastText
 	{
 		private readonly TypeWriter<object> _serializer;
 		private readonly TypeSerializer<T> _typeSerializer;
-		private TypeReader<T> _deserializer;
+		private readonly TypeReader<T> _deserializer;
 
 		public FastTextTypeSerializer(TypeSerializer<T> typeSerializer)
 		{
 			_typeSerializer = typeSerializer;
 
-			_serializer = CreateDefaultWriter(typeSerializer);
+			TypeWriter<T> serialize = typeSerializer.GetWriter();
+			_serializer = (value, output) =>
+				{
+					serialize((T) value, output);
+				};
+
 			_deserializer = typeSerializer.GetReader();
 		}
 
@@ -45,28 +50,6 @@ namespace Magnum.Serialization.FastText
 		public TResult Deserialize<TResult>(string text)
 		{
 			return (TResult)(object)_deserializer(text);
-		}
-
-		private static TypeWriter<object> CreateDefaultWriter(TypeSerializer<T> typeSerializer)
-		{
-			Type inputType = typeof (object);
-			Type outType = typeof (T);
-
-			ParameterExpression input = Expression.Parameter(inputType, "i");
-			UnaryExpression convert = outType.IsValueType ? Expression.Convert(input, outType) : Expression.TypeAs(input, outType);
-
-			Expression<Func<object, T>> lambda = Expression.Lambda<Func<object, T>>(convert, new[] {input});
-
-			Func<object, T> call = lambda.Compile();
-
-			TypeWriter<T> serialize = typeSerializer.GetWriter();
-
-			return (value, output) =>
-				{
-					T obj = call(value);
-
-					serialize(obj, output);
-				};
 		}
 
 		public TypeReader<T> GetReader()
