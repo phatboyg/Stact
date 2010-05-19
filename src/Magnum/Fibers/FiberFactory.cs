@@ -12,5 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Fibers
 {
-	public delegate Fiber FiberProvider();
+	public delegate Fiber FiberFactory();
 }

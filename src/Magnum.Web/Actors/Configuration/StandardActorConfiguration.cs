@@ -34,12 +34,12 @@ namespace Magnum.Web.Actors.Configuration
 		private ActorFactory<TActor> _actorFactory;
 
 		private Action<RouteConfiguration> _configure;
-		private readonly FiberProvider _fiberProvider;
+		private readonly FiberFactory _fiberFactory;
 
 		public StandardActorConfiguration()
 		{
-			_fiberProvider = ThreadPoolFiberProvider;
-			_actorFactory = new TransientActorFactory<TActor>(_fiberProvider);
+			_fiberFactory = ThreadPoolFiberProvider;
+			_actorFactory = new TransientActorFactory<TActor>(_fiberFactory);
 			_configure = DefaultConfigureAction;
 		}
 

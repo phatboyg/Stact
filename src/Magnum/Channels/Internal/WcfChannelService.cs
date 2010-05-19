@@ -10,18 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
 	using System.ServiceModel;
 
 	/// <summary>
-	///   A single generic channel type used for local channels via WCF/named pipes
+	///   Handles the server end of a WCF channel connection
 	/// </summary>
-	/// <typeparam name = "T"></typeparam>
-	[ServiceContract(Namespace = "http://magnum-project.net/LocalWcfChannel")]
-	public interface WcfChannel<T>
+	/// <typeparam name = "T">The channel type</typeparam>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+	public class WcfChannelService<T> :
+		WcfChannel<T>
 	{
-		[OperationContract(IsOneWay = true, IsInitiating = true, IsTerminating = false)]
-		void Send(T message);
+		public WcfChannelService(Channel<T> output)
+		{
+			Output = output;
+		}
+
+		public Channel<T> Output { get; private set; }
+
+		public void Send(T message)
+		{
+			Output.Send(message);
+		}
 	}
 }

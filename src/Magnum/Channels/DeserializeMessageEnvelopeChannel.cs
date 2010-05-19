@@ -14,17 +14,30 @@ namespace Magnum.Channels
 {
 	using System;
 	using Fibers;
+	using Logging;
 	using Reflection;
 	using Serialization;
 
+	/// <summary>
+	/// Accepts a MessageEnvelope as input and deserializes the message body on the supplied fiber,
+	/// after which the message object is sent to the untyped output channel.
+	/// </summary>
+	/// <typeparam name="T">The input message type, which must implement MessageEnvelope</typeparam>
 	public class DeserializeMessageEnvelopeChannel<T> :
 		Channel<T>
 		where T : MessageEnvelope
 	{
+		private static readonly ILogger _log = Logger.GetLogger<DeserializeMessageEnvelopeChannel<T>>();
 		private readonly Fiber _fiber;
 		private readonly UntypedChannel _output;
 		private readonly Serializer _serializer;
 
+		/// <summary>
+		/// Constructs an instance
+		/// </summary>
+		/// <param name="fiber">The fiber used to perform message deserialization</param>
+		/// <param name="serializer">The serializer to use on the message body</param>
+		/// <param name="output">The output channel for the deserialized message</param>
 		public DeserializeMessageEnvelopeChannel(Fiber fiber, Serializer serializer, UntypedChannel output)
 		{
 			_fiber = fiber;
@@ -37,14 +50,19 @@ namespace Magnum.Channels
 			_fiber.Enqueue(() =>
 				{
 					Type messageType = Type.GetType(message.MessageType, true, true);
+					if (messageType == null)
+					{
+						_log.Warn(x => x.Write("Unknown message type {0}, unable to deserialize message", message.MessageType));
+						return;
+					}
 
 					this.FastInvoke(new[] {messageType}, "Deserialize", message.Body);
 				});
 		}
 
-		private void Deserialize<T>(string body)
+		private void Deserialize<TMessage>(string body)
 		{
-			var message = _serializer.Deserialize<T>(body);
+			var message = _serializer.Deserialize<TMessage>(body);
 
 			_output.Send(message);
 		}

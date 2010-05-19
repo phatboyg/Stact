@@ -15,10 +15,15 @@ namespace Magnum.Channels
 	using System;
 	using System.ServiceModel;
 	using Fibers;
+	using Internal;
 	using Serialization;
 
-	public class WcfUntypedChannelAdapter :
-		UntypedChannelAdapter,
+	/// <summary>
+	/// Receives messages from a named pipe via WCF and forwards them to the specific channel. Messages
+	/// are first serialized to a wire type that is already WCF compliant, making it unnecessary to decorate
+	/// your message objects with WCF data contract serializer attributes.
+	/// </summary>
+	public class WcfUntypedChannelHost :
 		IDisposable
 	{
 		private readonly WcfChannelService<WcfMessageEnvelope> _service;
@@ -27,15 +32,13 @@ namespace Magnum.Channels
 		private bool _disposed;
 		private ServiceHost _serviceHost;
 
-		public WcfUntypedChannelAdapter(Fiber fiber, Uri serviceUri, string pipeName)
-			: base(fiber)
+		public WcfUntypedChannelHost(Fiber fiber, UntypedChannel output, Uri serviceUri, string pipeName)
 		{
 			_serviceUri = serviceUri;
 
-			var channel = new DeserializeMessageEnvelopeChannel<WcfMessageEnvelope>(new SynchronousFiber(),
-			                                                                        new FastTextSerializer(), this);
+			var channel = new DeserializeMessageEnvelopeChannel<WcfMessageEnvelope>(fiber, new FastTextSerializer(), output);
 
-			_service = new WcfChannelService<WcfMessageEnvelope>(fiber, channel);
+			_service = new WcfChannelService<WcfMessageEnvelope>(channel);
 
 			_serviceHost = new ServiceHost(_service, _serviceUri);
 			_serviceHost.AddServiceEndpoint(typeof (WcfChannel<WcfMessageEnvelope>), new NetNamedPipeBinding(), pipeName);
@@ -57,7 +60,7 @@ namespace Magnum.Channels
 			}
 		}
 
-		~WcfUntypedChannelAdapter()
+		~WcfUntypedChannelHost()
 		{
 			Dispose(false);
 		}

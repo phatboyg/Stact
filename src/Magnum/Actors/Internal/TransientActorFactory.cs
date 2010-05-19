@@ -23,16 +23,16 @@ namespace Magnum.Actors.Internal
 		ActorFactory<TActor>
 		where TActor : class
 	{
-		private readonly FiberProvider _fiberProvider;
+		private readonly FiberFactory _fiberFactory;
 
-		public TransientActorFactory(FiberProvider fiberProvider)
+		public TransientActorFactory(FiberFactory fiberFactory)
 		{
-			_fiberProvider = fiberProvider;
+			_fiberFactory = fiberFactory;
 		}
 
 		public TActor GetActor()
 		{
-			Fiber fiber = _fiberProvider();
+			Fiber fiber = _fiberFactory();
 
 			return FastActivator<TActor>.Create(fiber);
 		}

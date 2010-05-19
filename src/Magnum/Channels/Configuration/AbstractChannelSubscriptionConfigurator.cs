@@ -20,7 +20,7 @@ namespace Magnum.Channels.Configuration
 	public class AbstractChannelSubscriptionConfigurator<TChannel> :
 		ChannelSubscriptionConfigurator<TChannel>
 	{
-		private FiberProvider _fiberProvider = ThreadPoolFiberProvider;
+		private FiberFactory _fiberFactory = ThreadPoolFiberProvider;
 		private Func<Scheduler> _schedulerProvider = TimerSchedulerProvider;
 		private SynchronizationContext _synchronizationContext;
 
@@ -47,14 +47,14 @@ namespace Magnum.Channels.Configuration
 
 		public ChannelSubscriptionConfigurator<TChannel> Using(SelectiveConsumer<TChannel> selectiveConsumer)
 		{
-			ConsumerProvider = () => new SelectiveConsumerChannel<TChannel>(_fiberProvider(), selectiveConsumer);
+			ConsumerProvider = () => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), selectiveConsumer);
 
 			return this;
 		}
 
 		public ChannelSubscriptionConfigurator<TChannel> Using(Consumer<TChannel> consumer)
 		{
-			ConsumerProvider = () => new ConsumerChannel<TChannel>(_fiberProvider(), consumer);
+			ConsumerProvider = () => new ConsumerChannel<TChannel>(_fiberFactory(), consumer);
 
 			return this;
 		}
@@ -63,7 +63,7 @@ namespace Magnum.Channels.Configuration
 		{
 			var configurator = new IntervalChannelSubscriptionConfigurator<TChannel>();
 
-			ConsumerProvider = () => new IntervalChannel<TChannel>(_fiberProvider(), _schedulerProvider(), interval, configurator.ConsumerProvider());
+			ConsumerProvider = () => new IntervalChannel<TChannel>(_fiberFactory(), _schedulerProvider(), interval, configurator.ConsumerProvider());
 
 			return configurator;
 		}
@@ -72,7 +72,7 @@ namespace Magnum.Channels.Configuration
 		{
 			var configurator = new DistinctIntervalChannelSubscriptionConfigurator<TChannel, TKey>();
 
-			ConsumerProvider = () => new DistinctIntervalChannel<TChannel, TKey>(_fiberProvider(), _schedulerProvider(), interval, keyAccessor, configurator.ConsumerProvider());
+			ConsumerProvider = () => new DistinctIntervalChannel<TChannel, TKey>(_fiberFactory(), _schedulerProvider(), interval, keyAccessor, configurator.ConsumerProvider());
 
 			return configurator;
 		}
@@ -92,8 +92,8 @@ namespace Magnum.Channels.Configuration
 			if (_synchronizationContext == null)
 				return provider();
 
-			Fiber fiber = _fiberProvider();
-			_fiberProvider = () => new SynchronousFiber();
+			Fiber fiber = _fiberFactory();
+			_fiberFactory = () => new SynchronousFiber();
 
 			return new SynchronizedChannel<TChannel>(fiber, provider(), _synchronizationContext);
 		}

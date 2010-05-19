@@ -33,13 +33,14 @@ namespace Magnum.Specs.Channels
 
 			var serviceUri = new Uri("net.pipe://localhost/Pipe");
 			string pipeName = "Test";
-			using (var host = new WcfChannelAdapter<TestMessage>(new SynchronousFiber(), serviceUri, pipeName))
+			Channel<TestMessage> adapter = new ChannelAdapter<TestMessage>();
+			using (var host = new WcfChannelHost<TestMessage>(adapter, serviceUri, pipeName))
 			{
 				log.Debug("Host started");
 
 				var future = new Future<TestMessage>();
 
-				using (host.Subscribe(x =>
+				using (adapter.Subscribe(x =>
 					{
 						x.Consume<TestMessage>()
 							.Using(m =>

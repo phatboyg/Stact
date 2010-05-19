@@ -17,7 +17,6 @@ namespace Sample.WebActors.Actors.Auction
 	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Fibers;
-	using Magnum.Web.Actors;
 
 	/// <summary>
 	///   A model representation of an auction, of which each auction running in a system would have
@@ -60,8 +59,9 @@ namespace Sample.WebActors.Actors.Auction
 		private Fiber _fiber;
 		private decimal _highBid;
 		private Actor _highBidder;
-		private ChannelRouter _router;
 		private Actor _seller;
+		private UntypedChannelAdapter _input;
+		private ChannelSubscription _subscriptions;
 
 		public AuctionActor(Fiber fiber, Scheduler scheduler, DateTime expiresAt, decimal openingBid, decimal bidIncrement)
 		{
@@ -72,10 +72,14 @@ namespace Sample.WebActors.Actors.Auction
 			_bidIncrement = bidIncrement;
 			_highBid = openingBid - bidIncrement;
 
-			BidChannel = new ConsumerChannel<Bid>(_fiber, ReceiveBid);
-			AskChannel = new ConsumerChannel<Ask>(_fiber, ReceiveAsk);
-
-			_router = new ChannelRouter(new Channel[] {BidChannel, AskChannel});
+			_input = new UntypedChannelAdapter(fiber);
+			_subscriptions = _input.Subscribe(x =>
+				{
+					x.Consume<Bid>()
+						.Using(m => ReceiveBid(m));
+					x.Consume<Ask>()
+						.Using(m => ReceiveAsk(m));
+				});
 
 			scheduler.Schedule(expiresAt.ToUniversalTime() - SystemUtil.UtcNow, _fiber, EndAuction);
 		}
@@ -85,12 +89,12 @@ namespace Sample.WebActors.Actors.Auction
 
 		public void Send<T>(T message)
 		{
-			_router.Send(message);
+			_input.Send(message);
 		}
 
 		public void Send<T>(T message, RequestResponseChannel replyTo)
 		{
-			_router.Send(message);
+			_input.Send(message);
 		}
 
 		private void ReceiveAsk(Ask message)

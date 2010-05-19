@@ -14,10 +14,15 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.ServiceModel;
-	using Fibers;
+	using Internal;
 
-	public class WcfChannelAdapter<T> :
-		ChannelAdapter<T>,
+	/// <summary>
+	/// Receives messages from a named pipe via WCF and forwards it to the output
+	/// channel. Message serialization is handled entirely by WCF and therefore
+	/// requires that classes are appropriately decorated.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class WcfChannelHost<T> :
 		IDisposable
 	{
 		private readonly WcfChannelService<T> _service;
@@ -26,11 +31,11 @@ namespace Magnum.Channels
 		private bool _disposed;
 		private ServiceHost _serviceHost;
 
-		public WcfChannelAdapter(Fiber fiber, Uri serviceUri, string pipeName)
+		public WcfChannelHost(Channel<T> output, Uri serviceUri, string pipeName)
 		{
 			_serviceUri = serviceUri;
 
-			_service = new WcfChannelService<T>(fiber, this);
+			_service = new WcfChannelService<T>(output);
 
 			_serviceHost = new ServiceHost(_service, _serviceUri);
 			_serviceHost.AddServiceEndpoint(typeof (WcfChannel<T>), new NetNamedPipeBinding(), pipeName);
@@ -52,7 +57,7 @@ namespace Magnum.Channels
 			}
 		}
 
-		~WcfChannelAdapter()
+		~WcfChannelHost()
 		{
 			Dispose(false);
 		}

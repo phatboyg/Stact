@@ -1,12 +1,10 @@
 <CodeStyleSettings>
   <CSharp>
     <FormatSettings>
-      <ALIGN_MULTILINE_ARGUMENT>False</ALIGN_MULTILINE_ARGUMENT>
-      <ALIGN_MULTILINE_ARRAY_AND_OBJECT_INITIALIZER>False</ALIGN_MULTILINE_ARRAY_AND_OBJECT_INITIALIZER>
-      <ALIGN_MULTILINE_EXTENDS_LIST>False</ALIGN_MULTILINE_EXTENDS_LIST>
-      <ALIGN_MULTLINE_TYPE_PARAMETER_CONSTRAINS>False</ALIGN_MULTLINE_TYPE_PARAMETER_CONSTRAINS>
       <INDENT_ANONYMOUS_METHOD_BLOCK>False</INDENT_ANONYMOUS_METHOD_BLOCK>
       <INDENT_EMBRACED_INITIALIZER_BLOCK>False</INDENT_EMBRACED_INITIALIZER_BLOCK>
+      <INDENT_SIZE>4</INDENT_SIZE>
+      <INSERT_TABS>True</INSERT_TABS>
       <MODIFIERS_ORDER IsNull="False">
         <Item>public</Item>
         <Item>protected</Item>
@@ -23,21 +21,32 @@
         <Item>unsafe</Item>
         <Item>volatile</Item>
       </MODIFIERS_ORDER>
-      <PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>False</PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>
-      <PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>False</PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>
-      <PLACE_TYPE_CONSTRAINTS_ON_SAME_LINE>False</PLACE_TYPE_CONSTRAINTS_ON_SAME_LINE>
       <SPACE_BEFORE_ATTRIBUTE_COLON>True</SPACE_BEFORE_ATTRIBUTE_COLON>
+      <WRAP_BEFORE_BINARY_OPSIGN>True</WRAP_BEFORE_BINARY_OPSIGN>
       <WRAP_BEFORE_FIRST_TYPE_PARAMETER_CONSTRAINT>True</WRAP_BEFORE_FIRST_TYPE_PARAMETER_CONSTRAINT>
-      <WRAP_EXTENDS_LIST_STYLE>CHOP_ALWAYS</WRAP_EXTENDS_LIST_STYLE>
-      <WRAP_LINES>False</WRAP_LINES>
+      <WRAP_BEFORE_TYPE_PARAMETER_LANGLE>True</WRAP_BEFORE_TYPE_PARAMETER_LANGLE>
       <WRAP_MULTIPLE_TYPE_PARAMEER_CONSTRAINTS_STYLE>CHOP_ALWAYS</WRAP_MULTIPLE_TYPE_PARAMEER_CONSTRAINTS_STYLE>
+      <WRAP_PARAMETERS_STYLE>CHOP_IF_LONG</WRAP_PARAMETERS_STYLE>
+      <WRAP_TERNARY_EXPR_STYLE>WRAP_IF_LONG</WRAP_TERNARY_EXPR_STYLE>
     </FormatSettings>
     <UsingsSettings>
       <AddImportsToDeepestScope>True</AddImportsToDeepestScope>
     </UsingsSettings>
     <Naming2>
-      <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
-      <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+      <ExceptionName IsNull="False">
+      </ExceptionName>
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+      <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
+      <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
     </Naming2>
     <CustomMemberReorderingPatterns><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 
@@ -76,16 +85,13 @@ II.2.12 <HandlesEvent />
 
 <Patterns xmlns="urn:shemas-jetbrains-com:member-reordering-patterns">
 
-  <!--Do not reorder COM interfaces and structs marked by StructLayout attribute-->
+  <!--Do not reorder COM interfaces-->
   <Pattern>
     <Match>
-      <Or Weight="100">
-        <And>
-          <Kind Is="interface"/>
-          <HasAttribute CLRName="System.Runtime.InteropServices.InterfaceTypeAttribute"/>
-        </And>
-        <HasAttribute CLRName="System.Runtime.InteropServices.StructLayoutAttribute"/>
-      </Or>
+      <And Weight="100">
+        <Kind Is="interface"/>
+        <HasAttribute CLRName="System.Runtime.InteropServices.InterfaceTypeAttribute"/>
+      </And>
     </Match>
   </Pattern>
 
@@ -111,11 +117,7 @@ II.2.12 <HandlesEvent />
           </Or>
         </And>
       </Match>
-      <Group />
     </Entry>
-    
-    <!--All other members-->
-    <Entry/>
     
     <!--Test methods-->
     <Entry>
@@ -128,7 +130,12 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Name/>
       </Sort>
+      <Group />
     </Entry>
+
+    <!--All other members-->
+    <Entry/>
+
   </Pattern>
 
   <!--Default pattern-->
@@ -145,7 +152,7 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Name/>
       </Sort>
-      <Group Region="Delegates"/>
+      <Group />
     </Entry>
     
     <!--public enum-->
@@ -173,9 +180,7 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Kind Order="constant field"/>
         <Static/>
-
         <Readonly/>
-
         <Name/>
       </Sort>
     </Entry>
@@ -198,10 +203,6 @@ II.2.12 <HandlesEvent />
           <Kind Is="indexer"/>
         </Or>
       </Match>
-      <Sort>
-            <Static/>
-            <Access/>
-      </Sort>
     </Entry>
     
     <!--interface implementations-->
@@ -215,32 +216,12 @@ II.2.12 <HandlesEvent />
       <Sort>
         <ImplementsInterface Immediate="true"/>
       </Sort>
-      <Group/>
+      <Group />
     </Entry>
     
     <!--all other members-->
-    <Entry>
-	<Match>
-	<Not>
-	<Static/>
-	</Not>
-	</Match>
-	<Sort>
-	<Access/>
-	</Sort>
-    </Entry>
-
-    <Entry>
-	<Match>
-	<Static/>
-	</Match>
-	<Sort>
-	<Access/>
-	</Sort>
-    </Entry>
-    
     <Entry/>
-	
+    
     <!--nested types-->
     <Entry>
       <Match>
@@ -257,22 +238,13 @@ II.2.12 <HandlesEvent />
 ]]></CustomMemberReorderingPatterns>
   </CSharp>
   <VB>
-    <FormatSettings />
+    <FormatSettings>
+      <INDENT_SIZE>4</INDENT_SIZE>
+      <INSERT_TABS>True</INSERT_TABS>
+    </FormatSettings>
     <ImportsSettings />
-    <Naming2>
-      <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
-      <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
-    </Naming2>
+    <Naming2 />
   </VB>
-  <Web>
-    <Naming2 />
-  </Web>
-  <Xaml>
-    <Naming2 />
-  </Xaml>
-  <XML>
-    <FormatSettings />
-  </XML>
   <FileHeader><![CDATA[Copyright 2007-2008 The Apache Software Foundation.
  
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -288,23 +260,28 @@ specific language governing permissions and limitations under the License.
 ]]></FileHeader>
   <GenerateMemberBody />
   <Naming2>
-    <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
-    <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+    <ExceptionName>ex</ExceptionName>
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
-    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
-    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces">
+      <ExtraRule Prefix="" Suffix="" Style="Aa_bb" />
+    </PredefinedRule>
     <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
     <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
-    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
-    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent">
+      <ExtraRule Prefix="" Suffix="" Style="Aa_bb" />
+    </PredefinedRule>
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
-    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
-    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
-    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
+    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly">
+      <ExtraRule Prefix="_" Suffix="" Style="aaBb" />
+    </PredefinedRule>
   </Naming2>
 </CodeStyleSettings>

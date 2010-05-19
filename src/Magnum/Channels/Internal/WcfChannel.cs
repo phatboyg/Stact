@@ -10,18 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
-	using System.Runtime.Serialization;
+	using System.ServiceModel;
 
-	[DataContract]
-	public class WcfMessageEnvelope :
-		MessageEnvelope
+	/// <summary>
+	///   A single generic channel type used for local channels via WCF/named pipes
+	/// </summary>
+	/// <typeparam name = "T"></typeparam>
+	[ServiceContract(Namespace = "http://magnum-project.net/LocalWcfChannel")]
+	public interface WcfChannel<T>
 	{
-		[DataMember]
-		public string MessageType { get; set; }
-
-		[DataMember]
-		public string Body { get; set; }
+		[OperationContract(IsOneWay = true, IsInitiating = true, IsTerminating = false)]
+		void Send(T message);
 	}
 }

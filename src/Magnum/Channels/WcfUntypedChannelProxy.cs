@@ -16,16 +16,17 @@ namespace Magnum.Channels
 	using System.ServiceModel;
 	using Extensions;
 	using Fibers;
+	using Internal;
 	using Serialization;
 
-	public class WcfUntypedChannel :
+	public class WcfUntypedChannelProxy :
 		UntypedChannel
 	{
 		private readonly EndpointAddress _address;
 		private readonly Fiber _fiber;
 		private readonly WcfChannel<WcfMessageEnvelope> _proxy;
 
-		public WcfUntypedChannel(Fiber fiber, Uri serviceUri, string pipeName)
+		public WcfUntypedChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
 			_fiber = fiber;
 			Serializer = new FastTextSerializer();
@@ -33,9 +34,8 @@ namespace Magnum.Channels
 			PipeName = pipeName;
 
 			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy =
-				System.ServiceModel.ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
-				                                                                                 _address);
+			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
+			                                                                                          _address);
 		}
 
 		public Serializer Serializer { get; private set; }

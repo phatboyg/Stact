@@ -27,20 +27,20 @@ namespace Magnum.Web.Actors.Internal
 	{
 		private readonly ChannelProvider<TInput> _channelProvider;
 		private readonly ModelBinder _modelBinder;
-		private readonly FiberProvider _fiberProvider;
+		private readonly FiberFactory _fiberFactory;
 
-		public ActorRouteHandler(FiberProvider fiberProvider, ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
+		public ActorRouteHandler(FiberFactory fiberFactory, ModelBinder modelBinder, ChannelProvider<TInput> channelProvider)
 		{
 			_modelBinder = modelBinder;
 			_channelProvider = channelProvider;
 
-			_fiberProvider = fiberProvider;
+			_fiberFactory = fiberFactory;
 		}
 
 		public IHttpHandler GetHttpHandler(RequestContext requestContext)
 		{
 			// NOTE this feels a bit dirty, would like to maybe have a context provider or something
-			var context = new HttpActorRequestContext(_fiberProvider(), requestContext);
+			var context = new HttpActorRequestContext(_fiberFactory(), requestContext);
 
 			// NOTE this rocks, need to make sure we are thread safe
 			var inputModel = (TInput) _modelBinder.Bind(typeof (TInput), context);

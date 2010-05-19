@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,27 +17,27 @@ namespace Magnum.Channels
 	using Extensions;
 	using Fibers;
 	using Internal;
+	using Serialization;
 
-	/// <summary>
-	///   A local net.pipe channel proxy
-	/// </summary>
-	/// <typeparam name = "T">The channel type</typeparam>
-	public class LocalWcfChannelProxy<T> :
+	public class WcfChannelProxy<T> :
 		Channel<T>
 	{
 		private readonly EndpointAddress _address;
 		private readonly Fiber _fiber;
 		private readonly WcfChannel<T> _proxy;
 
-		public LocalWcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
+		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
 			_fiber = fiber;
+			Serializer = new FastTextSerializer();
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
 			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
 			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
 		}
+
+		public Serializer Serializer { get; private set; }
 
 		public Uri ServiceUri { get; private set; }
 
