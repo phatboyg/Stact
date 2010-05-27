@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "..\Magnum.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Web.Specs", "..\Magnum.Web.Specs\Magnum.Web.Specs.csproj", "{296C852C-988C-4E01-A653-E3BF95536049}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Actors", "..\Sample.Actors\Sample.Actors.csproj", "{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Actors.Console", "..\Sample.Actors.Console\Sample.Actors.Console.csproj", "{5A44EC48-BB63-420B-9DA1-88E303852484}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{296C852C-988C-4E01-A653-E3BF95536049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{296C852C-988C-4E01-A653-E3BF95536049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{296C852C-988C-4E01-A653-E3BF95536049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A44EC48-BB63-420B-9DA1-88E303852484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A44EC48-BB63-420B-9DA1-88E303852484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A44EC48-BB63-420B-9DA1-88E303852484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A44EC48-BB63-420B-9DA1-88E303852484}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

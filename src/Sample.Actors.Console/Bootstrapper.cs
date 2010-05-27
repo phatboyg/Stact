@@ -10,22 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Sample.Actors.Console
 {
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class
-	{
-		/// <summary>
-		/// Returns an instance of an actor
-		/// </summary>
-		/// <returns></returns>
-		TActor GetActor();
-	}
+	using Magnum.Actors;
+	using Magnum.Fibers;
+	using StructureMap;
 
-	public delegate TActor ActorProvider<TActor, TKey>(TKey key)
-		where TActor : Actor;
+	public class Bootstrapper
+	{
+		public void Bootstrap()
+		{
+			ObjectFactory.Initialize(x =>
+				{
+					x.For<Fiber>().AlwaysUnique().Use<ThreadPoolFiber>();
+					x.SelectConstructor(() => new ThreadPoolFiber());
+					
+					x.For<Scheduler>().Singleton().Use<TimerScheduler>();
+
+					x.For(typeof (ActorCache<,>)).Singleton().Use(typeof (ActorCache<,>));
+
+					x.For<ActorProvider<Seller, string>>().Use(
+						context => key => context.GetInstance<ActorCache<Seller, string>>().Get(key));
+				});
+		}
+	}
 }

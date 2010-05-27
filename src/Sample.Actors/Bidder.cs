@@ -10,22 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Sample.Actors
 {
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class
-	{
-		/// <summary>
-		/// Returns an instance of an actor
-		/// </summary>
-		/// <returns></returns>
-		TActor GetActor();
-	}
+	using System;
+	using Magnum.Actors;
+	using Magnum.Channels;
 
-	public delegate TActor ActorProvider<TActor, TKey>(TKey key)
-		where TActor : Actor;
+	public class Bidder :
+		Actor
+	{
+		public void Send<T>(T message)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Send<T>(T message, RequestResponseChannel replyTo)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

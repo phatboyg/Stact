@@ -12,20 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class
-	{
-		/// <summary>
-		/// Returns an instance of an actor
-		/// </summary>
-		/// <returns></returns>
-		TActor GetActor();
-	}
+	using System;
 
-	public delegate TActor ActorProvider<TActor, TKey>(TKey key)
-		where TActor : Actor;
+	public interface ActorRepository<TActor, TKey>
+		where TActor : Actor
+	{
+		TActor Get(TKey key);
+		TActor Get(TKey key, Func<TKey, TActor> onMissing);
+	}
 }

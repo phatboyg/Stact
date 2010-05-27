@@ -72,7 +72,17 @@ namespace Magnum.Serialization.FastText
 			if (typeof (IEnumerable).IsAssignableFrom(type))
 				return CreateEnumerableSerializer(type);
 
+			if (type.IsInterface)
+				return CreateObjectSerializerForInterface(type);
+
 			return CreateObjectSerializerFor(type);
+		}
+
+		private FastTextTypeSerializer CreateObjectSerializerForInterface(Type type)
+		{
+			var proxyType = InterfaceImplementationBuilder.GetProxyFor(type);
+
+			return CreateObjectSerializerFor(proxyType);
 		}
 
 		private FastTextTypeSerializer CreateObjectSerializerFor(Type type)

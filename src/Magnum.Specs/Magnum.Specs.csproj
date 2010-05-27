@@ -134,9 +134,6 @@
     <Compile Include="CommandLineParser\RequiredAttribute.cs" />
     <Compile Include="CommandLineParser\VersionCommand.cs" />
     <Compile Include="RangeParser_Specs.cs" />
-    <Compile Include="EventStreamProcessing\MessagesToBeTestedWith.cs" />
-    <Compile Include="EventStreamProcessing\ObjectParser_specs.cs" />
-    <Compile Include="EventStreamProcessing\PossibleAttackPattern.cs" />
     <Compile Include="CommandLineParser\Parser_Specs.cs" />
     <Compile Include="CommandLine\ArgumentOrderPolicy_Specs.cs" />
     <Compile Include="CommandLine\ArgumentWithSameFirstLetter.cs" />
@@ -183,6 +180,7 @@
     <Compile Include="Reflection\PropertyPerformance_Specs.cs" />
     <Compile Include="Serialization\Array_Specs.cs" />
     <Compile Include="Serialization\Dictionary_Specs.cs" />
+    <Compile Include="Serialization\Interface_Specs.cs" />
     <Compile Include="Serialization\Object_Specs.cs" />
     <Compile Include="Serialization\SimpleType_Specs.cs" />
     <Compile Include="Serialization\FastSerializerObjects_Specs.cs" />
