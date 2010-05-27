@@ -118,6 +118,7 @@
     <Compile Include="Extensions\GenericExtension_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
+    <Compile Include="FileSystem\FileSystemWatcher_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
     <Compile Include="Guard_Specs.cs" />
     <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />
