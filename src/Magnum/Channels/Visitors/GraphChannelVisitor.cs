@@ -247,9 +247,12 @@ namespace Magnum.Channels.Visitors
 
 		protected override ChannelProvider<T> Visitor<T>(DelegateChannelProvider<T> provider)
 		{
-			Trace.WriteLine("DelegateChannelProvider<{0}>".FormatWith(typeof (T).Name));
+			_current = GetVertex(provider.GetHashCode(), () => "Provider", typeof(DelegateChannelProvider<T>), typeof(T));
 
-			return base.Visitor(provider);
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_current, _stack.Peek(), _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(provider));
 		}
 
 		protected override ChannelProvider<TChannel> Visitor<TConsumer, TChannel>(InstanceChannelProvider<TConsumer, TChannel> provider)
