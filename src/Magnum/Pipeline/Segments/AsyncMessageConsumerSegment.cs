@@ -54,7 +54,7 @@ namespace Magnum.Pipeline.Segments
 			TMessage msg = message as TMessage;
 			if (msg != null)
 			{
-				yield return x => _fiber.Enqueue(() => _getConsumer().Consume(x as TMessage));
+				yield return x => _fiber.Add(() => _getConsumer().Consume(x as TMessage));
 			}
 		}
 	}

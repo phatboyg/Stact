@@ -3,6 +3,7 @@ namespace Magnum.Specs.Channels
 	using System.Collections.Generic;
 	using Fibers;
 	using Magnum.Channels;
+	using Magnum.Channels.Visitors;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 

@@ -22,36 +22,27 @@ namespace Magnum.Fibers
 	public class SynchronousFiber :
 		Fiber
 	{
-		private bool _discardActions;
-		private bool _notAcceptingActions;
+		private bool _stopping;
 
-		public void Enqueue(Action action)
+		public void Add(Action action)
 		{
-			if (_notAcceptingActions)
-				return;
-
-			if (_discardActions)
+			if (_stopping)
 				return;
 
 			action();
 		}
 
-		public void EnqueueMany(params Action[] actions)
+		public void AddMany(params Action[] actions)
 		{
-			actions.Each(Enqueue);
+			actions.Each(Add);
 		}
 
-		public void StopAcceptingActions()
+		public void Stop()
 		{
-			_notAcceptingActions = true;
+			_stopping = true;
 		}
 
-		public void DiscardAllActions()
-		{
-			_discardActions = true;
-		}
-
-		public void ExecuteAll(TimeSpan timeout)
+		public void Shutdown(TimeSpan timeout)
 		{
 		}
 	}

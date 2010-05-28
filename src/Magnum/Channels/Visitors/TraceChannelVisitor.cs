@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Visitors
 {
 	using System.Diagnostics;
 	using Extensions;
@@ -56,7 +56,7 @@ namespace Magnum.Channels
 		protected override Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
 		{
 			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}, Interval = {2}".FormatWith(typeof (T).Name, typeof (TKey).Name,
-				channel.Interval));
+			                                                                                     channel.Interval));
 
 			return base.Visitor(channel);
 		}
@@ -89,9 +89,9 @@ namespace Magnum.Channels
 			return base.Visitor<T>(channel);
 		}
 
-		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
 		{
-			Trace.WriteLine("PublishSubscribeChannel<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Subscribers.Length));
+			Trace.WriteLine("ChannelRouter<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Subscribers.Length));
 
 			return base.Visitor(channel);
 		}

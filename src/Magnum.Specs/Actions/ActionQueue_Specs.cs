@@ -33,11 +33,11 @@ namespace Magnum.Specs.Actions
 
 			var called = new Future<bool>();
 
-			fiber.StopAcceptingActions();
+			fiber.Stop();
 
-			Assert.Throws<FiberException>(() => fiber.Enqueue(() => called.Complete(true)));
+			Assert.Throws<FiberException>(() => fiber.Add(() => called.Complete(true)));
 
-			fiber.ExecuteAll(10.Seconds());
+			fiber.Shutdown(10.Seconds());
 
 			called.IsCompleted.ShouldBeFalse();
 		}
@@ -55,12 +55,12 @@ namespace Magnum.Specs.Actions
 
 			var called = new Future<bool>();
 
-			10.Times(() => fiber.Enqueue(() => Thread.Sleep(100)));
-			fiber.Enqueue(() => called.Complete(true));
+			10.Times(() => fiber.Add(() => Thread.Sleep(100)));
+			fiber.Add(() => called.Complete(true));
 
 			Stopwatch timer = Stopwatch.StartNew();
 
-			fiber.ExecuteAll(8.Seconds());
+			fiber.Shutdown(8.Seconds());
 
 			timer.Stop();
 
@@ -79,12 +79,12 @@ namespace Magnum.Specs.Actions
 			var action = MockRepository.GenerateMock<Action>();
 
 			var queue = new ThreadPoolFiber(2, 0);
-			queue.Enqueue(action);
-			queue.Enqueue(action);
+			queue.Add(action);
+			queue.Add(action);
 
 			try
 			{
-				queue.Enqueue(action);
+				queue.Add(action);
 				Assert.Fail("Should have thrown an exception");
 			}
 			catch (FiberException ex)
@@ -102,13 +102,13 @@ namespace Magnum.Specs.Actions
 		{
 			Fiber fiber = new ThreadFiber();
 
-			fiber.Enqueue(() => Thread.Sleep(1000));
+			fiber.Add(() => Thread.Sleep(1000));
 
 			var called = new Future<bool>();
 
-			fiber.Enqueue(() => called.Complete(true));
+			fiber.Add(() => called.Complete(true));
 
-			fiber.ExecuteAll(12.Seconds());
+			fiber.Shutdown(12.Seconds());
 
 			called.IsCompleted.ShouldBeTrue();
 		}

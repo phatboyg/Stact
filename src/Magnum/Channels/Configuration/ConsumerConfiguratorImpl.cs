@@ -21,7 +21,7 @@ namespace Magnum.Channels.Configuration
 	{
 		private readonly ChannelAccessor<TConsumer, TChannel> _accessor;
 		private readonly IList<object> _args = new List<object>();
-		private Func<TConsumer> _factory = DefaultConsumerFactory;
+		private Func<TChannel, TConsumer> _factory = DefaultConsumerFactory;
 
 		public ConsumerConfiguratorImpl(ChannelAccessor<TConsumer, TChannel> accessor)
 		{
@@ -30,17 +30,24 @@ namespace Magnum.Channels.Configuration
 
 		public ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TConsumer> consumerFactory)
 		{
+			_factory = m => consumerFactory();
+
+			return this;
+		}
+
+		public ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TChannel, TConsumer> consumerFactory)
+		{
 			_factory = consumerFactory;
 
 			return this;
 		}
 
-		public Channel<TChannel> GetChannel()
+		public ChannelProvider<TChannel> GetChannelProvider()
 		{
-			return _accessor(_factory());
+			return new InstanceChannelProvider<TConsumer, TChannel>(_factory, _accessor);
 		}
 
-		private static TConsumer DefaultConsumerFactory()
+		private static TConsumer DefaultConsumerFactory(TChannel message)
 		{
 			return FastActivator<TConsumer>.Create();
 		}

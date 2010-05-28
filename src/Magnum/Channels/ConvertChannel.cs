@@ -46,7 +46,7 @@ namespace Magnum.Channels
 
 		public void Send(TInput message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					TOutput outputMessage = Converter(message);
 

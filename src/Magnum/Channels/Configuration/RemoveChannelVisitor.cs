@@ -18,6 +18,7 @@ namespace Magnum.Channels.Configuration
 	using Extensions;
 	using Fibers;
 	using Reflection;
+	using Visitors;
 
 	public class RemoveChannelVisitor :
 		ChannelVisitor
@@ -179,7 +180,7 @@ namespace Magnum.Channels.Configuration
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
 		{
 			bool changed;
 			Channel<T>[] subscribers = VisitSubscribers(channel.Subscribers, out changed).ToArray();
@@ -187,7 +188,7 @@ namespace Magnum.Channels.Configuration
 				return subscribers[0];
 
 			if (changed)
-				return new PublishSubscribeChannel<T>(subscribers);
+				return new ChannelRouter<T>(subscribers);
 
 			return channel;
 		}

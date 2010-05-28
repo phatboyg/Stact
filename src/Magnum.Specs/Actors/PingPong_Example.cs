@@ -100,7 +100,7 @@ namespace Magnum.Specs.Actors
 
 			public void PingPong(int count, IPingPongPlayer partner)
 			{
-				_player._fiber.Enqueue(() => _player.PingPong(count, partner));
+				_player._fiber.Add(() => _player.PingPong(count, partner));
 			}
 		}
 	}

@@ -15,26 +15,25 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Fibers;
 	using Logging;
 
 	/// <summary>
 	///   Publishes a messages to multiple channels
 	/// </summary>
 	/// <typeparam name = "T">Channel type</typeparam>
-	public class PublishSubscribeChannel<T> :
+	public class ChannelRouter<T> :
 		Channel<T>
 	{
-		private static readonly ILogger _log = Logger.GetLogger<PublishSubscribeChannel<T>>();
+		private static readonly ILogger _log = Logger.GetLogger<ChannelRouter<T>>();
 
 		private readonly Channel<T>[] _subscribers;
 
-		public PublishSubscribeChannel(IEnumerable<Channel<T>> subscribers)
+		public ChannelRouter(IEnumerable<Channel<T>> subscribers)
 		{
 			_subscribers = subscribers.ToArray();
 		}
 
-		public PublishSubscribeChannel(Channel<T>[] subscribers)
+		public ChannelRouter(Channel<T>[] subscribers)
 		{
 			_subscribers = subscribers;
 		}
@@ -46,7 +45,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			foreach (Channel<T> channel in _subscribers)
+			foreach (var channel in _subscribers)
 			{
 				try
 				{

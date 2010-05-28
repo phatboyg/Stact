@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
-	using System;
-	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
@@ -26,10 +24,6 @@ namespace Magnum.Specs.Channels
 	[TestFixture]
 	public class Creating_a_channel_with_a_synchronization_context
 	{
-		private class TestMessage
-		{
-		}
-
 		[Test]
 		public void Should_properly_wrap_the_channel_as_synchronized()
 		{
@@ -74,7 +68,7 @@ namespace Magnum.Specs.Channels
 						typeof (ConsumerChannel<TestMessage>),
 					});
 
-				fiber.Enqueue(() =>
+				fiber.Add(() =>
 					{
 						Trace.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
 						Assert.IsNull(SynchronizationContext.Current);
@@ -88,16 +82,19 @@ namespace Magnum.Specs.Channels
 			}
 		}
 
+		private class TestMessage
+		{
+		}
+
 		private class TestSynchronizationContext :
 			SynchronizationContext
 		{
 			public override void Send(SendOrPostCallback d, object state)
 			{
-				SynchronizationContext.SetSynchronizationContext(this);
+				SetSynchronizationContext(this);
 
 				base.Send(d, state);
 			}
 		}
-
 	}
 }

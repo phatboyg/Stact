@@ -31,7 +31,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 
 		public void Pong(Pong pong)
 		{
-			_fiber.Enqueue(() => Consume(pong));
+			_fiber.Add(() => Consume(pong));
 		}
 
 		public void Start(int count, Pong pong)

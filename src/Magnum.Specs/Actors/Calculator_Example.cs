@@ -84,7 +84,7 @@ namespace Magnum.Specs.Actors
 
 		public void Call<T>(IActor caller, T method)
 		{
-			_fiber.Enqueue(() => Dispatch(caller, method));
+			_fiber.Add(() => Dispatch(caller, method));
 		}
 
 		public void Dispatch<T>(IActor caller, T method)

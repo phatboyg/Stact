@@ -15,6 +15,7 @@ namespace Magnum.Specs.Channels
 	using System;
 	using Fibers;
 	using Magnum.Channels;
+	using Magnum.Channels.Visitors;
 	using Magnum.Extensions;
 	using Magnum.Logging;
 	using NUnit.Framework;
@@ -89,7 +90,7 @@ namespace Magnum.Specs.Channels
 			var secondFuture = new Future<TestMessage>();
 
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
+			var subs = new ChannelRouter<TestMessage>(new[] {first});
 			var adapter = new ChannelAdapter<TestMessage>(subs);
 
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
@@ -112,7 +113,7 @@ namespace Magnum.Specs.Channels
 			var secondFuture = new Future<ITestMessage>();
 
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var subs = new PublishSubscribeChannel<TestMessage>(new[] {first});
+			var subs = new ChannelRouter<TestMessage>(new[] {first});
 			var adapter = new ChannelAdapter<TestMessage>(subs);
 
 			var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);

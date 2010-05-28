@@ -17,6 +17,7 @@ namespace Magnum.Channels.Configuration
 	using Extensions;
 	using Fibers;
 	using Reflection;
+	using Visitors;
 
 	public class AddChannelVisitor<TChannel> :
 		ChannelVisitor
@@ -59,7 +60,7 @@ namespace Magnum.Channels.Configuration
 
 			if (!_added && typeof (T) == typeof (TChannel))
 			{
-				replacement = new PublishSubscribeChannel<T>(new[] {replacement, GetChannel<T>()});
+				replacement = new ChannelRouter<T>(new[] {replacement, GetChannel<T>()});
 				_added = true;
 			}
 
@@ -79,7 +80,7 @@ namespace Magnum.Channels.Configuration
 
 			if (!_added && typeof (T) == typeof (TChannel))
 			{
-				replacement = new PublishSubscribeChannel<T>(new[] {replacement, GetChannel<T>()});
+				replacement = new ChannelRouter<T>(new[] {replacement, GetChannel<T>()});
 				_added = true;
 			}
 
@@ -159,11 +160,11 @@ namespace Magnum.Channels.Configuration
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
 		{
 			if (IsCompatibleType(typeof (T)))
 			{
-				return new PublishSubscribeChannel<T>(VisitSubscribers(channel.Subscribers));
+				return new ChannelRouter<T>(VisitSubscribers(channel.Subscribers));
 			}
 
 			return channel;

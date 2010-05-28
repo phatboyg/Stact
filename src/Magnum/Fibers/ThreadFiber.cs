@@ -57,9 +57,9 @@ namespace Magnum.Fibers
 			get { return _isActive; }
 		}
 
-		public override void ExecuteAll(TimeSpan timeout)
+		public override void Shutdown(TimeSpan timeout)
 		{
-			base.ExecuteAll(timeout);
+			base.Shutdown(timeout);
 
 			_thread.Join(timeout);
 		}

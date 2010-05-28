@@ -15,6 +15,7 @@ namespace Magnum.Specs.Channels
 	using System.Diagnostics;
 	using Fibers;
 	using Magnum.Channels;
+	using Magnum.Channels.Visitors;
 	using NUnit.Framework;
 	using TestFramework;
 

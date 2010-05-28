@@ -88,7 +88,7 @@ namespace Magnum.Specs.Actions
 
 			scheduler.Schedule(1.Seconds(), fiber, () => called.Complete(true));
 
-			scheduler.Disable();
+			scheduler.Stop();
 
 			called.WaitUntilCompleted(2.Seconds()).ShouldBeFalse();
 		}

@@ -14,6 +14,7 @@ namespace Magnum.Channels
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using Visitors;
 
 	public class FlattenChannelVisitor :
 		ChannelVisitor

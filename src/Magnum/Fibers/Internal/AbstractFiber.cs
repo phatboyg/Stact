@@ -26,9 +26,8 @@ namespace Magnum.Fibers.Internal
 		private readonly object _lock = new object();
 		private readonly int _queueLimit;
 		private readonly int _queueTimeout;
-		private bool _discardAllActions;
-		private bool _executingAllActions;
-		private bool _notAcceptingActions;
+		private bool _stopping;
+		private bool _shuttingDown;
 
 		protected AbstractFiber(int queueLimit, int queueTimeout)
 		{
@@ -47,7 +46,7 @@ namespace Magnum.Fibers.Internal
 			}
 		}
 
-		public void Enqueue(Action action)
+		public void Add(Action action)
 		{
 			lock (_lock)
 			{
@@ -62,7 +61,7 @@ namespace Magnum.Fibers.Internal
 			}
 		}
 
-		public void EnqueueMany(params Action[] actions)
+		public void AddMany(params Action[] actions)
 		{
 			lock (_lock)
 			{
@@ -77,40 +76,32 @@ namespace Magnum.Fibers.Internal
 			}
 		}
 
-		public virtual void ExecuteAll(TimeSpan timeout)
+		public virtual void Shutdown(TimeSpan timeout)
 		{
-			DateTime giveUpAt = SystemUtil.Now + timeout;
+			DateTime waitUntil = SystemUtil.Now + timeout;
 
 			lock (_lock)
 			{
-				_executingAllActions = true;
+				_shuttingDown = true;
 				Monitor.PulseAll(_lock);
 
 				while (_actions.Count > 0 || Active)
 				{
-					timeout = giveUpAt - SystemUtil.Now;
+					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
-						throw new FiberException("Timeout expired waiting for all pending actions to complete");
+						throw new FiberException("Timeout expired waiting for all pending actions to complete during shutdown");
 
 					Monitor.Wait(_lock, timeout);
 				}
 			}
 		}
 
-		public void StopAcceptingActions()
+		public void Stop()
 		{
 			lock (_lock)
 			{
-				_notAcceptingActions = true;
-				Monitor.PulseAll(_lock);
-			}
-		}
+				_stopping = true;
 
-		public void DiscardAllActions()
-		{
-			lock (_lock)
-			{
-				_discardAllActions = true;
 				Monitor.PulseAll(_lock);
 			}
 		}
@@ -152,9 +143,8 @@ namespace Magnum.Fibers.Internal
 
 		protected virtual int ActionsAreAvailable()
 		{
-			while (_actions.Count == 0 && !_executingAllActions)
+			while (_actions.Count == 0 && !_shuttingDown)
 			{
-//				Trace.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] waiting for actions to execute");
 				Monitor.Wait(_lock);
 			}
 
@@ -165,7 +155,7 @@ namespace Magnum.Fibers.Internal
 		{
 			foreach (Action action in actions)
 			{
-				if (_discardAllActions)
+				if (_stopping)
 					break;
 
 				try
@@ -199,7 +189,7 @@ namespace Magnum.Fibers.Internal
 
 		private bool IsSpaceAvailable(int needed)
 		{
-			if (_notAcceptingActions)
+			if (_stopping)
 				throw new FiberException("The fiber is no longer accepting actions");
 
 			const int attempts = 100;
@@ -215,7 +205,7 @@ namespace Magnum.Fibers.Internal
 				}
 
 				Monitor.Wait(_lock, timeout);
-				if (_notAcceptingActions)
+				if (_stopping)
 					return false;
 
 				if (_queueLimit <= 0 || _actions.Count + needed <= _queueLimit)

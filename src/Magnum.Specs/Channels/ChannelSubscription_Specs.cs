@@ -146,7 +146,7 @@ namespace Magnum.Specs.Channels
 						typeof (UntypedChannelAdapter),
 						typeof (UntypedChannelRouter),
 						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (PublishSubscribeChannel<TestMessage>),
+						typeof (ChannelRouter<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),
 					});

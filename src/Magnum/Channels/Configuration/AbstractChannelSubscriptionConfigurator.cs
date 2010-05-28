@@ -40,7 +40,7 @@ namespace Magnum.Channels.Configuration
 		{
 			var configurator = new ConsumerConfiguratorImpl<TConsumer, TChannel>(channelAccessor);
 
-			ConsumerProvider = () => configurator.GetChannel();
+			ConsumerProvider = () => new InstanceChannel<TChannel>(configurator.GetChannelProvider());
 
 			return configurator;
 		}

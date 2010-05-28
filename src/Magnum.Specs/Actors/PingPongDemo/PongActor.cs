@@ -27,7 +27,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 
 		public void Ping(Ping ping)
 		{
-			_fiber.Enqueue(() => Consume(ping));
+			_fiber.Add(() => Consume(ping));
 		}
 
 		private void Consume(Ping ping)

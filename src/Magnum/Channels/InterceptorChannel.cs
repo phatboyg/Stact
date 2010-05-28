@@ -44,7 +44,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => InterceptMessage(message));
+			_fiber.Add(() => InterceptMessage(message));
 		}
 
 		private void InterceptMessage(T message)

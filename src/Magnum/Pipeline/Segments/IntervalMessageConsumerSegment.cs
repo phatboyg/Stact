@@ -85,7 +85,7 @@ namespace Magnum.Pipeline.Segments
 			TMessage msg = message as TMessage;
 			if (msg != null)
 			{
-				yield return x => _fiber.Enqueue(() =>
+				yield return x => _fiber.Add(() =>
 					{
 						if (_pending == null)
 						{

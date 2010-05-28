@@ -20,28 +20,24 @@ namespace Magnum.Fibers
 		/// Enqueue a single action to the queue
 		/// </summary>
 		/// <param name="action"></param>
-		void Enqueue(Action action);
+		void Add(Action action);
 
 		/// <summary>
 		/// Enqueue a series of actions to the queue
 		/// </summary>
 		/// <param name="actions"></param>
-		void EnqueueMany(params Action[] actions);
+		void AddMany(params Action[] actions);
 
 		/// <summary>
-		/// Run all remaining actions and return when complete (or when the timeout expires)
+		/// Runs all remaining actions, waiting until all actions have been executed or until the
+		/// timeout expires. If the timeout expires, an exception is thrown.
 		/// </summary>
 		/// <param name="timeout">The time to wait for all pending actions to be executed before throwing an exception</param>
-		void ExecuteAll(TimeSpan timeout);
+		void Shutdown(TimeSpan timeout);
 
 		/// <summary>
-		/// Disable the action queue, discarding any remaining items
+		/// Stops the fiber, discards any remaining actions, and prevents new actions from being added
 		/// </summary>
-		void StopAcceptingActions();
-
-		/// <summary>
-		/// Discard any pending actions from the queue
-		/// </summary>
-		void DiscardAllActions();
+		void Stop();
 	}
 }

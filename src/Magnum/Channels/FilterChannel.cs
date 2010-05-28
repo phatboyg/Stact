@@ -45,7 +45,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					if (Filter(message))
 						Output.Send(message);

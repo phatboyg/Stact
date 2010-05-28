@@ -10,17 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Fibers
+namespace Magnum.Graphing
 {
-	using System;
+	using System.Collections.Generic;
 
-	public interface Scheduler
+	/// <summary>
+	/// A provider of graph data can return vertices and edges
+	/// </summary>
+	public interface GraphProvider
 	{
-		ScheduledAction Schedule(TimeSpan interval, Fiber fiber, Action action);
-		ScheduledAction Schedule(int interval, Fiber fiber, Action action);
-		ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action);
-		ScheduledAction Schedule(int interval, int periodicInterval, Fiber fiber, Action action);
-
-		void Stop();
+		IEnumerable<Vertex> Vertices { get; }
+		IEnumerable<Edge> Edges { get; }
 	}
 }

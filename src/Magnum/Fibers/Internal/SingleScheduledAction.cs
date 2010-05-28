@@ -40,7 +40,7 @@ namespace Magnum.Fibers.Internal
 			if (_cancelled)
 				return;
 
-			_fiber.Enqueue(_action);
+			_fiber.Add(_action);
 		}
 	}
 }

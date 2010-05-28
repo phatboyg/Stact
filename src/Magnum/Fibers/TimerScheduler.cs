@@ -30,7 +30,7 @@ namespace Magnum.Fibers
 		private readonly Fiber _fiber;
 		private readonly object _lock = new object();
 		private readonly TimeSpan _noPeriod = -1.Milliseconds();
-		private bool _disabled;
+		private bool _stopped;
 		private Timer _timer;
 
 		public TimerScheduler(Fiber fiber)
@@ -104,9 +104,9 @@ namespace Magnum.Fibers
 			return scheduled;
 		}
 
-		public void Disable()
+		public void Stop()
 		{
-			_disabled = true;
+			_stopped = true;
 
 			lock (_lock)
 			{
@@ -119,7 +119,7 @@ namespace Magnum.Fibers
 
 		private void Schedule(ExecuteScheduledAction action)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					_actions.Add(action);
 
@@ -144,7 +144,7 @@ namespace Magnum.Fibers
 					}
 					else
 					{
-						_timer = new Timer(x => _fiber.Enqueue(ExecuteExpiredActions), this, dueTime, _noPeriod);
+						_timer = new Timer(x => _fiber.Add(ExecuteExpiredActions), this, dueTime, _noPeriod);
 					}
 				}
 			}
@@ -152,7 +152,7 @@ namespace Magnum.Fibers
 
 		private void ExecuteExpiredActions()
 		{
-			if (_disabled)
+			if (_stopped)
 				return;
 
 			ExecuteScheduledAction[] expiredActions;

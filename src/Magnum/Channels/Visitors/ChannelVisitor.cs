@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Visitors
 {
 	using Extensions;
 	using Logging;
@@ -123,7 +123,7 @@ namespace Magnum.Channels
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(PublishSubscribeChannel<T> channel)
+		protected virtual Channel<T> Visitor<T>(ChannelRouter<T> channel)
 		{
 			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
 
@@ -173,6 +173,12 @@ namespace Magnum.Channels
 		}
 
 		protected virtual ChannelProvider<T> Visitor<T>(ChannelProvider<T> provider)
+		{
+			return provider;
+		}
+
+		protected virtual ChannelProvider<TChannel> Visitor<TConsumer, TChannel>(
+			InstanceChannelProvider<TConsumer, TChannel> provider)
 		{
 			return provider;
 		}

@@ -42,7 +42,7 @@ namespace Magnum.Web.Abstractions
 		/// <param name="message"></param>
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					_writer.Write(message);
 

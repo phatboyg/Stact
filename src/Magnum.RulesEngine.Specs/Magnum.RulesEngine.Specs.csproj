@@ -62,6 +62,7 @@
     <Compile Include="ExecutionModelTest\SingleInputNode_Specs.cs" />
     <Compile Include="Expression_Specs.cs" />
     <Compile Include="FluentRuleSyntax\DeclareRule_Specs.cs" />
+    <Compile Include="Graphing\GraphChannel_Specs.cs" />
     <Compile Include="Graphing\Graphing_Specs.cs" />
     <Compile Include="Graphing\PipelineGraphing_Specs.cs" />
     <Compile Include="Graphing\StateMachineGraph_Specs.cs" />

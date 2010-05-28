@@ -38,7 +38,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => _consumer(message));
+			_fiber.Add(() => _consumer(message));
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					Consumer<T> consumer = _selectiveConsumer(message);
 					if (consumer != null)

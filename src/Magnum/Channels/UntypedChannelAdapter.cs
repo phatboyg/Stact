@@ -40,7 +40,7 @@ namespace Magnum.Channels
 
 		public void Send<T>(T message)
 		{
-			_fiber.Enqueue(() => Output.Send(message));
+			_fiber.Add(() => Output.Send(message));
 		}
 
 		public void ChangeOutputChannel(UntypedChannel original, UntypedChannel replacement)

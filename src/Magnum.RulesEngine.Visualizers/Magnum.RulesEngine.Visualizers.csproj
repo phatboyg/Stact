@@ -67,6 +67,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="ChannelGraphGenerator.cs" />
     <Compile Include="PipelineVisualizerForm.cs">
       <SubType>Form</SubType>
     </Compile>

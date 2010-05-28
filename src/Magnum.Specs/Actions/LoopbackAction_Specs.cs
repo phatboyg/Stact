@@ -59,11 +59,11 @@ namespace Magnum.Specs.Actions
 				Fiber fiber = new ThreadPoolFiber(messageCount, 1000);
 				for (int j = 0; j < messageCount; j++)
 				{
-					fiber.Enqueue(() =>
+					fiber.Add(() =>
 						{
 							SuperSleeper.Wait(1);
 
-							reader.Enqueue(() =>
+							reader.Add(() =>
 								{
 									total++;
 									if (total == writerCount*messageCount)

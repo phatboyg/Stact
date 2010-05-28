@@ -95,6 +95,8 @@
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Channels\ChannelSubscription.cs" />
+    <Compile Include="Channels\InstanceChannelProvider.cs" />
+    <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\WcfChannelHost.cs" />
     <Compile Include="Channels\WcfChannelProxy.cs" />
     <Compile Include="Channels\WcfUntypedChannelProxy.cs" />
@@ -132,7 +134,7 @@
     <Compile Include="Channels\Mailbox.cs" />
     <Compile Include="Channels\RequestResponseChannel.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
-    <Compile Include="Channels\TraceChannelVisitor.cs" />
+    <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\LocalWcfChannelProxy.cs" />
@@ -170,7 +172,7 @@
     <Compile Include="Fibers\FiberFactory.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
-    <Compile Include="Channels\ChannelVisitor.cs" />
+    <Compile Include="Channels\Visitors\ChannelVisitor.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />
@@ -192,7 +194,7 @@
     <Compile Include="Channels\KeyAccessor.cs" />
     <Compile Include="Channels\LastIntervalChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
-    <Compile Include="Channels\PublishSubscribeChannel.cs" />
+    <Compile Include="Channels\ChannelRouter.cs" />
     <Compile Include="Channels\SynchronizedChannel.cs" />
     <Compile Include="Channels\ThreadPoolChannel.cs" />
     <Compile Include="Channels\ThreadStaticChannelProvider.cs" />
@@ -317,6 +319,7 @@
     <Compile Include="FileSystem\FileSystemEventProducer.cs" />
     <Compile Include="FileSystem\Internal\FileSystemDeletedImpl.cs" />
     <Compile Include="Graphing\Edge.cs" />
+    <Compile Include="Graphing\GraphProvider.cs" />
     <Compile Include="Graphing\Vertex.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ConsoleLogProvider.cs" />

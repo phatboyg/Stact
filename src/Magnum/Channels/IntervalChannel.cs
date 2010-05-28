@@ -54,7 +54,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() => _messages.Add(message));
+			_fiber.Add(() => _messages.Add(message));
 		}
 
 		public void Dispose()

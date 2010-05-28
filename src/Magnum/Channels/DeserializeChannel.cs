@@ -31,7 +31,7 @@ namespace Magnum.Channels
 
 		public void Send(string message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					var msg = _serializer.Deserialize<T>(message);
 

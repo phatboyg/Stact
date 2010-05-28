@@ -46,7 +46,7 @@ namespace Magnum.Channels
 
 		public void Send<T>(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					var envelope = new WcfMessageEnvelope
 						{

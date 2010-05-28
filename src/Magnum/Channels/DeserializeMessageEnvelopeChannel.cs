@@ -47,7 +47,7 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			_fiber.Enqueue(() =>
+			_fiber.Add(() =>
 				{
 					Type messageType = Type.GetType(message.MessageType, true, true);
 					if (messageType == null)

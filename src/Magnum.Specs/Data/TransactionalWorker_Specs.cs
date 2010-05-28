@@ -47,7 +47,7 @@ namespace Magnum.Specs.Data
 							Trace.WriteLine("Completed");		
 						};
 
-					fiber.Enqueue(() =>
+					fiber.Add(() =>
 						{
 							dep.Start();
 							try
