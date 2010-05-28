@@ -96,6 +96,7 @@
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Channels\ChannelSubscription.cs" />
     <Compile Include="Channels\InstanceChannelProvider.cs" />
+    <Compile Include="Channels\SelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\WcfChannelHost.cs" />
     <Compile Include="Channels\WcfChannelProxy.cs" />

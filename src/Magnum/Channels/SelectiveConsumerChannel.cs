@@ -19,26 +19,33 @@ namespace Magnum.Channels
 	/// specified Fiber
 	/// </summary>
 	/// <typeparam name="T">The type of message delivered on the channel</typeparam>
-	public class ConsumerChannel<T> :
+	public class SelectiveConsumerChannel<T> :
 		Channel<T>
 	{
-		private readonly Consumer<T> _consumer;
 		private readonly Fiber _fiber;
+		private readonly SelectiveConsumer<T> _selectiveConsumer;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
 		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
-		/// <param name="consumer">The method to call when a message is sent to the channel</param>
-		public ConsumerChannel(Fiber fiber, Consumer<T> consumer)
+		/// <param name="selectiveConsumer">The method to call when a message is sent to the channel</param>
+		public SelectiveConsumerChannel(Fiber fiber, SelectiveConsumer<T> selectiveConsumer)
 		{
 			_fiber = fiber;
-			_consumer = consumer;
+			_selectiveConsumer = selectiveConsumer;
 		}
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => _consumer(message));
+			_fiber.Add(() =>
+				{
+					Consumer<T> consumer = _selectiveConsumer(message);
+					if (consumer != null)
+					{
+						consumer(message);
+					}
+				});
 		}
 	}
 }
