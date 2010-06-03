@@ -15,6 +15,7 @@ namespace Magnum.Extensions
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Monads;
 
 	public static class ExtensionsToExpression
 	{
@@ -113,6 +114,13 @@ namespace Magnum.Extensions
 				throw new ArgumentException("Expression is not a member access");
 
 			return memberExpression;
+		}
+
+
+		public static Expression<Func<T1, TResult>> Curry<T1, T2, TResult>(this Expression<Func<T1, T2, TResult>> expression,
+		                                                                   T2 value)
+		{
+			return new CurryExpressionVisitor<T1, T2, TResult>().Curry(expression, value);
 		}
 	}
 }

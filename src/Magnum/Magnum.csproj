@@ -336,6 +336,7 @@
     <Compile Include="Logging\TraceLogger.cs" />
     <Compile Include="Logging\TraceLogWriter.cs" />
     <Compile Include="Logging\TraceLogProvider.cs" />
+    <Compile Include="Monads\CurryExpressionVisitor.cs" />
     <Compile Include="Monads\State.cs" />
     <Compile Include="Pipeline\Visitors\GraphPipelineVisitor.cs" />
     <Compile Include="Reflection\ExpressionExtensions.cs" />
