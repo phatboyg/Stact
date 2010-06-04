@@ -24,15 +24,15 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, false);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, false);
 		}
 
 		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
@@ -47,7 +47,7 @@ namespace Magnum.Reflection
 			SetDelegate(instance, value);
 		}
 
-		private static Action<object, object> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		public static Action<object, object> GetSetMethod(PropertyInfo property, bool includeNonPublic)
 		{
 			var instance = Expression.Parameter(typeof (object), "instance");
 			var value = Expression.Parameter(typeof (object), "value");
@@ -70,7 +70,7 @@ namespace Magnum.Reflection
 			return Expression.Lambda<Action<object, object>>(call, new[] {instance, value}).Compile();
 		}
 
-		private static Func<object, object> InitializeGet(PropertyInfo property)
+		public static Func<object, object> GetGetMethod(PropertyInfo property)
 		{
 			var instance = Expression.Parameter(typeof (object), "instance");
 			UnaryExpression instanceCast;

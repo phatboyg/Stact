@@ -138,35 +138,31 @@ namespace Magnum.Specs.Monads
 				// we have a nested expression, we need to dig it out
 				if (me.Expression.NodeType == ExpressionType.MemberAccess)
 				{
-					return this.FastInvoke<SetterMaker, Action<T, object>>(new[] {typeof (T), me.Expression.Type},
-					                                                       "CreateNullSafeSetter",
-					                                                       property, me.Expression, expression.Parameters[0]);
+					return CreateNullSafeSetter<T>(property, (MemberExpression)me.Expression, expression.Parameters[0]);
 				}
 			}
 
 			throw new NotImplementedException("Not ready yet.");
 		}
 
-		private Action<T, object> CreateNullSafeSetter<T, TDeclaring>(PropertyInfo propertyInfo,
+		private static Action<T, object> CreateNullSafeSetter<T>(PropertyInfo propertyInfo,
 		                                                              MemberExpression me,
 		                                                              ParameterExpression parameter)
-			where TDeclaring : class, new()
 		{
-			Func<T, TDeclaring> getDeclaring = CreateNullSafeGetter<T, TDeclaring>(me, parameter);
+			Func<T, object> getDeclaring = CreateNullSafeGetter<T>(me, parameter);
 
-			Action<TDeclaring, object> setProperty = FastProperty<TDeclaring>.GetSetMethod(propertyInfo, true);
+			Action<object, object> setProperty = FastProperty.GetSetMethod(propertyInfo, true);
 
 			return (o, v) =>
 				{
-					TDeclaring declared = getDeclaring(o);
+					object declared = getDeclaring(o);
 
 					setProperty(declared, v);
 				};
 		}
 
-		private Func<T, TDeclaring> CreateNullSafeGetter<T, TDeclaring>(MemberExpression me,
+		private static Func<T, object> CreateNullSafeGetter<T>(MemberExpression me,
 		                                                                ParameterExpression parameter)
-			where TDeclaring : class, new()
 		{
 			if (me.Member.MemberType == MemberTypes.Property)
 			{
@@ -174,15 +170,15 @@ namespace Magnum.Specs.Monads
 
 				if (me.Expression.NodeType == ExpressionType.Parameter && me.Expression == parameter)
 				{
-					Func<T, TDeclaring> getDeclaring = FastProperty<T, TDeclaring>.GetGetMethod(property);
-					Action<T, TDeclaring> setDeclaring = FastProperty<T, TDeclaring>.GetSetMethod(property, true);
+					Func<T, object> getDeclaring = FastProperty<T>.GetGetMethod(property);
+					Action<T, object> setDeclaring = FastProperty<T>.GetSetMethod(property, true);
 
 					return (o) =>
 						{
-							TDeclaring declared = getDeclaring(o);
+							object declared = getDeclaring(o);
 							if (declared == null)
 							{
-								declared = new TDeclaring();
+								declared = FastActivator.Create(property.PropertyType);
 								setDeclaring(o, declared);
 							}
 
@@ -192,9 +188,24 @@ namespace Magnum.Specs.Monads
 
 				if (me.Expression.NodeType == ExpressionType.MemberAccess)
 				{
-//					return this.FastInvoke<SetterMaker, Action<T, object>>(new[] {typeof (T), me.Expression.Type},
-//					                                                       "CreateNullSafeSetter",
-//					                                                       property, me.Expression, expression.Parameters[0]);
+					Func<T, object> getChild = CreateNullSafeGetter<T>((MemberExpression)me.Expression, parameter);
+
+					Func<object, object> getDeclaring = FastProperty.GetGetMethod(property);
+					Action<object, object> setDeclaring = FastProperty.GetSetMethod(property, true);
+
+					return (o) =>
+						{
+							object target = getChild(o);
+
+							object declared = getDeclaring(target);
+							if (declared == null)
+							{
+								declared = FastActivator.Create(property.PropertyType);
+								setDeclaring(target, declared);
+							}
+
+							return declared;
+						};
 				}
 			}
 
