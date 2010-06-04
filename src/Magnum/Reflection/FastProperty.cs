@@ -94,15 +94,15 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, false);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, false);
 		}
 
 		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
@@ -117,7 +117,7 @@ namespace Magnum.Reflection
 			SetDelegate(instance, value);
 		}
 
-		private static Action<T, object> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		public static Action<T, object> GetSetMethod(PropertyInfo property, bool includeNonPublic)
 		{
 		    if (!property.CanWrite)
 		        return (x, i) => { throw new InvalidOperationException("No setter available on " + property.Name); };
@@ -136,7 +136,7 @@ namespace Magnum.Reflection
 		    return Expression.Lambda<Action<T, object>>(call, new[] { instance, value }).Compile();
 		}
 
-	    private static Func<T, object> InitializeGet(PropertyInfo property)
+		public static Func<T, object> GetGetMethod(PropertyInfo property)
 		{
 			var instance = Expression.Parameter(typeof (T), "instance");
 			var call = Expression.Call(instance, property.GetGetMethod());
@@ -153,15 +153,15 @@ namespace Magnum.Reflection
 		public FastProperty(PropertyInfo property)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, false);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, false);
 		}
 
 		public FastProperty(PropertyInfo property, BindingFlags bindingFlags)
 		{
 			Property = property;
-			GetDelegate = InitializeGet(Property);
-			SetDelegate = InitializeSet(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
+			GetDelegate = GetGetMethod(Property);
+			SetDelegate = GetSetMethod(Property, (bindingFlags & BindingFlags.NonPublic) == BindingFlags.NonPublic);
 		}
 
 		public PropertyInfo Property { get; set; }
@@ -176,7 +176,7 @@ namespace Magnum.Reflection
 			SetDelegate(instance, value);
 		}
 
-		private static Action<T, P> InitializeSet(PropertyInfo property, bool includeNonPublic)
+		public static Action<T, P> GetSetMethod(PropertyInfo property, bool includeNonPublic)
 		{
 			var instance = Expression.Parameter(typeof (T), "instance");
 			var value = Expression.Parameter(typeof (P), "value");
@@ -187,7 +187,7 @@ namespace Magnum.Reflection
 			// roughly looks like Action<T,P> a = new Action<T,P>((instance,value) => instance.set_Property(value));
 		}
 
-		private static Func<T, P> InitializeGet(PropertyInfo property)
+		public static Func<T, P> GetGetMethod(PropertyInfo property)
 		{
 			var instance = Expression.Parameter(typeof (T), "instance");
 			return Expression.Lambda<Func<T, P>>(Expression.Call(instance, property.GetGetMethod()), instance).Compile();

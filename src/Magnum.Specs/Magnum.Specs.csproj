@@ -127,6 +127,7 @@
     <Compile Include="Invoker\Performance_Specs.cs" />
     <Compile Include="Logging\Logging_Specs.cs" />
     <Compile Include="Monads\Currying_Specs.cs" />
+    <Compile Include="Monads\SetProperty_Specs.cs" />
     <Compile Include="Policies\ExceptionPolicy_Specs.cs" />
     <Compile Include="CommandLineParser\EchoCommand.cs" />
     <Compile Include="CommandLineParser\Executor_Specs.cs" />
