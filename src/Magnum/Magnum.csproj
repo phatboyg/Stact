@@ -340,6 +340,7 @@
     <Compile Include="Monads\State.cs" />
     <Compile Include="Pipeline\Visitors\GraphPipelineVisitor.cs" />
     <Compile Include="Reflection\ExpressionExtensions.cs" />
+    <Compile Include="Reflection\ExtensionsToSafeProperty.cs" />
     <Compile Include="Reflection\GenericFastActivator.cs" />
     <Compile Include="Reflection\FastActivator.cs" />
     <Compile Include="Reflection\FastActivatorBase.cs" />
@@ -350,6 +351,7 @@
     <Compile Include="Reflection\FastActivator.1.cs" />
     <Compile Include="Reflection\FastActivatorException.cs" />
     <Compile Include="Reflection\InterfaceImplementationBuilder.cs" />
+    <Compile Include="Reflection\SafeProperty.cs" />
     <Compile Include="Reflection\TypeSpecializationExtensions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="ILocalContext.cs" />

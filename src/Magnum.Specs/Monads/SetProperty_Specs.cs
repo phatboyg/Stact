@@ -13,9 +13,8 @@
 namespace Magnum.Specs.Monads
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq.Expressions;
-	using System.Reflection;
-	using Magnum.Extensions;
 	using Magnum.Reflection;
 	using NUnit.Framework;
 	using TestFramework;
@@ -28,14 +27,14 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<OuterClass, object>> accessor = o => o.Inner.Value;
 
-			Action<OuterClass, object> writer = accessor.CreateSafeSetter();
+			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new OuterClass();
 			subject.Inner = new InnerClass {OtherValue = "Hi"};
 
-			writer(subject, expected);
+			writer.Set(subject, expected);
 
 			subject.Inner.Value.ShouldEqual(expected);
 			subject.Inner.OtherValue.ShouldEqual("Hi");
@@ -47,14 +46,14 @@ namespace Magnum.Specs.Monads
 			Expression<Func<OuterClass, object>> accessor = o => o.Value;
 
 
-			Action<OuterClass, object> writer = accessor.CreateSafeSetter();
+			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
 
 
 			var subject = new OuterClass();
 
 			const string expected = "Hello";
 
-			writer(subject, expected);
+			writer.Set(subject, expected);
 
 			subject.Value.ShouldEqual(expected);
 		}
@@ -64,13 +63,13 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<WayOuterClass, object>> accessor = o => o.Outer.Inner.Value;
 
-			Action<WayOuterClass, object> writer = accessor.CreateSafeSetter();
+			SafeProperty<WayOuterClass> writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new WayOuterClass();
 
-			writer(subject, expected);
+			writer.Set(subject, expected);
 
 			subject.Outer.Inner.Value.ShouldEqual(expected);
 		}
@@ -80,15 +79,49 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<OuterClass, object>> accessor = o => o.Inner.Value;
 
-			Action<OuterClass, object> writer = accessor.CreateSafeSetter();
+			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new OuterClass();
 
-			writer(subject, expected);
+			writer.Set(subject, expected);
 
 			subject.Inner.Value.ShouldEqual(expected);
+		}
+
+		[Test]
+		public void Should_create_a_backing_list_for_list_based_properties()
+		{
+			Expression<Func<OuterClass, object>> accessor = o => o.Inners[0].Value;
+
+			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
+
+			const string expected = "Hello";
+
+			var subject = new OuterClass();
+
+			writer.Set(subject, expected);
+
+			subject.Inners.ShouldNotBeNull();
+			subject.Inners[0].Value.ShouldEqual(expected);
+		}
+
+		[Test]
+		public void Should_create_a_backing_list_for_list_based_properties_way_deep()
+		{
+			Expression<Func<WayOuterClass, object>> accessor = o => o.Outer.Inners[0].Value;
+
+			SafeProperty<WayOuterClass> writer = accessor.CreateSafeProperty();
+
+			const string expected = "Hello";
+
+			var subject = new WayOuterClass();
+
+			writer.Set(subject, expected);
+
+			subject.Outer.Inners.ShouldNotBeNull();
+			subject.Outer.Inners[0].Value.ShouldEqual(expected);
 		}
 
 		public class InnerClass
@@ -101,242 +134,12 @@ namespace Magnum.Specs.Monads
 		{
 			public InnerClass Inner { get; set; }
 			public string Value { get; set; }
+			public IList<InnerClass> Inners { get; set; }
 		}
 
 		public class WayOuterClass
 		{
 			public OuterClass Outer { get; private set; }
-		}
-	}
-
-	public static class extension
-	{
-		public static Action<T, object> CreateSafeSetter<T>(this Expression<Func<T, object>> expression)
-		{
-			return new SetterMaker().CreateSetter(expression);
-
-			//return new CreateSetterExpressionVisitor<T>().CreateSafeSetter(expression);
-		}
-	}
-
-
-	public class SetterMaker
-	{
-		public Action<T, object> CreateSetter<T>(Expression<Func<T, object>> expression)
-		{
-			MemberExpression me = expression.GetMemberExpression();
-
-			if (me.Member.MemberType == MemberTypes.Property)
-			{
-				var property = (PropertyInfo) me.Member;
-
-				if (me.Expression.NodeType == ExpressionType.Parameter && me.Expression.Type == typeof (T))
-				{
-					return FastProperty<T>.GetSetMethod(property, true);
-				}
-
-				// we have a nested expression, we need to dig it out
-				if (me.Expression.NodeType == ExpressionType.MemberAccess)
-				{
-					return CreateNullSafeSetter<T>(property, (MemberExpression)me.Expression, expression.Parameters[0]);
-				}
-			}
-
-			throw new NotImplementedException("Not ready yet.");
-		}
-
-		private static Action<T, object> CreateNullSafeSetter<T>(PropertyInfo propertyInfo,
-		                                                              MemberExpression me,
-		                                                              ParameterExpression parameter)
-		{
-			Func<T, object> getDeclaring = CreateNullSafeGetter<T>(me, parameter);
-
-			Action<object, object> setProperty = FastProperty.GetSetMethod(propertyInfo, true);
-
-			return (o, v) =>
-				{
-					object declared = getDeclaring(o);
-
-					setProperty(declared, v);
-				};
-		}
-
-		private static Func<T, object> CreateNullSafeGetter<T>(MemberExpression me,
-		                                                                ParameterExpression parameter)
-		{
-			if (me.Member.MemberType == MemberTypes.Property)
-			{
-				var property = (PropertyInfo) me.Member;
-
-				if (me.Expression.NodeType == ExpressionType.Parameter && me.Expression == parameter)
-				{
-					Func<T, object> getDeclaring = FastProperty<T>.GetGetMethod(property);
-					Action<T, object> setDeclaring = FastProperty<T>.GetSetMethod(property, true);
-
-					return (o) =>
-						{
-							object declared = getDeclaring(o);
-							if (declared == null)
-							{
-								declared = FastActivator.Create(property.PropertyType);
-								setDeclaring(o, declared);
-							}
-
-							return declared;
-						};
-				}
-
-				if (me.Expression.NodeType == ExpressionType.MemberAccess)
-				{
-					Func<T, object> getChild = CreateNullSafeGetter<T>((MemberExpression)me.Expression, parameter);
-
-					Func<object, object> getDeclaring = FastProperty.GetGetMethod(property);
-					Action<object, object> setDeclaring = FastProperty.GetSetMethod(property, true);
-
-					return (o) =>
-						{
-							object target = getChild(o);
-
-							object declared = getDeclaring(target);
-							if (declared == null)
-							{
-								declared = FastActivator.Create(property.PropertyType);
-								setDeclaring(target, declared);
-							}
-
-							return declared;
-						};
-				}
-			}
-
-			throw new NotImplementedException("Have not gotten this far yet");
-		}
-	}
-
-
-	public class CreateSetterExpressionVisitor<T> :
-		ExpressionVisitor
-	{
-		private ParameterExpression _parameter;
-		private Action<T, object> _result;
-
-		public Action<T, object> CreateSafeSetter(Expression<Func<T, object>> expression)
-		{
-			_parameter = expression.Parameters[0];
-
-			return DoIt(expression);
-		}
-
-		private Action<T, object> DoIt(Expression<Func<T, object>> expression)
-		{
-			Visit(expression);
-
-			if (_result == null)
-				throw new InvalidOperationException("The expression was not evaluated into a proper setter");
-
-			return _result;
-		}
-
-		protected override Expression VisitMethodCall(MethodCallExpression m)
-		{
-			return base.VisitMethodCall(m);
-		}
-
-		protected override Expression VisitMemberAccess(MemberExpression m)
-		{
-			if (m.Member.MemberType == MemberTypes.Property)
-			{
-				var property = (PropertyInfo) m.Member;
-
-				if (m.Expression.NodeType == ExpressionType.Parameter)
-				{
-					_result = GetSetMethod(property, true);
-				}
-				else
-				{
-					this.FastInvoke(new[] {m.Expression.Type}, "VisitClassProperty", new object[] {property, m.Expression});
-				}
-			}
-
-			return base.VisitMemberAccess(m);
-		}
-
-		private void VisitClassProperty<TContainer>(PropertyInfo property, Expression expression)
-			where TContainer : class
-		{
-			Expression<Func<T, TContainer>> inputExpression = Expression.Lambda<Func<T, TContainer>>(expression, _parameter);
-
-			Func<T, TContainer> input = inputExpression.Compile();
-
-			Func<TContainer, object> getter = GetGetMethod<TContainer>(property);
-			Action<TContainer, object> setter = GetSetMethod<TContainer>(property, true);
-			Action<T, object> writer = GetSetMethod(property, true);
-
-			Type propertyType = property.PropertyType;
-
-			_result = (x, v) =>
-				{
-					TContainer p = input(x);
-
-					object current = getter(p);
-					if (current == null)
-					{
-						current = FastActivator.Create(propertyType);
-						setter(p, current);
-					}
-				};
-		}
-
-		private static Action<T, object> GetSetMethod(PropertyInfo property, bool includeNonPublic)
-		{
-			if (!property.CanWrite)
-				return (x, i) => { throw new InvalidOperationException("No setter available on " + property.Name); };
-
-			ParameterExpression instance = Expression.Parameter(typeof (T), "instance");
-			ParameterExpression value = Expression.Parameter(typeof (object), "value");
-			UnaryExpression valueCast;
-			if (property.PropertyType.IsValueType)
-				valueCast = Expression.Convert(value, property.PropertyType);
-			else
-				valueCast = Expression.TypeAs(value, property.PropertyType);
-
-			MethodCallExpression call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), valueCast);
-
-			return Expression.Lambda<Action<T, object>>(call, new[] {instance, value}).Compile();
-		}
-
-		private static Action<T1, object> GetSetMethod<T1>(PropertyInfo property, bool includeNonPublic)
-		{
-			if (!property.CanWrite)
-				return (x, i) => { throw new InvalidOperationException("No setter available on " + property.Name); };
-
-			ParameterExpression instance = Expression.Parameter(typeof (T1), "instance");
-			ParameterExpression value = Expression.Parameter(typeof (object), "value");
-			UnaryExpression valueCast;
-			if (property.PropertyType.IsValueType)
-				valueCast = Expression.Convert(value, property.PropertyType);
-			else
-				valueCast = Expression.TypeAs(value, property.PropertyType);
-
-			MethodCallExpression call = Expression.Call(instance, property.GetSetMethod(includeNonPublic), valueCast);
-
-			return Expression.Lambda<Action<T1, object>>(call, new[] {instance, value}).Compile();
-		}
-
-		private static Func<T, object> GetGetMethod(PropertyInfo property)
-		{
-			ParameterExpression instance = Expression.Parameter(typeof (T), "instance");
-			MethodCallExpression call = Expression.Call(instance, property.GetGetMethod());
-			UnaryExpression typeAs = Expression.TypeAs(call, typeof (object));
-			return Expression.Lambda<Func<T, object>>(typeAs, instance).Compile();
-		}
-
-		private static Func<T1, object> GetGetMethod<T1>(PropertyInfo property)
-		{
-			ParameterExpression instance = Expression.Parameter(typeof (T1), "instance");
-			MethodCallExpression call = Expression.Call(instance, property.GetGetMethod());
-			UnaryExpression typeAs = Expression.TypeAs(call, typeof (object));
-			return Expression.Lambda<Func<T1, object>>(typeAs, instance).Compile();
 		}
 	}
 }
