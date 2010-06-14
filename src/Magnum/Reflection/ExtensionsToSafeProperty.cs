@@ -17,9 +17,14 @@ namespace Magnum.Reflection
 
 	public static class ExtensionsToSafeProperty
 	{
-		public static SafeProperty<T> CreateSafeProperty<T>(this Expression<Func<T, object>> expression)
+		public static SafeProperty CreateSafeProperty<T,V>(this Expression<Func<T, V>> expression)
 		{
-			return new SafeProperty<T>(expression);
+			return SafeProperty.Create(expression);
+		}
+
+		public static SafeProperty CreateSafeProperty<T,V>(this Expression<Func<T, int, V>> expression)
+		{
+			return SafeProperty.Create(expression);
 		}
 	}
 }

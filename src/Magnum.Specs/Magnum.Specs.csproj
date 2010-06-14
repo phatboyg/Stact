@@ -181,6 +181,8 @@
     <Compile Include="Reflection\GenericTypeReflection_Specs.cs" />
     <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
     <Compile Include="Reflection\PropertyPerformance_Specs.cs" />
+    <Compile Include="Reflection\SafePropertyVisitor_Specs.cs" />
+    <Compile Include="Reflection\SafeProperty_Specs.cs" />
     <Compile Include="Serialization\Array_Specs.cs" />
     <Compile Include="Serialization\Dictionary_Specs.cs" />
     <Compile Include="Serialization\Interface_Specs.cs" />

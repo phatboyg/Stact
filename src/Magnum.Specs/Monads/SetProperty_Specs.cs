@@ -27,14 +27,14 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<OuterClass, object>> accessor = o => o.Inner.Value;
 
-			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new OuterClass();
 			subject.Inner = new InnerClass {OtherValue = "Hi"};
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Inner.Value.ShouldEqual(expected);
 			subject.Inner.OtherValue.ShouldEqual("Hi");
@@ -46,14 +46,14 @@ namespace Magnum.Specs.Monads
 			Expression<Func<OuterClass, object>> accessor = o => o.Value;
 
 
-			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 
 			var subject = new OuterClass();
 
 			const string expected = "Hello";
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Value.ShouldEqual(expected);
 		}
@@ -63,13 +63,13 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<WayOuterClass, object>> accessor = o => o.Outer.Inner.Value;
 
-			SafeProperty<WayOuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new WayOuterClass();
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Outer.Inner.Value.ShouldEqual(expected);
 		}
@@ -79,13 +79,13 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<OuterClass, object>> accessor = o => o.Inner.Value;
 
-			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new OuterClass();
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Inner.Value.ShouldEqual(expected);
 		}
@@ -95,13 +95,13 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<OuterClass, object>> accessor = o => o.Inners[0].Value;
 
-			SafeProperty<OuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new OuterClass();
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Inners.ShouldNotBeNull();
 			subject.Inners[0].Value.ShouldEqual(expected);
@@ -112,13 +112,13 @@ namespace Magnum.Specs.Monads
 		{
 			Expression<Func<WayOuterClass, object>> accessor = o => o.Outer.Inners[0].Value;
 
-			SafeProperty<WayOuterClass> writer = accessor.CreateSafeProperty();
+			SafeProperty writer = accessor.CreateSafeProperty();
 
 			const string expected = "Hello";
 
 			var subject = new WayOuterClass();
 
-			writer.Set(subject, expected);
+			writer.Set(subject, 0, expected);
 
 			subject.Outer.Inners.ShouldNotBeNull();
 			subject.Outer.Inners[0].Value.ShouldEqual(expected);
