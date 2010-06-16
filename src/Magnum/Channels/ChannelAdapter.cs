@@ -15,6 +15,53 @@ namespace Magnum.Channels
 	using System;
 	using System.Threading;
 
+	/// <summary>
+	/// A channel adapter is a mutable segment in a channel network. The output channel can
+	/// be replaced, allowing a new channel network (built via a ChannelVisitor) to be installed
+	/// in response to changes (attachments, detachments, etc.) to the network.
+	/// 
+	/// This particular version handles untyped channels
+	/// </summary>
+	public class ChannelAdapter :
+		UntypedChannel
+	{
+		private UntypedChannel _output;
+
+		public ChannelAdapter()
+			: this(new ShuntChannel())
+		{
+		}
+
+		public ChannelAdapter(UntypedChannel output)
+		{
+			_output = output;
+		}
+
+		public UntypedChannel Output
+		{
+			get { return _output; }
+		}
+
+		public void Send<T>(T message)
+		{
+			Output.Send(message);
+		}
+
+		public void ChangeOutputChannel(UntypedChannel original, UntypedChannel replacement)
+		{
+			Interlocked.CompareExchange(ref _output, replacement, original);
+			if (_output != replacement)
+				throw new InvalidOperationException("The channel has been modified since it was last requested");
+		}
+	}
+
+	/// <summary>
+	/// A channel adapter is a mutable segment in a channel network. The output channel can
+	/// be replaced, allowing a new channel network (built via a ChannelVisitor) to be installed
+	/// in response to changes (attachments, detachments, etc.) to the network.
+	/// 
+	/// This particular version handles typed channels
+	/// </summary>
 	public class ChannelAdapter<T> :
 		Channel<T>
 	{

@@ -168,9 +168,9 @@ namespace Magnum.Channels.Visitors
 			return WithVertex(() => base.Visitor(channel));
 		}
 
-		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
+		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
-			_current = GetVertex(channel.GetHashCode(), () => "Router", typeof(ChannelRouter<T>), typeof(T));
+			_current = GetVertex(channel.GetHashCode(), () => "Router", typeof(BroadcastChannel<T>), typeof(T));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
@@ -208,9 +208,9 @@ namespace Magnum.Channels.Visitors
 			return WithVertex(() => base.Visitor(channel));
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
+		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
-			_current = GetVertex(channel.GetHashCode(), () => "Adapter", typeof(UntypedChannelAdapter), typeof(object));
+			_current = GetVertex(channel.GetHashCode(), () => "Adapter", typeof(ChannelAdapter), typeof(object));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
@@ -218,9 +218,9 @@ namespace Magnum.Channels.Visitors
 			return WithVertex(() => base.Visitor(channel));
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
+		protected override UntypedChannel Visitor(BroadcastChannel channel)
 		{
-			_current = GetVertex(channel.GetHashCode(), () => "Router", typeof(UntypedChannelRouter), typeof(object));
+			_current = GetVertex(channel.GetHashCode(), () => "Router", typeof(BroadcastChannel), typeof(object));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));

@@ -15,18 +15,18 @@ namespace Magnum.Channels.Configuration
 	using System;
 	using System.Collections.Generic;
 
-	public class UntypedChannelSubscription :
-		ChannelSubscription
+	public class TypedChannelConnection<T> :
+		ChannelConnection
 	{
-		private readonly UntypedChannel _channel;
-		private readonly HashSet<Channel> _subscribers;
+		private readonly Channel<T> _channel;
+		private readonly HashSet<Channel> _connectedChannels;
 
 		private bool _disposed;
 
-		public UntypedChannelSubscription(UntypedChannel channel, HashSet<Channel> subscribers)
+		public TypedChannelConnection(Channel<T> channel, HashSet<Channel> connectedChannels)
 		{
 			_channel = channel;
-			_subscribers = subscribers;
+			_connectedChannels = connectedChannels;
 		}
 
 		public void Dispose()
@@ -35,11 +35,14 @@ namespace Magnum.Channels.Configuration
 			GC.SuppressFinalize(this);
 		}
 
-		private void RemoveSubscribers()
+		public void Disconnect()
 		{
-			new RemoveChannelVisitor(_subscribers).RemoveFrom(_channel);
+			if (_connectedChannels.Count == 0)
+				return;
 
-			_subscribers.Clear();
+			new DisconnectChannelVisitor(_connectedChannels).DisconnectFrom(_channel);
+
+			_connectedChannels.Clear();
 		}
 
 		private void Dispose(bool disposing)
@@ -47,13 +50,13 @@ namespace Magnum.Channels.Configuration
 			if (_disposed) return;
 			if (disposing)
 			{
-				RemoveSubscribers();
+				Disconnect();
 			}
 
 			_disposed = true;
 		}
 
-		~UntypedChannelSubscription()
+		~TypedChannelConnection()
 		{
 			Dispose(false);
 		}

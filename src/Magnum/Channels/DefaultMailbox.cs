@@ -21,7 +21,7 @@ namespace Magnum.Channels
 		Mailbox<T>
 	{
 		private readonly Fiber _fiber;
-		private readonly IList<SelectiveConsumer<T>> _receivers;
+		private readonly IList<ConsumerFactory<T>> _receivers;
 		private readonly Scheduler _scheduler;
 		private readonly IList<T> _waitingMessages;
 
@@ -30,7 +30,7 @@ namespace Magnum.Channels
 			_fiber = fiber;
 			_scheduler = scheduler;
 
-			_receivers = new List<SelectiveConsumer<T>>();
+			_receivers = new List<ConsumerFactory<T>>();
 			_waitingMessages = new List<T>();
 		}
 
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 			_fiber.Add(() => HandleSend(message));
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer)
+		public void Receive(ConsumerFactory<T> consumer)
 		{
 			if (ReceiveWaitingMessage(consumer))
 				return;
@@ -47,13 +47,13 @@ namespace Magnum.Channels
 			_receivers.Add(consumer);
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		public void Receive(ConsumerFactory<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			if (ReceiveWaitingMessage(consumer))
 				return;
 
 			ScheduledAction scheduledAction = null;
-			SelectiveConsumer<T> consumerProxy = msg =>
+			ConsumerFactory<T> consumerProxy = msg =>
 				{
 					Consumer<T> c = consumer(msg);
 					if (c == null)
@@ -77,7 +77,7 @@ namespace Magnum.Channels
 			_receivers.Add(consumerProxy);
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
+		public void Receive(ConsumerFactory<T> consumer, int timeout, Action timeoutCallback)
 		{
 			Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
@@ -90,7 +90,7 @@ namespace Magnum.Channels
 			_waitingMessages.Add(message);
 		}
 
-		private bool ReceiveWaitingMessage(SelectiveConsumer<T> selectiveConsumer)
+		private bool ReceiveWaitingMessage(ConsumerFactory<T> selectiveConsumer)
 		{
 			for (int i = 0; i < _waitingMessages.Count; i++)
 			{
@@ -111,7 +111,7 @@ namespace Magnum.Channels
 		{
 			for (int i = 0; i < _receivers.Count; i++)
 			{
-				SelectiveConsumer<T> receiver = _receivers[i];
+				ConsumerFactory<T> receiver = _receivers[i];
 
 				Consumer<T> consumer = receiver(message);
 				if (consumer == null)

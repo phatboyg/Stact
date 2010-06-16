@@ -20,17 +20,17 @@ namespace Magnum.Channels.Configuration
 	using Reflection;
 	using Visitors;
 
-	public class RemoveChannelVisitor :
+	public class DisconnectChannelVisitor :
 		ChannelVisitor
 	{
 		private readonly HashSet<Channel> _channels;
 
-		public RemoveChannelVisitor(IEnumerable<Channel> channels)
+		public DisconnectChannelVisitor(IEnumerable<Channel> channels)
 		{
 			_channels = new HashSet<Channel>(channels);
 		}
 
-		public void RemoveFrom<T>(Channel<T> channel)
+		public void DisconnectFrom<T>(Channel<T> channel)
 		{
 			Visit(channel);
 
@@ -38,7 +38,7 @@ namespace Magnum.Channels.Configuration
 				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
 		}
 
-		public void RemoveFrom(UntypedChannel channel)
+		public void DisconnectFrom(UntypedChannel channel)
 		{
 			Visit(channel);
 
@@ -48,7 +48,7 @@ namespace Magnum.Channels.Configuration
 
 		public override Channel<T> Visit<T>(Channel<T> channel)
 		{
-			Channel<T> result = this.FastInvoke<RemoveChannelVisitor, Channel<T>>("Visitor", channel);
+			Channel<T> result = this.FastInvoke<DisconnectChannelVisitor, Channel<T>>("Visitor", channel);
 
 			return result;
 		}
@@ -119,12 +119,12 @@ namespace Magnum.Channels.Configuration
 			return original != replacement ? new TypedChannelAdapter<T>(replacement) : channel;
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
+		protected override UntypedChannel Visitor(BroadcastChannel channel)
 		{
 			var results = new List<UntypedChannel>();
 			bool changed = false;
 
-			foreach (UntypedChannel subscriber in channel.Subscribers)
+			foreach (UntypedChannel subscriber in channel.Listeners)
 			{
 				UntypedChannel newSubscriber = Visit(subscriber);
 
@@ -149,13 +149,13 @@ namespace Magnum.Channels.Configuration
 
 			if (changed)
 			{
-				return new UntypedChannelRouter(results);
+				return new BroadcastChannel(results);
 			}
 
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
+		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
 			UntypedChannel original = channel.Output;
 
@@ -180,15 +180,15 @@ namespace Magnum.Channels.Configuration
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
+		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
 			bool changed;
-			Channel<T>[] subscribers = VisitSubscribers(channel.Subscribers, out changed).ToArray();
+			Channel<T>[] subscribers = VisitSubscribers(channel.Listeners, out changed).ToArray();
 			if (subscribers.Length == 1)
 				return subscribers[0];
 
 			if (changed)
-				return new ChannelRouter<T>(subscribers);
+				return new BroadcastChannel<T>(subscribers);
 
 			return channel;
 		}

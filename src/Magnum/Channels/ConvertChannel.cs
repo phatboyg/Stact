@@ -26,18 +26,16 @@ namespace Magnum.Channels
 	{
 		private readonly Fiber _fiber;
 
+		public ConvertChannel(Fiber fiber, Channel<TOutput> output)
+			: this(fiber, output, CreateDefaultConverter())
+		{
+		}
+
 		public ConvertChannel(Fiber fiber, Channel<TOutput> output, MessageConverter<TInput, TOutput> converter)
 		{
 			_fiber = fiber;
 			Output = output;
 			Converter = converter;
-		}
-
-		public ConvertChannel(Fiber fiber, Channel<TOutput> output)
-		{
-			_fiber = fiber;
-			Output = output;
-			Converter = CreateDefaultConverter();
 		}
 
 		public MessageConverter<TInput, TOutput> Converter { get; private set; }
@@ -59,9 +57,9 @@ namespace Magnum.Channels
 			Type inputType = typeof (TInput);
 			Type outType = typeof (TOutput);
 
-			ParameterExpression input = Expression.Parameter(inputType, "input");
-			UnaryExpression convert = inputType.IsValueType ? Expression.Convert(input, outType) : Expression.TypeAs(input, outType);
-			Expression<MessageConverter<TInput, TOutput>> lambda = Expression.Lambda<MessageConverter<TInput, TOutput>>(convert, new[] {input});
+			var input = Expression.Parameter(inputType, "input");
+			var body = inputType.IsValueType ? Expression.Convert(input, outType) : Expression.TypeAs(input, outType);
+			var lambda = Expression.Lambda<MessageConverter<TInput, TOutput>>(body, new[] {input});
 
 			return lambda.Compile();
 		}

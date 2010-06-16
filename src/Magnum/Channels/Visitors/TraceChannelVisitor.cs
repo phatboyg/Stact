@@ -13,6 +13,7 @@
 namespace Magnum.Channels.Visitors
 {
 	using System.Diagnostics;
+	using System.Linq;
 	using Extensions;
 
 	public class TraceChannelVisitor :
@@ -89,9 +90,9 @@ namespace Magnum.Channels.Visitors
 			return base.Visitor<T>(channel);
 		}
 
-		protected override Channel<T> Visitor<T>(ChannelRouter<T> channel)
+		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
-			Trace.WriteLine("ChannelRouter<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Subscribers.Length));
+			Trace.WriteLine("ChannelRouter<{0}>, {1} subscribers".FormatWith(typeof (T).Name, channel.Listeners.Count()));
 
 			return base.Visitor(channel);
 		}
@@ -117,16 +118,16 @@ namespace Magnum.Channels.Visitors
 			return base.Visitor(channel);
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelAdapter channel)
+		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
 			Trace.WriteLine("UntypedChannelAdapter");
 
 			return base.Visitor(channel);
 		}
 
-		protected override UntypedChannel Visitor(UntypedChannelRouter channel)
+		protected override UntypedChannel Visitor(BroadcastChannel channel)
 		{
-			Trace.WriteLine("UntypedChannelRouter: {0} subscribers".FormatWith(channel.Subscribers.Length));
+			Trace.WriteLine("UntypedChannelRouter: {0} subscribers".FormatWith(channel.Listeners.Count()));
 
 			return base.Visitor(channel);
 		}

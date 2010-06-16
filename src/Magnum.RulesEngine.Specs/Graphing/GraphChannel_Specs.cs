@@ -25,8 +25,8 @@ namespace Magnum.RulesEngine.Specs.Graphing
 		[Test]
 		public void Should_contain_all_nodes()
 		{
-			var channel = new UntypedChannelAdapter(new SynchronousFiber());
-			channel.Subscribe(x =>
+			var channel = new ChannelAdapter();
+			channel.Connect(x =>
 			{ 
 				x.Consume<SomeEvent>().Using(m => { });
 				x.Consume<AnyEvent>().Using(m => { });

@@ -40,7 +40,7 @@ namespace Magnum.Specs.Channels
 
 				var future = new Future<TestMessage>();
 
-				using (adapter.Subscribe(x =>
+				using (adapter.Connect(x =>
 					{
 						x.Consume<TestMessage>()
 							.Using(m =>
@@ -50,7 +50,7 @@ namespace Magnum.Specs.Channels
 								});
 					}))
 				{
-					var client = new LocalWcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
+					var client = new WcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
 					log.Debug("Client started");
 
 					client.Send(new TestMessage("Hello!"));

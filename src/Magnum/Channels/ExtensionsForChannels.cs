@@ -15,21 +15,22 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using Configuration;
+	using Visitors;
 
 	public static class ExtensionsForChannels
 	{
-		public static ChannelSubscription Subscribe<T>(this Channel<T> channel, Action<SubscriptionConfigurator> subscriberActions)
+		public static ChannelConnection Connect<T>(this Channel<T> channel, Action<ConnectionConfigurator> subscriberActions)
 		{
-			var subscriber = new TypedSubscriptionConfigurator<T>(channel);
+			var subscriber = new TypedConnectionConfigurator<T>(channel);
 
 			subscriberActions(subscriber);
 
 			return subscriber.Complete();
 		}
 
-		public static ChannelSubscription Subscribe(this UntypedChannel channel, Action<SubscriptionConfigurator> subscriberActions)
+		public static ChannelConnection Connect(this UntypedChannel channel, Action<ConnectionConfigurator> subscriberActions)
 		{
-			var subscriber = new UntypedSubscriptionConfigurator(channel);
+			var subscriber = new UntypedConnectionConfigurator(channel);
 
 			subscriberActions(subscriber);
 

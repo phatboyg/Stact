@@ -40,7 +40,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_add_a_provider_based_consumer()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
+			var input = new ChannelAdapter();
 
 			var futureA = new Future<TestMessage>();
 			var futureB = new Future<TestMessage>();
@@ -48,7 +48,7 @@ namespace Magnum.Specs.Channels
 
 			TestConsumer.Future = futureA;
 
-			using (input.Subscribe(x =>
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Using<TestConsumer>(y => y.InputChannel)
@@ -79,7 +79,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_register_my_consumer()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
+			var input = new ChannelAdapter();
 
 			var futureA = new Future<TestMessage>();
 			var consumerA = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureA.Complete);
@@ -87,7 +87,7 @@ namespace Magnum.Specs.Channels
 			var futureB = new Future<TestMessage>();
 			var consumerB = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureB.Complete);
 
-			using (input.Subscribe(x =>
+			using (input.Connect(x =>
 				{
 					x.Add(consumerA);
 					x.Add(consumerB);
@@ -105,12 +105,12 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_remove_my_consumer()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
+			var input = new ChannelAdapter();
 
 			var futureA = new Future<TestMessage>();
 			var consumerA = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureA.Complete);
 
-			using (ChannelSubscription subscription = input.Subscribe(x => x.Add(consumerA)))
+			using (ChannelConnection connection = input.Connect(x => x.Add(consumerA)))
 			{
 			}
 

@@ -14,8 +14,9 @@ namespace Magnum.Channels
 {
 	using System;
 
-	public interface ChannelSubscription :
+	public interface ChannelConnection :
 		IDisposable
 	{
+		void Disconnect();
 	}
 }

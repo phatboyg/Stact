@@ -95,7 +95,7 @@ namespace Magnum.RulesEngine.Visualizers
 					attr.Shape = Shape.Diamond;
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Blue;
 				}
-				else if (openType == typeof(ChannelRouter<>))
+				else if (openType == typeof(BroadcastChannel<>))
 				{
 					attr.Shape = Shape.Octagon;
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Yellow;
@@ -114,11 +114,11 @@ namespace Magnum.RulesEngine.Visualizers
 			}
 			else
 			{
-				if (type == typeof (UntypedChannelAdapter))
+				if (type == typeof (ChannelAdapter))
 				{
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Orange;
 				}
-				else if (type == typeof (UntypedChannelRouter))
+				else if (type == typeof (BroadcastChannel))
 				{
 					attr.Shape = Shape.Octagon;
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Yellow;

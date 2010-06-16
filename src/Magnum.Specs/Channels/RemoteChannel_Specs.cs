@@ -40,17 +40,17 @@ namespace Magnum.Specs.Channels
 					Name = "Alpha",
 				};
 
-			UntypedChannel adapter = new UntypedChannelAdapter(new SynchronousFiber());
-			using (var remote = new WcfUntypedChannelHost(new SynchronousFiber(), adapter, serviceUri, pipeName))
+			UntypedChannel adapter = new ChannelAdapter();
+			using (var remote = new WcfChannelHost(new SynchronousFiber(), adapter, serviceUri, pipeName))
 			{
 				_log.Debug("Remote channel adapter created");
-				using (adapter.Subscribe(x =>
+				using (adapter.Connect(x =>
 					{
 						x.Consume<TestMessage>()
 							.Using(m => future.Complete(m));
 					}))
 				{
-					var client = new WcfUntypedChannelProxy(new SynchronousFiber(), serviceUri, pipeName);
+					var client = new WcfChannelProxy(new SynchronousFiber(), serviceUri, pipeName);
 					_log.Debug("Client created");
 
 					client.Send(message);

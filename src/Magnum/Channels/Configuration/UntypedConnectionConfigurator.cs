@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,37 +15,44 @@ namespace Magnum.Channels.Configuration
 	using System.Collections.Generic;
 	using Extensions;
 
-	public class TypedSubscriptionConfigurator<T> :
-		SubscriptionConfigurator
+	public class UntypedConnectionConfigurator :
+		ConnectionConfigurator
 	{
 		private readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
-		private readonly Channel<T> _channel;
-		private readonly List<TypedConfigurator<T>> _configurators = new List<TypedConfigurator<T>>();
+		private readonly UntypedChannel _channel;
+		private readonly List<UntypedConfigurator> _configurators = new List<UntypedConfigurator>();
 
-		public TypedSubscriptionConfigurator(Channel<T> channel)
+		public UntypedConnectionConfigurator(UntypedChannel channel)
 		{
 			_channel = channel;
 		}
 
-		public ChannelSubscriptionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel)
+		public ChannelConnectionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel)
 		{
-			var configurator = new TypedChannelSubscriptionConfigurator<T, TChannel>(channel);
+			var configurator = new UntypedChannelConnectionConfigurator<TChannel>(channel);
 
 			_configurators.Add(configurator);
 
 			return configurator;
 		}
 
-		public ChannelSubscriptionConfigurator<TChannel> Consume<TChannel>()
+		public void Add(UntypedChannel channel)
 		{
-			var configurator = new TypedChannelSubscriptionConfigurator<T, TChannel>();
+			var configurator = new UntypedChannelConnectionConfigurator(channel);
+
+			_configurators.Add(configurator);
+		}
+
+		public ChannelConnectionConfigurator<T> Consume<T>()
+		{
+			var configurator = new UntypedChannelConnectionConfigurator<T>();
 
 			_configurators.Add(configurator);
 
 			return configurator;
 		}
 
-		public ChannelSubscription Complete()
+		public ChannelConnection Complete()
 		{
 			_configurators.Each(configurator =>
 				{
@@ -54,7 +61,7 @@ namespace Magnum.Channels.Configuration
 					addedChannels.Each(channel => _boundChannels.Add(channel));
 				});
 
-			return new TypedChannelSubscription<T>(_channel, _boundChannels);
+			return new UntypedChannelConnection(_channel, _boundChannels);
 		}
 	}
 }

@@ -105,10 +105,10 @@ namespace Magnum.Actors
 		/// </summary>
 		/// <param name="subscriberActions">The subscription actions</param>
 		/// <returns>A channel subscription</returns>
-		ChannelSubscription Subscribe(Action<SubscriptionConfigurator> subscriberActions);
-		ChannelSubscription Subscribe(Channel<ActorRegistered> listener);
-		ChannelSubscription Subscribe(Channel<ActorUnregistered> listener);
-		ChannelSubscription Subscribe(Channel<ActorRegistered> registeredListener, Channel<ActorUnregistered> unregisteredListener);
+		ChannelConnection Subscribe(Action<ConnectionConfigurator> subscriberActions);
+		ChannelConnection Subscribe(Channel<ActorRegistered> listener);
+		ChannelConnection Subscribe(Channel<ActorUnregistered> listener);
+		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener, Channel<ActorUnregistered> unregisteredListener);
 	}
 
 	public interface ActorRegistryEvent

@@ -123,9 +123,9 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(ChannelRouter<T> channel)
+		protected virtual Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
-			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
+			channel.Listeners.Each(subscriber => { Visit(subscriber); });
 
 			return channel;
 		}
@@ -151,16 +151,16 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
-		protected virtual UntypedChannel Visitor(UntypedChannelAdapter channel)
+		protected virtual UntypedChannel Visitor(ChannelAdapter channel)
 		{
 			Visit(channel.Output);
 
 			return channel;
 		}
 
-		protected virtual UntypedChannel Visitor(UntypedChannelRouter channel)
+		protected virtual UntypedChannel Visitor(BroadcastChannel channel)
 		{
-			channel.Subscribers.Each(subscriber => { Visit(subscriber); });
+			channel.Listeners.Each(subscriber => { Visit(subscriber); });
 
 			return channel;
 		}

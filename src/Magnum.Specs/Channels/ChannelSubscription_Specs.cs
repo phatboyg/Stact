@@ -33,9 +33,9 @@ namespace Magnum.Specs.Channels
 		{
 			var future = new Future<int>();
 
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
+			var input = new ChannelAdapter();
 			int expected = 5;
-			using (input.Subscribe(x =>
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Every(1.Seconds(), c => c.Value)
@@ -44,8 +44,8 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
-						typeof (UntypedChannelRouter),
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
 						typeof (TypedChannelAdapter<TestMessage>),
 						typeof (DistinctIntervalChannel<TestMessage, int>),
 						typeof (ConsumerChannel<IDictionary<int,TestMessage>>),
@@ -64,13 +64,34 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_be_an_empty_channel_adapter_with_no_consumers()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
-			using (input.Subscribe(x => { }))
+			var input = new ChannelAdapter();
+			using (input.Connect(x => { }))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
+						typeof (ChannelAdapter),
 						typeof (ShuntChannel)
+					});
+			}
+		}
+
+		[Test]
+		public void Should_add_an_untyped_channel_to_an_untyped_channel_adapter()
+		{
+			var next = new ChannelAdapter();
+
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
+				{
+					x.Add(next);
+				}))
+			{
+				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
+					{
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
+						typeof(ChannelAdapter),
+						typeof(ShuntChannel),
 					});
 			}
 		}
@@ -80,9 +101,9 @@ namespace Magnum.Specs.Channels
 		{
 			var future = new Future<int>();
 
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
+			var input = new ChannelAdapter();
 			int expected = 5;
-			using (input.Subscribe(x =>
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Every(1.Seconds())
@@ -91,8 +112,8 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
-						typeof (UntypedChannelRouter),
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
 						typeof (TypedChannelAdapter<TestMessage>),
 						typeof (IntervalChannel<TestMessage>),
 						typeof (ConsumerChannel<ICollection<TestMessage>>),
@@ -111,8 +132,8 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_be_one_consumer_on_the_channel()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
-			using (input.Subscribe(x =>
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Using(message => { });
@@ -120,8 +141,8 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
-						typeof (UntypedChannelRouter),
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
 						typeof (TypedChannelAdapter<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>)
 					});
@@ -131,8 +152,8 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_be_two_consumers_on_the_channel()
 		{
-			var input = new UntypedChannelAdapter(new SynchronousFiber());
-			using (input.Subscribe(x =>
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Using(message => { });
@@ -143,10 +164,10 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
-						typeof (UntypedChannelRouter),
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
 						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (ChannelRouter<TestMessage>),
+						typeof (BroadcastChannel<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),
 					});

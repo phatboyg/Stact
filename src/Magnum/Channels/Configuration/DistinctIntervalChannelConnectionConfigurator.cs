@@ -14,8 +14,8 @@ namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	public class IntervalChannelSubscriptionConfigurator<TChannel> :
-		AbstractChannelSubscriptionConfigurator<ICollection<TChannel>>
+	public class DistinctIntervalChannelConnectionConfigurator<TChannel, TKey> :
+		AbstractChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
 	{
 	}
 }

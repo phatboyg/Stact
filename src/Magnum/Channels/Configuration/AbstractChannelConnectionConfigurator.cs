@@ -17,19 +17,19 @@ namespace Magnum.Channels.Configuration
 	using System.Threading;
 	using Fibers;
 
-	public class AbstractChannelSubscriptionConfigurator<TChannel> :
-		ChannelSubscriptionConfigurator<TChannel>
+	public class AbstractChannelConnectionConfigurator<TChannel> :
+		ChannelConnectionConfigurator<TChannel>
 	{
 		private FiberFactory _fiberFactory = ThreadPoolFiberProvider;
 		private Func<Scheduler> _schedulerProvider = TimerSchedulerProvider;
 		private SynchronizationContext _synchronizationContext;
 
-		public AbstractChannelSubscriptionConfigurator()
+		public AbstractChannelConnectionConfigurator()
 		{
 			ConsumerProvider = NoConsumerProviderConfigured;
 		}
 
-		protected AbstractChannelSubscriptionConfigurator(Channel<TChannel> channel)
+		protected AbstractChannelConnectionConfigurator(Channel<TChannel> channel)
 		{
 			ConsumerProvider = () => channel;
 		}
@@ -45,32 +45,32 @@ namespace Magnum.Channels.Configuration
 			return configurator;
 		}
 
-		public ChannelSubscriptionConfigurator<TChannel> Using(SelectiveConsumer<TChannel> selectiveConsumer)
+		public ChannelConnectionConfigurator<TChannel> Using(ConsumerFactory<TChannel> selectiveConsumer)
 		{
 			ConsumerProvider = () => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), selectiveConsumer);
 
 			return this;
 		}
 
-		public ChannelSubscriptionConfigurator<TChannel> Using(Consumer<TChannel> consumer)
+		public ChannelConnectionConfigurator<TChannel> Using(Consumer<TChannel> consumer)
 		{
 			ConsumerProvider = () => new ConsumerChannel<TChannel>(_fiberFactory(), consumer);
 
 			return this;
 		}
 
-		public ChannelSubscriptionConfigurator<ICollection<TChannel>> Every(TimeSpan interval)
+		public ChannelConnectionConfigurator<ICollection<TChannel>> Every(TimeSpan interval)
 		{
-			var configurator = new IntervalChannelSubscriptionConfigurator<TChannel>();
+			var configurator = new IntervalChannelConnectionConfigurator<TChannel>();
 
 			ConsumerProvider = () => new IntervalChannel<TChannel>(_fiberFactory(), _schedulerProvider(), interval, configurator.ConsumerProvider());
 
 			return configurator;
 		}
 
-		public ChannelSubscriptionConfigurator<IDictionary<TKey, TChannel>> Every<TKey>(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
+		public ChannelConnectionConfigurator<IDictionary<TKey, TChannel>> Every<TKey>(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
-			var configurator = new DistinctIntervalChannelSubscriptionConfigurator<TChannel, TKey>();
+			var configurator = new DistinctIntervalChannelConnectionConfigurator<TChannel, TKey>();
 
 			ConsumerProvider = () => new DistinctIntervalChannel<TChannel, TKey>(_fiberFactory(), _schedulerProvider(), interval, keyAccessor, configurator.ConsumerProvider());
 

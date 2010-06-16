@@ -14,15 +14,15 @@ namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	public class TypedChannelSubscriptionConfigurator<T, TChannel> :
-		AbstractChannelSubscriptionConfigurator<TChannel>,
+	public class TypedChannelConnectionConfigurator<T, TChannel> :
+		AbstractChannelConnectionConfigurator<TChannel>,
 		TypedConfigurator<T>
 	{
-		public TypedChannelSubscriptionConfigurator()
+		public TypedChannelConnectionConfigurator()
 		{
 		}
 
-		public TypedChannelSubscriptionConfigurator(Channel<TChannel> channel)
+		public TypedChannelConnectionConfigurator(Channel<TChannel> channel)
 			: base(channel)
 		{
 		}
@@ -31,7 +31,7 @@ namespace Magnum.Channels.Configuration
 		{
 			Channel<TChannel> newChannel = GetConsumer();
 
-			new AddChannelVisitor<TChannel>(newChannel).AddTo(channel);
+			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
 
 			return new[] {newChannel};
 		}

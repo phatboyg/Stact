@@ -21,7 +21,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_return_null_if_not_interested()
 		{
-			SelectiveConsumer<int> subject = message =>
+			ConsumerFactory<int> subject = message =>
 				{
 					return null;
 				};

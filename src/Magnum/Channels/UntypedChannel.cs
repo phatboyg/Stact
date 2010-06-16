@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	/// <summary>
+	/// A channel to which any message type can be sent
+	/// </summary>
 	public interface UntypedChannel :
 		Channel
 	{

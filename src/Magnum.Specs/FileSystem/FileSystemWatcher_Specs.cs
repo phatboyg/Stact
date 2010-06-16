@@ -25,7 +25,7 @@ namespace Magnum.Specs.FileSystem
 	public class Creating_a_file_in_a_folder
 	{
 		private string _baseDirectory;
-		private UntypedChannelAdapter _channel;
+		private ChannelAdapter _channel;
 		private FileSystemEventProducer _producer;
 		private Future<FileCreated> _listener;
 		private string _path;
@@ -43,10 +43,10 @@ namespace Magnum.Specs.FileSystem
 
 			_listener = new Future<FileCreated>();
 
-			_channel = new UntypedChannelAdapter(new SynchronousFiber());
+			_channel = new ChannelAdapter();
 			_producer = new FileSystemEventProducer(_baseDirectory, _channel);
 
-			using (var subscription = _channel.Subscribe(x => x.Consume<FileCreated>().Using(m => _listener.Complete(m))))
+			using (var subscription = _channel.Connect(x => x.Consume<FileCreated>().Using(m => _listener.Complete(m))))
 			{
 				File.Create(_path);
 

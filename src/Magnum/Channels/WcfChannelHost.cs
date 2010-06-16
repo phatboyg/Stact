@@ -14,7 +14,69 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.ServiceModel;
+	using Fibers;
 	using Internal;
+	using Serialization;
+
+	/// <summary>
+	/// Receives messages from a named pipe via WCF and forwards them to the specific channel. Messages
+	/// are first serialized to a wire type that is already WCF compliant, making it unnecessary to decorate
+	/// your message objects with WCF data contract serializer attributes.
+	/// </summary>
+	public class WcfChannelHost :
+		IDisposable
+	{
+		private readonly WcfChannelService<WcfMessageEnvelope> _service;
+		private readonly Uri _serviceUri;
+
+		private bool _disposed;
+		private ServiceHost _serviceHost;
+
+		public WcfChannelHost(Fiber fiber, UntypedChannel output, Uri serviceUri, string pipeName)
+		{
+			_serviceUri = serviceUri;
+
+			var channel = new DeserializeMessageEnvelopeChannel<WcfMessageEnvelope>(fiber, new FastTextSerializer(), output);
+
+			_service = new WcfChannelService<WcfMessageEnvelope>(channel);
+
+			_serviceHost = new ServiceHost(_service, _serviceUri);
+			_serviceHost.AddServiceEndpoint(typeof(WcfChannel<WcfMessageEnvelope>), new NetNamedPipeBinding(), pipeName);
+			_serviceHost.Open();
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		public void Stop()
+		{
+			if ((_serviceHost != null) && (_serviceHost.State != CommunicationState.Closed))
+			{
+				_serviceHost.Close();
+				_serviceHost = null;
+			}
+		}
+
+		~WcfChannelHost()
+		{
+			Dispose(false);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (_disposed) return;
+			if (disposing)
+			{
+				Stop();
+			}
+
+			_disposed = true;
+		}
+	}
+
 
 	/// <summary>
 	/// Receives messages from a named pipe via WCF and forwards it to the output

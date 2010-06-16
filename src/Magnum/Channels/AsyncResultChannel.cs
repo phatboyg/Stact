@@ -20,6 +20,67 @@ namespace Magnum.Channels
 	/// frameworks that support asynchronous callbacks
 	/// </summary>
 	/// <typeparam name="T">The channel type supported</typeparam>
+	public class AsyncResultChannel :
+		UntypedChannel,
+		IAsyncResult
+	{
+		private readonly AsyncCallback _callback;
+
+		private readonly object _state;
+		private volatile bool _completed;
+
+		public AsyncResultChannel(UntypedChannel output, AsyncCallback callback, object state)
+		{
+			Guard.AgainstNull(output, "output");
+			Guard.AgainstNull(callback, "callback");
+
+			Output = output;
+			_callback = callback;
+			_state = state;
+		}
+
+		public UntypedChannel Output { get; private set; }
+
+		public bool IsCompleted
+		{
+			get { return _completed; }
+		}
+
+		public WaitHandle AsyncWaitHandle
+		{
+			get { throw new NotSupportedException("Wait handles are not supported by the channel framework"); }
+		}
+
+		public object AsyncState
+		{
+			get { return _state; }
+		}
+
+		public bool CompletedSynchronously
+		{
+			get { return false; }
+		}
+
+		public void Send<T>(T message)
+		{
+			Output.Send(message);
+
+			Complete();
+		}
+
+		private void Complete()
+		{
+			_completed = true;
+
+			_callback(this);
+		}
+	}
+
+	/// <summary>
+	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
+	/// frameworks that support asynchronous callbacks
+	/// </summary>
+	/// <typeparam name="T">The channel type supported</typeparam>
 	public class AsyncResultChannel<T> :
 		Channel<T>,
 		IAsyncResult

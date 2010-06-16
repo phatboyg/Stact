@@ -31,7 +31,7 @@ namespace Magnum.Specs.Channels
 
 			var fiber = new ThreadPoolFiber();
 
-			var input = new UntypedChannelAdapter(fiber);
+			var input = new ChannelAdapter();
 
 			var context = new TestSynchronizationContext();
 
@@ -41,7 +41,7 @@ namespace Magnum.Specs.Channels
 
 			Assert.IsNotNull(SynchronizationContext.Current);
 
-			using (input.Subscribe(x =>
+			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
 						.Using(message =>
@@ -61,8 +61,8 @@ namespace Magnum.Specs.Channels
 
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (UntypedChannelAdapter),
-						typeof (UntypedChannelRouter),
+						typeof (ChannelAdapter),
+						typeof (BroadcastChannel),
 						typeof (TypedChannelAdapter<TestMessage>),
 						typeof (SynchronizedChannel<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),

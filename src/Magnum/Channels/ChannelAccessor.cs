@@ -15,9 +15,9 @@ namespace Magnum.Channels
 	/// <summary>
 	/// Provides a channel from an instance
 	/// </summary>
-	/// <typeparam name="T">The type of instance being accessed</typeparam>
-	/// <typeparam name="TChannel">The type of channel to return</typeparam>
-	/// <param name="source">The instance to retrieve the channel from</param>
+	/// <typeparam name="TInstance">The type of instance being accessed</typeparam>
+	/// <typeparam name="T">The type of channel to return</typeparam>
+	/// <param name="instance">The instance to retrieve the channel from</param>
 	/// <returns>The channel of the requested type from the instance</returns>
-	public delegate Channel<TChannel> ChannelAccessor<T, TChannel>(T source);
+	public delegate Channel<T> ChannelAccessor<TInstance, T>(TInstance instance);
 }
