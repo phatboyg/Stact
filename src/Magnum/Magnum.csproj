@@ -157,6 +157,15 @@
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />
+    <Compile Include="Concurrency\ImmutableReference.cs" />
+    <Compile Include="Concurrency\EmptyImmutableList.cs" />
+    <Compile Include="Concurrency\EmptyImmutableQueue.cs" />
+    <Compile Include="Concurrency\ImmutableList.cs" />
+    <Compile Include="Concurrency\ImmutableQueue.cs" />
+    <Compile Include="Concurrency\MultipleElementImmutableList.cs" />
+    <Compile Include="Concurrency\MultipleElementImmutableQueue.cs" />
+    <Compile Include="Concurrency\SingleElementImmutableList.cs" />
+    <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Internal\AbstractFiber.cs" />
     <Compile Include="Fibers\Fiber.cs" />

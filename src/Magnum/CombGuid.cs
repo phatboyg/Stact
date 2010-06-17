@@ -14,9 +14,10 @@ namespace Magnum
 {
 	using System;
 
+
 	public static class CombGuid
 	{
-		private static readonly DateTime _baseDate = new DateTime(1900, 1, 1);
+		static readonly DateTime _baseDate = new DateTime(1900, 1, 1);
 
 		public static Guid Generate()
 		{
@@ -31,7 +32,7 @@ namespace Magnum
 			// Convert to a byte array 
 			// Note that SQL Server is accurate to 1/300th of a millisecond so we divide by 3.333333 
 			byte[] daysArray = BitConverter.GetBytes(days.Days);
-			byte[] msecsArray = BitConverter.GetBytes((long) (msecs.TotalMilliseconds/3.333333));
+			byte[] msecsArray = BitConverter.GetBytes((long)(msecs.TotalMilliseconds/3.333333));
 
 			// Reverse the bytes to match SQL Servers ordering 
 			Array.Reverse(daysArray);
