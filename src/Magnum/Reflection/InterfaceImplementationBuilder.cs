@@ -18,14 +18,15 @@ namespace Magnum.Reflection
 	using Extensions;
 	using Threading;
 
+
 	public static class InterfaceImplementationBuilder
 	{
-		private const MethodAttributes PropertyAccessMethodAttributes = MethodAttributes.Public | MethodAttributes.SpecialName |
-		                                                                MethodAttributes.HideBySig | MethodAttributes.Final |
-		                                                                MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
+		const MethodAttributes PropertyAccessMethodAttributes = MethodAttributes.Public | MethodAttributes.SpecialName |
+		                                                        MethodAttributes.HideBySig | MethodAttributes.Final |
+		                                                        MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
 
-		private const string ProxyNamespaceSuffix = ".DynamicImpl";
-		private static readonly ReaderWriterLockedDictionary<Type, Type> _proxyTypes = new ReaderWriterLockedDictionary<Type, Type>();
+		const string ProxyNamespaceSuffix = ".DynamicImpl";
+		static readonly ReaderWriterLockedDictionary<Type, Type> _proxyTypes = new ReaderWriterLockedDictionary<Type, Type>();
 
 		public static Type GetProxyFor(Type typeToProxy)
 		{
@@ -37,7 +38,7 @@ namespace Magnum.Reflection
 				});
 		}
 
-		private static Type BuildTypeProxy(ModuleBuilder builder, Type typeToProxy)
+		static Type BuildTypeProxy(ModuleBuilder builder, Type typeToProxy)
 		{
 			if (!typeToProxy.IsInterface)
 				throw new ArgumentException("Proxies can only be created for interfaces: " + typeToProxy.Name, "typeToProxy");
@@ -47,13 +48,13 @@ namespace Magnum.Reflection
 			return proxyType;
 		}
 
-		private static Type CreateTypeFromInterface(ModuleBuilder builder, Type typeToProxy)
+		static Type CreateTypeFromInterface(ModuleBuilder builder, Type typeToProxy)
 		{
 			string typeName = typeToProxy.Namespace + ProxyNamespaceSuffix + "." + typeToProxy.Name;
 
 			TypeBuilder typeBuilder = builder.DefineType(typeName, TypeAttributes.Serializable | TypeAttributes.Class |
 			                                                       TypeAttributes.Public | TypeAttributes.Sealed,
-				typeof (object), new[] {typeToProxy});
+			                                             typeof(object), new[] {typeToProxy});
 
 			typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
@@ -62,7 +63,7 @@ namespace Magnum.Reflection
 					FieldBuilder fieldBuilder = typeBuilder.DefineField("field_" + x.Name, x.PropertyType, FieldAttributes.Private);
 
 					PropertyBuilder propertyBuilder = typeBuilder.DefineProperty(x.Name, x.Attributes | PropertyAttributes.HasDefault,
-						x.PropertyType, null);
+					                                                             x.PropertyType, null);
 
 					MethodBuilder getMethod = GetGetMethodBuilder(x, typeBuilder, fieldBuilder);
 					MethodBuilder setMethod = GetSetMethodBuilder(x, typeBuilder, fieldBuilder);
@@ -74,13 +75,12 @@ namespace Magnum.Reflection
 			return typeBuilder.CreateType();
 		}
 
-		private static MethodBuilder GetGetMethodBuilder(PropertyInfo propertyInfo, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
+		static MethodBuilder GetGetMethodBuilder(PropertyInfo propertyInfo, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
 		{
-			MethodBuilder getMethodBuilder = typeBuilder.DefineMethod(
-				"get_" + propertyInfo.Name,
-				PropertyAccessMethodAttributes,
-				propertyInfo.PropertyType,
-				Type.EmptyTypes);
+			MethodBuilder getMethodBuilder = typeBuilder.DefineMethod("get_" + propertyInfo.Name,
+			                                                          PropertyAccessMethodAttributes,
+			                                                          propertyInfo.PropertyType,
+			                                                          Type.EmptyTypes);
 
 			ILGenerator il = getMethodBuilder.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
@@ -90,13 +90,12 @@ namespace Magnum.Reflection
 			return getMethodBuilder;
 		}
 
-		private static MethodBuilder GetSetMethodBuilder(PropertyInfo propertyInfo, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
+		static MethodBuilder GetSetMethodBuilder(PropertyInfo propertyInfo, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
 		{
-			MethodBuilder setMethodBuilder = typeBuilder.DefineMethod(
-				"set_" + propertyInfo.Name,
-				PropertyAccessMethodAttributes,
-				null,
-				new[] {propertyInfo.PropertyType});
+			MethodBuilder setMethodBuilder = typeBuilder.DefineMethod("set_" + propertyInfo.Name,
+			                                                          PropertyAccessMethodAttributes,
+			                                                          null,
+			                                                          new[] {propertyInfo.PropertyType});
 
 			ILGenerator il = setMethodBuilder.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
@@ -107,12 +106,12 @@ namespace Magnum.Reflection
 			return setMethodBuilder;
 		}
 
-		private static ModuleBuilder GetModuleBuilderForType(Type typeToProxy)
+		static ModuleBuilder GetModuleBuilderForType(Type typeToProxy)
 		{
 			string assemblyName = typeToProxy.Namespace + ProxyNamespaceSuffix;
 
-			AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-				new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+			AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assemblyName),
+			                                                                                AssemblyBuilderAccess.Run);
 
 			return assemblyBuilder.DefineDynamicModule(assemblyName);
 		}

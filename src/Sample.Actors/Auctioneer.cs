@@ -22,9 +22,9 @@ namespace Sample.Actors
 	{
 		private readonly Fiber _fiber;
 		private readonly ActorRepository<Seller, string> _sellerRepository;
-		private UntypedChannelAdapter _input;
+		private ChannelAdapter _input;
 		private DefaultMailbox<RegisterSeller> _registerSeller;
-		private ChannelSubscription _subscriptions;
+		private ChannelConnection _subscriptions;
 
 		public Auctioneer(Fiber fiber, Scheduler scheduler, ActorRepository<Seller, string> sellerRepository)
 		{
@@ -33,9 +33,9 @@ namespace Sample.Actors
 
 			_registerSeller = new DefaultMailbox<RegisterSeller>(fiber, scheduler);
 
-			_input = new UntypedChannelAdapter(fiber);
+			_input = new ChannelAdapter();
 
-			_subscriptions = _input.Subscribe(x =>
+			_subscriptions = _input.Connect(x =>
 				{
 					x.Consume<RegisterSeller>()
 						.Using(message => _registerSeller.Send(message));

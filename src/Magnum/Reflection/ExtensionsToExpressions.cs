@@ -18,7 +18,7 @@ namespace Magnum.Reflection
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	public static class ExpressionExtensions
+	public static class ExtensionsToExpressions
 	{
 		public static ParameterExpression ToParameterExpression(this ParameterInfo parameterInfo)
 		{

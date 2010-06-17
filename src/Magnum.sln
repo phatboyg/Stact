@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "Magnum\Magnum.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "Magnum.Specs\Magnum.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"

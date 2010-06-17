@@ -60,8 +60,8 @@ namespace Sample.WebActors.Actors.Auction
 		private decimal _highBid;
 		private Actor _highBidder;
 		private Actor _seller;
-		private UntypedChannelAdapter _input;
-		private ChannelSubscription _subscriptions;
+		private ChannelAdapter _input;
+		private ChannelConnection _subscriptions;
 
 		public AuctionActor(Fiber fiber, Scheduler scheduler, DateTime expiresAt, decimal openingBid, decimal bidIncrement)
 		{
@@ -72,8 +72,8 @@ namespace Sample.WebActors.Actors.Auction
 			_bidIncrement = bidIncrement;
 			_highBid = openingBid - bidIncrement;
 
-			_input = new UntypedChannelAdapter(fiber);
-			_subscriptions = _input.Subscribe(x =>
+			_input = new ChannelAdapter();
+			_subscriptions = _input.Connect(x =>
 				{
 					x.Consume<Bid>()
 						.Using(m => ReceiveBid(m));

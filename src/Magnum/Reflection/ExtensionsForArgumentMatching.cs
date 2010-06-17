@@ -19,7 +19,7 @@ namespace Magnum.Reflection
 	using Extensions;
 	using Linq;
 
-	public static class ArgumentMatchingExtensions
+	public static class ExtensionsForArgumentMatching
 	{
 		public static IEnumerable<T> MatchingArguments<T>(this IEnumerable<T> constructors)
 			where T : MethodBase

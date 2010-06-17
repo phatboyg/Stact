@@ -1,10 +1,20 @@
 <CodeStyleSettings>
   <CSharp>
     <FormatSettings>
+      <ALIGN_FIRST_ARG_BY_PAREN>True</ALIGN_FIRST_ARG_BY_PAREN>
+      <BLANK_LINES_AROUND_NAMESPACE>2</BLANK_LINES_AROUND_NAMESPACE>
+      <BLANK_LINES_AROUND_TYPE>2</BLANK_LINES_AROUND_TYPE>
+      <EXPLICIT_INTERNAL_MODIFIER>False</EXPLICIT_INTERNAL_MODIFIER>
+      <EXPLICIT_PRIVATE_MODIFIER>False</EXPLICIT_PRIVATE_MODIFIER>
+      <FORCE_ATTRIBUTE_STYLE>SEPARATE</FORCE_ATTRIBUTE_STYLE>
+      <FORCE_FIXED_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_FIXED_BRACES_STYLE>
+      <FORCE_FOR_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_FOR_BRACES_STYLE>
+      <FORCE_FOREACH_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_FOREACH_BRACES_STYLE>
+      <FORCE_IFELSE_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_IFELSE_BRACES_STYLE>
+      <FORCE_USING_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_USING_BRACES_STYLE>
+      <FORCE_WHILE_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_WHILE_BRACES_STYLE>
       <INDENT_ANONYMOUS_METHOD_BLOCK>False</INDENT_ANONYMOUS_METHOD_BLOCK>
       <INDENT_EMBRACED_INITIALIZER_BLOCK>False</INDENT_EMBRACED_INITIALIZER_BLOCK>
-      <INDENT_SIZE>4</INDENT_SIZE>
-      <INSERT_TABS>True</INSERT_TABS>
       <MODIFIERS_ORDER IsNull="False">
         <Item>public</Item>
         <Item>protected</Item>
@@ -21,18 +31,25 @@
         <Item>unsafe</Item>
         <Item>volatile</Item>
       </MODIFIERS_ORDER>
-      <SPACE_BEFORE_ATTRIBUTE_COLON>True</SPACE_BEFORE_ATTRIBUTE_COLON>
+      <PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>False</PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>
+      <PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>False</PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>
+      <PLACE_WHILE_ON_NEW_LINE>True</PLACE_WHILE_ON_NEW_LINE>
+      <SIMPLE_EMBEDDED_STATEMENT_STYLE>LINE_BREAK</SIMPLE_EMBEDDED_STATEMENT_STYLE>
+      <SPACE_AFTER_TYPECAST_PARENTHESES>False</SPACE_AFTER_TYPECAST_PARENTHESES>
+      <SPACE_BEFORE_SIZEOF_PARENTHESES>False</SPACE_BEFORE_SIZEOF_PARENTHESES>
+      <SPACE_BEFORE_TYPEOF_PARENTHESES>False</SPACE_BEFORE_TYPEOF_PARENTHESES>
       <WRAP_BEFORE_BINARY_OPSIGN>True</WRAP_BEFORE_BINARY_OPSIGN>
       <WRAP_BEFORE_FIRST_TYPE_PARAMETER_CONSTRAINT>True</WRAP_BEFORE_FIRST_TYPE_PARAMETER_CONSTRAINT>
-      <WRAP_BEFORE_TYPE_PARAMETER_LANGLE>True</WRAP_BEFORE_TYPE_PARAMETER_LANGLE>
+      <WRAP_EXTENDS_LIST_STYLE>CHOP_ALWAYS</WRAP_EXTENDS_LIST_STYLE>
       <WRAP_MULTIPLE_TYPE_PARAMEER_CONSTRAINTS_STYLE>CHOP_ALWAYS</WRAP_MULTIPLE_TYPE_PARAMEER_CONSTRAINTS_STYLE>
-      <WRAP_PARAMETERS_STYLE>CHOP_IF_LONG</WRAP_PARAMETERS_STYLE>
-      <WRAP_TERNARY_EXPR_STYLE>WRAP_IF_LONG</WRAP_TERNARY_EXPR_STYLE>
+      <WRAP_OBJECT_AND_COLLECTION_INITIALIZER_STYLE>CHOP_ALWAYS</WRAP_OBJECT_AND_COLLECTION_INITIALIZER_STYLE>
     </FormatSettings>
     <UsingsSettings>
       <AddImportsToDeepestScope>True</AddImportsToDeepestScope>
     </UsingsSettings>
     <Naming2>
+      <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
+      <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
       <ExceptionName IsNull="False">
       </ExceptionName>
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
@@ -238,13 +255,22 @@ II.2.12 <HandlesEvent />
 ]]></CustomMemberReorderingPatterns>
   </CSharp>
   <VB>
-    <FormatSettings>
-      <INDENT_SIZE>4</INDENT_SIZE>
-      <INSERT_TABS>True</INSERT_TABS>
-    </FormatSettings>
+    <FormatSettings />
     <ImportsSettings />
-    <Naming2 />
+    <Naming2>
+      <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
+      <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+    </Naming2>
   </VB>
+  <Web>
+    <Naming2 />
+  </Web>
+  <Xaml>
+    <Naming2 />
+  </Xaml>
+  <XML>
+    <FormatSettings />
+  </XML>
   <FileHeader><![CDATA[Copyright 2007-2008 The Apache Software Foundation.
  
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -260,6 +286,8 @@ specific language governing permissions and limitations under the License.
 ]]></FileHeader>
   <GenerateMemberBody />
   <Naming2>
+    <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
+    <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
     <ExceptionName>ex</ExceptionName>
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />

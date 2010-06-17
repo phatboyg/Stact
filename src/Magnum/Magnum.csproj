@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,6 +12,25 @@
     <AssemblyName>Magnum</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +40,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Magnum.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -335,12 +356,12 @@
     <Compile Include="Monads\CurryExpressionVisitor.cs" />
     <Compile Include="Monads\State.cs" />
     <Compile Include="Pipeline\Visitors\GraphPipelineVisitor.cs" />
-    <Compile Include="Reflection\ExpressionExtensions.cs" />
+    <Compile Include="Reflection\ExtensionsToExpressions.cs" />
     <Compile Include="Reflection\ExtensionsToSafeProperty.cs" />
     <Compile Include="Reflection\GenericFastActivator.cs" />
     <Compile Include="Reflection\FastActivator.cs" />
     <Compile Include="Reflection\FastActivatorBase.cs" />
-    <Compile Include="Reflection\ArgumentMatchingExtensions.cs" />
+    <Compile Include="Reflection\ExtensionsForArgumentMatching.cs" />
     <Compile Include="Reflection\IFastActivator.cs" />
     <Compile Include="Reflection\FastActivator.2.cs" />
     <Compile Include="Reflection\FastActivator.3.cs" />
@@ -354,7 +375,7 @@
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="Reflection\FastInvoker.1.cs" />
     <Compile Include="Reflection\FastInvokerBase.cs" />
-    <Compile Include="Reflection\FastInvokerExtensions.cs" />
+    <Compile Include="Reflection\ExtensionsToFastActivator.cs" />
     <Compile Include="Reflection\FastInvoker.2.cs" />
     <Compile Include="Reflection\IFastInvoker.cs" />
     <Compile Include="Linq\Batch.cs" />
@@ -434,7 +455,6 @@
     <Compile Include="Reflection\ExpressionVisitor.cs" />
     <Compile Include="Reflection\ExtensionsForGenericArguments.cs" />
     <Compile Include="Reflection\FastCollection.cs" />
-    <Compile Include="Reflection\FastCollectionProperty.cs" />
     <Compile Include="Reflection\FastProperties.cs" />
     <Compile Include="Reflection\ReflectiveVisitorBase.cs" />
     <Compile Include="Serialization\FastText\FastTextDictionarySerializer.cs" />
@@ -547,6 +567,23 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

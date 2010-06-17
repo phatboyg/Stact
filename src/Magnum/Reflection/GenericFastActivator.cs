@@ -19,11 +19,12 @@ namespace Magnum.Reflection
 	using System.Reflection;
 	using Extensions;
 
+
 	public class GenericFastActivator :
 		FastActivatorBase,
 		IFastActivator
 	{
-		private readonly Dictionary<int, Func<object[], object>> _argGenerators;
+		readonly Dictionary<int, Func<object[], object>> _argGenerators;
 
 		public GenericFastActivator(Type genericType)
 			: base(genericType)
@@ -51,7 +52,7 @@ namespace Magnum.Reflection
 			return CreateFromArgs(arg0, arg1);
 		}
 
-		private object CreateFromArgs(params object[] args)
+		object CreateFromArgs(params object[] args)
 		{
 			int key = GenerateTypeKey(args);
 
@@ -60,7 +61,7 @@ namespace Magnum.Reflection
 			return generator(args);
 		}
 
-		private Func<object[], object> GetGenerator(int key, params object[] args)
+		Func<object[], object> GetGenerator(int key, params object[] args)
 		{
 			return _argGenerators.Retrieve(key, () =>
 				{
@@ -75,10 +76,10 @@ namespace Magnum.Reflection
 
 					constructorInfo = specializedType.GetConstructors().MatchingArguments(args).SingleOrDefault();
 
-					if(constructorInfo == null)
+					if (constructorInfo == null)
 						throw new FastActivatorException(specializedType, "Specialized constructor could not be used to build the object");
 
-					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
+					ParameterExpression argsParameter = Expression.Parameter(typeof(object[]), "args");
 
 					Expression[] parameters = constructorInfo.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 
@@ -90,7 +91,7 @@ namespace Magnum.Reflection
 				});
 		}
 
-		private static int GenerateTypeKey(params object[] args)
+		static int GenerateTypeKey(params object[] args)
 		{
 			int offset = 0;
 			return args.Aggregate(0, (x, o) => x ^ (o.GetType().GetHashCode() << offset++));
