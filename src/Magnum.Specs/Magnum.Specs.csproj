@@ -117,6 +117,7 @@
     <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\RemoveRemoteRepositoryCommand.cs" />
     <Compile Include="Concurrency\List_Specs.cs" />
+    <Compile Include="Concurrency\Load_Specs.cs" />
     <Compile Include="Cryptography\DpapiCryptographyService_Specs.cs" />
     <Compile Include="Cryptography\RsaCryptographyService_Specs.cs" />
     <Compile Include="Activator\Classes\ClassWithAConstrainedGenericArgument.cs" />

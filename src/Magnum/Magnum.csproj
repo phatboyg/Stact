@@ -157,6 +157,7 @@
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />
+    <Compile Include="Concurrency\CountDownLatch.cs" />
     <Compile Include="Concurrency\ImmutableReference.cs" />
     <Compile Include="Concurrency\EmptyImmutableList.cs" />
     <Compile Include="Concurrency\EmptyImmutableQueue.cs" />
