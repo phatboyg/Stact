@@ -20,17 +20,6 @@ namespace Magnum.Fibers
 	using Logging;
 
 
-	public enum FiberState
-	{
-		Created = 0,
-		Starting,
-		Running,
-		ShuttingDown,
-		Stopping,
-		Stopped,
-	}
-
-
 	/// <summary>
 	/// An Fiber that uses the .NET ThreadPool and QueueUserWorkItem to execute
 	/// actions.
@@ -43,7 +32,8 @@ namespace Magnum.Fibers
 
 		readonly object _lock = new object();
 
-		ImmutableReference<ImmutableList<Action>> _actions = new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
+		ImmutableReference<ImmutableList<Action>> _actions =
+			new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
 
 		bool _executorQueued;
 		bool _shuttingDown;
@@ -56,34 +46,12 @@ namespace Magnum.Fibers
 
 		public void Add(Action action)
 		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			ImmutableList<Action> previous = null;
-			_actions.Set(x =>
-				{
-					previous = x;
-					return x.Add(action);
-				});
-
-			if (previous.Count == 0)
-				QueueExecutor();
+			Add(x => x.Add(action));
 		}
 
 		public void AddMany(params Action[] actions)
 		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			ImmutableList<Action> previous = null;
-			_actions.Set(x =>
-				{
-					previous = x;
-					return x.AddMany(actions);
-				});
-
-			if (previous.Count == 0)
-				QueueExecutor();
+			Add(x => x.AddMany(actions));
 		}
 
 		public virtual void Shutdown(TimeSpan timeout)
@@ -112,14 +80,25 @@ namespace Magnum.Fibers
 			_stopping = true;
 		}
 
-		void QueueExecutor()
+		void Add(Func<ImmutableList<Action>, ImmutableList<Action>> mutator)
 		{
-			lock (_lock)
-			{
-				if (_executorQueued)
-					return;
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
 
-				QueueWorkItem();
+			ImmutableList<Action> previous = null;
+			_actions.Set(x =>
+				{
+					previous = x;
+					return mutator(x);
+				});
+
+			if (previous.Count == 0)
+			{
+				lock (_lock)
+				{
+					if (!_executorQueued)
+						QueueWorkItem();
+				}
 			}
 		}
 
@@ -133,7 +112,7 @@ namespace Magnum.Fibers
 
 		bool Execute()
 		{
-			ImmutableList<Action> actions = RemoveAll();
+			IEnumerable<Action> actions = RemoveAll();
 
 			ExecuteActions(actions);
 
@@ -163,7 +142,7 @@ namespace Magnum.Fibers
 			}
 		}
 
-		ImmutableList<Action> RemoveAll()
+		IEnumerable<Action> RemoveAll()
 		{
 			ImmutableList<Action> runActions = null;
 

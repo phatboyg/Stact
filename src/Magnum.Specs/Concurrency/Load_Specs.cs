@@ -24,7 +24,7 @@ namespace Magnum.Specs.Concurrency
 	[TestFixture]
 	public class Creating_a_sizeable_load
 	{
-		[Test]
+		[Test, Category("Slow")]
 		public void Should_work()
 		{
 			Stopwatch timer = Stopwatch.StartNew();
