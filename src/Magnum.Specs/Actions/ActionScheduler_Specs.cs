@@ -97,7 +97,7 @@ namespace Magnum.Specs.Actions
 	[TestFixture]
 	public class A_scheduled_item_throwing_an_exception
 	{
-		[Test]
+		[Test, Ignore("Should not be managing exceptions automatically")]
 		public void Should_not_stall_the_scheduler()
 		{
 			Fiber fiber = new ThreadPoolFiber();

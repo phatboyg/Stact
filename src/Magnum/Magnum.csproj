@@ -168,7 +168,6 @@
     <Compile Include="Concurrency\SingleElementImmutableList.cs" />
     <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
     <Compile Include="Extensions\ExtensionsToUri.cs" />
-    <Compile Include="Fibers\Internal\AbstractFiber.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
     <Compile Include="Fibers\FiberOverrunException.cs" />

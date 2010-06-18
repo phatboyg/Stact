@@ -12,10 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Fibers
 {
+	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Threading;
-	using Internal;
+	using Concurrency;
 	using Logging;
+
+
+	public enum FiberState
+	{
+		Created = 0,
+		Starting,
+		Running,
+		ShuttingDown,
+		Stopping,
+		Stopped,
+	}
+
 
 	/// <summary>
 	/// An Fiber that uses the .NET ThreadPool and QueueUserWorkItem to execute
@@ -23,71 +37,144 @@ namespace Magnum.Fibers
 	/// </summary>
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count} )")]
 	public class ThreadPoolFiber :
-		AbstractFiber
+		Fiber
 	{
-		private static readonly ILogger _log = Logger.GetLogger<ThreadPoolFiber>();
+		static readonly ILogger _log = Logger.GetLogger<ThreadPoolFiber>();
 
-		private bool _executorQueued;
+		readonly object _lock = new object();
 
-		/// <summary>
-		/// Constructs a new ThreadPoolFiber using the default queue settings
-		/// of unlimited actions with an infinite timeout to add new actions
-		/// </summary>
-		public ThreadPoolFiber()
-			: this(-1, Timeout.Infinite)
+		ImmutableReference<ImmutableList<Action>> _actions = new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
+
+		bool _executorQueued;
+		bool _shuttingDown;
+		bool _stopping;
+
+		protected int Count
 		{
+			get { return _actions.Value.Count; }
 		}
 
-		/// <summary>
-		/// Constructs a new ThreadPoolFiber using the specified settings for the
-		/// queue
-		/// </summary>
-		/// <param name="queueLimit">The maximum number of actions that can be waiting in the queue</param>
-		/// <param name="queueTimeout">The timeout to wait when adding actions when the queue if full before throwing an exception</param>
-		public ThreadPoolFiber(int queueLimit, int queueTimeout)
-			: base(queueLimit, queueTimeout)
+		public void Add(Action action)
 		{
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			ImmutableList<Action> previous = null;
+			_actions.Set(x =>
+				{
+					previous = x;
+					return x.Add(action);
+				});
+
+			if (previous.Count == 0)
+				QueueExecutor();
 		}
 
-		protected override bool Active
+		public void AddMany(params Action[] actions)
 		{
-			get { return _executorQueued; }
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			ImmutableList<Action> previous = null;
+			_actions.Set(x =>
+				{
+					previous = x;
+					return x.AddMany(actions);
+				});
+
+			if (previous.Count == 0)
+				QueueExecutor();
 		}
 
-		protected override void AfterExecute(bool actionsRemaining)
+		public virtual void Shutdown(TimeSpan timeout)
 		{
-			if (actionsRemaining)
+			DateTime waitUntil = SystemUtil.Now + timeout;
+
+			lock (_lock)
+			{
+				_shuttingDown = true;
+				Monitor.PulseAll(_lock);
+
+				while (_actions.Value.Count > 0 || _executorQueued)
+				{
+					timeout = waitUntil - SystemUtil.Now;
+					if (timeout < TimeSpan.Zero)
+						throw new FiberException("Timeout expired waiting for all pending actions to complete during shutdown");
+
+					Monitor.Wait(_lock, timeout);
+				}
+			}
+		}
+
+		public void Stop()
+		{
+			_shuttingDown = true;
+			_stopping = true;
+		}
+
+		void QueueExecutor()
+		{
+			lock (_lock)
+			{
+				if (_executorQueued)
+					return;
+
 				QueueWorkItem();
-			else
-				_executorQueued = false;
+			}
 		}
 
-		protected override void ActionAddedToQueue()
+		void QueueWorkItem()
 		{
-			if (_executorQueued)
-				return;
-
-			QueueWorkItem();
-		}
-
-		protected override int ActionsAreAvailable()
-		{
-			int count = base.ActionsAreAvailable();
-
-			return 1;
-		}
-
-		private void Execute(object state)
-		{
-			Execute();
-		}
-
-		private void QueueWorkItem()
-		{
-			if (!ThreadPool.QueueUserWorkItem(Execute))
+			if (!ThreadPool.QueueUserWorkItem(x => Execute()))
 				throw new FiberException("QueueUserWorkItem did not accept our execute method");
 
 			_executorQueued = true;
+		}
+
+		bool Execute()
+		{
+			ImmutableList<Action> actions = RemoveAll();
+
+			ExecuteActions(actions);
+
+			lock (_lock)
+			{
+				if (_actions.Value.Count > 0)
+					QueueWorkItem();
+				else
+				{
+					_executorQueued = false;
+
+					Monitor.PulseAll(_lock);
+				}
+			}
+
+			return true;
+		}
+
+		void ExecuteActions(IEnumerable<Action> actions)
+		{
+			foreach (Action action in actions)
+			{
+				if (_stopping)
+					break;
+
+				action();
+			}
+		}
+
+		ImmutableList<Action> RemoveAll()
+		{
+			ImmutableList<Action> runActions = null;
+
+			_actions.Set(x =>
+				{
+					runActions = x;
+
+					return ImmutableList<Action>.EmptyList;
+				});
+
+			return runActions;
 		}
 	}
 }

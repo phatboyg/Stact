@@ -24,11 +24,11 @@ namespace Magnum.Concurrency
 	public class ImmutableReference<T>
 		where T : class
 	{
-		T _value;
+		public T Value;
 
-		public T Value
+		public ImmutableReference(T initialValue)
 		{
-			get { return _value; }
+			Value = initialValue;
 		}
 
 		/// <summary>
@@ -38,18 +38,20 @@ namespace Magnum.Concurrency
 		/// again by calling the mutator function with the new value.
 		/// </summary>
 		/// <param name="mutator">A function that, given the current value, returns the changed value</param>
-		public void Set(Func<T, T> mutator)
+		/// <returns>The previous value</returns>
+		public T Set(Func<T, T> mutator)
 		{
 			for (;;)
 			{
-				T currentValue = _value;
+				T originalValue = Value;
 
-				T changedValue = mutator(currentValue);
+				T changedValue = mutator(originalValue);
 
-				Interlocked.CompareExchange(ref _value, changedValue, currentValue);
+				T previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
 
-				if (_value == changedValue)
-					break;
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return previousValue;
 			}
 		}
 	}

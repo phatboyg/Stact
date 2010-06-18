@@ -13,30 +13,33 @@
 namespace Magnum.Fibers
 {
 	using System;
+	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
-	using Internal;
+	using Concurrency;
 	using Logging;
+
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]
 	public class ThreadFiber :
-		AbstractFiber
+		Fiber
 	{
-		private readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
-		private readonly Thread _thread;
-		private bool _isActive;
+		readonly object _lock = new object();
+		readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
+		readonly Thread _thread;
+
+		ImmutableReference<ImmutableList<Action>> _actions;
+
+		bool _isActive;
+		bool _shuttingDown;
+		bool _stopping;
 
 		public ThreadFiber()
-			: this(-1, Timeout.Infinite)
 		{
-		}
+			_actions = new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
 
-		public ThreadFiber(int queueLimit, int queueTimeout)
-			: base(queueLimit, queueTimeout)
-		{
 			_thread = CreateThread();
-
 			_thread.Start();
 		}
 
@@ -52,19 +55,72 @@ namespace Magnum.Fibers
 			}
 		}
 
-		protected override bool Active
+		public void Add(Action action)
 		{
-			get { return _isActive; }
+			Add(x => x.Add(action));
 		}
 
-		public override void Shutdown(TimeSpan timeout)
+		public void AddMany(params Action[] actions)
 		{
-			base.Shutdown(timeout);
+			Add(x => x.AddMany(actions));
+		}
+
+		public void Shutdown(TimeSpan timeout)
+		{
+			DateTime waitUntil = SystemUtil.Now + timeout;
+
+			lock (_lock)
+			{
+				_shuttingDown = true;
+
+				Monitor.PulseAll(_lock);
+
+				while (_actions.Value.Count > 0 || _isActive)
+				{
+					timeout = waitUntil - SystemUtil.Now;
+					if (timeout < TimeSpan.Zero)
+						throw new FiberException("Timeout expired waiting for all pending actions to complete during shutdown");
+
+					Monitor.Wait(_lock, timeout);
+				}
+			}
 
 			_thread.Join(timeout);
 		}
 
-		private Thread CreateThread()
+		public void Stop()
+		{
+			lock (_lock)
+			{
+				_shuttingDown = true;
+				_stopping = true;
+
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		void Add(Func<ImmutableList<Action>, ImmutableList<Action>> mutator)
+		{
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			ImmutableList<Action> previous = null;
+			_actions.Set(x =>
+				{
+					previous = x;
+					return mutator(x);
+				});
+
+			if (previous.Count == 0)
+			{
+				lock (_lock)
+				{
+					Monitor.PulseAll(_lock);
+				}
+			}
+		}
+
+		Thread CreateThread()
 		{
 			var thread = new Thread(Run);
 			thread.Name = GetType().Name + "-" + thread.ManagedThreadId;
@@ -74,7 +130,7 @@ namespace Magnum.Fibers
 			return thread;
 		}
 
-		private void Run()
+		void Run()
 		{
 			_isActive = true;
 
@@ -93,9 +149,75 @@ namespace Magnum.Fibers
 
 			_isActive = false;
 
-			Pulse();
+			lock (_lock)
+			{
+				Monitor.PulseAll(_lock);
+			}
 
 			_log.Debug(x => x.Write("{0} Exiting", _thread.Name));
+		}
+
+
+		protected bool Execute()
+		{
+			if (!WaitForActions())
+				return false;
+
+			IEnumerable<Action> actions = RemoveAll();
+			if (actions == null)
+				return false;
+
+			ExecuteActions(actions);
+
+			lock (_lock)
+			{
+				if (_actions.Value.Count == 0)
+					Monitor.PulseAll(_lock);
+			}
+
+			return true;
+		}
+
+		bool WaitForActions()
+		{
+			lock (_lock)
+			{
+				while (_actions.Value.Count == 0 && !_stopping && !_shuttingDown)
+					Monitor.Wait(_lock);
+
+				if (_stopping)
+					return false;
+
+				if (_shuttingDown)
+					return _actions.Value.Count > 0;
+			}
+
+			return true;
+		}
+
+		void ExecuteActions(IEnumerable<Action> actions)
+		{
+			foreach (Action action in actions)
+			{
+				if (_stopping)
+					break;
+
+				action();
+			}
+		}
+
+		IEnumerable<Action> RemoveAll()
+		{
+			ImmutableList<Action> runActions = null;
+
+			_actions.Set(x =>
+				{
+					runActions = x;
+
+					return ImmutableList<Action>.EmptyList;
+				});
+
+			return runActions;
 		}
 	}
 }

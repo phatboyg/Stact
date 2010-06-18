@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actions
 {
-	using System;
 	using System.Diagnostics;
 	using System.Threading;
 	using Fibers;
@@ -20,7 +19,6 @@ namespace Magnum.Specs.Actions
 	using Magnum.Extensions;
 	using Magnum.Logging;
 	using NUnit.Framework;
-	using Rhino.Mocks;
 	using TestFramework;
 
 	[TestFixture]
@@ -70,29 +68,6 @@ namespace Magnum.Specs.Actions
 		}
 	}
 
-	[TestFixture]
-	public class Adding_an_action_to_a_full_queue
-	{
-		[Test]
-		public void Should_result_in_an_exception()
-		{
-			var action = MockRepository.GenerateMock<Action>();
-
-			var queue = new ThreadPoolFiber(2, 0);
-			queue.Add(action);
-			queue.Add(action);
-
-			try
-			{
-				queue.Add(action);
-				Assert.Fail("Should have thrown an exception");
-			}
-			catch (FiberException ex)
-			{
-				ex.Message.Contains("Insufficient").ShouldBeTrue();
-			}
-		}
-	}
 
 	[TestFixture]
 	public class Running_all_actions_using_a_thread_queue
@@ -108,7 +83,7 @@ namespace Magnum.Specs.Actions
 
 			fiber.Add(() => called.Complete(true));
 
-			fiber.Shutdown(12.Seconds());
+			fiber.Shutdown(112.Seconds());
 
 			called.IsCompleted.ShouldBeTrue();
 		}

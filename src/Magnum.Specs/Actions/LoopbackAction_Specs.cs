@@ -47,7 +47,7 @@ namespace Magnum.Specs.Actions
 			int total = 0;
 
 
-			Fiber reader = new ThreadFiber(100, 60000);
+			Fiber reader = new ThreadFiber();
 
 			Thread.Sleep(100);
 
@@ -56,7 +56,7 @@ namespace Magnum.Specs.Actions
 			var writers = new List<Fiber>();
 			for (int i = 0; i < writerCount; i++)
 			{
-				Fiber fiber = new ThreadPoolFiber(messageCount, 1000);
+				Fiber fiber = new ThreadPoolFiber();
 				for (int j = 0; j < messageCount; j++)
 				{
 					fiber.Add(() =>
