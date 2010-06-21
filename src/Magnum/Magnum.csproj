@@ -170,7 +170,6 @@
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
-    <Compile Include="Fibers\FiberOverrunException.cs" />
     <Compile Include="Fibers\Scheduler.cs" />
     <Compile Include="Fibers\ScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />

@@ -104,12 +104,7 @@ namespace Magnum.Fibers
 			if (_shuttingDown)
 				throw new FiberException("The fiber is no longer accepting actions");
 
-			ImmutableList<Action> previous = null;
-			_actions.Set(x =>
-				{
-					previous = x;
-					return mutator(x);
-				});
+			ImmutableList<Action> previous = _actions.Set(mutator);
 
 			if (previous.Count == 0)
 			{
