@@ -81,6 +81,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>Properties\SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="AfterAttribute.cs" />
     <Compile Include="AssertionsForBoolean.cs" />
     <Compile Include="AssertionsForCollections.cs" />
     <Compile Include="AssertionsForComparable.cs" />

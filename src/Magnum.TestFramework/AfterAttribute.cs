@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,11 +15,8 @@ namespace Magnum.TestFramework
 	using NUnit.Framework;
 
 
-	/// <summary>
-	/// Assert your expectations here
-	/// </summary>
-	public class ThenAttribute :
-		TestAttribute
+	public class AfterAttribute :
+		TestFixtureTearDownAttribute
 	{
 	}
 }

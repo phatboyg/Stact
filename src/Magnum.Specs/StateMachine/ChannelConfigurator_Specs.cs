@@ -43,6 +43,12 @@ namespace Magnum.Specs.StateMachine
 			_input.Send(new SampleStopped());
 		}
 
+		[After]
+		public void After()
+		{
+			_disconnect.Dispose();
+		}
+
 		[Then]
 		public void Should_have_a_set_of_channel_adapters_for_each_message_type()
 
