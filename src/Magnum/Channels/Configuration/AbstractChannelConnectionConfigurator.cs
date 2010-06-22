@@ -36,7 +36,7 @@ namespace Magnum.Channels.Configuration
 
 		private Func<Channel<TChannel>> ConsumerProvider { get; set; }
 
-		public ConsumerConfigurator<TConsumer, TChannel> UsingInstance<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor)
+		public ConsumerConfigurator<TConsumer, TChannel> UsingInstanceOf<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor)
 		{
 			var configurator = new ConsumerConfiguratorImpl<TConsumer, TChannel>(channelAccessor);
 

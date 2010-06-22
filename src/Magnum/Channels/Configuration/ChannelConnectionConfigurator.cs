@@ -22,7 +22,7 @@ namespace Magnum.Channels.Configuration
 		/// <typeparam name="TConsumer"></typeparam>
 		/// <param name="channelAccessor"></param>
 		/// <returns></returns>
-		ConsumerConfigurator<TConsumer, TChannel> UsingInstance<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor);
+		ConsumerConfigurator<TConsumer, TChannel> UsingInstanceOf<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor);
 
 		/// <summary>
 		/// Consumes the message on a ConsumerChannel, given the specified delegate
@@ -34,9 +34,9 @@ namespace Magnum.Channels.Configuration
 		/// <summary>
 		/// Consumes the message on a SelectiveConsumerChannel given the specified delegate
 		/// </summary>
-		/// <param name="consumer"></param>
+		/// <param name="selectiveConsumer"></param>
 		/// <returns></returns>
-		ChannelConnectionConfigurator<TChannel> UsingSelectiveConsumer(SelectiveConsumer<TChannel> consumer);
+		ChannelConnectionConfigurator<TChannel> UsingSelectiveConsumer(SelectiveConsumer<TChannel> selectiveConsumer);
 
 
 		/// <summary>
