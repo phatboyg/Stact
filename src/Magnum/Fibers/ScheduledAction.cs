@@ -18,6 +18,9 @@ namespace Magnum.Fibers
 	{
 		DateTime ScheduledAt { get; }
 
+        /// <summary>
+        /// Stops the ScheduledAction from firing again. 
+        /// </summary>
 		void Cancel();
 	}
 }

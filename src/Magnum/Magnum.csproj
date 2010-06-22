@@ -344,6 +344,7 @@
     <Compile Include="FileSystem\Events\FileSystemRenamed.cs" />
     <Compile Include="FileSystem\FileSystemEventProducer.cs" />
     <Compile Include="FileSystem\Internal\FileSystemDeletedImpl.cs" />
+    <Compile Include="FileSystem\PollingFileSystemEventProducer.cs" />
     <Compile Include="Graphing\Edge.cs" />
     <Compile Include="Graphing\GraphProvider.cs" />
     <Compile Include="Graphing\Vertex.cs" />
