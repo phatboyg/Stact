@@ -20,5 +20,5 @@ namespace Magnum.Channels
 	/// <typeparam name = "T">The message type</typeparam>
 	/// <param name = "message">The message</param>
 	/// <returns>An action to consume the message, or null</returns>
-	public delegate Consumer<T> ConsumerFactory<T>(T message);
+	public delegate Consumer<T> SelectiveConsumer<T>(T message);
 }

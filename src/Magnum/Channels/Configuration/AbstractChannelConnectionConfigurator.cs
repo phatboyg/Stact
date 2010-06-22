@@ -36,7 +36,7 @@ namespace Magnum.Channels.Configuration
 
 		private Func<Channel<TChannel>> ConsumerProvider { get; set; }
 
-		public ConsumerConfigurator<TConsumer, TChannel> Using<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor)
+		public ConsumerConfigurator<TConsumer, TChannel> UsingInstance<TConsumer>(ChannelAccessor<TConsumer, TChannel> channelAccessor)
 		{
 			var configurator = new ConsumerConfiguratorImpl<TConsumer, TChannel>(channelAccessor);
 
@@ -45,14 +45,14 @@ namespace Magnum.Channels.Configuration
 			return configurator;
 		}
 
-		public ChannelConnectionConfigurator<TChannel> Using(ConsumerFactory<TChannel> selectiveConsumer)
+		public ChannelConnectionConfigurator<TChannel> UsingSelectiveConsumer(SelectiveConsumer<TChannel> selectiveConsumer)
 		{
 			ConsumerProvider = () => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), selectiveConsumer);
 
 			return this;
 		}
 
-		public ChannelConnectionConfigurator<TChannel> Using(Consumer<TChannel> consumer)
+		public ChannelConnectionConfigurator<TChannel> UsingConsumer(Consumer<TChannel> consumer)
 		{
 			ConsumerProvider = () => new ConsumerChannel<TChannel>(_fiberFactory(), consumer);
 

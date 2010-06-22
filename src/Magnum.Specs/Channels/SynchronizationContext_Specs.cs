@@ -44,7 +44,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
-						.Using(message =>
+						.UsingConsumer(message =>
 							{
 								Trace.WriteLine("Received on Thread: " + Thread.CurrentThread.ManagedThreadId);
 

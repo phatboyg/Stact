@@ -51,14 +51,14 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
-						.Using<TestConsumer>(y => y.InputChannel)
+						.UsingInstance<TestConsumer>(y => y.InputChannel)
 						.ObtainedBy(() => new TestConsumer());
 
 					x.Consume<TestMessage>()
-						.Using(message => { futureB.Complete(message); });
+						.UsingConsumer(futureB.Complete);
 
 					x.Consume<TestMessage>()
-						.Using(message => { return m => { futureC.Complete(m); }; });
+						.UsingSelectiveConsumer(message => futureC.Complete);
 				}))
 			{
 				Trace.WriteLine("Complete network:");

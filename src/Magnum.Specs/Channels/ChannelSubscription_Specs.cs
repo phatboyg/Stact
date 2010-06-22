@@ -39,7 +39,7 @@ namespace Magnum.Specs.Channels
 				{
 					x.Consume<TestMessage>()
 						.Every(1.Seconds(), c => c.Value)
-						.Using(message => { future.Complete(message.Count); });
+						.UsingConsumer(message => future.Complete(message.Count));
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -107,7 +107,7 @@ namespace Magnum.Specs.Channels
 				{
 					x.Consume<TestMessage>()
 						.Every(1.Seconds())
-						.Using(message => { future.Complete(message.Count); });
+						.UsingConsumer(message => future.Complete(message.Count));
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -136,7 +136,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
-						.Using(message => { });
+						.UsingConsumer(message => { });
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -152,14 +152,16 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_be_two_consumers_on_the_channel()
 		{
+			SelectiveConsumer<TestMessage> selectiveConsumer = x => y => { };
+
 			var input = new ChannelAdapter();
 			using (input.Connect(x =>
 				{
 					x.Consume<TestMessage>()
-						.Using(message => { });
+						.UsingConsumer(message => { });
 
 					x.Consume<TestMessage>()
-						.Using(message => { });
+						.UsingSelectiveConsumer(selectiveConsumer);
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -169,7 +171,7 @@ namespace Magnum.Specs.Channels
 						typeof (TypedChannelAdapter<TestMessage>),
 						typeof (BroadcastChannel<TestMessage>),
 						typeof (ConsumerChannel<TestMessage>),
-						typeof (ConsumerChannel<TestMessage>),
+						typeof (SelectiveConsumerChannel<TestMessage>),
 					});
 			}
 		}

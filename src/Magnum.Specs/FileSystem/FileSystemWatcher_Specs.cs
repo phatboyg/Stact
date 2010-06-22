@@ -46,7 +46,7 @@ namespace Magnum.Specs.FileSystem
 			_channel = new ChannelAdapter();
 			_producer = new FileSystemEventProducer(_baseDirectory, _channel);
 
-			using (var subscription = _channel.Connect(x => x.Consume<FileCreated>().Using(m => _listener.Complete(m))))
+			using (var subscription = _channel.Connect(x => x.Consume<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
 			{
 				File.Create(_path);
 

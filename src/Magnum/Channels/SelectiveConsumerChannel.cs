@@ -23,14 +23,14 @@ namespace Magnum.Channels
 		Channel<T>
 	{
 		private readonly Fiber _fiber;
-		private readonly ConsumerFactory<T> _selectiveConsumer;
+		private readonly SelectiveConsumer<T> _selectiveConsumer;
 
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
 		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
 		/// <param name="selectiveConsumer">The method to call when a message is sent to the channel</param>
-		public SelectiveConsumerChannel(Fiber fiber, ConsumerFactory<T> selectiveConsumer)
+		public SelectiveConsumerChannel(Fiber fiber, SelectiveConsumer<T> selectiveConsumer)
 		{
 			_fiber = fiber;
 			_selectiveConsumer = selectiveConsumer;

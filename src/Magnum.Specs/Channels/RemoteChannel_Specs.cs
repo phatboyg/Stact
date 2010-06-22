@@ -47,7 +47,7 @@ namespace Magnum.Specs.Channels
 				using (adapter.Connect(x =>
 					{
 						x.Consume<TestMessage>()
-							.Using(m => future.Complete(m));
+							.UsingConsumer(m => future.Complete(m));
 					}))
 				{
 					var client = new WcfChannelProxy(new SynchronousFiber(), serviceUri, pipeName);

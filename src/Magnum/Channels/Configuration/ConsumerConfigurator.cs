@@ -22,6 +22,7 @@ namespace Magnum.Channels.Configuration
 	public interface ConsumerConfigurator<TConsumer, TChannel>
 	{
 		ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TConsumer> consumerFactory);
+
 		ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TChannel, TConsumer> consumerFactory);
 	}
 }
