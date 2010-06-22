@@ -3,6 +3,13 @@ namespace Magnum.Channels.Configuration
 	using System;
 	using System.Collections.Generic;
 
+
+	public interface ChannelConnectionConfigurator
+	{
+		// TODO
+		// ChannelConnectionConfigurator OnThreadPool();
+	}
+
 	/// <summary>
 	/// A fluent syntax for configuration the options of a channel subscription
 	/// </summary>

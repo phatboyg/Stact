@@ -66,6 +66,8 @@ namespace Magnum.Benchmarks
 			}
 
 			Console.WriteLine("Processed {0} messages in with {1} channels in {2}ms", seedCount, channelCount, timer.ElapsedMilliseconds);
+
+			Console.WriteLine("That's {0} messages per second!", ( (long)seedCount * channelCount * 1000) / timer.ElapsedMilliseconds);
 		}
 	}
 }

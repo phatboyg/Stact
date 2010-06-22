@@ -170,7 +170,6 @@
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
-    <Compile Include="Fibers\FiberOverrunException.cs" />
     <Compile Include="Fibers\Scheduler.cs" />
     <Compile Include="Fibers\ScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />
@@ -526,6 +525,7 @@
     <Compile Include="StateMachine\EventActionList.cs" />
     <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
+    <Compile Include="StateMachine\ExtensionsForChannel.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />
     <Compile Include="StateMachine\LambdaAction.cs" />
@@ -546,6 +546,9 @@
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="FunctionTimer.cs" />
     <Compile Include="Extensions\ExtensionsToTimeSpan.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineChannelConfigurator.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspector.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />
     <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />
