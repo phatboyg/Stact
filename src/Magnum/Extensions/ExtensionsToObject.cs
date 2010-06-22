@@ -17,9 +17,10 @@ namespace Magnum.Extensions
 	using System.Linq;
 	using System.Reflection;
 
+
 	public static class ExtensionsToObject
 	{
-		private const int RecursionLimit = 10;
+		const int RecursionLimit = 10;
 
 		public static string Stringify(this object value)
 		{
@@ -33,7 +34,7 @@ namespace Magnum.Extensions
 			}
 		}
 
-		private static string StringifyInternal(object value, int recursionLevel)
+		static string StringifyInternal(object value, int recursionLevel)
 		{
 			if (value == null)
 				return "null";
@@ -55,7 +56,7 @@ namespace Magnum.Extensions
 		}
 
 
-		private static string StringifyCollection(IEnumerable collection, int recursionLevel)
+		static string StringifyCollection(IEnumerable collection, int recursionLevel)
 		{
 			string[] elements = collection.Cast<object>()
 				.Select(x => StringifyInternal(x, recursionLevel - 1))
@@ -64,7 +65,7 @@ namespace Magnum.Extensions
 			return "[" + String.Join(", ", elements) + "]";
 		}
 
-		private static string StringifyObject(object value, int recursionLevel)
+		static string StringifyObject(object value, int recursionLevel)
 		{
 			string[] elements = value
 				.GetType()
@@ -73,6 +74,20 @@ namespace Magnum.Extensions
 				.ToArray();
 
 			return "{" + String.Join(", ", elements) + "}";
+		}
+
+		public static T CastAs<T>(this object input)
+			where T : class
+		{
+			if (input == null)
+				throw new ArgumentNullException("input");
+
+			var result = input as T;
+			if (result == null)
+				throw new InvalidOperationException("Unable to convert from " + input.GetType().FullName + " to "
+				                                    + typeof(T).FullName);
+
+			return result;
 		}
 	}
 }
