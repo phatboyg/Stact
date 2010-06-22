@@ -37,7 +37,7 @@ namespace Magnum.Specs.Channels
 			int expected = 5;
 			using (input.Connect(x =>
 				{
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.Every(1.Seconds(), c => c.Value)
 						.UsingConsumer(message => future.Complete(message.Count));
 				}))
@@ -83,7 +83,7 @@ namespace Magnum.Specs.Channels
 			var input = new ChannelAdapter();
 			using (input.Connect(x =>
 				{
-					x.Add(next);
+					x.AddUntypedChannel(next);
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -105,7 +105,7 @@ namespace Magnum.Specs.Channels
 			int expected = 5;
 			using (input.Connect(x =>
 				{
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.Every(1.Seconds())
 						.UsingConsumer(message => future.Complete(message.Count));
 				}))
@@ -135,7 +135,7 @@ namespace Magnum.Specs.Channels
 			var input = new ChannelAdapter();
 			using (input.Connect(x =>
 				{
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingConsumer(message => { });
 				}))
 			{
@@ -157,10 +157,10 @@ namespace Magnum.Specs.Channels
 			var input = new ChannelAdapter();
 			using (input.Connect(x =>
 				{
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingConsumer(message => { });
 
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingSelectiveConsumer(selectiveConsumer);
 				}))
 			{

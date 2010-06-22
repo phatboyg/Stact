@@ -50,14 +50,14 @@ namespace Magnum.Specs.Channels
 
 			using (input.Connect(x =>
 				{
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingInstanceOf<TestConsumer>(y => y.InputChannel)
 						.ObtainedBy(() => new TestConsumer());
 
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingConsumer(futureB.Complete);
 
-					x.Consume<TestMessage>()
+					x.AddConsumerOf<TestMessage>()
 						.UsingSelectiveConsumer(message => futureC.Complete);
 				}))
 			{
@@ -89,8 +89,8 @@ namespace Magnum.Specs.Channels
 
 			using (input.Connect(x =>
 				{
-					x.Add(consumerA);
-					x.Add(consumerB);
+					x.AddChannel(consumerA);
+					x.AddChannel(consumerB);
 				}))
 			{
 				new TraceChannelVisitor().Visit(input);
@@ -110,7 +110,7 @@ namespace Magnum.Specs.Channels
 			var futureA = new Future<TestMessage>();
 			var consumerA = new ConsumerChannel<TestMessage>(new SynchronousFiber(), futureA.Complete);
 
-			using (ChannelConnection connection = input.Connect(x => x.Add(consumerA)))
+			using (ChannelConnection connection = input.Connect(x => x.AddChannel(consumerA)))
 			{
 			}
 

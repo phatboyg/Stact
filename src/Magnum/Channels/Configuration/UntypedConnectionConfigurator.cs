@@ -27,23 +27,21 @@ namespace Magnum.Channels.Configuration
 			_channel = channel;
 		}
 
-		public ChannelConnectionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel)
+		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
 			var configurator = new UntypedChannelConnectionConfigurator<TChannel>(channel);
 
 			_configurators.Add(configurator);
-
-			return configurator;
 		}
 
-		public void Add(UntypedChannel channel)
+		public void AddUntypedChannel(UntypedChannel channel)
 		{
 			var configurator = new UntypedChannelConnectionConfigurator(channel);
 
 			_configurators.Add(configurator);
 		}
 
-		public ChannelConnectionConfigurator<T> Consume<T>()
+		public ChannelConnectionConfigurator<T> AddConsumerOf<T>()
 		{
 			var configurator = new UntypedChannelConnectionConfigurator<T>();
 

@@ -52,7 +52,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		public void Connect(ConnectionConfigurator configurator, Fiber fiber, T instance)
 		{
 			var consumerChannel = new ConsumerChannel<V>(fiber, x => instance.RaiseEvent(Event, x));
-			configurator.Add(consumerChannel);
+			configurator.AddChannel(consumerChannel);
 		}
 	}
 }

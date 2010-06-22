@@ -72,7 +72,7 @@ namespace Magnum.Specs.Channels
 
 			using (var scope = adapter.Connect(x =>
 				{
-					x.Add(consumer);
+					x.AddChannel(consumer);
 				}))
 			{
 				new TraceChannelVisitor().Visit(adapter);
@@ -95,7 +95,7 @@ namespace Magnum.Specs.Channels
 
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 
-			using (var scope = adapter.Connect(x => x.Add(second)))
+			using (var scope = adapter.Connect(x => x.AddChannel(second)))
 			{
 				new TraceChannelVisitor().Visit(adapter);
 
@@ -118,7 +118,7 @@ namespace Magnum.Specs.Channels
 
 			var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);
 
-			using (var scope = adapter.Connect(x => x.Add(second)))
+			using (var scope = adapter.Connect(x => x.AddChannel(second)))
 			{
 				new TraceChannelVisitor().Visit(adapter);
 
@@ -138,10 +138,10 @@ namespace Magnum.Specs.Channels
 			var adapter = new ChannelAdapter<TestMessage>(new ShuntChannel<TestMessage>());
 
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var firstScope = adapter.Connect(x => x.Add(first));
+			var firstScope = adapter.Connect(x => x.AddChannel(first));
 
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
-			var secondScope = adapter.Connect(x => x.Add(second));
+			var secondScope = adapter.Connect(x => x.AddChannel(second));
 
 			firstScope.Dispose();
 
@@ -161,7 +161,7 @@ namespace Magnum.Specs.Channels
 			var future = new Future<TestMessage>();
 
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
-			using (var scope = adapter.Connect(x => x.Add(consumer)))
+			using (var scope = adapter.Connect(x => x.AddChannel(consumer)))
 			{
 			}
 

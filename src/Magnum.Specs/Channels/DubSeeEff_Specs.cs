@@ -42,7 +42,7 @@ namespace Magnum.Specs.Channels
 
 				using (adapter.Connect(x =>
 					{
-						x.Consume<TestMessage>()
+						x.AddConsumerOf<TestMessage>()
 							.UsingConsumer(m =>
 								{
 									log.Debug(l => l.Write("Received: {0}", m.Value));

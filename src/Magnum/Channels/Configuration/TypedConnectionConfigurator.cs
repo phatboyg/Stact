@@ -29,16 +29,14 @@ namespace Magnum.Channels.Configuration
 			_channel = channel;
 		}
 
-		public ChannelConnectionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel)
+		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
 			var configurator = new TypedChannelConnectionConfigurator<T, TChannel>(channel);
 
 			_configurators.Add(configurator);
-
-			return configurator;
 		}
 
-		public void Add(UntypedChannel channel)
+		public void AddUntypedChannel(UntypedChannel channel)
 		{
 			var consumerChannel = new ConsumerChannel<T>(new SynchronousFiber(), channel.Send);
 
@@ -47,7 +45,7 @@ namespace Magnum.Channels.Configuration
 			_configurators.Add(configurator);
 		}
 
-		public ChannelConnectionConfigurator<TChannel> Consume<TChannel>()
+		public ChannelConnectionConfigurator<TChannel> AddConsumerOf<TChannel>()
 		{
 			var configurator = new TypedChannelConnectionConfigurator<T, TChannel>();
 

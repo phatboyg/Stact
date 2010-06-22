@@ -22,19 +22,19 @@ namespace Magnum.Channels.Configuration
 		/// </summary>
 		/// <typeparam name="TChannel">The channel type</typeparam>
 		/// <param name="channel">The channel instance</param>
-		ChannelConnectionConfigurator<TChannel> Add<TChannel>(Channel<TChannel> channel);
+		void AddChannel<TChannel>(Channel<TChannel> channel);
 
 		/// <summary>
 		/// Adds a channel directly without any modification
 		/// </summary>
 		/// <param name="channel">The channel instance</param>
-		void Add(UntypedChannel channel);
+		void AddUntypedChannel(UntypedChannel channel);
 
 		/// <summary>
 		/// Configures a new consumer
 		/// </summary>
 		/// <typeparam name="TChannel">The channel type</typeparam>
 		/// <returns>A chainable method to configure additional options</returns>
-		ChannelConnectionConfigurator<TChannel> Consume<TChannel>();
+		ChannelConnectionConfigurator<TChannel> AddConsumerOf<TChannel>();
 	}
 }

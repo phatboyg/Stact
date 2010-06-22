@@ -46,7 +46,7 @@ namespace Magnum.Specs.Channels
 				_log.Debug("Remote channel adapter created");
 				using (adapter.Connect(x =>
 					{
-						x.Consume<TestMessage>()
+						x.AddConsumerOf<TestMessage>()
 							.UsingConsumer(m => future.Complete(m));
 					}))
 				{
