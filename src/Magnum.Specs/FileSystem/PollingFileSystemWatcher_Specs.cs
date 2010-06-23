@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.FileSystem.Poller
+namespace Magnum.Specs.FileSystem
 {
     using System;
     using System.IO;
@@ -24,7 +24,7 @@ namespace Magnum.Specs.FileSystem.Poller
 
 
     [Scenario]
-    public class Creating_a_file_in_a_folder
+    public class Creating_a_file_in_a_folder_for_poller
     {
         string _baseDirectory;
         ChannelAdapter _channel;
@@ -49,11 +49,12 @@ namespace Magnum.Specs.FileSystem.Poller
             _channel = new ChannelAdapter();
             FiberFactory fiberFactory = () => new SynchronousFiber();
             _scheduler = new TimerScheduler(fiberFactory());
-            _producer = new PollingFileSystemEventProducer(_baseDirectory, _channel, _scheduler, fiberFactory());
+            _producer = new PollingFileSystemEventProducer(_baseDirectory, _channel, _scheduler, fiberFactory(),
+                                                           20.Seconds());
 
             Thread.Sleep(5.Seconds());
 
-            using (ChannelConnection subscription = _channel.Connect(x => x.Consume<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
+            using (_channel.Connect(x => x.Consume<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
             {
                 File.Create(_path);
 

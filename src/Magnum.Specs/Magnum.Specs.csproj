@@ -104,6 +104,7 @@
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />
     <Compile Include="Channels\ConsumerPool_Specs.cs" />
     <Compile Include="Channels\DubSeeEff_Specs.cs" />
+    <Compile Include="Channels\Future_Specs.cs" />
     <Compile Include="Channels\Interval_Specs.cs" />
     <Compile Include="Channels\Mailbox_Specs.cs" />
     <Compile Include="Channels\PingPong_Specs.cs" />
