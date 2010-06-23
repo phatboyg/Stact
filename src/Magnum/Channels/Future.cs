@@ -72,7 +72,18 @@ namespace Magnum.Channels
 
 		public void Complete(T message)
 		{
-			Value = message;
+		    if (_completed)
+            {
+                if (Value != null && Value.Equals(message))
+                    return;
+
+                if (Value.Equals(message))
+                    return;
+                    
+                throw new InvalidOperationException("A Future cannot be completed twice.");
+            }
+
+		    Value = message;
 
 			_completed = true;
 
