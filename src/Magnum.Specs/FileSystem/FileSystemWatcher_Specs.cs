@@ -12,66 +12,66 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.FileSystem
 {
-	using System;
-	using System.IO;
-	using Fibers;
-	using Magnum.Channels;
-	using Magnum.Extensions;
-	using Magnum.FileSystem;
-	using Magnum.FileSystem.Events;
-	using TestFramework;
+    using System;
+    using System.IO;
+    using Magnum.Channels;
+    using Magnum.Extensions;
+    using Magnum.FileSystem;
+    using Magnum.FileSystem.Events;
+    using TestFramework;
 
-	[Scenario]
-	public class Creating_a_file_in_a_folder
-	{
-		private string _baseDirectory;
-		private ChannelAdapter _channel;
-		private FileSystemEventProducer _producer;
-		private Future<FileCreated> _listener;
-		private string _path;
-		private string _filename;
 
-		[When]
-		public void A_file_is_created()
-		{
-			_baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    [Scenario]
+    public class Creating_a_file_in_a_folder
+    {
+        string _baseDirectory;
+        ChannelAdapter _channel;
+        string _filename;
+        Future<FileCreated> _listener;
+        string _path;
+        FileSystemEventProducer _producer;
 
-			_filename = "test.dat";
-			_path = Path.Combine(_baseDirectory, _filename);
+        [When]
+        public void A_file_is_created()
+        {
+            _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-			File.Delete(_path);
+            _filename = "test.dat";
+            _path = Path.Combine(_baseDirectory, _filename);
 
-			_listener = new Future<FileCreated>();
+            File.Delete(_path);
 
-			_channel = new ChannelAdapter();
-			_producer = new FileSystemEventProducer(_baseDirectory, _channel);
+            _listener = new Future<FileCreated>();
 
-			using (var subscription = _channel.Connect(x => x.Consume<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
-			{
-				File.Create(_path);
+            _channel = new ChannelAdapter();
+            _producer = new FileSystemEventProducer(_baseDirectory, _channel);
 
-				_listener.WaitUntilCompleted(10.Seconds());
-			}
+            using (_channel.Connect(x => x.Consume<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
+            {
+                File.Create(_path);
 
-			_producer.Dispose();
-		}
+                _listener.WaitUntilCompleted(10.Seconds());
+            }
 
-		[Then]
-		public void Should_produce_a_file_created_message()
-		{
-			_listener.IsCompleted.ShouldBeTrue();
-		}
+            _producer.Dispose();
+        }
 
-		[Then]
-		public void Should_match_the_full_path_of_the_file()
-		{
-			_listener.Value.Path.ShouldEqual(_path);
-		}
+        [Then]
+        public void Should_produce_a_file_created_message()
+        {
+            _listener.IsCompleted.ShouldBeTrue();
+        }
 
-		[Then]
-		public void Should_match_the_name_of_the_file()
-		{
-			_listener.Value.Name.ShouldEqual(_filename);
-		}
-	}
+        [Then]
+        public void Should_match_the_full_path_of_the_file()
+        {
+            _listener.Value.Path.ShouldEqual(_path);
+        }
+
+        [Then]
+        public void Should_match_the_name_of_the_file()
+        {
+            _listener.Value.Name.ShouldEqual(_filename);
+        }
+    }
 }
