@@ -18,6 +18,7 @@ namespace Magnum.FileSystem
     using System.Linq;
     using System.Security.Cryptography;
     using Channels;
+    using Events;
     using Extensions;
     using Fibers;
     using Internal;
@@ -27,13 +28,15 @@ namespace Magnum.FileSystem
         IDisposable
     {
         readonly UntypedChannel _channel;
+        readonly TimeSpan _checkInterval;
+        readonly ChannelConnection _connection;
         readonly string _directory;
-        ScheduledAction _scheduledAction;
-        Fiber _fiber;
-        Scheduler _scheduler;
+        readonly Fiber _fiber;
+        readonly FileSystemEventProducer _fileSystemEventProducer;
+        readonly Dictionary<string, Guid> _hashes;
+        readonly Scheduler _scheduler;
         bool _disposed;
-        Dictionary<string, Guid> _hashes;
-        TimeSpan _checkInterval;
+        ScheduledAction _scheduledAction;
 
         /// <summary>
         /// Creates a PollingFileSystemEventProducer
@@ -42,13 +45,9 @@ namespace Magnum.FileSystem
         /// <param name="channel">The channel where events should be sent</param>
         /// <param name="scheduler">Event scheduler</param>
         /// <param name="fiber">Fiber to schedule on</param>
-        public PollingFileSystemEventProducer(string directory, UntypedChannel channel, Scheduler scheduler, Fiber fiber) :
-            this(directory, channel, scheduler, fiber, 1.Minutes())
-        {
-            
-        }
-
-        public PollingFileSystemEventProducer(string directory, UntypedChannel channel, Scheduler scheduler, Fiber fiber, TimeSpan checkInterval)
+        /// <param name="checkInterval">The maximal time between events or polls on a given file</param>
+        public PollingFileSystemEventProducer(string directory, UntypedChannel channel, Scheduler scheduler, Fiber fiber,
+                                              TimeSpan checkInterval)
         {
             _directory = directory;
             _channel = channel;
@@ -57,13 +56,64 @@ namespace Magnum.FileSystem
             _scheduler = scheduler;
             _checkInterval = checkInterval;
 
-            _scheduledAction = scheduler.Schedule(3.Seconds(), _fiber, () => HashFileSystem());
+            _scheduledAction = scheduler.Schedule(3.Seconds(), _fiber, HashFileSystem);
+
+            ChannelAdapter myChannel = new ChannelAdapter();
+
+            _connection = myChannel.Connect(connectionConfigurator =>
+                {
+                    connectionConfigurator.AddConsumerOf<FileSystemChanged>().UsingConsumer(HandleFileSystemChangedAndCreated);
+					connectionConfigurator.AddConsumerOf<FileSystemCreated>().UsingConsumer(HandleFileSystemChangedAndCreated);
+					connectionConfigurator.AddConsumerOf<FileSystemRenamed>().UsingConsumer(HandleFileSystemRenamed);
+					connectionConfigurator.AddConsumerOf<FileSystemDeleted>().UsingConsumer(HandleFileSystemDeleted);
+                });
+
+            _fileSystemEventProducer = new FileSystemEventProducer(directory, myChannel);
         }
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        void HandleFileSystemChangedAndCreated(FileSystemEvent fileEvent)
+        {
+            HandleHash(fileEvent.Path, GenerateHashForFile(fileEvent.Path));
+        }
+
+        void HandleFileSystemRenamed(FileSystemRenamed fileEvent)
+        {
+            HandleFileSystemChangedAndCreated(fileEvent);
+            HandleFileSystemDeleted(new FileSystemDeletedImpl(fileEvent.OldPath, fileEvent.OldName));
+        }
+
+        void HandleFileSystemDeleted(FileSystemEvent fileEvent)
+        {
+            RemoveHash(fileEvent.Path);
+        }
+
+        void HandleHash(string key, Guid newHash)
+        {
+            if (_hashes.ContainsKey(key))
+            {
+                if (_hashes[key] != newHash)
+                {
+                    _hashes[key] = newHash;
+                    _channel.Send(new FileChangedImpl(Path.GetFileName(key), key));
+                }
+            }
+            else
+            {
+                _hashes.Add(key, newHash);
+                _channel.Send(new FileCreatedImpl(Path.GetFileName(key), key));
+            }
+        }
+
+        void RemoveHash(string key)
+        {
+            _hashes.Remove(key);
+            _channel.Send(new FileSystemDeletedImpl(Path.GetFileName(key), key));
         }
 
         void HashFileSystem()
@@ -74,41 +124,15 @@ namespace Magnum.FileSystem
 
                 ProcessDirectory(newHashes, _directory);
 
-                _hashes.ToList().ForEach(hashKvp =>
-                    {
-                        if (!newHashes.ContainsKey(hashKvp.Key))
-                        {
-                            _hashes.Remove(hashKvp.Key);
-                            _channel.Send(new FileSystemDeletedImpl(Path.GetFileName(hashKvp.Key),
-                                                                    Path.GetFullPath(hashKvp.Key)));
-                        }
-                        else
-                        {
-                            if (hashKvp.Value == newHashes[hashKvp.Key])
-                            {
-                                newHashes.Remove(hashKvp.Key);
-                            }
-                            else
-                            {
-                                _hashes[hashKvp.Key] = newHashes[hashKvp.Key];
-                                _channel.Send(new FileChangedImpl(Path.GetFileName(hashKvp.Key),
-                                                                  Path.GetFullPath(hashKvp.Key)));
-                            }
+                // process all the new hashes found
+                newHashes.ToList().ForEach(x => HandleHash(x.Key, x.Value));
 
-                            newHashes.Remove(hashKvp.Key);
-                        }
-                    });
-
-                foreach (var newHashKvp in newHashes)
-                {
-                    _hashes.Add(newHashKvp.Key, newHashKvp.Value);
-                    _channel.Send(new FileCreatedImpl(Path.GetFileName(newHashKvp.Key),
-                                                      Path.GetFullPath(newHashKvp.Key)));
-                }
+                // remove any hashes we couldn't process
+                _hashes.Where(x => !newHashes.ContainsKey(x.Key)).ToList().ConvertAll(x => x.Key).ForEach(RemoveHash);
             }
             finally
             {
-                _scheduledAction = _scheduler.Schedule(_checkInterval, _fiber, () => HashFileSystem());
+                _scheduledAction = _scheduler.Schedule(_checkInterval, _fiber, HashFileSystem);
             }
         }
 
@@ -118,29 +142,41 @@ namespace Magnum.FileSystem
 
             foreach (string file in files)
             {
-                try
-                {
-                    string hashValue;
-                    using (FileStream f = File.OpenRead(file))
-                    using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-                    {
-                        byte[] fileHash = md5.ComputeHash(f);
-
-                        hashValue = BitConverter.ToString(fileHash).Replace("-", "");
-                    }
-
-                    hashes.Add(Path.Combine(baseDirectory, file), new Guid(hashValue));
-                }
-                catch (Exception)
-                {
-                    // chew up exception and say empty hash
-                    // can we do something more interesting than this?
-                    hashes.Add(Path.Combine(baseDirectory, file), Guid.Empty);
-                }
-
+                string fullFileName = Path.Combine(baseDirectory, file);
+                hashes.Add(fullFileName, GenerateHashForFile(fullFileName));
             }
 
             Directory.GetDirectories(baseDirectory).ToList().Each(dir => ProcessDirectory(hashes, dir));
+        }
+
+        static Guid GenerateHashForFile(string file)
+        {
+            try
+            {
+                string hashValue;
+                using (FileStream f = File.OpenRead(file))
+                using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+                {
+                    byte[] fileHash = md5.ComputeHash(f);
+
+                    hashValue = BitConverter.ToString(fileHash).Replace("-", "");
+
+                    f.Close();
+                }
+
+                return new Guid(hashValue);
+            }
+            catch (Exception)
+            {
+                // chew up exception and say empty hash
+                // can we do something more interesting than this?
+                return Guid.Empty;
+            }
+        }
+
+        ~PollingFileSystemEventProducer()
+        {
+            Dispose(false);
         }
 
         void Dispose(bool disposing)
@@ -148,7 +184,11 @@ namespace Magnum.FileSystem
             if (_disposed)
                 return;
             if (disposing)
+            {
                 _scheduledAction.Cancel();
+                _connection.Dispose();
+                _fileSystemEventProducer.Dispose();
+            }
 
             _disposed = true;
         }
