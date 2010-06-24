@@ -14,6 +14,8 @@ namespace Magnum.Channels
 {
 	using System;
 	using System.Threading;
+	using Extensions;
+
 
 	/// <summary>
 	/// A future object that supports asynchronous waits and channel sends, in addition to a regular complete method
@@ -79,8 +81,9 @@ namespace Magnum.Channels
 
                 if (Value.Equals(message))
                     return;
-                    
-                throw new InvalidOperationException("A Future cannot be completed twice.");
+
+            	throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
+            	                                    	.FormatWith(Value, message));
             }
 
 		    Value = message;

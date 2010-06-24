@@ -58,7 +58,8 @@ namespace Magnum.Specs.Channels
 							{
 								future.Complete(message.Count);
 								connection.Disconnect();
-							});
+							})
+						.UseProducerThread();
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -108,7 +109,8 @@ namespace Magnum.Specs.Channels
 				{
 					x.AddConsumerOf<TestMessage>()
 						.Every(4.Seconds())
-						.UsingConsumer(message => future.Complete(message.Count));
+						.UsingConsumer(message => future.Complete(message.Count))
+						.UseProducerThread();
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
