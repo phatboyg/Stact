@@ -31,7 +31,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 				x.AddConsumerOf<SomeEvent>().UsingConsumer(m => { });
 				x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
 				x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
-				x.AddConsumerOf<SomeEvent>().UsingInstanceOf<MyConsumer>(c => c.Input);
+				x.AddConsumerOf<SomeEvent>().UsingInstance().Of<MyConsumer>(c => c.Input);
 			});
 
 			var generator = new ChannelGraphGenerator();

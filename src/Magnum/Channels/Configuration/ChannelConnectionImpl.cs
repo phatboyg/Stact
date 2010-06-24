@@ -15,15 +15,16 @@ namespace Magnum.Channels.Configuration
 	using System;
 	using System.Collections.Generic;
 
-	public class UntypedChannelConnection :
+
+	public class ChannelConnectionImpl :
 		ChannelConnection
 	{
-		private readonly UntypedChannel _channel;
-		private readonly HashSet<Channel> _connectedChannels;
+		readonly UntypedChannel _channel;
+		readonly HashSet<Channel> _connectedChannels;
 
-		private bool _disposed;
+		bool _disposed;
 
-		public UntypedChannelConnection(UntypedChannel channel, HashSet<Channel> connectedChannels)
+		public ChannelConnectionImpl(UntypedChannel channel, HashSet<Channel> connectedChannels)
 		{
 			_channel = channel;
 			_connectedChannels = connectedChannels;
@@ -45,18 +46,64 @@ namespace Magnum.Channels.Configuration
 			_connectedChannels.Clear();
 		}
 
-		private void Dispose(bool disposing)
+		void Dispose(bool disposing)
 		{
-			if (_disposed) return;
+			if (_disposed)
+				return;
 			if (disposing)
-			{
 				Disconnect();
-			}
 
 			_disposed = true;
 		}
 
-		~UntypedChannelConnection()
+		~ChannelConnectionImpl()
+		{
+			Dispose(false);
+		}
+	}
+
+
+	public class ChannelConnectionImpl<T> :
+		ChannelConnection
+	{
+		readonly Channel<T> _channel;
+		readonly HashSet<Channel> _connectedChannels;
+
+		bool _disposed;
+
+		public ChannelConnectionImpl(Channel<T> channel, HashSet<Channel> connectedChannels)
+		{
+			_channel = channel;
+			_connectedChannels = connectedChannels;
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		public void Disconnect()
+		{
+			if (_connectedChannels.Count == 0)
+				return;
+
+			new DisconnectChannelVisitor(_connectedChannels).DisconnectFrom(_channel);
+
+			_connectedChannels.Clear();
+		}
+
+		void Dispose(bool disposing)
+		{
+			if (_disposed)
+				return;
+			if (disposing)
+				Disconnect();
+
+			_disposed = true;
+		}
+
+		~ChannelConnectionImpl()
 		{
 			Dispose(false);
 		}

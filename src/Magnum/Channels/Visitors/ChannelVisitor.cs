@@ -158,6 +158,11 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
+		protected virtual UntypedChannel Visitor(ShuntChannel channel)
+		{
+			return channel;
+		}
+
 		protected virtual UntypedChannel Visitor(BroadcastChannel channel)
 		{
 			channel.Listeners.Each(subscriber => { Visit(subscriber); });

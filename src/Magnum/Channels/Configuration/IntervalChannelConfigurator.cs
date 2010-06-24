@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,16 +13,21 @@
 namespace Magnum.Channels.Configuration
 {
 	using System;
+	using System.Collections.Generic;
+	using Fibers;
 
 	/// <summary>
-	/// A fluent syntax for configuration options of a channel consumer
+	/// Used to configure the options on a channel that delivers messages at regular
+	/// intervals
 	/// </summary>
-	/// <typeparam name="TConsumer">The consumer type</typeparam>
-	/// <typeparam name="TChannel">The channel type</typeparam>
-	public interface ConsumerConfigurator<TConsumer, TChannel>
+	/// <typeparam name="TChannel"></typeparam>
+	public interface IntervalChannelConfigurator<TChannel> :
+		ChannelConnectionConfigurator<ICollection<TChannel>>
 	{
-		ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TConsumer> consumerFactory);
+		IntervalChannelConfigurator<TChannel> UsePrivateScheduler();
 
-		ConsumerConfigurator<TConsumer, TChannel> ObtainedBy(Func<TChannel, TConsumer> consumerFactory);
+		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
+
+		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
 	}
 }

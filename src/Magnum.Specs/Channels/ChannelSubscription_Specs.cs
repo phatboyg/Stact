@@ -14,18 +14,31 @@ namespace Magnum.Specs.Channels
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 	using TestFramework;
 
+
 	[TestFixture]
 	public class Subscribing_to_a_channel
 	{
-		private class TestMessage
+		[Test]
+		public void Should_add_an_untyped_channel_to_an_untyped_channel_adapter()
 		{
-			public int Value { get; set; }
+			var next = new ChannelAdapter();
+
+			var input = new ChannelAdapter();
+			using (input.Connect(x => { x.AddUntypedChannel(next); }))
+			{
+				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
+					{
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(ChannelAdapter),
+						typeof(ShuntChannel),
+					});
+			}
 		}
 
 		[Test]
@@ -44,16 +57,19 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
-						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (DistinctIntervalChannel<TestMessage, int>),
-						typeof (ConsumerChannel<IDictionary<int,TestMessage>>),
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(DistinctIntervalChannel<TestMessage, int>),
+						typeof(ConsumerChannel<IDictionary<int, TestMessage>>),
 					});
 
 				for (int i = 0; i < expected; i++)
 				{
-					input.Send(new TestMessage { Value = i});
+					input.Send(new TestMessage
+						{
+							Value = i
+						});
 				}
 			}
 
@@ -69,29 +85,8 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (ShuntChannel)
-					});
-			}
-		}
-
-		[Test]
-		public void Should_add_an_untyped_channel_to_an_untyped_channel_adapter()
-		{
-			var next = new ChannelAdapter();
-
-			var input = new ChannelAdapter();
-			using (input.Connect(x =>
-				{
-					x.AddUntypedChannel(next);
-				}))
-			{
-				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
-					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
 						typeof(ChannelAdapter),
-						typeof(ShuntChannel),
+						typeof(ShuntChannel)
 					});
 			}
 		}
@@ -112,17 +107,15 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
-						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (IntervalChannel<TestMessage>),
-						typeof (ConsumerChannel<ICollection<TestMessage>>),
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(IntervalChannel<TestMessage>),
+						typeof(ConsumerChannel<ICollection<TestMessage>>),
 					});
 
 				for (int i = 0; i < expected; i++)
-				{
 					input.Send(new TestMessage());
-				}
 			}
 
 			future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
@@ -141,10 +134,10 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
-						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (ConsumerChannel<TestMessage>)
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>)
 					});
 			}
 		}
@@ -166,14 +159,20 @@ namespace Magnum.Specs.Channels
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
-						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (BroadcastChannel<TestMessage>),
-						typeof (ConsumerChannel<TestMessage>),
-						typeof (SelectiveConsumerChannel<TestMessage>),
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(BroadcastChannel<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>),
+						typeof(SelectiveConsumerChannel<TestMessage>),
 					});
 			}
+		}
+
+
+		class TestMessage
+		{
+			public int Value { get; set; }
 		}
 	}
 }

@@ -101,6 +101,7 @@
     <Compile Include="Channels\ChannelSubscription_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />
     <Compile Include="Channels\ConditionalConsumer_Specs.cs" />
+    <Compile Include="Channels\Connect_Specs.cs" />
     <Compile Include="Channels\ConsumerInstance_Specs.cs" />
     <Compile Include="Channels\ConsumerPool_Specs.cs" />
     <Compile Include="Channels\DubSeeEff_Specs.cs" />

@@ -12,10 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System.Collections.Generic;
+	using System;
 
-	public interface TypedConfigurator<TChannel>
+	public interface InstanceChannelConfigurator<TChannel>
 	{
-		IEnumerable<Channel> Configure(Channel<TChannel> channel);
+		InstanceChannelConfigurator<TConsumer, TChannel> Of<TConsumer>(ChannelAccessor<TConsumer, TChannel> accessor);
+	}
+
+
+	/// <summary>
+	/// A fluent syntax for configuration options of a channel consumer
+	/// </summary>
+	/// <typeparam name="TConsumer">The consumer type</typeparam>
+	/// <typeparam name="TChannel">The channel type</typeparam>
+	public interface InstanceChannelConfigurator<TConsumer, TChannel>
+	{
+		void ObtainedBy(Func<TConsumer> consumerFactory);
+
+		void ObtainedBy(Func<TChannel, TConsumer> consumerFactory);
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,10 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System.Collections.Generic;
-
-	public interface UntypedConfigurator
+	public interface Configurator
 	{
-		IEnumerable<Channel> Configure(UntypedChannel channel);
+		/// <summary>
+		/// Validate the configuration, throwing an exception if the configuration settings
+		/// are insufficient or invalid based on the type of configuration being performed.
+		/// </summary>
+		void ValidateConfiguration();
 	}
 }

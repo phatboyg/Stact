@@ -13,7 +13,7 @@
 namespace Magnum.Channels.Configuration
 {
 	/// <summary>
-	/// A fluent syntax for defining subscriptions against a channel network
+	/// Used to configure the connections to be added to an UntypedChannel
 	/// </summary>
 	public interface ConnectionConfigurator
 	{
@@ -30,11 +30,21 @@ namespace Magnum.Channels.Configuration
 		/// <param name="channel">The channel instance</param>
 		void AddUntypedChannel(UntypedChannel channel);
 
-		/// <summary>
-		/// Configures a new consumer
-		/// </summary>
-		/// <typeparam name="TChannel">The channel type</typeparam>
-		/// <returns>A chainable method to configure additional options</returns>
-		ChannelConnectionConfigurator<TChannel> AddConsumerOf<TChannel>();
+
+		void RegisterChannelConfigurator(ChannelConfigurator configurator);
+	}
+
+
+	/// <summary>
+	/// Used to configure the connections to be added to a typed Channel
+	/// </summary>
+	/// <typeparam name="T">The channel type</typeparam>
+	public interface ConnectionConfigurator<T>
+	{
+		void AddChannel<TChannel>(Channel<TChannel> channel);
+
+		ConsumerChannelConfigurator<T> AddUntypedChannel(UntypedChannel channel);
+
+		void RegisterChannelConfigurator(ChannelConfigurator<T> configurator);
 	}
 }

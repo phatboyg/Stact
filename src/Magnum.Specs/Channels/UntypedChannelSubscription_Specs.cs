@@ -51,7 +51,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.UsingInstanceOf<TestConsumer>(y => y.InputChannel)
+						.UsingInstance().Of<TestConsumer>(y => y.InputChannel)
 						.ObtainedBy(() => new TestConsumer());
 
 					x.AddConsumerOf<TestMessage>()

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,28 +12,36 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System.Collections.Generic;
+	using System;
+	using Fibers;
 
-	public class TypedChannelConnectionConfigurator<T, TChannel> :
-		AbstractChannelConnectionConfigurator<TChannel>,
-		TypedConfigurator<T>
+
+	public class IntervalModelConfigurator<T> :
+		FiberModelConfigurator<T>
+		where T : class
 	{
-		public TypedChannelConnectionConfigurator()
+		protected TimeSpan _interval;
+		protected Func<Scheduler> _schedulerFactory;
+
+		public T UsePrivateScheduler()
 		{
+			_schedulerFactory = () => new TimerScheduler(new ThreadPoolFiber());
+
+			return this as T;
 		}
 
-		public TypedChannelConnectionConfigurator(Channel<TChannel> channel)
-			: base(channel)
+		public T UseScheduler(Scheduler scheduler)
 		{
+			_schedulerFactory = () => scheduler;
+
+			return this as T;
 		}
 
-		public IEnumerable<Channel> Configure(Channel<T> channel)
+		public T WithSchedulerFactory(Func<Scheduler> schedulerFactory)
 		{
-			Channel<TChannel> newChannel = GetConsumer();
+			_schedulerFactory = schedulerFactory;
 
-			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
-
-			return new[] {newChannel};
+			return this as T;
 		}
 	}
 }

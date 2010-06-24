@@ -14,8 +14,23 @@ namespace Magnum.Channels.Configuration
 {
 	using System.Collections.Generic;
 
-	public class DistinctIntervalChannelConnectionConfigurator<TChannel, TKey> :
-		AbstractChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
+
+	/// <summary>
+	/// Configures a channel on an untyped channel
+	/// </summary>
+	public interface ChannelConfigurator :
+		Configurator
 	{
+		IEnumerable<Channel> Configure(UntypedChannel channel);
+	}
+
+	/// <summary>
+	/// Configures a channel on a typed channel
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public interface ChannelConfigurator<T> :
+		Configurator
+	{
+		IEnumerable<Channel> Configure(Channel<T> channel);
 	}
 }

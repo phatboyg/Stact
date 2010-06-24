@@ -19,9 +19,9 @@ namespace Magnum.Channels
 
 	public static class ExtensionsForChannels
 	{
-		public static ChannelConnection Connect<T>(this Channel<T> channel, Action<ConnectionConfigurator> subscriberActions)
+		public static ChannelConnection Connect<T>(this Channel<T> channel, Action<ConnectionConfigurator<T>> subscriberActions)
 		{
-			var subscriber = new TypedConnectionConfigurator<T>(channel);
+			var subscriber = new ConnectionConfiguratorImpl<T>(channel);
 
 			subscriberActions(subscriber);
 
@@ -30,19 +30,19 @@ namespace Magnum.Channels
 
 		public static ChannelConnection Connect(this UntypedChannel channel, Action<ConnectionConfigurator> subscriberActions)
 		{
-			var subscriber = new UntypedConnectionConfigurator(channel);
+			var subscriber = new ConnectionConfiguratorImpl(channel);
 
 			subscriberActions(subscriber);
 
 			return subscriber.Complete();
 		}
 
-		public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
+		public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
 		{
 			return new FlattenChannelVisitor().Flatten(channel);
 		}
 
-		public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
+		public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
 		{
 			return new FlattenChannelVisitor().Flatten(channel);
 		}

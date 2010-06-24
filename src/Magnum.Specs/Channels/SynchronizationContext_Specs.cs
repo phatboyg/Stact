@@ -21,6 +21,7 @@ namespace Magnum.Specs.Channels
 	using NUnit.Framework;
 	using TestFramework;
 
+
 	[TestFixture]
 	public class Creating_a_channel_with_a_synchronization_context
 	{
@@ -52,7 +53,8 @@ namespace Magnum.Specs.Channels
 								Assert.AreEqual(context, SynchronizationContext.Current);
 
 								future.Complete(message);
-							});
+							})
+						.UseCurrentSychronizationContext();
 				}))
 			{
 				Trace.WriteLine("Subscribed on Thread: " + Thread.CurrentThread.ManagedThreadId);
@@ -61,11 +63,11 @@ namespace Magnum.Specs.Channels
 
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
-						typeof (ChannelAdapter),
-						typeof (BroadcastChannel),
-						typeof (TypedChannelAdapter<TestMessage>),
-						typeof (SynchronizedChannel<TestMessage>),
-						typeof (ConsumerChannel<TestMessage>),
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(SynchronizedChannel<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>),
 					});
 
 				fiber.Add(() =>
@@ -82,11 +84,13 @@ namespace Magnum.Specs.Channels
 			}
 		}
 
-		private class TestMessage
+
+		class TestMessage
 		{
 		}
 
-		private class TestSynchronizationContext :
+
+		class TestSynchronizationContext :
 			SynchronizationContext
 		{
 			public override void Send(SendOrPostCallback d, object state)

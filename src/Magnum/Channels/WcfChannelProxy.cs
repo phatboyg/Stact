@@ -19,12 +19,13 @@ namespace Magnum.Channels
 	using Internal;
 	using Serialization;
 
+
 	public class WcfChannelProxy :
 		UntypedChannel
 	{
-		private readonly EndpointAddress _address;
-		private readonly Fiber _fiber;
-		private readonly WcfChannel<WcfMessageEnvelope> _proxy;
+		readonly EndpointAddress _address;
+		readonly Fiber _fiber;
+		readonly WcfChannel<WcfMessageEnvelope> _proxy;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
@@ -34,8 +35,8 @@ namespace Magnum.Channels
 			PipeName = pipeName;
 
 			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
-			                                                                      _address);
+			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
+			                                                                                          _address);
 		}
 
 		public Serializer Serializer { get; private set; }
@@ -50,7 +51,7 @@ namespace Magnum.Channels
 				{
 					var envelope = new WcfMessageEnvelope
 						{
-							MessageType = typeof (T).AssemblyQualifiedName,
+							MessageType = typeof(T).AssemblyQualifiedName,
 							Body = Serializer.Serialize(message),
 						};
 
@@ -59,12 +60,13 @@ namespace Magnum.Channels
 		}
 	}
 
+
 	public class WcfChannelProxy<T> :
 		Channel<T>
 	{
-		private readonly EndpointAddress _address;
-		private readonly Fiber _fiber;
-		private readonly WcfChannel<T> _proxy;
+		readonly EndpointAddress _address;
+		readonly Fiber _fiber;
+		readonly WcfChannel<T> _proxy;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
@@ -73,7 +75,7 @@ namespace Magnum.Channels
 			PipeName = pipeName;
 
 			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
+			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
 		}
 
 		public Uri ServiceUri { get; private set; }
