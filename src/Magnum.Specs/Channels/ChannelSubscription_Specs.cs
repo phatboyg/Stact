@@ -107,7 +107,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.Every(1.Seconds())
+						.Every(4.Seconds())
 						.UsingConsumer(message => future.Complete(message.Count));
 				}))
 			{
@@ -124,7 +124,7 @@ namespace Magnum.Specs.Channels
 					input.Send(new TestMessage());
 			}
 
-			future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+			future.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
 			future.Value.ShouldEqual(expected);
 		}
 
