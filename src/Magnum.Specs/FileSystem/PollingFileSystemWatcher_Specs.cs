@@ -20,6 +20,7 @@ namespace Magnum.Specs.FileSystem
     using Magnum.Extensions;
     using Magnum.FileSystem;
     using Magnum.FileSystem.Events;
+    using NUnit.Framework;
     using TestFramework;
 
 
@@ -64,20 +65,20 @@ namespace Magnum.Specs.FileSystem
             _producer.Dispose();
         }
 
-        [Then]
+        [Then, Category("Slow")]
         public void Should_produce_a_file_created_message()
         {
             _listener.IsCompleted.ShouldBeTrue();
         }
 
-        [Then]
-        public void Should_match_the_full_path_of_the_file()
+		[Then, Category("Slow")]
+		public void Should_match_the_full_path_of_the_file()
         {
             _listener.Value.Path.ShouldEqual(_path);
         }
 
-        [Then]
-        public void Should_match_the_name_of_the_file()
+		[Then, Category("Slow")]
+		public void Should_match_the_name_of_the_file()
         {
             _listener.Value.Name.ShouldEqual(_filename);
         }
