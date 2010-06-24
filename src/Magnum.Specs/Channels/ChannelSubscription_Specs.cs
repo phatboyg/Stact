@@ -48,11 +48,17 @@ namespace Magnum.Specs.Channels
 
 			var input = new ChannelAdapter();
 			int expected = 5;
-			using (input.Connect(x =>
+
+			ChannelConnection connection = null;
+			using (connection = input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
 						.Every(4.Seconds(), c => c.Value)
-						.UsingConsumer(message => future.Complete(message.Count));
+						.UsingConsumer(message =>
+							{
+								future.Complete(message.Count);
+								connection.Disconnect();
+							});
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
