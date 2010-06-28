@@ -135,6 +135,7 @@
     <Compile Include="Channels\Configuration\IntervalChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\IntervalModelConfigurator.cs" />
     <Compile Include="Channels\Configuration\SelectiveConsumerChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\FutureChannel.cs" />
     <Compile Include="Channels\InstanceChannelProvider.cs" />
     <Compile Include="Channels\SelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
@@ -168,8 +169,9 @@
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />
+    <Compile Include="Concurrency\AtomicInt32.cs" />
     <Compile Include="Concurrency\CountDownLatch.cs" />
-    <Compile Include="Concurrency\ImmutableReference.cs" />
+    <Compile Include="Concurrency\AtomicReference.cs" />
     <Compile Include="Concurrency\EmptyImmutableList.cs" />
     <Compile Include="Concurrency\EmptyImmutableQueue.cs" />
     <Compile Include="Concurrency\ImmutableList.cs" />

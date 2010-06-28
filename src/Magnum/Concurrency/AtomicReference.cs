@@ -21,12 +21,12 @@ namespace Magnum.Concurrency
 	/// change the reference pointed to in an atomic fashion
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ImmutableReference<T>
+	public class AtomicReference<T>
 		where T : class
 	{
 		public T Value;
 
-		public ImmutableReference(T initialValue)
+		public AtomicReference(T initialValue)
 		{
 			Value = initialValue;
 		}

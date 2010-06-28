@@ -32,8 +32,8 @@ namespace Magnum.Fibers
 
 		readonly object _lock = new object();
 
-		ImmutableReference<ImmutableList<Action>> _actions =
-			new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
+		AtomicReference<ImmutableList<Action>> _actions =
+			new AtomicReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
 
 		bool _executorQueued;
 		bool _shuttingDown;
