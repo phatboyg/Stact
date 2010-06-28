@@ -51,19 +51,19 @@ namespace Magnum.Specs.Configuration
         public void Should_be_able_to_parse_the_file_and_return_entries()
         {
             IEnumerable<ConfigurationEntry> entries = _store.GetEntries();
-            AssertionsForComparable.ShouldBeEqualTo(entries.Count(), 1);
+            entries.Count().ShouldBeEqualTo(1);
         }
 
         [Test]
         public void The_name_should_be_viewable()
         {
-            AssertionsForString.ShouldEqual(_store.FilesLoaded.First().FileName, "bob.json");
+            _store.FilesLoaded.First().FileName.ShouldEqual("bob.json");
         }
 
         [Test]
         public void There_should_be_one_file()
         {
-            AssertionsForObjects.ShouldEqual(_store.FilesLoaded.Count(), 1);
+            _store.FilesLoaded.Count().ShouldEqual(1);
         }
     }
 }

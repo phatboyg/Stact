@@ -26,9 +26,9 @@ namespace Magnum.Web.ValueProviders
 	{
 		readonly ValueProvider _provider;
 
-		public JsonValueProvider(Stream inputStream)
+		public JsonValueProvider(Stream bodyStream)
 		{
-			_provider = CreateDictionaryFromJson(inputStream);
+			_provider = CreateDictionaryFromJson(bodyStream);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)

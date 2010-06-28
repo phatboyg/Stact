@@ -15,7 +15,9 @@ namespace Magnum.Web.ValueProviders
 	using System;
 	using System.Web;
 	using System.Web.Routing;
+	using Abstractions;
 	using Magnum.ValueProviders;
+
 
 	/// <summary>
 	///   Maps access to the RequestContext for model binding
@@ -23,15 +25,17 @@ namespace Magnum.Web.ValueProviders
 	public class RequestContextValueProvider :
 		ValueProvider
 	{
-		private readonly ValueProvider _provider;
+		readonly ValueProvider _provider;
 
 		public RequestContextValueProvider(RequestContext requestContext)
 		{
-			var providers = new ValueProvider[]
+			var providers = new[]
 				{
 					new DictionaryValueProvider(requestContext.RouteData.Values),
 					GetCookieCollection(requestContext.HttpContext.Request),
-					new JsonValueProvider(requestContext.HttpContext.Request),
+					requestContext.HttpContext.Request.ContentType.StartsWith(MediaType.Json.ToString())
+						? (ValueProvider)new JsonValueProvider(requestContext.HttpContext.Request.InputStream)
+						: new EmptyValueProvider(),
 					GetFormCollection(requestContext.HttpContext.Request),
 					GetQueryStringCollection(requestContext.HttpContext.Request),
 					GetFileCollection(requestContext.HttpContext.Request),
@@ -57,27 +61,27 @@ namespace Magnum.Web.ValueProviders
 			_provider.GetAll(valueAction);
 		}
 
-		private static AccessorValueProvider GetFileCollection(HttpRequestBase request)
+		static AccessorValueProvider GetFileCollection(HttpRequestBase request)
 		{
 			return new AccessorValueProvider(x => request.Files[x], () => request.Files.AllKeys);
 		}
 
-		private static AccessorValueProvider GetCookieCollection(HttpRequestBase request)
+		static AccessorValueProvider GetCookieCollection(HttpRequestBase request)
 		{
 			return new AccessorValueProvider(x => request.Cookies[x], () => request.Cookies.AllKeys);
 		}
 
-		private static AccessorValueProvider GetFormCollection(HttpRequestBase request)
+		static AccessorValueProvider GetFormCollection(HttpRequestBase request)
 		{
 			return new AccessorValueProvider(x => request.Form[x], () => request.Form.AllKeys);
 		}
 
-		private static AccessorValueProvider GetQueryStringCollection(HttpRequestBase request)
+		static AccessorValueProvider GetQueryStringCollection(HttpRequestBase request)
 		{
 			return new AccessorValueProvider(x => request.QueryString[x], () => request.QueryString.AllKeys);
 		}
 
-		private static AccessorValueProvider GetHeaderCollection(HttpRequestBase request)
+		static AccessorValueProvider GetHeaderCollection(HttpRequestBase request)
 		{
 			return new AccessorValueProvider(x => request.Headers[x], () => request.Headers.AllKeys);
 		}
