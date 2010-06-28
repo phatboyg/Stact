@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,19 +13,18 @@
 namespace Magnum.Specs.Configuration
 {
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.IO;
 	using System.Text;
 	using Magnum.Configuration;
 	using Magnum.ValueProviders;
 	using TestFramework;
-	using ValueProviders;
+
 
 	[Scenario]
-	public class When_a_configuration_object_is_bound 
+	public class When_a_configuration_object_is_bound
 	{
-		ConfigurationBinder _configurationBinder;
 		MyConfiguration _configuration;
+		ConfigurationBinder _configurationBinder;
 		MultipleValueProvider _provider;
 
 		[When]
@@ -36,10 +35,10 @@ namespace Magnum.Specs.Configuration
 
 			string commandLineText = "-password:really_long_one --secure";
 
-			ValueProvider[] providers = new ValueProvider[]
+			var providers = new ValueProvider[]
 				{
 					new Magnum.ValueProviders.CommandLineValueProvider(commandLineText),
-					new Magnum.ValueProviders.JsonValueProvider(jsonStream),
+					new JsonValueProvider(jsonStream),
 				};
 
 			_provider = new MultipleValueProvider(providers);
@@ -70,7 +69,7 @@ namespace Magnum.Specs.Configuration
 		[Then]
 		public void Should_return_a_list_of_all_configuration()
 		{
-			var found = new Dictionary<string,object>();
+			var found = new Dictionary<string, object>();
 			_provider.GetAll(found.Add);
 
 			found.ContainsKey("password").ShouldBeTrue();
@@ -82,8 +81,8 @@ namespace Magnum.Specs.Configuration
 
 		public class MyConfiguration
 		{
-			public string Name { get;  set; }
-			public string Password { get;  set; }
+			public string Name { get; set; }
+			public string Password { get; set; }
 			public bool Secure { get; set; }
 		}
 	}
