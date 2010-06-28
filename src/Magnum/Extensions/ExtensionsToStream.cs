@@ -13,8 +13,9 @@
 namespace Magnum.Extensions
 {
 	using System.IO;
+	using System.Text;
 
-	public static class ExtensionsToStream
+    public static class ExtensionsToStream
 	{
 		public static byte[] ReadToEnd(this Stream stream)
 		{
@@ -33,5 +34,10 @@ namespace Magnum.Extensions
 				return content.ToArray();
 			}
 		}
+
+        public static string ReadToEndAsText(this Stream stream)
+        {
+            return Encoding.UTF8.GetString(stream.ReadToEnd());
+        }
 	}
 }
