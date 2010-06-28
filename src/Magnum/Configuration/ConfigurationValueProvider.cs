@@ -12,18 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration
 {
-    public class ConfigurationFile
+    public interface ConfigurationValueProvider
     {
-        readonly string _path;
-
-        public ConfigurationFile(string path)
-        {
-            _path = path;
-        }
-
-        public string FileName
-        {
-            get { return _path; }
-        }
+        ConfigurationDto[] GetEntries();
+        string Name { get; }
     }
 }

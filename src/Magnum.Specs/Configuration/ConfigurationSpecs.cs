@@ -57,13 +57,13 @@ namespace Magnum.Specs.Configuration
         [Test]
         public void The_name_should_be_viewable()
         {
-            AssertionsForString.ShouldEqual(_store.FilesLoaded.First().FileName, "bob.json");
+            AssertionsForString.ShouldEqual(_store.ProvidersLoaded.First().Name, "bob.json");
         }
 
         [Test]
         public void There_should_be_one_file()
         {
-            AssertionsForObjects.ShouldEqual(_store.FilesLoaded.Count(), 1);
+            AssertionsForObjects.ShouldEqual(_store.ProvidersLoaded.Count(), 1);
         }
     }
 }

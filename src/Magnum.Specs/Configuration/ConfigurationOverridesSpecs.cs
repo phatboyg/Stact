@@ -45,14 +45,14 @@ namespace Magnum.Specs.Configuration
         [Test]
         public void There_should_be_two_files()
         {
-            _store.FilesLoaded.Count().ShouldEqual(2);
+            _store.ProvidersLoaded.Count().ShouldEqual(2);
         }
 
         [Test]
         public void The_name_should_be_viewable()
         {
-            _store.FilesLoaded.First().FileName.ShouldEqual("global.json");
-            _store.FilesLoaded.Skip(1).First().FileName.ShouldEqual("local.json");
+            _store.ProvidersLoaded.First().Name.ShouldEqual("global.json");
+            _store.ProvidersLoaded.Skip(1).First().Name.ShouldEqual("local.json");
         }
 
         [Test]

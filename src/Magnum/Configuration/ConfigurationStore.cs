@@ -13,49 +13,48 @@
 namespace Magnum.Configuration
 {
     using System.Collections.Generic;
-    using System.IO;
-    using System.Web.Script.Serialization;
     using Extensions;
 
     public class ConfigurationStore
     {
         public ConfigurationStore()
         {
-            FilesLoaded = new List<ConfigurationFile>();
+            ProvidersLoaded = new List<ConfigurationValueProvider>();
         }
 
         public void AddFile(string jsonFile)
         {
-            FilesLoaded.Add(new ConfigurationFile(jsonFile));
+            ProvidersLoaded.Add(new ConfigurationFileValueProvider(jsonFile));
+        }
+        public void AddCommandLine(string argv)
+        {
+            ProvidersLoaded.Add(new CommandLineValueProvider(argv));
         }
 
-        public ICollection<ConfigurationFile> FilesLoaded { get; private set; }
+        public ICollection<ConfigurationValueProvider> ProvidersLoaded { get; private set; }
 
         public ConfigurationEntries GetEntries()
         {
             var result = new ConfigurationEntries();
-            var serializer = new JavaScriptSerializer();
             var dict = new Dictionary<string, ConfigurationEntry>();
 
-            FilesLoaded.Each(file =>
+            ProvidersLoaded.Each(entry =>
             {
-                using (FileStream str = new FileInfo(file.FileName).OpenRead())
+                var dtos = entry.GetEntries();
+                dtos.Each(e =>
                 {
-                    string stuff = str.ReadToEndAsText();
-                    var dtos = serializer.Deserialize<ConfigurationDto[]>(stuff);
-                    dtos.Each(e =>
-                    {
-                        if (!dict.ContainsKey(e.Key))
-                            dict.Add(e.Key, new ConfigurationEntry(e.Key));
+                    if (!dict.ContainsKey(e.Key))
+                        dict.Add(e.Key, new ConfigurationEntry(e.Key));
 
-                        dict[e.Key].SetValue(e.Value, file.FileName);
-                    });
-                }
+                    dict[e.Key].SetValue(e.Value, entry.Name);
+                });
             });
 
             result.Entries.AddRange(dict.Values);
 
             return result;
         }
+
+
     }
 }
