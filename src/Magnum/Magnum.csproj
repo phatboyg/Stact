@@ -187,6 +187,8 @@
     <Compile Include="Concurrency\SingleElementImmutableList.cs" />
     <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
     <Compile Include="Configuration\CommandLineValueProvider.cs" />
+    <Compile Include="Configuration\ConfigurationBinder.cs" />
+    <Compile Include="Configuration\ConfigurationBinderContext.cs" />
     <Compile Include="Configuration\ConfigurationDto.cs" />
     <Compile Include="Configuration\ConfigurationEntries.cs" />
     <Compile Include="Configuration\ConfigurationEntry.cs" />

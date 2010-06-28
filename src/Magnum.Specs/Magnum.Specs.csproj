@@ -122,6 +122,7 @@
     <Compile Include="Concurrency\List_Specs.cs" />
     <Compile Include="Concurrency\Load_Specs.cs" />
     <Compile Include="Configuration\CommandLineConfigurationSpecs.cs" />
+    <Compile Include="Configuration\ConfigurationBinder_Specs.cs" />
     <Compile Include="Configuration\ConfigurationOverridesSpecs.cs" />
     <Compile Include="Configuration\ConfigurationSpecs.cs" />
     <Compile Include="Cryptography\DpapiCryptographyService_Specs.cs" />

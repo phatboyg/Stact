@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,33 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.ValueProviders
+namespace Magnum.Configuration
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Collections;
-	using CommandLineParser;
+	using Binding;
+	using Channels;
+	using ValueProviders;
 
 
-	public class CommandLineValueProvider :
-		ValueProvider
+	public class ConfigurationBinderContext :
+		ModelBinderContext
 	{
 		readonly ValueProvider _provider;
 
-		public CommandLineValueProvider(string commandLine)
+		public ConfigurationBinderContext(ValueProvider provider)
 		{
-			IEnumerable<ICommandLineElement> elements = new MonadicCommandLineParser().Parse(commandLine);
-
-			Dictionary<string, object> dictionary = elements.Where(x => x is IDefinitionElement)
-				.Cast<IDefinitionElement>()
-				.Select(x => new Tuple<string, object>(x.Key, x.Value))
-				.Union(elements.Where(x => x is ISwitchElement)
-				       	.Cast<ISwitchElement>()
-				       	.Select(x => new Tuple<string, object>(x.Key, x.Value)))
-				.ToDictionary(x => x.First, x => x.Second, StringComparer.InvariantCultureIgnoreCase);
-
-			_provider = new DictionaryValueProvider(dictionary);
+			_provider = provider;
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
@@ -52,6 +41,11 @@ namespace Magnum.ValueProviders
 		public void GetAll(Action<string, object> valueAction)
 		{
 			_provider.GetAll(valueAction);
+		}
+
+		public Channel<T> GetChannel<T>()
+		{
+			throw new NotImplementedException("We don't support channels in this situtation, maybe this is a bad thing to have");
 		}
 	}
 }
