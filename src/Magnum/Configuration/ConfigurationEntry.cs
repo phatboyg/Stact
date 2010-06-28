@@ -10,20 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Conf
+namespace Magnum.Configuration
 {
-    public class ConfigurationFile
+    public class ConfigurationEntry
     {
-        readonly string _path;
-
-        public ConfigurationFile(string path)
+        public ConfigurationEntry()
         {
-            _path = path;
         }
 
-        public string FileName
+        public ConfigurationEntry(string key, string value)
         {
-            get { return _path; }
+            Key = key;
+            Value = value;
         }
+
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

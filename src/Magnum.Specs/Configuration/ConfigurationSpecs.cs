@@ -16,7 +16,7 @@ namespace Magnum.Specs.Configuration
     using System.Linq;
     using System.Collections.Generic;
     using System.IO;
-    using Conf;
+    using Magnum.Configuration;
     using NUnit.Framework;
     using TestFramework;
     using Enumerable = System.Linq.Enumerable;

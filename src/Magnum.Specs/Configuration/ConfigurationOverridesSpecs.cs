@@ -14,7 +14,7 @@ namespace Magnum.Specs.Configuration
 {
     using System.IO;
     using System.Linq;
-    using Conf;
+    using Magnum.Configuration;
     using NUnit.Framework;
     using TestFramework;
 
