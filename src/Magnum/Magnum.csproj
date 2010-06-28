@@ -66,6 +66,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +186,12 @@
     <Compile Include="Concurrency\MultipleElementImmutableQueue.cs" />
     <Compile Include="Concurrency\SingleElementImmutableList.cs" />
     <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
+    <Compile Include="Configuration\ConfigurationDto.cs" />
+    <Compile Include="Configuration\ConfigurationEntries.cs" />
+    <Compile Include="Configuration\ConfigurationEntry.cs" />
+    <Compile Include="Configuration\ConfigurationFile.cs" />
+    <Compile Include="Configuration\ConfigurationHistory.cs" />
+    <Compile Include="Configuration\ConfigurationStore.cs" />
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
@@ -306,11 +313,6 @@
     <Compile Include="CommandLine\Argument_short_form_is_first_letter_lowercase.cs" />
     <Compile Include="CommandLine\Use_types_name_lowercased_removing_Args_or_Arguments.cs" />
     <Compile Include="ComparisonComparer.cs" />
-    <Compile Include="Configuration\Client\IReadOnlySettings.cs" />
-    <Compile Include="Configuration\Client\IReadWriteSettings.cs" />
-    <Compile Include="Configuration\Client\ISetting.cs" />
-    <Compile Include="Configuration\Client\SettingEntry.cs" />
-    <Compile Include="Configuration\Client\SettingsManager.cs" />
     <Compile Include="Cryptography\DpapiCryptographyService.cs" />
     <Compile Include="Cryptography\EncryptedText.cs" />
     <Compile Include="Cryptography\EncryptedStream.cs" />
