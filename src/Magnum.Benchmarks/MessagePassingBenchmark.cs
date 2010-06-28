@@ -35,7 +35,7 @@ namespace Magnum.Benchmarks
 
 			var complete = new Future<int>();
 
-			var latch = new CountDownLatch(channelCount*seedCount, complete.Complete);
+			var latch = new CountdownLatch(channelCount*seedCount, complete.Complete);
 
 			for (int i = 0; i < channelCount; i++)
 			{

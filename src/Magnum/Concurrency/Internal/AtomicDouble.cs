@@ -10,30 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Concurrency.Internal
 {
 	using System;
 	using System.Threading;
 
 
-	public class AtomicInt32
+	public class AtomicDouble :
+		Atomic<double>
 	{
-		public Int32 Value;
-
-		public AtomicInt32(Int32 initialValue)
+		public AtomicDouble(double initialValue)
 		{
 			Value = initialValue;
 		}
 
-		public Int32 Set(Func<Int32, Int32> mutator)
+		public override double Set(Func<double, double> mutator)
 		{
 			for (;;)
 			{
-				Int32 originalValue = Value;
+				double originalValue = Value;
 
-				Int32 changedValue = mutator(originalValue);
+				double changedValue = mutator(originalValue);
 
-				Int32 previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
+				double previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
 
 				// if the value returned is equal to the original value, we made the change
 				if (previousValue == originalValue)

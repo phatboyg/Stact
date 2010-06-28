@@ -13,6 +13,7 @@
 namespace BetaMemory_Specs
 {
 	using System.Diagnostics;
+	using Magnum;
 	using Magnum.Channels;
 	using Magnum.RulesEngine;
 	using Magnum.RulesEngine.ExecutionModel;

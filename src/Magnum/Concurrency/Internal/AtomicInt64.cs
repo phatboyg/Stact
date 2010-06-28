@@ -10,28 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Concurrency.Internal
 {
 	using System;
-	using Fibers;
+	using System.Threading;
 
 
-	public class FutureChannel<T> :
-		Future<T>,
-		Channel<T>
+	public class AtomicInt64 :
+		Atomic<long>
 	{
-		public FutureChannel()
+		public AtomicInt64(Int64 initialValue)
 		{
+			Value = initialValue;
 		}
 
-		public FutureChannel(Fiber fiber, Action callback)
-			: base(x => fiber.Add(callback), 0)
+		public override Int64 Set(Func<Int64, Int64> mutator)
 		{
-		}
+			for (;;)
+			{
+				Int64 originalValue = Value;
 
-		public void Send(T message)
-		{
-			Complete(message);
+				Int64 changedValue = mutator(originalValue);
+
+				Int64 previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
+
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return previousValue;
+			}
 		}
 	}
 }

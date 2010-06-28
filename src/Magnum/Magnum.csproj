@@ -169,9 +169,14 @@
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />
-    <Compile Include="Concurrency\AtomicInt32.cs" />
-    <Compile Include="Concurrency\CountDownLatch.cs" />
-    <Compile Include="Concurrency\AtomicReference.cs" />
+    <Compile Include="Concurrency\Atomic.cs" />
+    <Compile Include="Concurrency\Internal\AtomicDouble.cs" />
+    <Compile Include="Concurrency\Internal\AtomicFloat.cs" />
+    <Compile Include="Concurrency\Internal\AtomicInt32.cs" />
+    <Compile Include="Concurrency\Internal\AtomicInt64.cs" />
+    <Compile Include="Concurrency\CountdownLatch.cs" />
+    <Compile Include="Concurrency\Internal\AtomicObject.cs" />
+    <Compile Include="Concurrency\Internal\AtomicReference.cs" />
     <Compile Include="Concurrency\EmptyImmutableList.cs" />
     <Compile Include="Concurrency\EmptyImmutableQueue.cs" />
     <Compile Include="Concurrency\ImmutableList.cs" />
@@ -217,7 +222,7 @@
     <Compile Include="Channels\Consumer.cs" />
     <Compile Include="Channels\ChannelProvider.cs" />
     <Compile Include="Channels\DelegateChannelProvider.cs" />
-    <Compile Include="Channels\Future.cs" />
+    <Compile Include="Future.cs" />
     <Compile Include="Channels\Interceptor.cs" />
     <Compile Include="Channels\InterceptorChannel.cs" />
     <Compile Include="Channels\InterceptorFactory.cs" />

@@ -13,22 +13,22 @@
 namespace Magnum.Concurrency
 {
 	using System;
+	using System.Threading;
 
 
-	public class CountDownLatch
+	public class CountdownLatch
 	{
 		readonly Action _callback;
-		AtomicInt32 _count;
+		int _count;
 
-		public CountDownLatch(int count, Action<Int32> callback)
+		public CountdownLatch(int count, Action<int> callback)
+			: this(count, () => callback(0))
 		{
-			_count = new AtomicInt32(count);
-			_callback = () => callback(_count.Value);
 		}
 
-		public CountDownLatch(int count, Action callback)
+		public CountdownLatch(int count, Action callback)
 		{
-			_count = new AtomicInt32(count);
+			_count = count;
 			_callback = callback;
 		}
 
@@ -40,16 +40,15 @@ namespace Magnum.Concurrency
 
 		bool Decrement()
 		{
-			for (;;)
-			{
-				if (_count.Value == 0)
-					return false;
+			if (_count == 0)
+				return false;
 
-				int previousValue = _count.Set(x => x - 1);
+			int value = Interlocked.Decrement(ref _count);
 
-				if (previousValue == 1)
-					return true;
-			}
+			if (value == 0)
+				return true;
+
+			return false;
 		}
 	}
 }

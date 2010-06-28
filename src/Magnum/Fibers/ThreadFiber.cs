@@ -29,7 +29,7 @@ namespace Magnum.Fibers
 		readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
 		readonly Thread _thread;
 
-		AtomicReference<ImmutableList<Action>> _actions;
+		Atomic<ImmutableList<Action>> _actions;
 
 		bool _isActive;
 		bool _shuttingDown;
@@ -37,7 +37,7 @@ namespace Magnum.Fibers
 
 		public ThreadFiber()
 		{
-			_actions = new AtomicReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
+			_actions = Atomic.Create(ImmutableList<Action>.EmptyList);
 
 			_thread = CreateThread();
 			_thread.Start();

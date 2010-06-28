@@ -38,7 +38,7 @@ namespace Magnum.Specs.Concurrency
 
 			var completed = new Future<int>();
 
-			var latch = new CountDownLatch(channelCount*seedCount, completed.Complete);
+			var latch = new CountdownLatch(channelCount*seedCount, completed.Complete);
 
 			for (int i = 0; i < channelCount; i++)
 			{

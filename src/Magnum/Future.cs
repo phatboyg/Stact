@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum
 {
 	using System;
 	using System.Threading;
@@ -18,7 +18,7 @@ namespace Magnum.Channels
 
 
 	/// <summary>
-	/// A future object that supports asynchronous waits and channel sends, in addition to a regular complete method
+	/// A future object that supports both callbacks and asynchronous waits once a future value becomes available.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class Future<T> :
