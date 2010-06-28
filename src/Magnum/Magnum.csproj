@@ -66,6 +66,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +179,11 @@
     <Compile Include="Concurrency\MultipleElementImmutableQueue.cs" />
     <Compile Include="Concurrency\SingleElementImmutableList.cs" />
     <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
+    <Compile Include="Configuration\ConfigurationDto.cs" />
     <Compile Include="Configuration\ConfigurationEntries.cs" />
     <Compile Include="Configuration\ConfigurationEntry.cs" />
     <Compile Include="Configuration\ConfigurationFile.cs" />
+    <Compile Include="Configuration\ConfigurationHistory.cs" />
     <Compile Include="Configuration\ConfigurationStore.cs" />
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Fiber.cs" />

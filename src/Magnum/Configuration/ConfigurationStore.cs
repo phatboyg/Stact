@@ -14,8 +14,8 @@ namespace Magnum.Configuration
 {
     using System.Collections.Generic;
     using System.IO;
-    using Magnum.Extensions;
-    using Serialization;
+    using System.Web.Script.Serialization;
+    using Extensions;
 
     public class ConfigurationStore
     {
@@ -31,29 +31,31 @@ namespace Magnum.Configuration
 
         public ICollection<ConfigurationFile> FilesLoaded { get; private set; }
 
-        public IEnumerable<ConfigurationEntry> GetEntries()
+        public ConfigurationEntries GetEntries()
         {
-            var serializer = new FastTextSerializer();
+            var result = new ConfigurationEntries();
+            var serializer = new JavaScriptSerializer();
             var dict = new Dictionary<string, ConfigurationEntry>();
 
-            FilesLoaded.Each(f =>
+            FilesLoaded.Each(file =>
             {
-                using (FileStream str = new FileInfo(f.FileName).OpenRead())
+                using (FileStream str = new FileInfo(file.FileName).OpenRead())
                 {
                     string stuff = str.ReadToEndAsText();
-                    var col = serializer.Deserialize<ConfigurationEntry[]>(stuff);
-                    col.Each(e =>
+                    var dtos = serializer.Deserialize<ConfigurationDto[]>(stuff);
+                    dtos.Each(e =>
                     {
                         if (!dict.ContainsKey(e.Key))
-                            dict.Add(e.Key, null);
+                            dict.Add(e.Key, new ConfigurationEntry(e.Key));
 
-                        dict[e.Key] = e;
+                        dict[e.Key].SetValue(e.Value, file.FileName);
                     });
                 }
             });
 
+            result.Entries.AddRange(dict.Values);
 
-            return dict.Values;
+            return result;
         }
     }
 }

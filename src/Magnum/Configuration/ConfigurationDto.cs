@@ -12,28 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-
-    public class ConfigurationEntries :
-        IEnumerable<ConfigurationEntry>
+    public class ConfigurationDto
     {
-        public ConfigurationEntries()
-        {
-            Entries = new List<ConfigurationEntry>();
-        }
-
-        public List<ConfigurationEntry> Entries { get; set; }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public IEnumerator<ConfigurationEntry> GetEnumerator()
-        {
-            return Entries.GetEnumerator();
-        }
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

@@ -12,28 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
-    [DebuggerDisplay("{Key}:{Value}")]
-    public class ConfigurationEntry
+    public class ConfigurationHistory
     {
-        public ConfigurationEntry(string key)
+        public ConfigurationHistory(string value, string source)
         {
-            History = new Stack<ConfigurationHistory>();
-            Key = key;
-            Value = null;
-        }
-
-        public void SetValue(string value, string source)
-        {
-            History.Push(new ConfigurationHistory(value, source));
             Value = value;
+            Source = source;
         }
-        public string Key { get; private set; }
-        public string Value { get; private set; }
 
-        public Stack<ConfigurationHistory> History { get; private set; }
+        public string Source { get; set; }
+        public string Value { get; set; }
     }
 }
