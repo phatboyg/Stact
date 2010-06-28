@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum
 {
 	using System;
 	using System.Threading;
@@ -18,20 +18,19 @@ namespace Magnum.Channels
 
 
 	/// <summary>
-	/// A future object that supports asynchronous waits and channel sends, in addition to a regular complete method
+	/// A future object that supports both callbacks and asynchronous waits once a future value becomes available.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class Future<T> :
-		Channel<T>,
 		IAsyncResult
 	{
-		private readonly AsyncCallback _callback;
-		private readonly ManualResetEvent _event;
-		private readonly object _state;
-		private volatile bool _completed;
+		readonly AsyncCallback _callback;
+		readonly ManualResetEvent _event;
+		readonly object _state;
+		volatile bool _completed;
 
 		public Future()
-			: this(DefaultCallback, 0)
+			: this(NullCallback, 0)
 		{
 		}
 
@@ -46,11 +45,6 @@ namespace Magnum.Channels
 		}
 
 		public T Value { get; private set; }
-
-		public void Send(T message)
-		{
-			Complete(message);
-		}
 
 		public bool IsCompleted
 		{
@@ -74,19 +68,19 @@ namespace Magnum.Channels
 
 		public void Complete(T message)
 		{
-		    if (_completed)
-            {
-                if (Value != null && Value.Equals(message))
-                    return;
+			if (_completed)
+			{
+				if (Value != null && Value.Equals(message))
+					return;
 
-                if (Value.Equals(message))
-                    return;
+				if (Value.Equals(message))
+					return;
 
-            	throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
-            	                                    	.FormatWith(Value, message));
-            }
+				throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
+				                                    	.FormatWith(Value, message));
+			}
 
-		    Value = message;
+			Value = message;
 
 			_completed = true;
 
@@ -110,7 +104,7 @@ namespace Magnum.Channels
 			_event.Close();
 		}
 
-		private static void DefaultCallback(object state)
+		static void NullCallback(object state)
 		{
 		}
 	}

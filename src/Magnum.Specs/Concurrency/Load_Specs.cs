@@ -36,7 +36,9 @@ namespace Magnum.Specs.Concurrency
 
 			var channels = new Channel<string>[channelCount];
 
-			var latch = new CountDownLatch(channelCount*seedCount);
+			var completed = new Future<int>();
+
+			var latch = new CountdownLatch(channelCount*seedCount, completed.Complete);
 
 			for (int i = 0; i < channelCount; i++)
 			{
@@ -58,8 +60,7 @@ namespace Magnum.Specs.Concurrency
 					latch.CountDown();
 			}
 
-			latch.Wait(24.Seconds()).ShouldBeTrue();
-
+			completed.WaitUntilCompleted(24.Seconds()).ShouldBeTrue();
 
 			timer.Stop();
 

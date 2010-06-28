@@ -33,7 +33,9 @@ namespace Magnum.Benchmarks
 
 			var channels = new Channel<string>[channelCount];
 
-			var latch = new CountDownLatch(channelCount*seedCount);
+			var complete = new Future<int>();
+
+			var latch = new CountdownLatch(channelCount*seedCount, complete.Complete);
 
 			for (int i = 0; i < channelCount; i++)
 			{
@@ -55,7 +57,7 @@ namespace Magnum.Benchmarks
 					latch.CountDown();
 			}
 
-			bool completed = latch.Wait(24.Seconds());
+			bool completed = complete.WaitUntilCompleted(24.Seconds());
 
 			timer.Stop();
 

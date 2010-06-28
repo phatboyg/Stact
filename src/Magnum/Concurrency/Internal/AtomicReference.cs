@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Concurrency.Internal
 {
 	using System;
 	using System.Threading;
@@ -21,12 +21,11 @@ namespace Magnum.Concurrency
 	/// change the reference pointed to in an atomic fashion
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ImmutableReference<T>
+	public class AtomicReference<T> :
+		Atomic<T>
 		where T : class
 	{
-		public T Value;
-
-		public ImmutableReference(T initialValue)
+		public AtomicReference(T initialValue)
 		{
 			Value = initialValue;
 		}
@@ -39,7 +38,7 @@ namespace Magnum.Concurrency
 		/// </summary>
 		/// <param name="mutator">A function that, given the current value, returns the changed value</param>
 		/// <returns>The previous value</returns>
-		public T Set(Func<T, T> mutator)
+		public override T Set(Func<T, T> mutator)
 		{
 			for (;;)
 			{

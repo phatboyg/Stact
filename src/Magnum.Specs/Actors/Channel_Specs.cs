@@ -29,7 +29,7 @@ namespace Magnum.Specs.Actors
 
 			Fiber fiber = new SynchronousFiber();
 
-			var future = new Future<UserUpdate>();
+			var future = new FutureChannel<UserUpdate>();
 
 			var filter = new FilterChannel<UserUpdate>(fiber, future, x => x.LastActivity > DateTime.Now);
 
@@ -61,7 +61,7 @@ namespace Magnum.Specs.Actors
 
 			Fiber fiber = new SynchronousFiber();
 
-			var future = new Future<UserUpdate>();
+			var future = new FutureChannel<UserUpdate>();
 
 			Channel<UserUpdate> channel = new BroadcastChannel<UserUpdate>(new Channel<UserUpdate>[] {future});
 

@@ -10,45 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Channels
 {
 	using System;
-	using System.Threading;
+	using Fibers;
 
 
-	public class CountdownLatch
+	public class FutureChannel<T> :
+		Future<T>,
+		Channel<T>
 	{
-		readonly Action _callback;
-		int _count;
-
-		public CountdownLatch(int count, Action<int> callback)
-			: this(count, () => callback(0))
+		public FutureChannel()
 		{
 		}
 
-		public CountdownLatch(int count, Action callback)
+		public FutureChannel(Fiber fiber, Action callback)
+			: base(x => fiber.Add(callback), 0)
 		{
-			_count = count;
-			_callback = callback;
 		}
 
-		public void CountDown()
+		public void Send(T message)
 		{
-			if (Decrement())
-				_callback();
-		}
-
-		bool Decrement()
-		{
-			if (_count == 0)
-				return false;
-
-			int value = Interlocked.Decrement(ref _count);
-
-			if (value == 0)
-				return true;
-
-			return false;
+			Complete(message);
 		}
 	}
 }

@@ -10,45 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Concurrency.Internal
 {
 	using System;
 	using System.Threading;
 
 
-	public class CountdownLatch
+	public class AtomicInt64 :
+		Atomic<long>
 	{
-		readonly Action _callback;
-		int _count;
-
-		public CountdownLatch(int count, Action<int> callback)
-			: this(count, () => callback(0))
+		public AtomicInt64(Int64 initialValue)
 		{
+			Value = initialValue;
 		}
 
-		public CountdownLatch(int count, Action callback)
+		public override Int64 Set(Func<Int64, Int64> mutator)
 		{
-			_count = count;
-			_callback = callback;
-		}
+			for (;;)
+			{
+				Int64 originalValue = Value;
 
-		public void CountDown()
-		{
-			if (Decrement())
-				_callback();
-		}
+				Int64 changedValue = mutator(originalValue);
 
-		bool Decrement()
-		{
-			if (_count == 0)
-				return false;
+				Int64 previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
 
-			int value = Interlocked.Decrement(ref _count);
-
-			if (value == 0)
-				return true;
-
-			return false;
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return previousValue;
+			}
 		}
 	}
 }

@@ -32,8 +32,7 @@ namespace Magnum.Fibers
 
 		readonly object _lock = new object();
 
-		ImmutableReference<ImmutableList<Action>> _actions =
-			new ImmutableReference<ImmutableList<Action>>(ImmutableList<Action>.EmptyList);
+		Atomic<ImmutableList<Action>> _actions = Atomic.Create(ImmutableList<Action>.EmptyList);
 
 		bool _executorQueued;
 		bool _shuttingDown;
@@ -139,14 +138,7 @@ namespace Magnum.Fibers
 
 		IEnumerable<Action> RemoveAll()
 		{
-			ImmutableList<Action> runActions = null;
-
-			_actions.Set(x =>
-				{
-					runActions = x;
-
-					return ImmutableList<Action>.EmptyList;
-				});
+			ImmutableList<Action> runActions = _actions.Set(x => ImmutableList<Action>.EmptyList);
 
 			return runActions;
 		}

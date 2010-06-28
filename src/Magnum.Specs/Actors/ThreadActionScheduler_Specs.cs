@@ -37,7 +37,7 @@ namespace Magnum.Specs.Actors
 
 			var thread = new TimerScheduler(fiber);
 			thread.Schedule(50, fiber, three);
-			thread.Schedule(1, fiber, two);
+			thread.Schedule(1, fiber, one);
 			thread.Schedule(1, fiber, two);
 			Assert.IsTrue(reset.WaitOne(10000, false));
 		}

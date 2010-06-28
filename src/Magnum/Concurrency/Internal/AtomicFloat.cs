@@ -10,45 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Concurrency
+namespace Magnum.Concurrency.Internal
 {
 	using System;
 	using System.Threading;
 
 
-	public class CountdownLatch
+	public class AtomicFloat :
+		Atomic<float>
 	{
-		readonly Action _callback;
-		int _count;
-
-		public CountdownLatch(int count, Action<int> callback)
-			: this(count, () => callback(0))
+		public AtomicFloat(float initialValue)
 		{
+			Value = initialValue;
 		}
 
-		public CountdownLatch(int count, Action callback)
+		public override float Set(Func<float, float> mutator)
 		{
-			_count = count;
-			_callback = callback;
-		}
+			for (;;)
+			{
+				float originalValue = Value;
 
-		public void CountDown()
-		{
-			if (Decrement())
-				_callback();
-		}
+				float changedValue = mutator(originalValue);
 
-		bool Decrement()
-		{
-			if (_count == 0)
-				return false;
+				float previousValue = Interlocked.CompareExchange(ref Value, changedValue, originalValue);
 
-			int value = Interlocked.Decrement(ref _count);
-
-			if (value == 0)
-				return true;
-
-			return false;
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return previousValue;
+			}
 		}
 	}
 }
