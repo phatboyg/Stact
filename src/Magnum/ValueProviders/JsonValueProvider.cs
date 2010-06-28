@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Web.ValueProviders
+namespace Magnum.ValueProviders
 {
 	using System;
 	using System.Collections.Generic;
@@ -18,7 +18,6 @@ namespace Magnum.Web.ValueProviders
 	using System.IO;
 	using System.Web.Script.Serialization;
 	using Extensions;
-	using Magnum.ValueProviders;
 
 
 	public class JsonValueProvider :
