@@ -23,8 +23,8 @@ namespace Magnum.Specs.Configuration
     {
         ConfigurationStore _store;
         //TODO: Get rid of the UGLY 'Entries'
-        const string GLOBAL_CONF = @"{Entries:[{Key:""key1"",Value:""global-value-1""},{Key:""key2"",Value:""global-value-2""}]}";
-        const string LOCAL_CONF = @"{Entries:[{Key:""key1"",Value:""local-value-1""}]}";
+        const string GLOBAL_CONF = @"[{Key:""key1"",Value:""global-value-1""},{Key:""key2"",Value:""global-value-2""}]";
+        const string LOCAL_CONF = @"[{Key:""key1"",Value:""local-value-1""}]";
 
         [SetUp]
         public void Should_be_able_to_add_multiple_configuration_files_to_be_loaded()

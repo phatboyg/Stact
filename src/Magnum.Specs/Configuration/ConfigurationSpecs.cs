@@ -24,7 +24,8 @@ namespace Magnum.Specs.Configuration
     [TestFixture]
     public class ConfigurationSpecs
     {
-        #region Setup/Teardown
+        ConfigurationStore _store;
+        const string CONF = @"[{Key:""my-key"",Value:""my-value""}]";
 
         [SetUp]
         public void Should_be_able_to_add_configuration_files_to_be_loaded()
@@ -36,12 +37,6 @@ namespace Magnum.Specs.Configuration
             File.AppendAllText("bob.json", CONF);
             _store.AddFile("bob.json");
         }
-
-        #endregion
-
-        ConfigurationStore _store;
-        //TODO: Get rid of the UGLY 'Entries'
-        const string CONF = @"{Entries:[{Key:""my-key"",Value:""my-value""}]}";
 
         [Test]
         public void Entries_should_be_accurate()
