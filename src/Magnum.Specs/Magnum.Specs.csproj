@@ -244,6 +244,7 @@
     <Compile Include="Threading\LamdbaIsTheNewDisposable_Specs.cs" />
     <Compile Include="Threading\UpgradeableLock_Specs.cs" />
     <Compile Include="Threading\WrappedObjectLocking_Specs.cs" />
+    <Compile Include="ValueProviders\CommandLine_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">

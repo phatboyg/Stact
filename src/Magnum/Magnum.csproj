@@ -575,6 +575,7 @@
     <Compile Include="Context\TypedKey.cs" />
     <Compile Include="Tree\Tree.cs" />
     <Compile Include="ValueProviders\AccessorValueProvider.cs" />
+    <Compile Include="ValueProviders\CommandLineValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\EmptyValueProvider.cs" />
     <Compile Include="ValueProviders\JsonValueProvider.cs" />

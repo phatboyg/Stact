@@ -95,7 +95,6 @@
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />
     <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
-    <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
