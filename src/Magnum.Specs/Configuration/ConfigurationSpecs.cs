@@ -42,7 +42,7 @@ namespace Magnum.Specs.Configuration
         public void Entries_should_be_accurate()
         {
             IEnumerable<ConfigurationEntry> entries = _store.GetEntries();
-            ConfigurationEntry entry = Enumerable.First(entries);
+            ConfigurationEntry entry = entries.First();
             entry.Key.ShouldEqual("my-key");
             entry.Value.ShouldEqual("my-value");
         }
@@ -51,19 +51,19 @@ namespace Magnum.Specs.Configuration
         public void Should_be_able_to_parse_the_file_and_return_entries()
         {
             IEnumerable<ConfigurationEntry> entries = _store.GetEntries();
-            AssertionsForComparable.ShouldBeEqualTo(entries.Count(), 1);
+            entries.Count().ShouldBeEqualTo(1);
         }
 
         [Test]
         public void The_name_should_be_viewable()
         {
-            AssertionsForString.ShouldEqual(_store.ProvidersLoaded.First().Name, "bob.json");
+            _store.ProvidersLoaded.First().Name.ShouldEqual("bob.json");
         }
 
         [Test]
         public void There_should_be_one_file()
         {
-            AssertionsForObjects.ShouldEqual(_store.ProvidersLoaded.Count(), 1);
+            _store.ProvidersLoaded.Count().ShouldEqual(1);
         }
     }
 }

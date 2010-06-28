@@ -577,6 +577,7 @@
     <Compile Include="ValueProviders\AccessorValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\EmptyValueProvider.cs" />
+    <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\MultipleValueProvider.cs" />
     <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
