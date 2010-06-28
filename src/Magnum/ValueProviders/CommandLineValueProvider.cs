@@ -17,11 +17,14 @@ namespace Magnum.ValueProviders
 	using System.Linq;
 	using Collections;
 	using CommandLineParser;
+	using Logging;
 
 
 	public class CommandLineValueProvider :
 		ValueProvider
 	{
+		static ILogger _log = Logger.GetLogger<CommandLineValueProvider>();
+
 		readonly ValueProvider _provider;
 
 		public CommandLineValueProvider(string commandLine)
@@ -41,12 +44,35 @@ namespace Magnum.ValueProviders
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction);
+			object returnedValue = null;
+			bool result = _provider.GetValue(key, value =>
+				{
+					returnedValue = value;
+
+					return matchingValueAction(value);
+				});
+
+			if(result)
+				_log.Debug(x => x.Write("Using command-line value for {0}: {1}", key, returnedValue ?? "null"));
+
+			return result;
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
-			return _provider.GetValue(key, matchingValueAction, missingValueAction);
+			object returnedValue = null;
+			bool result = _provider.GetValue(key, value =>
+			{
+				returnedValue = value;
+
+				return matchingValueAction(value);
+
+			}, missingValueAction);
+
+			if (result)
+				_log.Debug(x => x.Write("Using command-line value for {0}: {1}", key, returnedValue ?? "null"));
+
+			return result;
 		}
 
 		public void GetAll(Action<string, object> valueAction)
