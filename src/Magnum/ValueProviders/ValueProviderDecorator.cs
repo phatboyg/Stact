@@ -62,7 +62,13 @@
 			return result;
 		}
 
-		public void GetAll(Action<string, object> valueAction)
+	    public object UnsafeGet(string key)
+	    {
+            //TODO: Logging?
+	        return _provider.UnsafeGet(key);
+	    }
+
+	    public void GetAll(Action<string, object> valueAction)
 		{
 			_provider.GetAll(valueAction);
 		}

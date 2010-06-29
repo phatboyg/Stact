@@ -23,8 +23,8 @@ namespace Magnum.Specs.Configuration
     {
         ConfigurationStore _store;
         //TODO: Get rid of the UGLY 'Entries'
-        const string GLOBAL_CONF = @"[{Key:""key1"",Value:""global-value-1""},{Key:""key2"",Value:""global-value-2""}]";
-        const string LOCAL_CONF = @"[{Key:""key1"",Value:""local-value-1""}]";
+        const string GLOBAL_CONF = @"{key1:""global-value-1"",key2:""global-value-2""}";
+        const string LOCAL_CONF = @"{key1:""local-value-1""}";
 
         [SetUp]
         public void Should_be_able_to_add_multiple_configuration_files_to_be_loaded()
@@ -41,29 +41,13 @@ namespace Magnum.Specs.Configuration
             _store.AddJsonFile("global.json");
             _store.AddJsonFile("local.json");
         }
-        
-//        [Test]
-//        public void Should_be_able_override_values()
-//        {
-//            var entries = _store.GetEntries();
-//            entries.First().Value.ShouldEqual("local-value-1");
-//            entries.Skip(1).First().Value.ShouldEqual("global-value-2");
-//        }
-//
-//        [Test]
-//        public void Entries_should_track_history()
-//        {
-//            var entries = _store.GetEntries();
-//            var entry = entries.First();
-//
-//            entry.History.Count.ShouldEqual(2);
-//
-//            entry.History.First().Source.ShouldEqual("local.json");
-//            entry.History.Skip(1).First().Source.ShouldEqual("global.json");
-//
-//            entry.History.First().Value.ShouldEqual("local-value-1");
-//            entry.History.Skip(1).First().Value.ShouldEqual("global-value-1");
-//        }
 
+        [Test]
+        public void Should_be_able_override_values()
+        {
+            var entries = _store.GetValueProvider();
+            entries.UnsafeGet("key1").ShouldEqual("local-value-1");
+            entries.UnsafeGet("key2").ShouldEqual("global-value-2");
+        }
     }
 }
