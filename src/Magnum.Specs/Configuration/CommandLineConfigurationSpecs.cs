@@ -1,5 +1,5 @@
-// Copyright 2007-2010 The Apache Software Foundation.
-// 
+// Copyright 2007-2008 The Apache Software Foundation.
+//  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
 // License at 
@@ -12,40 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Configuration
 {
-    using System.Linq;
-    using Magnum.Configuration;
-    using Magnum.ValueProviders;
-    using NUnit.Framework;
-    using TestFramework;
+	using Magnum.Configuration;
+	using NUnit.Framework;
+	using TestFramework;
 
-    [Scenario]
-    public class When_a_single_configuration_store_is_configured
-    {
-        ConfigurationStore _store;
-    	ValueProvider _provider;
 
-    	[When]
-		public void A_single_configuration_store_is_configured()
-        {
-            _store = new ConfigurationStore();
-            _store.AddCommandLine("-name:dru");
+	[Scenario]
+	public class When_using_the_configuration_command_line_value_provider
+	{
+		ConfigurationBinder _binder;
 
-        	_provider = _store.GetValueProvider();
-        }
+		[When]
+		public void Using_the_configuration_command_line_value_provider()
+		{
+			_binder = ConfigurationBinderFactory.New(x => { x.AddCommandLine("-name:dru"); });
+		}
 
-        [Test]
-        public void Should_parse_the_command_line_correctly()
-        {
-        	string resultValue = null;
-        	_provider.GetValue("name", value =>
-        		{
-        			resultValue = value.ToString();
+		[Test]
+		public void Should_parse_the_command_line_correctly()
+		{
+			string value = _binder.GetValue("name");
 
-        			return true;
-        		});
-
-        	resultValue.ShouldEqual("dru");
-        }
-
-    }
+			value.ShouldEqual("dru");
+		}
+	}
 }

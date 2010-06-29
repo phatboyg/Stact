@@ -14,57 +14,38 @@ namespace Magnum.Specs.Configuration
 {
 	using System.IO;
 	using Magnum.Configuration;
-	using Magnum.ValueProviders;
 	using NUnit.Framework;
 	using TestFramework;
 
 
 	[TestFixture]
-	public class ConfigurationSpecs
+	public class When_a_single_json_configuration_file_is_loaded
 	{
-		[SetUp]
-		public void Should_be_able_to_add_configuration_files_to_be_loaded()
+		ConfigurationBinder _binder;
+
+		[When]
+		public void A_single_json_configuration_file_is_loaded()
 		{
-			_store = new ConfigurationStore();
 			if (File.Exists("bob.json"))
 				File.Delete("bob.json");
 
-			File.AppendAllText("bob.json", CONF);
-			_store.AddJsonFile("bob.json");
+			const string conf = @"{""my-key"": ""my-value""}";
 
-			_provider = _store.GetValueProvider();
+			File.AppendAllText("bob.json", conf);
+
+			_binder = ConfigurationBinderFactory.New(x =>
+				{
+					// a single json file
+					x.AddJsonFile("bob.json");
+				});
 		}
 
-		[Test]
+		[Then]
 		public void Should_parse_the_first_value()
 		{
-			string resultValue = null;
-			_provider.GetValue("key", value =>
-				{
-					resultValue = value.ToString();
+			string value = _binder.GetValue("my-key");
 
-					return true;
-				});
-
-			resultValue.ShouldEqual("my-key");
+			value.ShouldEqual("my-value");
 		}
-
-		[Test]
-		public void Should_parse_the_second_value()
-		{
-			string resultValue = null;
-			_provider.GetValue("value", value =>
-				{
-					resultValue = value.ToString();
-
-					return true;
-				});
-
-			resultValue.ShouldEqual("my-value");
-		}
-
-		ConfigurationStore _store;
-		ValueProvider _provider;
-		const string CONF = @"{Key:""my-key"",Value:""my-value""}";
 	}
 }
