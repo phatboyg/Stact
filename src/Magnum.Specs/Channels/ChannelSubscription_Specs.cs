@@ -41,7 +41,7 @@ namespace Magnum.Specs.Channels
 			}
 		}
 
-		[Test]
+		[Test, Category("Slow")]
 		public void Should_be_an_distinct_interval_consumer_on_the_channel()
 		{
 			var future = new Future<int>();
@@ -100,7 +100,7 @@ namespace Magnum.Specs.Channels
 			}
 		}
 
-		[Test]
+		[Test, Category("Slow")]
 		public void Should_be_an_interval_consumer_on_the_channel()
 		{
 			var future = new Future<int>();
