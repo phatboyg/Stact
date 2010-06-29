@@ -10,24 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels
 {
-	using System;
-	using System.Collections.Generic;
-	using Fibers;
+	using Configuration;
 
-	/// <summary>
-	/// Used to configure the options on a channel that delivers messages at regular
-	/// intervals
-	/// </summary>
-	/// <typeparam name="TChannel"></typeparam>
-	public interface IntervalChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<ICollection<TChannel>>
+
+	public static class ExtensionsForFilterChannel
 	{
-		IntervalChannelConfigurator<TChannel> UsePrivateScheduler();
+		public static ChannelConnectionConfigurator<TChannel> Where<TChannel>(
+			this ChannelConnectionConfigurator<TChannel> configurator,
+			Filter<TChannel> filter)
+		{
+			var filterConfigurator = new FilterChannelConfiguratorImpl<TChannel>(filter);
 
-		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
+			configurator.SetChannelFactory(filterConfigurator);
 
-		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
+			return filterConfigurator;
+		}
 	}
 }

@@ -12,22 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System;
-	using System.Collections.Generic;
-	using Fibers;
-
 	/// <summary>
 	/// Used to configure the options on a channel that delivers messages at regular
 	/// intervals
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
-	public interface IntervalChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<ICollection<TChannel>>
+	public interface FilterChannelConfigurator<TChannel> :
+		ChannelConnectionConfigurator<TChannel>
 	{
-		IntervalChannelConfigurator<TChannel> UsePrivateScheduler();
-
-		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
-
-		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
 	}
 }

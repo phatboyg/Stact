@@ -128,11 +128,14 @@
     <Compile Include="Channels\Configuration\DistinctChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistinctChannels.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForFilterChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForInstanceChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForIntervalChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForSelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForAddConsumer.cs" />
     <Compile Include="Channels\Configuration\FiberModelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\FilterChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\FilterChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\InstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\IntervalChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\IntervalModelConfigurator.cs" />
@@ -590,6 +593,7 @@
     <Content Include="Collections\A Note About This Folder.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Channels\Configuration\Internal\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

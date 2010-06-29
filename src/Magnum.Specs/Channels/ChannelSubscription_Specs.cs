@@ -153,6 +153,28 @@ namespace Magnum.Specs.Channels
 		}
 
 		[Test]
+		public void Should_include_the_filter_channel()
+		{
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
+				{
+					x.AddConsumerOf<TestMessage>()
+						.Where(message => message.Value == 47)
+						.UsingConsumer(message => { });
+				}))
+			{
+				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
+					{
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(FilterChannel<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>)
+					});
+			}
+		}
+
+		[Test]
 		public void Should_be_two_consumers_on_the_channel()
 		{
 			SelectiveConsumer<TestMessage> selectiveConsumer = x => y => { };
