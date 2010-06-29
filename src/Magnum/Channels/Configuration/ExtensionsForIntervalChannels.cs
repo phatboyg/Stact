@@ -25,7 +25,7 @@ namespace Magnum.Channels
 		/// <param name="configurator"></param>
 		/// <param name="interval">The time period of each interval</param>
 		/// <returns></returns>
-		public static IntervalChannelConfigurator<TChannel> Every<TChannel>(
+		public static IntervalChannelConfigurator<TChannel> BufferWithTime<TChannel>(
 			this ChannelConnectionConfigurator<TChannel> configurator, TimeSpan interval)
 		{
 			var intervalConfigurator = new IntervalChannelConfiguratorImpl<TChannel>(interval);
@@ -35,7 +35,7 @@ namespace Magnum.Channels
 			return intervalConfigurator;
 		}
 
-		public static DistinctIntervalChannelConfigurator<TChannel, TKey> Every<TChannel, TKey>(
+		public static DistinctIntervalChannelConfigurator<TChannel, TKey> DistinctlyBufferWithTime<TChannel, TKey>(
 			this ChannelConnectionConfigurator<TChannel> configurator, TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			var intervalConfigurator = new DistinctIntervalChannelConfiguratorImpl<TChannel, TKey>(interval, keyAccessor);

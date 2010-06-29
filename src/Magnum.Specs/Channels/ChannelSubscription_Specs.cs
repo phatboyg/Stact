@@ -53,7 +53,7 @@ namespace Magnum.Specs.Channels
 			using (connection = input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.Every(4.Seconds(), c => c.Value)
+						.DistinctlyBufferWithTime(4.Seconds(), c => c.Value)
 						.UsingConsumer(message =>
 							{
 								future.Complete(message.Count);
@@ -108,7 +108,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.Every(4.Seconds())
+						.BufferWithTime(4.Seconds())
 						.UsingConsumer(message => future.Complete(message.Count))
 						.UseProducerThread();
 				}))
