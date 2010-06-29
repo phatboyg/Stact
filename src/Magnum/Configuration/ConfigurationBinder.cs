@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,27 +12,49 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration
 {
-	using Binding;
-	using ValueProviders;
+	using System.Collections.Generic;
 
 
-	public class ConfigurationBinder
+	/// <summary>
+	/// Creates configuration/settings objects, applying configuration values
+	/// to the properties as they match the configuration keys in the store
+	/// </summary>
+	public interface ConfigurationBinder
 	{
-		ModelBinder _binder;
-		ModelBinderContext _context;
+		/// <summary>
+		/// Creates an instance of the specified type and sets the properties
+		/// to the configuration settings that match
+		/// </summary>
+		/// <typeparam name="T">The configuration object type</typeparam>
+		/// <returns>An initialize configuration object</returns>
+		T Bind<T>();
 
-		public ConfigurationBinder(ValueProvider provider)
-		{
-			_binder = new FastModelBinder();
+		/// <summary>
+		/// Returns a single configuration value
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		object GetValue(string key);
 
-			_context = new ConfigurationBinderContext(provider);
-		}
+		/// <summary>
+		/// Returns a single configuration value of type T
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		T GetValue<T>(string key);
 
-		public T Bind<T>()
-		{
-			var obj = _binder.Bind<T>(_context);
+		/// <summary>
+		/// Returns a single configuration as a string
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns>The string representation of the value, or null</returns>
+		string GetValueAsString(string key);
 
-			return obj;
-		}
+		/// <summary>
+		/// Return a dictionary of all key/value pairs that exist
+		/// </summary>
+		/// <returns></returns>
+		IDictionary<string, object> GetAll();
 	}
 }

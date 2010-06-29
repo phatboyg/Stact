@@ -187,8 +187,12 @@
     <Compile Include="Concurrency\SingleElementImmutableList.cs" />
     <Compile Include="Concurrency\SingleElementImmutableQueue.cs" />
     <Compile Include="Configuration\ConfigurationBinder.cs" />
-    <Compile Include="Configuration\ConfigurationBinderContext.cs" />
-    <Compile Include="Configuration\ConfigurationStore.cs" />
+    <Compile Include="Configuration\ConfigurationBinderConfigurator.cs" />
+    <Compile Include="Configuration\Internal\ConfigurationBinderConfiguratorImpl.cs" />
+    <Compile Include="Configuration\ConfigurationBinderFactoryMethod.cs" />
+    <Compile Include="Configuration\Internal\ConfigurationBinderImpl.cs" />
+    <Compile Include="Configuration\Internal\ConfigurationBinderContext.cs" />
+    <Compile Include="Configuration\ConfigurationBinderFactory.cs" />
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />

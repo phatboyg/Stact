@@ -14,6 +14,8 @@ namespace Magnum.ValueProviders
 {
 	using System;
 	using System.IO;
+	using Extensions;
+
 
 	/// <summary>
 	/// Wraps the reading of a file containing value configuration, passing the appropriate context
@@ -22,14 +24,17 @@ namespace Magnum.ValueProviders
 	public class FileValueProvider :
 		ValueProviderDecorator
 	{
+		readonly string _filename;
+
 		public FileValueProvider(string filename, Func<Stream, ValueProvider> createProviderFromStream)
 			: base(CreateDictionaryProvider(filename, createProviderFromStream))
 		{
+			_filename = filename;
 		}
 
 		protected override string ProviderName
 		{
-			get { return "command-line"; }
+			get { return "file ({0})".FormatWith(_filename); }
 		}
 
 		static ValueProvider CreateDictionaryProvider(string filename, Func<Stream, ValueProvider> createProviderFromStream)

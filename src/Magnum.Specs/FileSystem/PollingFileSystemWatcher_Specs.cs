@@ -55,7 +55,7 @@ namespace Magnum.Specs.FileSystem
 
             Thread.Sleep(5.Seconds());
 
-            using (ChannelConnection subscription = _channel.Connect(x => x.AddConsumerOf<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
+            using (_channel.Connect(x => x.AddConsumerOf<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
             {
                 File.Create(_path);
 

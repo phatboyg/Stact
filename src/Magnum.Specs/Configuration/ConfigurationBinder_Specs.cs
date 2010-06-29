@@ -1,4 +1,4 @@
-// Copyright 2007-2010 The Apache Software Foundation.
+// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -24,8 +24,7 @@ namespace Magnum.Specs.Configuration
 	public class When_a_configuration_object_is_bound
 	{
 		IMyConfiguration _configuration;
-		ConfigurationBinder _configurationBinder;
-		MultipleValueProvider _provider;
+		ConfigurationBinder _binder;
 
 		[When]
 		public void A_configuration_object_is_bound()
@@ -35,17 +34,13 @@ namespace Magnum.Specs.Configuration
 
 			string commandLineText = "-password:really_long_one --secure";
 
-			var providers = new ValueProvider[]
+			_binder = ConfigurationBinderFactory.New(x =>
 				{
-					new Magnum.ValueProviders.CommandLineValueProvider(commandLineText),
-					new JsonValueProvider(jsonStream),
-				};
+					x.AddCommandLine(commandLineText);
+					x.AddJson(jsonStream);
+				});
 
-			_provider = new MultipleValueProvider(providers);
-
-			_configurationBinder = new ConfigurationBinder(_provider);
-
-			_configuration = _configurationBinder.Bind<IMyConfiguration>();
+			_configuration = _binder.Bind<IMyConfiguration>();
 		}
 
 		[Then]
@@ -69,14 +64,14 @@ namespace Magnum.Specs.Configuration
 		[Then]
 		public void Should_return_a_list_of_all_configuration()
 		{
-			var found = new Dictionary<string, object>();
-			_provider.GetAll(found.Add);
+			var found = _binder.GetAll();
 
 			found.ContainsKey("password").ShouldBeTrue();
 			found.ContainsKey("secure").ShouldBeTrue();
 			found.ContainsKey("Name").ShouldBeTrue();
 			found.ContainsKey("Password").ShouldBeTrue();
 		}
+
 
 		/// <summary>
 		/// We are binding configuration values to an interface, so that no tight coupling to an
