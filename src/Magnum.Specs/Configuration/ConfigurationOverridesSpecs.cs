@@ -38,52 +38,32 @@ namespace Magnum.Specs.Configuration
             File.AppendAllText("global.json",GLOBAL_CONF);
             File.AppendAllText("local.json",LOCAL_CONF);
 
-            _store.AddFile("global.json");
-            _store.AddFile("local.json");
+            _store.AddJsonFile("global.json");
+            _store.AddJsonFile("local.json");
         }
         
-        [Test]
-        public void There_should_be_two_files()
-        {
-            _store.ProvidersLoaded.Count().ShouldEqual(2);
-        }
-
-        [Test]
-        public void The_name_should_be_viewable()
-        {
-            _store.ProvidersLoaded.First().Name.ShouldEqual("global.json");
-            _store.ProvidersLoaded.Skip(1).First().Name.ShouldEqual("local.json");
-        }
-
-        [Test]
-        public void Should_be_able_to_parse_the_file_and_return_entries()
-        {
-            var entries = _store.GetEntries();
-            entries.Count().ShouldBeEqualTo(2);
-        }
-
-        [Test]
-        public void Should_be_able_override_values()
-        {
-            var entries = _store.GetEntries();
-            entries.First().Value.ShouldEqual("local-value-1");
-            entries.Skip(1).First().Value.ShouldEqual("global-value-2");
-        }
-
-        [Test]
-        public void Entries_should_track_history()
-        {
-            var entries = _store.GetEntries();
-            var entry = entries.First();
-
-            entry.History.Count.ShouldEqual(2);
-
-            entry.History.First().Source.ShouldEqual("local.json");
-            entry.History.Skip(1).First().Source.ShouldEqual("global.json");
-
-            entry.History.First().Value.ShouldEqual("local-value-1");
-            entry.History.Skip(1).First().Value.ShouldEqual("global-value-1");
-        }
+//        [Test]
+//        public void Should_be_able_override_values()
+//        {
+//            var entries = _store.GetEntries();
+//            entries.First().Value.ShouldEqual("local-value-1");
+//            entries.Skip(1).First().Value.ShouldEqual("global-value-2");
+//        }
+//
+//        [Test]
+//        public void Entries_should_track_history()
+//        {
+//            var entries = _store.GetEntries();
+//            var entry = entries.First();
+//
+//            entry.History.Count.ShouldEqual(2);
+//
+//            entry.History.First().Source.ShouldEqual("local.json");
+//            entry.History.Skip(1).First().Source.ShouldEqual("global.json");
+//
+//            entry.History.First().Value.ShouldEqual("local-value-1");
+//            entry.History.Skip(1).First().Value.ShouldEqual("global-value-1");
+//        }
 
     }
 }

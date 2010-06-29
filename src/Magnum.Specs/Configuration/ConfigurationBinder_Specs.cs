@@ -23,7 +23,7 @@ namespace Magnum.Specs.Configuration
 	[Scenario]
 	public class When_a_configuration_object_is_bound
 	{
-		MyConfiguration _configuration;
+		IMyConfiguration _configuration;
 		ConfigurationBinder _configurationBinder;
 		MultipleValueProvider _provider;
 
@@ -45,7 +45,7 @@ namespace Magnum.Specs.Configuration
 
 			_configurationBinder = new ConfigurationBinder(_provider);
 
-			_configuration = _configurationBinder.Bind<MyConfiguration>();
+			_configuration = _configurationBinder.Bind<IMyConfiguration>();
 		}
 
 		[Then]
@@ -78,12 +78,16 @@ namespace Magnum.Specs.Configuration
 			found.ContainsKey("Password").ShouldBeTrue();
 		}
 
-
-		public class MyConfiguration
+		/// <summary>
+		/// We are binding configuration values to an interface, so that no tight coupling to an
+		/// implementation is made. We can also mock configuration easily since we are using a 
+		/// narrow interface for the particular component
+		/// </summary>
+		public interface IMyConfiguration
 		{
-			public string Name { get; set; }
-			public string Password { get; set; }
-			public bool Secure { get; set; }
+			string Name { get; }
+			string Password { get; }
+			bool Secure { get; }
 		}
 	}
 }

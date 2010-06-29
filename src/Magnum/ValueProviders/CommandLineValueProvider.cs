@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,17 +17,22 @@ namespace Magnum.ValueProviders
 	using System.Linq;
 	using Collections;
 	using CommandLineParser;
-	using Logging;
 
 
 	public class CommandLineValueProvider :
-		ValueProvider
+		ValueProviderDecorator
 	{
-		static ILogger _log = Logger.GetLogger<CommandLineValueProvider>();
-
-		readonly ValueProvider _provider;
-
 		public CommandLineValueProvider(string commandLine)
+			: base(CreateDictionaryProvider(commandLine))
+		{
+		}
+
+		protected override string ProviderName
+		{
+			get { return "command-line"; }
+		}
+
+		static ValueProvider CreateDictionaryProvider(string commandLine)
 		{
 			IEnumerable<ICommandLineElement> elements = new MonadicCommandLineParser().Parse(commandLine);
 
@@ -39,45 +44,9 @@ namespace Magnum.ValueProviders
 				       	.Select(x => new Tuple<string, object>(x.Key, x.Value)))
 				.ToDictionary(x => x.First, x => x.Second, StringComparer.InvariantCultureIgnoreCase);
 
-			_provider = new DictionaryValueProvider(dictionary);
-		}
+			var provider = new DictionaryValueProvider(dictionary);
 
-		public bool GetValue(string key, Func<object, bool> matchingValueAction)
-		{
-			object returnedValue = null;
-			bool result = _provider.GetValue(key, value =>
-				{
-					returnedValue = value;
-
-					return matchingValueAction(value);
-				});
-
-			if(result)
-				_log.Debug(x => x.Write("Using command-line value for {0}: {1}", key, returnedValue ?? "null"));
-
-			return result;
-		}
-
-		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
-		{
-			object returnedValue = null;
-			bool result = _provider.GetValue(key, value =>
-			{
-				returnedValue = value;
-
-				return matchingValueAction(value);
-
-			}, missingValueAction);
-
-			if (result)
-				_log.Debug(x => x.Write("Using command-line value for {0}: {1}", key, returnedValue ?? "null"));
-
-			return result;
-		}
-
-		public void GetAll(Action<string, object> valueAction)
-		{
-			_provider.GetAll(valueAction);
+			return provider;
 		}
 	}
 }

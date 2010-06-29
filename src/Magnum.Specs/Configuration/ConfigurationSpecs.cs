@@ -1,5 +1,5 @@
-﻿// Copyright 2007-2010 The Apache Software Foundation.
-// 
+﻿// Copyright 2007-2008 The Apache Software Foundation.
+//  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
 // License at 
@@ -12,58 +12,59 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Configuration
 {
+	using System.IO;
+	using Magnum.Configuration;
+	using Magnum.ValueProviders;
+	using NUnit.Framework;
+	using TestFramework;
 
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.IO;
-    using Magnum.Configuration;
-    using NUnit.Framework;
-    using TestFramework;
-    using Enumerable = System.Linq.Enumerable;
 
-    [TestFixture]
-    public class ConfigurationSpecs
-    {
-        ConfigurationStore _store;
-        const string CONF = @"[{Key:""my-key"",Value:""my-value""}]";
+	[TestFixture]
+	public class ConfigurationSpecs
+	{
+		[SetUp]
+		public void Should_be_able_to_add_configuration_files_to_be_loaded()
+		{
+			_store = new ConfigurationStore();
+			if (File.Exists("bob.json"))
+				File.Delete("bob.json");
 
-        [SetUp]
-        public void Should_be_able_to_add_configuration_files_to_be_loaded()
-        {
-            _store = new ConfigurationStore();
-            if (File.Exists("bob.json"))
-                File.Delete("bob.json");
+			File.AppendAllText("bob.json", CONF);
+			_store.AddJsonFile("bob.json");
 
-            File.AppendAllText("bob.json", CONF);
-            _store.AddFile("bob.json");
-        }
+			_provider = _store.GetValueProvider();
+		}
 
-        [Test]
-        public void Entries_should_be_accurate()
-        {
-            IEnumerable<ConfigurationEntry> entries = _store.GetEntries();
-            ConfigurationEntry entry = entries.First();
-            entry.Key.ShouldEqual("my-key");
-            entry.Value.ShouldEqual("my-value");
-        }
+		[Test]
+		public void Should_parse_the_first_value()
+		{
+			string resultValue = null;
+			_provider.GetValue("key", value =>
+				{
+					resultValue = value.ToString();
 
-        [Test]
-        public void Should_be_able_to_parse_the_file_and_return_entries()
-        {
-            IEnumerable<ConfigurationEntry> entries = _store.GetEntries();
-            entries.Count().ShouldBeEqualTo(1);
-        }
+					return true;
+				});
 
-        [Test]
-        public void The_name_should_be_viewable()
-        {
-            _store.ProvidersLoaded.First().Name.ShouldEqual("bob.json");
-        }
+			resultValue.ShouldEqual("my-key");
+		}
 
-        [Test]
-        public void There_should_be_one_file()
-        {
-            _store.ProvidersLoaded.Count().ShouldEqual(1);
-        }
-    }
+		[Test]
+		public void Should_parse_the_second_value()
+		{
+			string resultValue = null;
+			_provider.GetValue("value", value =>
+				{
+					resultValue = value.ToString();
+
+					return true;
+				});
+
+			resultValue.ShouldEqual("my-value");
+		}
+
+		ConfigurationStore _store;
+		ValueProvider _provider;
+		const string CONF = @"{Key:""my-key"",Value:""my-value""}";
+	}
 }

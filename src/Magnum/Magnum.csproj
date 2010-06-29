@@ -580,10 +580,12 @@
     <Compile Include="ValueProviders\CommandLineValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\EmptyValueProvider.cs" />
+    <Compile Include="ValueProviders\FileValueProvider.cs" />
     <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\MultipleValueProvider.cs" />
     <Compile Include="ValueProviders\NestedValueProvider.cs" />
     <Compile Include="ValueProviders\ValueProvider.cs" />
+    <Compile Include="ValueProviders\ValueProviderDecorator.cs" />
     <Compile Include="WeakReference.cs" />
   </ItemGroup>
   <ItemGroup>

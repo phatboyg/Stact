@@ -14,41 +14,37 @@ namespace Magnum.Specs.Configuration
 {
     using System.Linq;
     using Magnum.Configuration;
+    using Magnum.ValueProviders;
     using NUnit.Framework;
     using TestFramework;
 
-    [TestFixture]
-    public class CommandLineConfigurationSpecs
+    [Scenario]
+    public class When_a_single_configuration_store_is_configured
     {
         ConfigurationStore _store;
+    	ValueProvider _provider;
 
-        [SetUp]
-        public void Should_be_able_to_add_multiple_configuration_files_to_be_loaded()
+    	[When]
+		public void A_single_configuration_store_is_configured()
         {
             _store = new ConfigurationStore();
             _store.AddCommandLine("-name:dru");
-        }
 
-        [Test]
-        public void Should_show_one_registration()
-        {
-            _store.ProvidersLoaded.Count.ShouldEqual(1);
-        }
-
-        [Test]
-        public void Should_parse_the_command_line()
-        {
-            var entries = _store.GetEntries();
-            entries.Count().ShouldEqual(1);
+        	_provider = _store.GetValueProvider();
         }
 
         [Test]
         public void Should_parse_the_command_line_correctly()
         {
-            var entries = _store.GetEntries();
-            var entry = entries.First();
-            entry.Key.ShouldEqual("name");
-            entry.Value.ShouldEqual("dru");
+        	string resultValue = null;
+        	_provider.GetValue("name", value =>
+        		{
+        			resultValue = value.ToString();
+
+        			return true;
+        		});
+
+        	resultValue.ShouldEqual("dru");
         }
 
     }
