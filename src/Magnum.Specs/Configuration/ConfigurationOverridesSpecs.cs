@@ -53,7 +53,7 @@ namespace Magnum.Specs.Configuration
 		[Then]
 		public void A_local_value_should_override_a_global_value()
 		{
-			string value = _binder.GetValue("key1");
+			string value = _binder.GetValueAsString("key1");
 			value.ShouldEqual("local-value-1");
 		}
 	}

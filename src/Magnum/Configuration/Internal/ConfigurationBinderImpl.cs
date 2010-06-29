@@ -12,8 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration.Internal
 {
+	using System;
 	using System.Collections.Generic;
 	using Binding;
+	using Extensions;
 	using ValueProviders;
 
 
@@ -39,17 +41,39 @@ namespace Magnum.Configuration.Internal
 			return obj;
 		}
 
-		public string GetValue(string key)
+		public object GetValue(string key)
 		{
-			string resultValue = null;
+			object resultValue = null;
 			_provider.GetValue(key, value =>
 				{
-					resultValue = value.ToString();
+					resultValue = value;
 
 					return true;
 				});
 
 			return resultValue;
+		}
+
+		public T GetValue<T>(string key)
+		{
+			object value = GetValue(key);
+			if (value == null)
+				return default(T);
+
+			if (typeof(T).IsAssignableFrom(value.GetType()))
+				return (T)value;
+
+			throw new ArgumentException("The value type {0} is not assignable to the requested type {1}"
+			                            	.FormatWith(value.GetType().Name, typeof(T).Name));
+		}
+
+		public string GetValueAsString(string key)
+		{
+			object value = GetValue(key);
+			if (value == null)
+				return null;
+
+			return value.ToString();
 		}
 
 		public IDictionary<string, object> GetAll()

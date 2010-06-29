@@ -43,7 +43,7 @@ namespace Magnum.Specs.Configuration
 		[Then]
 		public void Should_parse_the_first_value()
 		{
-			string value = _binder.GetValue("my-key");
+			string value = _binder.GetValueAsString("my-key");
 
 			value.ShouldEqual("my-value");
 		}

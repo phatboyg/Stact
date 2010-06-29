@@ -31,7 +31,7 @@ namespace Magnum.Specs.Configuration
 		[Test]
 		public void Should_parse_the_command_line_correctly()
 		{
-			string value = _binder.GetValue("name");
+			string value = _binder.GetValueAsString("name");
 
 			value.ShouldEqual("dru");
 		}

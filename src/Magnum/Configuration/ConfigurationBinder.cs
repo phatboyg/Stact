@@ -34,7 +34,22 @@ namespace Magnum.Configuration
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		string GetValue(string key);
+		object GetValue(string key);
+
+		/// <summary>
+		/// Returns a single configuration value of type T
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		T GetValue<T>(string key);
+
+		/// <summary>
+		/// Returns a single configuration as a string
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns>The string representation of the value, or null</returns>
+		string GetValueAsString(string key);
 
 		/// <summary>
 		/// Return a dictionary of all key/value pairs that exist
