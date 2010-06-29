@@ -38,11 +38,6 @@ namespace Magnum.ValueProviders
 			return false;
 		}
 
-        public object UnsafeGet(string key)
-        {
-            return _values[key];
-        }
-
 		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
 			if (GetValue(key, matchingValueAction))

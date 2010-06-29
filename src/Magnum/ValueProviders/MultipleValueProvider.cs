@@ -35,19 +35,7 @@ namespace Magnum.ValueProviders
 			return _providers.Any(x => x.GetValue(key, matchingValueAction));
 		}
 
-	    public object UnsafeGet(string key)
-	    {
-	        foreach (var valueProvider in _providers)
-	        {
-	            var obj = valueProvider.UnsafeGet(key);
-                if (obj != null)
-                    return obj;
-	        }
-
-	        return null;
-	    }
-
-	    public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
 			if (_providers.Any(x => x.GetValue(key, matchingValueAction)))
 				return true;

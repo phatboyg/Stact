@@ -16,7 +16,6 @@ namespace Magnum.ValueProviders
 
 	public interface ValueProvider
 	{
-	    object UnsafeGet(string key);
 		bool GetValue(string key, Func<object, bool> matchingValueAction);
 		bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction);
 

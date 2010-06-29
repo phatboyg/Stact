@@ -94,12 +94,7 @@ namespace Magnum.Web.ValueProviders
 			return false;
 		}
 
-	    public object UnsafeGet(string key)
-	    {
-	        return _values[key](_httpRequest);
-	    }
-
-	    public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
 			if (GetValue(key, matchingValueAction))
 				return true;

@@ -26,12 +26,7 @@ namespace Magnum.ValueProviders
 			_prefix = prefix;
 		}
 
-	    public object UnsafeGet(string key)
-	    {
-	        return _parent.UnsafeGet(_prefix + key);
-	    }
-
-	    public bool GetValue(string key, Func<object, bool> matchingValueAction)
+		public bool GetValue(string key, Func<object, bool> matchingValueAction)
 		{
 			return _parent.GetValue(_prefix + key, matchingValueAction);
 		}
