@@ -41,7 +41,7 @@ namespace Magnum.Configuration.Internal
 
 		public ConfigurationBinder CreateBinder()
 		{
-			var providers = new MultipleValueProvider(_providers.Select(x => x()));
+			var providers = new MultipleValueProvider(_providers.Reverse().Select(x => x()));
 
 			return new ConfigurationBinderImpl(providers);
 		}

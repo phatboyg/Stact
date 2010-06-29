@@ -22,7 +22,12 @@ namespace Magnum.ValueProviders
 			return false;
 		}
 
-		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
+	    public object UnsafeGet(string key)
+	    {
+	        return "";
+	    }
+
+	    public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
 			return false;
 		}

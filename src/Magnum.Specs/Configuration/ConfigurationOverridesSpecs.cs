@@ -42,11 +42,11 @@ namespace Magnum.Specs.Configuration
 
 			_binder = ConfigurationBinderFactory.New(x =>
 				{
-					// most-specific to least specific
+					// least specific to most specific
 					// I assume that is reasonable
 
-					x.AddJsonFile("local.json");
 					x.AddJsonFile("global.json");
+                    x.AddJsonFile("local.json");
 				});
 		}
 

@@ -16,7 +16,6 @@ namespace Magnum.Specs.Configuration
 	using System.IO;
 	using System.Text;
 	using Magnum.Configuration;
-	using Magnum.ValueProviders;
 	using TestFramework;
 
 
@@ -36,8 +35,12 @@ namespace Magnum.Specs.Configuration
 
 			_binder = ConfigurationBinderFactory.New(x =>
 				{
-					x.AddCommandLine(commandLineText);
+
+                    // least specific to most specific
+                    // I assume that is reasonable
+
 					x.AddJson(jsonStream);
+					x.AddCommandLine(commandLineText);
 				});
 
 			_configuration = _binder.Bind<IMyConfiguration>();

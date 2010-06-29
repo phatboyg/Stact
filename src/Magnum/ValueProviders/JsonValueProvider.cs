@@ -35,6 +35,11 @@ namespace Magnum.ValueProviders
 			return _provider.GetValue(key, matchingValueAction);
 		}
 
+        public object UnsafeGet(string key)
+        {
+            return _provider.UnsafeGet(key);
+        }
+
 		public bool GetValue(string key, Func<object, bool> matchingValueAction, Action missingValueAction)
 		{
 			return _provider.GetValue(key, matchingValueAction, missingValueAction);

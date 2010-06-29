@@ -56,7 +56,12 @@ namespace Magnum.Web.Actors.Internal
 			return _valueProvider.GetValue(key, matchingValueAction, missingValueAction);
 		}
 
-		public void GetAll(Action<string, object> valueAction)
+	    public object UnsafeGet(string key)
+	    {
+	        return _valueProvider.UnsafeGet(key);
+	    }
+
+	    public void GetAll(Action<string, object> valueAction)
 		{
 			_valueProvider.GetAll(valueAction);
 		}
