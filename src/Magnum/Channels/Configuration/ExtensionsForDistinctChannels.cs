@@ -12,28 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
 	using Configuration;
 
 
-	public static class ExtensionsForIntervalChannels
+	public static class ExtensionsForDistinctChannels
 	{
-		/// <summary>
-		/// Specifies an interval at which the consumer should be called with a collection
-		/// of messages received during that period.
-		/// </summary>
-		/// <param name="configurator"></param>
-		/// <param name="interval">The time period of each interval</param>
-		/// <returns></returns>
-		public static IntervalChannelConfigurator<TChannel> BufferFor<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator, TimeSpan interval)
+		public static DistinctChannelConfigurator<TChannel, TKey> Distinct<TChannel, TKey>(
+			this IntervalChannelConfigurator<TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
-			var intervalConfigurator = new IntervalChannelConfiguratorImpl<TChannel>(interval);
+			var intervalConfigurator = new DistinctChannelConfiguratorImpl<TChannel, TKey>(keyAccessor);
 
 			configurator.SetChannelFactory(intervalConfigurator);
 
 			return intervalConfigurator;
 		}
-
 	}
 }

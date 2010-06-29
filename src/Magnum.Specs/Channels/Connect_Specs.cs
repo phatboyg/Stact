@@ -58,7 +58,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.BufferWithTime(15.Seconds())
+						.BufferFor(15.Seconds())
 						.UsingConsumer(messages => { });
 				}))
 			{

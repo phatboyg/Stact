@@ -48,5 +48,10 @@ namespace Magnum.Channels.Configuration
 
 			return this;
 		}
+
+		public TimeSpan Interval
+		{
+			get { return _interval; }
+		}
 	}
 }

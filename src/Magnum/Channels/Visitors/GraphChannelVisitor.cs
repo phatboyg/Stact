@@ -18,14 +18,15 @@ namespace Magnum.Channels.Visitors
 	using Extensions;
 	using Graphing;
 
+
 	public class GraphChannelVisitor :
 		ChannelVisitor,
 		GraphProvider
 	{
-		private readonly List<Edge> _edges = new List<Edge>();
-		private readonly Stack<Vertex> _stack = new Stack<Vertex>();
-		private readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
-		private Vertex _current;
+		readonly List<Edge> _edges = new List<Edge>();
+		readonly Stack<Vertex> _stack = new Stack<Vertex>();
+		readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
+		Vertex _current;
 
 		public IEnumerable<Vertex> Vertices
 		{
@@ -37,7 +38,7 @@ namespace Magnum.Channels.Visitors
 			get { return _edges; }
 		}
 
-		private Vertex GetVertex(int key, Func<string> getTitle, Type nodeType, Type objectType)
+		Vertex GetVertex(int key, Func<string> getTitle, Type nodeType, Type objectType)
 		{
 			return _vertices.Retrieve(key, () =>
 				{
@@ -47,7 +48,7 @@ namespace Magnum.Channels.Visitors
 				});
 		}
 
-		private Channel<T> WithVertex<T>(Func<Channel<T>> scopedAction)
+		Channel<T> WithVertex<T>(Func<Channel<T>> scopedAction)
 		{
 			_stack.Push(_current);
 
@@ -58,7 +59,7 @@ namespace Magnum.Channels.Visitors
 			return result;
 		}
 
-		private UntypedChannel WithVertex(Func<UntypedChannel> scopedAction)
+		UntypedChannel WithVertex(Func<UntypedChannel> scopedAction)
 		{
 			_stack.Push(_current);
 
@@ -69,7 +70,7 @@ namespace Magnum.Channels.Visitors
 			return result;
 		}
 
-		private ChannelProvider<T> WithVertex<T>(Func<ChannelProvider<T>> scopedAction)
+		ChannelProvider<T> WithVertex<T>(Func<ChannelProvider<T>> scopedAction)
 		{
 			_stack.Push(_current);
 
@@ -112,37 +113,34 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<T> Visitor<T>(IntervalChannel<T> channel)
 		{
-			Trace.WriteLine("IntervalChannel<{0}>, Interval = {1}".FormatWith(typeof (T).Name, channel.Interval));
+			Trace.WriteLine("IntervalChannel<{0}>, Interval = {1}".FormatWith(typeof(T).Name, channel.Interval));
 
 			return base.Visitor(channel);
 		}
 
 		protected override Channel<T> Visitor<T>(InterceptorChannel<T> channel)
 		{
-			Trace.WriteLine("InterceptorChannel<{0}>".FormatWith(typeof (T).Name));
+			Trace.WriteLine("InterceptorChannel<{0}>".FormatWith(typeof(T).Name));
 
 			return base.Visitor(channel);
 		}
 
-		protected override Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
+		protected override Channel<ICollection<T>> Visitor<T, TKey>(DistinctChannel<T, TKey> channel)
 		{
-			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}, Interval = {2}".FormatWith(typeof (T).Name,
-			                                                                                     typeof (TKey).Name,
-			                                                                                     channel.Interval));
-
+			Trace.WriteLine("DistinctChannel<{0}>, Key = {1}".FormatWith(typeof(T).Name, typeof(TKey).Name));
 			return base.Visitor(channel);
 		}
 
 		protected override Channel<T> Visitor<T>(LastIntervalChannel<T> channel)
 		{
-			Trace.WriteLine("LastIntervalChannel<{0}>, Interval = {1}".FormatWith(typeof (T).Name, channel.Interval));
+			Trace.WriteLine("LastIntervalChannel<{0}>, Interval = {1}".FormatWith(typeof(T).Name, channel.Interval));
 
 			return base.Visitor(channel);
 		}
 
 		protected override Channel<T> Visitor<T>(AsyncResultChannel<T> channel)
 		{
-			Trace.WriteLine("AsyncResultChannel<{0}>, {1}".FormatWith(typeof (T).Name,
+			Trace.WriteLine("AsyncResultChannel<{0}>, {1}".FormatWith(typeof(T).Name,
 			                                                          channel.IsCompleted ? "Complete" : "Pending"));
 
 			return base.Visitor(channel);
@@ -160,7 +158,7 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
-			_current = GetVertex(channel.GetHashCode(), () => "Adapter", typeof (ChannelAdapter<T>), typeof (T));
+			_current = GetVertex(channel.GetHashCode(), () => "Adapter", typeof(ChannelAdapter<T>), typeof(T));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
@@ -240,7 +238,7 @@ namespace Magnum.Channels.Visitors
 
 		protected override ChannelProvider<T> Visitor<T>(ChannelProvider<T> provider)
 		{
-			Trace.WriteLine("ChannelProvider<{0}>".FormatWith(typeof (T).Name));
+			Trace.WriteLine("ChannelProvider<{0}>".FormatWith(typeof(T).Name));
 
 			return base.Visitor(provider);
 		}
@@ -255,9 +253,11 @@ namespace Magnum.Channels.Visitors
 			return WithVertex(() => base.Visitor(provider));
 		}
 
-		protected override ChannelProvider<TChannel> Visitor<TConsumer, TChannel>(InstanceChannelProvider<TConsumer, TChannel> provider)
+		protected override ChannelProvider<TChannel> Visitor<TConsumer, TChannel>(
+			InstanceChannelProvider<TConsumer, TChannel> provider)
 		{
-			_current = GetVertex(provider.GetHashCode(), () => "Provider", typeof(InstanceChannelProvider<TConsumer, TChannel>), typeof(TConsumer));
+			_current = GetVertex(provider.GetHashCode(), () => "Provider", typeof(InstanceChannelProvider<TConsumer, TChannel>),
+			                     typeof(TConsumer));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_current, _stack.Peek(), _current.TargetType.Name));
@@ -267,25 +267,26 @@ namespace Magnum.Channels.Visitors
 
 		protected override ChannelProvider<T> Visitor<T, TKey>(KeyedChannelProvider<T, TKey> provider)
 		{
-			Trace.WriteLine("KeyedChannelProvider<{0}>, Key = {1}".FormatWith(typeof (T).Name, typeof (TKey).Name));
+			Trace.WriteLine("KeyedChannelProvider<{0}>, Key = {1}".FormatWith(typeof(T).Name, typeof(TKey).Name));
 
 			return base.Visitor(provider);
 		}
 
 		protected override ChannelProvider<T> Visitor<T>(ThreadStaticChannelProvider<T> provider)
 		{
-			Trace.WriteLine("ThreadStaticChannelProvider<{0}>".FormatWith(typeof (T).Name));
+			Trace.WriteLine("ThreadStaticChannelProvider<{0}>".FormatWith(typeof(T).Name));
 
 			return base.Visitor(provider);
 		}
 
 		protected override InterceptorFactory<T> Visitor<T>(InterceptorFactory<T> factory)
 		{
-			Trace.WriteLine("InterceptorFactory<{0}>".FormatWith(typeof (T).Name));
+			Trace.WriteLine("InterceptorFactory<{0}>".FormatWith(typeof(T).Name));
 
 			return base.Visitor(factory);
 		}
 	}
+
 
 //
 //	public class GraphChannkkelVisitor :

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Visitors
 {
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 	using Extensions;
@@ -54,10 +55,9 @@ namespace Magnum.Channels.Visitors
 			return base.Visitor(channel);
 		}
 
-		protected override Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
+		protected override Channel<ICollection<T>> Visitor<T, TKey>(DistinctChannel<T, TKey> channel)
 		{
-			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}, Interval = {2}".FormatWith(typeof (T).Name, typeof (TKey).Name,
-			                                                                                     channel.Interval));
+			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}".FormatWith(typeof (T).Name, typeof (TKey).Name));
 
 			return base.Visitor(channel);
 		}

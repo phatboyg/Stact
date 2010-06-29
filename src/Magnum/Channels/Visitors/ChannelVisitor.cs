@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Visitors
 {
+	using System.Collections.Generic;
 	using Extensions;
 	using Logging;
 	using Reflection;
@@ -102,7 +103,7 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T, TKey>(DistinctIntervalChannel<T, TKey> channel)
+		protected virtual Channel<ICollection<T>> Visitor<T, TKey>(DistinctChannel<T, TKey> channel)
 		{
 			Visit(channel.Output);
 

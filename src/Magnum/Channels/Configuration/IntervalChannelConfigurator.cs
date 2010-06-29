@@ -29,5 +29,7 @@ namespace Magnum.Channels.Configuration
 		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
 
 		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
+
+		TimeSpan Interval { get; }
 	}
 }

@@ -12,38 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System;
 	using System.Collections.Generic;
 	using Fibers;
 
 
-	public class DistinctIntervalChannelConfiguratorImpl<TChannel, TKey> :
-		IntervalModelConfigurator<DistinctIntervalChannelConfigurator<TChannel, TKey>>,
-		DistinctIntervalChannelConfigurator<TChannel, TKey>,
-		ChannelFactory<TChannel>
+	public class DistinctChannelConfiguratorImpl<TChannel, TKey> :
+		FiberModelConfigurator<DistinctChannelConfigurator<TChannel, TKey>>,
+		DistinctChannelConfigurator<TChannel, TKey>,
+		ChannelFactory<ICollection<TChannel>>
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 		ChannelFactory<IDictionary<TKey, TChannel>> _channelFactory;
 
-		public DistinctIntervalChannelConfiguratorImpl(TimeSpan interval, KeyAccessor<TChannel, TKey> keyAccessor)
+		public DistinctChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
-			_interval = interval;
-
-			UsePrivateScheduler();
 			UseThreadPool();
 		}
 
-		public Channel<TChannel> GetChannel()
+		public Channel<ICollection<TChannel>> GetChannel()
 		{
 			if (_channelFactory == null)
 				throw new ChannelConfigurationException(typeof(TChannel), "No channel was specified for the interval channel");
 
 			Channel<IDictionary<TKey, TChannel>> channel = _channelFactory.GetChannel();
 			Fiber fiber = _fiberFactory();
-			Scheduler scheduler = _schedulerFactory();
 
-			return new DistinctIntervalChannel<TChannel, TKey>(fiber, scheduler, _interval, _keyAccessor, channel);
+			return new DistinctChannel<TChannel, TKey>(fiber, _keyAccessor, channel);
 		}
 
 		public ChannelConnectionConfigurator<IDictionary<TKey, TChannel>> SetChannelFactory(

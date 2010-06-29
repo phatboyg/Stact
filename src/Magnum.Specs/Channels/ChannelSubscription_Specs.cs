@@ -53,7 +53,8 @@ namespace Magnum.Specs.Channels
 			using (connection = input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.DistinctlyBufferWithTime(4.Seconds(), c => c.Value)
+						.BufferFor(4.Seconds())
+						.Distinct(c => c.Value)
 						.UsingConsumer(message =>
 							{
 								future.Complete(message.Count);
@@ -67,7 +68,8 @@ namespace Magnum.Specs.Channels
 						typeof(ChannelAdapter),
 						typeof(BroadcastChannel),
 						typeof(TypedChannelAdapter<TestMessage>),
-						typeof(DistinctIntervalChannel<TestMessage, int>),
+						typeof(IntervalChannel<TestMessage>),
+						typeof(DistinctChannel<TestMessage, int>),
 						typeof(ConsumerChannel<IDictionary<int, TestMessage>>),
 					});
 
@@ -108,7 +110,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.BufferWithTime(4.Seconds())
+						.BufferFor(4.Seconds())
 						.UsingConsumer(message => future.Complete(message.Count))
 						.UseProducerThread();
 				}))

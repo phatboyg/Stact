@@ -12,9 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
-	using System;
 	using System.Collections.Generic;
-	using Fibers;
 
 
 	/// <summary>
@@ -22,13 +20,8 @@ namespace Magnum.Channels.Configuration
 	/// intervals
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
-	public interface DistinctIntervalChannelConfigurator<TChannel, TKey> :
+	public interface DistinctChannelConfigurator<TChannel, TKey> :
 		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
 	{
-		DistinctIntervalChannelConfigurator<TChannel,TKey> UsePrivateScheduler();
-
-		DistinctIntervalChannelConfigurator<TChannel, TKey> UseScheduler(Scheduler scheduler);
-
-		DistinctIntervalChannelConfigurator<TChannel, TKey> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
 	}
 }
