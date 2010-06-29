@@ -53,7 +53,7 @@ namespace Magnum.Specs.Channels
 			using (connection = input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.BufferFor(4.Seconds())
+						.BufferFor(2.Seconds())
 						.Distinct(c => c.Value)
 						.UsingConsumer(message =>
 							{
@@ -63,6 +63,17 @@ namespace Magnum.Specs.Channels
 						.UseProducerThread();
 				}))
 			{
+				for (int i = 0; i < expected; i++)
+				{
+					input.Send(new TestMessage
+						{
+							Value = i
+						});
+				}
+
+				future.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
+				future.Value.ShouldEqual(expected);
+
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
 						typeof(ChannelAdapter),
@@ -72,18 +83,7 @@ namespace Magnum.Specs.Channels
 						typeof(DistinctChannel<TestMessage, int>),
 						typeof(ConsumerChannel<IDictionary<int, TestMessage>>),
 					});
-
-				for (int i = 0; i < expected; i++)
-				{
-					input.Send(new TestMessage
-						{
-							Value = i
-						});
-				}
 			}
-
-			future.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
-			future.Value.ShouldEqual(expected);
 		}
 
 		[Test]
@@ -107,14 +107,25 @@ namespace Magnum.Specs.Channels
 
 			var input = new ChannelAdapter();
 			int expected = 5;
-			using (input.Connect(x =>
+			ChannelConnection connection = null;
+			using (connection = input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
-						.BufferFor(4.Seconds())
-						.UsingConsumer(message => future.Complete(message.Count))
+						.BufferFor(2.Seconds())
+						.UsingConsumer(message =>
+							{
+								future.Complete(message.Count);
+								connection.Disconnect();
+							})
 						.UseProducerThread();
 				}))
 			{
+				for (int i = 0; i < expected; i++)
+					input.Send(new TestMessage());
+
+				future.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
+				future.Value.ShouldEqual(expected);
+
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
 						typeof(ChannelAdapter),
@@ -123,13 +134,8 @@ namespace Magnum.Specs.Channels
 						typeof(IntervalChannel<TestMessage>),
 						typeof(ConsumerChannel<ICollection<TestMessage>>),
 					});
-
-				for (int i = 0; i < expected; i++)
-					input.Send(new TestMessage());
 			}
 
-			future.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
-			future.Value.ShouldEqual(expected);
 		}
 
 		[Test]
