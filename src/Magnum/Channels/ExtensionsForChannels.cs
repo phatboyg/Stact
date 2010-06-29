@@ -15,6 +15,7 @@ namespace Magnum.Channels
 	using System;
 	using System.Collections.Generic;
 	using Configuration;
+	using Configuration.Internal;
 	using Visitors;
 
 	public static class ExtensionsForChannels

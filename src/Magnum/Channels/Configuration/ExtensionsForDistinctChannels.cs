@@ -13,6 +13,7 @@
 namespace Magnum.Channels
 {
 	using Configuration;
+	using Configuration.Internal;
 
 
 	public static class ExtensionsForDistinctChannels

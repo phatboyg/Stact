@@ -14,6 +14,7 @@ namespace Magnum.Channels.Configuration
 {
 	using System;
 	using System.Collections.Generic;
+	using Internal;
 
 
 	public class ChannelConnectionImpl :

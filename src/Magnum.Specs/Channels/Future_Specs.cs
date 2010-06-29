@@ -12,57 +12,58 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Channels
 {
-    using System;
-    using Magnum.Channels;
-    using NUnit.Framework;
-    using TestFramework;
+	using System;
+	using NUnit.Framework;
+	using TestFramework;
 
 
-    [Scenario]
-    public class Future_SpecsBase
-    {
-        public Future<object> Future { get; set; }
+	[Scenario]
+	public class Future_SpecsBase
+	{
+		public Future<object> Future { get; set; }
 
-        [Given]
-        public void A_future()
-        {
-            Future = new Future<object>();    
-        }
-    }
+		[Given]
+		public void A_future()
+		{
+			Future = new Future<object>();
+		}
+	}
 
-    [Scenario]
-    public class Completes_twice_same_objects :
-        Future_SpecsBase
-    {
-        [When]
-        public void Complete_is_called_twice_with_the_same_object()
-        {
-            var obj1 = new object();
 
-            Future.Complete(obj1);
-            Future.Complete(obj1);
-        }
+	[Scenario]
+	public class Completes_twice_same_objects :
+		Future_SpecsBase
+	{
+		[When]
+		public void Complete_is_called_twice_with_the_same_object()
+		{
+			var obj1 = new object();
 
-        [Then]
-        public void No_exception_is_thrown()
-        {
-            Future.IsCompleted.ShouldBeTrue();
-        }
-    }
+			Future.Complete(obj1);
+			Future.Complete(obj1);
+		}
 
-    [TestFixture]
-    public class Completes_twice_different_objects
-    {
-        [Test]
-        public void An_exception_is_thrown()
-        {
-            Future<object> future = new Future<object>();
+		[Then]
+		public void No_exception_is_thrown()
+		{
+			Future.IsCompleted.ShouldBeTrue();
+		}
+	}
 
-            var obj1 = new object();
-            var obj2 = new object();
 
-            future.Complete(obj1);
-            Assert.That(() => future.Complete(obj2), Throws.TypeOf<InvalidOperationException>());
-        }
-    }
+	[TestFixture]
+	public class Completes_twice_different_objects
+	{
+		[Test]
+		public void An_exception_is_thrown()
+		{
+			var future = new Future<object>();
+
+			var obj1 = new object();
+			var obj2 = new object();
+
+			future.Complete(obj1);
+			Assert.That(() => future.Complete(obj2), Throws.TypeOf<InvalidOperationException>());
+		}
+	}
 }

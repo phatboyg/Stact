@@ -10,23 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
-	public class SelectiveConsumerChannelConfiguratorImpl<TChannel> :
-		ChannelModelConfigurator<ConsumerChannelConfigurator<TChannel>, TChannel>,
-		ConsumerChannelConfigurator<TChannel>,
-		ChannelFactory<TChannel>
+	using System.Collections.Generic;
+
+
+	/// <summary>
+	/// Used to configure the options on a channel that delivers messages at regular
+	/// intervals
+	/// </summary>
+	/// <typeparam name="TChannel"></typeparam>
+	public interface DistinctChannelConfigurator<TChannel, TKey> :
+		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
 	{
-		readonly SelectiveConsumer<TChannel> _consumer;
-
-		public SelectiveConsumerChannelConfiguratorImpl(SelectiveConsumer<TChannel> consumer)
-		{
-			_consumer = consumer;
-		}
-
-		public Channel<TChannel> GetChannel()
-		{
-			return CreateChannel(() => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), _consumer));
-		}
 	}
 }

@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
@@ -20,10 +20,11 @@ namespace Magnum.Channels.Configuration
 	using Reflection;
 	using Visitors;
 
+
 	public class DisconnectChannelVisitor :
 		ChannelVisitor
 	{
-		private readonly HashSet<Channel> _channels;
+		readonly HashSet<Channel> _channels;
 
 		public DisconnectChannelVisitor(IEnumerable<Channel> channels)
 		{
@@ -79,9 +80,7 @@ namespace Magnum.Channels.Configuration
 			Channel<T> newOutput = Visit(output);
 
 			if (newOutput != output)
-			{
 				channel.ChangeOutputChannel(output, newOutput);
-			}
 
 			return channel;
 		}
@@ -144,13 +143,11 @@ namespace Magnum.Channels.Configuration
 				results.Add(newSubscriber);
 			}
 
-			if(results.Count == 0)
+			if (results.Count == 0)
 				return null;
 
 			if (changed)
-			{
 				return new BroadcastChannel(results);
-			}
 
 			return channel;
 		}
@@ -168,14 +165,10 @@ namespace Magnum.Channels.Configuration
 			}
 
 			if (replacement == null)
-			{
 				replacement = new ShuntChannel();
-			}
 
 			if (replacement != original)
-			{
 				channel.ChangeOutputChannel(original, replacement);
-			}
 
 			return channel;
 		}
@@ -193,12 +186,12 @@ namespace Magnum.Channels.Configuration
 			return channel;
 		}
 
-		private Channel<T>[] VisitSubscribers<T>(IEnumerable<Channel<T>> subscribers, out bool changed)
+		Channel<T>[] VisitSubscribers<T>(IEnumerable<Channel<T>> subscribers, out bool changed)
 		{
 			var results = new List<Channel<T>>();
 
 			changed = false;
-			foreach (Channel<T> subscriber in subscribers)
+			foreach (var subscriber in subscribers)
 			{
 				Channel<T> result = Visit(subscriber);
 				if (result == null)

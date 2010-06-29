@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using System.Threading;
@@ -21,7 +21,7 @@ namespace Magnum.Channels.Configuration
 		FiberModelConfigurator<T>
 		where T : class
 	{
-		private SynchronizationContext _synchronizationContext;
+		SynchronizationContext _synchronizationContext;
 
 
 		public T UseCurrentSychronizationContext()
@@ -47,7 +47,7 @@ namespace Magnum.Channels.Configuration
 
 			UseProducerThread();
 
-			var channel = channelBuilder();
+			Channel<TChannel> channel = channelBuilder();
 
 			return new SynchronizedChannel<TChannel>(originalFiberFactory(), channel, _synchronizationContext);
 		}

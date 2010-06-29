@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
@@ -29,11 +29,6 @@ namespace Magnum.Channels.Configuration
 			_consumer = consumer;
 		}
 
-		public Channel<TChannel> GetChannel()
-		{
-			return CreateChannel(() => new ConsumerChannel<TChannel>(_fiberFactory(), _consumer));
-		}
-
 		public IEnumerable<Channel> Configure(Channel<TChannel> channel)
 		{
 			throw new NotImplementedException();
@@ -42,6 +37,11 @@ namespace Magnum.Channels.Configuration
 		public void ValidateConfiguration()
 		{
 			throw new NotImplementedException();
+		}
+
+		public Channel<TChannel> GetChannel()
+		{
+			return CreateChannel(() => new ConsumerChannel<TChannel>(_fiberFactory(), _consumer));
 		}
 	}
 }

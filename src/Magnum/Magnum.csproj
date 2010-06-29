@@ -120,12 +120,12 @@
     <Compile Include="Channels\ChannelFactory.cs" />
     <Compile Include="Channels\ChannelConfigurationException.cs" />
     <Compile Include="Channels\Configuration\ChannelConnectionConfigurator.cs" />
-    <Compile Include="Channels\Configuration\ChannelConnectionConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Configurator.cs" />
-    <Compile Include="Channels\Configuration\ConsumerChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\ConsumerChannelConfiguratorImpl.cs" />
-    <Compile Include="Channels\Configuration\DistinctChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\DistinctChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ConsumerChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\ConsumerChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\DistinctChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\DistinctChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistinctChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForFilterChannel.cs" />
@@ -133,27 +133,27 @@
     <Compile Include="Channels\Configuration\ExtensionsForIntervalChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForSelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForAddConsumer.cs" />
-    <Compile Include="Channels\Configuration\FiberModelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\FilterChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\FilterChannelConfiguratorImpl.cs" />
-    <Compile Include="Channels\Configuration\InstanceChannelConfiguratorImpl.cs" />
-    <Compile Include="Channels\Configuration\IntervalChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\IntervalModelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\SelectiveConsumerChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\FiberModelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\FilterChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\FilterChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\InstanceChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\IntervalChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\IntervalModelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\SelectiveConsumerChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\FutureChannel.cs" />
     <Compile Include="Channels\InstanceChannelProvider.cs" />
     <Compile Include="Channels\SelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\WcfChannelHost.cs" />
     <Compile Include="Channels\WcfChannelProxy.cs" />
-    <Compile Include="Channels\Configuration\ChannelModelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\ConnectChannelVisitor.cs" />
-    <Compile Include="Channels\Configuration\InstanceChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\IntervalChannelConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelModelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\ConnectChannelVisitor.cs" />
+    <Compile Include="Channels\Configuration\Internal\InstanceChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\IntervalChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\ConnectionConfigurator.cs" />
     <Compile Include="Channels\ChannelAdapter.cs" />
     <Compile Include="Channels\Configuration\ConnectionConfiguratorImpl.cs" />
-    <Compile Include="Channels\Configuration\ChannelConnectionImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConnectionImpl.cs" />
     <Compile Include="Channels\Configuration\ChannelConfigurator.cs" />
     <Compile Include="Channels\DeserializeChannel.cs" />
     <Compile Include="Channels\DeserializeMessageEnvelopeChannel.cs" />
@@ -164,7 +164,7 @@
     <Compile Include="Channels\SerializeChannel.cs" />
     <Compile Include="Channels\ExtensionsForChannels.cs" />
     <Compile Include="Channels\MessageConverter.cs" />
-    <Compile Include="Channels\Configuration\DisconnectChannelVisitor.cs" />
+    <Compile Include="Channels\Configuration\Internal\DisconnectChannelVisitor.cs" />
     <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Channels\DefaultMailbox.cs" />
     <Compile Include="Channels\Mailbox.cs" />
@@ -593,7 +593,6 @@
     <Content Include="Collections\A Note About This Folder.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Channels\Configuration\Internal\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

@@ -10,38 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
-	using System;
-	using Fibers;
-
-
-	public class IntervalModelConfigurator<T> :
-		FiberModelConfigurator<T>
-		where T : class
+	public class SelectiveConsumerChannelConfiguratorImpl<TChannel> :
+		ChannelModelConfigurator<ConsumerChannelConfigurator<TChannel>, TChannel>,
+		ConsumerChannelConfigurator<TChannel>,
+		ChannelFactory<TChannel>
 	{
-		protected TimeSpan _interval;
-		protected Func<Scheduler> _schedulerFactory;
+		readonly SelectiveConsumer<TChannel> _consumer;
 
-		public T UsePrivateScheduler()
+		public SelectiveConsumerChannelConfiguratorImpl(SelectiveConsumer<TChannel> consumer)
 		{
-			_schedulerFactory = () => new TimerScheduler(new ThreadPoolFiber());
-
-			return this as T;
+			_consumer = consumer;
 		}
 
-		public T UseScheduler(Scheduler scheduler)
+		public Channel<TChannel> GetChannel()
 		{
-			_schedulerFactory = () => scheduler;
-
-			return this as T;
-		}
-
-		public T WithSchedulerFactory(Func<Scheduler> schedulerFactory)
-		{
-			_schedulerFactory = schedulerFactory;
-
-			return this as T;
+			return CreateChannel(() => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), _consumer));
 		}
 	}
 }

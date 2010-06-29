@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
@@ -19,11 +19,12 @@ namespace Magnum.Channels.Configuration
 	using Reflection;
 	using Visitors;
 
+
 	public class ConnectChannelVisitor :
 		ChannelVisitor
 	{
-		private readonly UntypedChannel _newChannel;
-		private bool _added;
+		readonly UntypedChannel _newChannel;
+		bool _added;
 
 		public ConnectChannelVisitor(UntypedChannel newChannel)
 		{
@@ -65,9 +66,7 @@ namespace Magnum.Channels.Configuration
 			}
 
 			if (changed)
-			{
 				return new BroadcastChannel(results);
-			}
 
 			return channel;
 		}
@@ -80,7 +79,7 @@ namespace Magnum.Channels.Configuration
 
 			if (!_added)
 			{
-				if (replacement.GetType() == typeof (ShuntChannel))
+				if (replacement.GetType() == typeof(ShuntChannel))
 				{
 					replacement = new BroadcastChannel(new[] {_newChannel});
 					_added = true;
@@ -88,19 +87,18 @@ namespace Magnum.Channels.Configuration
 			}
 
 			if (original != replacement)
-			{
 				channel.ChangeOutputChannel(original, replacement);
-			}
 
 			return channel;
 		}
 	}
 
+
 	public class ConnectChannelVisitor<TChannel> :
 		ChannelVisitor
 	{
-		private readonly Channel<TChannel> _newChannel;
-		private bool _added;
+		readonly Channel<TChannel> _newChannel;
+		bool _added;
 
 		public ConnectChannelVisitor(Channel<TChannel> newChannel)
 		{
@@ -112,8 +110,10 @@ namespace Magnum.Channels.Configuration
 			Channel<T> result = Visit(channel);
 
 			if (!_added)
-				throw new InvalidOperationException("The binding operation failed: {0} to {1}".FormatWith(typeof (T).Name,
-				                                                                                          typeof (TChannel).Name));
+			{
+				throw new InvalidOperationException("The binding operation failed: {0} to {1}".FormatWith(typeof(T).Name,
+				                                                                                          typeof(TChannel).Name));
+			}
 		}
 
 		public void ConnectTo(UntypedChannel channel)
@@ -121,7 +121,7 @@ namespace Magnum.Channels.Configuration
 			UntypedChannel result = Visit(channel);
 
 			if (!_added)
-				throw new InvalidOperationException("The binding operation failed: {0}".FormatWith(typeof (TChannel).Name));
+				throw new InvalidOperationException("The binding operation failed: {0}".FormatWith(typeof(TChannel).Name));
 		}
 
 		public override Channel<T> Visit<T>(Channel<T> channel)
@@ -136,16 +136,14 @@ namespace Magnum.Channels.Configuration
 			Channel<T> replacement = Visit(original);
 
 
-			if (!_added && typeof (T) == typeof (TChannel))
+			if (!_added && typeof(T) == typeof(TChannel))
 			{
 				replacement = new BroadcastChannel<T>(new[] {replacement, GetChannel<T>()});
 				_added = true;
 			}
 
 			if (original != replacement)
-			{
 				channel.ChangeOutputChannel(original, replacement);
-			}
 
 			return channel;
 		}
@@ -156,16 +154,14 @@ namespace Magnum.Channels.Configuration
 
 			Channel<T> replacement = Visit(original);
 
-			if (!_added && typeof (T) == typeof (TChannel))
+			if (!_added && typeof(T) == typeof(TChannel))
 			{
 				replacement = new BroadcastChannel<T>(new[] {replacement, GetChannel<T>()});
 				_added = true;
 			}
 
 			if (original != replacement)
-			{
 				return new TypedChannelAdapter<T>(replacement);
-			}
 
 			return channel;
 		}
@@ -197,9 +193,7 @@ namespace Magnum.Channels.Configuration
 			}
 
 			if (changed)
-			{
 				return new BroadcastChannel(results);
-			}
 
 			return channel;
 		}
@@ -212,7 +206,7 @@ namespace Magnum.Channels.Configuration
 
 			if (!_added)
 			{
-				if (replacement.GetType() == typeof (ShuntChannel))
+				if (replacement.GetType() == typeof(ShuntChannel))
 				{
 					replacement = new BroadcastChannel(new[] {GetUntypedChannel()});
 					_added = true;
@@ -220,16 +214,14 @@ namespace Magnum.Channels.Configuration
 			}
 
 			if (original != replacement)
-			{
 				channel.ChangeOutputChannel(original, replacement);
-			}
 
 			return channel;
 		}
 
 		protected override Channel<T> Visitor<T>(ShuntChannel<T> channel)
 		{
-			if (typeof (T) == typeof (TChannel))
+			if (typeof(T) == typeof(TChannel))
 			{
 				_added = true;
 				return GetChannel<T>();
@@ -240,28 +232,26 @@ namespace Magnum.Channels.Configuration
 
 		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
-			if (IsCompatibleType(typeof (T)))
-			{
+			if (IsCompatibleType(typeof(T)))
 				return new BroadcastChannel<T>(VisitSubscribers(channel.Listeners));
-			}
 
 			return channel;
 		}
 
-		private Channel<T> GetChannel<T>()
+		Channel<T> GetChannel<T>()
 		{
-			if (typeof (T) == typeof (TChannel))
-				return (Channel<T>) _newChannel;
+			if (typeof(T) == typeof(TChannel))
+				return (Channel<T>)_newChannel;
 
 			return new ConvertChannel<T, TChannel>(new SynchronousFiber(), _newChannel);
 		}
 
-		private UntypedChannel GetUntypedChannel()
+		UntypedChannel GetUntypedChannel()
 		{
 			return new TypedChannelAdapter<TChannel>(_newChannel);
 		}
 
-		private IEnumerable<Channel<T>> VisitSubscribers<T>(IEnumerable<Channel<T>> recipients)
+		IEnumerable<Channel<T>> VisitSubscribers<T>(IEnumerable<Channel<T>> recipients)
 		{
 			foreach (var recipient in recipients)
 			{
@@ -281,9 +271,9 @@ namespace Magnum.Channels.Configuration
 			}
 		}
 
-		private static bool IsCompatibleType(Type type)
+		static bool IsCompatibleType(Type type)
 		{
-			return typeof (TChannel).IsAssignableFrom(type);
+			return typeof(TChannel).IsAssignableFrom(type);
 		}
 	}
 }

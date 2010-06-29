@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
+	using Internal;
+
+
 	/// <summary>
 	/// Used to configure the connections to be added to an UntypedChannel
 	/// </summary>

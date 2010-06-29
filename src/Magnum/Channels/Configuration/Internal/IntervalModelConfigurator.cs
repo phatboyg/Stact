@@ -10,24 +10,38 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
-	using System.Threading;
+	using System;
 	using Fibers;
 
 
-	public interface ConsumerChannelConfigurator<TChannel>
+	public class IntervalModelConfigurator<T> :
+		FiberModelConfigurator<T>
+		where T : class
 	{
-		ConsumerChannelConfigurator<TChannel> UseFiber(Fiber fiber);
-		ConsumerChannelConfigurator<TChannel> UsePrivateThread();
-		ConsumerChannelConfigurator<TChannel> UseProducerThread();
-		ConsumerChannelConfigurator<TChannel> UseThreadPool();
+		protected TimeSpan _interval;
+		protected Func<Scheduler> _schedulerFactory;
 
-		ConsumerChannelConfigurator<TChannel> UseCurrentSychronizationContext();
+		public T UsePrivateScheduler()
+		{
+			_schedulerFactory = () => new TimerScheduler(new ThreadPoolFiber());
 
-		ConsumerChannelConfigurator<TChannel> WithFiberFactory(FiberFactory fiberFactory);
+			return this as T;
+		}
 
-		ConsumerChannelConfigurator<TChannel> WithSynchronizationContext(
-			SynchronizationContext synchronizationContext);
+		public T UseScheduler(Scheduler scheduler)
+		{
+			_schedulerFactory = () => scheduler;
+
+			return this as T;
+		}
+
+		public T WithSchedulerFactory(Func<Scheduler> schedulerFactory)
+		{
+			_schedulerFactory = schedulerFactory;
+
+			return this as T;
+		}
 	}
 }
