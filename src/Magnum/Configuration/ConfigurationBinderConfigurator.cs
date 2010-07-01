@@ -18,7 +18,8 @@ namespace Magnum.Configuration
 	public interface ConfigurationBinderConfigurator
 	{
 		void AddJsonFile(string filename);
-		void AddCommandLine(string commandLine);
 		void AddJson(Stream stream);
+		void AddJson(string text);
+		void AddCommandLine(string commandLine);
 	}
 }

@@ -29,14 +29,19 @@ namespace Magnum.Configuration.Internal
 			_providers.Add(() => new FileValueProvider(filename, stream => new JsonValueProvider(stream)));
 		}
 
-		public void AddCommandLine(string commandLine)
-		{
-			_providers.Add(() => new CommandLineValueProvider(commandLine));
-		}
-
 		public void AddJson(Stream stream)
 		{
 			_providers.Add(() => new JsonValueProvider(stream));
+		}
+
+		public void AddJson(string text)
+		{
+			_providers.Add(() => new JsonValueProvider(text));
+		}
+
+		public void AddCommandLine(string commandLine)
+		{
+			_providers.Add(() => new CommandLineValueProvider(commandLine));
 		}
 
 		public ConfigurationBinder CreateBinder()

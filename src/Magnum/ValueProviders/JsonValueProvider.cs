@@ -27,7 +27,16 @@ namespace Magnum.ValueProviders
 
 		public JsonValueProvider(Stream bodyStream)
 		{
-			_provider = CreateDictionaryFromJson(bodyStream);
+			object data = GetDeserializedObject(bodyStream);
+
+			_provider = CreateDictionaryFromJson(data);
+		}
+
+		public JsonValueProvider(string text)
+		{
+			object data = new JavaScriptSerializer().DeserializeObject(text);
+
+			_provider = CreateDictionaryFromJson(data);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
@@ -45,10 +54,8 @@ namespace Magnum.ValueProviders
 			_provider.GetAll(valueAction);
 		}
 
-		static DictionaryValueProvider CreateDictionaryFromJson(Stream inputStream)
+		static DictionaryValueProvider CreateDictionaryFromJson(object data)
 		{
-			object data = GetDeserializedObject(inputStream);
-
 			var backingStore = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 			AddValueToDictionary(backingStore, "", data);

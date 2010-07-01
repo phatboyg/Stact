@@ -13,7 +13,7 @@
 namespace Magnum.Serialization.FastText
 {
 	using System;
-	using System.Linq.Expressions;
+
 
 	public interface FastTextTypeSerializer
 	{
@@ -21,23 +21,21 @@ namespace Magnum.Serialization.FastText
 		T Deserialize<T>(string text);
 	}
 
+
 	public class FastTextTypeSerializer<T> :
 		FastTextTypeSerializer,
 		TypeSerializer<T>
 	{
-		private readonly TypeWriter<object> _serializer;
-		private readonly TypeSerializer<T> _typeSerializer;
-		private readonly TypeReader<T> _deserializer;
+		readonly TypeReader<T> _deserializer;
+		readonly TypeWriter<object> _serializer;
+		readonly TypeSerializer<T> _typeSerializer;
 
 		public FastTextTypeSerializer(TypeSerializer<T> typeSerializer)
 		{
 			_typeSerializer = typeSerializer;
 
 			TypeWriter<T> serialize = typeSerializer.GetWriter();
-			_serializer = (value, output) =>
-				{
-					serialize((T) value, output);
-				};
+			_serializer = (value, output) => { serialize((T)value, output); };
 
 			_deserializer = typeSerializer.GetReader();
 		}

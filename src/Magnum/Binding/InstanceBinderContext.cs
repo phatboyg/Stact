@@ -56,7 +56,7 @@ namespace Magnum.Binding
 		{
 			get
 			{
-				const string separator = "_";
+				const string separator = ".";
 
 				string value = string.Join(separator,
 					_propertyStack
