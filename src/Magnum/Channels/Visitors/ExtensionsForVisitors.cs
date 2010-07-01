@@ -10,18 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-using System.Diagnostics;
-using Magnum.Pipeline.Segments;
-using Magnum.RulesEngine;
-using Magnum.RulesEngine.Visualizers;
-using Microsoft.VisualStudio.DebuggerVisualizers;
+namespace Magnum.Channels.Visitors
+{
+	using Reflection;
 
-[assembly : DebuggerVisualizer(typeof (RulesEngineDebugVisualizer),
-	typeof (VisualizerObjectSource),
-	Target = typeof (MagnumRulesEngine),
-	Description = "Rules Engine Graph Visualizer")]
 
-[assembly : DebuggerVisualizer(typeof (PipelineDebugVisualizer),
-	typeof (VisualizerObjectSource),
-	Description = "Pipeline Graph Visualizer",
-	Target = typeof (InputSegment))]
+	public static class ExtensionsForVisitors
+	{
+		public static ChannelGraphData GetGraphData(this Channel channel)
+		{
+			var visitor = new GraphChannelVisitor();
+
+			visitor.FastInvoke("Visit", channel);
+
+			return visitor.GetGraphData();
+		}
+	}
+}

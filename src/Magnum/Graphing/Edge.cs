@@ -12,6 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Graphing
 {
+	using System;
+
+
+	[Serializable]
 	public class Edge
 	{
 		public Edge(Vertex from, Vertex to, string title)

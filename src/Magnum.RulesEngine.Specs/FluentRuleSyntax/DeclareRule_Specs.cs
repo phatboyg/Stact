@@ -18,7 +18,7 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 	using DSL;
 	using Events;
 	using NUnit.Framework;
-	using Visualizers;
+
 
 	[TestFixture]
 	public class When_declaring_a_rule_using_the_domain_specific_language

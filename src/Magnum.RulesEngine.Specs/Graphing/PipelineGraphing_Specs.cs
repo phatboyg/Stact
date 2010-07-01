@@ -14,10 +14,11 @@ namespace Magnum.RulesEngine.Specs.Graphing
 {
 	using System.IO;
 	using System.Reflection;
+	using Magnum.Visualizers.Pipeline;
 	using NUnit.Framework;
 	using Pipeline;
 	using Pipeline.Segments;
-	using Visualizers;
+
 
 	[TestFixture]
 	public class Generating_a_graph_from_a_pipeline

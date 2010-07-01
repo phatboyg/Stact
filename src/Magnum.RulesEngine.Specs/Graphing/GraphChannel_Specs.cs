@@ -15,31 +15,47 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	using System.IO;
 	using System.Reflection;
 	using Channels;
+	using Channels.Visitors;
 	using Fibers;
+	using Magnum.Visualizers;
+	using Magnum.Visualizers.Channels;
 	using NUnit.Framework;
-	using Visualizers;
+
 
 	[TestFixture]
 	public class GraphChannel_Specs
 	{
+		ChannelAdapter _channel;
+
 		[Test]
 		public void Should_contain_all_nodes()
 		{
-			var channel = new ChannelAdapter();
-			channel.Connect(x =>
-			{ 
-				x.AddConsumerOf<SomeEvent>().UsingConsumer(m => { });
-				x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
-				x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
-				x.AddConsumerOf<SomeEvent>().UsingInstance().Of<MyConsumer>(c => c.Input);
-			});
-
 			var generator = new ChannelGraphGenerator();
 
 			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
-			generator.SaveGraphToFile(channel, 2560, 1920, filename);
+			generator.SaveGraphToFile(_channel, 2560, 1920, filename);
 		}
+
+		[Test]
+		public void Should_launch_correctly_in_the_debug_visualizer()
+		{
+			ChannelDebugVisualizer.TestShowVisualizer(_channel.GetGraphData());
+		}
+
+		[SetUp]
+		public void Setup()
+		{
+			_channel = new ChannelAdapter();
+			_channel.Connect(x =>
+				{ 
+					x.AddConsumerOf<SomeEvent>().UsingConsumer(m => { });
+					x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
+					x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
+					x.AddConsumerOf<SomeEvent>().UsingInstance().Of<MyConsumer>(c => c.Input);
+				});
+		}
+
 
 		private class MyConsumer
 		{

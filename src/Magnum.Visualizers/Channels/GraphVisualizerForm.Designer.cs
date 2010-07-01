@@ -1,6 +1,6 @@
-﻿namespace Magnum.RulesEngine.Visualizers
+﻿namespace Magnum.Visualizers.Channels
 {
-	partial class RulesEngineVisualizerForm
+	partial class GraphVisualizerForm
 	{
 		/// <summary>
 		/// Required designer variable.

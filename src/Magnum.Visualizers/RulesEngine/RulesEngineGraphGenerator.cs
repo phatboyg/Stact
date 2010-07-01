@@ -10,43 +10,43 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.RulesEngine
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
-	using Extensions;
-	using Graphing;
+	using Magnum.RulesEngine;
+	using Magnum.RulesEngine.ExecutionModel;
+	using Magnum.Extensions;
+	using Magnum.Graphing;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
-	using Pipeline;
-	using Pipeline.Segments;
-	using Pipeline.Visitors;
 	using QuickGraph;
 	using QuickGraph.Glee;
 
-	public class PipelineGraphGenerator : 
-		GraphGenerator
+
+	public class RulesEngineGraphGenerator
 	{
 		private static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
 
-		static PipelineGraphGenerator()
+		static RulesEngineGraphGenerator()
 		{
 			_colors = new Dictionary<Type, Microsoft.Glee.Drawing.Color>
 				{
-					{typeof (InputSegment), Microsoft.Glee.Drawing.Color.Green},
-					{typeof (FilterSegment), Microsoft.Glee.Drawing.Color.Yellow},
-					{typeof (RecipientListSegment), Microsoft.Glee.Drawing.Color.Orange},
-					{typeof (EndSegment), Microsoft.Glee.Drawing.Color.Red},
-					{typeof (MessageConsumerSegment), Microsoft.Glee.Drawing.Color.Blue},
+					{typeof (AlphaNode<>), Microsoft.Glee.Drawing.Color.Red},
+					{typeof (TypeNode<>), Microsoft.Glee.Drawing.Color.Orange},
+					{typeof (JoinNode<>), Microsoft.Glee.Drawing.Color.Green},
+					{typeof (ConditionNode<>), Microsoft.Glee.Drawing.Color.Blue},
+					{typeof (ActionNode<>), Microsoft.Glee.Drawing.Color.Teal},
+					{typeof (ConstantNode<>), Microsoft.Glee.Drawing.Color.Magenta},
 				};
 		}
 
-		public void SaveGraphToFile(Pipe pipe, int width, int height, string filename)
+		public void SaveGraphToFile(RulesEngine engine, int width, int height, string filename)
 		{
-			Graph gleeGraph = CreateGraph(pipe);
+			Graph gleeGraph = CreateGraph(engine);
 
 			var renderer = new GraphRenderer(gleeGraph);
 			renderer.CalculateLayout();
@@ -59,20 +59,16 @@ namespace Magnum.RulesEngine.Visualizers
 			bitmap.Save(filename, ImageFormat.Png);
 		}
 
-		public Graph CreateGraph(Pipe pipe)
-		{
-			var visitor = new GraphPipelineVisitor();
-			visitor.Visit(pipe);
 
-			return CreateGraph(visitor.Vertices, visitor.Edges);
-		}
-
-		public Graph CreateGraph(IEnumerable<Vertex> vertices, IEnumerable<Graphing.Edge> edges)
+		public Graph CreateGraph(RulesEngine engine)
 		{
+			var visitor = new GraphRulesEngineVisitor();
+			engine.Visit(visitor);
+
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
 
-			vertices.Each(x => graph.AddVertex(x));
-			edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
+			visitor.Vertices.Each(x => graph.AddVertex(x));
+			visitor.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
 
 			GleeGraphPopulator<Vertex, Edge<Vertex>> glee = graph.CreateGleePopulator();
 
@@ -84,6 +80,7 @@ namespace Magnum.RulesEngine.Visualizers
 
 			return gleeGraph;
 		}
+
 
 		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
@@ -99,10 +96,12 @@ namespace Magnum.RulesEngine.Visualizers
 			args.Node.Attr.Padding = 1.2;
 		}
 
+
 		private static Microsoft.Glee.Drawing.Color GetVertexColor(Type type)
 		{
 			return _colors.Retrieve(type, () => Microsoft.Glee.Drawing.Color.Black);
 		}
+
 
 		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{

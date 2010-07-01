@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.StateMachine
 {
 	using System;
 	using System.Collections.Generic;
@@ -18,14 +18,16 @@ namespace Magnum.RulesEngine.Visualizers
 	using System.Drawing;
 	using System.Drawing.Imaging;
 	using System.Linq;
-	using Extensions;
-	using Graphing;
+	using Magnum.Extensions;
+	using Magnum.Graphing;
+	using Magnum.Visualizers;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Reflection;
-	using StateMachine;
+	using Magnum.Reflection;
+	using Magnum.StateMachine;
+
 
 	public class StateMachineGraphGenerator :
 		GraphGenerator

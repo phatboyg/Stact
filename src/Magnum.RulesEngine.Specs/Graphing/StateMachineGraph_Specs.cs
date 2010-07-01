@@ -3,9 +3,10 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	using System.IO;
 	using System.Reflection;
 	using Magnum.Specs.StateMachine;
+	using Magnum.Visualizers.StateMachine;
 	using NUnit.Framework;
 	using StateMachine;
-	using Visualizers;
+
 
 	[TestFixture]
 	public class StateMachineGraph_Specs

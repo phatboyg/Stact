@@ -10,32 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.Channels
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
-	using Channels;
-	using Channels.Visitors;
 	using Extensions;
 	using Graphing;
+	using Magnum.Channels;
+	using Magnum.Channels.Visitors;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
 	using Reflection;
 
-	public class ChannelGraphGenerator :
-		GraphGenerator
+
+	public class ChannelGraphGenerator
 	{
-		public Graph CreateGraph(IEnumerable<Vertex> vertices, IEnumerable<Graphing.Edge> edges)
+		public Graph CreateGraph(ChannelGraphData data)
 		{
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
 
-			vertices.Each(x => graph.AddVertex(x));
-			edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
+			data.Vertices.Each(x => graph.AddVertex(x));
+			data.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
 
 			GleeGraphPopulator<Vertex, Edge<Vertex>> glee = graph.CreateGleePopulator();
 
@@ -50,7 +49,12 @@ namespace Magnum.RulesEngine.Visualizers
 
 		public void SaveGraphToFile(Channel channel, int width, int height, string filename)
 		{
-			Graph gleeGraph = CreateGraph(channel);
+			SaveGraphToFile(channel.GetGraphData(), width, height, filename);
+		}
+
+		public void SaveGraphToFile(ChannelGraphData data, int width, int height, string filename)
+		{
+			Graph gleeGraph = CreateGraph(data);
 
 			var renderer = new GraphRenderer(gleeGraph);
 			renderer.CalculateLayout();
@@ -63,16 +67,7 @@ namespace Magnum.RulesEngine.Visualizers
 			bitmap.Save(filename, ImageFormat.Png);
 		}
 
-		public Graph CreateGraph(Channel channel)
-		{
-			var visitor = new GraphChannelVisitor();
-
-			visitor.FastInvoke("Visit", channel);
-
-			return CreateGraph(visitor.Vertices, visitor.Edges);
-		}
-
-		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
+		void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
 			args.Node.Attr.Shape = Shape.Box;
 			args.Node.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Black;
@@ -85,7 +80,7 @@ namespace Magnum.RulesEngine.Visualizers
 			ApplyVertexStyle(args.Node.Attr, args.Vertex.VertexType);
 		}
 
-		private static void ApplyVertexStyle(NodeAttr attr, Type type)
+		static void ApplyVertexStyle(NodeAttr attr, Type type)
 		{
 			if (type.IsGenericType)
 			{
@@ -114,11 +109,9 @@ namespace Magnum.RulesEngine.Visualizers
 			}
 			else
 			{
-				if (type == typeof (ChannelAdapter))
-				{
+				if (type == typeof(ChannelAdapter))
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Orange;
-				}
-				else if (type == typeof (BroadcastChannel))
+				else if (type == typeof(BroadcastChannel))
 				{
 					attr.Shape = Shape.Octagon;
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Yellow;
@@ -127,7 +120,7 @@ namespace Magnum.RulesEngine.Visualizers
 			}
 		}
 
-		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
+		static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
 			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.Name;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";

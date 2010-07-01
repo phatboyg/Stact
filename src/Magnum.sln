@@ -14,13 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.RulesEngine", "Magnu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.RulesEngine.Specs", "Magnum.RulesEngine.Specs\Magnum.RulesEngine.Specs.csproj", "{41E2299B-973B-462D-AA77-D6C1DDA0332D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.RulesEngine.Visualizers", "Magnum.RulesEngine.Visualizers\Magnum.RulesEngine.Visualizers.csproj", "{DB58A632-0D01-475E-9C20-A5457653887A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Logging.Log4Net", "Magnum.Logging.Log4Net\Magnum.Logging.Log4Net.csproj", "{66A05739-70C4-47D7-B7D0-69C038864457}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Web", "Magnum.Web\Magnum.Web.csproj", "{716A460C-0F8C-4336-8448-5ED8C24F31EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Benchmarks", "Magnum.Benchmarks\Magnum.Benchmarks.csproj", "{28B956AA-E6BB-4B8D-9B04-8BE2F45F6666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Visualizers", "Magnum.Visualizers\Magnum.Visualizers.csproj", "{DB58A632-0D01-475E-9C20-A5457653887A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,16 +102,6 @@ Global
 		{41E2299B-973B-462D-AA77-D6C1DDA0332D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{41E2299B-973B-462D-AA77-D6C1DDA0332D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{41E2299B-973B-462D-AA77-D6C1DDA0332D}.Release|x86.ActiveCfg = Release|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|x86.ActiveCfg = Release|Any CPU
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A05739-70C4-47D7-B7D0-69C038864457}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -142,6 +132,16 @@ Global
 		{28B956AA-E6BB-4B8D-9B04-8BE2F45F6666}.Release|Mixed Platforms.Build.0 = Release|x86
 		{28B956AA-E6BB-4B8D-9B04-8BE2F45F6666}.Release|x86.ActiveCfg = Release|x86
 		{28B956AA-E6BB-4B8D-9B04-8BE2F45F6666}.Release|x86.Build.0 = Release|x86
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DB58A632-0D01-475E-9C20-A5457653887A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

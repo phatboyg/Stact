@@ -8,8 +8,8 @@
     <ProjectGuid>{DB58A632-0D01-475E-9C20-A5457653887A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Magnum.RulesEngine.Visualizers</RootNamespace>
-    <AssemblyName>Magnum.RulesEngine.Visualizers</AssemblyName>
+    <RootNamespace>Magnum.Visualizers</RootNamespace>
+    <AssemblyName>Magnum.Visualizers</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,7 +67,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Glee\Microsoft.GLEE.GraphViewerGDI.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="QuickGraph, Version=3.3.40824.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\QuickGraph\QuickGraph.dll</HintPath>
@@ -88,30 +89,38 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="ChannelGraphGenerator.cs" />
-    <Compile Include="PipelineVisualizerForm.cs">
+    <Compile Include="Channels\ChannelDebugVisualizer.cs" />
+    <Compile Include="Channels\ChannelGraphGenerator.cs" />
+    <Compile Include="Channels\ChannelVisualizerObjectSource.cs" />
+    <Compile Include="Pipeline\PipelineVisualizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PipelineVisualizerForm.Designer.cs">
+    <Compile Include="Pipeline\PipelineVisualizerForm.Designer.cs">
       <DependentUpon>PipelineVisualizerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphGenerator.cs" />
-    <Compile Include="PipelineDebugVisualizer.cs" />
-    <Compile Include="PipelineGraphGenerator.cs" />
-    <Compile Include="RulesEngineGraphGenerator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RulesEngineDebugVisualizer.cs" />
-    <Compile Include="RulesEngineVisualizerForm.cs">
+    <Compile Include="Pipeline\PipelineDebugVisualizer.cs" />
+    <Compile Include="Pipeline\PipelineGraphGenerator.cs" />
+    <Compile Include="Channels\GraphVisualizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RulesEngineVisualizerForm.Designer.cs">
+    <Compile Include="Channels\GraphVisualizerForm.Designer.cs">
+      <DependentUpon>GraphVisualizerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RulesEngine\RulesEngineGraphGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RulesEngine\RulesEngineDebugVisualizer.cs" />
+    <Compile Include="RulesEngine\RulesEngineVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RulesEngine\RulesEngineVisualizerForm.Designer.cs">
       <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StateMachineGraphGenerator.cs" />
-    <Compile Include="StateMachineVisualizerForm.cs">
+    <Compile Include="StateMachine\StateMachineGraphGenerator.cs" />
+    <Compile Include="StateMachine\StateMachineVisualizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StateMachineVisualizerForm.designer.cs">
+    <Compile Include="StateMachine\StateMachineVisualizerForm.designer.cs">
       <DependentUpon>StateMachineVisualizerForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -1,6 +1,6 @@
-﻿namespace Magnum.RulesEngine.Visualizers
+﻿namespace Magnum.Visualizers.StateMachine
 {
-	partial class PipelineVisualizerForm
+	partial class StateMachineVisualizerForm
 	{
 		/// <summary>
 		/// Required designer variable.

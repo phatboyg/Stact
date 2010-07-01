@@ -10,22 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.Channels
 {
 	using System;
 	using System.Windows.Forms;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
-	using Magnum.StateMachine;
 
-	public partial class StateMachineVisualizerForm : Form
+
+	public partial class GraphVisualizerForm :
+		Form
 	{
-		private readonly StateMachine _machine;
+		readonly Graph _graph;
 
-		public StateMachineVisualizerForm(StateMachine machine)
+		public GraphVisualizerForm(Graph graph, string caption)
 		{
-			_machine = machine;
+			_graph = graph;
+
 			InitializeComponent();
+
+			Text = caption;
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -37,21 +41,15 @@ namespace Magnum.RulesEngine.Visualizers
 			Controls.Add(viewer);
 		}
 
-		private GViewer CreateGraphControl()
+		GViewer CreateGraphControl()
 		{
-			var viewer = new GViewer();
-			viewer.Dock = DockStyle.Fill;
-			viewer.Graph = CreateGraphForObject();
+			var viewer = new GViewer
+				{
+					Dock = DockStyle.Fill,
+					Graph = _graph
+				};
+
 			return viewer;
-		}
-
-		private Graph CreateGraphForObject()
-		{
-			return new StateMachineGraphGenerator().CreateGraph(_machine);
-		}
-
-		private void RulesEngineVisualizerForm_Load(object sender, EventArgs e)
-		{
 		}
 	}
 }

@@ -20,22 +20,16 @@ namespace Magnum.Channels.Visitors
 
 
 	public class GraphChannelVisitor :
-		ChannelVisitor,
-		GraphProvider
+		ChannelVisitor
 	{
 		readonly List<Edge> _edges = new List<Edge>();
 		readonly Stack<Vertex> _stack = new Stack<Vertex>();
 		readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
 		Vertex _current;
 
-		public IEnumerable<Vertex> Vertices
+		public ChannelGraphData GetGraphData()
 		{
-			get { return _vertices.Values; }
-		}
-
-		public IEnumerable<Edge> Edges
-		{
-			get { return _edges; }
+			return new ChannelGraphData(_vertices.Values, _edges);
 		}
 
 		Vertex GetVertex(int key, Func<string> getTitle, Type nodeType, Type objectType)

@@ -1,6 +1,6 @@
-﻿namespace Magnum.RulesEngine.Visualizers
+﻿namespace Magnum.Visualizers.RulesEngine
 {
-	partial class StateMachineVisualizerForm
+	partial class RulesEngineVisualizerForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -36,8 +36,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(633, 339);
 			this.Name = "PipelineVisualizerForm";
-			this.Text = "Pipeline Visualizer";
-			this.Load += new System.EventHandler(this.RulesEngineVisualizerForm_Load);
+			this.Text = "Rules Engine Visualizer";
 			this.ResumeLayout(false);
 
 		}

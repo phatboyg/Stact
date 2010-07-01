@@ -10,63 +10,47 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.Pipeline
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
-	using ExecutionModel;
 	using Extensions;
 	using Graphing;
+	using Magnum.Pipeline;
+	using Magnum.Pipeline.Segments;
+	using Magnum.Pipeline.Visitors;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
 
-	public class RulesEngineGraphGenerator
-	{
-		private static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
 
-		static RulesEngineGraphGenerator()
+	public class PipelineGraphGenerator :
+		GraphGenerator
+	{
+		static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
+
+		static PipelineGraphGenerator()
 		{
 			_colors = new Dictionary<Type, Microsoft.Glee.Drawing.Color>
 				{
-					{typeof (AlphaNode<>), Microsoft.Glee.Drawing.Color.Red},
-					{typeof (TypeNode<>), Microsoft.Glee.Drawing.Color.Orange},
-					{typeof (JoinNode<>), Microsoft.Glee.Drawing.Color.Green},
-					{typeof (ConditionNode<>), Microsoft.Glee.Drawing.Color.Blue},
-					{typeof (ActionNode<>), Microsoft.Glee.Drawing.Color.Teal},
-					{typeof (ConstantNode<>), Microsoft.Glee.Drawing.Color.Magenta},
+					{typeof(InputSegment), Microsoft.Glee.Drawing.Color.Green},
+					{typeof(FilterSegment), Microsoft.Glee.Drawing.Color.Yellow},
+					{typeof(RecipientListSegment), Microsoft.Glee.Drawing.Color.Orange},
+					{typeof(EndSegment), Microsoft.Glee.Drawing.Color.Red},
+					{typeof(MessageConsumerSegment), Microsoft.Glee.Drawing.Color.Blue},
 				};
 		}
 
-		public void SaveGraphToFile(RulesEngine engine, int width, int height, string filename)
+		public Graph CreateGraph(IEnumerable<Vertex> vertices, IEnumerable<Graphing.Edge> edges)
 		{
-			Graph gleeGraph = CreateGraph(engine);
-
-			var renderer = new GraphRenderer(gleeGraph);
-			renderer.CalculateLayout();
-
-			var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			renderer.Render(bitmap);
-
-			Trace.WriteLine("Saving graph to " + filename);
-
-			bitmap.Save(filename, ImageFormat.Png);
-		}
-
-
-		public Graph CreateGraph(RulesEngine engine)
-		{
-			var visitor = new GraphRulesEngineVisitor();
-			engine.Visit(visitor);
-
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
 
-			visitor.Vertices.Each(x => graph.AddVertex(x));
-			visitor.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
+			vertices.Each(x => graph.AddVertex(x));
+			edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
 
 			GleeGraphPopulator<Vertex, Edge<Vertex>> glee = graph.CreateGleePopulator();
 
@@ -79,8 +63,30 @@ namespace Magnum.RulesEngine.Visualizers
 			return gleeGraph;
 		}
 
+		public void SaveGraphToFile(Pipe pipe, int width, int height, string filename)
+		{
+			Graph gleeGraph = CreateGraph(pipe);
 
-		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
+			var renderer = new GraphRenderer(gleeGraph);
+			renderer.CalculateLayout();
+
+			var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+			renderer.Render(bitmap);
+
+			Trace.WriteLine("Saving graph to " + filename);
+
+			bitmap.Save(filename, ImageFormat.Png);
+		}
+
+		public Graph CreateGraph(Pipe pipe)
+		{
+			var visitor = new GraphPipelineVisitor();
+			visitor.Visit(pipe);
+
+			return CreateGraph(visitor.Vertices, visitor.Edges);
+		}
+
+		void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
 			Microsoft.Glee.Drawing.Color color = GetVertexColor(args.Vertex.VertexType);
 
@@ -94,14 +100,12 @@ namespace Magnum.RulesEngine.Visualizers
 			args.Node.Attr.Padding = 1.2;
 		}
 
-
-		private static Microsoft.Glee.Drawing.Color GetVertexColor(Type type)
+		static Microsoft.Glee.Drawing.Color GetVertexColor(Type type)
 		{
 			return _colors.Retrieve(type, () => Microsoft.Glee.Drawing.Color.Black);
 		}
 
-
-		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
+		static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
 			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.Name;
 			e.GEdge.EdgeAttr.FontName = "Tahoma";

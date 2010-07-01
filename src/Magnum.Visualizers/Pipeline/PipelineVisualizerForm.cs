@@ -10,20 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.Pipeline
 {
 	using System;
 	using System.Windows.Forms;
+	using Magnum.Pipeline;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 
-	public partial class RulesEngineVisualizerForm : Form
-	{
-		private readonly RulesEngine _engine;
 
-		public RulesEngineVisualizerForm(RulesEngine engine)
+	public partial class PipelineVisualizerForm : Form
+	{
+		readonly Pipe _pipeline;
+
+		public PipelineVisualizerForm(Pipe pipeline)
 		{
-			_engine = engine;
+			_pipeline = pipeline;
 			InitializeComponent();
 		}
 
@@ -36,7 +38,7 @@ namespace Magnum.RulesEngine.Visualizers
 			Controls.Add(viewer);
 		}
 
-		private GViewer CreateGraphControl()
+		GViewer CreateGraphControl()
 		{
 			var viewer = new GViewer();
 			viewer.Dock = DockStyle.Fill;
@@ -44,9 +46,13 @@ namespace Magnum.RulesEngine.Visualizers
 			return viewer;
 		}
 
-		private Graph CreateGraphForObject()
+		Graph CreateGraphForObject()
 		{
-			return new RulesEngineGraphGenerator().CreateGraph(_engine);
+			return new PipelineGraphGenerator().CreateGraph(_pipeline);
+		}
+
+		void RulesEngineVisualizerForm_Load(object sender, EventArgs e)
+		{
 		}
 	}
 }

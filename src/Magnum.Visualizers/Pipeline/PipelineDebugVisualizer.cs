@@ -10,12 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.RulesEngine.Visualizers
+namespace Magnum.Visualizers.Pipeline
 {
 	using System;
 	using System.Windows.Forms;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
-	using Pipeline;
+	using Magnum.Pipeline;
+
 
 	[Serializable]
 	public class PipelineDebugVisualizer :

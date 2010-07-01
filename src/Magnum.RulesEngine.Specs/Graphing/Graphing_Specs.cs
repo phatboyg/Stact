@@ -16,10 +16,11 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Magnum.Visualizers.RulesEngine;
 	using Model;
 	using NUnit.Framework;
 	using SemanticModel;
-	using Visualizers;
+
 
 	[TestFixture]
 	public class Graphing_an_existing_engine
