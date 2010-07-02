@@ -22,15 +22,12 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// This version invokes a simple action that accepts no arguments or only the base RuleContext
 	/// without a generic specialization on the argument
 	/// </summary>
-	[Serializable]
 	public class ActionNode :
 		Activation,
 		Node
 	{
-		[NonSerialized]
 		private readonly Action<RuleContext> _eval;
 
-		[NonSerialized]
 		private readonly Expression<Action<RuleContext>> _expression;
 
 		public ActionNode(Expression<Action> expression)
@@ -95,15 +92,12 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// This version invokes a simple action that accepts no arguments or only the base RuleContext
 	/// without a generic specialization on the argument
 	/// </summary>
-	[Serializable]
 	public class ActionNode<T> :
 		Node,
 		Activation<T>
 	{
-		[NonSerialized]
 		private readonly Action<RuleContext<T>> _eval;
 
-		[NonSerialized]
 		private readonly Expression<Action<RuleContext<T>>> _expression;
 
 		public ActionNode(Expression<Action<RuleContext<T>>> expression)

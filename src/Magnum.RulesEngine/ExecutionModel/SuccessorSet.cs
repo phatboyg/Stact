@@ -18,7 +18,6 @@ namespace Magnum.RulesEngine.ExecutionModel
 	using System.Linq;
 	using Extensions;
 
-	[Serializable]
 	public class SuccessorSet<T> :
 		IEnumerable<Activation<T>>,
 		Node

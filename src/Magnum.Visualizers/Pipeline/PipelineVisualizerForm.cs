@@ -48,7 +48,7 @@ namespace Magnum.Visualizers.Pipeline
 
 		Graph CreateGraphForObject()
 		{
-			return new PipelineGraphGenerator().CreateGraph(_pipeline);
+			return new PipelineGraphGenerator().CreateGraph(_pipeline.GetGraphData());
 		}
 
 		void RulesEngineVisualizerForm_Load(object sender, EventArgs e)

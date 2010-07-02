@@ -44,9 +44,9 @@ namespace Magnum.Visualizers.RulesEngine
 				};
 		}
 
-		public void SaveGraphToFile(RulesEngine engine, int width, int height, string filename)
+		public void SaveGraphToFile(RulesEngineGraphData data, int width, int height, string filename)
 		{
-			Graph gleeGraph = CreateGraph(engine);
+			Graph gleeGraph = CreateGraph(data);
 
 			var renderer = new GraphRenderer(gleeGraph);
 			renderer.CalculateLayout();
@@ -60,15 +60,12 @@ namespace Magnum.Visualizers.RulesEngine
 		}
 
 
-		public Graph CreateGraph(RulesEngine engine)
+		public Graph CreateGraph(RulesEngineGraphData data)
 		{
-			var visitor = new GraphRulesEngineVisitor();
-			engine.Visit(visitor);
-
 			var graph = new AdjacencyGraph<Vertex, Edge<Vertex>>();
 
-			visitor.Vertices.Each(x => graph.AddVertex(x));
-			visitor.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
+			data.Vertices.Each(x => graph.AddVertex(x));
+			data.Edges.Each(x => graph.AddEdge(new Edge<Vertex>(x.From, x.To)));
 
 			GleeGraphPopulator<Vertex, Edge<Vertex>> glee = graph.CreateGleePopulator();
 

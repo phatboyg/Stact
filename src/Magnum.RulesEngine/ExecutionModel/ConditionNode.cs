@@ -20,15 +20,12 @@ namespace Magnum.RulesEngine.ExecutionModel
 	/// A generic condition that has a single input type (alpha node)
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[Serializable]
 	public class ConditionNode<T> :
 		Node,
 		Activation<T>
 	{
-		[NonSerialized]
 		private readonly Func<T, bool> _eval;
 
-		[NonSerialized]
 		private readonly Expression<Func<T, bool>> _expression;
 
 		private readonly SuccessorSet<T> _successors;

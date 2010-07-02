@@ -27,7 +27,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 		{
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void Should_contain_all_nodes()
 
 		{
@@ -37,13 +37,13 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			FilterSegment filter = PipeSegment.Filter<object>(recipientList);
 			Pipe input = PipeSegment.Input(filter);
 
-            var generator = new PipelineGraphGenerator();
+            //var generator = new PipelineGraphGenerator();
 
-			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
+			//string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
-			generator.SaveGraphToFile(input, 2560, 1920, filename);
+			//generator.SaveGraphToFile(input.GetGraphData(), 2560, 1920, filename);
 
-			//PipelineDebugVisualizer.TestShowVisualizer(input);
+			PipelineDebugVisualizer.TestShowVisualizer(input.GetGraphData());
 
 		}
 	}

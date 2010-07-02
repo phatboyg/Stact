@@ -75,7 +75,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			generator.SaveGraphToFile(_channel, 2560, 1920, filename);
 		}
 
-		[Test]
+		[Test, Explicit]
 		public void Should_launch_correctly_in_the_debug_visualizer()
 		{
 			ChannelDebugVisualizer.TestShowVisualizer(_channel.GetGraphData());

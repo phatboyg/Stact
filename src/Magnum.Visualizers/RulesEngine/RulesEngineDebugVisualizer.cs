@@ -14,7 +14,8 @@ namespace Magnum.Visualizers.RulesEngine
 {
 	using System;
 	using System.Windows.Forms;
-	using Magnum.RulesEngine;
+	using Magnum.RulesEngine.ExecutionModel;
+	using Microsoft.Glee.Drawing;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
 
 
@@ -26,23 +27,23 @@ namespace Magnum.Visualizers.RulesEngine
 		{
 			try
 			{
-				var engine = (RulesEngine) objectProvider.GetObject();
+				var data = (RulesEngineGraphData)objectProvider.GetObject();
 
-				using (var form = new RulesEngineVisualizerForm(engine))
-				{
+				Graph graph = new RulesEngineGraphGenerator().CreateGraph(data);
+
+				using (var form = new GraphVisualizerForm(graph, "Rules Engine Visualizer"))
 					windowService.ShowDialog(form);
-				}
 			}
 			catch (InvalidCastException)
 			{
 				MessageBox.Show("The selected data is not of a type compatible with this visualizer.",
-					GetType().ToString());
+				                GetType().ToString());
 			}
 		}
 
-		public static void TestShowVisualizer(RulesEngine rulesEngine)
+		public static void TestShowVisualizer(RulesEngineGraphData data)
 		{
-			var visualizerHost = new VisualizerDevelopmentHost(rulesEngine, typeof (RulesEngineDebugVisualizer));
+			var visualizerHost = new VisualizerDevelopmentHost(data, typeof(RulesEngineDebugVisualizer));
 			visualizerHost.ShowVisualizer();
 		}
 	}

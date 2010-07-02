@@ -14,8 +14,9 @@ namespace Magnum.Visualizers.Pipeline
 {
 	using System;
 	using System.Windows.Forms;
+	using Magnum.Pipeline.Visitors;
+	using Microsoft.Glee.Drawing;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
-	using Magnum.Pipeline;
 
 
 	[Serializable]
@@ -26,23 +27,23 @@ namespace Magnum.Visualizers.Pipeline
 		{
 			try
 			{
-				var engine = (Pipe) objectProvider.GetObject();
+				var data = (PipelineGraphData)objectProvider.GetObject();
 
-				using (var form = new PipelineVisualizerForm(engine))
-				{
+				Graph graph = new PipelineGraphGenerator().CreateGraph(data);
+
+				using (var form = new GraphVisualizerForm(graph, "Pipeline Visualizer"))
 					windowService.ShowDialog(form);
-				}
 			}
 			catch (InvalidCastException)
 			{
 				MessageBox.Show("The selected data is not of a type compatible with this visualizer.",
-					GetType().ToString());
+				                GetType().ToString());
 			}
 		}
 
-		public static void TestShowVisualizer(Pipe pipeline)
+		public static void TestShowVisualizer(PipelineGraphData data)
 		{
-			var visualizerHost = new VisualizerDevelopmentHost(pipeline, typeof (PipelineDebugVisualizer));
+			var visualizerHost = new VisualizerDevelopmentHost(data, typeof(PipelineDebugVisualizer));
 			visualizerHost.ShowVisualizer();
 		}
 	}

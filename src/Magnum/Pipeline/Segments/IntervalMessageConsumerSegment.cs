@@ -16,7 +16,6 @@ namespace Magnum.Pipeline.Segments
 	using System.Collections.Generic;
 	using Fibers;
 
-	[Serializable]
 	public abstract class IntervalMessageConsumerSegment :
 		PipeSegment
 	{
@@ -29,24 +28,19 @@ namespace Magnum.Pipeline.Segments
 		public Type ConsumerType { get; private set; }
 	}
 
-	[Serializable]
 	public class IntervalMessageConsumerSegment<TMessage> :
 		IntervalMessageConsumerSegment
 		where TMessage : class
 	{
-		[NonSerialized]
 		private readonly Func<MessageConsumer<IList<TMessage>>> _getConsumer;
 
 		private readonly int _interval;
 		private readonly object _lock = new object();
 
-		[NonSerialized]
 		private readonly Fiber _fiber = new ThreadPoolFiber();
 
-		[NonSerialized]
 		private readonly Scheduler _scheduler = new TimerScheduler(new ThreadPoolFiber());
 
-		[NonSerialized]
 		private List<TMessage> _pending;
 
 		public IntervalMessageConsumerSegment(TimeSpan interval, MessageConsumer<IList<TMessage>> consumer)

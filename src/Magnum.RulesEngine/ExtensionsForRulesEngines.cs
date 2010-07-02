@@ -12,38 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine
 {
-	using System.Collections.Generic;
 	using ExecutionModel;
-	using Extensions;
-	using SemanticModel;
 
-	public class MagnumRulesEngine :
-		RulesEngine
+
+	public static class ExtensionsForRulesEngines
 	{
-		private TypeDispatchNode _root = new TypeDispatchNode();
-
-
-		public bool Visit(NodeVisitor visitor)
+		public static RulesEngineGraphData GetGraphData(this RulesEngine engine)
 		{
-			return visitor.Visit(this, () => _root.Visit(visitor));
-		}
+			var visitor = new GraphRulesEngineVisitor();
+			engine.Visit(visitor);
 
-		public void Assert<T>(RuleContext<T> context)
-		{
-			_root.Activate(context);
-		}
-
-		public void Add(params RuleDeclaration[] rules)
-		{
-			IEnumerable<RuleDeclaration> all = rules;
-			Add(all);
-		}
-
-		public void Add(IEnumerable<RuleDeclaration> rules)
-		{
-			var compiler = new DeclarationCompiler();
-
-			rules.Each(rule => _root = compiler.Add(_root, rule));
+			return visitor.GetGraphData();
 		}
 	}
 }

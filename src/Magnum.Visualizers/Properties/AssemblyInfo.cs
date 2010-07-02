@@ -19,13 +19,12 @@ using Magnum.Visualizers.Channels;
 using Magnum.Visualizers.Pipeline;
 using Magnum.Visualizers.RulesEngine;
 using Magnum.Visualizers.StateMachine;
-using Microsoft.VisualStudio.DebuggerVisualizers;
 
-[assembly: DebuggerVisualizer(typeof(RulesEngineDebugVisualizer), typeof(VisualizerObjectSource),
+[assembly: DebuggerVisualizer(typeof(RulesEngineDebugVisualizer), typeof(RulesEngineVisualizerObjectSource),
 	Target = typeof(MagnumRulesEngine),
-	Description = "Rules Engine Graph Visualizer")]
-[assembly: DebuggerVisualizer(typeof(PipelineDebugVisualizer), typeof(VisualizerObjectSource),
-	Description = "Pipeline Graph Visualizer",
+	Description = "Rules Engine Visualizer")]
+[assembly: DebuggerVisualizer(typeof(PipelineDebugVisualizer), typeof(PipelineVisualizerObjectSource),
+	Description = "Pipeline Visualizer",
 	Target = typeof(InputSegment))]
 [assembly: DebuggerVisualizer(typeof(ChannelDebugVisualizer), typeof(ChannelVisualizerObjectSource),
 	Description = "Channel Visualizer",

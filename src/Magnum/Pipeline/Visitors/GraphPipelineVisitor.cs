@@ -18,22 +18,18 @@ namespace Magnum.Pipeline.Visitors
 	using Graphing;
 	using Segments;
 
+
 	public class GraphPipelineVisitor :
 		AbstractPipeVisitor
 	{
-		private readonly List<Edge> _edges = new List<Edge>();
-		private readonly Stack<Vertex> _stack = new Stack<Vertex>();
-		private readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
-		private Vertex _lastNodeVertex;
+		readonly List<Edge> _edges = new List<Edge>();
+		readonly Stack<Vertex> _stack = new Stack<Vertex>();
+		readonly Dictionary<int, Vertex> _vertices = new Dictionary<int, Vertex>();
+		Vertex _lastNodeVertex;
 
-		public IEnumerable<Vertex> Vertices
+		public PipelineGraphData GetGraphData()
 		{
-			get { return _vertices.Values; }
-		}
-
-		public IEnumerable<Edge> Edges
-		{
-			get { return _edges; }
+			return new PipelineGraphData(_vertices.Values, _edges);
 		}
 
 		public new void Visit(Pipe pipe)
@@ -43,7 +39,7 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitInput(InputSegment input)
 		{
-			_lastNodeVertex = GetSink(input.GetHashCode(), () => "Input", typeof (InputSegment), input.MessageType);
+			_lastNodeVertex = GetSink(input.GetHashCode(), () => "Input", typeof(InputSegment), input.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -53,7 +49,7 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitEnd(EndSegment end)
 		{
-			_lastNodeVertex = GetSink(end.GetHashCode(), () => "End", typeof (EndSegment), end.MessageType);
+			_lastNodeVertex = GetSink(end.GetHashCode(), () => "End", typeof(EndSegment), end.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -63,7 +59,7 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitFilter(FilterSegment filter)
 		{
-			_lastNodeVertex = GetSink(filter.GetHashCode(), () => "Filter", typeof (FilterSegment), filter.MessageType);
+			_lastNodeVertex = GetSink(filter.GetHashCode(), () => "Filter", typeof(FilterSegment), filter.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -73,7 +69,8 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitInterceptor(InterceptorSegment interceptor)
 		{
-			_lastNodeVertex = GetSink(interceptor.GetHashCode(), () => "Interceptor", typeof (InterceptorSegment), interceptor.MessageType);
+			_lastNodeVertex = GetSink(interceptor.GetHashCode(), () => "Interceptor", typeof(InterceptorSegment),
+			                          interceptor.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -83,7 +80,8 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitMessageConsumer(MessageConsumerSegment messageConsumer)
 		{
-			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (MessageConsumerSegment), messageConsumer.MessageType);
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof(MessageConsumerSegment),
+			                          messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -93,7 +91,8 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitIntervalMessageConsumer(IntervalMessageConsumerSegment messageConsumer)
 		{
-			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (IntervalMessageConsumerSegment), messageConsumer.MessageType);
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof(IntervalMessageConsumerSegment),
+			                          messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -103,7 +102,8 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitAsyncMessageConsumer(AsyncMessageConsumerSegment messageConsumer)
 		{
-			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof (AsyncMessageConsumerSegment), messageConsumer.MessageType);
+			_lastNodeVertex = GetSink(messageConsumer.GetHashCode(), () => "Consumer", typeof(AsyncMessageConsumerSegment),
+			                          messageConsumer.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -113,7 +113,8 @@ namespace Magnum.Pipeline.Visitors
 
 		protected override Pipe VisitRecipientList(RecipientListSegment recipientList)
 		{
-			_lastNodeVertex = GetSink(recipientList.GetHashCode(), () => "List", typeof (RecipientListSegment), recipientList.MessageType);
+			_lastNodeVertex = GetSink(recipientList.GetHashCode(), () => "List", typeof(RecipientListSegment),
+			                          recipientList.MessageType);
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _lastNodeVertex, _lastNodeVertex.TargetType.Name));
@@ -121,7 +122,7 @@ namespace Magnum.Pipeline.Visitors
 			return Recurse(() => base.VisitRecipientList(recipientList));
 		}
 
-		private Pipe Recurse(Func<Pipe> action)
+		Pipe Recurse(Func<Pipe> action)
 		{
 			_stack.Push(_lastNodeVertex);
 
@@ -132,7 +133,7 @@ namespace Magnum.Pipeline.Visitors
 			return result;
 		}
 
-		private Vertex GetSink(int key, Func<string> getTitle, Type nodeType, Type objectType)
+		Vertex GetSink(int key, Func<string> getTitle, Type nodeType, Type objectType)
 		{
 			return _vertices.Retrieve(key, () =>
 				{

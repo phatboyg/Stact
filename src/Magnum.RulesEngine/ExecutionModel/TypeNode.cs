@@ -12,15 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
 	using Extensions;
 
-	[Serializable]
+
 	public class TypeNode<T> :
 		Node,
 		Activation
 	{
-		private readonly SuccessorSet<T> _successors;
+		readonly SuccessorSet<T> _successors;
 
 		public TypeNode()
 		{
@@ -29,7 +28,7 @@ namespace Magnum.RulesEngine.ExecutionModel
 
 		public void Activate<TInput>(RuleContext<TInput> context)
 		{
-			var ruleContext = (RuleContext<T>) context;
+			var ruleContext = (RuleContext<T>)context;
 
 			_successors.Activate(ruleContext);
 		}

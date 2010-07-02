@@ -16,7 +16,6 @@ namespace Magnum.Pipeline.Segments
 	using System.Collections.Generic;
 	using Fibers;
 
-	[Serializable]
 	public abstract class AsyncMessageConsumerSegment :
 		PipeSegment
 	{

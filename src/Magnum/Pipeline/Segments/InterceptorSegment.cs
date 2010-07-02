@@ -15,7 +15,6 @@ namespace Magnum.Pipeline.Segments
     using System;
     using System.Collections.Generic;
 
-	[Serializable]
 	public abstract class InterceptorSegment :
         PipeSegment
     {
@@ -30,7 +29,6 @@ namespace Magnum.Pipeline.Segments
         public abstract InterceptorSegment Clone(Pipe output);
     }
 
-	[Serializable]
 	public class InterceptorSegment<TMessage> :
         InterceptorSegment
         where TMessage : class

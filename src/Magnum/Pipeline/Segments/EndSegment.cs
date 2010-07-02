@@ -14,7 +14,6 @@ namespace Magnum.Pipeline.Segments
 {
     using System;
 
-	[Serializable]
 	public class EndSegment :
         PipeSegment
     {

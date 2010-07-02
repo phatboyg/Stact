@@ -12,21 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Visualizers.StateMachine
 {
-	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Imaging;
-	using System.Linq;
-	using Magnum.Extensions;
-	using Magnum.Graphing;
-	using Magnum.Visualizers;
+	using Extensions;
+	using Graphing;
+	using Magnum.StateMachine;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Magnum.Reflection;
-	using Magnum.StateMachine;
 
 
 	public class StateMachineGraphGenerator
@@ -64,7 +59,7 @@ namespace Magnum.Visualizers.StateMachine
 			bitmap.Save(filename, ImageFormat.Png);
 		}
 
-		private void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
+		void NodeStyler(object sender, GleeVertexEventArgs<Vertex> args)
 		{
 			if (args.Vertex.VertexType == typeof(Event))
 			{
@@ -74,7 +69,6 @@ namespace Magnum.Visualizers.StateMachine
 			}
 			else
 			{
-				
 				args.Node.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Blue;
 				args.Node.Attr.Label = args.Vertex.Title;
 				args.Node.Attr.Shape = Shape.Box;
@@ -86,7 +80,7 @@ namespace Magnum.Visualizers.StateMachine
 			args.Node.Attr.Padding = 1.2;
 		}
 
-		private static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
+		static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;

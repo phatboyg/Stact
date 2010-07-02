@@ -83,6 +83,7 @@
     <Compile Include="ExecutionModel\Activation.cs" />
     <Compile Include="ExecutionModel\Agenda.cs" />
     <Compile Include="ExecutionModel\AlphaNode.cs" />
+    <Compile Include="ExecutionModel\RulesEngineGraphData.cs" />
     <Compile Include="ExecutionModel\SessionRuleContext.cs" />
     <Compile Include="ExecutionModel\StringNodeVisitor.cs" />
     <Compile Include="ExecutionModel\TypeNode.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="ExecutionModel\RightActivation.cs" />
     <Compile Include="ExecutionModel\SuccessorSet.cs" />
     <Compile Include="ExecutionModel\GraphRulesEngineVisitor.cs" />
+    <Compile Include="ExtensionsForRulesEngines.cs" />
     <Compile Include="MagnumRulesEngine.cs" />
     <Compile Include="RulesEngine.cs" />
     <Compile Include="RulesEngineException.cs" />

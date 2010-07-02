@@ -26,14 +26,9 @@ namespace Magnum.RulesEngine.ExecutionModel
 		private Vertex _lastNodeVertex;
 
 
-		public IEnumerable<Vertex> Vertices
+		public RulesEngineGraphData GetGraphData()
 		{
-			get { return _vertices.Values; }
-		}
-
-		public IEnumerable<Edge> Edges
-		{
-			get { return _edges; }
+			return new RulesEngineGraphData(_vertices.Values, _edges);
 		}
 
 		protected override void IncreaseDepth()

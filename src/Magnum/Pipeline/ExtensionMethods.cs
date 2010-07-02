@@ -13,6 +13,8 @@
 namespace Magnum.Pipeline
 {
 	using Segments;
+	using Visitors;
+
 
 	public static class ExtensionMethods
     {
@@ -24,6 +26,14 @@ namespace Magnum.Pipeline
 		public static Pipe New(this Pipe ignored)
 		{
 			return PipeSegment.Input(PipeSegment.End());
+		}
+
+		public static PipelineGraphData GetGraphData(this Pipe pipe)
+		{
+			var visitor = new GraphPipelineVisitor();
+			visitor.Visit(pipe);
+
+			return visitor.GetGraphData();
 		}
     }
 }

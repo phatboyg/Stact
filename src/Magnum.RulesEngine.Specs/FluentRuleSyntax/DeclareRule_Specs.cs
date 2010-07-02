@@ -32,7 +32,6 @@ namespace Magnum.RulesEngine.Specs.FluentRuleSyntax
 		[TearDown]
 		public void Teardown()
 		{
-	//			RulesEngineDebugVisualizer.TestShowVisualizer(_engine);
 		}
 
 		private RulesEngine _engine;

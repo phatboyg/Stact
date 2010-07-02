@@ -15,7 +15,6 @@ namespace Magnum.Pipeline.Segments
 	using System;
 	using System.Collections.Generic;
 
-	[Serializable]
 	public abstract class MessageConsumerSegment :
 		PipeSegment
 	{
@@ -28,12 +27,10 @@ namespace Magnum.Pipeline.Segments
 		public Type ConsumerType { get; private set; }
 	}
 
-	[Serializable]
 	public class MessageConsumerSegment<TMessage> :
 		MessageConsumerSegment
 		where TMessage : class
 	{
-		[NonSerialized]
 		private readonly Func<MessageConsumer<TMessage>> _getConsumer;
 
 		public MessageConsumerSegment(MessageConsumer<TMessage> consumer)

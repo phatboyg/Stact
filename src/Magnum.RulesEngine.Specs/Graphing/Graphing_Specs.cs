@@ -102,7 +102,8 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "graph.png");
 
 			var generator = new RulesEngineGraphGenerator();
-			generator.SaveGraphToFile(_engine, 2560, 1920, filename);
+
+			generator.SaveGraphToFile(_engine.GetGraphData(), 2560, 1920, filename);
 		}
 	}
 

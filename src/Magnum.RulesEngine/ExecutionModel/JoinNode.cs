@@ -12,10 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.ExecutionModel
 {
-	using System;
 	using Extensions;
 
-	[Serializable]
 	public class JoinNode<T> :
 		Node,
 		Activation<T>
