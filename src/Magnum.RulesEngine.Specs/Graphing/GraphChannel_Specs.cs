@@ -12,23 +12,56 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.RulesEngine.Specs.Graphing
 {
+	using System;
 	using System.IO;
 	using System.Reflection;
 	using Channels;
 	using Channels.Visitors;
+	using Extensions;
 	using Fibers;
-	using Magnum.Visualizers;
-	using Magnum.Visualizers.Channels;
 	using NUnit.Framework;
+	using Visualizers.Channels;
 
 
 	[TestFixture]
-	public class GraphChannel_Specs
+	public class Generating_a_graph_of_a_channel_network
 	{
-		ChannelAdapter _channel;
+		[SetUp]
+		public void Setup()
+		{
+			_channel = new ChannelAdapter();
+			_channel.Connect(x =>
+				{
+					x.AddConsumerOf<SomeEvent>()
+						.UsingConsumer(m => { })
+						.UseProducerThread();
+
+					x.AddConsumerOf<AnyEvent>()
+						.UsingConsumer(m => { });
+
+					x.AddConsumerOf<AnyEvent>()
+						.UsingConsumer(m => { });
+
+					x.AddConsumerOf<SomeEvent>()
+						.UsingInstance()
+						.Of<MyConsumer>(c => c.Input);
+
+					x.AddConsumerOf<AnyEvent>()
+						.BufferFor(5.Minutes())
+						.Distinct(m => m.Key)
+						.UsingConsumer(ms => { })
+						.UseThreadPool();
+
+					x.AddConsumerOf<SomeEvent>()
+						.BufferFor(5.Minutes())
+						.Last()
+						.UsingConsumer(m => { })
+						.UseThreadPool();
+				});
+		}
 
 		[Test]
-		public void Should_contain_all_nodes()
+		public void Should_create_a_file()
 		{
 			var generator = new ChannelGraphGenerator();
 
@@ -43,21 +76,10 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			ChannelDebugVisualizer.TestShowVisualizer(_channel.GetGraphData());
 		}
 
-		[SetUp]
-		public void Setup()
-		{
-			_channel = new ChannelAdapter();
-			_channel.Connect(x =>
-				{ 
-					x.AddConsumerOf<SomeEvent>().UsingConsumer(m => { });
-					x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
-					x.AddConsumerOf<AnyEvent>().UsingConsumer(m => { });
-					x.AddConsumerOf<SomeEvent>().UsingInstance().Of<MyConsumer>(c => c.Input);
-				});
-		}
+		ChannelAdapter _channel;
 
 
-		private class MyConsumer
+		class MyConsumer
 		{
 			public MyConsumer()
 			{
@@ -67,13 +89,17 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			public Channel<SomeEvent> Input { get; private set; }
 		}
 
+
 		public interface AnyEvent
 		{
+			int Key { get; }
 		}
+
 
 		public class SomeEvent :
 			AnyEvent
 		{
+			public int Key{get;set;}
 		}
 	}
 }

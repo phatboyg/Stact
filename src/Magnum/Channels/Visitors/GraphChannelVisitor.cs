@@ -107,9 +107,12 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<T> Visitor<T>(IntervalChannel<T> channel)
 		{
-			Trace.WriteLine("IntervalChannel<{0}>, Interval = {1}".FormatWith(typeof(T).Name, channel.Interval));
+			_current = GetVertex(channel.GetHashCode(), () => "Interval", typeof(IntervalChannel<T>), typeof(ICollection<T>));
 
-			return base.Visitor(channel);
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(channel));
 		}
 
 		protected override Channel<T> Visitor<T>(InterceptorChannel<T> channel)
@@ -121,15 +124,22 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<ICollection<T>> Visitor<T, TKey>(DistinctChannel<T, TKey> channel)
 		{
-			Trace.WriteLine("DistinctChannel<{0}>, Key = {1}".FormatWith(typeof(T).Name, typeof(TKey).Name));
-			return base.Visitor(channel);
+			_current = GetVertex(channel.GetHashCode(), () => "Distinct", typeof(DistinctChannel<T, TKey>), typeof(T));
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(channel));
 		}
 
-		protected override Channel<T> Visitor<T>(LastIntervalChannel<T> channel)
+		protected override Channel<ICollection<T>> Visitor<T>(LastChannel<T> channel)
 		{
-			Trace.WriteLine("LastIntervalChannel<{0}>, Interval = {1}".FormatWith(typeof(T).Name, channel.Interval));
+			_current = GetVertex(channel.GetHashCode(), () => "Last", typeof(LastChannel<T>), typeof(T));
 
-			return base.Visitor(channel);
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(channel));
 		}
 
 		protected override Channel<T> Visitor<T>(AsyncResultChannel<T> channel)
@@ -138,6 +148,16 @@ namespace Magnum.Channels.Visitors
 			                                                          channel.IsCompleted ? "Complete" : "Pending"));
 
 			return base.Visitor(channel);
+		}
+
+		protected override UntypedChannel Visitor(ShuntChannel channel)
+		{
+			_current = GetVertex(channel.GetHashCode(), () => "Shunt", typeof(ShuntChannel), typeof(object));
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(channel));
 		}
 
 		protected override Channel<T> Visitor<T>(ShuntChannel<T> channel)
@@ -172,7 +192,7 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
 		{
-			_current = GetVertex(channel.GetHashCode(), () => "Convert", typeof(ShuntChannel<TInput>), typeof(TInput));
+			_current = GetVertex(channel.GetHashCode(), () => "Convert", typeof(ConvertChannel<TInput,TOutput>), typeof(TInput));
 
 			if (_stack.Count > 0)
 				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));

@@ -17,7 +17,6 @@ namespace Magnum.Visualizers.Channels
 	using Magnum.Channels.Visitors;
 	using Microsoft.Glee.Drawing;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
-	using RulesEngine;
 
 
 	public class ChannelDebugVisualizer :

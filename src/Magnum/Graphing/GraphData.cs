@@ -10,20 +10,35 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Visitors
+namespace Magnum.Graphing
 {
 	using System;
 	using System.Collections.Generic;
-	using Graphing;
 
 
+	/// <summary>
+	/// A provider of graph data can return vertices and edges
+	/// </summary>
 	[Serializable]
-	public class ChannelGraphData :
-		GraphData
+	public abstract class GraphData
 	{
-		public ChannelGraphData(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
-			: base(vertices, edges)
+		readonly List<Edge> _edges;
+		readonly List<Vertex> _vertices;
+
+		protected GraphData(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
 		{
+			_vertices = new List<Vertex>(vertices);
+			_edges = new List<Edge>(edges);
+		}
+
+		public IEnumerable<Vertex> Vertices
+		{
+			get { return _vertices; }
+		}
+
+		public IEnumerable<Edge> Edges
+		{
+			get { return _edges; }
 		}
 	}
 }

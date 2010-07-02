@@ -120,6 +120,7 @@
     <Compile Include="Channels\ChannelFactory.cs" />
     <Compile Include="Channels\ChannelConfigurationException.cs" />
     <Compile Include="Channels\Configuration\ChannelConnectionConfigurator.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForLastChannels.cs" />
     <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Configurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConsumerChannelConfigurator.cs" />
@@ -139,6 +140,8 @@
     <Compile Include="Channels\Configuration\Internal\InstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\IntervalChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\IntervalModelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\LastChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\LastChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\SelectiveConsumerChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\FutureChannel.cs" />
     <Compile Include="Channels\InstanceChannelProvider.cs" />
@@ -250,7 +253,7 @@
     <Compile Include="Channels\Internal\MessageListImpl.cs" />
     <Compile Include="Channels\IntervalChannel.cs" />
     <Compile Include="Channels\KeyAccessor.cs" />
-    <Compile Include="Channels\LastIntervalChannel.cs" />
+    <Compile Include="Channels\LastChannel.cs" />
     <Compile Include="Channels\FilterChannel.cs" />
     <Compile Include="Channels\BroadcastChannel.cs" />
     <Compile Include="Channels\SynchronizedChannel.cs" />
@@ -358,7 +361,7 @@
     <Compile Include="FileSystem\Internal\FileSystemDeletedImpl.cs" />
     <Compile Include="FileSystem\PollingFileSystemEventProducer.cs" />
     <Compile Include="Graphing\Edge.cs" />
-    <Compile Include="Graphing\GraphProvider.cs" />
+    <Compile Include="Graphing\GraphData.cs" />
     <Compile Include="Graphing\Vertex.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ConsoleLogProvider.cs" />

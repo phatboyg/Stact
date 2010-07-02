@@ -232,7 +232,8 @@ namespace Magnum.Channels.Configuration.Internal
 
 		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
 		{
-			if (IsCompatibleType(typeof(T)))
+			// TODO changing this to be the same type, to avoid conversions in the chain
+			if (typeof(T) == typeof(TChannel))
 				return new BroadcastChannel<T>(VisitSubscribers(channel.Listeners));
 
 			return channel;

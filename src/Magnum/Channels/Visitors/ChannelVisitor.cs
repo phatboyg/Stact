@@ -110,7 +110,7 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
-		protected virtual Channel<T> Visitor<T>(LastIntervalChannel<T> channel)
+		protected virtual Channel<ICollection<T>> Visitor<T>(LastChannel<T> channel)
 		{
 			Visit(channel.Output);
 

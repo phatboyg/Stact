@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,16 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Graphing
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System.Collections.Generic;
 
+
 	/// <summary>
-	/// A provider of graph data can return vertices and edges
+	/// Used to configure the last channel 
 	/// </summary>
-	public interface GraphProvider
+	/// <typeparam name="TChannel"></typeparam>
+	public interface LastChannelConfigurator<TChannel> :
+		ChannelConnectionConfigurator<TChannel>
 	{
-		IEnumerable<Vertex> Vertices { get; }
-		IEnumerable<Edge> Edges { get; }
 	}
 }

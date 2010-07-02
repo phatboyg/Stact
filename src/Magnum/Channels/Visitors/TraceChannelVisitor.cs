@@ -57,14 +57,14 @@ namespace Magnum.Channels.Visitors
 
 		protected override Channel<ICollection<T>> Visitor<T, TKey>(DistinctChannel<T, TKey> channel)
 		{
-			Trace.WriteLine("DistinctIntervalChannel<{0}>, Key = {1}".FormatWith(typeof (T).Name, typeof (TKey).Name));
+			Trace.WriteLine("DistinctChannel<{0}>, Key = {1}".FormatWith(typeof (T).Name, typeof (TKey).Name));
 
 			return base.Visitor(channel);
 		}
 
-		protected override Channel<T> Visitor<T>(LastIntervalChannel<T> channel)
+		protected override Channel<ICollection<T>> Visitor<T>(LastChannel<T> channel)
 		{
-			Trace.WriteLine("LastIntervalChannel<{0}>, Interval = {1}".FormatWith(typeof (T).Name, channel.Interval));
+			Trace.WriteLine("LastChannel<{0}>".FormatWith(typeof (T).Name));
 
 			return base.Visitor(channel);
 		}

@@ -13,6 +13,7 @@
 namespace Magnum.Extensions
 {
 	using System;
+	using System.Linq;
 	using Reflection;
 
 	public static class ExtensionsToType
@@ -35,6 +36,22 @@ namespace Magnum.Extensions
 		public static bool IsCompatibleWith<T>(this object value)
 		{
 			return (value is T || (value == null && typeof (T).AllowsNullValue()));
+		}
+
+		public static string ToShortTypeName(this Type type)
+		{
+			if (type.IsGenericType)
+			{
+				string name = type.GetGenericTypeDefinition().Name;
+				name = name.Substring(0, name.IndexOf('`'));
+
+				Type[] arguments = type.GetGenericArguments();
+				string innerTypeName = string.Join(",", arguments.Select(x => x.ToShortTypeName()).ToArray());
+
+				return "{0}<{1}>".FormatWith(name, innerTypeName);
+			}
+
+			return type.Name;
 		}
 	}
 }

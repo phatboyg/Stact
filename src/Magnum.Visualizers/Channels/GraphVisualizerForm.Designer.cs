@@ -34,9 +34,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(633, 339);
-			this.Name = "PipelineVisualizerForm";
-			this.Text = "Rules Engine Visualizer";
+			this.ClientSize = new System.Drawing.Size(800, 600);
+			this.Name = "GraphVisualizerForm";
+			this.Text = "Graph Visualizer";
 			this.ResumeLayout(false);
 
 		}

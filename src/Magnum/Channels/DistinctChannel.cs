@@ -50,7 +50,7 @@ namespace Magnum.Channels
 			_fiber.Add(() => SendMessagesToOutputChannel(message));
 		}
 
-		void SendMessagesToOutputChannel(ICollection<T> messages)
+		void SendMessagesToOutputChannel(IEnumerable<T> messages)
 		{
 			MessageDictionary<TKey, T> result = new MessageDictionaryImpl<TKey, T>(_keyAccessor);
 

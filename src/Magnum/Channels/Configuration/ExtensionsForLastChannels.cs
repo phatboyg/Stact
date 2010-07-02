@@ -15,16 +15,16 @@ namespace Magnum.Channels
 	using Configuration.Internal;
 
 
-	public static class ExtensionsForDistinctChannels
+	public static class ExtensionsForLastChannels
 	{
-		public static DistinctChannelConfigurator<TChannel, TKey> Distinct<TChannel, TKey>(
-			this IntervalChannelConfigurator<TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
+		public static LastChannelConfigurator<TChannel> Last<TChannel>(
+			this IntervalChannelConfigurator<TChannel> configurator)
 		{
-			var intervalConfigurator = new DistinctChannelConfiguratorImpl<TChannel, TKey>(keyAccessor);
+			var lastConfigurator = new LastChannelConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelFactory(intervalConfigurator);
+			configurator.SetChannelFactory(lastConfigurator);
 
-			return intervalConfigurator;
+			return lastConfigurator;
 		}
 	}
 }

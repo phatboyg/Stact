@@ -24,7 +24,6 @@ namespace Magnum.Visualizers.Channels
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Reflection;
 
 
 	public class ChannelGraphGenerator
@@ -73,7 +72,7 @@ namespace Magnum.Visualizers.Channels
 			args.Node.Attr.Fillcolor = Microsoft.Glee.Drawing.Color.Black;
 			args.Node.Attr.Fontcolor = Microsoft.Glee.Drawing.Color.White;
 			args.Node.Attr.Fontsize = 8;
-			args.Node.Attr.FontName = "Arial";
+			args.Node.Attr.FontName = "Tahoma";
 			args.Node.Attr.Label = args.Vertex.Title;
 			args.Node.Attr.Padding = 1.2;
 
@@ -96,9 +95,16 @@ namespace Magnum.Visualizers.Channels
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Yellow;
 					attr.Fontcolor = Microsoft.Glee.Drawing.Color.Black;
 				}
+				else if (openType == typeof(IntervalChannel<>) || openType == typeof(DistinctChannel<,>)
+				         || openType == typeof(ConvertChannel<,>) || openType == typeof(LastChannel<>))
+				{
+					attr.Shape = Shape.Ellipse;
+					attr.Fillcolor = Microsoft.Glee.Drawing.Color.PowderBlue;
+					attr.Fontcolor = Microsoft.Glee.Drawing.Color.Black;
+				}
 				else if (openType == typeof(ConsumerChannel<>) || openType == typeof(InstanceChannel<>))
 				{
-					attr.Shape = Shape.Circle;
+					attr.Shape = Shape.Ellipse;
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.Green;
 				}
 				else if (openType == typeof(InstanceChannelProvider<,>))
@@ -122,7 +128,7 @@ namespace Magnum.Visualizers.Channels
 
 		static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
-			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.Name;
+			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType.ToShortTypeName();
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;
 		}

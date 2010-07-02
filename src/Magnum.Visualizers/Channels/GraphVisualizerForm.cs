@@ -22,19 +22,21 @@ namespace Magnum.Visualizers.Channels
 		Form
 	{
 		readonly Graph _graph;
+		readonly string _caption;
 
 		public GraphVisualizerForm(Graph graph, string caption)
 		{
 			_graph = graph;
+			_caption = caption;
 
 			InitializeComponent();
-
-			Text = caption;
 		}
 
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
+
+			Text = _caption;
 
 			GViewer viewer = CreateGraphControl();
 

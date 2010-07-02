@@ -87,6 +87,34 @@ namespace Magnum.Specs.Channels
 		}
 
 		[Test]
+		public void Should_subscribe_the_last_message_consumer()
+		{
+			var input = new ChannelAdapter();
+			ChannelConnection connection = null;
+			using (connection = input.Connect(x =>
+				{
+					x.AddConsumerOf<TestMessage>()
+						.BufferFor(2.Seconds())
+						.Last()
+						.UsingConsumer(message =>
+							{
+							})
+						.UseProducerThread();
+				}))
+			{
+				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
+					{
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(IntervalChannel<TestMessage>),
+						typeof(LastChannel<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>),
+					});
+			}
+		}
+
+		[Test]
 		public void Should_be_an_empty_channel_adapter_with_no_consumers()
 		{
 			var input = new ChannelAdapter();
