@@ -90,12 +90,13 @@ namespace Magnum.Specs.Channels
 		public void Should_subscribe_the_last_message_consumer()
 		{
 			var input = new ChannelAdapter();
-			ChannelConnection connection = null;
-			using (connection = input.Connect(x =>
+			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
 						.BufferFor(2.Seconds())
+						.UseProducerThread()
 						.Last()
+						.UseProducerThread()
 						.UsingConsumer(message =>
 							{
 							})

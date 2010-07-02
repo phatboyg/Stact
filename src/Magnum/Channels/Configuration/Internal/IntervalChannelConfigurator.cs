@@ -25,10 +25,14 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface IntervalChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<ICollection<TChannel>>
 	{
+		IntervalChannelConfigurator<TChannel> UseFiber(Fiber fiber);
+		IntervalChannelConfigurator<TChannel> UsePrivateThread();
+		IntervalChannelConfigurator<TChannel> UseProducerThread();
+		IntervalChannelConfigurator<TChannel> UseThreadPool();
+		IntervalChannelConfigurator<TChannel> WithFiberFactory(FiberFactory fiberFactory);
+
 		IntervalChannelConfigurator<TChannel> UsePrivateScheduler();
-
 		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
-
 		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
 	}
 }

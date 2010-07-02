@@ -22,11 +22,9 @@ namespace Magnum.Channels.Configuration.Internal
 		ConsumerChannelConfigurator<TChannel> UsePrivateThread();
 		ConsumerChannelConfigurator<TChannel> UseProducerThread();
 		ConsumerChannelConfigurator<TChannel> UseThreadPool();
-
-		ConsumerChannelConfigurator<TChannel> UseCurrentSychronizationContext();
-
 		ConsumerChannelConfigurator<TChannel> WithFiberFactory(FiberFactory fiberFactory);
 
+		ConsumerChannelConfigurator<TChannel> UseCurrentSychronizationContext();
 		ConsumerChannelConfigurator<TChannel> WithSynchronizationContext(SynchronizationContext synchronizationContext);
 	}
 }

@@ -52,6 +52,11 @@ namespace Magnum.RulesEngine.Specs.Graphing
 						.UsingConsumer(ms => { })
 						.UseThreadPool();
 
+					x.AddConsumerOf<AnyEvent>()
+						.Where(m => m.Key > 100)
+						.UsingConsumer(m => { })
+						.UsePrivateThread();
+
 					x.AddConsumerOf<SomeEvent>()
 						.BufferFor(5.Minutes())
 						.Last()

@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
-	using System.Collections.Generic;
+	using Fibers;
 
 
 	/// <summary>
@@ -22,5 +22,10 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface LastChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<TChannel>
 	{
+		LastChannelConfigurator<TChannel> UseFiber(Fiber fiber);
+		LastChannelConfigurator<TChannel> UsePrivateThread();
+		LastChannelConfigurator<TChannel> UseProducerThread();
+		LastChannelConfigurator<TChannel> UseThreadPool();
+		LastChannelConfigurator<TChannel> WithFiberFactory(FiberFactory fiberFactory);
 	}
 }

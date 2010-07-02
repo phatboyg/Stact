@@ -102,6 +102,12 @@ namespace Magnum.Visualizers.Channels
 					attr.Fillcolor = Microsoft.Glee.Drawing.Color.PowderBlue;
 					attr.Fontcolor = Microsoft.Glee.Drawing.Color.Black;
 				}
+				else if (openType == typeof(FilterChannel<>) )
+				{
+					attr.Shape = Shape.Ellipse;
+					attr.Fillcolor = Microsoft.Glee.Drawing.Color.YellowGreen;
+					attr.Fontcolor = Microsoft.Glee.Drawing.Color.Black;
+				}
 				else if (openType == typeof(ConsumerChannel<>) || openType == typeof(InstanceChannel<>))
 				{
 					attr.Shape = Shape.Ellipse;
