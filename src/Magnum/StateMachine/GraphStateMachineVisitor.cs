@@ -19,30 +19,21 @@ namespace Magnum.StateMachine
 	using Graphing;
 	using Reflection;
 
+
 	public class GraphStateMachineVisitor<TStateMachine> :
 		ReflectiveVisitorBase<GraphStateMachineVisitor<TStateMachine>>,
 		IStateMachineInspector
 		where TStateMachine : StateMachine<TStateMachine>
 	{
-		private readonly List<Edge> _edges = new List<Edge>();
-		private readonly Dictionary<string, Vertex> _eventVertices = new Dictionary<string, Vertex>();
-		private readonly Dictionary<string, Vertex> _vertices = new Dictionary<string, Vertex>();
-		private Vertex _currentEventVertex;
-		private Vertex _currentStateVertex;
+		readonly List<Edge> _edges = new List<Edge>();
+		readonly Dictionary<string, Vertex> _eventVertices = new Dictionary<string, Vertex>();
+		readonly Dictionary<string, Vertex> _vertices = new Dictionary<string, Vertex>();
+		Vertex _currentEventVertex;
+		Vertex _currentStateVertex;
 
 		public GraphStateMachineVisitor()
 			: base("Inspect")
 		{
-		}
-
-		public IEnumerable<Vertex> Vertices
-		{
-			get { return _vertices.Values.Union(_eventVertices.Values); }
-		}
-
-		public IEnumerable<Edge> Edges
-		{
-			get { return _edges; }
 		}
 
 		public void Inspect(object obj)
@@ -59,6 +50,11 @@ namespace Magnum.StateMachine
 				});
 		}
 
+		public StateMachineGraphData GetGraphData()
+		{
+			return new StateMachineGraphData(_vertices.Values.Union(_eventVertices.Values), _edges);
+		}
+
 		public bool Inspect<T>(T machine)
 			where T : StateMachine<T>
 		{
@@ -68,7 +64,7 @@ namespace Magnum.StateMachine
 		public bool Inspect<T>(State<T> state)
 			where T : StateMachine<T>
 		{
-			_currentStateVertex = GetStateVertex(state.Name, () => state.Name, typeof (State), typeof (T));
+			_currentStateVertex = GetStateVertex(state.Name, () => state.Name, typeof(State), typeof(T));
 
 			return true;
 		}
@@ -76,7 +72,7 @@ namespace Magnum.StateMachine
 		public bool Inspect<T>(BasicEvent<T> eevent)
 			where T : StateMachine<T>
 		{
-			_currentEventVertex = GetEventVertex(eevent.Name, () => eevent.Name, typeof (Event), typeof (void));
+			_currentEventVertex = GetEventVertex(eevent.Name, () => eevent.Name, typeof(Event), typeof(void));
 
 			_edges.Add(new Edge(_currentStateVertex, _currentEventVertex, eevent.Name));
 
@@ -87,7 +83,7 @@ namespace Magnum.StateMachine
 		public bool Inspect<T, V>(DataEvent<T, V> eevent)
 			where T : StateMachine<T>
 		{
-			_currentEventVertex = GetEventVertex(eevent.Name, () => eevent.Name, typeof (Event), typeof(V));
+			_currentEventVertex = GetEventVertex(eevent.Name, () => eevent.Name, typeof(Event), typeof(V));
 
 			_edges.Add(new Edge(_currentStateVertex, _currentEventVertex, eevent.Name));
 
@@ -97,7 +93,7 @@ namespace Magnum.StateMachine
 		public bool Inspect<T>(TransitionToAction<T> action)
 			where T : StateMachine<T>
 		{
-			Vertex targetStateVertex = GetStateVertex(action.NewState.Name, () => action.NewState.Name, typeof (State), typeof (T));
+			Vertex targetStateVertex = GetStateVertex(action.NewState.Name, () => action.NewState.Name, typeof(State), typeof(T));
 
 			_edges.Add(new Edge(_currentEventVertex, targetStateVertex, _currentEventVertex.Title));
 
@@ -163,7 +159,7 @@ namespace Magnum.StateMachine
 		//		}
 		//
 
-		private Vertex GetStateVertex(string name, Func<string> getTitle, Type nodeType, Type objectType)
+		Vertex GetStateVertex(string name, Func<string> getTitle, Type nodeType, Type objectType)
 		{
 			return _vertices.Retrieve(name, () =>
 				{
@@ -173,7 +169,7 @@ namespace Magnum.StateMachine
 				});
 		}
 
-		private Vertex GetEventVertex(string name, Func<string> getTitle, Type nodeType, Type objectType)
+		Vertex GetEventVertex(string name, Func<string> getTitle, Type nodeType, Type objectType)
 		{
 			return _eventVertices.Retrieve(name, () =>
 				{

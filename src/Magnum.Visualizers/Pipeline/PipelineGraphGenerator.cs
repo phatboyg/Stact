@@ -28,8 +28,7 @@ namespace Magnum.Visualizers.Pipeline
 	using QuickGraph.Glee;
 
 
-	public class PipelineGraphGenerator :
-		GraphGenerator
+	public class PipelineGraphGenerator
 	{
 		static Dictionary<Type, Microsoft.Glee.Drawing.Color> _colors;
 

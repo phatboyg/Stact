@@ -98,13 +98,12 @@
     <Compile Include="Pipeline\PipelineVisualizerForm.Designer.cs">
       <DependentUpon>PipelineVisualizerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GraphGenerator.cs" />
     <Compile Include="Pipeline\PipelineDebugVisualizer.cs" />
     <Compile Include="Pipeline\PipelineGraphGenerator.cs" />
-    <Compile Include="Channels\GraphVisualizerForm.cs">
+    <Compile Include="GraphVisualizerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Channels\GraphVisualizerForm.Designer.cs">
+    <Compile Include="GraphVisualizerForm.Designer.cs">
       <DependentUpon>GraphVisualizerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RulesEngine\RulesEngineGraphGenerator.cs" />
@@ -116,13 +115,9 @@
     <Compile Include="RulesEngine\RulesEngineVisualizerForm.Designer.cs">
       <DependentUpon>RulesEngineVisualizerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StateMachine\StateMachineDebugVisualizer.cs" />
     <Compile Include="StateMachine\StateMachineGraphGenerator.cs" />
-    <Compile Include="StateMachine\StateMachineVisualizerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StateMachine\StateMachineVisualizerForm.designer.cs">
-      <DependentUpon>StateMachineVisualizerForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="StateMachine\StateMachineVisualizerObjectSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum.RulesEngine\Magnum.RulesEngine.csproj">

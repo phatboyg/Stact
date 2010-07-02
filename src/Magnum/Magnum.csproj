@@ -541,6 +541,7 @@
     <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
     <Compile Include="StateMachine\ExtensionsForChannel.cs" />
+    <Compile Include="StateMachine\ExtensionsForStateMachineVisitor.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />
     <Compile Include="StateMachine\LambdaAction.cs" />
@@ -567,6 +568,7 @@
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />
     <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />
+    <Compile Include="StateMachine\StateMachineGraphData.cs" />
     <Compile Include="StateMachine\StateMachineInspector.cs" />
     <Compile Include="StateMachine\TransitionToAction.cs" />
     <Compile Include="Extensions\ExtensionsToStream.cs" />

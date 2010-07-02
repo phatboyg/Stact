@@ -14,9 +14,11 @@ using System.Diagnostics;
 using Magnum.Channels;
 using Magnum.Pipeline.Segments;
 using Magnum.RulesEngine;
+using Magnum.StateMachine;
 using Magnum.Visualizers.Channels;
 using Magnum.Visualizers.Pipeline;
 using Magnum.Visualizers.RulesEngine;
+using Magnum.Visualizers.StateMachine;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
 [assembly: DebuggerVisualizer(typeof(RulesEngineDebugVisualizer), typeof(VisualizerObjectSource),
@@ -28,3 +30,6 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 [assembly: DebuggerVisualizer(typeof(ChannelDebugVisualizer), typeof(ChannelVisualizerObjectSource),
 	Description = "Channel Visualizer",
 	Target = typeof(ChannelAdapter))]
+[assembly: DebuggerVisualizer(typeof(StateMachineDebugVisualizer), typeof(StateMachineVisualizerObjectSource),
+	Description = "State Machine Visualizer",
+	Target = typeof(StateMachine<>))]
