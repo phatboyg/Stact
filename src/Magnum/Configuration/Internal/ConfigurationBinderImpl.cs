@@ -41,6 +41,13 @@ namespace Magnum.Configuration.Internal
 			return obj;
 		}
 
+        public object Bind(Type typeToBindTo)
+        {
+            var obj = _binder.Bind(typeToBindTo, _context);
+
+            return obj;
+        }
+
 		public object GetValue(string key)
 		{
 			object resultValue = null;

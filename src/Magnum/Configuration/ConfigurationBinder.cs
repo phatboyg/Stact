@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Configuration
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 
 	/// <summary>
@@ -28,6 +29,14 @@ namespace Magnum.Configuration
 		/// <typeparam name="T">The configuration object type</typeparam>
 		/// <returns>An initialize configuration object</returns>
 		T Bind<T>();
+
+        /// <summary>
+        /// Creates an instance of the specified type and sets the properties
+        /// to the configuration settings that match
+        /// </summary>
+        /// <typeparam name="T">The configuration object type</typeparam>
+        /// <returns>An initialize configuration object</returns>
+        object Bind(Type typeToBindTo);
 
 		/// <summary>
 		/// Returns a single configuration value

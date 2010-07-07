@@ -15,6 +15,7 @@ namespace Magnum.Specs.Configuration
 	using System.IO;
 	using Magnum.Configuration;
 	using Magnum.Logging;
+	using NUnit.Framework;
 	using TestFramework;
 
 
@@ -47,6 +48,7 @@ namespace Magnum.Specs.Configuration
 
 					x.AddJsonFile("global.json");
                     x.AddJsonFile("local.json");
+                    x.AddJsonFile(".\\Configuration\\config.json");
 				});
 		}
 
@@ -56,5 +58,12 @@ namespace Magnum.Specs.Configuration
 			string value = _binder.GetValueAsString("key1");
 			value.ShouldEqual("local-value-1");
 		}
+
+        [Then, Ignore("odd")]
+        public void A_stupid_file()
+        {
+            string value = _binder.GetValueAsString("key3");
+            value.ShouldBeEqualTo("from-file");
+        }
 	}
 }
