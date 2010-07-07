@@ -33,16 +33,6 @@ namespace Magnum.Binding
 			_set = InitializeSet(info);
 		}
 
-		public string Name
-		{
-			get { return _info.Name; }
-		}
-
-		public Type PropertyType
-		{
-			get { return _info.PropertyType; }
-		}
-
 		public PropertyInfo Property
 		{
 			get { return _info; }

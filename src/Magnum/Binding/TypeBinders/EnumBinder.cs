@@ -21,7 +21,7 @@ namespace Magnum.Binding.TypeBinders
 		{
 			object value = context.PropertyValue;
 			if (value == null)
-				return null;
+				return default(T);
 
 			string text = value.ToString();
 

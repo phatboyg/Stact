@@ -26,12 +26,13 @@ namespace Magnum.Specs.Binding
 					{"SubClass.Street", "123 American Way"},
 					{"SubClass.City", "Tulsa"},
 					{"SubClass.State", "OK"},
+                    //no enum value provided on purpose
 				};
 
 			ValueProvider dictionaryProvider = new DictionaryValueProvider(_dictionary);
 			ValueProvider jsonProvider = new JsonValueProvider(@"{ SubClass: { ZipCode: ""90210"" } }");
 
-			var providers = new MultipleValueProvider(new[] {dictionaryProvider, jsonProvider});
+			var providers = new MultipleValueProvider(new[] { dictionaryProvider, jsonProvider });
 
 			ModelBinder binder = new FastModelBinder();
 			ModelBinderContext context = new TestModelBinderContext(providers);
@@ -48,6 +49,7 @@ namespace Magnum.Specs.Binding
 			public DateTime Created { get; set; }
 			public TimeSpan Duration { get; set; }
 			public BinderSubClass SubClass { get; set; }
+			public BinderEnum AnEnum { get; set; }
 		}
 
 		private class BinderSubClass
@@ -56,6 +58,13 @@ namespace Magnum.Specs.Binding
 			public string City { get; set; }
 			public string State { get; set; }
 			public string ZipCode { get; set; }
+		}
+
+		private enum BinderEnum
+		{
+			DefaultValue,
+			Value1,
+			Value2
 		}
 
 		[Test]
@@ -115,6 +124,12 @@ namespace Magnum.Specs.Binding
 		public void Should_property_bind_the_subclass_property()
 		{
 			_result.SubClass.ShouldNotBeNull();
+		}
+
+		[Test]
+		public void Should_use_the_first_enum_entry_when_not_provided()
+		{
+			_result.AnEnum.ShouldEqual(BinderEnum.DefaultValue);
 		}
 	}
 }
