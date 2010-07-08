@@ -13,7 +13,6 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
-	using System.Collections.Generic;
 
 
 	public class ConsumerChannelConfiguratorImpl<TChannel> :
@@ -29,7 +28,7 @@ namespace Magnum.Channels.Configuration.Internal
 			_consumer = consumer;
 		}
 
-		public IEnumerable<Channel> Configure(Channel<TChannel> channel)
+		public void Configure(CreateChannelConnection connection, Channel<TChannel> channel)
 		{
 			throw new NotImplementedException();
 		}

@@ -17,6 +17,7 @@ namespace Magnum.Channels
 	using Fibers;
 	using Internal;
 
+
 	/// <summary>
 	/// A channel that accepts messages and sends them to the channel at regular intervals
 	/// </summary>
@@ -25,10 +26,11 @@ namespace Magnum.Channels
 		Channel<T>,
 		IDisposable
 	{
-		private readonly MessageList<T> _messages;
-		private readonly Fiber _fiber;
-		private bool _disposed;
-		private ScheduledAction _scheduledAction;
+		readonly Fiber _fiber;
+		readonly MessageList<T> _messages;
+		readonly Scheduler _scheduler;
+		bool _disposed;
+		ScheduledAction _scheduledAction;
 
 		/// <summary>
 		/// Constructs a channel
@@ -42,10 +44,11 @@ namespace Magnum.Channels
 			_messages = new MessageListImpl<T>();
 
 			_fiber = fiber;
+			_scheduler = scheduler;
 			Output = output;
 			Interval = interval;
 
-			_scheduledAction = scheduler.Schedule(interval, interval, fiber, SendMessagesToOutputChannel);
+			ScheduleNextSend();
 		}
 
 		public Channel<ICollection<T>> Output { get; private set; }
@@ -63,9 +66,15 @@ namespace Magnum.Channels
 			GC.SuppressFinalize(this);
 		}
 
-		private void Dispose(bool disposing)
+		void ScheduleNextSend()
 		{
-			if (_disposed) return;
+			_scheduledAction = _scheduler.Schedule(Interval, _fiber, SendMessagesToOutputChannel);
+		}
+
+		void Dispose(bool disposing)
+		{
+			if (_disposed)
+				return;
 			if (disposing)
 			{
 				_scheduledAction.Cancel();
@@ -75,9 +84,13 @@ namespace Magnum.Channels
 			_disposed = true;
 		}
 
-		private void SendMessagesToOutputChannel()
+		void SendMessagesToOutputChannel()
 		{
-			Output.Send(_messages.RemoveAll());
+			IList<T> all = _messages.RemoveAll();
+			if (all.Count > 0)
+				Output.Send(all);
+
+			ScheduleNextSend();
 		}
 
 		~IntervalChannel()

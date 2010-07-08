@@ -116,6 +116,12 @@
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForWcfChannels.cs" />
+    <Compile Include="Channels\Configuration\Internal\AbstractChannelConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
+    <Compile Include="Channels\Internal\AsyncResult.cs" />
     <Compile Include="Channels\ChannelConnection.cs" />
     <Compile Include="Channels\ChannelFactory.cs" />
     <Compile Include="Channels\ChannelConfigurationException.cs" />
@@ -159,7 +165,7 @@
     <Compile Include="Channels\ChannelAdapter.cs" />
     <Compile Include="Channels\Configuration\Internal\ConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\ChannelConnectionImpl.cs" />
-    <Compile Include="Channels\Configuration\ChannelConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConfigurator.cs" />
     <Compile Include="Channels\DeserializeChannel.cs" />
     <Compile Include="Channels\DeserializeMessageEnvelopeChannel.cs" />
     <Compile Include="Channels\Visitors\FlattenChannelVisitor.cs" />

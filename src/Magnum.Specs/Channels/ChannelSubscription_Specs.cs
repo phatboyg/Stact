@@ -49,17 +49,12 @@ namespace Magnum.Specs.Channels
 			var input = new ChannelAdapter();
 			int expected = 5;
 
-			ChannelConnection connection = null;
-			using (connection = input.Connect(x =>
+			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
 						.BufferFor(2.Seconds())
 						.Distinct(c => c.Value)
-						.UsingConsumer(message =>
-							{
-								future.Complete(message.Count);
-								connection.Disconnect();
-							})
+						.UsingConsumer(message => future.Complete(message.Count))
 						.UseProducerThread();
 				}))
 			{
@@ -136,15 +131,13 @@ namespace Magnum.Specs.Channels
 
 			var input = new ChannelAdapter();
 			int expected = 5;
-			ChannelConnection connection = null;
-			using (connection = input.Connect(x =>
+			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
 						.BufferFor(2.Seconds())
 						.UsingConsumer(message =>
 							{
 								future.Complete(message.Count);
-								connection.Disconnect();
 							})
 						.UseProducerThread();
 				}))

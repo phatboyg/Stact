@@ -21,18 +21,18 @@ namespace Magnum.Channels
 	public class DelegateChannelProvider<T> :
 		ChannelProvider<T>
 	{
-		private readonly Func<T, Channel<T>> _channelProvider;
+		private readonly Func<T, Channel<T>> _provider;
 
-		public DelegateChannelProvider(Func<T, Channel<T>> channelProvider)
+		public DelegateChannelProvider(Func<T, Channel<T>> provider)
 		{
-			Guard.AgainstNull(channelProvider, "channelProvider");
+			Guard.AgainstNull(provider, "provider");
 
-			_channelProvider = channelProvider;
+			_provider = provider;
 		}
 
 		public Channel<T> GetChannel(T message)
 		{
-			return _channelProvider(message);
+			return _provider(message);
 		}
 	}
 }

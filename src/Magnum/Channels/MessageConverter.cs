@@ -12,5 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	public delegate TOutput MessageConverter<TInput, TOutput>(TInput message);
+	public delegate TOutput MessageConverter<in TInput, out TOutput>(TInput message);
 }

@@ -49,6 +49,11 @@ namespace Magnum.Channels.Visitors
 			return result;
 		}
 
+		protected virtual Channel<T> Visitor<T>(SelectiveConsumerChannel<T> channel)
+		{
+			return channel;
+		}
+
 		protected virtual Channel<T> Visitor<T>(ConsumerChannel<T> channel)
 		{
 			return channel;
@@ -111,6 +116,13 @@ namespace Magnum.Channels.Visitors
 		}
 
 		protected virtual Channel<ICollection<T>> Visitor<T>(LastChannel<T> channel)
+		{
+			Visit(channel.Output);
+
+			return channel;
+		}
+
+		protected virtual Channel Visitor<T>(AsyncResultChannel channel)
 		{
 			Visit(channel.Output);
 

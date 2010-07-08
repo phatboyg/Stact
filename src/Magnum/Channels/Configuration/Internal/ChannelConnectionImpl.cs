@@ -10,103 +10,44 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
-	using System;
 	using System.Collections.Generic;
-	using Internal;
 
 
+	/// <summary>
+	/// The channel connection implementation
+	/// </summary>
 	public class ChannelConnectionImpl :
-		ChannelConnection
+		AbstractChannelConnection,
+		ChannelConnection,
+		CreateChannelConnection
 	{
-		readonly UntypedChannel _channel;
-		readonly HashSet<Channel> _connectedChannels;
-
-		bool _disposed;
-
-		public ChannelConnectionImpl(UntypedChannel channel, HashSet<Channel> connectedChannels)
+		public ChannelConnectionImpl(UntypedChannel channel)
+			: base(x => DisconnectChannels(channel, x))
 		{
-			_channel = channel;
-			_connectedChannels = connectedChannels;
 		}
 
-		public void Dispose()
+		static void DisconnectChannels(UntypedChannel channel, IEnumerable<Channel> channels)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		public void Disconnect()
-		{
-			if (_connectedChannels.Count == 0)
-				return;
-
-			new DisconnectChannelVisitor(_connectedChannels).DisconnectFrom(_channel);
-
-			_connectedChannels.Clear();
-		}
-
-		void Dispose(bool disposing)
-		{
-			if (_disposed)
-				return;
-			if (disposing)
-				Disconnect();
-
-			_disposed = true;
-		}
-
-		~ChannelConnectionImpl()
-		{
-			Dispose(false);
+			new DisconnectChannelVisitor(channels).DisconnectFrom(channel);
 		}
 	}
 
 
 	public class ChannelConnectionImpl<T> :
-		ChannelConnection
+		AbstractChannelConnection,
+		ChannelConnection,
+		CreateChannelConnection
 	{
-		readonly Channel<T> _channel;
-		readonly HashSet<Channel> _connectedChannels;
-
-		bool _disposed;
-
-		public ChannelConnectionImpl(Channel<T> channel, HashSet<Channel> connectedChannels)
+		public ChannelConnectionImpl(Channel<T> channel)
+			: base(x => DisconnectChannels(channel, x))
 		{
-			_channel = channel;
-			_connectedChannels = connectedChannels;
 		}
 
-		public void Dispose()
+		static void DisconnectChannels(Channel<T> channel, IEnumerable<Channel> channels)
 		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		public void Disconnect()
-		{
-			if (_connectedChannels.Count == 0)
-				return;
-
-			new DisconnectChannelVisitor(_connectedChannels).DisconnectFrom(_channel);
-
-			_connectedChannels.Clear();
-		}
-
-		void Dispose(bool disposing)
-		{
-			if (_disposed)
-				return;
-			if (disposing)
-				Disconnect();
-
-			_disposed = true;
-		}
-
-		~ChannelConnectionImpl()
-		{
-			Dispose(false);
+			new DisconnectChannelVisitor(channels).DisconnectFrom(channel);
 		}
 	}
 }

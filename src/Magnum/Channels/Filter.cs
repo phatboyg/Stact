@@ -12,5 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	public delegate bool Filter<T>(T message);
+	public delegate bool Filter<in T>(T message);
 }
