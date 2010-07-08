@@ -12,5 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	public delegate TOutput MessageConverter<TInput, TOutput>(TInput message);
+	/// <summary>
+	/// Used to obtain and instance of a class based on the information contained
+	/// in the specified message
+	/// </summary>
+	/// <typeparam name="TInstance">The type of the class</typeparam>
+	/// <typeparam name="TChannel">The type of the message</typeparam>
+	public interface InstanceProvider<TInstance, TChannel>
+	{
+		TInstance GetInstance(TChannel message);
+	}
 }

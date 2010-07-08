@@ -14,6 +14,7 @@ namespace Magnum.Channels
 {
 	using System;
 
+
 	/// <summary>
 	/// Creates an instance of a class and returns the channel from the class
 	/// </summary>
@@ -22,9 +23,9 @@ namespace Magnum.Channels
 	public class InstanceChannelProvider<TConsumer, TChannel> :
 		ChannelProvider<TChannel>
 	{
-		private readonly ChannelAccessor<TConsumer, TChannel> _accessor;
-		private readonly Func<TChannel, Channel<TChannel>> _channelProvider;
-		private readonly Func<TChannel, TConsumer> _factory;
+		readonly ChannelAccessor<TConsumer, TChannel> _accessor;
+		readonly Func<TChannel, Channel<TChannel>> _channelProvider;
+		readonly Func<TChannel, TConsumer> _factory;
 
 		public InstanceChannelProvider(Func<TChannel, TConsumer> factory, ChannelAccessor<TConsumer, TChannel> accessor)
 		{
@@ -39,8 +40,10 @@ namespace Magnum.Channels
 		{
 			Channel<TChannel> channel = _accessor(_factory(message));
 			if (channel == null)
-				throw new InvalidOperationException("The channel on the consumer " + typeof (TConsumer).Name + " is null: "
-				                                    + typeof (TChannel).Name);
+			{
+				throw new InvalidOperationException("The channel on the consumer " + typeof(TConsumer).Name + " is null: "
+				                                    + typeof(TChannel).Name);
+			}
 
 			return channel;
 		}

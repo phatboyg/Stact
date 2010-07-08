@@ -99,6 +99,7 @@
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
     <Compile Include="Channels\Aggregator_Specs.cs" />
+    <Compile Include="Channels\Auction_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
     <Compile Include="Channels\ChannelSubscription_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />
