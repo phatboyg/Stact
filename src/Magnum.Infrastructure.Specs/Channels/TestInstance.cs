@@ -29,7 +29,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 		{
 			UpdateValueChannel = new ConsumerChannel<UpdateValue>(new SynchronousFiber(), m =>
 				{
-					Value = m.Value;
+					Value += m.Value;
 					m.MarkAsReceived();
 				});
 		}

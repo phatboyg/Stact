@@ -210,7 +210,7 @@ namespace Magnum.Channels.Visitors
 
 		protected virtual ChannelProvider<T> Visitor<T, TKey>(KeyedChannelProvider<T, TKey> provider)
 		{
-			Visit(provider.InstanceProvider);
+			Visit(provider.ChannelProvider);
 
 			return provider;
 		}

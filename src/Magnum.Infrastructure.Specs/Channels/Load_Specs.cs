@@ -13,7 +13,6 @@
 namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
@@ -27,52 +26,16 @@ namespace Magnum.Infrastructure.Specs.Channels
 	using TestFramework;
 
 
-	[TestFixture, Explicit]
+	[TestFixture]
+	[Explicit]
 	public class Generating_a_large_volume_of_messages_to_entities :
 		Given_an_empty_test_instance_table
 	{
-		List<UpdateValue> _updateValues;
-		Stopwatch _stopwatch;
-
-		[TestFixtureSetUp]
-		public void Should_perform_admirably()
+		[Test]
+		public void Output_timing()
 		{
-			var random = new Random();
-
-			int count = 5000;
-
-			_updateValues = Enumerable.Range(0, count)
-				.Select(x => random.Next(1, 1000))
-				.Select(x => x > 960 ? 1000 : x)
-				.Select(x => new UpdateValue(x, random.Next(1, 500000)/100m))
-				.ToList();
-
-			var input = new ChannelAdapter();
-			using (input.Connect(x =>
-				{
-					var instanceProvider = new DelegateInstanceProvider<TestInstance, UpdateValue>(m => new TestInstance(m.Id));
-
-					var channel = new NHibernateInstanceChannel<TestInstance, UpdateValue, int>(new ThreadPoolFiber(),
-					                                                                            SessionFactory,
-					                                                                            m => m.Id,
-					                                                                            m => m.UpdateValueChannel,
-					                                                                            instanceProvider);
-
-					x.AddChannel(channel);
-				}))
-			{
-				var complete = new Future<int>();
-				var latch = new CountdownLatch(count, complete.Complete);
-
-				_stopwatch = Stopwatch.StartNew();
-				UpdateValue.SetReceivedCallback(x => latch.CountDown());
-
-				_updateValues.Each(input.Send);
-
-				complete.WaitUntilCompleted(2.Minutes()).ShouldBeTrue();
-
-				_stopwatch.Stop();
-			}
+			Trace.WriteLine("Execution Time: " + _stopwatch.ElapsedMilliseconds + "ms");
+			Trace.WriteLine("Updates/Second: " + _count * 1000 / _stopwatch.ElapsedMilliseconds);
 		}
 
 		[Test]
@@ -83,17 +46,77 @@ namespace Magnum.Infrastructure.Specs.Channels
 				IList<TestInstance> list = session.CreateCriteria<TestInstance>().List<TestInstance>();
 
 				int rowCount = list.Count;
+				Trace.WriteLine("Rows stored in database: " + rowCount);
 
 				int expectedCount = _updateValues.GroupBy(x => x.Id).Count();
 
 				rowCount.ShouldEqual(expectedCount);
+
+
+				var join = _updateValues.GroupBy(x => x.Id).Join(list, x => x.Key, x => x.Id, (g, l) => new
+					{
+						g.Key,
+						Sum = g.Sum(v => v.Value),
+						l.Value
+					}).ToList();
+
+				join.Count.ShouldEqual(expectedCount);
+
+				join.Where(x => x.Sum == x.Value).Count().ShouldEqual(expectedCount);
+
 			}
 		}
 
-		[Test]
-		public void Output_timing()
+		List<UpdateValue> _updateValues;
+		Stopwatch _stopwatch;
+		int _count;
+
+		[TestFixtureSetUp]
+		public void Should_perform_admirably()
 		{
-			Trace.WriteLine("Execution Time: " + _stopwatch.ElapsedMilliseconds + "ms");
+			var random = new Random();
+
+			_count = 50000;
+
+			_updateValues = Enumerable.Range(0, _count)
+				.Select(x => random.Next(1, 1000))
+				.Select(x => x > 960 ? 1000 : x)
+				.Select(x => new UpdateValue(x, random.Next(1, 500000)/100m))
+				.ToList();
+
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
+				{
+					var instanceProvider = new DelegateInstanceProvider<TestInstance, UpdateValue>(m => new TestInstance(m.Id));
+
+					var delegateChannelProvider = new DelegateChannelProvider<UpdateValue>(msg =>
+						{
+							return new NHibernateInstanceChannel<TestInstance, UpdateValue, int>(new ThreadPoolFiber(),
+							                                                                     SessionFactory,
+							                                                                     m => m.Id,
+							                                                                     m => m.UpdateValueChannel,
+							                                                                     instanceProvider);
+						});
+
+					var keyedProvider = new KeyedChannelProvider<UpdateValue, int>(delegateChannelProvider, m => m.Id);
+
+					var channel = new InstanceChannel<UpdateValue>(keyedProvider);
+
+					x.AddChannel(channel);
+				}))
+			{
+				var complete = new Future<int>();
+				var latch = new CountdownLatch(_count, complete.Complete);
+
+				_stopwatch = Stopwatch.StartNew();
+				UpdateValue.SetReceivedCallback(x => latch.CountDown());
+
+				_updateValues.Each(input.Send);
+
+				complete.WaitUntilCompleted(2.Minutes()).ShouldBeTrue();
+
+				_stopwatch.Stop();
+			}
 		}
 	}
 }
