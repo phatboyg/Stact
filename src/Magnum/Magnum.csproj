@@ -122,6 +122,7 @@
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
+    <Compile Include="Channels\FastActivatorInstanceProvider.cs" />
     <Compile Include="Channels\InstanceProvider.cs" />
     <Compile Include="Channels\Internal\AsyncResult.cs" />
     <Compile Include="Channels\ChannelConnection.cs" />

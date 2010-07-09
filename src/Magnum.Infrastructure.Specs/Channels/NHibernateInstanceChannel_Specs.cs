@@ -25,12 +25,12 @@ namespace Magnum.Infrastructure.Specs.Channels
 	public class When_sending_a_message_to_an_nhibernate_instance_channel :
 		Given_an_nhibernate_session_factory
 	{
-		string _newValue;
+		decimal _newValue;
 
 		[When]
 		public void Sending_a_message_to_an_nhibernate_instance_channel()
 		{
-			_newValue = DateTime.Now.ToShortTimeString();
+			_newValue = new Random().Next(1, 500000)/100m;
 
 			using (ISession session = SessionFactory.OpenSession())
 			using (ITransaction transaction = session.BeginTransaction())
@@ -47,11 +47,23 @@ namespace Magnum.Infrastructure.Specs.Channels
 				{
 					var instanceProvider = new DelegateInstanceProvider<TestInstance, UpdateValue>(m => new TestInstance(m.Id));
 
-					var channel = new NHibernateInstanceChannel<TestInstance, UpdateValue, int>(new SynchronousFiber(), SessionFactory, m => m.Id,
-																				  m => m.UpdateValueChannel,
-																				  instanceProvider);
+					var channel = new NHibernateInstanceChannel<TestInstance, UpdateValue, int>(new SynchronousFiber(), SessionFactory,
+					                                                                            m => m.Id,
+					                                                                            m => m.UpdateValueChannel,
+					                                                                            instanceProvider);
 
 					x.AddChannel(channel);
+
+//					x.AddConsumerOf<UpdateValue>()
+//						.UsingInstance()
+//						.Of<TestInstance>()
+//						.OnChannel(i => i.UpdateValueChannel)
+//						.PersistedUsingNHibernate(() => SessionFactory)
+//						.WithId(m => m.Id)
+//						.OnProducerThread();
+//
+//						.StoredIn(() => SessionFactory, i => i.Id)
+//						.UseProducerThread();
 				}))
 			{
 				//

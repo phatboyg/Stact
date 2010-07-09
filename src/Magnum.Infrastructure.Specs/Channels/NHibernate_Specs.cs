@@ -55,4 +55,23 @@ namespace Magnum.Infrastructure.Specs.Channels
 				.BuildSessionFactory();
 		}
 	}
+
+
+	[Scenario]
+	public class Given_an_empty_test_instance_table :
+		Given_an_nhibernate_session_factory
+	{
+		[Given]
+		public void An_empty_test_instance_table()
+		{
+			using (ISession session = SessionFactory.OpenSession())
+			using (ITransaction transaction = session.BeginTransaction())
+			{
+				session.CreateQuery("Delete TestInstance").ExecuteUpdate();
+
+
+				transaction.Commit();
+			}
+		}
+	}
 }

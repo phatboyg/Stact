@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Specs.Channels
 {
+	using System;
 	using Fibers;
 	using Magnum.Channels;
 
@@ -26,13 +27,17 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 		protected TestInstance()
 		{
-			UpdateValueChannel = new ConsumerChannel<UpdateValue>(new SynchronousFiber(), m => Value = m.Value);
+			UpdateValueChannel = new ConsumerChannel<UpdateValue>(new SynchronousFiber(), m =>
+				{
+					Value = m.Value;
+					m.MarkAsReceived();
+				});
 		}
 
 		public virtual Channel<UpdateValue> UpdateValueChannel { get; private set; }
 
 		public virtual int Id { get; private set; }
-		public virtual string Value { get; set; }
+		public virtual decimal Value { get; set; }
 
 		public virtual bool Equals(TestInstance other)
 		{
@@ -63,13 +68,26 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 	public class UpdateValue
 	{
-		public UpdateValue(int id, string value)
+		static Action<UpdateValue> _received = _ => { };
+
+
+		public UpdateValue(int id, decimal value)
 		{
 			Id = id;
 			Value = value;
 		}
 
 		public int Id { get; private set; }
-		public string Value { get; private set; }
+		public decimal Value { get; private set; }
+
+		public static void SetReceivedCallback(Action<UpdateValue> callback)
+		{
+			_received = callback;
+		}
+
+		public void MarkAsReceived()
+		{
+			_received(this);
+		}
 	}
 }

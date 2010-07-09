@@ -14,29 +14,28 @@ namespace Magnum.Channels
 {
 	using System;
 	using Extensions;
+	using Reflection;
 
 
-	public class DelegateInstanceProvider<TInstance, TChannel> :
+	public class FastActivatorInstanceProvider<TInstance, TChannel> :
 		InstanceProvider<TInstance, TChannel>
 		where TInstance : class
 	{
-		readonly Func<TChannel, TInstance> _provider;
+		readonly object[] _args;
 
-		public DelegateInstanceProvider(Func<TChannel, TInstance> provider)
+		public FastActivatorInstanceProvider(params object[] args)
 		{
-			Guard.AgainstNull(provider);
-
-			_provider = provider;
+			_args = args ?? new object[] {};
 		}
 
 		public TInstance GetInstance(TChannel message)
 		{
-			TInstance instance = _provider(message);
+			TInstance instance = FastActivator<TInstance>.Create(_args);
 			if (instance == null)
 			{
 				throw new InvalidOperationException(
-					"The instance of type {0} was null for the message type {1}".FormatWith(typeof(TInstance).ToShortTypeName(),
-					                                                                        typeof(TChannel).ToShortTypeName()));
+					"Failed to create type {0} for the message type {1}".FormatWith(typeof(TInstance).ToShortTypeName(),
+					                                                                typeof(TChannel).ToShortTypeName()));
 			}
 
 			return instance;

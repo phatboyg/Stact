@@ -13,8 +13,6 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
-	using Extensions;
-	using Reflection;
 
 
 	public class InstanceChannelConfiguratorImpl<TChannel> :
@@ -31,9 +29,10 @@ namespace Magnum.Channels.Configuration.Internal
 			return _channelFactory.GetChannel();
 		}
 
-		public InstanceChannelConfigurator<TConsumer, TChannel> Of<TConsumer>(ChannelAccessor<TConsumer, TChannel> accessor)
+		public InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>(ChannelAccessor<TInstance, TChannel> accessor) 
+			where TInstance : class
 		{
-			var configurator = new InstanceChannelConfiguratorImpl<TConsumer, TChannel>(accessor);
+			var configurator = new InstanceChannelConfiguratorImpl<TInstance, TChannel>(accessor);
 
 			_channelFactory = configurator;
 
@@ -42,50 +41,63 @@ namespace Magnum.Channels.Configuration.Internal
 	}
 
 
-	public class InstanceChannelConfiguratorImpl<TConsumer, TChannel> :
-		InstanceChannelConfigurator<TConsumer, TChannel>,
+	public class InstanceChannelConfiguratorImpl<TInstance, TChannel> :
+		InstanceChannelConfigurator<TInstance, TChannel>,
 		ChannelFactory<TChannel>
+		where TInstance : class
 	{
-		readonly ChannelAccessor<TConsumer, TChannel> _accessor;
-		Func<TChannel, TConsumer> _factory = DefaultConsumerFactory;
+		readonly ChannelAccessor<TInstance, TChannel> _accessor;
+		Func<ChannelProvider<TChannel>> _providerFactory;
 
-		public InstanceChannelConfiguratorImpl(ChannelAccessor<TConsumer, TChannel> accessor)
+		public InstanceChannelConfiguratorImpl(ChannelAccessor<TInstance, TChannel> accessor)
 		{
 			_accessor = accessor;
 		}
 
 		public Channel<TChannel> GetChannel()
 		{
-			var instanceChannelProvider = new InstanceChannelProvider<TConsumer, TChannel>(_factory, _accessor);
+			ChannelProvider<TChannel> provider = _providerFactory == null ? GetDefaultProvider() : _providerFactory();
 
-			var instanceChannel = new InstanceChannel<TChannel>(instanceChannelProvider);
+			var instanceChannel = new InstanceChannel<TChannel>(provider);
 
 			return instanceChannel;
 		}
 
-		public void ObtainedBy(Func<TConsumer> consumerFactory)
+		public void ObtainedBy(Func<TInstance> consumerFactory)
 		{
-			_factory = m => consumerFactory();
+			_providerFactory = () =>
+				{
+					var instanceProvider = new DelegateInstanceProvider<TInstance, TChannel>(_ => consumerFactory());
+
+					return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, _accessor);
+				};
 		}
 
-		public void ObtainedBy(Func<TChannel, TConsumer> consumerFactory)
+		public void ObtainedBy(Func<TChannel, TInstance> consumerFactory)
 		{
-			_factory = consumerFactory;
+			_providerFactory = () =>
+				{
+					var instanceProvider = new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory);
+
+					return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, _accessor);
+				};
 		}
 
-		static TConsumer DefaultConsumerFactory(TChannel message)
+		public ChannelAccessor<TInstance, TChannel> ChannelAccessor
 		{
-			try
-			{
-				return FastActivator<TConsumer>.Create();
-			}
-			catch (Exception ex)
-			{
-				string errorMessage = "Failed to create consumer {0} for message {1} using default factory"
-					.FormatWith(typeof(TConsumer), typeof(TChannel));
+			get { return _accessor; }
+		}
 
-				throw new ChannelConfigurationException(errorMessage, ex);
-			}
+		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)
+		{
+			_providerFactory = providerFactory;
+		}
+
+		ChannelProvider<TChannel> GetDefaultProvider()
+		{
+			var instanceProvider = new FastActivatorInstanceProvider<TInstance, TChannel>();
+
+			return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, ChannelAccessor);
 		}
 	}
 }

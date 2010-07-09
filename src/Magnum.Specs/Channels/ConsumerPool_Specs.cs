@@ -84,6 +84,7 @@ namespace Magnum.Specs.Channels
 
 
 	public class ConsumerPool<TConsumer, TMessage, TKey>
+		where TConsumer : class
 	{
 		private readonly IConsumerDictionary<TKey, TConsumer> _dictionary;
 		private readonly ChannelAccessor<TConsumer, TMessage> _getChannel;

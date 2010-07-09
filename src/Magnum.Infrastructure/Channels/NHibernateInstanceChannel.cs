@@ -29,18 +29,19 @@ namespace Magnum.Infrastructure.Channels
 		where TInstance : class
 	{
 		readonly ChannelAccessor<TInstance, TChannel> _channelAccessor;
-		readonly InstanceProvider<TInstance, TChannel> _instanceProvider;
-		readonly KeyAccessor<TChannel, TKey> _messageKeyAccessor;
 		readonly Fiber _fiber;
+		readonly KeyAccessor<TChannel, TKey> _messageKeyAccessor;
+		readonly InstanceProvider<TInstance, TChannel> _missingInstanceProvider;
 		readonly ISessionFactory _sessionFactory;
 
-		public NHibernateInstanceChannel(Fiber fiber, ISessionFactory sessionFactory, KeyAccessor<TChannel, TKey> messageKeyAccessor,
+		public NHibernateInstanceChannel(Fiber fiber, ISessionFactory sessionFactory,
+		                                 KeyAccessor<TChannel, TKey> messageKeyAccessor,
 		                                 ChannelAccessor<TInstance, TChannel> channelAccessor,
-		                                 InstanceProvider<TInstance, TChannel> instanceProvider)
+		                                 InstanceProvider<TInstance, TChannel> missingInstanceProvider)
 		{
 			_fiber = fiber;
 			_sessionFactory = sessionFactory;
-			_instanceProvider = instanceProvider;
+			_missingInstanceProvider = missingInstanceProvider;
 			_channelAccessor = channelAccessor;
 			_messageKeyAccessor = messageKeyAccessor;
 		}
@@ -73,7 +74,7 @@ namespace Magnum.Infrastructure.Channels
 
 		TInstance SendToNewInstance(TChannel message)
 		{
-			TInstance instance = _instanceProvider.GetInstance(message);
+			TInstance instance = _missingInstanceProvider.GetInstance(message);
 
 			SendToInstanceChannel(instance, message);
 

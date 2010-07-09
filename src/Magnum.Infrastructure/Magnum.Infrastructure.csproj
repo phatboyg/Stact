@@ -96,6 +96,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Channels\ExtensionsForNHibernateInstanceChannel.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel.cs" />
     <Compile Include="Data\NHibernateTransaction.cs" />
     <Compile Include="Data\NHibernateUnitOfWork.cs" />
