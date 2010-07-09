@@ -29,10 +29,10 @@ namespace Magnum.Channels.Configuration.Internal
 			return _channelFactory.GetChannel();
 		}
 
-		public InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>(ChannelAccessor<TInstance, TChannel> accessor) 
+		public InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>() 
 			where TInstance : class
 		{
-			var configurator = new InstanceChannelConfiguratorImpl<TInstance, TChannel>(accessor);
+			var configurator = new InstanceChannelConfiguratorImpl<TInstance, TChannel>();
 
 			_channelFactory = configurator;
 
@@ -46,58 +46,23 @@ namespace Magnum.Channels.Configuration.Internal
 		ChannelFactory<TChannel>
 		where TInstance : class
 	{
-		readonly ChannelAccessor<TInstance, TChannel> _accessor;
 		Func<ChannelProvider<TChannel>> _providerFactory;
-
-		public InstanceChannelConfiguratorImpl(ChannelAccessor<TInstance, TChannel> accessor)
-		{
-			_accessor = accessor;
-		}
 
 		public Channel<TChannel> GetChannel()
 		{
-			ChannelProvider<TChannel> provider = _providerFactory == null ? GetDefaultProvider() : _providerFactory();
+			if (_providerFactory == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
+
+			ChannelProvider<TChannel> provider =  _providerFactory();
 
 			var instanceChannel = new InstanceChannel<TChannel>(provider);
 
 			return instanceChannel;
 		}
 
-		public void ObtainedBy(Func<TInstance> consumerFactory)
-		{
-			_providerFactory = () =>
-				{
-					var instanceProvider = new DelegateInstanceProvider<TInstance, TChannel>(_ => consumerFactory());
-
-					return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, _accessor);
-				};
-		}
-
-		public void ObtainedBy(Func<TChannel, TInstance> consumerFactory)
-		{
-			_providerFactory = () =>
-				{
-					var instanceProvider = new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory);
-
-					return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, _accessor);
-				};
-		}
-
-		public ChannelAccessor<TInstance, TChannel> ChannelAccessor
-		{
-			get { return _accessor; }
-		}
-
 		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
-		}
-
-		ChannelProvider<TChannel> GetDefaultProvider()
-		{
-			var instanceProvider = new FastActivatorInstanceProvider<TInstance, TChannel>();
-
-			return new InstanceChannelProvider<TInstance, TChannel>(instanceProvider, ChannelAccessor);
 		}
 	}
 }

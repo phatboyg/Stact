@@ -17,7 +17,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 	public interface InstanceChannelConfigurator<TChannel>
 	{
-		InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>(ChannelAccessor<TInstance, TChannel> accessor)
+		InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>()
 			where TInstance : class;
 	}
 
@@ -30,10 +30,14 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface InstanceChannelConfigurator<TInstance, TChannel>
 		where TInstance : class
 	{
-		void ObtainedBy(Func<TInstance> consumerFactory);
+		void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory);
+	}
 
-		void ObtainedBy(Func<TChannel, TInstance> consumerFactory);
 
-		ChannelAccessor<TInstance, TChannel> ChannelAccessor { get; }
+	public interface InstanceChannelProviderConfigurator<TInstance, TChannel>
+		where TInstance : class
+	{
+		InstanceChannelProviderConfigurator<TInstance, TChannel> OnChannel(
+			ChannelAccessor<TInstance, TChannel> accessor);
 	}
 }

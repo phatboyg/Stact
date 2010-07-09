@@ -72,8 +72,9 @@ namespace Magnum.Specs.Channels
 			_connection = _input.Connect(x =>
 				{
 					x.AddConsumerOf<Bid>()
-						.UsingInstance().Of<Auction>(auction => auction.BidChannel)
-						.ObtainedBy(m => new Auction(m.AuctionId));
+						.UsingInstance().Of<Auction>()
+						.ObtainedBy(m => new Auction(m.AuctionId))
+						.OnChannel(auction => auction.BidChannel);
 				});
 
 		}

@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="Channels\Load_Specs.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel_Specs.cs" />
+    <Compile Include="Channels\NHibernateSubscription_Specs.cs" />
     <Compile Include="Channels\NHibernate_Specs.cs" />
     <Compile Include="Channels\TestInstance.cs" />
     <Compile Include="Channels\TestInstanceMap.cs" />

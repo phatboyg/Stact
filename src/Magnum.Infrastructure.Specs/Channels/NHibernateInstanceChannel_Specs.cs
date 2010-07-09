@@ -57,13 +57,17 @@ namespace Magnum.Infrastructure.Specs.Channels
 //					x.AddConsumerOf<UpdateValue>()
 //						.UsingInstance()
 //						.Of<TestInstance>()
-//						.OnChannel(i => i.UpdateValueChannel)
-//						.PersistedUsingNHibernate(() => SessionFactory)
-//						.WithId(m => m.Id)
-//						.OnProducerThread();
-//
-//						.StoredIn(() => SessionFactory, i => i.Id)
-//						.UseProducerThread();
+//						.ObtainedBy(m => new TestInstance(m.Id))
+//						.OnChannel(i => i.UpdateValueChannel);
+
+					x.AddConsumerOf<UpdateValue>()
+						.UsingInstance()
+						.Of<TestInstance>()
+						.PersistedUsingNHibernate()
+						.OnChannel(m => m.UpdateValueChannel)
+						.IdentifiedByMessageProperty(m => m.Id)
+						.CreateMissingInstanceBy(m => new TestInstance(m.Id));
+
 				}))
 			{
 				//

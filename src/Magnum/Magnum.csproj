@@ -118,6 +118,7 @@
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForWcfChannels.cs" />
     <Compile Include="Channels\Configuration\Internal\AbstractChannelConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />

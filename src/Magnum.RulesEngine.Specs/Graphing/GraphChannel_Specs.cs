@@ -44,7 +44,9 @@ namespace Magnum.RulesEngine.Specs.Graphing
 
 					x.AddConsumerOf<SomeEvent>()
 						.UsingInstance()
-						.Of<MyConsumer>(c => c.Input);
+						.Of<MyConsumer>()
+						.ObtainedBy(m => new MyConsumer())
+						.OnChannel(c => c.Input);
 
 					x.AddConsumerOf<AnyEvent>()
 						.BufferFor(5.Minutes())

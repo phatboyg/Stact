@@ -97,6 +97,8 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Channels\ExtensionsForNHibernateInstanceChannel.cs" />
+    <Compile Include="Channels\NHibernateChannelProviderConfigurator.cs" />
+    <Compile Include="Channels\NHibernateChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel.cs" />
     <Compile Include="Data\NHibernateTransaction.cs" />
     <Compile Include="Data\NHibernateUnitOfWork.cs" />

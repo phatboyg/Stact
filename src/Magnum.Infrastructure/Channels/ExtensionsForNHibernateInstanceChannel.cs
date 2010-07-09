@@ -22,6 +22,46 @@ namespace Magnum.Infrastructure.Channels
 
 	public static class ExtensionsForNHibernateInstanceChannel
 	{
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel> PersistedUsingNHibernate<TInstance, TChannel>(
+			this InstanceChannelConfigurator<TInstance, TChannel> configurator)
+			where TInstance : class
+		{
+			var providerConfigurator = new NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel>();
+
+			configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
+
+			return providerConfigurator;
+		}
+
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel> CreateMissingInstanceBy<TInstance, TChannel>(
+					this NHibernateChannelProviderConfigurator<TInstance, TChannel> configurator, Func<TInstance> consumerFactory)
+					where TInstance : class
+		{
+			return CreateMissingInstanceBy(configurator, _ => consumerFactory());
+		}
+
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel> CreateMissingInstanceBy<TInstance, TChannel>(
+			this NHibernateChannelProviderConfigurator<TInstance, TChannel> configurator, Func<TChannel, TInstance> consumerFactory)
+			where TInstance : class
+		{
+			Func<InstanceProvider<TInstance, TChannel>> instanceProvider =
+				() => new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory);
+
+			configurator.SetMissingInstanceFactory(instanceProvider);
+
+			return configurator;
+		}
+
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel> CreateMissingInstanceBy<TInstance, TChannel>(
+			this NHibernateChannelProviderConfigurator<TInstance, TChannel> configurator,
+			InstanceProvider<TInstance, TChannel> instanceProvider)
+			where TInstance : class
+		{
+			configurator.SetMissingInstanceFactory(() => instanceProvider);
+
+			return configurator;
+		}
+
 //		public static InstanceChannelConfigurator<TInstance,TChannel> StoredIn<TInstance, TChannel, TKey>(
 //			this InstanceChannelConfigurator<TInstance, TChannel> configurator,
 //			Func<ISessionFactory> sessionFactoryFactory,
