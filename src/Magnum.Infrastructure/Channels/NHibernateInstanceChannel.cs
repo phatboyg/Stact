@@ -30,17 +30,18 @@ namespace Magnum.Infrastructure.Channels
 	{
 		readonly ChannelAccessor<TInstance, TChannel> _channelAccessor;
 		readonly Fiber _fiber;
+		readonly SessionProvider<TChannel> _sessionProvider;
 		readonly KeyAccessor<TChannel, TKey> _messageKeyAccessor;
 		readonly InstanceProvider<TInstance, TChannel> _missingInstanceProvider;
-		readonly ISessionFactory _sessionFactory;
 
-		public NHibernateInstanceChannel(Fiber fiber, ISessionFactory sessionFactory,
+		public NHibernateInstanceChannel(Fiber fiber, 
+										 SessionProvider<TChannel> sessionProvider,
 		                                 KeyAccessor<TChannel, TKey> messageKeyAccessor,
 		                                 ChannelAccessor<TInstance, TChannel> channelAccessor,
 		                                 InstanceProvider<TInstance, TChannel> missingInstanceProvider)
 		{
 			_fiber = fiber;
-			_sessionFactory = sessionFactory;
+			_sessionProvider = sessionProvider;
 			_missingInstanceProvider = missingInstanceProvider;
 			_channelAccessor = channelAccessor;
 			_messageKeyAccessor = messageKeyAccessor;
@@ -53,7 +54,7 @@ namespace Magnum.Infrastructure.Channels
 
 		void HandleSend(TChannel message)
 		{
-			using (ISession session = _sessionFactory.OpenSession())
+			using (ISession session = _sessionProvider(message))
 			using (ITransaction transaction = session.BeginTransaction())
 			{
 				TKey key = _messageKeyAccessor(message);

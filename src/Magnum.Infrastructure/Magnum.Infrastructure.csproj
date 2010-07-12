@@ -96,10 +96,12 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Channels\ExtensionsForNHibernateInstanceChannel.cs" />
-    <Compile Include="Channels\NHibernateChannelProviderConfigurator.cs" />
-    <Compile Include="Channels\NHibernateChannelProviderConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForNHibernateInstanceChannel.cs" />
+    <Compile Include="Channels\Configuration\NHibernateChannelProviderConfigurator.cs" />
+    <Compile Include="Channels\Configuration\NHibernateChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel.cs" />
+    <Compile Include="Channels\NHibernateInstanceChannelProvider.cs" />
+    <Compile Include="Channels\SessionProvider.cs" />
     <Compile Include="Data\NHibernateTransaction.cs" />
     <Compile Include="Data\NHibernateUnitOfWork.cs" />
     <Compile Include="Data\NHibernateRepository.cs" />

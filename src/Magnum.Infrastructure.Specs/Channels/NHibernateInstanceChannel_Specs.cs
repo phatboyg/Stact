@@ -13,8 +13,6 @@
 namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System;
-	using Fibers;
-	using Infrastructure.Channels;
 	using Magnum.Channels;
 	using NHibernate;
 	using NUnit.Framework;
@@ -45,29 +43,16 @@ namespace Magnum.Infrastructure.Specs.Channels
 			var input = new ChannelAdapter();
 			using (input.Connect(x =>
 				{
-					var instanceProvider = new DelegateInstanceProvider<TestInstance, UpdateValue>(m => new TestInstance(m.Id));
-
-					var channel = new NHibernateInstanceChannel<TestInstance, UpdateValue, int>(new SynchronousFiber(), SessionFactory,
-					                                                                            m => m.Id,
-					                                                                            m => m.UpdateValueChannel,
-					                                                                            instanceProvider);
-
-					x.AddChannel(channel);
-
-//					x.AddConsumerOf<UpdateValue>()
-//						.UsingInstance()
-//						.Of<TestInstance>()
-//						.ObtainedBy(m => new TestInstance(m.Id))
-//						.OnChannel(i => i.UpdateValueChannel);
-
 					x.AddConsumerOf<UpdateValue>()
 						.UsingInstance()
 						.Of<TestInstance>()
+						.DistributedBy(msg => msg.Id)
 						.PersistedUsingNHibernate()
-						.OnChannel(m => m.UpdateValueChannel)
 						.IdentifiedByMessageProperty(m => m.Id)
+						.UsingSessionProvider(m => SessionFactory.OpenSession())
+						.OnChannel(m => m.UpdateValueChannel)
+						.UseProducerThread()
 						.CreateMissingInstanceBy(m => new TestInstance(m.Id));
-
 				}))
 			{
 				//

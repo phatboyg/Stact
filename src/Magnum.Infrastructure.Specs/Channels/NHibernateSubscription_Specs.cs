@@ -13,8 +13,8 @@
 namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System.Linq;
-	using Infrastructure.Channels;
 	using Magnum.Channels;
+	using NHibernate;
 	using NUnit.Framework;
 	using TestFramework;
 
@@ -31,9 +31,11 @@ namespace Magnum.Infrastructure.Specs.Channels
 					x.AddConsumerOf<UpdateValue>()
 						.UsingInstance()
 						.Of<TestInstance>()
+						.DistributedBy(m => m.Id)
 						.PersistedUsingNHibernate()
-						.OnChannel(m => m.UpdateValueChannel)
 						.IdentifiedByMessageProperty(m => m.Id)
+						.UsingSessionProvider(m => (ISession)null)
+						.OnChannel(m => m.UpdateValueChannel)
 						.CreateMissingInstanceBy(m => new TestInstance(m.Id));
 				}))
 			{

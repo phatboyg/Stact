@@ -19,6 +19,8 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 	public class TestInstance
 	{
+		Fiber _fiber;
+
 		public TestInstance(int id)
 			: this()
 		{
@@ -27,17 +29,21 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 		protected TestInstance()
 		{
-			UpdateValueChannel = new ConsumerChannel<UpdateValue>(new SynchronousFiber(), m =>
-				{
-					Value += m.Value;
-					m.MarkAsReceived();
-				});
+			_fiber = new SynchronousFiber();
+
+			UpdateValueChannel = new ConsumerChannel<UpdateValue>(_fiber, HandleUpdateValue);
 		}
 
 		public virtual Channel<UpdateValue> UpdateValueChannel { get; private set; }
 
 		public virtual int Id { get; private set; }
 		public virtual decimal Value { get; set; }
+
+		void HandleUpdateValue(UpdateValue m)
+		{
+			Value += m.Value;
+			m.MarkAsReceived();
+		}
 
 		public virtual bool Equals(TestInstance other)
 		{

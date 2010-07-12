@@ -12,23 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Channels
 {
-	using System;
-	using Magnum.Channels;
+	using NHibernate;
+
 
 	/// <summary>
-	/// Configures an NHibernate channel provider
+	/// Defines a delegate that returns an NHibernate session appropriate for the message
+	/// that was received.
 	/// </summary>
-	/// <typeparam name="TInstance"></typeparam>
-	/// <typeparam name="TChannel"></typeparam>
-	public interface NHibernateChannelProviderConfigurator<TInstance, TChannel>
-		where TInstance : class
-	{
-		void SetMissingInstanceFactory(Func<InstanceProvider<TInstance, TChannel>> providerFactory);
-
-		NHibernateChannelProviderConfigurator<TInstance, TChannel> OnChannel(
-			ChannelAccessor<TInstance, TChannel> accessor);
-
-		NHibernateChannelProviderConfigurator<TInstance, TChannel> IdentifiedByMessageProperty(
-			Func<TChannel, object> accessor);
-	}
+	/// <typeparam name="T"></typeparam>
+	/// <param name="message"></param>
+	/// <returns></returns>
+	public delegate ISession SessionProvider<T>(T message);
 }
