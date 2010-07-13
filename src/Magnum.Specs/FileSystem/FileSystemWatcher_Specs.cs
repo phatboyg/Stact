@@ -40,7 +40,7 @@ namespace Magnum.Specs.FileSystem
             _filename = "test.dat";
             _path = Path.Combine(_baseDirectory, _filename);
 
-            File.Delete(_path);
+            System.IO.File.Delete(_path);
 
             _listener = new Future<FileCreated>();
 
@@ -49,7 +49,7 @@ namespace Magnum.Specs.FileSystem
 
 			using (var subscription = _channel.Connect(x => x.AddConsumerOf<FileCreated>().UsingConsumer(m => _listener.Complete(m))))
             {
-                File.Create(_path);
+                System.IO.File.Create(_path);
 
                 _listener.WaitUntilCompleted(10.Seconds());
             }

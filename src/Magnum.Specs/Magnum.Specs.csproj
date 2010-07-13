@@ -152,6 +152,9 @@
     <Compile Include="Extensions\GenericExtension_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\DotNetFileSystem_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\LocalFileSystemLocator_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\ZippedFile_specs.cs" />
     <Compile Include="FileSystem\PollingFileSystemWatcher_Specs.cs" />
     <Compile Include="FileSystem\FileSystemWatcher_Specs.cs" />
     <Compile Include="Framework\AssertExtension_Specs.cs" />
@@ -252,6 +255,10 @@
     <Compile Include="ValueProviders\CommandLine_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Magnum.FileSystem\Magnum.FileSystem.csproj">
+      <Project>{17018E20-C3AE-4E82-AB5C-40CE810345C9}</Project>
+      <Name>Magnum.FileSystem</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
       <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>
       <Name>Magnum.TestFramework</Name>
@@ -288,6 +295,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configuration\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="FileSystem\FileSpecs\sample.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

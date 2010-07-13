@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Magnum.FileSystem</RootNamespace>
     <AssemblyName>Magnum.FileSystem</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\lib\DotNetZip\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -38,7 +42,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurrentWorkingDirectory.cs" />
+    <Compile Include="Directory.cs" />
+    <Compile Include="DirectoryName.cs" />
+    <Compile Include="DotNetCurrentWorkingDirectory.cs" />
+    <Compile Include="DotNetDirectory.cs" />
+    <Compile Include="DotNetFile.cs" />
+    <Compile Include="DotNetFileSystem.cs" />
+    <Compile Include="DotNetInstallationDirectory.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="FileName.cs" />
+    <Compile Include="FileSystem.cs" />
+    <Compile Include="FileSystemLocator.cs" />
+    <Compile Include="InstallationDirectory.cs" />
+    <Compile Include="Internal\AbsoluteDirectoryName.cs" />
+    <Compile Include="Internal\AbsoluteFileName.cs" />
+    <Compile Include="Internal\AbsolutePathName.cs" />
+    <Compile Include="Internal\RelativeDirectoryName.cs" />
+    <Compile Include="Internal\RelativeFileName.cs" />
+    <Compile Include="Internal\RelativePathName.cs" />
+    <Compile Include="LocalFileSystemLocator.cs" />
+    <Compile Include="PathName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Zip\ZipDirectoryName.cs" />
+    <Compile Include="Zip\ZipFileDirectory.cs" />
+    <Compile Include="Zip\ZipFileName.cs" />
+    <Compile Include="Zip\ZipPathName.cs" />
+    <Compile Include="Zip\ZippedDirectory.cs" />
+    <Compile Include="Zip\ZippedFile.cs" />
+    <Compile Include="Zip\ZippedPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Magnum\Magnum.csproj">
