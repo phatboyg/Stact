@@ -75,7 +75,7 @@ namespace Magnum.FileSystem
 				.SingleOrDefault();
 
 			if (file == null)
-				throw new InvalidOperationException("Could not get file: " + childName);
+				throw new InvalidOperationException("Could not get directory: " + childName);
 
 			if (Path.GetExtension(file.Name.GetName()) == ".zip")
 			{
