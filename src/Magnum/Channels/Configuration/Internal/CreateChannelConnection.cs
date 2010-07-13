@@ -10,21 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 
+
 	/// <summary>
-	/// Contains the changes made by a connection to a channel so that they can be 
-	/// removed when the connections are no longer required.
+	/// Allows channels and disposable items to be added to the connection
 	/// </summary>
-	public interface ChannelConnection :
-		IDisposable
+	public interface CreateChannelConnection
 	{
 		/// <summary>
-		/// Disconnects any channels and/or consumers that were added by a Connect
-		/// to a channel.
+		/// Adds a channel to the connection
 		/// </summary>
-		void Disconnect();
+		/// <param name="channel"></param>
+		void AddChannel(Channel channel);
+
+		/// <summary>
+		/// Adds a disposable reference to the connection
+		/// </summary>
+		/// <param name="disposable"></param>
+		void AddDisposable(IDisposable disposable);
 	}
 }

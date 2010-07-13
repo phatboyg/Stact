@@ -17,9 +17,10 @@ namespace Magnum.Channels.Visitors
 	using Logging;
 	using Reflection;
 
+
 	public class ChannelVisitor
 	{
-		private readonly ILogger _log = Logger.GetLogger<ChannelVisitor>();
+		readonly ILogger _log = Logger.GetLogger<ChannelVisitor>();
 
 		public virtual Channel<T> Visit<T>(Channel<T> channel)
 		{
@@ -47,6 +48,11 @@ namespace Magnum.Channels.Visitors
 			InterceptorFactory<T> result = this.FastInvoke<ChannelVisitor, InterceptorFactory<T>>("Visitor", factory);
 
 			return result;
+		}
+
+		protected virtual Channel<T> Visitor<T>(SelectiveConsumerChannel<T> channel)
+		{
+			return channel;
 		}
 
 		protected virtual Channel<T> Visitor<T>(ConsumerChannel<T> channel)
@@ -111,6 +117,13 @@ namespace Magnum.Channels.Visitors
 		}
 
 		protected virtual Channel<ICollection<T>> Visitor<T>(LastChannel<T> channel)
+		{
+			Visit(channel.Output);
+
+			return channel;
+		}
+
+		protected virtual Channel Visitor<T>(AsyncResultChannel channel)
 		{
 			Visit(channel.Output);
 
@@ -185,6 +198,7 @@ namespace Magnum.Channels.Visitors
 
 		protected virtual ChannelProvider<TChannel> Visitor<TConsumer, TChannel>(
 			InstanceChannelProvider<TConsumer, TChannel> provider)
+			where TConsumer : class
 		{
 			return provider;
 		}
@@ -196,7 +210,7 @@ namespace Magnum.Channels.Visitors
 
 		protected virtual ChannelProvider<T> Visitor<T, TKey>(KeyedChannelProvider<T, TKey> provider)
 		{
-			Visit(provider.InstanceProvider);
+			Visit(provider.ChannelProvider);
 
 			return provider;
 		}

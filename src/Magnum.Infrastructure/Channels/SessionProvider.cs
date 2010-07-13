@@ -10,21 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Infrastructure.Channels
 {
-	using System;
+	using NHibernate;
+
 
 	/// <summary>
-	/// Contains the changes made by a connection to a channel so that they can be 
-	/// removed when the connections are no longer required.
+	/// Defines a delegate that returns an NHibernate session appropriate for the message
+	/// that was received.
 	/// </summary>
-	public interface ChannelConnection :
-		IDisposable
-	{
-		/// <summary>
-		/// Disconnects any channels and/or consumers that were added by a Connect
-		/// to a channel.
-		/// </summary>
-		void Disconnect();
-	}
+	/// <typeparam name="T"></typeparam>
+	/// <param name="message"></param>
+	/// <returns></returns>
+	public delegate ISession SessionProvider<T>(T message);
 }

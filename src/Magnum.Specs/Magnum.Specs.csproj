@@ -99,6 +99,7 @@
     <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
     <Compile Include="BehaviorTest.cs" />
     <Compile Include="Channels\Aggregator_Specs.cs" />
+    <Compile Include="Channels\Auction_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
     <Compile Include="Channels\ChannelSubscription_Specs.cs" />
     <Compile Include="Channels\ChannelVisitor_Specs.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Channels\SynchronizationContext_Specs.cs" />
     <Compile Include="Channels\ThreadPoolChannel_Specs.cs" />
     <Compile Include="Channels\UntypedChannelSubscription_Specs.cs" />
+    <Compile Include="Channels\WcfSubscription_Specs.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddFileCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddRemoteRepositoryCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />

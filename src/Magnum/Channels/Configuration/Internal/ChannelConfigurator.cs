@@ -10,19 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration
+namespace Magnum.Channels.Configuration.Internal
 {
-	using System.Collections.Generic;
-
-
 	/// <summary>
 	/// Configures a channel on an untyped channel
 	/// </summary>
 	public interface ChannelConfigurator :
 		Configurator
 	{
-		IEnumerable<Channel> Configure(UntypedChannel channel);
+		void Configure(CreateChannelConnection connection, UntypedChannel channel);
 	}
+
 
 	/// <summary>
 	/// Configures a channel on a typed channel
@@ -31,6 +29,6 @@ namespace Magnum.Channels.Configuration
 	public interface ChannelConfigurator<T> :
 		Configurator
 	{
-		IEnumerable<Channel> Configure(Channel<T> channel);
+		void Configure(CreateChannelConnection connection, Channel<T> channel);
 	}
 }

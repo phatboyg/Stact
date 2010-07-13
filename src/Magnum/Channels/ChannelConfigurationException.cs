@@ -16,6 +16,9 @@ namespace Magnum.Channels
 	using System.Runtime.Serialization;
 	using Extensions;
 
+	/// <summary>
+	/// Thrown when an invalid configuration is supplied when configuring a channel
+	/// </summary>
 	[Serializable]
 	public class ChannelConfigurationException :
 		Exception

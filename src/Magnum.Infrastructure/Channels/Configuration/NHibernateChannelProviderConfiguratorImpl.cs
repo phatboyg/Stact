@@ -1,0 +1,116 @@
+﻿// Copyright 2007-2008 The Apache Software Foundation.
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+namespace Magnum.Infrastructure.Channels.Configuration
+{
+	using System;
+	using Extensions;
+	using Magnum.Channels;
+	using Magnum.Channels.Configuration.Internal;
+
+
+	public class NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel> :
+		NHibernateChannelProviderConfigurator<TInstance, TChannel>
+		where TInstance : class
+	{
+		readonly InstanceChannelConfigurator<TInstance, TChannel> _configurator;
+
+		public NHibernateChannelProviderConfiguratorImpl(InstanceChannelConfigurator<TInstance, TChannel> configurator)
+		{
+			_configurator = configurator;
+		}
+
+		public NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> IdentifiedByMessageProperty<TKey>(
+			KeyAccessor<TChannel, TKey> accessor)
+		{
+			var providerConfigurator = new NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey>(accessor);
+
+			_configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
+
+			return providerConfigurator;
+		}
+	}
+
+
+	public class NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey> :
+		FiberModelConfigurator<NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey>>,
+		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey>
+		where TInstance : class
+	{
+		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
+		ChannelAccessor<TInstance, TChannel> _accessor;
+		Func<InstanceProvider<TInstance, TChannel>> _missingInstanceProvider;
+		SessionProvider<TChannel> _sessionProvider;
+
+		public NHibernateChannelProviderConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
+		{
+			_keyAccessor = keyAccessor;
+		}
+
+		public NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> OnChannel(
+			ChannelAccessor<TInstance, TChannel> accessor)
+		{
+			_accessor = accessor;
+
+			return this;
+		}
+
+		public NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UsingSessionProvider(
+			SessionProvider<TChannel> sessionProvider)
+		{
+			_sessionProvider = sessionProvider;
+
+			return this;
+		}
+
+		public void SetMissingInstanceFactory(Func<InstanceProvider<TInstance, TChannel>> providerFactory)
+		{
+			_missingInstanceProvider = providerFactory;
+		}
+
+		public ChannelProvider<TChannel> GetChannelProvider()
+		{
+			if (_accessor == null)
+			{
+				throw new ChannelConfigurationException(typeof(TChannel),
+				                                        "No channel accessor was specified for NHibernate instance: "
+				                                        + typeof(TInstance).ToShortTypeName());
+			}
+			if (_keyAccessor == null)
+			{
+				throw new ChannelConfigurationException(typeof(TChannel),
+				                                        "No message key accessor was specified for NHibernate instance: "
+				                                        + typeof(TInstance).ToShortTypeName());
+			}
+			if (_missingInstanceProvider == null)
+			{
+				throw new ChannelConfigurationException(typeof(TChannel),
+				                                        "No missing instance provider specified for NHibernate instance: "
+				                                        + typeof(TInstance).ToShortTypeName());
+			}
+			if (_sessionProvider == null)
+			{
+				throw new ChannelConfigurationException(typeof(TChannel),
+				                                        "No NHibernate ISession provider specified for NHibernate instance: "
+				                                        + typeof(TInstance).ToShortTypeName());
+			}
+
+			var channelProvider = new NHibernateInstanceChannelProvider<TInstance, TChannel, TKey>(_fiberFactory,
+			                                                                                       _sessionProvider,
+			                                                                                       _keyAccessor,
+			                                                                                       _accessor,
+			                                                                                       _missingInstanceProvider());
+
+			return channelProvider;
+		}
+	}
+}

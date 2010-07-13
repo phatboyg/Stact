@@ -13,7 +13,8 @@
 namespace Magnum.Channels
 {
 	using System;
-	using System.Threading;
+	using Internal;
+
 
 	/// <summary>
 	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
@@ -21,45 +22,18 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The channel type supported</typeparam>
 	public class AsyncResultChannel :
-		UntypedChannel,
-		IAsyncResult
+		AsyncResult,
+		UntypedChannel
 	{
-		private readonly AsyncCallback _callback;
-
-		private readonly object _state;
-		private volatile bool _completed;
-
 		public AsyncResultChannel(UntypedChannel output, AsyncCallback callback, object state)
+			: base(callback, state)
 		{
 			Guard.AgainstNull(output, "output");
-			Guard.AgainstNull(callback, "callback");
 
 			Output = output;
-			_callback = callback;
-			_state = state;
 		}
 
 		public UntypedChannel Output { get; private set; }
-
-		public bool IsCompleted
-		{
-			get { return _completed; }
-		}
-
-		public WaitHandle AsyncWaitHandle
-		{
-			get { throw new NotSupportedException("Wait handles are not supported by the channel framework"); }
-		}
-
-		public object AsyncState
-		{
-			get { return _state; }
-		}
-
-		public bool CompletedSynchronously
-		{
-			get { return false; }
-		}
 
 		public void Send<T>(T message)
 		{
@@ -67,14 +41,8 @@ namespace Magnum.Channels
 
 			Complete();
 		}
-
-		private void Complete()
-		{
-			_completed = true;
-
-			_callback(this);
-		}
 	}
+
 
 	/// <summary>
 	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
@@ -82,22 +50,15 @@ namespace Magnum.Channels
 	/// </summary>
 	/// <typeparam name="T">The channel type supported</typeparam>
 	public class AsyncResultChannel<T> :
-		Channel<T>,
-		IAsyncResult
+		AsyncResult,
+		Channel<T>
 	{
-		private readonly AsyncCallback _callback;
-
-		private readonly object _state;
-		private volatile bool _completed;
-
 		public AsyncResultChannel(Channel<T> output, AsyncCallback callback, object state)
+			: base(callback, state)
 		{
 			Guard.AgainstNull(output, "output");
-			Guard.AgainstNull(callback, "callback");
 
 			Output = output;
-			_callback = callback;
-			_state = state;
 		}
 
 		public Channel<T> Output { get; private set; }
@@ -107,33 +68,6 @@ namespace Magnum.Channels
 			Output.Send(message);
 
 			Complete();
-		}
-
-		public bool IsCompleted
-		{
-			get { return _completed; }
-		}
-
-		public WaitHandle AsyncWaitHandle
-		{
-			get { throw new NotSupportedException("Wait handles are not supported by the channel framework"); }
-		}
-
-		public object AsyncState
-		{
-			get { return _state; }
-		}
-
-		public bool CompletedSynchronously
-		{
-			get { return false; }
-		}
-
-		private void Complete()
-		{
-			_completed = true;
-
-			_callback(this);
 		}
 	}
 }

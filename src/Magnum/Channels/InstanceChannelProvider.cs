@@ -13,34 +13,42 @@
 namespace Magnum.Channels
 {
 	using System;
+	using Extensions;
+
 
 	/// <summary>
-	/// Creates an instance of a class and returns the channel from the class
+	/// Gets an instance of a class from the InstanceProvider and returns the channel
+	/// from that class
 	/// </summary>
-	/// <typeparam name="TConsumer">The consumer type</typeparam>
+	/// <typeparam name="TInstance">The instance type</typeparam>
 	/// <typeparam name="TChannel">The channel type</typeparam>
-	public class InstanceChannelProvider<TConsumer, TChannel> :
+	public class InstanceChannelProvider<TInstance, TChannel> :
 		ChannelProvider<TChannel>
+		where TInstance : class
 	{
-		private readonly ChannelAccessor<TConsumer, TChannel> _accessor;
-		private readonly Func<TChannel, Channel<TChannel>> _channelProvider;
-		private readonly Func<TChannel, TConsumer> _factory;
+		readonly ChannelAccessor<TInstance, TChannel> _accessor;
+		readonly InstanceProvider<TInstance, TChannel> _instanceProvider;
 
-		public InstanceChannelProvider(Func<TChannel, TConsumer> factory, ChannelAccessor<TConsumer, TChannel> accessor)
+		public InstanceChannelProvider(InstanceProvider<TInstance, TChannel> instanceProvider,
+		                               ChannelAccessor<TInstance, TChannel> accessor)
 		{
-			Guard.AgainstNull(factory);
+			Guard.AgainstNull(instanceProvider);
 			Guard.AgainstNull(accessor);
 
+			_instanceProvider = instanceProvider;
 			_accessor = accessor;
-			_factory = factory;
 		}
 
 		public Channel<TChannel> GetChannel(TChannel message)
 		{
-			Channel<TChannel> channel = _accessor(_factory(message));
+			TInstance instance = _instanceProvider.GetInstance(message);
+
+			Channel<TChannel> channel = _accessor(instance);
 			if (channel == null)
-				throw new InvalidOperationException("The channel on the consumer " + typeof (TConsumer).Name + " is null: "
-				                                    + typeof (TChannel).Name);
+			{
+				throw new InvalidOperationException("The channel on the consumer {0} is null: {1}"
+				                                    	.FormatWith(typeof(TInstance).Name, typeof(TChannel).Name));
+			}
 
 			return channel;
 		}

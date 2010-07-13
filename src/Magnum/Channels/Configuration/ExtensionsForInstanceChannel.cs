@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using System;
 	using Configuration;
 	using Configuration.Internal;
 
@@ -26,6 +27,39 @@ namespace Magnum.Channels
 			configurator.SetChannelFactory(instanceConfigurator);
 
 			return instanceConfigurator;
+		}
+
+		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
+			this InstanceChannelConfigurator<TInstance, TChannel> configurator, Func<TInstance> consumerFactory)
+			where TInstance : class
+		{
+			return ObtainedBy(configurator, _ => consumerFactory());
+		}
+
+		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
+			this InstanceChannelConfigurator<TInstance, TChannel> configurator, Func<TChannel, TInstance> consumerFactory)
+			where TInstance : class
+		{
+			Func<InstanceProvider<TInstance, TChannel>> instanceProvider =
+				() => new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory);
+
+			var providerConfigurator = new InstanceChannelProviderConfiguratorImpl<TInstance, TChannel>(instanceProvider);
+
+			configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
+
+			return providerConfigurator;
+		}
+
+		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
+			this InstanceChannelConfigurator<TInstance, TChannel> configurator,
+			InstanceProvider<TInstance, TChannel> instanceProvider)
+			where TInstance : class
+		{
+			var providerConfigurator = new InstanceChannelProviderConfiguratorImpl<TInstance, TChannel>(() => instanceProvider);
+
+			configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
+
+			return providerConfigurator;
 		}
 	}
 }

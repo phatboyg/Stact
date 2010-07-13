@@ -19,7 +19,6 @@ namespace Magnum.Channels.Configuration.Internal
 	public class ConnectionConfiguratorImpl :
 		ConnectionConfigurator
 	{
-		readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
 		readonly UntypedChannel _channel;
 		readonly List<ChannelConfigurator> _configurators;
 
@@ -51,15 +50,12 @@ namespace Magnum.Channels.Configuration.Internal
 		public ChannelConnection Complete()
 		{
 			_configurators.Each(x => x.ValidateConfiguration());
+			
+			var connection = new ChannelConnectionImpl(_channel);
 
-			_configurators.Each(configurator =>
-				{
-					IEnumerable<Channel> newChannels = configurator.Configure(_channel);
+			_configurators.Each(configurator => configurator.Configure(connection, _channel));
 
-					newChannels.Each(channel => _boundChannels.Add(channel));
-				});
-
-			return new ChannelConnectionImpl(_channel, _boundChannels);
+			return connection;
 		}
 	}
 
@@ -67,7 +63,6 @@ namespace Magnum.Channels.Configuration.Internal
 	public class ConnectionConfiguratorImpl<T> :
 		ConnectionConfigurator<T>
 	{
-		readonly HashSet<Channel> _boundChannels = new HashSet<Channel>();
 		readonly Channel<T> _channel;
 		readonly List<ChannelConfigurator<T>> _configurators;
 
@@ -96,14 +91,11 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public ChannelConnection Complete()
 		{
-			_configurators.Each(configurator =>
-				{
-					IEnumerable<Channel> newChannels = configurator.Configure(_channel);
+			var connection = new ChannelConnectionImpl<T>(_channel);
 
-					newChannels.Each(channel => _boundChannels.Add(channel));
-				});
+			_configurators.Each(configurator => configurator.Configure(connection, _channel));
 
-			return new ChannelConnectionImpl<T>(_channel, _boundChannels);
+			return connection;
 		}
 	}
 }

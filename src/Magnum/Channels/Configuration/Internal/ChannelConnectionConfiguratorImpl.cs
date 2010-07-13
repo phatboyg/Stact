@@ -13,7 +13,6 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
-	using System.Collections.Generic;
 
 
 	public class ChannelConnectionConfiguratorImpl :
@@ -29,11 +28,11 @@ namespace Magnum.Channels.Configuration.Internal
 			_channel = channel;
 		}
 
-		public IEnumerable<Channel> Configure(UntypedChannel channel)
+		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
 		{
 			new ConnectChannelVisitor(_channel).ConnectTo(channel);
 
-			yield return _channel;
+			connection.AddChannel(_channel);
 		}
 
 		public void ValidateConfiguration()
@@ -60,13 +59,13 @@ namespace Magnum.Channels.Configuration.Internal
 			_channelFactory = () => channel;
 		}
 
-		public IEnumerable<Channel> Configure(UntypedChannel channel)
+		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
 		{
 			Channel<TChannel> newChannel = _channelFactory();
 
 			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
 
-			yield return newChannel;
+			connection.AddChannel(newChannel);
 		}
 
 		public void ValidateConfiguration()
@@ -75,13 +74,13 @@ namespace Magnum.Channels.Configuration.Internal
 				throw new ChannelConfigurationException("No channel factory specified for channel: " + typeof(TChannel).Name);
 		}
 
-		public IEnumerable<Channel> Configure(Channel<TChannel> channel)
+		public void Configure(CreateChannelConnection connection, Channel<TChannel> channel)
 		{
 			Channel<TChannel> newChannel = _channelFactory();
 
 			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
 
-			yield return newChannel;
+			connection.AddChannel(newChannel);
 		}
 
 		public ChannelConnectionConfigurator<TChannel> SetChannelFactory(ChannelFactory<TChannel> channelFactory)
@@ -103,11 +102,11 @@ namespace Magnum.Channels.Configuration.Internal
 			_channel = channel;
 		}
 
-		public IEnumerable<Channel> Configure(Channel<T> channel)
+		public void Configure(CreateChannelConnection connection, Channel<T> channel)
 		{
 			new ConnectChannelVisitor<TChannel>(_channel).ConnectTo(channel);
 
-			yield return _channel;
+			connection.AddChannel(_channel);
 		}
 
 		public void ValidateConfiguration()

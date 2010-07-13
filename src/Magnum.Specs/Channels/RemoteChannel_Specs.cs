@@ -13,6 +13,7 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
+	using System.Linq;
 	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
@@ -20,9 +21,35 @@ namespace Magnum.Specs.Channels
 	using NUnit.Framework;
 	using TestFramework;
 
+
 	[TestFixture]
 	public class Sending_a_message_to_a_remote_channel_via_wcf
 	{
+		[Test]
+		public void Should_be_able_to_configure_a_wcf_host_via_the_connect_dsl()
+		{
+			var future = new Future<TestMessage>();
+
+			var input = new ChannelAdapter();
+			using (input.Connect(x =>
+				{
+//					x.ReceiveFromNamedPipe(new Uri("net.pipe://localhost/pipe"), "test");
+
+					x.AddConsumerOf<TestMessage>()
+						.UsingConsumer(future.Complete);
+				}))
+			{
+				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
+					{
+						typeof(ChannelAdapter),
+						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<TestMessage>),
+						typeof(ConsumerChannel<TestMessage>),
+					});
+			}
+		}
+
+
 		[Test]
 		public void Should_properly_arrive_at_the_destination()
 		{
@@ -65,26 +92,32 @@ namespace Magnum.Specs.Channels
 		}
 
 
-		private ILogger _log;
+		ILogger _log;
 
-		private class TestMessage
+
+		class TestMessage
 		{
 			public Guid Id { get; set; }
 			public string Name { get; set; }
 
 			public bool Equals(TestMessage other)
 			{
-				if (ReferenceEquals(null, other)) return false;
-				if (ReferenceEquals(this, other)) return true;
+				if (ReferenceEquals(null, other))
+					return false;
+				if (ReferenceEquals(this, other))
+					return true;
 				return other.Id.Equals(Id) && Equals(other.Name, Name);
 			}
 
 			public override bool Equals(object obj)
 			{
-				if (ReferenceEquals(null, obj)) return false;
-				if (ReferenceEquals(this, obj)) return true;
-				if (obj.GetType() != typeof (TestMessage)) return false;
-				return Equals((TestMessage) obj);
+				if (ReferenceEquals(null, obj))
+					return false;
+				if (ReferenceEquals(this, obj))
+					return true;
+				if (obj.GetType() != typeof(TestMessage))
+					return false;
+				return Equals((TestMessage)obj);
 			}
 
 			public override int GetHashCode()

@@ -76,6 +76,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\FluentNHibernate\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle">
+      <HintPath>..\..\lib\FluentNHibernate\NHibernate.ByteCode.Castle.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate.Linq, Version=1.0.0.0, Culture=neutral, PublicKeyToken=444cf6a87fdab271, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\FluentNHibernate\NHibernate.Linq.dll</HintPath>
@@ -96,6 +99,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Channels\Load_Specs.cs" />
+    <Compile Include="Channels\NHibernateInstanceChannel_Specs.cs" />
+    <Compile Include="Channels\NHibernateSubscription_Specs.cs" />
+    <Compile Include="Channels\NHibernate_Specs.cs" />
+    <Compile Include="Channels\TestInstance.cs" />
+    <Compile Include="Channels\TestInstanceMap.cs" />
     <Compile Include="Data\NHibernateTransaction_Specs.cs" />
     <Compile Include="Data\NHibernateUnitOfWork_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -138,6 +147,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

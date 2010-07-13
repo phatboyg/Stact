@@ -12,8 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	/// <summary>
+	/// Implemented by classes that can create channels. The factory method is used
+	/// to create channels outside of any message delivery context. If the content
+	/// of the message is important in the creation of the channel, the ChannelProvider is a 
+	/// better choice to use since it passes the message as part of the channel acquisition
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public interface ChannelFactory<T>
 	{
+		/// <summary>
+		/// Returns the channel
+		/// </summary>
+		/// <returns>A channel instance</returns>
 		Channel<T> GetChannel();
 	}
 }

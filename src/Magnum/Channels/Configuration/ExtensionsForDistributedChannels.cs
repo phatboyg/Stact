@@ -12,19 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
+	using Configuration.Internal;
 
-	/// <summary>
-	/// Contains the changes made by a connection to a channel so that they can be 
-	/// removed when the connections are no longer required.
-	/// </summary>
-	public interface ChannelConnection :
-		IDisposable
+
+	public static class ExtensionsForDistributedChannels
 	{
-		/// <summary>
-		/// Disconnects any channels and/or consumers that were added by a Connect
-		/// to a channel.
-		/// </summary>
-		void Disconnect();
+		public static DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> DistributedBy
+			<TInstance, TChannel, TKey>(
+			this InstanceChannelConfigurator<TInstance, TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
+			where TInstance : class
+		{
+			var providerConfigurator = new DistributedInstanceChannelConfiguratorImpl<TInstance, TChannel, TKey>(keyAccessor);
+
+			configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
+
+			return providerConfigurator;
+		}
 	}
 }

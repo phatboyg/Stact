@@ -40,7 +40,7 @@ namespace Magnum.Specs.FileSystem
         {
             _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            _filename = "test.dat";
+            _filename = "test2.dat";
             _path = Path.Combine(_baseDirectory, _filename);
 
             File.Delete(_path);

@@ -12,19 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System;
-
 	/// <summary>
-	/// Contains the changes made by a connection to a channel so that they can be 
-	/// removed when the connections are no longer required.
+	/// Used to obtain and instance of a class based on the information contained
+	/// in the specified message
 	/// </summary>
-	public interface ChannelConnection :
-		IDisposable
+	/// <typeparam name="TInstance">The type of the class</typeparam>
+	/// <typeparam name="TChannel">The type of the message</typeparam>
+	public interface InstanceProvider<TInstance, TChannel>
+		where TInstance : class
 	{
-		/// <summary>
-		/// Disconnects any channels and/or consumers that were added by a Connect
-		/// to a channel.
-		/// </summary>
-		void Disconnect();
+		TInstance GetInstance(TChannel message);
 	}
 }
