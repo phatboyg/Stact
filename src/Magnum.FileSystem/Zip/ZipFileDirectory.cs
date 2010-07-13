@@ -17,7 +17,6 @@ namespace Magnum.FileSystem.Zip
     using System.Diagnostics;
     using System.Linq;
     using Extensions;
-    using Internal;
     using Ionic.Zip;
 
     public class ZipFileDirectory :
@@ -104,19 +103,20 @@ namespace Magnum.FileSystem.Zip
                     {
                         byte[] data = input.ReadToEnd();
                         Trace.WriteLine("Read: " + data.Length + " bytes");
-                        _files.Add(name[0], new ZippedFile(FileName.GetFileName(name[0]), data));
+                        var fn = FileName.GetFileName(this.Name, name[0]);
+                        _files.Add(name[0], new ZippedFile(fn, data));
                     }
                     else
                     {
                         var first = name.First();
-                        var parent = new ZippedDirectory(DirectoryName.GetDirectoryName(first), this);
+                        var parent = new ZippedDirectory(DirectoryName.GetDirectoryName(this.Name, first), this);
                         _directories.Add(first, parent);
                         var rest = name.Skip(1).Take(name.Length - 2);
                         var queue = new Queue<string>(rest);
 
                         foreach (var item in queue)
                         {
-                            var dir = new ZippedDirectory(DirectoryName.GetDirectoryName(item), parent);
+                            var dir = new ZippedDirectory(DirectoryName.GetDirectoryName(parent.Name, item), parent);
                             parent = dir;
                         }
                         var file = name.Last();
@@ -124,7 +124,7 @@ namespace Magnum.FileSystem.Zip
                         byte[] data = input.ReadToEnd();
                         Trace.WriteLine("Read: " + data.Length + " bytes");
                         //neds to be added
-                        var zipfile = new ZippedFile(FileName.GetFileName(file), data);
+                        var zipfile = new ZippedFile(FileName.GetFileName(parent.Name, file), data);
                         parent.AddFile(file, zipfile);
                     }
                 }

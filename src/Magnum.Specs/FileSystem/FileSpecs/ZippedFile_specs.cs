@@ -33,7 +33,7 @@ namespace Magnum.Specs.FileSystem.FileSpecs
         public void GetChildDirectory()
         {
             var c = _zf.GetChildDirectory("lib");
-            Assert.AreEqual("sample.zip\\lib", c.Name.GetPath());
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\lib", c.Name.GetPath());
         }
 
 
@@ -59,7 +59,7 @@ namespace Magnum.Specs.FileSystem.FileSpecs
         public void GetChildFile()
         {
             var c = _zf.GetChildFile("MANIFEST.json");
-            Assert.AreEqual("sample.zip\\MANIFEST.json", c.Name.GetPath());
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\MANIFEST.json", c.Name.GetPath());
         }
 
         [Test]

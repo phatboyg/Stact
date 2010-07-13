@@ -59,5 +59,10 @@ namespace Magnum.FileSystem
 		{
 			return GetDirectoryName(pathName.GetPath());
 		}
+
+        public static DirectoryName GetDirectoryName(DirectoryName directoryName, string child)
+        {
+            return GetDirectoryName(directoryName.Name.Combine(child));
+        }
 	}
 }
