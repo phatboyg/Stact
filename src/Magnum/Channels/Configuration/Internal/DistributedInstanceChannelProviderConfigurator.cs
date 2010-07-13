@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using Magnum.Fibers;
+
+
 	/// <summary>
 	/// An instance configuration that is distributed by a specified key
 	/// </summary>
@@ -22,5 +25,14 @@ namespace Magnum.Channels.Configuration.Internal
 		InstanceChannelConfigurator<TInstance, TChannel>
 		where TInstance : class
 	{
+		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnProducerThread();
+		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnSharedFiber();
+		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnThreadPoolFiber();
+		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnSharedThread();
+		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> UseFiberProvider(FiberProvider<TKey> fiberProvider);
+
+		FiberProvider<TKey> GetConfiguredProvider();
+
+		KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor();
 	}
 }

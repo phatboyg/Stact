@@ -19,12 +19,12 @@ namespace Magnum.Channels
 
 	public static class ExtensionsForNHibernateInstanceChannel
 	{
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel> PersistedUsingNHibernate<TInstance, TChannel>
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> PersistedUsingNHibernate<TInstance, TChannel, TKey>
 			(
-			this InstanceChannelConfigurator<TInstance, TChannel> configurator)
+			this DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> configurator)
 			where TInstance : class
 		{
-			var providerConfigurator = new NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel>(configurator);
+			var providerConfigurator = new NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey>(configurator);
 
 			return providerConfigurator;
 		}
