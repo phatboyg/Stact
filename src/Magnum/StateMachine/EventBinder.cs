@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.StateMachine
 {
-	using Configuration;
-	using Fibers;
-	using StateMachine;
-	using StateMachine.ChannelConfiguration;
+	using System;
 
 
-	public static class ExtensionsForChannel
+	public interface EventBinder<T, TKey>
+		where T : StateMachine<T>
 	{
-		public static void AddStateMachineInstance<T>(this ConnectionConfigurator configurator, Fiber fiber, T instance)
-			where T : StateMachine<T>
-		{
-			new StateMachineConnectionConfigurator<T>(configurator).Connect(fiber, instance);
-		}
+		Func<TEventType, TKey> GetBinder<TEventType>();
+	}
+
+
+	public interface EventBinder<T, TKey, TEvent> :
+		EventBinder<T, TKey>
+		where T : StateMachine<T>
+	{
 	}
 }

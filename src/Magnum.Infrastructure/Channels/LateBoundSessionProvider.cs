@@ -10,18 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Infrastructure.Channels
 {
-	using Fibers;
+	using NHibernate;
 
 
-	public interface WcfChannelConnectionConfigurator :
-		ChannelConnectionConfigurator
+	public interface LateBoundSessionProvider
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		ISession GetSession<T>(T message);
 	}
 }

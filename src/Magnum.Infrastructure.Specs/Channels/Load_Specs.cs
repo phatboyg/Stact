@@ -90,7 +90,6 @@ namespace Magnum.Infrastructure.Specs.Channels
 						.Of<TestInstance>()
 						.DistributedBy(msg => msg.Id)
 						.PersistedUsingNHibernate()
-						.IdentifiedByMessageProperty(m => m.Id)
 						.UsingSessionProvider(m => SessionFactory.OpenSession())
 						.OnChannel(m => m.UpdateValueChannel)
 						.CreateMissingInstanceBy(m => new TestInstance(m.Id));

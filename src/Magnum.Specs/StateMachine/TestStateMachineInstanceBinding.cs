@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Extensions
+namespace Magnum.Specs.StateMachine
 {
-	using System;
-	using System.Globalization;
+	using Magnum.StateMachine;
 
-	public static class ExtensionsToIntX
+
+	public class TestStateMachineInstanceBinding :
+		StateMachineBinding<TestStateMachineInstance, int>
 	{
-		public static int FromHexToInt32(string text)
+		public TestStateMachineInstanceBinding()
 		{
-			int value;
-			if (int.TryParse(text, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out value))
-				return value;
+			Id(x => x.Id);
 
-			throw new ArgumentException("'{0}' is not a valid hexidecimal value".FormatWith(text));
+			Bind(TestStateMachineInstance.CreatingOrder, m => m.Id);
+			Bind(TestStateMachineInstance.UpdatingOrder, m => m.Id);
+			Bind(TestStateMachineInstance.CompletingOrder, m => m.Id);
 		}
 	}
 }

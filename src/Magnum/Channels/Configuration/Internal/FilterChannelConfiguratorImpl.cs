@@ -23,7 +23,7 @@ namespace Magnum.Channels.Configuration.Internal
 		public FilterChannelConfiguratorImpl(Filter<TChannel> filter)
 		{
 			_filter = filter;
-			UseThreadPool();
+			ExecuteOnThreadPoolFiber();
 		}
 
 		public Channel<TChannel> GetChannel()

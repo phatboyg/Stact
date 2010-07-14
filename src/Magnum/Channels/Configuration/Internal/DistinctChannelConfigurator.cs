@@ -24,10 +24,10 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface DistinctChannelConfigurator<TChannel, TKey> :
 		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
 	{
-		DistinctChannelConfigurator<TChannel, TKey> UseFiber(Fiber fiber);
-		DistinctChannelConfigurator<TChannel, TKey> UsePrivateThread();
-		DistinctChannelConfigurator<TChannel, TKey> UseProducerThread();
-		DistinctChannelConfigurator<TChannel, TKey> UseThreadPool();
-		DistinctChannelConfigurator<TChannel, TKey> WithFiberFactory(FiberFactory fiberFactory);
+		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnFiber(Fiber fiber);
+		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnThread();
+		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnProducerThread();
+		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnThreadPoolFiber();
+		DistinctChannelConfigurator<TChannel, TKey> UseFiberFactory(FiberFactory fiberFactory);
 	}
 }

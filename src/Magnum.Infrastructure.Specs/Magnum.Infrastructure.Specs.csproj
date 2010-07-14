@@ -101,10 +101,12 @@
   <ItemGroup>
     <Compile Include="Channels\Load_Specs.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel_Specs.cs" />
+    <Compile Include="Channels\NHibernateStateMachine_Specs.cs" />
     <Compile Include="Channels\NHibernateSubscription_Specs.cs" />
     <Compile Include="Channels\NHibernate_Specs.cs" />
     <Compile Include="Channels\TestInstance.cs" />
     <Compile Include="Channels\TestInstanceMap.cs" />
+    <Compile Include="Channels\TestStateMachineInstanceMap.cs" />
     <Compile Include="Data\NHibernateTransaction_Specs.cs" />
     <Compile Include="Data\NHibernateUnitOfWork_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -28,20 +28,23 @@ namespace Magnum.Infrastructure.Channels
 		where TInstance : class
 	{
 		readonly ChannelAccessor<TInstance, TChannel> _channelAccessor;
-		readonly FiberFactory _fiberFactory;
+		readonly FiberProvider<TKey> _fiberProvider;
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 		readonly InstanceProvider<TInstance, TChannel> _missingInstanceProvider;
 		readonly SessionProvider<TChannel> _sessionProvider;
 
-		public NHibernateInstanceChannelProvider(FiberFactory fiberFactory, SessionProvider<TChannel> sessionProvider,
+		public NHibernateInstanceChannelProvider(FiberProvider<TKey> fiberProvider, SessionProvider<TChannel> sessionProvider,
 		                                         KeyAccessor<TChannel, TKey> keyAccessor,
 		                                         ChannelAccessor<TInstance, TChannel> channelAccessor,
 		                                         InstanceProvider<TInstance, TChannel> missingInstanceProvider)
 		{
-			Guard.AgainstNull(missingInstanceProvider);
+			Guard.AgainstNull(fiberProvider);
+			Guard.AgainstNull(sessionProvider);
+			Guard.AgainstNull(keyAccessor);
 			Guard.AgainstNull(channelAccessor);
+			Guard.AgainstNull(missingInstanceProvider);
 
-			_fiberFactory = fiberFactory;
+			_fiberProvider = fiberProvider;
 			_sessionProvider = sessionProvider;
 			_keyAccessor = keyAccessor;
 			_channelAccessor = channelAccessor;
@@ -50,10 +53,13 @@ namespace Magnum.Infrastructure.Channels
 
 		public Channel<TChannel> GetChannel(TChannel message)
 		{
-			var channel = new NHibernateInstanceChannel<TInstance, TChannel, TKey>(_fiberFactory(), _sessionProvider,
+			TKey key = _keyAccessor(message);
+
+			Fiber fiber = _fiberProvider.GetFiber(key);
+
+			var channel = new NHibernateInstanceChannel<TInstance, TChannel, TKey>(fiber, _sessionProvider,
 			                                                                       _keyAccessor, _channelAccessor,
 			                                                                       _missingInstanceProvider);
-
 
 			return channel;
 		}

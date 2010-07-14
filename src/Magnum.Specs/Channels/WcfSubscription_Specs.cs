@@ -16,10 +16,12 @@ namespace Magnum.Specs.Channels
 	using System.Linq;
 	using Magnum.Channels;
 	using Magnum.Extensions;
+	using NUnit.Framework;
 	using TestFramework;
 
 
 	[Scenario]
+	[Category("Slow")]
 	public class When_connecting_two_services_through_a_wcf_proxy_and_host
 	{
 		const string _pipeName = "test";
@@ -50,7 +52,7 @@ namespace Magnum.Specs.Channels
 			_outputConnection = _output.Connect(x =>
 				{
 					x.SendToWcfChannel(_pipeUri, _pipeName)
-						.UseProducerThread();
+						.ExecuteOnProducerThread();
 				});
 		}
 
