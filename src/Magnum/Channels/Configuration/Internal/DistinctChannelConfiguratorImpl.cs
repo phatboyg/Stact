@@ -27,7 +27,7 @@ namespace Magnum.Channels.Configuration.Internal
 		public DistinctChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
-			UseThreadPool();
+			ExecuteOnThreadPoolFiber();
 		}
 
 		public Channel<ICollection<TChannel>> GetChannel()

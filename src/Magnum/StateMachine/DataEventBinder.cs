@@ -10,18 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.StateMachine
 {
-	using Fibers;
+	using System;
+	using Magnum.Extensions;
 
 
-	public interface WcfChannelConnectionConfigurator :
-		ChannelConnectionConfigurator
+	public class DataEventBinder<T, TKey, TEvent> :
+		EventBinder<T, TKey, TEvent>
+		where T : StateMachine<T>
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		readonly Func<TEvent, TKey> _keyAccessor;
+
+		public DataEventBinder(Func<TEvent, TKey> keyAccessor)
+		{
+			_keyAccessor = keyAccessor;
+		}
+
+		public Func<TEventType, TKey> GetBinder<TEventType>()
+		{
+			return _keyAccessor.CastAs<Func<TEventType, TKey>>();
+		}
 	}
 }

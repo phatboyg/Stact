@@ -116,6 +116,7 @@
     <Compile Include="Binding\TypeBinders\UriBinder.cs" />
     <Compile Include="Binding\TypeBinders\UShortBinder.cs" />
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
+    <Compile Include="Channels\ChannelProviderFactory.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistributedChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForWcfChannels.cs" />
     <Compile Include="Channels\Configuration\Internal\AbstractChannelConnection.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
+    <Compile Include="Channels\DelegateChannel.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
     <Compile Include="Channels\FastActivatorInstanceProvider.cs" />
     <Compile Include="Channels\InstanceProvider.cs" />
@@ -352,7 +354,7 @@
     <Compile Include="Extensions\ExtensionsToExpression.cs" />
     <Compile Include="Extensions\ExtensionsToGenerics.cs" />
     <Compile Include="Extensions\ExtensionsToInterfaces.cs" />
-    <Compile Include="Extensions\ExtensionsToIntX.cs" />
+    <Compile Include="Extensions\ExtensionsToInt32.cs" />
     <Compile Include="Extensions\ExtensionsToObject.cs" />
     <Compile Include="Extensions\ExtensionsToRange.cs" />
     <Compile Include="Extensions\ExtensionsToString.cs" />
@@ -551,6 +553,12 @@
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\BasicEventAction.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachine.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfigurator.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfiguratorImpl.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceConnectionConfigurator.cs" />
+    <Compile Include="StateMachine\DataEventBinder.cs" />
+    <Compile Include="StateMachine\EventBinder.cs" />
     <Compile Include="StateMachine\EventCombiner.cs" />
     <Compile Include="StateMachine\DataEvent.cs" />
     <Compile Include="StateMachine\DataEventAction.cs" />
@@ -559,7 +567,7 @@
     <Compile Include="StateMachine\EventActionList.cs" />
     <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
-    <Compile Include="StateMachine\ExtensionsForChannel.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForChannel.cs" />
     <Compile Include="StateMachine\ExtensionsForStateMachineVisitor.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />
@@ -581,9 +589,10 @@
     <Compile Include="ReverseComparer.cs" />
     <Compile Include="FunctionTimer.cs" />
     <Compile Include="Extensions\ExtensionsToTimeSpan.cs" />
-    <Compile Include="StateMachine\ChannelConfiguration\StateMachineChannelConfigurator.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceConnectionConfiguratorImpl.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspector.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
+    <Compile Include="StateMachine\StateMachineBinding.cs" />
     <Compile Include="StateMachine\StateMachineException.cs" />
     <Compile Include="StateMachine\StateMachineExpressionInspector.cs" />
     <Compile Include="StateMachine\GraphStateMachineVisitor.cs" />

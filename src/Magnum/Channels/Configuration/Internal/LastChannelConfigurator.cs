@@ -22,10 +22,10 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface LastChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<TChannel>
 	{
-		LastChannelConfigurator<TChannel> UseFiber(Fiber fiber);
-		LastChannelConfigurator<TChannel> UsePrivateThread();
-		LastChannelConfigurator<TChannel> UseProducerThread();
-		LastChannelConfigurator<TChannel> UseThreadPool();
-		LastChannelConfigurator<TChannel> WithFiberFactory(FiberFactory fiberFactory);
+		LastChannelConfigurator<TChannel> ExecuteOnFiber(Fiber fiber);
+		LastChannelConfigurator<TChannel> ExecuteOnThread();
+		LastChannelConfigurator<TChannel> ExecuteOnProducerThread();
+		LastChannelConfigurator<TChannel> ExecuteOnThreadPoolFiber();
+		LastChannelConfigurator<TChannel> UseFiberFactory(FiberFactory fiberFactory);
 	}
 }

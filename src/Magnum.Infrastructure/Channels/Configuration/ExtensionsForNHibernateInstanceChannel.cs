@@ -13,14 +13,14 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Configuration.Internal;
-	using Infrastructure.Channels.Configuration;
+	using Magnum.Channels.Configuration.Internal;
+	using Magnum.Infrastructure.Channels.Configuration;
 
 
 	public static class ExtensionsForNHibernateInstanceChannel
 	{
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> PersistedUsingNHibernate<TInstance, TChannel, TKey>
-			(
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> PersistedUsingNHibernate
+			<TInstance, TChannel, TKey>(
 			this DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> configurator)
 			where TInstance : class
 		{

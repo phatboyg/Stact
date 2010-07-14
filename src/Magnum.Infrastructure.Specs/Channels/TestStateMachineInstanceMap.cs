@@ -10,29 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.StateMachine.ChannelConfiguration
+namespace Magnum.Infrastructure.Specs.Channels
 {
-	using Channels.Configuration;
-	using Fibers;
+	using FluentNHibernate.Mapping;
+	using Magnum.Infrastructure.StateMachine;
+	using Magnum.Specs.StateMachine;
 
 
-	public class StateMachineConnectionConfigurator<T>
-		where T : StateMachine<T>
+	public class TestStateMachineInstanceMap :
+		ClassMap<TestStateMachineInstance>
 	{
-		readonly ConnectionConfigurator _configurator;
-
-		public StateMachineConnectionConfigurator(ConnectionConfigurator configurator)
+		public TestStateMachineInstanceMap()
 		{
-			_configurator = configurator;
-		}
+			Not.LazyLoad();
 
-		public void Connect(Fiber fiber, T instance)
-		{
-			var inspector = new StateMachineEventInspector<T>();
-			instance.Inspect(inspector);
+			Id(x => x.Id)
+				.GeneratedBy.Assigned();
 
-			foreach (var result in inspector.GetResults())
-				result.Connect(_configurator, fiber, instance);
+			Version(x => x.LastUpdatedAt);
+
+			Map(x => x.Value);
+			Map(x => x.CreatedAt);
+			Map(x => x.UpdatedAt);
+			Map(x => x.CompletedAt);
+
+			Map(x => x.CurrentState)
+				.Access.ReadOnlyPropertyThroughCamelCaseField(Prefix.Underscore)
+				.CustomType<StateMachineUserType>();
 		}
 	}
 }

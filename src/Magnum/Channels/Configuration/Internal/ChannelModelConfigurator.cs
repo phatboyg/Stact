@@ -45,7 +45,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 			FiberFactory originalFiberFactory = _fiberFactory;
 
-			UseProducerThread();
+			ExecuteOnProducerThread();
 
 			Channel<TChannel> channel = channelBuilder();
 
