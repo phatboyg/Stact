@@ -12,93 +12,157 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.FileSystem.FileSpecs
 {
+    using Magnum.FileSystem;
     using Magnum.FileSystem.Internal;
     using Magnum.FileSystem.Zip;
     using NUnit.Framework;
+    using TestFramework;
 
-    [TestFixture]
-    public class Accessing_an_existing_zip_file
+    public class Given_a_zipped_file
     {
         string _zippedFile = @".\FileSystem\FileSpecs\sample.zip";
 
         ZipFileDirectory _zf;
 
-        [TestFixtureSetUp]
-        public void SetUp()
+        [Given]
+        public void A_ZippedFile_Directory()
         {
             _zf = new ZipFileDirectory(new RelativePathName(_zippedFile));
         }
 
-        [Test]
-        public void GetChildDirectory()
-        {
-            var c = _zf.GetChildDirectory("lib");
-            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\lib", c.Name.GetPath());
-        }
-
-
-        [Test]
-        public void GetChildFileExists()
-        {
-            var c = _zf.GetChildFile("MANIFEST.json");
-            Assert.IsTrue(c.Exists());
-
-            var c2 = _zf.GetChildDirectory("lib").GetChildFile("yo.txt");
-            Assert.IsTrue(c2.Exists());
-        }
-
-        [Test]
-        public void ZippedDirectoryExists()
-        {
-            var c = _zf.GetChildDirectory("lib");
-            Assert.IsTrue(c.Exists());
-            
-        }
-
-        [Test]
-        public void GetChildFile()
-        {
-            var c = _zf.GetChildFile("MANIFEST.json");
-            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\MANIFEST.json", c.Name.GetPath());
-        }
-
-        [Test]
-        public void PathWithRelative()
+        [Then]
+        public void The_path_of_the_zip_should_be_based_on_its_constructor()
         {
             Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip", _zf.Name.GetPath());
         }
 
-        [Test]
-        public void ZipPathHelpers()
+        public ZipFileDirectory ZipFile
         {
-            var result = ZippedPath.GetPathInsideZip("sample.zip\\lib\\yo.txt");
+            get
+            {
+                return _zf;
+            }
+        }
+    }
+
+    [Scenario]
+    public class Accessing_an_existing_file_in_the_zip :
+        Given_a_zipped_file
+    {
+        File _fileInQuestion;
+
+        [When]
+        public void Get_the_file()
+        {
+            _fileInQuestion = ZipFile.GetChildFile("MANIFEST.json");
+        }
+
+        [Then]
+        public void File_should_exist()
+        {
+            _fileInQuestion.Exists().ShouldBeTrue();
+        }
+
+        [Then]
+        public void Path_should_be_what()
+        {
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\MANIFEST.json", _fileInQuestion.Name.GetPath());
+        }
+
+        //parent path
+    }
+
+    [Scenario]
+    public class Accessing_an_existing_directory_in_the_zip :
+        Given_a_zipped_file
+    {
+        Directory _directoryInQuestion;
+
+        [When]
+        public void Get_the_directory()
+        {
+            _directoryInQuestion = ZipFile.GetChildDirectory("lib");
+        }
+
+        [Then]
+        public void Should_exist()
+        {
+            _directoryInQuestion.Exists().ShouldBeTrue();
+        }
+
+        [Then]
+        public void Path_should_be_what()
+        {
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\lib", _directoryInQuestion.Name.GetPath());
+        }
+
+
+        //parent path
+    }
+
+    [Scenario]
+    public class Accessing_an_existing_nested_file :
+        Given_a_zipped_file
+    {
+        File _fileInQuesiton;
+
+        [When]
+        public void Get_the_nested_file()
+        {
+            _fileInQuesiton = ZipFile.GetChildDirectory("lib").GetChildFile("yo.txt");
+        }
+
+        [Test]
+        public void Should_exist()
+        {
+            _fileInQuesiton.Exists().ShouldBeTrue();
+        }
+
+    }
+
+    [Scenario]
+    public class Bob :
+        Given_a_zipped_file
+    {
+
+        [Then]
+        public void Should_convert_the_path_to_a_zip_path()
+        {
+            var result = ZippedPath.GetPathInsideZip("noexist.zip\\lib\\yo.txt");
             Assert.AreEqual("lib/yo.txt", result);
         }
 
-        [Test]
-        public void MorePath()
+        [Then]
+        public void Should_get_the_name_of_the_zip_file()
         {
-            var result = ZippedPath.GetZip("sample.zip\\lib\\yo.txt");
-            Assert.AreEqual("sample.zip", result);
+            var result = ZippedPath.GetZip("noexist.zip\\lib\\yo.txt");
+            Assert.AreEqual("noexist.zip", result);
         }
 
-        [Test]
-        public void ParentPath()
+        [Then]
+        public void Should_get_the_parent_folder_of_the_file()
         {
-            var result = ZippedPath.GetParentPath("sample.zip\\lib\\yo.txt");
+            var result = ZippedPath.GetParentPath("noexist.zip\\lib\\yo.txt");
             Assert.AreEqual("lib", result);
+        }
 
-
-            var result2 = ZippedPath.GetParentPath("sample.zip\\test\\test2");
+        [Then]
+        public void Should_get_the_parent_folder_of_the_folder()
+        {
+            var result2 = ZippedPath.GetParentPath("noexist.zip\\test\\test2");
             Assert.AreEqual("test", result2);
+        }
+
+        [Then]
+        public void Should_return_the_zip_if_a_root_item_is_asked_for_its_parent()
+        {
+
+            var result3 = ZippedPath.GetParentPath("noexist.zip\\test");
+            Assert.AreEqual("noexist.zip", result3);
 
 
-            var result3 = ZippedPath.GetParentPath("sample.zip\\test");
-            Assert.AreEqual("sample.zip", result3);
-
-
-            var result4 = ZippedPath.GetParentPath("sample.zip\\yo.txt");
-            Assert.AreEqual("sample.zip", result4);
+            var result4 = ZippedPath.GetParentPath("noexist.zip\\yo.txt");
+            Assert.AreEqual("noexist.zip", result4);
         }
     }
 }
