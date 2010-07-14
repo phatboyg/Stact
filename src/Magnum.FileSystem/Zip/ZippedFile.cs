@@ -19,18 +19,25 @@ namespace Magnum.FileSystem.Zip
 		File
 	{
 		readonly byte[] _data;
+        bool _exists;
 
+        public ZippedFile(FileName name, byte[] data, bool exists) : this(name, data)
+        {
+            _exists = false;    
+        }
 		public ZippedFile(FileName name, byte[] data)
 		{
 			_data = data;
 			Name = name;
+            _exists = true;
 		}
+        
 
 		public FileName Name { get; set; }
 
 		public bool Exists()
 		{
-			return true;
+			return _exists;
 		}
 
 		public string ReadToEnd()

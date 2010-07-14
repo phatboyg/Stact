@@ -66,7 +66,7 @@ namespace Magnum.FileSystem.Zip
             if (_files.ContainsKey(name))
                 return _files[name];
 
-            throw new InvalidOperationException("Could not find child element: " + name);
+            return new ZippedFile(FileName.GetFileName(Name, name), new byte[]{}, false);
         }
 
         public Directory GetChildDirectory(string name)
@@ -74,7 +74,7 @@ namespace Magnum.FileSystem.Zip
             if (_directories.ContainsKey(name))
                 return _directories[name];
 
-            throw new InvalidOperationException("Count not find child folder: " + name);
+            return new ZippedDirectory(DirectoryName.GetDirectoryName(Name, name), this, false);
         }
 
         public IEnumerable<File> GetFiles()

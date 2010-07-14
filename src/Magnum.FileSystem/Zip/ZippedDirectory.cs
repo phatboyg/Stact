@@ -21,11 +21,18 @@ namespace Magnum.FileSystem.Zip
 	{
 		readonly IDictionary<string, ZippedDirectory> _directories = new Dictionary<string, ZippedDirectory>();
 		readonly IDictionary<string, ZippedFile> _files = new Dictionary<string, ZippedFile>();
+        bool _exists;
 
+        public ZippedDirectory(DirectoryName name, Directory parent, bool exists) :
+            this(name, parent)
+        {
+            _exists = false;
+        }
 		public ZippedDirectory(DirectoryName name, Directory parent)
 		{
 			Name = name;
 			Parent = parent;
+		    _exists = true;
 		}
 
 		public DirectoryName Name { get; set; }
@@ -57,7 +64,7 @@ namespace Magnum.FileSystem.Zip
 
 		public bool Exists()
 		{
-			return true;
+			return _exists;
 		}
 
 		public File GetChildFile(string name)

@@ -69,6 +69,12 @@ namespace Magnum.Specs.FileSystem.FileSpecs
             Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\MANIFEST.json", _fileInQuestion.Name.GetPath());
         }
 
+        [Then]
+        public void Should_be_able_to_copy_file()
+        {
+            var data = _fileInQuestion.ReadToEnd();
+            System.IO.File.WriteAllText(@"C:\Users\sellersd\Desktop\cm issue\test.txt",data);
+        }
         //parent path
     }
 
@@ -119,9 +125,62 @@ namespace Magnum.Specs.FileSystem.FileSpecs
         }
 
     }
+    
+    [Scenario(Description="Zip won't zip an empty folder")]
+    public class Accessing_an_empty_folder {}
 
     [Scenario]
-    public class Bob :
+    public class Accessing_a_nonexistent_file_in_the_zip :
+        Given_a_zipped_file
+    {
+        File _fileInQuestion;
+
+        [When]
+        public void Get_the_file()
+        {
+            _fileInQuestion = ZipFile.GetChildFile("NOEXIST.json");
+        }
+
+        [Then]
+        public void Should_not_exist()
+        {
+            _fileInQuestion.Exists().ShouldBeFalse();
+        }
+
+        [Then]
+        public void The_path_should_be_correct()
+        {
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\NOEXIST.json", _fileInQuestion.Name.GetPath());
+        }
+    }
+
+    [Scenario]
+    public class Accessing_a_nonexistent_directory_in_the_zip :
+        Given_a_zipped_file
+    {
+        Directory _directoryInQuestion;
+
+        [When]
+        public void Get_the_file()
+        {
+            _directoryInQuestion = ZipFile.GetChildDirectory("NOEXIST");
+        }
+
+        [Then]
+        public void Should_not_exist()
+        {
+            _directoryInQuestion.Exists().ShouldBeFalse();
+        }
+
+        [Then]
+        public void The_path_should_be_correct()
+        {
+            Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\NOEXIST", _directoryInQuestion.Name.GetPath());
+        }
+    }
+
+    [Scenario]
+    public class Path_specs :
         Given_a_zipped_file
     {
 
