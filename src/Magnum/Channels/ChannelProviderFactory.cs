@@ -10,18 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Channels
 {
-	using Fibers;
-
-
-	public interface WcfChannelConnectionConfigurator :
-		ChannelConnectionConfigurator
+	public interface ChannelProviderFactory
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		ChannelProvider<TChannel> GetProvider<TChannel>();
+	}
+
+
+	public interface ChannelProviderFactory<T, TKey>
+		where T : class
+	{
+		ChannelProvider<TChannel> GetChannelProvider<TChannel>(ChannelAccessor<T, TChannel> channelAccessor,
+		                                                       KeyAccessor<TChannel, TKey> messageKeyAccessor);
 	}
 }

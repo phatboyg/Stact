@@ -10,18 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Channels
 {
-	using Fibers;
+	using System;
+	using Magnum.StateMachine;
+	using Magnum.StateMachine.ChannelConfiguration;
 
 
-	public interface WcfChannelConnectionConfigurator :
-		ChannelConnectionConfigurator
+	public static class ExtensionsForStateMachine
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		public static StateMachineConnectionConfigurator<T, TKey, TBinding> CreateNewInstanceUsing<T, TKey, TBinding>(
+			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator, Func<TKey, T> consumerFactory)
+			where T : StateMachine<T>
+			where TBinding : StateMachineBinding<T, TKey>
+		{
+			configurator.SetNewInstanceFactory(consumerFactory);
+
+			return configurator;
+		}
 	}
 }

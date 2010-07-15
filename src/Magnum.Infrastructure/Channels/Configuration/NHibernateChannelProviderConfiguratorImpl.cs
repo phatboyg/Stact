@@ -13,47 +13,30 @@
 namespace Magnum.Infrastructure.Channels.Configuration
 {
 	using System;
-	using Extensions;
 	using Magnum.Channels;
 	using Magnum.Channels.Configuration.Internal;
-
-
-	public class NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel> :
-		NHibernateChannelProviderConfigurator<TInstance, TChannel>
-		where TInstance : class
-	{
-		readonly InstanceChannelConfigurator<TInstance, TChannel> _configurator;
-
-		public NHibernateChannelProviderConfiguratorImpl(InstanceChannelConfigurator<TInstance, TChannel> configurator)
-		{
-			_configurator = configurator;
-		}
-
-		public NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> IdentifiedByMessageProperty<TKey>(
-			KeyAccessor<TChannel, TKey> accessor)
-		{
-			var providerConfigurator = new NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey>(accessor);
-
-			_configurator.SetProviderFactory(providerConfigurator.GetChannelProvider);
-
-			return providerConfigurator;
-		}
-	}
+	using Magnum.Extensions;
+	using Magnum.Fibers;
 
 
 	public class NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey> :
-		FiberModelConfigurator<NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey>>,
 		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey>
 		where TInstance : class
 	{
+		readonly DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> _configurator;
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 		ChannelAccessor<TInstance, TChannel> _accessor;
 		Func<InstanceProvider<TInstance, TChannel>> _missingInstanceProvider;
 		SessionProvider<TChannel> _sessionProvider;
 
-		public NHibernateChannelProviderConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
+		public NHibernateChannelProviderConfiguratorImpl(
+			DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> configurator)
 		{
-			_keyAccessor = keyAccessor;
+			_configurator = configurator;
+
+			_keyAccessor = configurator.GetDistributionKeyAccessor();
+
+			_configurator.SetProviderFactory(GetChannelProvider);
 		}
 
 		public NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> OnChannel(
@@ -104,7 +87,9 @@ namespace Magnum.Infrastructure.Channels.Configuration
 				                                        + typeof(TInstance).ToShortTypeName());
 			}
 
-			var channelProvider = new NHibernateInstanceChannelProvider<TInstance, TChannel, TKey>(_fiberFactory,
+			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();
+
+			var channelProvider = new NHibernateInstanceChannelProvider<TInstance, TChannel, TKey>(fiberProvider,
 			                                                                                       _sessionProvider,
 			                                                                                       _keyAccessor,
 			                                                                                       _accessor,

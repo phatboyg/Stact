@@ -164,6 +164,18 @@ namespace Magnum.Collections
 			return value;
 		}
 
+		public TValue Retrieve(TKey key, Func<TKey, TValue> missingValueProvider)
+		{
+			TValue value;
+			if (_values.TryGetValue(key, out value))
+				return value;
+
+			value = missingValueProvider(key);
+			_values.Add(key, value);
+
+			return value;
+		}
+
 		public void Each(Action<TValue> action)
 		{
 			foreach (KeyValuePair<TKey, TValue> pair in _values)

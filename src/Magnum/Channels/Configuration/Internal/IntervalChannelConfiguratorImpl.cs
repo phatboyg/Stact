@@ -28,7 +28,7 @@ namespace Magnum.Channels.Configuration.Internal
 			_interval = interval;
 
 			UsePrivateScheduler();
-			UseThreadPool();
+			ExecuteOnThreadPoolFiber();
 		}
 
 		public Channel<TChannel> GetChannel()

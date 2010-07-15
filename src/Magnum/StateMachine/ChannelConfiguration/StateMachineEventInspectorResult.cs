@@ -12,15 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.StateMachine.ChannelConfiguration
 {
+	using System;
 	using System.Collections.Generic;
-	using Channels;
-	using Channels.Configuration;
-	using Fibers;
+	using Magnum.Channels;
+	using Magnum.Channels.Configuration;
+	using Magnum.Fibers;
 
 
 	public interface StateMachineEventInspectorResult<T>
 		where T : StateMachine<T>
 	{
+		Event GenericEvent { get; }
+		Type EventType { get; }
+
 		void Connect(ConnectionConfigurator configurator, Fiber fiber, T instance);
 	}
 
@@ -44,10 +48,21 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		/// </summary>
 		public DataEvent<T, V> Event { get; private set; }
 
+
 		/// <summary>
 		/// The states in which the event can be delivered to the state machine
 		/// </summary>
 		public IEnumerable<State> AcceptingStates { get; private set; }
+
+		public Event GenericEvent
+		{
+			get { return Event; }
+		}
+
+		public Type EventType
+		{
+			get { return typeof(V); }
+		}
 
 		public void Connect(ConnectionConfigurator configurator, Fiber fiber, T instance)
 		{

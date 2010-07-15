@@ -22,38 +22,38 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public FiberModelConfigurator()
 		{
-			UseThreadPool();
+			ExecuteOnThreadPoolFiber();
 		}
 
-		public T UseFiber(Fiber fiber)
+		public T ExecuteOnFiber(Fiber fiber)
 		{
 			_fiberFactory = () => fiber;
 
 			return this as T;
 		}
 
-		public T UsePrivateThread()
+		public T ExecuteOnThread()
 		{
 			_fiberFactory = () => new ThreadFiber();
 
 			return this as T;
 		}
 
-		public T UseProducerThread()
+		public T ExecuteOnProducerThread()
 		{
 			_fiberFactory = () => new SynchronousFiber();
 
 			return this as T;
 		}
 
-		public T UseThreadPool()
+		public T ExecuteOnThreadPoolFiber()
 		{
 			_fiberFactory = () => new ThreadPoolFiber();
 
 			return this as T;
 		}
 
-		public T WithFiberFactory(FiberFactory fiberFactory)
+		public T UseFiberFactory(FiberFactory fiberFactory)
 		{
 			_fiberFactory = fiberFactory;
 

@@ -10,22 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Fibers.Configuration
 {
-	using Fibers;
+	using System;
+	using System.Runtime.Serialization;
 
 
 	/// <summary>
-	/// Used to configure the last channel 
+	/// Thrown when an invalid configuration is supplied when configuring a channel
 	/// </summary>
-	/// <typeparam name="TChannel"></typeparam>
-	public interface LastChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>
+	[Serializable]
+	public class FiberConfigurationException :
+		Exception
 	{
-		LastChannelConfigurator<TChannel> ExecuteOnFiber(Fiber fiber);
-		LastChannelConfigurator<TChannel> ExecuteOnThread();
-		LastChannelConfigurator<TChannel> ExecuteOnProducerThread();
-		LastChannelConfigurator<TChannel> ExecuteOnThreadPoolFiber();
-		LastChannelConfigurator<TChannel> UseFiberFactory(FiberFactory fiberFactory);
+		public FiberConfigurationException()
+		{
+		}
+
+		public FiberConfigurationException(string message)
+			: base(message)
+		{
+		}
+
+		public FiberConfigurationException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected FiberConfigurationException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
 	}
 }
