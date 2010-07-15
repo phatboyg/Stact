@@ -48,7 +48,7 @@ namespace Magnum.Reflection
 
 		private static string FormatMessage(Type type, string message, Type[] argumentTypes)
 		{
-			return string.Format("An object of type {0} could not be created. {1}{2}", type.Name, message,
+			return string.Format("An object of type '{0}' could not be created. '{1}' that takes '{2}'", type.Name, message,
 				string.Join(", ", argumentTypes.Select(x => x.Name).ToArray()));
 		}
 	}
