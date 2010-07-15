@@ -224,4 +224,18 @@ namespace Magnum.Specs.FileSystem.FileSpecs
             Assert.AreEqual("noexist.zip", result4);
         }
     }
+
+    [Scenario]
+    public class Digging_into_a_zip
+    {
+        [Test, Ignore("Not Implemented")]
+        public void Getting_busy()
+        {
+            FileSystemLocator locator = new LocalFileSystemLocator();
+
+            File file = locator.GetFile(FileName.GetFileName("FileSystem\\FileSpecs\\sample.zip/manifest.json"));
+
+            file.Name.GetName().ShouldEqual("manifest.json");
+        }
+    }
 }

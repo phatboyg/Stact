@@ -1,5 +1,5 @@
-// Copyright 2007-2008 The Apache Software Foundation.
-//  
+﻿// Copyright 2007-2010 The Apache Software Foundation.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
 // License at 
@@ -13,33 +13,17 @@
 namespace Magnum.Specs.FileSystem.FileSpecs
 {
     using Magnum.FileSystem;
-    using NUnit.Framework;
     using TestFramework;
 
     [Scenario]
-    public class The_fs_should_be_able_write_files
+    public class Given_a_FileSystemLocator
     {
-        DotNetFileSystem fs;
-        string filePath = @".\temp.txt";
-        string contents = "hi123";
+        public FileSystemLocator Locator { get; set; }
 
-        [When]
-        public void We_Write_a_file()
+        [Given]
+        public void Setup()
         {
-            fs = new DotNetFileSystem();
-            fs.Write(filePath, contents);            
-        }
-
-        [Then]
-        public void File_contents_should_be_the_same()
-        {
-            Assert.AreEqual(fs.ReadToEnd(@".\temp.txt"), "hi123");
-
-
-            fs.Write(@".\temp.txt", "hii");
-            Assert.AreEqual(fs.ReadToEnd(@".\temp.txt"), "hii");
-
-            fs.DeleteFile(@".\temp.txt");
+            Locator = new LocalFileSystemLocator();
         }
     }
 }

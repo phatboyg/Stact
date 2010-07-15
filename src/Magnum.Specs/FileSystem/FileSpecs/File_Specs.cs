@@ -1,5 +1,5 @@
-// Copyright 2007-2008 The Apache Software Foundation.
-//  
+// Copyright 2007-2010 The Apache Software Foundation.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
 // License at 
@@ -12,34 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.FileSystem.FileSpecs
 {
+    using System.Reflection;
     using Magnum.FileSystem;
-    using NUnit.Framework;
     using TestFramework;
 
     [Scenario]
-    public class The_fs_should_be_able_write_files
+    public class Creating_a_filename_from_a_string
     {
-        DotNetFileSystem fs;
-        string filePath = @".\temp.txt";
-        string contents = "hi123";
+        string _location;
+        FileName _fileName;
 
-        [When]
-        public void We_Write_a_file()
+        [Given]
+        public void Setup()
         {
-            fs = new DotNetFileSystem();
-            fs.Write(filePath, contents);            
+            _location = Assembly.GetExecutingAssembly().Location;
+            _fileName = FileName.GetFileName(_location);
         }
 
         [Then]
-        public void File_contents_should_be_the_same()
+        public void Should_get_the_directory_name()
         {
-            Assert.AreEqual(fs.ReadToEnd(@".\temp.txt"), "hi123");
+            _fileName.GetDirectoryName().GetName().ShouldEqual("tests");
+        }
 
-
-            fs.Write(@".\temp.txt", "hii");
-            Assert.AreEqual(fs.ReadToEnd(@".\temp.txt"), "hii");
-
-            fs.DeleteFile(@".\temp.txt");
+        [Then]
+        public void Should_retrieve_the_filename()
+        {
+            _fileName.GetName().ShouldEqual("Magnum.Specs.dll");
         }
     }
 }

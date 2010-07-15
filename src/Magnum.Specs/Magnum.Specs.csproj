@@ -152,7 +152,10 @@
     <Compile Include="Extensions\GenericExtension_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\Directory_Specs.cs" />
     <Compile Include="FileSystem\FileSpecs\DotNetFileSystem_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\File_Specs.cs" />
+    <Compile Include="FileSystem\FileSpecs\Given_a_FileSystemLocator.cs" />
     <Compile Include="FileSystem\FileSpecs\LocalFileSystemLocator_Specs.cs" />
     <Compile Include="FileSystem\FileSpecs\ZippedFile_specs.cs" />
     <Compile Include="FileSystem\PollingFileSystemWatcher_Specs.cs" />

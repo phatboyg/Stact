@@ -17,70 +17,125 @@ namespace Magnum.Specs.FileSystem.FileSpecs
     using NUnit.Framework;
     using TestFramework;
 
-    [TestFixture]
-	public class Creating_a_filename_from_a_string
-	{
-		string _location;
-		FileName _fileName;
-
-		[TestFixtureSetUp]
-		public void Setup()
-		{
-			_location = Assembly.GetExecutingAssembly().Location;
-
-			_fileName = FileName.GetFileName(_location);
-		}
-
-		[Test]
-		public void Should_get_the_directory_name()
-		{
-			_fileName.GetDirectoryName().GetName().ShouldEqual("tests");
-		}
-
-		[Test]
-		public void Should_retrieve_the_filename()
-		{
-			_fileName.GetName().ShouldEqual("Magnum.Specs.dll");
-		}
-	}
-
-	[TestFixture]
-	public class Passing_a_filename_to_the_locator
+    [Scenario]
+	public class Passing_a_filename_to_the_locator_and_the_file_exists :
+        Given_a_FileSystemLocator
 	{
 		FileName _fileName;
+	    File _fileInQuestion;
 
-		[TestFixtureSetUp]
-		public void Setup()
+		[When]
+		public void When_you_get_a_file_that_exists()
 		{
 			_fileName = FileName.GetFileName(Assembly.GetExecutingAssembly().Location);
 
-			FileSystemLocator locator = new LocalFileSystemLocator();
-
-			File file = locator.GetFile(_fileName);
-
-			file.Exists().ShouldBeTrue();
-
-			file.Name.GetPath().ShouldEqual(_fileName.GetPath());
+            _fileInQuestion = Locator.GetFile(_fileName);
 		}
 
-		[Test, Ignore("somedir doesn't exist. Is that ok?")]
-		public void Getting_a_directory_now()
-		{
-			FileSystemLocator locator = new LocalFileSystemLocator();
+        [Then]
+        public void The_file_should_exist()
+        {
+            _fileInQuestion.Exists().ShouldBeTrue();
+        }
 
-			Directory directory = locator.GetDirectory(DirectoryName.GetDirectoryName("somedir"));
-
-			directory.Name.GetName().ShouldEqual("somedir");
-		}
-
-		[Test, Ignore("Not Implemented")]
-		public void Getting_busy()
-		{
-			FileSystemLocator locator = new LocalFileSystemLocator();
-
-			File file = locator.GetFile(FileName.GetFileName("FileSystem\\FileSpecs\\sample.zip/manifest.json"));
-
-			file.Name.GetName().ShouldEqual("manifest.json");
-		}
+        [Then]
+        public void The_file_path_should_match()
+        {
+            _fileInQuestion.Name.GetPath().ShouldEqual(_fileName.GetPath());
+        }
 	}
+
+    [Scenario]
+    public class Passing_a_filename_to_the_locator_and_the_file_DOESNT_exists :
+        Given_a_FileSystemLocator
+    {
+        FileName _fileName;
+        File _fileInQuestion;
+
+        [When]
+        public void When_you_get_a_file_that_DOESNT_exist()
+        {
+            _fileName = FileName.GetFileName(".\\doesntexist.txt");
+            _fileInQuestion = Locator.GetFile(_fileName);
+        }
+
+        [Then, Ignore("We don't support getting non-existent files")]
+        public void Getting_a_directory_now()
+        {
+            _fileInQuestion.Exists().ShouldBeFalse();
+        }
+
+        [Then, Ignore("we don't support getting non-existent files")]
+        public void The_file_path_should_match()
+        {
+            _fileInQuestion.Name.GetPath().ShouldEqual(_fileName.GetPath());
+        }
+
+        /*
+         Directory directory = locator.GetDirectory(DirectoryName.GetDirectoryName("somedir"));
+
+            directory.Name.GetName().ShouldEqual("somedir");
+         * */
+    }
+
+    [Scenario]
+    public class Passing_a_directoryname_to_the_locator_and_the_directory_exists :
+        Given_a_FileSystemLocator
+    {
+        DirectoryName _directoryName;
+        Directory _directoryInQuestion;
+
+        [When]
+        public void When_you_get_a_directory_that_exists()
+        {
+            _directoryName = FileName.GetFileName(Assembly.GetExecutingAssembly().Location).GetDirectoryName();
+            _directoryInQuestion = Locator.GetDirectory(_directoryName);
+        }
+
+        [Then]
+        public void The_directory_should_exist()
+        {
+            _directoryInQuestion.Exists().ShouldBeTrue();
+        }
+
+        [Then]
+        public void The_directory_path_should_match()
+        {
+            _directoryInQuestion.Name.GetPath().ShouldEqual(_directoryName.GetPath());
+        }
+    }
+
+    [Scenario]
+    public class Passing_a_directoryname_to_the_locator_and_the_directory_DOESNT_exists :
+        Given_a_FileSystemLocator
+    {
+        DirectoryName _fileName;
+        Directory _fileInQuestion;
+
+        [When]
+        public void When_you_get_a_directory_that_DOESNT_exist()
+        {
+            _fileName = DirectoryName.GetDirectoryName(".\\doesntexist");
+            _fileInQuestion = Locator.GetDirectory(_fileName);
+        }
+
+        [Then, Ignore("We don't support getting non-existent directories")]
+        public void Getting_a_directory_now()
+        {
+            _fileInQuestion.Exists().ShouldBeFalse();
+        }
+
+        [Then, Ignore("we don't support getting non-existent directories")]
+        public void The_directory_path_should_match()
+        {
+            _fileInQuestion.Name.GetPath().ShouldEqual(_fileName.GetPath());
+        }
+
+        /*
+         Directory directory = locator.GetDirectory(DirectoryName.GetDirectoryName("somedir"));
+
+            directory.Name.GetName().ShouldEqual("somedir");
+         * */
+    }
+
 }
