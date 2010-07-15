@@ -12,8 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration
 {
+	using Internal;
+
+
 	public interface ChannelConnectionConfigurator
 	{
+		void SetChannelConfigurator(ChannelConfigurator configurator);
 	}
 
 
@@ -23,6 +27,6 @@ namespace Magnum.Channels.Configuration
 	/// <typeparam name="TChannel">The channel type</typeparam>
 	public interface ChannelConnectionConfigurator<TChannel>
 	{
-		ChannelConnectionConfigurator<TChannel> SetChannelFactory(ChannelFactory<TChannel> channelFactory);
+		void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator);
 	}
 }

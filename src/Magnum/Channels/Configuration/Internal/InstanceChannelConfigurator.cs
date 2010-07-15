@@ -15,7 +15,8 @@ namespace Magnum.Channels.Configuration.Internal
 	using System;
 
 
-	public interface InstanceChannelConfigurator<TChannel>
+	public interface InstanceChannelConfigurator<TChannel> :
+		ChannelConnectionConfigurator<TChannel>
 	{
 		InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>()
 			where TInstance : class;

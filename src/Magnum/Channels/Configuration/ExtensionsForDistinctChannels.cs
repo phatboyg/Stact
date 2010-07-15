@@ -22,7 +22,7 @@ namespace Magnum.Channels
 		{
 			var intervalConfigurator = new DistinctChannelConfiguratorImpl<TChannel, TKey>(keyAccessor);
 
-			configurator.SetChannelFactory(intervalConfigurator);
+			configurator.SetChannelConfigurator(intervalConfigurator);
 
 			return intervalConfigurator;
 		}

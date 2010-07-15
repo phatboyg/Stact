@@ -73,6 +73,7 @@ namespace Magnum.Specs.Actions
 	public class Running_all_actions_using_a_thread_queue
 	{
 		[Test]
+		[Category("Slow")]
 		public void Should_result_in_no_waiting_actions_in_the_queue()
 		{
 			Fiber fiber = new ThreadFiber();

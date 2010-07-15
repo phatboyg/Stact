@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using System;
 	using System.Collections.Generic;
 	using Fibers;
 
@@ -19,32 +20,65 @@ namespace Magnum.Channels.Configuration.Internal
 	public class LastChannelConfiguratorImpl<TChannel> :
 		FiberModelConfigurator<LastChannelConfigurator<TChannel>>,
 		LastChannelConfigurator<TChannel>,
-		ChannelFactory<ICollection<TChannel>>
+		ChannelConfigurator<ICollection<TChannel>>
 	{
-		ChannelFactory<TChannel> _channelFactory;
+		ChannelConfigurator<TChannel> _configurator;
 
 		public LastChannelConfiguratorImpl()
 		{
 			ExecuteOnProducerThread();
 		}
 
-		public Channel<ICollection<TChannel>> GetChannel()
+		public void Configure(ChannelConfiguratorConnection<ICollection<TChannel>> connection)
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel was specified for the interval channel");
+			Fiber fiber = GetConfiguredFiber(connection);
 
-			Channel<TChannel> channel = _channelFactory.GetChannel();
-			Fiber fiber = _fiberFactory();
-
-			return new LastChannel<TChannel>(fiber, channel);
+			_configurator.Configure(new LastChannelConfiguratorConnection(connection, fiber));
 		}
 
-		public ChannelConnectionConfigurator<TChannel> SetChannelFactory(
-			ChannelFactory<TChannel> channelFactory)
+		public void ValidateConfiguration()
 		{
-			_channelFactory = channelFactory;
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
 
-			return this;
+			_configurator.ValidateConfiguration();
+		}
+
+		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		{
+			_configurator = configurator;
+		}
+
+
+		class LastChannelConfiguratorConnection :
+			ChannelConfiguratorConnection<TChannel>
+		{
+			readonly ChannelConfiguratorConnection<ICollection<TChannel>> _connection;
+			readonly Fiber _fiber;
+
+			public LastChannelConfiguratorConnection(ChannelConfiguratorConnection<ICollection<TChannel>> connection,
+			                                         Fiber fiber)
+			{
+				_connection = connection;
+				_fiber = fiber;
+			}
+
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
+			{
+				Channel<TChannel> channel = channelFactory(fiber);
+
+				_connection.AddChannel(fiber, x => new LastChannel<TChannel>(_fiber, channel));
+			}
+
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				throw new NotImplementedException("Cannot added non-descript channels to a distinct channel, sorry");
+			}
+
+			public void AddDisposable(IDisposable disposable)
+			{
+				_connection.AddDisposable(disposable);
+			}
 		}
 	}
 }

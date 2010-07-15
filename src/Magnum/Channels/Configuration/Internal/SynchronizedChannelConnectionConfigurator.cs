@@ -12,15 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
-	using Fibers;
-
-
-	public interface WcfChannelConnectionConfigurator 
+	public interface SynchronizedChannelConnectionConfigurator<TChannel> :
+		ChannelConnectionConfigurator<TChannel>
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		SynchronizedChannelConnectionConfigurator<TChannel> WithState(object state);
 	}
 }

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using System;
 	using System.Collections.Generic;
 	using Fibers;
 
@@ -19,34 +20,70 @@ namespace Magnum.Channels.Configuration.Internal
 	public class DistinctChannelConfiguratorImpl<TChannel, TKey> :
 		FiberModelConfigurator<DistinctChannelConfigurator<TChannel, TKey>>,
 		DistinctChannelConfigurator<TChannel, TKey>,
-		ChannelFactory<ICollection<TChannel>>
+		ChannelConfigurator<ICollection<TChannel>>
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
-		ChannelFactory<IDictionary<TKey, TChannel>> _channelFactory;
+		ChannelConfigurator<IDictionary<TKey,TChannel>> _configurator;
 
 		public DistinctChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
+
 			ExecuteOnThreadPoolFiber();
 		}
 
-		public Channel<ICollection<TChannel>> GetChannel()
+		public void Configure(ChannelConfiguratorConnection<ICollection<TChannel>> connection)
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel was specified for the interval channel");
+			Fiber fiber = GetConfiguredFiber(connection);
 
-			Channel<IDictionary<TKey, TChannel>> channel = _channelFactory.GetChannel();
-			Fiber fiber = _fiberFactory();
-
-			return new DistinctChannel<TChannel, TKey>(fiber, _keyAccessor, channel);
+			_configurator.Configure(new DistinctChannelConfiguratorConnection(connection, fiber, _keyAccessor));
 		}
 
-		public ChannelConnectionConfigurator<IDictionary<TKey, TChannel>> SetChannelFactory(
-			ChannelFactory<IDictionary<TKey, TChannel>> channelFactory)
+		public void ValidateConfiguration()
 		{
-			_channelFactory = channelFactory;
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
 
-			return this;
+			_configurator.ValidateConfiguration();
+		}
+
+		public void SetChannelConfigurator(ChannelConfigurator<IDictionary<TKey, TChannel>> configurator)
+		{
+			_configurator = configurator;
+		}
+
+
+		class DistinctChannelConfiguratorConnection :
+			ChannelConfiguratorConnection<IDictionary<TKey, TChannel>>
+		{
+			readonly ChannelConfiguratorConnection<ICollection<TChannel>> _connection;
+			readonly Fiber _fiber;
+			readonly KeyAccessor<TChannel, TKey> _keyAccessor;
+
+			public DistinctChannelConfiguratorConnection(ChannelConfiguratorConnection<ICollection<TChannel>> connection,
+			                                             Fiber fiber, KeyAccessor<TChannel, TKey> keyAccessor)
+			{
+				_connection = connection;
+				_fiber = fiber;
+				_keyAccessor = keyAccessor;
+			}
+
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<IDictionary<TKey, TChannel>>> channelFactory)
+			{
+				Channel<IDictionary<TKey, TChannel>> channel = channelFactory(fiber);
+
+				_connection.AddChannel(fiber, x => new DistinctChannel<TChannel, TKey>(_fiber, _keyAccessor, channel));
+			}
+
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				throw new NotImplementedException("Cannot added non-descript channels to a distinct channel, sorry");
+			}
+
+			public void AddDisposable(IDisposable disposable)
+			{
+				_connection.AddDisposable(disposable);
+			}
 		}
 	}
 }

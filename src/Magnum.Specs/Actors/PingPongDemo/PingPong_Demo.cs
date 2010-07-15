@@ -18,6 +18,7 @@ namespace Magnum.Specs.Actors.PingPongDemo
 	using NUnit.Framework;
 
 	[TestFixture]
+	[Category("Slow")]
 	public class PingPong_Demo
 	{
 		[SetUp]

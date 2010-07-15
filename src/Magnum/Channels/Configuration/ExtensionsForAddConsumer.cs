@@ -19,7 +19,7 @@ namespace Magnum.Channels
 	public static class ExtensionsForAddConsumer
 	{
 		/// <summary>
-		/// Configures a new consumer
+		/// Add a consumer of the specified message type
 		/// </summary>
 		/// <typeparam name="TChannel">The channel type</typeparam>
 		/// <returns>A chainable method to configure additional options</returns>
@@ -29,21 +29,6 @@ namespace Magnum.Channels
 			var configurator = new ChannelConnectionConfiguratorImpl<TChannel>();
 
 			connectionConfigurator.RegisterChannelConfigurator(configurator);
-
-			return configurator;
-		}
-
-		public static ConsumerChannelConfigurator<TChannel> AddConsumer<TChannel>(
-			this ConnectionConfigurator<TChannel> connectionConfigurator,
-			Consumer<TChannel> consumer)
-		{
-			var channelConfigurator = new ChannelConnectionConfiguratorImpl<TChannel>();
-
-			connectionConfigurator.RegisterChannelConfigurator(channelConfigurator);
-
-			var configurator = new ConsumerChannelConfiguratorImpl<TChannel>(consumer);
-
-			channelConfigurator.SetChannelFactory(configurator);
 
 			return configurator;
 		}

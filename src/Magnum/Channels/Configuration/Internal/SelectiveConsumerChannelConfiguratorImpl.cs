@@ -12,10 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using Fibers;
+
+
 	public class SelectiveConsumerChannelConfiguratorImpl<TChannel> :
-		ChannelModelConfigurator<ConsumerChannelConfigurator<TChannel>, TChannel>,
+		FiberModelConfigurator<ConsumerChannelConfigurator<TChannel>>,
 		ConsumerChannelConfigurator<TChannel>,
-		ChannelFactory<TChannel>
+		ChannelConfigurator<TChannel>,
+		ChannelConfigurator
 	{
 		readonly SelectiveConsumer<TChannel> _consumer;
 
@@ -24,9 +28,24 @@ namespace Magnum.Channels.Configuration.Internal
 			_consumer = consumer;
 		}
 
-		public Channel<TChannel> GetChannel()
+		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			return CreateChannel(() => new SelectiveConsumerChannel<TChannel>(_fiberFactory(), _consumer));
+			Fiber fiber = GetConfiguredFiber(connection);
+
+			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
+		}
+
+		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			Fiber fiber = GetConfiguredFiber(connection);
+
+			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
+		}
+
+		public void ValidateConfiguration()
+		{
+			if (_consumer == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "Consumer cannot be null");
 		}
 	}
 }

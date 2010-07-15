@@ -12,13 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using System;
+	using Extensions;
 	using Fibers;
 
 
 	public class FiberModelConfigurator<T>
 		where T : class
 	{
-		protected FiberFactory _fiberFactory;
+		FiberFactory _fiberFactory;
+		TimeSpan _shutdownTimeout = 1.Minutes();
 
 		public FiberModelConfigurator()
 		{
@@ -58,6 +61,29 @@ namespace Magnum.Channels.Configuration.Internal
 			_fiberFactory = fiberFactory;
 
 			return this as T;
+		}
+
+		public T SetShutdownTimeout(TimeSpan timeout)
+		{
+			_shutdownTimeout = timeout;
+
+			return this as T;
+		}
+
+		protected Fiber GetConfiguredFiber(ChannelConfiguratorConnection connection)
+		{
+			Fiber fiber = _fiberFactory();
+			connection.AddDisposable(fiber.GetShutdownDisposable(_shutdownTimeout));
+
+			return fiber;
+		}
+
+		protected Fiber GetConfiguredFiber<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			Fiber fiber = _fiberFactory();
+			connection.AddDisposable(fiber.GetShutdownDisposable(_shutdownTimeout));
+
+			return fiber;
 		}
 	}
 }

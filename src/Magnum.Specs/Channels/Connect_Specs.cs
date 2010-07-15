@@ -28,9 +28,9 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
+						.OnCurrentSynchronizationContext()
 						.UsingConsumer(message => { })
-						.ExecuteOnThreadPoolFiber()
-						.UseCurrentSychronizationContext();
+						.ExecuteOnThreadPoolFiber();
 				}))
 			{
 			}

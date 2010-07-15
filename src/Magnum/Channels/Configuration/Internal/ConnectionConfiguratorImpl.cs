@@ -30,14 +30,14 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
-			var configurator = new ChannelConnectionConfiguratorImpl<TChannel>(channel);
+			var configurator = new ChannelConfiguratorImpl<TChannel>(channel);
 
 			_configurators.Add(configurator);
 		}
 
 		public void AddUntypedChannel(UntypedChannel channel)
 		{
-			var configurator = new ChannelConnectionConfiguratorImpl(channel);
+			var configurator = new ChannelConfiguratorImpl(channel);
 
 			_configurators.Add(configurator);
 		}
@@ -51,11 +51,11 @@ namespace Magnum.Channels.Configuration.Internal
 		{
 			_configurators.Each(x => x.ValidateConfiguration());
 			
-			var connection = new ChannelConnectionImpl(_channel);
+			var connection = new ChannelConfiguratorConnectionImpl(_channel);
 
-			_configurators.Each(configurator => configurator.Configure(connection, _channel));
+			_configurators.Each(configurator => configurator.Configure(connection));
 
-			return connection;
+			return connection.ChannelConnection;
 		}
 	}
 
@@ -74,7 +74,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
-			var configurator = new ChannelConnectionConfiguratorImpl<T, TChannel>(channel);
+			var configurator = new ChannelConfiguratorImpl<T, TChannel>(channel);
 
 			_configurators.Add(configurator);
 		}
@@ -91,11 +91,11 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public ChannelConnection Complete()
 		{
-			var connection = new ChannelConnectionImpl<T>(_channel);
+			var connection = new ChannelConfiguratorConnectionImpl<T>(_channel);
 
-			_configurators.Each(configurator => configurator.Configure(connection, _channel));
+			_configurators.Each(configurator => configurator.Configure(connection));
 
-			return connection;
+			return connection.ChannelConnection;
 		}
 	}
 }

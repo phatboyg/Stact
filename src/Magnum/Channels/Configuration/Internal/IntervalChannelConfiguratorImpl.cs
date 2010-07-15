@@ -14,14 +14,15 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Fibers;
 
 
 	public class IntervalChannelConfiguratorImpl<TChannel> :
 		IntervalModelConfigurator<IntervalChannelConfigurator<TChannel>>,
 		IntervalChannelConfigurator<TChannel>,
-		ChannelFactory<TChannel>
+		ChannelConfigurator<TChannel>
 	{
-		ChannelFactory<ICollection<TChannel>> _channelFactory;
+		ChannelConfigurator<ICollection<TChannel>> _configurator;
 
 		public IntervalChannelConfiguratorImpl(TimeSpan interval)
 		{
@@ -31,22 +32,63 @@ namespace Magnum.Channels.Configuration.Internal
 			ExecuteOnThreadPoolFiber();
 		}
 
-		public Channel<TChannel> GetChannel()
+		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel was specified for the interval channel");
+			Fiber fiber = GetConfiguredFiber(connection);
 
-			Channel<ICollection<TChannel>> channel = _channelFactory.GetChannel();
-
-			return new IntervalChannel<TChannel>(_fiberFactory(), _schedulerFactory(), _interval, channel);
+			_configurator.Configure(new IntervalChannelConfiguratorConnection(connection, fiber, _schedulerFactory(),
+			                                                                  _interval));
 		}
 
-		public ChannelConnectionConfigurator<ICollection<TChannel>> SetChannelFactory(
-			ChannelFactory<ICollection<TChannel>> channelFactory)
+		public void ValidateConfiguration()
 		{
-			_channelFactory = channelFactory;
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
 
-			return this;
+			_configurator.ValidateConfiguration();
+		}
+
+		public void SetChannelConfigurator(ChannelConfigurator<ICollection<TChannel>> configurator)
+		{
+			_configurator = configurator;
+		}
+
+
+		class IntervalChannelConfiguratorConnection :
+			ChannelConfiguratorConnection<ICollection<TChannel>>
+		{
+			readonly ChannelConfiguratorConnection<TChannel> _connection;
+			readonly Fiber _fiber;
+			readonly TimeSpan _interval;
+			readonly Scheduler _scheduler;
+
+			public IntervalChannelConfiguratorConnection(ChannelConfiguratorConnection<TChannel> connection,
+			                                             Fiber fiber,
+			                                             Scheduler scheduler,
+			                                             TimeSpan interval)
+			{
+				_connection = connection;
+				_fiber = fiber;
+				_scheduler = scheduler;
+				_interval = interval;
+			}
+
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<ICollection<TChannel>>> channelFactory)
+			{
+				Channel<ICollection<TChannel>> channel = channelFactory(fiber);
+
+				_connection.AddChannel(fiber, x => new IntervalChannel<TChannel>(_fiber, _scheduler, _interval, channel));
+			}
+
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				throw new NotImplementedException("No way to buffer untyped messages at this point");
+			}
+
+			public void AddDisposable(IDisposable disposable)
+			{
+				_connection.AddDisposable(disposable);
+			}
 		}
 	}
 }

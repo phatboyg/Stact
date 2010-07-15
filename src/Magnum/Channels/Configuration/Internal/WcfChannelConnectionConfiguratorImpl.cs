@@ -13,6 +13,7 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
+	using Fibers;
 
 
 	/// <summary>
@@ -35,17 +36,15 @@ namespace Magnum.Channels.Configuration.Internal
 			_pipeName = pipeName;
 		}
 
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
-		{
-			UntypedChannel client = new WcfChannelProxy(_fiberFactory(), _endpointUri, _pipeName);
-
-			new ConnectChannelVisitor(client).ConnectTo(channel);
-
-			connection.AddChannel(client);
-		}
-
 		public void ValidateConfiguration()
 		{
+		}
+
+		public void Configure(ChannelConfiguratorConnection connection)
+		{
+			Fiber fiber = GetConfiguredFiber(connection);
+
+			connection.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
 		}
 	}
 
@@ -67,15 +66,17 @@ namespace Magnum.Channels.Configuration.Internal
 			_pipeName = pipeName;
 		}
 
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
-		{
-			var host = new WcfChannelHost(_fiberFactory(), channel, _endpointUri, _pipeName);
-
-			connection.AddDisposable(host);
-		}
-
 		public void ValidateConfiguration()
 		{
+		}
+
+		public void Configure(ChannelConfiguratorConnection connection)
+		{
+			Fiber fiber = GetConfiguredFiber(connection);
+
+			var host = new WcfChannelHost(fiber, connection.Channel, _endpointUri, _pipeName);
+
+			connection.AddDisposable(host);
 		}
 	}
 }

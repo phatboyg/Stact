@@ -118,11 +118,17 @@
     <Compile Include="Binding\TypeBinders\ValueTypeBinder.cs" />
     <Compile Include="Channels\ChannelProviderFactory.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistributedChannels.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForSynchronizedChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForWcfChannels.cs" />
     <Compile Include="Channels\Configuration\Internal\AbstractChannelConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConfiguratorConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConfiguratorConnectionImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelProviderConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
@@ -136,7 +142,7 @@
     <Compile Include="Channels\ChannelConfigurationException.cs" />
     <Compile Include="Channels\Configuration\ChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForLastChannels.cs" />
-    <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\Internal\ChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Configurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConsumerChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConsumerChannelConfiguratorImpl.cs" />
@@ -166,7 +172,6 @@
     <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\WcfChannelHost.cs" />
     <Compile Include="Channels\WcfChannelProxy.cs" />
-    <Compile Include="Channels\Configuration\Internal\ChannelModelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConnectChannelVisitor.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\IntervalChannelConfiguratorImpl.cs" />
@@ -220,6 +225,8 @@
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurationException.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfigurator.cs" />
+    <Compile Include="Fibers\DisposeCallback.cs" />
+    <Compile Include="Fibers\ExtensionsToFiber.cs" />
     <Compile Include="Fibers\FiberCache.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />

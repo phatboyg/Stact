@@ -151,6 +151,16 @@ namespace Magnum.Channels.Visitors
 			return channel;
 		}
 
+		protected virtual UntypedChannel Visitor(WcfChannelProxy channel)
+		{
+			return channel;
+		}
+
+		protected virtual Channel<T> Visitor<T>(WcfChannelProxy<T> channel)
+		{
+			return channel;
+		}
+
 		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
 		{
 			_log.Warn(x => x.Write("Unknown channel implementation found: {0}", channel.GetType().FullName));
