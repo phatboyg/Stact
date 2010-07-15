@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\bin\Magnum.RulesEngine.XML</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
