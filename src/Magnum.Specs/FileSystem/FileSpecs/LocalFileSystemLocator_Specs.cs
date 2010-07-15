@@ -17,6 +17,8 @@ namespace Magnum.Specs.FileSystem.FileSpecs
     using NUnit.Framework;
     using TestFramework;
 
+	//TODO: what if there are .. in the path
+	
     [Scenario]
 	public class Passing_a_filename_to_the_locator_and_the_file_exists :
         Given_a_FileSystemLocator

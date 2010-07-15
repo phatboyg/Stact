@@ -18,6 +18,8 @@ namespace Magnum.Specs.FileSystem.FileSpecs
     using NUnit.Framework;
     using TestFramework;
 
+	//TODO:what about nested folders
+	
     public class Given_a_zipped_file
     {
         string _zippedFile = @".\FileSystem\FileSpecs\sample.zip";
