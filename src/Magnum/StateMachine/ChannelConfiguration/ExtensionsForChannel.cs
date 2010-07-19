@@ -12,9 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using Magnum.Channels.Configuration;
-	using Magnum.StateMachine;
-	using Magnum.StateMachine.ChannelConfiguration;
+	using Configuration;
+	using StateMachine;
+	using StateMachine.ChannelConfiguration;
 
 
 	public static class ExtensionsForChannel
@@ -23,7 +23,9 @@ namespace Magnum.Channels
 			this ConnectionConfigurator configurator, T instance)
 			where T : StateMachine<T>
 		{
-			var instanceConfigurator = new StateMachineInstanceConnectionConfiguratorImpl<T>(configurator, instance);
+			var instanceConfigurator = new StateMachineInstanceConnectionConfiguratorImpl<T>(instance);
+
+			configurator.RegisterChannelConfigurator(instanceConfigurator);
 
 			return instanceConfigurator;
 		}

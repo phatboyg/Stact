@@ -24,7 +24,7 @@ namespace Magnum.Channels
 		{
 			var filterConfigurator = new FilterChannelConfiguratorImpl<TChannel>(filter);
 
-			configurator.SetChannelFactory(filterConfigurator);
+			configurator.SetChannelConfigurator(filterConfigurator);
 
 			return filterConfigurator;
 		}

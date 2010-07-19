@@ -15,6 +15,43 @@ namespace Magnum.Channels
 	using System.Threading;
 	using Fibers;
 
+
+	/// <summary>
+	/// Using the specified SynchronizationContext, messages sent through this channel
+	/// will be delivered on the specified user interface thread, to avoid issues when
+	/// writing to the UI
+	/// </summary>
+	/// <typeparam name="T">The channel type</typeparam>
+	public class SynchronizedChannel :
+		UntypedChannel
+	{
+		readonly Fiber _fiber;
+		readonly object _state;
+		readonly SynchronizationContext _synchronizationContext;
+
+		public SynchronizedChannel(Fiber fiber, UntypedChannel output, SynchronizationContext synchronizationContext)
+			: this(fiber, output, synchronizationContext, 0)
+		{
+		}
+
+		public SynchronizedChannel(Fiber fiber, UntypedChannel output, SynchronizationContext synchronizationContext,
+		                           object state)
+		{
+			_fiber = fiber;
+			Output = output;
+			_synchronizationContext = synchronizationContext;
+			_state = state;
+		}
+
+		public UntypedChannel Output { get; private set; }
+
+		public void Send<T>(T message)
+		{
+			_fiber.Add(() => _synchronizationContext.Send(x => Output.Send(message), _state));
+		}
+	}
+
+
 	/// <summary>
 	/// Using the specified SynchronizationContext, messages sent through this channel
 	/// will be delivered on the specified user interface thread, to avoid issues when
@@ -24,9 +61,9 @@ namespace Magnum.Channels
 	public class SynchronizedChannel<T> :
 		Channel<T>
 	{
-		private readonly Fiber _fiber;
-		private readonly object _state;
-		private readonly SynchronizationContext _synchronizationContext;
+		readonly Fiber _fiber;
+		readonly object _state;
+		readonly SynchronizationContext _synchronizationContext;
 
 		public SynchronizedChannel(Fiber fiber, Channel<T> output, SynchronizationContext synchronizationContext)
 			: this(fiber, output, synchronizationContext, 0)

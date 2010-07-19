@@ -12,35 +12,83 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using System;
+	using Fibers;
+
+
 	public class FilterChannelConfiguratorImpl<TChannel> :
 		FiberModelConfigurator<FilterChannelConfigurator<TChannel>>,
 		FilterChannelConfigurator<TChannel>,
-		ChannelFactory<TChannel>
+		ChannelConfigurator<TChannel>
 	{
 		readonly Filter<TChannel> _filter;
-		ChannelFactory<TChannel> _channelFactory;
+		ChannelConfigurator<TChannel> _configurator;
 
 		public FilterChannelConfiguratorImpl(Filter<TChannel> filter)
 		{
 			_filter = filter;
+
 			ExecuteOnThreadPoolFiber();
 		}
 
-		public Channel<TChannel> GetChannel()
+		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel was specified for the filter output channel");
+			Fiber fiber = GetConfiguredFiber(connection);
 
-			Channel<TChannel> channel = _channelFactory.GetChannel();
+			var filterConnection = new ChannelConfiguratorConnectionDecorator(connection, fiber, _filter);
 
-			return new FilterChannel<TChannel>(_fiberFactory(), channel, _filter);
+			_configurator.Configure(filterConnection);
 		}
 
-		public ChannelConnectionConfigurator<TChannel> SetChannelFactory(ChannelFactory<TChannel> channelFactory)
+		public void ValidateConfiguration()
 		{
-			_channelFactory = channelFactory;
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
 
-			return this;
+			_configurator.ValidateConfiguration();
+		}
+
+		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		{
+			_configurator = configurator;
+		}
+
+
+		class ChannelConfiguratorConnectionDecorator :
+			ChannelConfiguratorConnection<TChannel>
+		{
+			readonly ChannelConfiguratorConnection<TChannel> _connection;
+			readonly Fiber _fiber;
+			readonly Filter<TChannel> _filter;
+
+			public ChannelConfiguratorConnectionDecorator(ChannelConfiguratorConnection<TChannel> connection, Fiber fiber,
+			                                              Filter<TChannel> filter)
+			{
+				_connection = connection;
+				_fiber = fiber;
+				_filter = filter;
+			}
+
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
+			{
+				Channel<TChannel> channel = channelFactory(fiber);
+
+				_connection.AddChannel(fiber, x => new FilterChannel<TChannel>(_fiber, channel, _filter));
+			}
+
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				Channel<T> channel = channelFactory(fiber);
+
+				Filter<T> filter = m => _filter((TChannel)(object)m);
+
+				_connection.AddChannel(_fiber, x => new FilterChannel<T>(x, channel, filter));
+			}
+
+			public void AddDisposable(IDisposable disposable)
+			{
+				_connection.AddDisposable(disposable);
+			}
 		}
 	}
 }

@@ -10,17 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Fibers
 {
-	using Fibers;
+	using System;
 
 
-	public interface WcfChannelConnectionConfigurator 
+	/// <summary>
+	/// Wraps a callback as an IDisposable to allow it to be called when the object is disposed.
+	/// </summary>
+	public class DisposeCallback :
+		IDisposable
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		readonly Action _disposeCallback;
+
+		public DisposeCallback(Action disposeCallback)
+		{
+			Guard.AgainstNull(disposeCallback);
+
+			_disposeCallback = disposeCallback;
+		}
+
+		public void Dispose()
+		{
+			_disposeCallback();
+		}
 	}
 }

@@ -13,11 +13,11 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System.Linq;
-	using Magnum.Channels;
-	using Magnum.Channels.Configuration;
-	using Magnum.Channels.Configuration.Internal;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
+	using Channels;
+	using Channels.Configuration;
+	using Channels.Configuration.Internal;
+	using Extensions;
+	using Fibers;
 
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
@@ -30,12 +30,9 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		readonly T _instance;
 		StateMachineEventInspectorResult<T>[] _results;
 
-		public StateMachineInstanceConnectionConfiguratorImpl(ConnectionConfigurator configurator, T instance)
+		public StateMachineInstanceConnectionConfiguratorImpl(T instance)
 		{
-			_configurator = configurator;
 			_instance = instance;
-
-			_configurator.RegisterChannelConfigurator(this);
 		}
 
 		public void ValidateConfiguration()
@@ -49,12 +46,12 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			_results = inspector.GetResults().ToArray();
 		}
 
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
+		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = _fiberFactory();
+			Fiber fiber = GetConfiguredFiber(connection);
 
 			foreach (var result in _results)
-				result.Connect(_configurator, fiber, _instance);
+				result.Connect(connection, fiber, _instance);
 		}
 	}
 }

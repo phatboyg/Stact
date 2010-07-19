@@ -19,6 +19,24 @@ namespace Magnum.Channels
 	public static class ExtensionsForSelectiveConsumerChannel
 	{
 		/// <summary>
+		/// Add a consumer to the channel using the message type defined for the channel
+		/// </summary>
+		/// <typeparam name="TChannel">The channel type, specifies the type of message sent by the channel</typeparam>
+		/// <param name="connectionConfigurator">The connection configurator</param>
+		/// <param name="consumer">The consumer to add to the channel</param>
+		/// <returns>A consumer configurator to customize the consumer settings</returns>
+		public static ConsumerChannelConfigurator<TChannel> AddSelectiveConsumer<TChannel>(
+			this ConnectionConfigurator<TChannel> connectionConfigurator,
+			SelectiveConsumer<TChannel> consumer)
+		{
+			var configurator = new SelectiveConsumerChannelConfiguratorImpl<TChannel>(consumer);
+
+			connectionConfigurator.RegisterChannelConfigurator(configurator);
+
+			return configurator;
+		}
+
+		/// <summary>
 		/// Consumes the message on a SelectiveConsumerChannel given the specified delegate
 		/// </summary>
 		/// <param name="configurator"></param>
@@ -29,7 +47,7 @@ namespace Magnum.Channels
 		{
 			var consumerConfigurator = new SelectiveConsumerChannelConfiguratorImpl<TChannel>(selectiveConsumer);
 
-			configurator.SetChannelFactory(consumerConfigurator);
+			configurator.SetChannelConfigurator(consumerConfigurator);
 
 			return consumerConfigurator;
 		}

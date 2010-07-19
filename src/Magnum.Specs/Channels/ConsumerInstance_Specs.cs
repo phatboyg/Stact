@@ -14,11 +14,13 @@ namespace Magnum.Specs.Channels
 {
 	using System;
 	using System.Threading;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Rhino.Mocks;
 	using TestFramework;
+
 
 	[TestFixture]
 	public class Sending_a_message_to_an_instance_consumer
@@ -34,7 +36,7 @@ namespace Magnum.Specs.Channels
 			var provider = MockRepository.GenerateMock<ChannelProvider<MyMessage>>();
 			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
 
-			var channel = new InstanceChannel<MyMessage>(provider);
+			var channel = new InstanceChannel<MyMessage>(new SynchronousFiber(), provider);
 
 			channel.Send(message);
 			channel.Send(message);
@@ -56,7 +58,8 @@ namespace Magnum.Specs.Channels
 
 			KeyAccessor<MyMessage, Guid> messageKeyAccessor = x => x.Id;
 
-			var channel = new InstanceChannel<MyMessage>(new KeyedChannelProvider<MyMessage, Guid>(provider, messageKeyAccessor));
+			var channel = new InstanceChannel<MyMessage>(new SynchronousFiber(),
+			                                             new KeyedChannelProvider<MyMessage, Guid>(provider, messageKeyAccessor));
 
 			channel.Send(message);
 			channel.Send(message);
@@ -78,7 +81,8 @@ namespace Magnum.Specs.Channels
 
 			KeyAccessor<int, int> messageKeyAccessor = x => x;
 
-			var channel = new InstanceChannel<int>(new KeyedChannelProvider<int, int>(provider, messageKeyAccessor));
+			var channel = new InstanceChannel<int>(new SynchronousFiber(),
+			                                       new KeyedChannelProvider<int, int>(provider, messageKeyAccessor));
 
 
 			channel.Send(message);
@@ -88,7 +92,8 @@ namespace Magnum.Specs.Channels
 			result.VerifyAllExpectations();
 		}
 
-		[Test, Category("Slow")]
+		[Test]
+		[Category("Slow")]
 		public void Should_work_for_thread_static_instances()
 		{
 			int message = 27;
@@ -99,10 +104,10 @@ namespace Magnum.Specs.Channels
 			var provider = MockRepository.GenerateMock<ChannelProvider<int>>();
 			provider.Expect(x => x.GetChannel(message)).Return(result).Repeat.Twice();
 
-			var channel = new InstanceChannel<int>(new ThreadStaticChannelProvider<int>(provider));
+			var channel = new InstanceChannel<int>(new SynchronousFiber(), new ThreadStaticChannelProvider<int>(provider));
 
-			Future<bool> first = new Future<bool>();
-			Future<bool> second = new Future<bool>();
+			var first = new Future<bool>();
+			var second = new Future<bool>();
 			var started = new Future<bool>();
 
 			ThreadPool.QueueUserWorkItem(x =>

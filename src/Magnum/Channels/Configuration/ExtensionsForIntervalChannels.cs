@@ -31,7 +31,7 @@ namespace Magnum.Channels
 		{
 			var intervalConfigurator = new IntervalChannelConfiguratorImpl<TChannel>(interval);
 
-			configurator.SetChannelFactory(intervalConfigurator);
+			configurator.SetChannelConfigurator(intervalConfigurator);
 
 			return intervalConfigurator;
 		}

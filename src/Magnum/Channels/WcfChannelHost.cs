@@ -26,7 +26,7 @@ namespace Magnum.Channels
 	public class WcfChannelHost :
 		IDisposable
 	{
-		private readonly WcfChannelService<WcfMessageEnvelope> _service;
+		private WcfChannelService<WcfMessageEnvelope> _service;
 		private readonly Uri _serviceUri;
 
 		private bool _disposed;
@@ -58,6 +58,8 @@ namespace Magnum.Channels
 				_serviceHost.Close();
 				_serviceHost = null;
 			}
+
+			_service = null;
 		}
 
 		~WcfChannelHost()

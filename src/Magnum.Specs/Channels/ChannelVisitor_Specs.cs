@@ -33,7 +33,7 @@ namespace Magnum.Specs.Channels
 		public void Should_capture_the_instance_channel()
 		{
 			var provider = new DelegateChannelProvider<int>(x => new ConsumerChannel<int>(new SynchronousFiber(), y => { }));
-			var channel = new InstanceChannel<int>(provider);
+			var channel = new InstanceChannel<int>(new SynchronousFiber(), provider);
 
 			new ChannelVisitor().Visit(channel);
 		}
@@ -43,7 +43,7 @@ namespace Magnum.Specs.Channels
 		{
 			var provider = new DelegateChannelProvider<int>(x => new ConsumerChannel<int>(new SynchronousFiber(), y => { }));
 			var threadProvider = new ThreadStaticChannelProvider<int>(provider);
-			var channel = new InstanceChannel<int>(threadProvider);
+			var channel = new InstanceChannel<int>(new SynchronousFiber(), threadProvider);
 
 			new ChannelVisitor().Visit(channel);
 		}

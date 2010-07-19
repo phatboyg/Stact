@@ -24,7 +24,7 @@ namespace Magnum.Channels
 		{
 			var instanceConfigurator = new InstanceChannelConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelFactory(instanceConfigurator);
+			configurator.SetChannelConfigurator(instanceConfigurator);
 
 			return instanceConfigurator;
 		}

@@ -12,8 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
-	using System.Threading;
-	using Magnum.Fibers;
+	using Fibers;
 
 
 	public interface ConsumerChannelConfigurator<TChannel>
@@ -23,8 +22,5 @@ namespace Magnum.Channels.Configuration.Internal
 		ConsumerChannelConfigurator<TChannel> ExecuteOnProducerThread();
 		ConsumerChannelConfigurator<TChannel> ExecuteOnThreadPoolFiber();
 		ConsumerChannelConfigurator<TChannel> UseFiberFactory(FiberFactory fiberFactory);
-
-		ConsumerChannelConfigurator<TChannel> UseCurrentSychronizationContext();
-		ConsumerChannelConfigurator<TChannel> WithSynchronizationContext(SynchronizationContext synchronizationContext);
 	}
 }

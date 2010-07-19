@@ -13,51 +13,71 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
+	using Fibers;
 
 
 	public class InstanceChannelConfiguratorImpl<TChannel> :
 		InstanceChannelConfigurator<TChannel>,
-		ChannelFactory<TChannel>
+		ChannelConfigurator<TChannel>
 	{
-		ChannelFactory<TChannel> _channelFactory;
+		ChannelConfigurator<TChannel> _configurator;
 
-		public Channel<TChannel> GetChannel()
+		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider specified");
-
-			return _channelFactory.GetChannel();
+			_configurator.Configure(connection);
 		}
 
-		public InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>() 
+		public void ValidateConfiguration()
+		{
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
+
+			_configurator.ValidateConfiguration();
+		}
+
+		public InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>()
 			where TInstance : class
 		{
 			var configurator = new InstanceChannelConfiguratorImpl<TInstance, TChannel>();
 
-			_channelFactory = configurator;
+			SetChannelConfigurator(configurator);
 
 			return configurator;
+		}
+
+		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		{
+			_configurator = configurator;
 		}
 	}
 
 
 	public class InstanceChannelConfiguratorImpl<TInstance, TChannel> :
+		FiberModelConfigurator<InstanceChannelConfigurator<TInstance, TChannel>>,
 		InstanceChannelConfigurator<TInstance, TChannel>,
-		ChannelFactory<TChannel>
+		ChannelConfigurator<TChannel>
 		where TInstance : class
 	{
 		Func<ChannelProvider<TChannel>> _providerFactory;
 
-		public Channel<TChannel> GetChannel()
+		public InstanceChannelConfiguratorImpl()
+		{
+			ExecuteOnProducerThread();
+		}
+
+		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			ChannelProvider<TChannel> provider = _providerFactory();
+
+			Fiber fiber = GetConfiguredFiber(connection);
+
+			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
+		}
+
+		public void ValidateConfiguration()
 		{
 			if (_providerFactory == null)
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
-
-			ChannelProvider<TChannel> provider =  _providerFactory();
-
-			var instanceChannel = new InstanceChannel<TChannel>(provider);
-
-			return instanceChannel;
 		}
 
 		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)

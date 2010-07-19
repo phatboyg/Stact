@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
+	using Fibers;
+
+
 	/// <summary>
 	/// An instance channel requests an instance of a channel which can be created/loaded
 	/// based on the information in the message being sent on the channel
@@ -20,8 +23,11 @@ namespace Magnum.Channels
 	public class InstanceChannel<T> :
 		Channel<T>
 	{
-		public InstanceChannel(ChannelProvider<T> instanceProvider)
+		readonly Fiber _fiber;
+
+		public InstanceChannel(Fiber fiber, ChannelProvider<T> instanceProvider)
 		{
+			_fiber = fiber;
 			Provider = instanceProvider;
 		}
 
@@ -29,11 +35,14 @@ namespace Magnum.Channels
 
 		public void Send(T message)
 		{
-			Channel<T> channel = Provider.GetChannel(message);
-			if (channel == null)
-				return;
+			_fiber.Add(() =>
+				{
+					Channel<T> channel = Provider.GetChannel(message);
+					if (channel == null)
+						return;
 
-			channel.Send(message);
+					channel.Send(message);
+				});
 		}
 	}
 }

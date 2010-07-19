@@ -14,9 +14,9 @@ namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum.Channels;
-	using Magnum.Channels.Configuration;
-	using Magnum.Fibers;
+	using Channels;
+	using Channels.Configuration.Internal;
+	using Fibers;
 
 
 	public interface StateMachineEventInspectorResult<T>
@@ -25,7 +25,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		Event GenericEvent { get; }
 		Type EventType { get; }
 
-		void Connect(ConnectionConfigurator configurator, Fiber fiber, T instance);
+		void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance);
 	}
 
 
@@ -64,10 +64,9 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			get { return typeof(V); }
 		}
 
-		public void Connect(ConnectionConfigurator configurator, Fiber fiber, T instance)
+		public void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance)
 		{
-			var consumerChannel = new ConsumerChannel<V>(fiber, x => instance.RaiseEvent(Event, x));
-			configurator.AddChannel(consumerChannel);
+			configurator.AddChannel(fiber, x => new ConsumerChannel<V>(x, m => instance.RaiseEvent(Event, m)));
 		}
 	}
 }

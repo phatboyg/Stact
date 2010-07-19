@@ -13,13 +13,13 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
-	using Magnum.Channels;
-	using Magnum.Channels.Configuration.Internal;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
-	using Magnum.Fibers.Configuration;
-	using Magnum.Logging;
-	using Magnum.Reflection;
+	using Channels;
+	using Channels.Configuration.Internal;
+	using Extensions;
+	using Fibers;
+	using Fibers.Configuration;
+	using Logging;
+	using Reflection;
 
 
 	public class StateMachineConnectionConfiguratorImpl<T> :
@@ -37,9 +37,9 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			_configurator.ValidateConfiguration();
 		}
 
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
+		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			_configurator.Configure(connection, channel);
+			_configurator.Configure(connection);
 		}
 
 		public StateMachineConnectionConfigurator<T, TKey, TBinding> BindUsing<TBinding, TKey>()
@@ -85,7 +85,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			_binding.Validate(_instanceFactory(default(TKey)));
 		}
 
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
+		public void Configure(ChannelConfiguratorConnection connection)
 		{
 			_fiberProvider = base.GetConfiguredProvider();
 
@@ -95,7 +95,8 @@ namespace Magnum.StateMachine.ChannelConfiguration
 				{
 					_log.Debug(x => x.Write("Binding Event: " + @event.Name));
 
-					this.FastInvoke(new[] {result.EventType}, "ConfigureChannel", connection, channel, @event, binder, result);
+					this.FastInvoke(new[] {result.EventType}, "ConfigureChannel", connection, @event, binder,
+					                result);
 				});
 		}
 
@@ -119,13 +120,13 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			_channelProviderFactory = factory;
 		}
 
-		public void ConfigureChannel<TChannel>(CreateChannelConnection connection, UntypedChannel channel,
+
+		public void ConfigureChannel<TChannel>(ChannelConfiguratorConnection connection,
 		                                       DataEvent<T, TChannel> @event, EventBinder<T, TKey, TChannel> binder,
 		                                       StateMachineEventInspectorResult<T> result)
 		{
 			_log.Debug(x => x.Write("Configuring channel for event {0}, message type {1}", @event.Name,
 			                        typeof(TChannel).ToShortTypeName()));
-
 
 			Func<TChannel, TKey> accessor = binder.GetBinder<TChannel>();
 			KeyAccessor<TChannel, TKey> keyAccessor = m => accessor(m);
@@ -137,11 +138,9 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 			var keyedProvider = new KeyedChannelProvider<TChannel, TKey>(channelProvider, keyAccessor);
 
-			var newChannel = new InstanceChannel<TChannel>(keyedProvider);
+			var fiber = new SynchronousFiber();
 
-			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
-
-			connection.AddChannel(newChannel);
+			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, keyedProvider));
 		}
 	}
 }

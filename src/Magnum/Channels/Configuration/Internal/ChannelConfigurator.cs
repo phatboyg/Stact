@@ -18,17 +18,17 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface ChannelConfigurator :
 		Configurator
 	{
-		void Configure(CreateChannelConnection connection, UntypedChannel channel);
+		void Configure(ChannelConfiguratorConnection connection);
 	}
 
 
 	/// <summary>
 	/// Configures a channel on a typed channel
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface ChannelConfigurator<T> :
+	/// <typeparam name="TChannel"></typeparam>
+	public interface ChannelConfigurator<TChannel> :
 		Configurator
 	{
-		void Configure(CreateChannelConnection connection, Channel<T> channel);
+		void Configure(ChannelConfiguratorConnection<TChannel> connection);
 	}
 }

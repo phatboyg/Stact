@@ -22,7 +22,7 @@ namespace Magnum.Channels
 		{
 			var lastConfigurator = new LastChannelConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelFactory(lastConfigurator);
+			configurator.SetChannelConfigurator(lastConfigurator);
 
 			return lastConfigurator;
 		}

@@ -13,106 +13,58 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
-
-
-	public class ChannelConnectionConfiguratorImpl :
-		ChannelConnectionConfigurator,
-		ChannelConfigurator
-	{
-		readonly UntypedChannel _channel;
-
-		public ChannelConnectionConfiguratorImpl(UntypedChannel channel)
-		{
-			Guard.AgainstNull(channel);
-
-			_channel = channel;
-		}
-
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
-		{
-			new ConnectChannelVisitor(_channel).ConnectTo(channel);
-
-			connection.AddChannel(_channel);
-		}
-
-		public void ValidateConfiguration()
-		{
-		}
-	}
+	using Fibers;
 
 
 	public class ChannelConnectionConfiguratorImpl<TChannel> :
 		ChannelConnectionConfigurator<TChannel>,
-		ChannelConfigurator,
-		ChannelConfigurator<TChannel>
+		ChannelConfigurator
 	{
-		Func<Channel<TChannel>> _channelFactory;
-
-		public ChannelConnectionConfiguratorImpl()
-		{
-		}
-
-		public ChannelConnectionConfiguratorImpl(Channel<TChannel> channel)
-		{
-			Guard.AgainstNull(channel);
-
-			_channelFactory = () => channel;
-		}
-
-		public void Configure(CreateChannelConnection connection, UntypedChannel channel)
-		{
-			Channel<TChannel> newChannel = _channelFactory();
-
-			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
-
-			connection.AddChannel(newChannel);
-		}
+		ChannelConfigurator<TChannel> _configurator;
 
 		public void ValidateConfiguration()
 		{
-			if (_channelFactory == null)
-				throw new ChannelConfigurationException("No channel factory specified for channel: " + typeof(TChannel).Name);
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
+
+			_configurator.ValidateConfiguration();
 		}
 
-		public void Configure(CreateChannelConnection connection, Channel<TChannel> channel)
+		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Channel<TChannel> newChannel = _channelFactory();
-
-			new ConnectChannelVisitor<TChannel>(newChannel).ConnectTo(channel);
-
-			connection.AddChannel(newChannel);
+			_configurator.Configure(new ChannelConfiguratorConnectionDecorator(connection));
 		}
 
-		public ChannelConnectionConfigurator<TChannel> SetChannelFactory(ChannelFactory<TChannel> channelFactory)
+		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
 		{
-			_channelFactory = channelFactory.GetChannel;
-
-			return this;
-		}
-	}
-
-
-	public class ChannelConnectionConfiguratorImpl<T, TChannel> :
-		ChannelConfigurator<T>
-	{
-		readonly Channel<TChannel> _channel;
-
-		public ChannelConnectionConfiguratorImpl(Channel<TChannel> channel)
-		{
-			_channel = channel;
+			_configurator = configurator;
 		}
 
-		public void Configure(CreateChannelConnection connection, Channel<T> channel)
-		{
-			new ConnectChannelVisitor<TChannel>(_channel).ConnectTo(channel);
 
-			connection.AddChannel(_channel);
-		}
-
-		public void ValidateConfiguration()
+		class ChannelConfiguratorConnectionDecorator :
+			ChannelConfiguratorConnection<TChannel>
 		{
-			if (_channel == null)
-				throw new ChannelConfigurationException("A null channel was specified");
+			ChannelConfiguratorConnection _connection;
+
+			public ChannelConfiguratorConnectionDecorator(ChannelConfiguratorConnection connection)
+			{
+				_connection = connection;
+			}
+
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
+			{
+				_connection.AddChannel(fiber, channelFactory);
+			}
+
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				_connection.AddChannel(fiber, channelFactory);
+			}
+
+			public void AddDisposable(IDisposable disposable)
+			{
+				_connection.AddDisposable(disposable);
+			}
 		}
 	}
 }

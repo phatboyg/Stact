@@ -45,6 +45,7 @@ namespace Magnum.Specs.Channels
 			using (input.Connect(x =>
 				{
 					x.AddConsumerOf<TestMessage>()
+						.OnCurrentSynchronizationContext()
 						.UsingConsumer(message =>
 							{
 								Trace.WriteLine("Received on Thread: " + Thread.CurrentThread.ManagedThreadId);
@@ -53,8 +54,7 @@ namespace Magnum.Specs.Channels
 								Assert.AreEqual(context, SynchronizationContext.Current);
 
 								future.Complete(message);
-							})
-						.UseCurrentSychronizationContext();
+							});
 				}))
 			{
 				Trace.WriteLine("Subscribed on Thread: " + Thread.CurrentThread.ManagedThreadId);

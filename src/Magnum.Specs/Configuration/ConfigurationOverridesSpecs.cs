@@ -33,13 +33,17 @@ namespace Magnum.Specs.Configuration
 				File.Delete("global.json");
 			if (File.Exists("local.json"))
 				File.Delete("local.json");
+			if (File.Exists("config.json"))
+				File.Delete("config.json");
 
 			const string globalConf = @"{ key1: ""global-value-1"", key2: ""global-value-2""}";
 			const string localConf = @"{ key1: ""local-value-1""}";
+			const string configConf = @"{ key3: ""config-value-3""}";
 
 
 			File.AppendAllText("global.json", globalConf);
 			File.AppendAllText("local.json", localConf);
+			File.AppendAllText("config.json", configConf);
 
 			_binder = ConfigurationBinderFactory.New(x =>
 				{
@@ -48,7 +52,7 @@ namespace Magnum.Specs.Configuration
 
 					x.AddJsonFile("global.json");
                     x.AddJsonFile("local.json");
-                    x.AddJsonFile(".\\Configuration\\config.json");
+                    x.AddJsonFile("config.json");
 				});
 		}
 
@@ -59,11 +63,11 @@ namespace Magnum.Specs.Configuration
 			value.ShouldEqual("local-value-1");
 		}
 
-        [Then, Ignore("odd")]
+        [Then]
         public void A_stupid_file()
         {
             string value = _binder.GetValueAsString("key3");
-            value.ShouldBeEqualTo("from-file");
+            value.ShouldBeEqualTo("config-value-3");
         }
 	}
 }
