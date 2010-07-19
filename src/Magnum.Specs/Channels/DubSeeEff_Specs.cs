@@ -14,17 +14,19 @@ namespace Magnum.Specs.Channels
 {
 	using System;
 	using System.Runtime.Serialization;
-	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
+	using Magnum.Fibers;
 	using Magnum.Logging;
+	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using TestFramework;
+
 
 	[TestFixture]
 	public class Sending_a_message_through_a_wcf_channel
 	{
-		[Test, Category("Slow")]
+		[Test]
+		[Category("Slow")]
 		public void Should_property_adapt_itself_to_a_channel_network()
 		{
 			TraceLogProvider.Configure(LogLevel.Debug);
@@ -43,10 +45,10 @@ namespace Magnum.Specs.Channels
 				using (adapter.Connect(x =>
 					{
 						x.AddConsumer(m =>
-								{
-									log.Debug(l => l.Write("Received: {0}", m.Value));
-									future.Complete(m);
-								});
+							{
+								log.Debug(l => l.Write("Received: {0}", m.Value));
+								future.Complete(m);
+							});
 					}))
 				{
 					var client = new WcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
@@ -60,6 +62,7 @@ namespace Magnum.Specs.Channels
 				}
 			}
 		}
+
 
 		[DataContract]
 		public class TestMessage

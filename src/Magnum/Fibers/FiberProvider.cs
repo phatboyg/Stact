@@ -10,29 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.StateMachine.ChannelConfiguration
+namespace Magnum.Fibers
 {
-	using Channels.Configuration;
-	using Fibers;
-
-
-	public class StateMachineConnectionConfigurator<T>
-		where T : StateMachine<T>
+	/// <summary>
+	/// Returns a fiber appropriate for the specified key
+	/// 
+	/// Designed for use with cases where there are multiple channels needed
+	/// for a particular object and the fiber needs to be acquired
+	/// </summary>
+	/// <typeparam name="TKey">The key type</typeparam>
+	public interface FiberProvider<TKey>
 	{
-		readonly ConnectionConfigurator _configurator;
-
-		public StateMachineConnectionConfigurator(ConnectionConfigurator configurator)
-		{
-			_configurator = configurator;
-		}
-
-		public void Connect(Fiber fiber, T instance)
-		{
-			var inspector = new StateMachineEventInspector<T>();
-			instance.Inspect(inspector);
-
-			foreach (var result in inspector.GetResults())
-				result.Connect(_configurator, fiber, instance);
-		}
+		Fiber GetFiber(TKey key);
 	}
 }

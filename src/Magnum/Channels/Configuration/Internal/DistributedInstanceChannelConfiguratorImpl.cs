@@ -13,6 +13,7 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
+	using Magnum.Fibers.Configuration;
 
 
 	/// <summary>
@@ -22,7 +23,9 @@ namespace Magnum.Channels.Configuration.Internal
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
+	/// <typeparam name="TInstance"></typeparam>
 	public class DistributedInstanceChannelConfiguratorImpl<TInstance, TChannel, TKey> :
+		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>,
 		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>
 		where TInstance : class
 	{
@@ -32,11 +35,18 @@ namespace Magnum.Channels.Configuration.Internal
 		public DistributedInstanceChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
+
+			ExecuteOnThreadPoolFiber();
 		}
 
 		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
+		}
+
+		public KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor()
+		{
+			return _keyAccessor;
 		}
 
 		public ChannelProvider<TChannel> GetChannelProvider()

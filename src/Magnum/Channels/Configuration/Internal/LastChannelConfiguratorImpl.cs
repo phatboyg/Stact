@@ -25,7 +25,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public LastChannelConfiguratorImpl()
 		{
-			UseProducerThread();
+			ExecuteOnProducerThread();
 		}
 
 		public Channel<ICollection<TChannel>> GetChannel()

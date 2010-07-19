@@ -21,6 +21,7 @@ namespace Magnum.Channels
 		Channel<T> GetChannel<T>(T message);
 	}
 
+
 	/// <summary>
 	/// Used by dispatching channels to retrieve the appropriate channel for
 	/// a message.

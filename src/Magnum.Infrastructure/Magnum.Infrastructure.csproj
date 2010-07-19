@@ -97,11 +97,16 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Channels\Configuration\ExtensionsForNHibernateInstanceChannel.cs" />
+    <Compile Include="Channels\Configuration\ExtentionsForNHibernateConnectionChannel.cs" />
     <Compile Include="Channels\Configuration\NHibernateChannelProviderConfigurator.cs" />
     <Compile Include="Channels\Configuration\NHibernateChannelProviderConfiguratorImpl.cs" />
+    <Compile Include="Channels\Configuration\NHibernateConnectionProviderConfigurator.cs" />
+    <Compile Include="Channels\Configuration\NHibernateConnectionProviderConfiguratorImpl.cs" />
+    <Compile Include="Channels\LateBoundSessionProvider.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel.cs" />
     <Compile Include="Channels\NHibernateInstanceChannelProvider.cs" />
     <Compile Include="Channels\SessionProvider.cs" />
+    <Compile Include="Channels\DelegateSessionProvider.cs" />
     <Compile Include="Data\NHibernateTransaction.cs" />
     <Compile Include="Data\NHibernateUnitOfWork.cs" />
     <Compile Include="Data\NHibernateRepository.cs" />

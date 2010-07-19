@@ -23,6 +23,7 @@ namespace Magnum.Specs.Channels
 
 
 	[TestFixture]
+	[Category("Slow")]
 	public class Sending_a_message_to_a_remote_channel_via_wcf
 	{
 		[Test]

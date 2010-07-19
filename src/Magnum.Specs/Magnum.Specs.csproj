@@ -231,7 +231,10 @@
     <Compile Include="StateMachine\EventException_Specs.cs" />
     <Compile Include="StateMachine\FileImportWorkflow.cs" />
     <Compile Include="StateMachine\OrderStateMachine.cs" />
+    <Compile Include="StateMachine\Reflection_Specs.cs" />
     <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
+    <Compile Include="StateMachine\TestStateMachineInstance.cs" />
+    <Compile Include="StateMachine\TestStateMachineInstanceBinding.cs" />
     <Compile Include="Tree\BuildingATree.cs" />
     <Compile Include="TypedKey_Specs.cs" />
     <Compile Include="Mapping_Specs.cs" />

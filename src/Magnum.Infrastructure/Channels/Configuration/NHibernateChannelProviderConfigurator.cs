@@ -46,11 +46,5 @@ namespace Magnum.Infrastructure.Channels.Configuration
 
 		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UsingSessionProvider(
 			SessionProvider<TChannel> sessionProvider);
-
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UseFiber(Fiber fiber);
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UsePrivateThread();
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UseProducerThread();
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UseThreadPool();
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> WithFiberFactory(FiberFactory fiberFactory);
 	}
 }

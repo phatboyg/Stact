@@ -10,18 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Configuration.Internal
+namespace Magnum.Fibers
 {
-	using Fibers;
+	using Collections;
 
 
-	public interface WcfChannelConnectionConfigurator :
-		ChannelConnectionConfigurator
+	/// <summary>
+	/// Keeps track of a keyed fiber collection
+	/// </summary>
+	/// <typeparam name="TKey"></typeparam>
+	public class FiberCache<TKey> :
+		FiberProvider<TKey>
 	{
-		WcfChannelConnectionConfigurator ExecuteOnFiber(Fiber fiber);
-		WcfChannelConnectionConfigurator ExecuteOnThread();
-		WcfChannelConnectionConfigurator ExecuteOnProducerThread();
-		WcfChannelConnectionConfigurator ExecuteOnThreadPoolFiber();
-		WcfChannelConnectionConfigurator UseFiberFactory(FiberFactory fiberFactory);
+		readonly Cache<TKey, Fiber> _cache;
+
+		public FiberCache(FiberFactory missingFiberFactory)
+		{
+			_cache = new Cache<TKey, Fiber>(k => missingFiberFactory());
+		}
+
+		public Fiber GetFiber(TKey key)
+		{
+			return _cache[key];
+		}
 	}
 }

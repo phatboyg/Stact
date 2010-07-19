@@ -13,7 +13,6 @@
 namespace Magnum.Specs.StateMachine
 {
 	using System.Linq;
-	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using Magnum.StateMachine;
@@ -36,7 +35,8 @@ namespace Magnum.Specs.StateMachine
 			_disconnect = _input.Connect(x =>
 				{
 					// adds a single state machine instance to the channel via listeners
-					x.AddStateMachineInstance(new SynchronousFiber(), _instance);
+					x.AddStateMachineInstance(_instance)
+						.ExecuteOnProducerThread();
 				});
 
 			_input.Send(new SampleStarted());
