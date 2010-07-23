@@ -194,7 +194,7 @@ namespace Magnum.Specs.Reflection
 		[Test]
 		public void FailsIfTargetIsNull()
 		{
-			const string x = null;
+			//const string x = null;
 			//Assert.Throws<ArgumentNullException>(() => x.FastInvoke("ToString"));
 		}
 

@@ -52,5 +52,28 @@ namespace Magnum.FileSystem.Zip
 				action(stream);
 			}
 		}
+        public void CopyTo(FileName path)
+        {
+            //refactor?
+            if (System.IO.File.Exists(path.GetPath()))
+                System.IO.File.Delete(path.GetPath());
+
+            WithStream(s =>
+            {
+                using (var stream = System.IO.File.OpenWrite(path.GetPath()))
+                {
+                    var buff = new byte[32768];
+                    while (true)
+                    {
+                        int read = s.Read(buff, 0, buff.Length);
+
+                        if (read <= 0)
+                            return;
+
+                        stream.Write(buff, 0, read);
+                    }
+                }
+            });
+        }
 	}
 }

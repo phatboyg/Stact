@@ -27,7 +27,7 @@ namespace Magnum.Specs.FileSystem.FileSpecs
         public void We_Write_a_file()
         {
             fs = new DotNetFileSystem();
-            fs.Write(filePath, contents);            
+            fs.Write(filePath, contents);       
         }
 
         [Then]
@@ -40,6 +40,32 @@ namespace Magnum.Specs.FileSystem.FileSpecs
             Assert.AreEqual(fs.ReadToEnd(@".\temp.txt"), "hii");
 
             fs.DeleteFile(@".\temp.txt");
+        }
+    }
+
+    [Scenario]
+    public class CopyAFile
+    {
+        DotNetFileSystem fs;
+        string filePath = @".\temp.txt";
+        string contents = "hi123";
+
+        [When]
+        public void We_Write_a_file()
+        {
+            fs = new DotNetFileSystem();
+            fs.Write(filePath, contents);
+            var f = new DotNetFile(FileName.GetFileName(@".\temp.txt"));
+            f.CopyTo(FileName.GetFileName(@".\copy.txt"));
+        }
+
+        [Then]
+        public void File_contents_should_be_the_same()
+        {
+            Assert.AreEqual("hi123", fs.ReadToEnd(@".\copy.txt"));
+
+            fs.DeleteFile(@".\temp.txt");
+            fs.DeleteFile(@".\copy.txt");
         }
     }
 }

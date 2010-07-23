@@ -36,7 +36,7 @@ namespace Magnum.Specs.Activator
 		[Test]
 		public void The_object_should_be_of_the_requested_type()
 		{
-			Assert.IsInstanceOfType(typeof (T), Instance);
+			Assert.IsInstanceOf(typeof (T), Instance);
 		}
 	}
 
@@ -60,7 +60,7 @@ namespace Magnum.Specs.Activator
 		[Test]
 		public void The_object_should_be_of_the_requested_type()
 		{
-			Assert.IsInstanceOfType(typeof (T), Instance);
+			Assert.IsInstanceOf(typeof (T), Instance);
 		}
 	}
 

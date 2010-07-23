@@ -43,7 +43,7 @@ namespace Magnum.Specs.Policies
 						throw new InvalidOperationException();
 					});
 			}
-			catch (InvalidOperationException ex)
+			catch (InvalidOperationException)
 			{
 			}
 		}
@@ -122,7 +122,7 @@ namespace Magnum.Specs.Policies
 						throw new InvalidOperationException();
 					});
 			}
-			catch (InvalidOperationException ex)
+			catch (InvalidOperationException)
 			{
 			}
 		}
@@ -168,7 +168,7 @@ namespace Magnum.Specs.Policies
 						throw new InvalidOperationException();
 					});
 			}
-			catch (InvalidOperationException ex)
+			catch (InvalidOperationException)
 			{
 			}
 		}
@@ -217,7 +217,7 @@ namespace Magnum.Specs.Policies
 							throw new InvalidOperationException();
 						});
 				}
-				catch (InvalidOperationException ex)
+				catch (InvalidOperationException)
 				{
 					_failureCount++;
 				}
@@ -267,7 +267,7 @@ namespace Magnum.Specs.Policies
 				{
 					_policy.Do(action);
 				}
-				catch (InvalidOperationException ex)
+				catch (InvalidOperationException)
 				{
 				}
 			}
@@ -279,7 +279,7 @@ namespace Magnum.Specs.Policies
 			{
 				_policy.Do(action);
 			}
-			catch (InvalidOperationException ex)
+			catch (InvalidOperationException)
 			{
 			}
 

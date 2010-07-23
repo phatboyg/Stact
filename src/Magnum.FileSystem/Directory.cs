@@ -49,5 +49,7 @@ namespace Magnum.FileSystem
 		File GetChildFile(string name);
         
 		bool IsRoot();
+
+        void CopyTo(DirectoryName path);
     }
 }

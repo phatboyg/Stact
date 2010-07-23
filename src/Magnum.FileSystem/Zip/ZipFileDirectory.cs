@@ -131,5 +131,29 @@ namespace Magnum.FileSystem.Zip
             }
             _parse = () => { };
         }
+
+        public void CopyTo(DirectoryName path)
+        {
+            //refactor this out?
+            if (!System.IO.Directory.Exists(path.GetPath()))
+                System.IO.Directory.CreateDirectory(path.GetPath());
+
+            // Copy all files.
+            var files = GetFiles();
+
+            foreach (var file in files)
+            {
+                var fileDestination = FileName.GetFileName(path, file.Name.GetName());
+                file.CopyTo(fileDestination);
+            }
+
+            // Process subdirectories.
+            var dirs = GetDirectories();
+            foreach (var dir in dirs)
+            {
+                var destinationDir = DirectoryName.GetDirectoryName(path, dir.Name.GetName());
+                dir.CopyTo(destinationDir);
+            }
+        }
     }
 }

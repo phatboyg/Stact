@@ -76,7 +76,7 @@ namespace Magnum.Specs.Data
 
 				Trace.WriteLine("all done");
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 			}
 

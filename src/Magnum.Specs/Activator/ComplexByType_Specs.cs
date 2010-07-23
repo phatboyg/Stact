@@ -36,7 +36,7 @@ namespace Magnum.Specs.Activator
 			object instance = FastActivator.Create(_objectType, args);
 
 			Assert.IsNotNull(instance);
-			Assert.IsInstanceOfType(_objectType, instance);
+            Assert.IsInstanceOf(_objectType, instance);
 
 			var typed = (ClassWithMultipleComplexConstructors) instance;
 
@@ -59,7 +59,7 @@ namespace Magnum.Specs.Activator
 			object instance = FastActivator.Create(_objectType, args);
 
 			Assert.IsNotNull(instance);
-			Assert.IsInstanceOfType(_objectType, instance);
+			Assert.IsInstanceOf(_objectType, instance);
 
 			var typed = (ClassWithMultipleComplexConstructors) instance;
 

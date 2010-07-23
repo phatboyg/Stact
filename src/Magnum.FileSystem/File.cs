@@ -24,5 +24,7 @@ namespace Magnum.FileSystem
 		string ReadToEnd();
 
 		void WithStream(Action<Stream> action);
+
+        void CopyTo(FileName path);
 	}
 }
