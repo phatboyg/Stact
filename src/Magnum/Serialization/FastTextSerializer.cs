@@ -21,7 +21,6 @@ namespace Magnum.Serialization
     public class FastTextSerializer :
         Serializer
     {
-        [ThreadStatic]
         static readonly object _lockObject = new object();
 
         [ThreadStatic]
