@@ -14,6 +14,7 @@ namespace Magnum.Specs.Serialization
 {
 	using System;
 	using Magnum.Extensions;
+	using NUnit.Framework;
 	using TestFramework;
 
 	[Scenario]
@@ -185,6 +186,16 @@ namespace Magnum.Specs.Serialization
 		}
 	}
 
+    [Scenario, Explicit("Not yet supported.")]
+    public class Serializing_an_type_object_property :
+        Given_a_property_on_an_object_of_type<Type>
+    {
+        public Serializing_an_type_object_property() :
+            //base(typeof(string), "{Value:\"System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\"}")
+            base(typeof(string), "{Value:\"System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\"}")
+        {
+        }
+    }
 
 	[Scenario]
 	public class Serializing_an_int_object_property :
