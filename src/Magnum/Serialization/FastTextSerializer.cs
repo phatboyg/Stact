@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,66 +12,71 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Serialization
 {
-	using System;
-	using System.IO;
-	using System.Text;
-	using FastText;
+    using System;
+    using System.IO;
+    using System.Text;
+    using FastText;
 
-	public class FastTextSerializer :
-		Serializer
-	{
-		[ThreadStatic]
-		private static TypeSerializerCache _typeSerializerCache;
 
-		[ThreadStatic]
-		private static FastTextTypeSerializerCache _typeSerializers;
+    public class FastTextSerializer :
+        Serializer
+    {
+        [ThreadStatic]
+        static readonly object _lockObject = new object();
 
-		public void Serialize<T>(T obj, TextWriter writer)
-		{
-			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
+        [ThreadStatic]
+        static TypeSerializerCache _typeSerializerCache;
 
-			serializer.Serialize(obj, writer.Write);
-		}
+        [ThreadStatic]
+        static FastTextTypeSerializerCache _typeSerializers;
 
-		public string Serialize<T>(T obj)
-		{
-			var sb = new StringBuilder(4096);
-			using (var writer = new StringWriter(sb))
-			{
-				Serialize(obj, writer);
-			}
+        public void Serialize<T>(T obj, TextWriter writer)
+        {
+            FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
 
-			return sb.ToString();
-		}
+            serializer.Serialize(obj, writer.Write);
+        }
 
-		public T Deserialize<T>(string text)
-		{
-			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
+        public string Serialize<T>(T obj)
+        {
+            var sb = new StringBuilder(4096);
+            using (var writer = new StringWriter(sb))
+                Serialize(obj, writer);
 
-			return serializer.Deserialize<T>(text);
-		}
+            return sb.ToString();
+        }
 
-		public T Deserialize<T>(TextReader reader)
-		{
-			FastTextTypeSerializer serializer = GetTypeSerializer(typeof (T));
+        public T Deserialize<T>(string text)
+        {
+            FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
 
-			return serializer.Deserialize<T>(reader.ReadToEnd());
-		}
+            return serializer.Deserialize<T>(text);
+        }
 
-		private static FastTextTypeSerializer GetTypeSerializer(Type type)
-		{
-			if (_typeSerializers == null)
-				_typeSerializers = new FastTextTypeSerializerCache(GetTypeSerializerCache());
+        public T Deserialize<T>(TextReader reader)
+        {
+            FastTextTypeSerializer serializer = GetTypeSerializer(typeof(T));
 
-			return _typeSerializers[type];
-		}
+            return serializer.Deserialize<T>(reader.ReadToEnd());
+        }
 
-		private static TypeSerializerCache GetTypeSerializerCache()
-		{
-			if (_typeSerializerCache == null)
-				_typeSerializerCache = new TypeSerializerCacheImpl();
+        static FastTextTypeSerializer GetTypeSerializer(Type type)
+        {
+            lock (_lockObject)
+            {
+                if (_typeSerializers == null)
+                    _typeSerializers = new FastTextTypeSerializerCache(GetTypeSerializerCache());
+            }
 
-			return _typeSerializerCache;
-		}
-	}
+            return _typeSerializers[type];
+        }
+
+        static TypeSerializerCache GetTypeSerializerCache()
+        {
+            if (_typeSerializerCache == null)
+                _typeSerializerCache = new TypeSerializerCacheImpl();
+
+            return _typeSerializerCache;
+        }
+    }
 }
