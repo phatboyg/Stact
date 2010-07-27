@@ -16,7 +16,7 @@ namespace Magnum.TestFramework
 
 
     public class NotYetImplementedAttribute :
-        IgnoreAttribute 
+        ExplicitAttribute 
     {
         public NotYetImplementedAttribute() :
             base("Not Yet Implemented")
