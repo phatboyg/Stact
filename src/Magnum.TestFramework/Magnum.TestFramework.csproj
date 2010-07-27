@@ -88,10 +88,15 @@
     <Compile Include="AssertionsForRouting.cs" />
     <Compile Include="AssertionsForObjects.cs" />
     <Compile Include="AssertionsForString.cs" />
+    <Compile Include="DatabaseAttribute.cs" />
     <Compile Include="GivenAttribute.cs" />
+    <Compile Include="IntergrationAttribute.cs" />
     <Compile Include="LogSetup.cs" />
+    <Compile Include="NotWorkingAttribute.cs" />
+    <Compile Include="NotYetImplementedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScenarioAttribute.cs" />
+    <Compile Include="SlowAttribute.cs" />
     <Compile Include="ThenAttribute.cs" />
     <Compile Include="WhenAttribute.cs" />
   </ItemGroup>

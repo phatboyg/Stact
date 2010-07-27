@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,7 +14,6 @@ namespace Magnum.Specs.Serialization
 {
 	using System;
 	using Magnum.Extensions;
-	using NUnit.Framework;
 	using TestFramework;
 
 	[Scenario]
@@ -186,7 +185,7 @@ namespace Magnum.Specs.Serialization
 		}
 	}
 
-    [Scenario, Explicit("Not yet supported.")]
+    [Scenario, NotYetImplemented]
     public class Serializing_an_type_object_property :
         Given_a_property_on_an_object_of_type<Type>
     {
