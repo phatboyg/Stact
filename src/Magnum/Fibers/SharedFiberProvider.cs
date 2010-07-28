@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Fibers
 {
+	using Extensions;
+
+
 	public class SharedFiberProvider<TKey> :
 		FiberProvider<TKey>
 	{
@@ -25,6 +28,11 @@ namespace Magnum.Fibers
 		public Fiber GetFiber(TKey key)
 		{
 			return _fiber;
+		}
+
+		public void Dispose()
+		{
+			_fiber.Shutdown(60.Seconds());
 		}
 	}
 }

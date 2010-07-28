@@ -60,7 +60,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 			_missingInstanceProvider = providerFactory;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider()
+		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
 		{
 			if (_accessor == null)
 			{
@@ -87,7 +87,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 				                                        + typeof(TInstance).ToShortTypeName());
 			}
 
-			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();
+			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider(connection);
 
 			var channelProvider = new NHibernateInstanceChannelProvider<TInstance, TChannel, TKey>(fiberProvider,
 			                                                                                       _sessionProvider,

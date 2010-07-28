@@ -31,7 +31,7 @@ namespace Magnum.Channels.Configuration.Internal
 	public interface InstanceChannelConfigurator<TInstance, TChannel>
 		where TInstance : class
 	{
-		void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory);
+		void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>,ChannelProvider<TChannel>> providerFactory);
 	}
 
 

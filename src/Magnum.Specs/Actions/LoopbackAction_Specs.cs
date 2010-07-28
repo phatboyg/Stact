@@ -46,40 +46,46 @@ namespace Magnum.Specs.Actions
 			var complete = new Future<bool>();
 			int total = 0;
 
-
 			Fiber reader = new ThreadFiber();
-
-			Thread.Sleep(100);
-
-			Stopwatch timer = Stopwatch.StartNew();
-
-			var writers = new List<Fiber>();
-			for (int i = 0; i < writerCount; i++)
+			
+			try
 			{
-				Fiber fiber = new ThreadPoolFiber();
-				for (int j = 0; j < messageCount; j++)
-				{
-					fiber.Add(() =>
-						{
-							SuperSleeper.Wait(1);
+				Thread.Sleep(100);
 
-							reader.Add(() =>
-								{
-									total++;
-									if (total == writerCount*messageCount)
-										complete.Complete(true);
-								});
-						});
+				Stopwatch timer = Stopwatch.StartNew();
+
+				var writers = new List<Fiber>();
+				for (int i = 0; i < writerCount; i++)
+				{
+					Fiber fiber = new ThreadPoolFiber();
+					for (int j = 0; j < messageCount; j++)
+					{
+						fiber.Add(() =>
+							{
+								SuperSleeper.Wait(1);
+
+								reader.Add(() =>
+									{
+										total++;
+										if (total == writerCount*messageCount)
+											complete.Complete(true);
+									});
+							});
+					}
+
+					writers.Add(fiber);
 				}
 
-				writers.Add(fiber);
+				complete.WaitUntilCompleted(20.Seconds()).ShouldBeTrue();
+
+				timer.Stop();
+
+				Trace.WriteLine("Elapsed time: " + timer.ElapsedMilliseconds + "ms (expected " + writerCount*messageCount + ")");
 			}
-
-			complete.WaitUntilCompleted(20.Seconds()).ShouldBeTrue();
-
-			timer.Stop();
-
-			Trace.WriteLine("Elapsed time: " + timer.ElapsedMilliseconds + "ms (expected " + writerCount*messageCount + ")");
+			finally
+			{
+				reader.Stop();
+			}
 		}
 	}
 }

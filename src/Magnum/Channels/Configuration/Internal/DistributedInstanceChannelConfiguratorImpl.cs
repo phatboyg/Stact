@@ -13,6 +13,7 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
+	using Fibers;
 	using Magnum.Fibers.Configuration;
 
 
@@ -30,7 +31,7 @@ namespace Magnum.Channels.Configuration.Internal
 		where TInstance : class
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
-		Func<ChannelProvider<TChannel>> _providerFactory;
+		Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> _providerFactory;
 
 		public DistributedInstanceChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
@@ -39,9 +40,14 @@ namespace Magnum.Channels.Configuration.Internal
 			ExecuteOnThreadPoolFiber();
 		}
 
-		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)
+		public void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
+		}
+
+		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			return base.GetConfiguredProvider(connection);
 		}
 
 		public KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor()
@@ -49,12 +55,12 @@ namespace Magnum.Channels.Configuration.Internal
 			return _keyAccessor;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider()
+		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
 		{
 			if (_providerFactory == null)
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
 
-			ChannelProvider<TChannel> provider = _providerFactory();
+			ChannelProvider<TChannel> provider = _providerFactory(connection);
 
 			var keyedProvider = new KeyedChannelProvider<TChannel, TKey>(provider, _keyAccessor);
 

@@ -31,7 +31,7 @@ namespace Magnum.Channels.Configuration.Internal
 		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnSharedThread();
 		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> UseFiberProvider(FiberProvider<TKey> fiberProvider);
 
-		FiberProvider<TKey> GetConfiguredProvider();
+		FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection);
 
 		KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor();
 	}

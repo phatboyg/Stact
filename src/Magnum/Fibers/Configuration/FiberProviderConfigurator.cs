@@ -13,6 +13,7 @@
 namespace Magnum.Fibers.Configuration
 {
 	using System;
+	using Channels.Configuration.Internal;
 
 
 	public class FiberProviderConfigurator<T, TKey>
@@ -20,12 +21,26 @@ namespace Magnum.Fibers.Configuration
 	{
 		Func<FiberProvider<TKey>> _configuredProvider;
 
-		public FiberProvider<TKey> GetConfiguredProvider()
+		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection connection)
 		{
 			if (_configuredProvider == null)
 				throw new FiberConfigurationException("No provider specified for FiberProvider");
 
-			return _configuredProvider();
+			FiberProvider<TKey> configuredProvider = _configuredProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
+		}
+
+		public FiberProvider<TKey> GetConfiguredProvider<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			if (_configuredProvider == null)
+				throw new FiberConfigurationException("No provider specified for FiberProvider");
+
+			FiberProvider<TKey> configuredProvider = _configuredProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
 		}
 
 		public T ExecuteOnProducerThread()

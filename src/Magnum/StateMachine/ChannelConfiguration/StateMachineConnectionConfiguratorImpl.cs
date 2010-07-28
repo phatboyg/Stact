@@ -87,7 +87,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			_fiberProvider = base.GetConfiguredProvider();
+			_fiberProvider = GetConfiguredProvider(connection);
 
 			_log.Debug(x => x.Write("Configuring State Machine Binder for {0}", typeof(T).ToShortTypeName()));
 

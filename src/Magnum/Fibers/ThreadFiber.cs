@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -30,6 +30,7 @@ namespace Magnum.Fibers
 		readonly Thread _thread;
 
 		Atomic<ImmutableList<Action>> _actions;
+		StackTrace _createdBy;
 
 		bool _isActive;
 		bool _shuttingDown;
@@ -38,6 +39,8 @@ namespace Magnum.Fibers
 		public ThreadFiber()
 		{
 			_actions = Atomic.Create(ImmutableList<Action>.EmptyList);
+
+			_createdBy = new StackTrace(true);
 
 			_thread = CreateThread();
 			_thread.Start();

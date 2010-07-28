@@ -36,7 +36,7 @@ namespace Magnum.Channels.Configuration.Internal
 			return this;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider()
+		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
 		{
 			if (_accessor == null)
 			{

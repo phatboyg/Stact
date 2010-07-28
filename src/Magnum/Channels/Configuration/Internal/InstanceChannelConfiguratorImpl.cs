@@ -58,7 +58,7 @@ namespace Magnum.Channels.Configuration.Internal
 		ChannelConfigurator<TChannel>
 		where TInstance : class
 	{
-		Func<ChannelProvider<TChannel>> _providerFactory;
+		Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> _providerFactory;
 
 		public InstanceChannelConfiguratorImpl()
 		{
@@ -67,7 +67,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			ChannelProvider<TChannel> provider = _providerFactory();
+			ChannelProvider<TChannel> provider = _providerFactory(connection);
 
 			Fiber fiber = GetConfiguredFiber(connection);
 
@@ -80,7 +80,7 @@ namespace Magnum.Channels.Configuration.Internal
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
 		}
 
-		public void SetProviderFactory(Func<ChannelProvider<TChannel>> providerFactory)
+		public void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
 		}

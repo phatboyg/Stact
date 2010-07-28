@@ -20,17 +20,18 @@ namespace Magnum.RulesEngine.Specs.Graphing
 	using Extensions;
 	using Fibers;
 	using NUnit.Framework;
+	using TestFramework;
 	using Visualizers.Channels;
 
 
-	[TestFixture]
+	[Scenario]
 	public class Generating_a_graph_of_a_channel_network
 	{
-		[SetUp]
+		[Given]
 		public void Setup()
 		{
 			_channel = new ChannelAdapter();
-			_channel.Connect(x =>
+			_channelConnection = _channel.Connect(x =>
 				{
 					x.AddConsumerOf<SomeEvent>()
 						.UsingConsumer(m => { })
@@ -67,7 +68,13 @@ namespace Magnum.RulesEngine.Specs.Graphing
 				});
 		}
 
-		[Test]
+		[Finally]
+		public void Finally()
+		{
+			_channelConnection.Dispose();
+		}
+
+		[Then]
 		public void Should_create_a_file()
 		{
 			var generator = new ChannelGraphGenerator();
@@ -77,13 +84,14 @@ namespace Magnum.RulesEngine.Specs.Graphing
 			generator.SaveGraphToFile(_channel, 2560, 1920, filename);
 		}
 
-		[Test, Explicit]
+		[Then, Explicit]
 		public void Should_launch_correctly_in_the_debug_visualizer()
 		{
 			ChannelDebugVisualizer.TestShowVisualizer(_channel.GetGraphData());
 		}
 
 		ChannelAdapter _channel;
+		ChannelConnection _channelConnection;
 
 
 		class MyConsumer
