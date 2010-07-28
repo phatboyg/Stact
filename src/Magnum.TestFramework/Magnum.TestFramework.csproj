@@ -89,6 +89,7 @@
     <Compile Include="AssertionsForObjects.cs" />
     <Compile Include="AssertionsForString.cs" />
     <Compile Include="DatabaseAttribute.cs" />
+    <Compile Include="FinallyAttribute.cs" />
     <Compile Include="GivenAttribute.cs" />
     <Compile Include="IntergrationAttribute.cs" />
     <Compile Include="LogSetup.cs" />
