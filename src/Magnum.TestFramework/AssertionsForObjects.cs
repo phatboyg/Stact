@@ -40,8 +40,14 @@ namespace Magnum.TestFramework
 			return value;
 		}
 
-	
-		public static T ShouldNotEqual<T>(this T value, T expected)
+        public static T ShouldEqual<T>(this T value, T expected, string message)
+        {
+            Assert.AreEqual(expected, value, message);
+
+            return value;
+        }
+
+	    public static T ShouldNotEqual<T>(this T value, T expected)
 		{
 			Assert.AreNotEqual(expected, value);
 
