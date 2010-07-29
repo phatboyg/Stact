@@ -23,7 +23,14 @@ namespace Magnum.TestFramework
 			return value;
 		}
 
-		public static bool ShouldBeFalse(this bool value)
+        public static bool ShouldBeTrue(this bool value, string message)
+        {
+            Assert.IsTrue(value, message);
+
+            return value;
+        }
+
+	    public static bool ShouldBeFalse(this bool value)
 		{
 			Assert.IsFalse(value);
 
