@@ -14,7 +14,6 @@ namespace Magnum.Serialization.FastText
 {
 	using System;
 	using System.Runtime.Serialization;
-	using System.Text;
 	using Reflection;
 	using TypeSerializers;
 
