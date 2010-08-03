@@ -13,7 +13,9 @@
   <property name="folder.code_build" value="build_output" overwrite="false" />
   <property name="dirs.build" value="${dirs.current}\${path.to.toplevel}\${folder.code_build}" />
   <property name="folder.app.drop" value="${project.name}" overwrite="false" />
+  <property name="folder.test.drop" value="Tests" overwrite="false" />
   <property name="dirs.build.code" value="${dirs.build}\${folder.app.drop}" overwrite="false" />
+  <property name="dirs.test.code" value="${dirs.build}\${folder.test.drop}" overwrite="false" />
   <property name="folder.references" value="lib" overwrite="false" />
   <property name="dirs.lib" value="${dirs.current}\${path.to.toplevel}\${folder.references}" overwrite="false" />
   <property name="microsoft.framework" value="net-3.5" overwrite="false" />
@@ -84,16 +86,16 @@
   </target>
 
   <target name="get_test_dlls">
-    <echo message="Getting test dlls based on name in directory ${path::get-full-path(dirs.build.code)}." />
+    <echo message="Getting test dlls based on name in directory ${path::get-full-path(dirs.test.code)}." />
     <property name="dll.names" value="" />
     <foreach item="File" property="dll.filename">
       <in>
         <items>
-          <exclude name="${dirs.build.code}\*Database*dll" />
-          <exclude name="${dirs.build.code}\*.Integration*dll" />
-          <exclude name="${dirs.build.code}\TestFu.dll" />
-          <include name="${dirs.build.code}\*Test*dll" />
-          <include name="${dirs.build.code}\*Spec*dll" />
+          <exclude name="${dirs.test.code}\*Database*dll" />
+          <exclude name="${dirs.test.code}\*.Integration*dll" />
+          <exclude name="${dirs.test.code}\TestFu.dll" />
+          <include name="${dirs.test.code}\*Test*dll" />
+          <include name="${dirs.test.code}\*Spec*dll" />
         </items>
       </in>
       <do>
@@ -108,14 +110,14 @@
   </target>
   
   <target name="get_test_dlls_all">
-    <echo message="Getting all test dlls (including integration tests) based on name in directory ${path::get-full-path(dirs.build.code)}." />
+    <echo message="Getting all test dlls (including integration tests) based on name in directory ${path::get-full-path(dirs.test.code)}." />
     <property name="dll.names" value="" />
     <foreach item="File" property="dll.filename">
       <in>
         <items>
-          <exclude name="${dirs.build.code}\TestFu.dll" />
-          <include name="${dirs.build.code}\*Test*dll" />
-          <include name="${dirs.build.code}\*Spec*dll" />
+          <exclude name="${dirs.test.code}\TestFu.dll" />
+          <include name="${dirs.test.code}\*Test*dll" />
+          <include name="${dirs.test.code}\*Spec*dll" />
         </items>
       </in>
       <do>
@@ -134,7 +136,7 @@
 
     <exec 
         program="${app.nunit.console}" 
-        workingdir="${dirs.build.code}"
+        workingdir="${dirs.test.code}"
         failonerror="true">
       <arg value="${args.test_runner}" />
     </exec>
