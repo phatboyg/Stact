@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.FileSystem.FileSpecs
 {
-    using System.Reflection;
+	using System;
+	using System.IO;
+	using System.Reflection;
     using Magnum.FileSystem;
     using TestFramework;
 
@@ -21,24 +23,28 @@ namespace Magnum.Specs.FileSystem.FileSpecs
     {
         string _location;
         FileName _fileName;
+    	string _directory;
 
-        [Given]
+    	[Given]
         public void Setup()
         {
             _location = Assembly.GetExecutingAssembly().Location;
+    		_directory = Path.GetDirectoryName(_location);
+    		_directory = _directory.Substring(_directory.LastIndexOf('\\') + 1);
+
             _fileName = FileName.GetFileName(_location);
         }
 
         [Then]
         public void Should_get_the_directory_name()
         {
-            _fileName.GetDirectoryName().GetName().ShouldEqual("tests");
+            _fileName.GetDirectoryName().GetName().ShouldEqual(_directory, StringComparison.InvariantCultureIgnoreCase);
         }
 
         [Then]
         public void Should_retrieve_the_filename()
         {
-            _fileName.GetName().ShouldEqual("Magnum.Specs.dll");
+        	_fileName.GetName().ShouldEqual("Magnum.Specs.dll", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

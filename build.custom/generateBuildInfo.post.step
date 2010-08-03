@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="BuildInformation" default="go">
+  <!-- Project UppercuT - http://projectuppercut.org -->
+  <property name="build.config.settings" value="__NONE__" overwrite="false" />
+  <include buildfile="${build.config.settings}" if="${file::exists(build.config.settings)}" />
+  <property name="dirs.current" value="${directory::get-parent-directory(project::get-buildfile-path())}" />
+  <property name="dirs.build" value="${dirs.current}\..\build_output" />
+  <property name="version.major" value="1" overwrite="false" />
+  <property name="version.minor" value="0" overwrite="false" />
+  <property name="version.build" value="0" overwrite="false" />
+  <property name="version.revision" value="0" overwrite="false" />
+  <property name="folder.app.drop" value="app" overwrite="false" />
+  <property name="files.uppercut.info" value="${dirs.build}\${folder.app.drop}\build\UppercuT.xml" />
+  
+  <target name="go" depends="generate_uppercut_info_file" />
+
+  <target name="generate_uppercut_info_file">
+    <echo message="Generating XML file with some information to possibly get merged in at ${files.uppercut.info}."/>
+    <echo file="${files.uppercut.info}" append="false" failonerror="false">
+<![CDATA[<?xml version="1.0" ?>
+<uppercut>
+  <version>${version.major}.${version.minor}.${version.build}.${version.revision}</version>
+</uppercut>
+]]>
+    </echo>
+  </target>
+
+</project>

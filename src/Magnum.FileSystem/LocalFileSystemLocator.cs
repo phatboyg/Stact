@@ -14,7 +14,6 @@ namespace Magnum.FileSystem
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using Zip;
@@ -58,15 +57,12 @@ namespace Magnum.FileSystem
 
 			string childName = children.First();
 
-			Trace.WriteLine("Parsing out: " + childName);
-
 			Directory info = directory.GetDirectories()
 				.Where(x => string.Compare(x.Name.GetName(), childName, true) == 0)
 				.SingleOrDefault();
 
 			if (info != null)
 			{
-				Trace.WriteLine(string.Format("Found directory: {0}", info.Name));
 				return ResolveDirectory(info, children.Skip(1));
 			}
 
@@ -113,15 +109,12 @@ namespace Magnum.FileSystem
 
 			string childName = children.First();
 
-			Trace.WriteLine("Parsing out: " + childName);
-
 			Directory info = directoryInfo.GetDirectories()
 				.Where(x => string.Compare(x.Name.GetName(), childName, true) == 0)
 				.SingleOrDefault();
 
 			if (info != null)
 			{
-				Trace.WriteLine(string.Format("Found directory: {0}", info.Name));
 				return ResolveFile(info, children.Skip(1));
 			}
 

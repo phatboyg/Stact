@@ -71,7 +71,7 @@ namespace Magnum.Specs.FileSystem.FileSpecs
             Assert.AreEqual(".\\FileSystem\\FileSpecs\\sample.zip\\MANIFEST.json", _fileInQuestion.Name.GetPath());
         }
 
-        [Then]
+        [Then, Explicit("Seriously you expect this to work someplace other than your workstation?")]
         public void Should_be_able_to_copy_file()
         {
             var data = _fileInQuestion.ReadToEnd();

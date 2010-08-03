@@ -517,6 +517,7 @@
     <Compile Include="Serialization\FastText\FastTextIListSerializer.cs" />
     <Compile Include="Serialization\FastText\FastTextKeyElementParser.cs" />
     <Compile Include="Serialization\FastText\FastTextParser.cs" />
+    <Compile Include="Serialization\FastText\FastTextSystemTypeSerializer.cs" />
     <Compile Include="Serialization\TypeSerializerCacheImpl.cs" />
     <Compile Include="Serialization\FastText\FastTextElementParser.cs" />
     <Compile Include="Serialization\FastText\FastTextArraySerializer.cs" />
@@ -554,6 +555,7 @@
     <Compile Include="Serialization\TypeSerializers\ShortSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\StringSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\TimeSpanSerializer.cs" />
+    <Compile Include="Serialization\TypeSerializers\SystemTypeSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\TypeSerializerException.cs" />
     <Compile Include="Serialization\TypeSerializers\UIntSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\ULongSerializer.cs" />

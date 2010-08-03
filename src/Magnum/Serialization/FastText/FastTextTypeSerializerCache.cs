@@ -36,6 +36,7 @@ namespace Magnum.Serialization.FastText
 			typeSerializerCache.Each((type, serializer) => _serializers.Add(type, CreateSerializerFor(type, serializer)));
 
 			_serializers[typeof (string)] = new FastTextTypeSerializer<string>(new FastTextStringSerializer());
+			_serializers[typeof (Type)] = new FastTextTypeSerializer<Type>(new FastTextSystemTypeSerializer());
 		}
 
 		public FastTextTypeSerializer this[Type type]

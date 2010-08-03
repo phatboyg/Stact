@@ -47,7 +47,18 @@ namespace Magnum.TestFramework
             return value;
         }
 
-	    public static T ShouldNotEqual<T>(this T value, T expected)
+		public static string ShouldEqual(this string value, string expected, StringComparison comparison)
+		{
+			bool match = string.Compare(value, expected, comparison) == 0;
+			if (match)
+				return value;
+
+			Assert.AreEqual(expected, value, "String values did not match using " + comparison);
+
+			return value;
+		}
+
+		public static T ShouldNotEqual<T>(this T value, T expected)
 		{
 			Assert.AreNotEqual(expected, value);
 

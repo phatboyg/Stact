@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Compiler" default="go">
+  <!-- Project UppercuT - http://projectuppercut.org -->
+  <property name="build.config.settings" value="__NONE__" overwrite="false" />
+  <include buildfile="${build.config.settings}" if="${file::exists(build.config.settings)}" />
+  <property name="dirs.current" value="${directory::get-parent-directory(project::get-buildfile-path())}" />
+  <property name="folder.code_build" value="build_output" overwrite="false" />
+  <property name="dirs.build" value="${dirs.current}\..\${folder.code_build}" />
+  <property name="dirs.lib" value="${dirs.current}\..\lib" overwrite="false" />
+  <property name="folder.app.drop" value="app" overwrite="false" />
+
+  <target name="go" depends="copy_lib_files" description="Packaging" />
+
+  <target name="copy_lib_files">
+    <echo message="Copying lib folder items to ${dirs.build}\lib."/>
+    <copy todir="${dirs.build}\${folder.app.drop}\lib">
+      <fileset basedir="${dirs.lib}">
+        <exclude name="**/submit.xml" />
+        <include name="MbUnit2/**" />
+        <include name="NUnit/**" />
+        <include name="NAnt/**" />
+        <include name="NCover/**" />
+        <include name="MoMA/**" />
+      </fileset>
+    </copy>
+  </target>
+  
+</project>
