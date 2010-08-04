@@ -47,7 +47,23 @@ namespace Magnum.FileSystem
         /// <param name="fiber">Fiber to schedule on</param>
         /// <param name="checkInterval">The maximal time between events or polls on a given file</param>
         public PollingFileSystemEventProducer(string directory, UntypedChannel channel, Scheduler scheduler, Fiber fiber,
-                                              TimeSpan checkInterval)
+                                              TimeSpan checkInterval) :
+            this(directory, channel, scheduler, fiber, checkInterval, true)
+            
+        {
+        }
+
+        /// <summary>
+        /// Creates a PollingFileSystemEventProducer
+        /// </summary>		
+        /// <param name="directory">The directory to watch</param>
+        /// <param name="channel">The channel where events should be sent</param>
+        /// <param name="scheduler">Event scheduler</param>
+        /// <param name="fiber">Fiber to schedule on</param>
+        /// <param name="checkInterval">The maximal time between events or polls on a given file</param>
+        /// <param name="checkSubDirectory">Indicates if subdirectorys will be checked or ignored</param>
+        public PollingFileSystemEventProducer(string directory, UntypedChannel channel, Scheduler scheduler, Fiber fiber,
+                                              TimeSpan checkInterval, bool checkSubDirectory)
         {
             _directory = directory;
             _channel = channel;
@@ -61,14 +77,14 @@ namespace Magnum.FileSystem
             ChannelAdapter myChannel = new ChannelAdapter();
 
             _connection = myChannel.Connect(connectionConfigurator =>
-                {
-                    connectionConfigurator.AddConsumerOf<FileSystemChanged>().UsingConsumer(HandleFileSystemChangedAndCreated);
-					connectionConfigurator.AddConsumerOf<FileSystemCreated>().UsingConsumer(HandleFileSystemChangedAndCreated);
-					connectionConfigurator.AddConsumerOf<FileSystemRenamed>().UsingConsumer(HandleFileSystemRenamed);
-					connectionConfigurator.AddConsumerOf<FileSystemDeleted>().UsingConsumer(HandleFileSystemDeleted);
-                });
+            {
+                connectionConfigurator.AddConsumerOf<FileSystemChanged>().UsingConsumer(HandleFileSystemChangedAndCreated);
+                connectionConfigurator.AddConsumerOf<FileSystemCreated>().UsingConsumer(HandleFileSystemChangedAndCreated);
+                connectionConfigurator.AddConsumerOf<FileSystemRenamed>().UsingConsumer(HandleFileSystemRenamed);
+                connectionConfigurator.AddConsumerOf<FileSystemDeleted>().UsingConsumer(HandleFileSystemDeleted);
+            });
 
-            _fileSystemEventProducer = new FileSystemEventProducer(directory, myChannel);
+            _fileSystemEventProducer = new FileSystemEventProducer(directory, myChannel, checkSubDirectory);
         }
 
         public void Dispose()
@@ -95,6 +111,9 @@ namespace Magnum.FileSystem
 
         void HandleHash(string key, Guid newHash)
         {
+            if (string.IsNullOrEmpty(key))
+                return;
+
             if (_hashes.ContainsKey(key))
             {
                 if (_hashes[key] != newHash)
