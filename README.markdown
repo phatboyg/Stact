@@ -1,7 +1,7 @@
 Magnum - A library for the LARGER than average developer
 =======
 
-![Magnum](docs/logo/magnum_logo.png "Magnum - For the LARGER than average developer")
+![Magnum](Magnum/raw/master/docs/logo/magnum_logo.png "Magnum - For the LARGER than average developer")
 
 # LICENSE
 Apache 2.0 - see docs/legal (just LEGAL in the zip folder)
