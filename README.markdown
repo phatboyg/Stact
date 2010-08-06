@@ -1,7 +1,7 @@
 Magnum - A library for the LARGER than average developer
 =======
 
-![Magnum](http://github.com/phatboyg/Magnum/raw/master/docs/logo/magnum_logo.png "Magnum - For the LARGER than average developer")
+![Magnum](raw/master/docs/logo/magnum_logo.png "Magnum - For the LARGER than average developer")
 
 # LICENSE
 Apache 2.0 - see docs/legal (just LEGAL in the zip folder)
@@ -18,6 +18,8 @@ Magnum is a collection of different tools that help you work smarter.
 * Reflection Tools  
 * Concurrency  
 * Expanding...  
+
+Check out the site at [http://magnum-project.net/](http://magnum-project.net/)  
   
 ## Getting started with Magnum
 ### Downloads
