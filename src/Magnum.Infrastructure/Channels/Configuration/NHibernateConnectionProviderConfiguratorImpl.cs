@@ -27,7 +27,6 @@ namespace Magnum.Infrastructure.Channels.Configuration
 		where T : StateMachine<T>
 	{
 		readonly StateMachineConnectionConfigurator<T, TKey, TBinding> _configurator;
-		Func<TKey, T> _instanceProvider;
 		LateBoundSessionProvider _sessionProvider;
 
 		public NHibernateConnectionProviderConfiguratorImpl(StateMachineConnectionConfigurator<T, TKey, TBinding> configurator)
@@ -87,11 +86,6 @@ namespace Magnum.Infrastructure.Channels.Configuration
 			_sessionProvider = new DelegateSessionProvider(sessionProvider);
 
 			return this;
-		}
-
-		public void SetNewInstanceProvider(Func<TKey, T> instanceProvider)
-		{
-			_instanceProvider = instanceProvider;
 		}
 	}
 }

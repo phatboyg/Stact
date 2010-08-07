@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,10 +13,10 @@
 namespace Magnum.Infrastructure.Channels.Configuration
 {
 	using System;
+	using Extensions;
+	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Channels.Configuration.Internal;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
 
 
 	public class NHibernateChannelProviderConfiguratorImpl<TInstance, TChannel, TKey> :

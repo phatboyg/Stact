@@ -68,6 +68,9 @@
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Threading">
+      <HintPath>..\..\lib\Rx_Net35_SP1\System.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
@@ -565,6 +568,9 @@
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\BasicEventAction.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfigurator.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfiguratorImpl.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheChannelProvider.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachine.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfiguratorImpl.cs" />

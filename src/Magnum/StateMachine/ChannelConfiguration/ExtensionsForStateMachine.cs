@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,8 +13,9 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Magnum.StateMachine;
-	using Magnum.StateMachine.ChannelConfiguration;
+	using Collections;
+	using StateMachine;
+	using StateMachine.ChannelConfiguration;
 
 
 	public static class ExtensionsForStateMachine
@@ -27,6 +28,24 @@ namespace Magnum.Channels
 			configurator.SetNewInstanceFactory(consumerFactory);
 
 			return configurator;
+		}
+
+		public static CacheConnectionProviderConfigurator<T, TKey> CacheInMemory<T, TKey, TBinding>(
+			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator)
+			where T : StateMachine<T>
+		{
+			var providerConfigurator = new CacheConnectionProviderConfiguratorImpl<T, TKey, TBinding>(configurator);
+
+			return providerConfigurator;
+		}
+
+		public static CacheConnectionProviderConfigurator<T, TKey> CacheUsing<T, TKey, TBinding>(
+			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator, Cache<TKey, T> cache)
+			where T : StateMachine<T>
+		{
+			var providerConfigurator = new CacheConnectionProviderConfiguratorImpl<T, TKey, TBinding>(configurator, cache);
+
+			return providerConfigurator;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,20 +14,21 @@ namespace Magnum.Collections
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
 	using Extensions;
+
 
 	[Serializable]
 	public class Cache<TKey, TValue> :
 		IEnumerable<TValue>
 	{
-		private readonly object _locker = new object();
-		private readonly IDictionary<TKey, TValue> _values;
-		private Action<TKey, TValue> _duplicateValueAddedCallback = DefaultDuplicateValueAddedCallback;
-		private Func<TValue, TKey> _keyConverter = DefaultKeyConverter;
-		private Func<TKey, TValue> _missingValueProvider = ThrowOnMissingValue;
-		private Action<TKey, TValue> _valueAddedCallback = DefaultValueAddedAction;
+		readonly Action<TKey, TValue> _duplicateValueAddedCallback = DefaultDuplicateValueAddedCallback;
+		readonly ConcurrentDictionary<TKey, TValue> _values;
+		Func<TValue, TKey> _keyConverter = DefaultKeyConverter;
+		Func<TKey, TValue> _missingValueProvider = ThrowOnMissingValue;
+		Action<TKey, TValue> _valueAddedCallback = DefaultValueAddedAction;
 
 		public Cache()
 			: this(new Dictionary<TKey, TValue>())
@@ -35,22 +36,22 @@ namespace Magnum.Collections
 		}
 
 		public Cache(IEqualityComparer<TKey> comparer)
-			: this(new Dictionary<TKey, TValue>(comparer))
+			: this(new ConcurrentDictionary<TKey, TValue>(comparer))
 		{
 		}
 
 		public Cache(IDictionary<TKey, TValue> dictionary)
 		{
-			_values = dictionary;
+			_values = new ConcurrentDictionary<TKey, TValue>(dictionary);
 		}
 
 		public Cache(Func<TKey, TValue> missingValueProvider)
-			: this(new Dictionary<TKey, TValue>(), missingValueProvider)
+			: this(new ConcurrentDictionary<TKey, TValue>(), missingValueProvider)
 		{
 		}
 
 		public Cache(Func<TKey, TValue> missingValueProvider, IEqualityComparer<TKey> comparer)
-			: this(new Dictionary<TKey, TValue>(comparer), missingValueProvider)
+			: this(new ConcurrentDictionary<TKey, TValue>(comparer), missingValueProvider)
 		{
 		}
 
@@ -80,33 +81,19 @@ namespace Magnum.Collections
 		{
 			get
 			{
-				TValue value;
-				if (_values.TryGetValue(key, out value))
-					return value;
-
-				lock (_locker)
-				{
-					if (_values.TryGetValue(key, out value))
-						return value;
-
-					value = _missingValueProvider(key);
-					_values.Add(key, value);
-					_valueAddedCallback(key, value);
-
-					return value;
-				}
+				return Retrieve(key);
 			}
 			set
 			{
-				if (_values.ContainsKey(key))
-				{
-					_values[key] = value;
-				}
-				else
-				{
-					_values.Add(key, value);
+				bool added = false;
+				_values.AddOrUpdate(key, (add) =>
+					{
+						added = true;
+						return value;
+					}, (update, current) => value);
+
+				if(added)
 					_valueAddedCallback(key, value);
-				}
 			}
 		}
 
@@ -114,18 +101,13 @@ namespace Magnum.Collections
 		{
 			get
 			{
-				foreach (KeyValuePair<TKey, TValue> pair in _values)
-				{
-					return pair.Value;
-				}
-
-				return default(TValue);
+				return _values.Values.FirstOrDefault();
 			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable<TValue>) this).GetEnumerator();
+			return ((IEnumerable<TValue>)this).GetEnumerator();
 		}
 
 		public IEnumerator<TValue> GetEnumerator()
@@ -135,12 +117,19 @@ namespace Magnum.Collections
 
 		public void Add(TKey key, TValue value)
 		{
-			if (_values.ContainsKey(key))
+			bool added = false;
+			_values.AddOrUpdate(key, (add) =>
 			{
-				_duplicateValueAddedCallback(key, value);
-			}
+				added = true;
+				return value;
+			}, (update, current) =>
+				{
+					_duplicateValueAddedCallback(update, current);
+					return value;
+				});
 
-			this[key] = value;
+			if (added)
+				_valueAddedCallback(key, value);
 		}
 
 		public void Fill(IEnumerable<TValue> values)
@@ -148,48 +137,40 @@ namespace Magnum.Collections
 			values.Each(value =>
 				{
 					TKey key = _keyConverter(value);
-					this[key] = value;
+					Add(key, value);
 				});
 		}
 
 		public TValue Retrieve(TKey key)
 		{
-			TValue value;
-			if (_values.TryGetValue(key, out value))
-				return value;
-
-			value = _missingValueProvider(key);
-			_values.Add(key, value);
-
-			return value;
+			return Retrieve(key, _missingValueProvider);
 		}
 
 		public TValue Retrieve(TKey key, Func<TKey, TValue> missingValueProvider)
 		{
-			TValue value;
-			if (_values.TryGetValue(key, out value))
-				return value;
+			bool added = false;
+			TValue value = _values.GetOrAdd(key, x =>
+			{
+				added = true;
+				return missingValueProvider(x);
+			});
 
-			value = missingValueProvider(key);
-			_values.Add(key, value);
+			if (added)
+				_valueAddedCallback(key, value);
 
 			return value;
 		}
 
 		public void Each(Action<TValue> action)
 		{
-			foreach (KeyValuePair<TKey, TValue> pair in _values)
-			{
+			foreach (var pair in _values)
 				action(pair.Value);
-			}
 		}
 
 		public void Each(Action<TKey, TValue> action)
 		{
-			foreach (KeyValuePair<TKey, TValue> pair in _values)
-			{
+			foreach (var pair in _values)
 				action(pair.Key, pair.Value);
-			}
 		}
 
 		public bool Has(TKey key)
@@ -199,24 +180,12 @@ namespace Magnum.Collections
 
 		public bool Exists(Predicate<TValue> predicate)
 		{
-			bool returnValue = false;
-
-			Each(delegate(TValue value) { returnValue |= predicate(value); });
-
-			return returnValue;
+			return _values.Values.Any(x => predicate(x));
 		}
 
 		public TValue Find(Predicate<TValue> predicate)
 		{
-			foreach (KeyValuePair<TKey, TValue> pair in _values)
-			{
-				if (predicate(pair.Value))
-				{
-					return pair.Value;
-				}
-			}
-
-			return default(TValue);
+			return _values.Values.FirstOrDefault(x => predicate(x));
 		}
 
 		public TKey[] GetAllKeys()
@@ -231,10 +200,8 @@ namespace Magnum.Collections
 
 		public void Remove(TKey key)
 		{
-			if (_values.ContainsKey(key))
-			{
-				_values.Remove(key);
-			}
+			TValue existing;
+			_values.TryRemove(key, out existing);
 		}
 
 		public void ClearAll()
@@ -254,21 +221,21 @@ namespace Magnum.Collections
 			return false;
 		}
 
-		private static TValue ThrowOnMissingValue(TKey key)
+		static TValue ThrowOnMissingValue(TKey key)
 		{
 			throw new KeyNotFoundException("The specified element was not found: " + key);
 		}
 
-		private static void DefaultValueAddedAction(TKey key, TValue value)
+		static void DefaultValueAddedAction(TKey key, TValue value)
 		{
 		}
 
-		private static void DefaultDuplicateValueAddedCallback(TKey key, TValue value)
+		static void DefaultDuplicateValueAddedCallback(TKey key, TValue value)
 		{
 			throw new InvalidOperationException("Duplicate value added for key: " + key);
 		}
 
-		private static TKey DefaultKeyConverter(TValue value)
+		static TKey DefaultKeyConverter(TValue value)
 		{
 			throw new InvalidOperationException("No default key converter has been specified");
 		}
