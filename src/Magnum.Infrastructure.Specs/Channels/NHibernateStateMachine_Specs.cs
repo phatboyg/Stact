@@ -60,12 +60,12 @@ namespace Magnum.Infrastructure.Specs.Channels
 					{
 						typeof(ChannelAdapter),
 						typeof(BroadcastChannel),
+						typeof(TypedChannelAdapter<CompleteOrder>),
+						typeof(InstanceChannel<CompleteOrder>),
 						typeof(TypedChannelAdapter<CreateOrder>),
 						typeof(InstanceChannel<CreateOrder>),
 						typeof(TypedChannelAdapter<UpdateOrder>),
 						typeof(InstanceChannel<UpdateOrder>),
-						typeof(TypedChannelAdapter<CompleteOrder>),
-						typeof(InstanceChannel<CompleteOrder>),
 					});
 
 				var future = new Future<int>();

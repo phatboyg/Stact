@@ -14,6 +14,8 @@ namespace Magnum.Channels.Visitors
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using Extensions;
+
 
 	public class FlattenChannelVisitor :
 		ChannelVisitor
@@ -50,6 +52,13 @@ namespace Magnum.Channels.Visitors
 			_channels.Add(channel);
 
 			return base.Visit(channel);
+		}
+
+		protected override UntypedChannel Visitor(BroadcastChannel channel)
+		{
+			channel.Listeners.OrderBy(x => x.GetType().FullName).Each(subscriber => { Visit(subscriber); });
+
+			return channel;
 		}
 	}
 }

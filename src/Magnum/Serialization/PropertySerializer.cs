@@ -18,6 +18,7 @@ namespace Magnum.Serialization
 
 	public interface PropertySerializer<T>
 	{
+		string Name { get; }
 		void Write(T obj, Action<string> output);
 		void Read(T obj, string value);
 	}
@@ -38,6 +39,11 @@ namespace Magnum.Serialization
 
 			_typeWriter = _serializer.GetWriter();
 			_typeReader = _serializer.GetReader();
+		}
+
+		public string Name
+		{
+			get { return _property.Property.Name; }
 		}
 
 		public void Write(T obj, Action<string> output)
