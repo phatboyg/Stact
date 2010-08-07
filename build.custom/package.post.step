@@ -14,60 +14,22 @@
   <property name="folder.deployment" value="deployment" overwrite="false" />
   <property name="dirs.lib" value="${dirs.current}\..\lib" overwrite="false" />
 
-  <target name="go" depends="include_default_excluded_files, move_output_files, deployment_scripts, copy_notices" description="Packaging" />
+  <target name="go" depends="include_default_excluded_files, remove_build_artifacts, deployment_scripts, copy_notices" description="Packaging" />
 
   <target name="include_default_excluded_files">
-    <echo message="Packaging test.bat items to ${dirs.drop}\${folder.app.drop}."/>
-    <copy todir="${dirs.drop}\${folder.app.drop}">
-      <fileset basedir="${dirs.build}\${folder.app.drop}">
-        <include name="**/Test.bat" />
+    <echo message="Packaging test items to ${dirs.drop}\${folder.app.drop}\TestFramework."/>
+    <copy todir="${dirs.drop}\${folder.app.drop}\TestFramework">
+      <fileset basedir="${dirs.build}\${folder.app.drop}\TestFramework">
+        <include name="**/*" />
       </fileset>
     </copy>
-    <copy todir="${dirs.drop}\${folder.app.drop}\build\customizers">
-      <fileset basedir="${dirs.build}\${folder.app.drop}\build\customizers">
-        <include name="item.template" />
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="move_output_files">
-    <echo message="Moving output dlls to ${dirs.drop}\${folder.app.drop}\build."/>
-    <copy todir="${dirs.drop}\${folder.app.drop}\build">
-      <fileset basedir="${dirs.build}\${folder.app.drop}">
-        <exclude name="uppercut*test*.dll" />
-        <exclude name="uppercut.build.dll" />
-        <include name="uppercut*.dll" />
-        <include name="Castle*.dll" />
-      </fileset>
-    </copy>
-    
-    <copy todir="${dirs.drop}\${folder.app.drop}\..\SettingsFileEditor">
-      <fileset basedir="${dirs.build}\${folder.app.drop}">
-        <exclude name="uppercut*test*.dll" />
-        <exclude name="uppercut.build.dll" />
-        <include name="uppercut.settings.editor*" />
-        <include name="Castle*.dll" />
-      </fileset>
-    </copy>
-    
-    <delete>
-      <fileset>
-        <include name="${dirs.drop}\${folder.app.drop}\log4net.*" />
-        <include name="${dirs.drop}\${folder.app.drop}\NAnt.Core.*" />
-        <include name="${dirs.drop}\${folder.app.drop}\Castle.*" />
-        <include name="${dirs.drop}\${folder.app.drop}\*.dll" />
-        <include name="${dirs.drop}\${folder.app.drop}\*.pdb" />
-        <include name="${dirs.drop}\${folder.app.drop}\_BuildInfo.xml" />
-        <include name="${dirs.drop}\${folder.app.drop}\uppercut.settings.editor*" />
-      </fileset>
-    </delete>
   </target>
  
   <target name="deployment_scripts">
     <echo message="Packaging deployment templates to ${dirs.drop}\${folder.app.drop}\${folder.deployment}."/>
     <copy todir="${dirs.drop}\${folder.app.drop}\${folder.deployment}">
       <fileset basedir="${dirs.build}\${folder.app.drop}\${folder.deployment}">
-        <include name="**/*.*" />
+        <include name="**/*" />
       </fileset>
     </copy>
     
