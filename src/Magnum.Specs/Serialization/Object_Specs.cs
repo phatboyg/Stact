@@ -113,7 +113,7 @@ namespace Magnum.Specs.Serialization
 		[Then]
 		public void Should_create_the_proper_serialized_body()
 		{
-			_body.ShouldEqual("{Boolean:true,Byte:127,Char:A,DateTime:2010-12-01T15:12:19.027Z,DateTimeOffset:2010-04-15T12:34:56.123Z,Decimal:123.45,Double:123.45,Float:123.45,Guid:71949725b986495db59bafc4e2d288b3,Int:47,Long:8675309,String:\"There was a time in 1942, an early 8:43 AM response, with 123.72 responses\",TimeSpan:P12DT4H5M6.007S,Uri:http://www.google.com/}");
+			_body.ShouldEqual("{String:\"There was a time in 1942, an early 8:43 AM response, with 123.72 responses\",Long:8675309,Int:47,Boolean:true,Double:123.45,DateTimeOffset:2010-04-15T12:34:56.123Z,Uri:http://www.google.com/,Byte:127,Decimal:123.45,DateTime:2010-12-01T15:12:19.027Z,TimeSpan:P12DT4H5M6.007S,Guid:71949725b986495db59bafc4e2d288b3,Float:123.45,Char:A}");
 		}
 
 		[Then]
