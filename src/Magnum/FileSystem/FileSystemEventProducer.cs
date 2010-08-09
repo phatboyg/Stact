@@ -35,7 +35,18 @@ namespace Magnum.FileSystem
 		/// </summary>
 		/// <param name="directory">The directory to watch</param>
 		/// <param name="channel">The channel where events should be sent</param>
-		public FileSystemEventProducer(string directory, UntypedChannel channel)
+        public FileSystemEventProducer(string directory, UntypedChannel channel) :
+            this(directory, channel, true)
+		{
+		}
+
+	    /// <summary>
+		/// Creates a FileSystemEventProducer
+		/// </summary>
+		/// <param name="directory">The directory to watch</param>
+		/// <param name="channel">The channel where events should be sent</param>
+        /// <param name="checkSubDirectory">Indicates if subdirectories will be included</param>
+		public FileSystemEventProducer(string directory, UntypedChannel channel, bool checkSubDirectory)
 		{
 			_directory = directory;
 			_channel = channel;
@@ -43,7 +54,7 @@ namespace Magnum.FileSystem
 			_watcher = new FileSystemWatcher(_directory)
 				{
 					EnableRaisingEvents = true,
-					IncludeSubdirectories = true,
+					IncludeSubdirectories = checkSubDirectory,
 					InternalBufferSize = 8 * 4 * 1024, // 8x the default size
 				};
 
