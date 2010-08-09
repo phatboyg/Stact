@@ -26,7 +26,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 		readonly DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> _configurator;
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 		ChannelAccessor<TInstance, TChannel> _accessor;
-		Func<InstanceProvider<TInstance, TChannel>> _missingInstanceProvider;
+		Func<InstanceChannelPolicy<TInstance, TChannel>> _instanceChannelPolicy;
 		SessionProvider<TChannel> _sessionProvider;
 
 		public NHibernateChannelProviderConfiguratorImpl(
@@ -55,9 +55,9 @@ namespace Magnum.Infrastructure.Channels.Configuration
 			return this;
 		}
 
-		public void SetMissingInstanceFactory(Func<InstanceProvider<TInstance, TChannel>> providerFactory)
+		public void SetInstanceChannelPolicyFactory(Func<InstanceChannelPolicy<TInstance, TChannel>> policyFactory)
 		{
-			_missingInstanceProvider = providerFactory;
+			_instanceChannelPolicy = policyFactory;
 		}
 
 		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
@@ -74,7 +74,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 				                                        "No message key accessor was specified for NHibernate instance: "
 				                                        + typeof(TInstance).ToShortTypeName());
 			}
-			if (_missingInstanceProvider == null)
+			if (_instanceChannelPolicy == null)
 			{
 				throw new ChannelConfigurationException(typeof(TChannel),
 				                                        "No missing instance provider specified for NHibernate instance: "
@@ -93,7 +93,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 			                                                                                       _sessionProvider,
 			                                                                                       _keyAccessor,
 			                                                                                       _accessor,
-			                                                                                       _missingInstanceProvider());
+			                                                                                       _instanceChannelPolicy());
 
 			return channelProvider;
 		}

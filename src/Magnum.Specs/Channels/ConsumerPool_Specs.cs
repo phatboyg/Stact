@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,42 +13,15 @@
 namespace Magnum.Specs.Channels
 {
 	using System;
-	using Collections;
 	using Fibers;
 	using Magnum.Channels;
 	using NUnit.Framework;
 	using TestFramework;
 
+
 	[TestFixture]
 	public class Sending_a_message_to_a_consumer_pool
 	{
-		private class MyCommand
-		{
-			public Guid Id { get; set; }
-		}
-
-		private class MyConsumer
-		{
-			private readonly Fiber _fiber;
-
-			public MyConsumer(Fiber fiber)
-			{
-				_fiber = fiber;
-
-				Called = new Future<MyCommand>();
-				CommandChannel = new ConsumerChannel<MyCommand>(_fiber, HandleMyCommand);
-			}
-
-			public Future<MyCommand> Called { get; private set; }
-
-			public Channel<MyCommand> CommandChannel { get; private set; }
-
-			private void HandleMyCommand(MyCommand message)
-			{
-				Called.Complete(message);
-			}
-		}
-
 		[Test]
 		public void Should_be_able_to_call_the_consumer_directly()
 		{
@@ -65,7 +38,10 @@ namespace Magnum.Specs.Channels
 			KeyAccessor<MyCommand, Guid> getKey = message => message.Id;
 
 			Guid id = CombGuid.Generate();
-			var command = new MyCommand {Id = id};
+			var command = new MyCommand
+				{
+					Id = id
+				};
 
 			Guid key = getKey(command);
 
@@ -77,72 +53,39 @@ namespace Magnum.Specs.Channels
 		{
 			Guid id = CombGuid.Generate();
 
-			var command = new MyCommand {Id = id};
-
+			var command = new MyCommand
+				{
+					Id = id
+				};
 		}
-	}
 
 
-	public class ConsumerPool<TConsumer, TMessage, TKey>
-		where TConsumer : class
-	{
-		private readonly IConsumerDictionary<TKey, TConsumer> _dictionary;
-		private readonly ChannelAccessor<TConsumer, TMessage> _getChannel;
-		private readonly KeyAccessor<TMessage, TKey> _getKey;
-		private readonly Fiber _fiber;
-
-		public ConsumerPool(Fiber fiber, IConsumerDictionary<TKey, TConsumer> dictionary, KeyAccessor<TMessage, TKey> getKey, ChannelAccessor<TConsumer, TMessage> getChannel)
+		class MyCommand
 		{
-			_fiber = fiber;
-			_dictionary = dictionary;
-			_getKey = getKey;
-			_getChannel = getChannel;
-
-			InputChannel = new ConsumerChannel<TMessage>(fiber, Dispatch);
+			public Guid Id { get; set; }
 		}
 
-		public Channel<TMessage> InputChannel { get; private set; }
 
-		private void Dispatch(TMessage message)
+		class MyConsumer
 		{
-			TKey key = _getKey(message);
+			readonly Fiber _fiber;
 
-			TConsumer consumer = _dictionary.Retrieve(key);
+			public MyConsumer(Fiber fiber)
+			{
+				_fiber = fiber;
 
-			Channel<TMessage> channel = _getChannel(consumer);
+				Called = new Future<MyCommand>();
+				CommandChannel = new ConsumerChannel<MyCommand>(_fiber, HandleMyCommand);
+			}
 
-			channel.Send(message);
+			public Future<MyCommand> Called { get; private set; }
+
+			public Channel<MyCommand> CommandChannel { get; private set; }
+
+			void HandleMyCommand(MyCommand message)
+			{
+				Called.Complete(message);
+			}
 		}
-	}
-
-
-	public interface ConsumerChannelPolicy<TConsumer, TMessage>
-	{
-	}
-
-	public interface ConsumerRepository<TKey, TConsumer>
-	{
-	}
-
-
-	public class ConsumerDictionary<TKey, T> :
-		IConsumerDictionary<TKey, T>
-	{
-		private readonly Cache<TKey, T> _cache;
-
-		public ConsumerDictionary(Func<TKey, T> getConsumer)
-		{
-			_cache = new Cache<TKey, T>(getConsumer);
-		}
-
-		public T Retrieve(TKey key)
-		{
-			return _cache.Retrieve(key);
-		}
-	}
-
-	public interface IConsumerDictionary<TKey, T>
-	{
-		T Retrieve(TKey key);
 	}
 }

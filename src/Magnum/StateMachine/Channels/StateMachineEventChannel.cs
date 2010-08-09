@@ -10,39 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.StateMachine
+namespace Magnum.StateMachine.Channels
 {
-	using System;
-	using System.Runtime.Serialization;
-	using Extensions;
+	using Magnum.Channels;
 
 
-	[Serializable]
-	public class StateMachineException :
-		Exception
+	public class StateMachineEventChannel<T, TChannel> :
+		Channel<TChannel>
+		where T : StateMachine<T>
 	{
-		public StateMachineException(string message)
-			: base(message)
+		readonly Event<TChannel> _event;
+		readonly T _instance;
+
+		public StateMachineEventChannel(T instance, Event<TChannel> @event)
 		{
+			_instance = instance;
+			_event = @event;
 		}
 
-		public StateMachineException()
+		public void Send(TChannel message)
 		{
-		}
-
-		public StateMachineException(Type type, string message)
-			: this("{0}: {1}".FormatWith(message, type.ToShortTypeName()))
-		{
-		}
-
-		public StateMachineException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
-
-		protected StateMachineException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
+			_instance.RaiseEvent(_event, message);
 		}
 	}
 }

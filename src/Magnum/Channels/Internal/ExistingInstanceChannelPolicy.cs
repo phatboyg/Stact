@@ -10,22 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Channels.Internal
 {
-	using Infrastructure.Channels.Configuration;
-	using StateMachine;
-	using StateMachine.ChannelConfiguration;
-
-
-	public static class ExtentionsForNHibernateConnectionChannel
+	public class ExistingInstanceChannelPolicy<T, TChannel> :
+		InstanceChannelPolicy<T, TChannel>
+		where T : class
 	{
-		public static NHibernateConnectionProviderConfigurator<T, TKey> PersistUsingNHibernate<T, TKey, TBinding>(
-			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator)
-			where T : StateMachine<T>
+		public bool CanCreateInstance(TChannel message, out T instance)
 		{
-			var providerConfigurator = new NHibernateConnectionProviderConfiguratorImpl<T, TKey, TBinding>(configurator);
+			instance = default(T);
 
-			return providerConfigurator;
+			return false;
+		}
+
+		public bool IsHandledByExistingInstance(TChannel message)
+		{
+			return true;
+		}
+
+		public void WasNotHandled(TChannel message)
+		{
+		}
+
+		public bool CanUnloadInstance(T instance)
+		{
+			return false;
+		}
+
+		public bool CanRemoveInstance(T instance)
+		{
+			return false;
 		}
 	}
 }

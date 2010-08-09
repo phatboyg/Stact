@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,9 +14,10 @@ namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
-	using Channels;
-	using Channels.Configuration.Internal;
 	using Fibers;
+	using Magnum.Channels;
+	using Magnum.Channels.Configuration.Internal;
+	using Magnum.Channels.Internal;
 
 
 	public interface StateMachineEventInspectorResult<T>
@@ -26,6 +27,8 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		Type EventType { get; }
 
 		void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance);
+
+		InstanceChannelPolicy<T, TChannel> GetPolicy<TChannel>(InstanceProvider<T, TChannel> missingInstanceProvider);
 	}
 
 
@@ -66,7 +69,42 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 		public void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance)
 		{
+			// TODO kill this crap
 			configurator.AddChannel(fiber, x => new ConsumerChannel<V>(x, m => instance.RaiseEvent(Event, m)));
+		}
+
+		public InstanceChannelPolicy<T, TChannel> GetPolicy<TChannel>(InstanceProvider<T, TChannel> missingInstanceProvider)
+		{
+			bool includesInitial = false;
+			bool includesOther = false;
+
+			foreach (State state in AcceptingStates)
+			{
+				if (IsAny(state))
+					includesInitial = includesOther = true;
+				if (IsInitial(state))
+					includesInitial = true;
+				else
+					includesOther = true;
+			}
+
+			if (includesInitial && includesOther)
+				return new CreateOrUseExistingInstanceChannelPolicy<T, TChannel>(missingInstanceProvider);
+
+			if (includesInitial)
+				return new CreateInstanceChannelPolicy<T, TChannel>(missingInstanceProvider);
+
+			return new ExistingInstanceChannelPolicy<T, TChannel>();
+		}
+
+		static bool IsAny(State state)
+		{
+			return state.Name == "Any";
+		}
+
+		static bool IsInitial(State state)
+		{
+			return state.Name == "Initial";
 		}
 	}
 }

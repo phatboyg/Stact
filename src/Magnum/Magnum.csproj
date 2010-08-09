@@ -592,6 +592,12 @@
     <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachine.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfiguratorImpl.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceChannelPolicyFactory.cs" />
+    <Compile Include="StateMachine\Channels\StateMachineEventChannel.cs" />
+    <Compile Include="Channels\Internal\CreateInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\Internal\CreateOrUseExistingInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\Internal\ExistingInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\InstanceChannelPolicy.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceConnectionConfigurator.cs" />
     <Compile Include="StateMachine\DataEventBinder.cs" />
     <Compile Include="StateMachine\EventBinder.cs" />

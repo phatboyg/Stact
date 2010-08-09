@@ -10,22 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.StateMachine.ChannelConfiguration
 {
-	using Infrastructure.Channels.Configuration;
-	using StateMachine;
-	using StateMachine.ChannelConfiguration;
+	using Magnum.Channels;
+	using Magnum.Channels.Internal;
+	using Magnum.StateMachine;
 
 
-	public static class ExtentionsForNHibernateConnectionChannel
+	public class StateMachineInstanceChannelPolicyFactory<T>
+		where T : StateMachine<T>
 	{
-		public static NHibernateConnectionProviderConfigurator<T, TKey> PersistUsingNHibernate<T, TKey, TBinding>(
-			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator)
-			where T : StateMachine<T>
-		{
-			var providerConfigurator = new NHibernateConnectionProviderConfiguratorImpl<T, TKey, TBinding>(configurator);
-
-			return providerConfigurator;
-		}
+		
 	}
 }

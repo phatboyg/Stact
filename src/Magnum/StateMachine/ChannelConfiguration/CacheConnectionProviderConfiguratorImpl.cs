@@ -13,7 +13,7 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
-	using Channels;
+	using Magnum.Channels;
 	using Collections;
 	using Fibers;
 
@@ -41,7 +41,8 @@ namespace Magnum.StateMachine.ChannelConfiguration
 		}
 
 		public ChannelProvider<TChannel> GetChannelProvider<TChannel>(ChannelAccessor<T, TChannel> channelAccessor,
-		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor)
+		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor,
+			InstanceChannelPolicy<T,TChannel> channelPolicy)
 		{
 			Guard.AgainstNull(channelAccessor, "channelAccessor");
 			Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
@@ -58,7 +59,30 @@ namespace Magnum.StateMachine.ChannelConfiguration
 				{
 					TKey key = messageKeyAccessor(msg);
 
-					return channelAccessor(cache[key]);
+					T instance;
+
+					if (cache.Has(key))
+					{
+						if (!channelPolicy.IsHandledByExistingInstance(msg))
+						{
+							channelPolicy.WasNotHandled(msg);
+							return null;
+						}
+
+						instance = cache[key];
+					}
+					else
+					{
+						if (!channelPolicy.CanCreateInstance(msg, out instance))
+						{
+							channelPolicy.WasNotHandled(msg);
+							return null;
+						}
+
+						cache.Add(key, instance);
+					}
+
+					return channelAccessor(instance);
 				});
 
 			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();

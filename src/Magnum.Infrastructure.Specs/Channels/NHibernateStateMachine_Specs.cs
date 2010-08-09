@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,21 +13,23 @@
 namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
+	using Concurrency;
+	using Extensions;
+	using Logging;
 	using Magnum.Channels;
-	using Magnum.Concurrency;
-	using Magnum.Extensions;
-	using Magnum.Logging;
 	using Magnum.Specs.StateMachine;
-	using Magnum.TestFramework;
 	using NHibernate;
 	using NUnit.Framework;
+	using TestFramework;
 
 
 	[Scenario]
 	public class When_sending_a_message_to_an_nhibernate_backed_state_machine :
 		Given_an_nhibernate_session_factory
 	{
+		IEnumerable<Type> _networkTypes;
 		decimal _newValue;
 
 		[When]
@@ -51,26 +53,21 @@ namespace Magnum.Infrastructure.Specs.Channels
 					x.AddConsumersFor<TestStateMachineInstance>()
 						.BindUsing<TestStateMachineInstanceBinding, int>()
 						.ExecuteOnProducerThread()
-						.CreateNewInstanceUsing(id => new TestStateMachineInstance(id))
+						.CreateNewInstanceBy(id => new TestStateMachineInstance(id))
 						.PersistUsingNHibernate()
 						.UseSessionProvider(() => SessionFactory.OpenSession());
 				}))
 			{
-				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
-					{
-						typeof(ChannelAdapter),
-						typeof(BroadcastChannel),
-						typeof(TypedChannelAdapter<CompleteOrder>),
-						typeof(InstanceChannel<CompleteOrder>),
-						typeof(TypedChannelAdapter<CreateOrder>),
-						typeof(InstanceChannel<CreateOrder>),
-						typeof(TypedChannelAdapter<UpdateOrder>),
-						typeof(InstanceChannel<UpdateOrder>),
-					});
+				_networkTypes = input.Flatten().Select(c => c.GetType());
 
 				var future = new Future<int>();
 				TestStateMachineInstance.CompletedLatch = new CountdownLatch(1, future.Complete);
 				//
+				input.Send(new UpdateOrder
+					{
+						Id = 47
+					});
+
 				input.Send(new CreateOrder
 					{
 						Id = 27
@@ -93,10 +90,35 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 		[Then]
 		[Category("Database")]
+		public void Should_have_the_proper_network_layout()
+		{
+			_networkTypes.ShouldEqual(new[]
+				{
+					typeof(ChannelAdapter),
+					typeof(BroadcastChannel),
+					typeof(TypedChannelAdapter<CompleteOrder>),
+					typeof(InstanceChannel<CompleteOrder>),
+					typeof(TypedChannelAdapter<CreateOrder>),
+					typeof(InstanceChannel<CreateOrder>),
+					typeof(TypedChannelAdapter<UpdateOrder>),
+					typeof(InstanceChannel<UpdateOrder>),
+				});
+		}
+
+		[Then]
+		[Category("Database")]
 		public void Should_load_the_matching_instance_and_send_it_the_message()
 		{
 			using (ISession session = SessionFactory.OpenSession())
 				session.Load<TestStateMachineInstance>(27).ShouldNotBeNull();
+		}
+
+		[Then]
+		[Category("Database")]
+		public void Should_not_have_created_an_instance_for_the_non_existing_update()
+		{
+			using (ISession session = SessionFactory.OpenSession())
+				session.Get<TestStateMachineInstance>(47).ShouldBeNull();
 		}
 
 		[Then]

@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.StateMachine.ChannelConfiguration
 {
-	using Channels;
 	using Fibers;
+	using Magnum.Channels;
 
 
 	/// <summary>

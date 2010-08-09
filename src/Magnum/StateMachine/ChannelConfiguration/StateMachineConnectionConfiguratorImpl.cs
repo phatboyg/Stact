@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,11 +14,12 @@ namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
 	using Channels;
-	using Channels.Configuration.Internal;
 	using Extensions;
 	using Fibers;
 	using Fibers.Configuration;
 	using Logging;
+	using Magnum.Channels;
+	using Magnum.Channels.Configuration.Internal;
 	using Reflection;
 
 
@@ -132,9 +133,23 @@ namespace Magnum.StateMachine.ChannelConfiguration
 			KeyAccessor<TChannel, TKey> keyAccessor = m => accessor(m);
 
 			ChannelAccessor<T, TChannel> channelAccessor =
-				instance => new DelegateChannel<TChannel>(msg => instance.RaiseEvent(@event, msg));
+				instance => new StateMachineEventChannel<T, TChannel>(instance, @event);
 
-			ChannelProvider<TChannel> channelProvider = _channelProviderFactory.GetChannelProvider(channelAccessor, keyAccessor);
+			Func<TKey, T> missingInstanceProvider = GetConfiguredInstanceFactory();
+
+			var delegateInstanceProvider = new DelegateInstanceProvider<T, TChannel>(msg =>
+				{
+					TKey key = keyAccessor(msg);
+
+					T instance = missingInstanceProvider(key);
+
+					return instance;
+				});
+
+			InstanceChannelPolicy<T, TChannel> policy = result.GetPolicy(delegateInstanceProvider);
+
+			ChannelProvider<TChannel> channelProvider = _channelProviderFactory.GetChannelProvider(channelAccessor, keyAccessor,
+			                                                                                       policy);
 
 			var keyedProvider = new KeyedChannelProvider<TChannel, TKey>(channelProvider, keyAccessor);
 

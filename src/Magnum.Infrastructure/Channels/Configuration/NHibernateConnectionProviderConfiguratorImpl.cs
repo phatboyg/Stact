@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,9 +13,9 @@
 namespace Magnum.Infrastructure.Channels.Configuration
 {
 	using System;
+	using Extensions;
+	using Fibers;
 	using Magnum.Channels;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
 	using Magnum.StateMachine;
 	using Magnum.StateMachine.ChannelConfiguration;
 	using NHibernate;
@@ -37,22 +37,12 @@ namespace Magnum.Infrastructure.Channels.Configuration
 		}
 
 		public ChannelProvider<TChannel> GetChannelProvider<TChannel>(ChannelAccessor<T, TChannel> channelAccessor,
-		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor)
+		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor,
+		                                                              InstanceChannelPolicy<T, TChannel> channelPolicy)
 		{
 			Guard.AgainstNull(channelAccessor, "channelAccessor");
 			Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
-
-
-			Func<TKey, T> missingInstanceProvider = _configurator.GetConfiguredInstanceFactory();
-
-			var delegateInstanceProvider = new DelegateInstanceProvider<T, TChannel>(msg =>
-				{
-					TKey key = messageKeyAccessor(msg);
-
-					T instance = missingInstanceProvider(key);
-
-					return instance;
-				});
+			Guard.AgainstNull(channelPolicy, "channelPolicy");
 
 			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();
 
@@ -69,7 +59,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 			                                                                               sessionProvider,
 			                                                                               messageKeyAccessor,
 			                                                                               channelAccessor,
-			                                                                               delegateInstanceProvider);
+			                                                                               channelPolicy);
 
 			return channelProvider;
 		}

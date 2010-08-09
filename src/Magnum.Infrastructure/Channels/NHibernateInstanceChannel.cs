@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -29,20 +29,20 @@ namespace Magnum.Infrastructure.Channels
 		where TInstance : class
 	{
 		readonly ChannelAccessor<TInstance, TChannel> _channelAccessor;
+		readonly InstanceChannelPolicy<TInstance, TChannel> _channelPolicy;
 		readonly Fiber _fiber;
-		readonly SessionProvider<TChannel> _sessionProvider;
 		readonly KeyAccessor<TChannel, TKey> _messageKeyAccessor;
-		readonly InstanceProvider<TInstance, TChannel> _missingInstanceProvider;
+		readonly SessionProvider<TChannel> _sessionProvider;
 
-		public NHibernateInstanceChannel(Fiber fiber, 
-										 SessionProvider<TChannel> sessionProvider,
+		public NHibernateInstanceChannel(Fiber fiber,
+		                                 SessionProvider<TChannel> sessionProvider,
 		                                 KeyAccessor<TChannel, TKey> messageKeyAccessor,
 		                                 ChannelAccessor<TInstance, TChannel> channelAccessor,
-		                                 InstanceProvider<TInstance, TChannel> missingInstanceProvider)
+		                                 InstanceChannelPolicy<TInstance, TChannel> channelPolicy)
 		{
 			_fiber = fiber;
 			_sessionProvider = sessionProvider;
-			_missingInstanceProvider = missingInstanceProvider;
+			_channelPolicy = channelPolicy;
 			_channelAccessor = channelAccessor;
 			_messageKeyAccessor = messageKeyAccessor;
 		}
@@ -65,8 +65,8 @@ namespace Magnum.Infrastructure.Channels
 				else
 				{
 					instance = SendToNewInstance(message);
-
-					session.Save(instance, key);
+					if (instance != null)
+						session.Save(instance, key);
 				}
 
 				transaction.Commit();
@@ -75,16 +75,23 @@ namespace Magnum.Infrastructure.Channels
 
 		TInstance SendToNewInstance(TChannel message)
 		{
-			TInstance instance = _missingInstanceProvider.GetInstance(message);
-
-			SendToInstanceChannel(instance, message);
+			TInstance instance;
+			if (_channelPolicy.CanCreateInstance(message, out instance))
+			{
+				SendToInstanceChannel(instance, message);
+			}
+			else
+				_channelPolicy.WasNotHandled(message);
 
 			return instance;
 		}
 
 		void SendToExistingInstance(TInstance instance, TChannel message)
 		{
-			SendToInstanceChannel(instance, message);
+			if (_channelPolicy.IsHandledByExistingInstance(message))
+				SendToInstanceChannel(instance, message);
+			else
+				_channelPolicy.WasNotHandled(message);
 		}
 
 		void SendToInstanceChannel(TInstance instance, TChannel message)

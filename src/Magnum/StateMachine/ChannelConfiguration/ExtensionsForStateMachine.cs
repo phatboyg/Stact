@@ -20,7 +20,7 @@ namespace Magnum.Channels
 
 	public static class ExtensionsForStateMachine
 	{
-		public static StateMachineConnectionConfigurator<T, TKey, TBinding> CreateNewInstanceUsing<T, TKey, TBinding>(
+		public static StateMachineConnectionConfigurator<T, TKey, TBinding> CreateNewInstanceBy<T, TKey, TBinding>(
 			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator, Func<TKey, T> consumerFactory)
 			where T : StateMachine<T>
 			where TBinding : StateMachineBinding<T, TKey>
@@ -30,7 +30,7 @@ namespace Magnum.Channels
 			return configurator;
 		}
 
-		public static CacheConnectionProviderConfigurator<T, TKey> CacheInMemory<T, TKey, TBinding>(
+		public static CacheConnectionProviderConfigurator<T, TKey> PersistInMemory<T, TKey, TBinding>(
 			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator)
 			where T : StateMachine<T>
 		{
@@ -39,7 +39,7 @@ namespace Magnum.Channels
 			return providerConfigurator;
 		}
 
-		public static CacheConnectionProviderConfigurator<T, TKey> CacheUsing<T, TKey, TBinding>(
+		public static CacheConnectionProviderConfigurator<T, TKey> PersistInMemoryUsing<T, TKey, TBinding>(
 			this StateMachineConnectionConfigurator<T, TKey, TBinding> configurator, Cache<TKey, T> cache)
 			where T : StateMachine<T>
 		{
