@@ -17,19 +17,8 @@ namespace Magnum.Channels
 	using StateMachine.ChannelConfiguration;
 
 
-	public static class ExtensionsForChannel
+	public static class ExtensionsForConfigurator
 	{
-		public static StateMachineInstanceConnectionConfigurator<T> AddStateMachineInstance<T>(
-			this ConnectionConfigurator configurator, T instance)
-			where T : StateMachine<T>
-		{
-			var instanceConfigurator = new StateMachineInstanceConnectionConfiguratorImpl<T>(instance);
-
-			configurator.RegisterChannelConfigurator(instanceConfigurator);
-
-			return instanceConfigurator;
-		}
-
 		public static StateMachineConnectionConfigurator<T> AddConsumersFor<T>(this ConnectionConfigurator configurator)
 			where T : StateMachine<T>
 		{

@@ -52,6 +52,15 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 			return configurator;
 		}
+
+		public StateMachineInstanceConnectionConfigurator<T> UsingInstance(T instance)
+		{
+			var instanceConfigurator = new StateMachineInstanceConnectionConfiguratorImpl<T>(instance);
+
+			_configurator = instanceConfigurator;
+
+			return instanceConfigurator;
+		}
 	}
 
 

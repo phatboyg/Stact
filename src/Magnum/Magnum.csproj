@@ -589,7 +589,7 @@
     <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfiguratorImpl.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\CacheChannelProvider.cs" />
-    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachine.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachineConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfiguratorImpl.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceChannelPolicyFactory.cs" />
@@ -609,7 +609,7 @@
     <Compile Include="StateMachine\EventActionList.cs" />
     <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
-    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForChannel.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForConfigurator.cs" />
     <Compile Include="StateMachine\ExtensionsForStateMachineVisitor.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />

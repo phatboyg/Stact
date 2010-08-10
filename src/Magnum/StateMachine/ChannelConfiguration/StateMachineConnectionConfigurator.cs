@@ -22,6 +22,8 @@ namespace Magnum.StateMachine.ChannelConfiguration
 	{
 		StateMachineConnectionConfigurator<T, TKey, TBinding> BindUsing<TBinding, TKey>()
 			where TBinding : StateMachineBinding<T, TKey>;
+
+		StateMachineInstanceConnectionConfigurator<T> UsingInstance(T instance);
 	}
 
 

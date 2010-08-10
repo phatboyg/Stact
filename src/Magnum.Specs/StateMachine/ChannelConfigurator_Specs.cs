@@ -35,7 +35,8 @@ namespace Magnum.Specs.StateMachine
 			_disconnect = _input.Connect(x =>
 				{
 					// adds a single state machine instance to the channel via listeners
-					x.AddStateMachineInstance(_instance)
+					x.AddConsumersFor<SampleStateMachine>()
+						.UsingInstance(_instance)
 						.ExecuteOnProducerThread();
 				});
 
