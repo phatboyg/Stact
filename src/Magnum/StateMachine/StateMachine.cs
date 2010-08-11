@@ -117,6 +117,9 @@ namespace Magnum.StateMachine
 
 		protected internal virtual void ChangeCurrentState(State newState)
 		{
+			if (_currentState == newState)
+				return;
+
 			LeaveCurrentState();
 
 			EnterState(State<T>.GetState(newState));
