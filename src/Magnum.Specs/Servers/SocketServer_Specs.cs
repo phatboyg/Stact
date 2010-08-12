@@ -10,52 +10,54 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Sockets
+namespace Magnum.Specs.Servers
 {
+	using System;
 	using System.Collections.Generic;
-	using System.IO;
 	using System.Net.Sockets;
 	using System.Threading;
 	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using Magnum.Logging;
-	using Magnum.Sockets;
-	using Magnum.Sockets.Events;
+	using Magnum.Servers;
+	using Magnum.Servers.Events;
 	using NUnit.Framework;
 	using TestFramework;
 
 
-	[Scenario]
+	[Scenario, Explicit]
 	public class When_starting_a_socket_server
 	{
-		protected SocketServer _server;
-		ChannelAdapter _input;
-		Future<SocketServerStarting> _startingEventReceived;
-		Future<SocketServerRunning> _runningEventReceived;
 		ChannelConnection _connection;
+		ChannelAdapter _input;
+		Future<ServerRunning> _runningEventReceived;
+		protected SocketServer _server;
+		Future<ServerStarting> _startingEventReceived;
+		Uri _uri;
 
 		[When]
 		public void Starting_a_socket_server()
 		{
 			TraceLogProvider.Configure(LogLevel.Info);
 
-			_startingEventReceived = new Future<SocketServerStarting>();
-			_runningEventReceived = new Future<SocketServerRunning>();
+			_startingEventReceived = new Future<ServerStarting>();
+			_runningEventReceived = new Future<ServerRunning>();
 
 			_input = new ChannelAdapter();
 			_connection = _input.Connect(x =>
 				{
-					x.AddConsumerOf<SocketServerStarting>()
+					x.AddConsumerOf<ServerStarting>()
 						.UsingConsumer(_startingEventReceived.Complete)
 						.ExecuteOnProducerThread();
 
-					x.AddConsumerOf<SocketServerRunning>()
+					x.AddConsumerOf<ServerRunning>()
 						.UsingConsumer(_runningEventReceived.Complete)
 						.ExecuteOnProducerThread();
 				});
-			
-			_server = new SocketServer(new ThreadPoolFiber(), _input);
+
+			_uri = new Uri("tcp://0.0.0.0:8008");
+			_server = new SocketServer(_uri, new ThreadPoolFiber(), _input);
 			_server.Start();
 		}
 
@@ -76,7 +78,7 @@ namespace Magnum.Specs.Sockets
 		[Test]
 		public void Should_have_called_the_starting_event()
 		{
-			_startingEventReceived.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();			
+			_startingEventReceived.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 		}
 
 		[Test]
@@ -86,7 +88,8 @@ namespace Magnum.Specs.Sockets
 		}
 	}
 
-	[Scenario]
+
+	[Scenario, Explicit]
 	public class When_connecting_to_a_socket_server :
 		When_starting_a_socket_server
 	{
@@ -116,7 +119,7 @@ namespace Magnum.Specs.Sockets
 		[Then]
 		public void Should_allow_multiple_connections()
 		{
-			List<TcpClient> clients = new List<TcpClient>();
+			var clients = new List<TcpClient>();
 
 			int expected = 100;
 			for (int i = 0; i < expected - 1; i++)
@@ -133,7 +136,7 @@ namespace Magnum.Specs.Sockets
 
 			clients.ForEach(client =>
 				{
-					using(client)
+					using (client)
 						client.Close();
 				});
 

@@ -10,14 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Sockets.Events
+namespace Magnum.Servers
 {
-	public class SocketServerStopping :
-		SocketServerEvent
+	using System;
+	using System.Runtime.Serialization;
+
+
+	[Serializable]
+	public class StreamServerException :
+		Exception
 	{
-		public SocketServerEventType EventType
+		public StreamServerException()
 		{
-			get { return SocketServerEventType.Stopping; }
+		}
+
+		public StreamServerException(string message)
+			: base(message)
+		{
+		}
+
+		public StreamServerException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected StreamServerException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
 		}
 	}
 }

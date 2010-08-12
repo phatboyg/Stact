@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,6 +13,9 @@
 namespace Magnum.Extensions
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Net;
+
 
 	public static class ExtensionsToUri
 	{
@@ -26,6 +29,33 @@ namespace Magnum.Extensions
 		{
 			string absolutePath = uri.AbsolutePath.TrimEnd('/') + "/" + path;
 			return new UriBuilder(uri.Scheme, uri.Host, uri.Port, absolutePath, uri.Query).Uri;
+		}
+
+		public static IEnumerable<IPEndPoint> ResolveHostName(this Uri uri)
+		{
+			if (uri.HostNameType == UriHostNameType.Dns)
+			{
+				IPAddress[] addresses = Dns.GetHostAddresses(uri.DnsSafeHost);
+				if (addresses.Length == 0)
+					throw new ArgumentException("The host could not be resolved: " + uri.DnsSafeHost, "uri");
+
+				foreach (IPAddress address in addresses)
+				{
+					var endpoint = new IPEndPoint(address, uri.Port);
+					yield return endpoint;
+				}
+			}
+			else if (uri.HostNameType == UriHostNameType.IPv4)
+			{
+				IPAddress address = IPAddress.Parse(uri.Host);
+				if (address == null)
+					throw new ArgumentException("The IP address is invalid: " + uri.Host, "uri");
+
+				var endpoint = new IPEndPoint(address, uri.Port);
+				yield return endpoint;
+			}
+			else
+				throw new ArgumentException("Could not determine host name type: " + uri.Host, "uri");
 		}
 	}
 }

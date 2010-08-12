@@ -10,14 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Sockets.Events
+namespace Magnum.Servers.Events
 {
-	public class SocketServerStopped :
-		SocketServerEvent
+	public class ServerStopped :
+		ServerEvent
 	{
-		public SocketServerEventType EventType
+		public ServerEventType EventType
 		{
-			get { return SocketServerEventType.Stopped; }
+			get { return ServerEventType.Stopped; }
 		}
 	}
 }

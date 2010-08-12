@@ -10,13 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Sockets.Events
+namespace Magnum.Servers
 {
-	public enum SocketServerEventType
+	using System.Collections.Specialized;
+	using System.IO;
+
+
+	public interface ResponseContext
 	{
-		Starting = 1,
-		Running = 2,
-		Stopping = 3,
-		Stopped = 4,
+		NameValueCollection Headers { get; }
+		Stream OutputStream { get; }
+		long ContentLength64 { get; set; }
+		int StatusCode { get; set; }
+		string StatusDescription { get; set; }
+		string ContentType { get; set; }
+		void Redirect(string url);
+		void Close();
 	}
 }
