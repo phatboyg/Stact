@@ -67,8 +67,6 @@ namespace Magnum.Servers
 				_httpContext.Response.Close();
 
 				_log.Debug(x => x.Write("CLOSED: {0} {1} {2}", Request.Url, _acceptedAt.ToLongTimeString(), Request.Url));
-
-				IsCompleted = true;
 			}
 			catch
 			{
@@ -78,8 +76,6 @@ namespace Magnum.Servers
 				_onComplete();
 			}
 		}
-
-		public bool IsCompleted { get; private set; }
 
 		public void SetResponseFilter(Func<Stream, Stream> responseFilter)
 		{

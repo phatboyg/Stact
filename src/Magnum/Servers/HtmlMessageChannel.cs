@@ -15,17 +15,22 @@ namespace Magnum.Servers
 	using Channels;
 
 
-	/// <summary>
-	/// Returns a channel to process the request, mapping the request Uri to the
-	/// channel implementation that support the specified URI.
-	/// </summary>
-	public class HttpConnectionChannelProvider :
-		ChannelProvider<ConnectionContext>
+	public class HtmlMessageChannel :
+		Channel<ConnectionContext>
 	{
-		public Channel<ConnectionContext> GetChannel(ConnectionContext message)
+		readonly byte[] _message;
+
+		public HtmlMessageChannel(byte[] message)
 		{
-			// not handled by another handler
-			return new RequestNotHandledChannel();
+			_message = message;
+		}
+
+		public void Send(ConnectionContext context)
+		{
+			context.Response.ContentType = "text/html; charset=\"utf-8\"";
+			context.Response.OutputStream.Write(_message, 0, _message.Length);
+
+			context.Complete();
 		}
 	}
 }

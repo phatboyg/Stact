@@ -28,7 +28,7 @@ namespace Magnum.Servers
 		static readonly ILogger _log = Logger.GetLogger<HttpServer>();
 
 		int _concurrentConnectionLimit = 1000;
-		ChannelAdapter<HttpConnectionContext> _connectionChannel;
+		ChannelAdapter<ConnectionContext> _connectionChannel;
 		ChannelConnection _connectionChannelConnection;
 		HttpListener _httpListener;
 
@@ -59,11 +59,11 @@ namespace Magnum.Servers
 
 		void CreateChannelNetwork()
 		{
-			_connectionChannel = new ChannelAdapter<HttpConnectionContext>();
+			_connectionChannel = new ChannelAdapter<ConnectionContext>();
 			_connectionChannelConnection = _connectionChannel.Connect(x =>
 				{
 					var channelProvider = new HttpConnectionChannelProvider();
-					var threadPoolChannel = new ThreadPoolChannel<HttpConnectionContext>(channelProvider, _concurrentConnectionLimit);
+					var threadPoolChannel = new ThreadPoolChannel<ConnectionContext>(channelProvider, _concurrentConnectionLimit);
 
 					x.AddChannel(threadPoolChannel);
 				});

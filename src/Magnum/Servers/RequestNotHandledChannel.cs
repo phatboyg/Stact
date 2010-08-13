@@ -12,20 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Servers
 {
-	using Channels;
+	using System.Text;
 
 
 	/// <summary>
-	/// Returns a channel to process the request, mapping the request Uri to the
-	/// channel implementation that support the specified URI.
+	/// Handles a connection inside of a channel, allowing handlers to be injected
+	/// along the channel network to handle things like authentication and ultimately
+	/// routing
 	/// </summary>
-	public class HttpConnectionChannelProvider :
-		ChannelProvider<ConnectionContext>
+	public class RequestNotHandledChannel :
+		HtmlMessageChannel
 	{
-		public Channel<ConnectionContext> GetChannel(ConnectionContext message)
+		const string Message =
+			@"<!DOCTYPE html> 
+<html>
+	<body>
+		<h1>Your request was not processed</h1>
+		<p>The URI specified was not recognized by any registered handler.</p>
+	</body>
+</html>";
+
+		static readonly byte[] _connectionNotHandled = Encoding.UTF8.GetBytes(Message);
+
+		public RequestNotHandledChannel()
+			: base(_connectionNotHandled)
 		{
-			// not handled by another handler
-			return new RequestNotHandledChannel();
 		}
 	}
 }

@@ -42,11 +42,6 @@ namespace Magnum.Servers
 		void Complete();
 
 		/// <summary>
-		/// True if the connection has been completed, false if it was not handled
-		/// </summary>
-		bool IsCompleted { get; }
-
-		/// <summary>
 		/// Wraps the response stream (for compression, encryption, etc.)
 		/// </summary>
 		/// <param name="responseFilter">A method to apply a filter to the connection</param>
