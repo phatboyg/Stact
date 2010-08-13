@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,17 +13,28 @@
 namespace Magnum.Benchmarks
 {
 	using System;
+	using Channels;
+	using Fibers;
+	using Servers;
 
 
-	class Program
+	public class HttpServerBenchmark
 	{
-		static void Main(string[] args)
+		public void Run()
 		{
-			Console.WriteLine("Magnum Benchmark Console");
+			var input = new ChannelAdapter();
 
-			//new MessagePassingBenchmark().Run();
+			var serverUri = new Uri("http://localhost:8008/MagnumBenchmark");
+			var server = new HttpServer(serverUri, new ThreadPoolFiber(), input);
+			server.Start();
 
-			new HttpServerBenchmark().Run();
+			Console.WriteLine("Started: press a key to shutdown");
+			Console.ReadKey();
+
+			server.Stop();
+
+			Console.WriteLine("Stopping server");
+			Console.ReadKey();
 		}
 	}
 }

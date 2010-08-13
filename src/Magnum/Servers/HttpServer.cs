@@ -13,6 +13,7 @@
 namespace Magnum.Servers
 {
 	using System;
+	using System.IO.Compression;
 	using System.Linq;
 	using System.Net;
 	using Channels;
@@ -136,6 +137,25 @@ namespace Magnum.Servers
 				prefix += "/";
 
 			return prefix;
+		}
+
+		static void AddHttpCompressionIfClientCanAcceptIt(HttpConnectionContext context)
+		{
+			string acceptEncoding = context.Request.Headers["Accept-Encoding"];
+
+			if (string.IsNullOrEmpty(acceptEncoding))
+				return;
+
+			if ((acceptEncoding.IndexOf("gzip", StringComparison.InvariantCultureIgnoreCase) != -1))
+			{
+				context.SetResponseFilter(s => new GZipStream(s, CompressionMode.Compress, true));
+				context.Response.Headers["Content-Encoding"] = "gzip";
+			}
+			else if (acceptEncoding.IndexOf("deflate", StringComparison.InvariantCultureIgnoreCase) != -1)
+			{
+				context.SetResponseFilter(s => new DeflateStream(s, CompressionMode.Compress, true));
+				context.Response.Headers["Content-Encoding"] = "deflate";
+			}
 		}
 	}
 }

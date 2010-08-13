@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Servers
 {
+	using System.Text;
 	using Channels;
 	using Fibers;
 
@@ -24,6 +25,10 @@ namespace Magnum.Servers
 	public class HttpConnectionChannel :
 		Channel<HttpConnectionContext>
 	{
+		const string ConnectionNotHandled =
+			@"<html><body><h1>Your request was not processed</h1><p>The URI specified was not recognized by any registered handler.</p></body></html>";
+
+		static byte[] _connectionNotHandled = Encoding.UTF8.GetBytes(ConnectionNotHandled);
 		readonly ThreadPoolFiber _fiber;
 
 		public HttpConnectionChannel(ThreadPoolFiber fiber)
@@ -38,14 +43,24 @@ namespace Magnum.Servers
 
 		void HandleConnection(HttpConnectionContext context)
 		{
-			_fiber.Add(() =>
-				{
-					var buffer = new byte[4000];
-					int read = context.Request.InputStream.Read(buffer, 0, buffer.Length);
+			if (context.IsCompleted == false)
+			{
+				_fiber.Add(() =>
+					{
+						var buffer = new byte[4000];
+						int read = context.Request.InputStream.Read(buffer, 0, buffer.Length);
 
+						RespondWithConnectionNotHandled(context.Response);
 
-					context.Complete();
-				});
+						context.Complete();
+					});
+			}
+		}
+
+		void RespondWithConnectionNotHandled(ResponseContext response)
+		{
+			response.ContentType = "text/html; charset=\"utf-8\"";
+			response.OutputStream.Write(_connectionNotHandled, 0, _connectionNotHandled.Length);
 		}
 	}
 }

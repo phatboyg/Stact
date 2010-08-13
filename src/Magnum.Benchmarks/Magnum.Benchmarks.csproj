@@ -64,6 +64,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="HttpServerBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
