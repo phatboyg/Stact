@@ -63,7 +63,7 @@ namespace Magnum.Specs.Extensions
 
 			IPEndPoint[] endpoint = uri.ResolveHostName().ToArray();
 
-			endpoint.Length.ShouldBeGreaterThanOrEqualTo(2);
+			endpoint.Length.ShouldBeGreaterThanOrEqualTo(1);
 		}
 
 		[Test]
