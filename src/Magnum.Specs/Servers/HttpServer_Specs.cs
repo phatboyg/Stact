@@ -60,7 +60,7 @@ namespace Magnum.Specs.Servers
 						.ExecuteOnProducerThread();
 				});
 
-			ServerUri = new Uri("http://localhost:8008/");
+			ServerUri = new Uri("http://localhost:8008/Topshelf");
 			_server = new HttpServer(ServerUri, new ThreadPoolFiber(), _input);
 			_server.Start();
 		}
@@ -131,7 +131,7 @@ namespace Magnum.Specs.Servers
 			int expected = 100;
 			for (int i = 0; i < expected; i++)
 			{
-				var webRequest = (HttpWebRequest)WebRequest.Create(ServerUri);
+				var webRequest = (HttpWebRequest)WebRequest.Create(ServerUri.AppendPath("Services/MyService"));
 				webRequest.Method = "PUT";
 				using (var reque = webRequest.GetRequestStream())
 				{

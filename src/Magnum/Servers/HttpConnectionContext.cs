@@ -17,7 +17,6 @@ namespace Magnum.Servers
 	using System.IO;
 	using System.Net;
 	using System.Security.Principal;
-	using Fibers;
 	using Logging;
 
 
@@ -26,44 +25,30 @@ namespace Magnum.Servers
 	{
 		static readonly ILogger _log = Logger.GetLogger<HttpConnectionContext>();
 
-		readonly Fiber _fiber;
+		readonly DateTime _acceptedAt;
 		readonly HttpListenerContext _httpContext;
-		readonly Action _onConnectionComplete;
-		Stopwatch _stopwatch;
+		readonly Action _onComplete;
+		readonly Stopwatch _stopwatch;
 
-		public HttpConnectionContext(Fiber fiber, DateTime acceptedAt, HttpListenerContext httpContext, Action onConnectionComplete)
+		HttpResponseContext _response;
+
+		public HttpConnectionContext(DateTime acceptedAt, HttpListenerContext httpContext, Action onComplete)
 		{
 			_stopwatch = Stopwatch.StartNew();
 
-			_fiber = fiber;
+			_acceptedAt = acceptedAt;
 			_httpContext = httpContext;
-			_onConnectionComplete = onConnectionComplete;
+			_onComplete = onComplete;
 
-			_fiber.Add(() =>
-				{
-					Request = new HttpRequestContext(httpContext.Request);
-					ResponseInternal = new HttpResponseContext(httpContext.Response);
-
-					byte[] buffer = new byte[4000];
-					int read = Request.InputStream.Read(buffer, 0, buffer.Length);
-
-
-					FinalizeResonse();
-
-					_stopwatch.Stop();
-
-					_onConnectionComplete();
-
-					_log.Debug(x => x.Write("CLOSED: {0} {1} {2}", httpContext.Request.Url, acceptedAt.ToLongTimeString(), Request.Url));
-				});
+			Request = new HttpRequestContext(httpContext.Request);
+			_response = new HttpResponseContext(httpContext.Response);
 		}
 
-		protected HttpResponseContext ResponseInternal { get; set; }
-		public RequestContext Request { get; set; }
+		public RequestContext Request { get; private set; }
 
 		public ResponseContext Response
 		{
-			get { return ResponseInternal; }
+			get { return _response; }
 		}
 
 		public IPrincipal User
@@ -71,22 +56,30 @@ namespace Magnum.Servers
 			get { return _httpContext.User; }
 		}
 
-		public void FinalizeResonse()
+		public void Complete()
 		{
+			_stopwatch.Stop();
+
 			try
 			{
-				ResponseInternal.OutputStream.Flush();
-				ResponseInternal.OutputStream.Dispose();
+				_response.OutputStream.Flush();
+				_response.OutputStream.Dispose();
 				_httpContext.Response.Close();
+
+				_log.Debug(x => x.Write("CLOSED: {0} {1} {2}", Request.Url, _acceptedAt.ToLongTimeString(), Request.Url));
 			}
 			catch
 			{
+			}
+			finally
+			{
+				_onComplete();
 			}
 		}
 
 		public void SetResponseFilter(Func<Stream, Stream> responseFilter)
 		{
-			ResponseInternal.OutputStream = responseFilter(ResponseInternal.OutputStream);
+			_response.OutputStream = responseFilter(_response.OutputStream);
 		}
 	}
 }

@@ -587,6 +587,8 @@
     <Compile Include="Servers\Events\ServerRunning.cs" />
     <Compile Include="Servers\Events\ServerStopped.cs" />
     <Compile Include="Servers\Events\ServerStopping.cs" />
+    <Compile Include="Servers\HttpConnectionChannel.cs" />
+    <Compile Include="Servers\HttpConnectionChannelProvider.cs" />
     <Compile Include="Servers\HttpConnectionContext.cs" />
     <Compile Include="Servers\HttpRequestContext.cs" />
     <Compile Include="Servers\HttpResponseContext.cs" />

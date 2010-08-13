@@ -13,7 +13,6 @@
 namespace Magnum.Servers
 {
 	using System;
-	using System.Diagnostics;
 	using System.Linq;
 	using System.Net;
 	using Channels;
@@ -27,6 +26,9 @@ namespace Magnum.Servers
 	{
 		static readonly ILogger _log = Logger.GetLogger<HttpServer>();
 
+		int _concurrentConnectionLimit = 1000;
+		ChannelAdapter<HttpConnectionContext> _connectionChannel;
+		ChannelConnection _connectionChannelConnection;
 		HttpListener _httpListener;
 
 		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel)
@@ -40,6 +42,8 @@ namespace Magnum.Servers
 
 			string prefix = GetPrefixForUri(uri);
 
+			CreateChannelNetwork();
+
 			_httpListener = new HttpListener();
 			_httpListener.Prefixes.Add(prefix);
 
@@ -50,6 +54,18 @@ namespace Magnum.Servers
 			_httpListener.Start();
 
 			QueueAccept();
+		}
+
+		void CreateChannelNetwork()
+		{
+			_connectionChannel = new ChannelAdapter<HttpConnectionContext>();
+			_connectionChannelConnection = _connectionChannel.Connect(x =>
+				{
+					var channelProvider = new HttpConnectionChannelProvider();
+					var threadPoolChannel = new ThreadPoolChannel<HttpConnectionContext>(channelProvider, _concurrentConnectionLimit);
+
+					x.AddChannel(threadPoolChannel);
+				});
 		}
 
 		void QueueAccept()
@@ -67,7 +83,9 @@ namespace Magnum.Servers
 				HttpListenerContext context = _httpListener.EndGetContext(asyncResult);
 
 				DateTime acceptedAt = SystemUtil.UtcNow;
-				_log.Debug(x => x.Write("ACCEPT: {0} {1} {2}", context.Request.Url, acceptedAt.ToLongTimeString(), BaseUri));
+				_log.Debug(
+				           x =>
+				           x.Write("ACCEPT: {0} {1} {2}", context.Request.Url, acceptedAt.ToLongTimeString(), context.Request.RawUrl));
 
 				ConnectionEstablished(() => HandleConnection(acceptedAt, context));
 			}
@@ -87,16 +105,18 @@ namespace Magnum.Servers
 		{
 			try
 			{
-				ConnectionContext context = new HttpConnectionContext(new ThreadPoolFiber(), acceptedAt, httpContext, ConnectionComplete);
+				_connectionChannel.Send(new HttpConnectionContext(acceptedAt, httpContext, ConnectionComplete));
 			}
 			catch (Exception ex)
 			{
+				_log.Error(x => x.Write(ex, "FAILED: {0}", httpContext.Request.Url));
 			}
 		}
 
 		protected override void ShutdownListener()
 		{
 			_httpListener.Close();
+			_connectionChannelConnection.Dispose();
 
 			base.ShutdownListener();
 		}

@@ -16,13 +16,35 @@ namespace Magnum.Servers
 	using System.IO;
 	using System.Security.Principal;
 
-
+	/// <summary>
+	/// Abstracts a connection from the underlying transport implementation
+	/// </summary>
 	public interface ConnectionContext
 	{
+		/// <summary>
+		/// The request submitted for the connection
+		/// </summary>
 		RequestContext Request { get; }
+
+		/// <summary>
+		/// The response for the connection
+		/// </summary>
 		ResponseContext Response { get; }
+
+		/// <summary>
+		/// The user context under which the connection was established
+		/// </summary>
 		IPrincipal User { get; }
-		void FinalizeResonse();
+
+		/// <summary>
+		/// Completes the response for this connection
+		/// </summary>
+		void Complete();
+
+		/// <summary>
+		/// Wraps the response stream (for compression, encryption, etc.)
+		/// </summary>
+		/// <param name="responseFilter">A method to apply a filter to the connection</param>
 		void SetResponseFilter(Func<Stream, Stream> responseFilter);
 	}
 }

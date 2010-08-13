@@ -17,13 +17,39 @@ namespace Magnum.Servers
 	using System.IO;
 
 
+	/// <summary>
+	/// Wraps a request, including the Url, Headers, and any QueryString parameters
+	/// </summary>
 	public interface RequestContext
 	{
+		/// <summary>
+		/// The headers submitted as part of the request
+		/// </summary>
 		NameValueCollection Headers { get; }
+
+		/// <summary>
+		/// The input stream to read the request contents
+		/// </summary>
 		Stream InputStream { get; }
+
+		/// <summary>
+		/// The query string arguments that were included with the request
+		/// </summary>
 		NameValueCollection QueryString { get; }
+
+		/// <summary>
+		/// The method (GET,PUT,etc.)
+		/// </summary>
 		string HttpMethod { get; }
+
+		/// <summary>
+		/// The URL specified for the request
+		/// </summary>
 		Uri Url { get; }
+
+		/// <summary>
+		/// The raw URL specified
+		/// </summary>
 		string RawUrl { get; }
 	}
 }
