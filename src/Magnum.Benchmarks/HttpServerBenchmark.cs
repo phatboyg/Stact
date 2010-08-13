@@ -16,6 +16,7 @@ namespace Magnum.Benchmarks
 	using Channels;
 	using Fibers;
 	using Servers;
+	using Servers.Events;
 
 
 	public class HttpServerBenchmark
@@ -23,9 +24,18 @@ namespace Magnum.Benchmarks
 		public void Run()
 		{
 			var input = new ChannelAdapter();
+			var connection = input.Connect(x =>
+			{
+				x.AddConsumerOf<ServerEvent>()
+					.OnCurrentSynchronizationContext()
+					.UsingConsumer(m => Console.WriteLine("Server " + m.EventType));
+			});
 
 			var serverUri = new Uri("http://localhost:8008/MagnumBenchmark");
-			var server = new HttpServer(serverUri, new ThreadPoolFiber(), input);
+			var server = new HttpServer(serverUri, new ThreadPoolFiber(), input, new[]
+				{
+					new VersionConnectionHandler(),
+				});
 			server.Start();
 
 			Console.WriteLine("Started: press a key to shutdown");

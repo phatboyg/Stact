@@ -10,9 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Servers
+namespace Magnum.Servers.Internal
 {
-	using System.Text;
+	using Channels;
+	using Fibers;
 
 
 	/// <summary>
@@ -20,23 +21,35 @@ namespace Magnum.Servers
 	/// along the channel network to handle things like authentication and ultimately
 	/// routing
 	/// </summary>
-	public class RequestNotHandledChannel :
-		HtmlMessageChannel
+	public class BadRequestConnectionHandler :
+		ConnectionHandler
 	{
-		const string Message =
-			@"<!DOCTYPE html> 
-<html>
-	<body>
-		<h1>Your request was not processed</h1>
-		<p>The URI specified was not recognized by any registered handler.</p>
-	</body>
-</html>";
-
-		static readonly byte[] _connectionNotHandled = Encoding.UTF8.GetBytes(Message);
-
-		public RequestNotHandledChannel()
-			: base(_connectionNotHandled)
+		public Channel<ConnectionContext> GetChannel(ConnectionContext message)
 		{
+			return new BadRequestChannel();
+		}
+
+
+		class BadRequestChannel :
+			Channel<ConnectionContext>
+		{
+			readonly Fiber _fiber = new ThreadPoolFiber();
+
+			public void Send(ConnectionContext context)
+			{
+				const string message =
+					@"<body>
+	<h1>Your request was not processed</h1>
+	<p>The URI specified was not recognized by any registered handler.</p>
+</body>";
+
+				_fiber.Add(() =>
+					{
+						context.SetStatusToBadRequest();
+						context.Response.WriteHtml(message);
+						context.Complete();
+					});
+			}
 		}
 	}
 }

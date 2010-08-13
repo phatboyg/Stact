@@ -15,10 +15,9 @@ namespace Magnum.Specs.Servers
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.IO;
 	using System.Net;
-	using System.Net.Sockets;
 	using System.Text;
-	using System.Threading;
 	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Extensions;
@@ -29,7 +28,8 @@ namespace Magnum.Specs.Servers
 	using TestFramework;
 
 
-	[Scenario, Explicit]
+	[Scenario]
+	[Explicit]
 	public class When_starting_an_http_server
 	{
 		ChannelConnection _connection;
@@ -61,7 +61,10 @@ namespace Magnum.Specs.Servers
 				});
 
 			ServerUri = new Uri("http://localhost:8008/Topshelf");
-			_server = new HttpServer(ServerUri, new ThreadPoolFiber(), _input);
+			_server = new HttpServer(ServerUri, new ThreadPoolFiber(), _input, new[]
+				{
+					new VersionConnectionHandler(),
+				});
 			_server.Start();
 		}
 
@@ -82,43 +85,54 @@ namespace Magnum.Specs.Servers
 		[Then]
 		public void Should_have_called_the_starting_event()
 		{
-			AssertionsForBoolean.ShouldBeTrue(_startingEventReceived.WaitUntilCompleted(2.Seconds()));
+			_startingEventReceived.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 		}
 
 		[Then]
 		public void Should_have_called_the_running_event()
 		{
-			AssertionsForBoolean.ShouldBeTrue(_runningEventReceived.WaitUntilCompleted(2.Seconds()));
+			_runningEventReceived.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 		}
 	}
 
-	[Scenario, Explicit]
+
+	[Scenario]
+	[Explicit]
 	public class When_connecting_to_an_http_server :
 		When_starting_an_http_server
 	{
 		HttpWebRequest _webRequest;
-		WebResponse _webResponse;
+		HttpWebResponse _webResponse;
 
 		[When]
 		public void Connecting_to_a_socket_server()
 		{
-			_webRequest = (HttpWebRequest)WebRequest.Create(ServerUri);
-			_webResponse = _webRequest.GetResponse();
+			_webRequest = (HttpWebRequest)WebRequest.Create(ServerUri.AppendPath("version"));
+			try
+			{
+				_webResponse = (HttpWebResponse)_webRequest.GetResponse();
+			}
+			catch (WebException ex)
+			{
+				_webResponse = (HttpWebResponse)ex.Response;
+			}
 		}
 
 		[After]
 		public void My_Finally()
 		{
 			using (_webResponse)
-			{
 				_webResponse.Close();
-			}
 		}
 
 		[Then]
 		public void Should_establish_a_connection()
 		{
-			//_webResponse.Connected.ShouldBeTrue();
+			using (Stream responseStream = _webResponse.GetResponseStream())
+			{
+				string response = responseStream.ReadToEndAsText();
+				Trace.WriteLine(response);
+			}
 		}
 
 		[Then]
@@ -132,8 +146,8 @@ namespace Magnum.Specs.Servers
 			for (int i = 0; i < expected; i++)
 			{
 				var webRequest = (HttpWebRequest)WebRequest.Create(ServerUri.AppendPath("Services/MyService"));
-				webRequest.Method = "PUT";
-				using (var reque = webRequest.GetRequestStream())
+				webRequest.Method = "POST";
+				using (Stream reque = webRequest.GetRequestStream())
 				{
 					byte[] buffer = Encoding.UTF8.GetBytes("Hello");
 
@@ -148,12 +162,34 @@ namespace Magnum.Specs.Servers
 			Trace.WriteLine("Established {0} connections in {0}ms".FormatWith(expected, connectionTimer.ElapsedMilliseconds));
 
 			requests.ForEach(request =>
-			{
-				using (WebResponse webResponse = request.GetResponse())
 				{
-					webResponse.Close();
-				}
-			});
+					try
+					{
+						using (WebResponse webResponse = request.GetResponse())
+						{
+							using (Stream responseStream = webResponse.GetResponseStream())
+							{
+								string response = responseStream.ReadToEndAsText();
+								Trace.WriteLine(response);
+							}
+							webResponse.Close();
+						}
+					}
+					catch (WebException ex)
+					{
+						using (WebResponse response = ex.Response)
+						{
+							var httpResponse = (HttpWebResponse)response;
+
+							Trace.WriteLine("HttpStatusCode: " + httpResponse.StatusCode);
+							using (Stream data = response.GetResponseStream())
+							{
+								string r = data.ReadToEndAsText();
+								Trace.WriteLine(r);
+							}
+						}
+					}
+				});
 
 			requests.Clear();
 		}

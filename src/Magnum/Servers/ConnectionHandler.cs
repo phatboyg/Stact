@@ -15,22 +15,8 @@ namespace Magnum.Servers
 	using Channels;
 
 
-	public class HtmlMessageChannel :
-		Channel<ConnectionContext>
+	public interface ConnectionHandler :
+		ChannelProvider<ConnectionContext>
 	{
-		readonly byte[] _message;
-
-		public HtmlMessageChannel(byte[] message)
-		{
-			_message = message;
-		}
-
-		public void Send(ConnectionContext context)
-		{
-			context.Response.ContentType = "text/html; charset=\"utf-8\"";
-			context.Response.OutputStream.Write(_message, 0, _message.Length);
-
-			context.Complete();
-		}
 	}
 }

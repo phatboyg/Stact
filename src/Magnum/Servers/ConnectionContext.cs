@@ -16,6 +16,7 @@ namespace Magnum.Servers
 	using System.IO;
 	using System.Security.Principal;
 
+
 	/// <summary>
 	/// Abstracts a connection from the underlying transport implementation
 	/// </summary>
@@ -35,6 +36,11 @@ namespace Magnum.Servers
 		/// The user context under which the connection was established
 		/// </summary>
 		IPrincipal User { get; }
+
+		/// <summary>
+		/// The server context
+		/// </summary>
+		ServerContext Server { get; }
 
 		/// <summary>
 		/// Completes the response for this connection

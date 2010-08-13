@@ -13,11 +13,13 @@
 namespace Magnum.Servers
 {
 	using System;
+	using System.Collections.Generic;
 	using System.IO.Compression;
 	using System.Linq;
 	using System.Net;
 	using Channels;
 	using Fibers;
+	using Internal;
 	using Logging;
 
 
@@ -25,6 +27,7 @@ namespace Magnum.Servers
 		StreamServer<HttpServer>,
 		ServerContext
 	{
+		readonly PatternMatchConnectionHandler[] _connectionHandlers;
 		static readonly ILogger _log = Logger.GetLogger<HttpServer>();
 
 		int _concurrentConnectionLimit = 1000;
@@ -32,9 +35,10 @@ namespace Magnum.Servers
 		ChannelConnection _connectionChannelConnection;
 		HttpListener _httpListener;
 
-		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel)
+		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel, IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
 			: base(uri, fiber, eventChannel)
 		{
+			_connectionHandlers = connectionHandlers.ToArray();
 		}
 
 		protected override void StartListener(Uri uri)
@@ -62,7 +66,7 @@ namespace Magnum.Servers
 			_connectionChannel = new ChannelAdapter<ConnectionContext>();
 			_connectionChannelConnection = _connectionChannel.Connect(x =>
 				{
-					var channelProvider = new HttpConnectionChannelProvider();
+					var channelProvider = new HttpConnectionChannelProvider(_connectionHandlers);
 					var threadPoolChannel = new ThreadPoolChannel<ConnectionContext>(channelProvider, _concurrentConnectionLimit);
 
 					x.AddChannel(threadPoolChannel);
@@ -106,7 +110,7 @@ namespace Magnum.Servers
 		{
 			try
 			{
-				_connectionChannel.Send(new HttpConnectionContext(acceptedAt, httpContext, ConnectionComplete));
+				_connectionChannel.Send(new HttpConnectionContext(this, httpContext, acceptedAt, ConnectionComplete));
 			}
 			catch (Exception ex)
 			{

@@ -100,7 +100,7 @@ namespace Magnum.Servers
 		}
 
 		protected void Publish<T>()
-			where T : new()
+			where T : ServerEvent, new()
 		{
 			EventChannel.Send(new T());
 		}
@@ -123,7 +123,7 @@ namespace Magnum.Servers
 			}
 		}
 
-		protected void StopListener()
+		void StopListener()
 		{
 			if (_connectionCount == 0)
 				ShutdownListener();

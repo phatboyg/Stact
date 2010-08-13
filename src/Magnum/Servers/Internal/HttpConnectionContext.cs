@@ -10,14 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Servers
+namespace Magnum.Servers.Internal
 {
 	using System;
 	using System.Diagnostics;
 	using System.IO;
 	using System.Net;
 	using System.Security.Principal;
-	using Logging;
+	using Magnum.Logging;
 
 
 	public class HttpConnectionContext :
@@ -28,23 +28,29 @@ namespace Magnum.Servers
 		readonly DateTime _acceptedAt;
 		readonly HttpListenerContext _httpContext;
 		readonly Action _onComplete;
-		readonly Stopwatch _stopwatch;
+		readonly RequestContext _request;
+		readonly HttpResponseContext _response;
+		readonly ServerContext _server;
+		readonly Stopwatch _timer;
 
-		HttpResponseContext _response;
-
-		public HttpConnectionContext(DateTime acceptedAt, HttpListenerContext httpContext, Action onComplete)
+		public HttpConnectionContext(ServerContext server, HttpListenerContext httpContext, DateTime acceptedAt,
+		                             Action onComplete)
 		{
-			_stopwatch = Stopwatch.StartNew();
+			_timer = Stopwatch.StartNew();
 
-			_acceptedAt = acceptedAt;
+			_server = server;
 			_httpContext = httpContext;
+			_acceptedAt = acceptedAt;
 			_onComplete = onComplete;
 
-			Request = new HttpRequestContext(httpContext.Request);
+			_request = new HttpRequestContext(httpContext.Request);
 			_response = new HttpResponseContext(httpContext.Response);
 		}
 
-		public RequestContext Request { get; private set; }
+		public RequestContext Request
+		{
+			get { return _request; }
+		}
 
 		public ResponseContext Response
 		{
@@ -56,9 +62,14 @@ namespace Magnum.Servers
 			get { return _httpContext.User; }
 		}
 
+		public ServerContext Server
+		{
+			get { return _server; }
+		}
+
 		public void Complete()
 		{
-			_stopwatch.Stop();
+			_timer.Stop();
 
 			try
 			{

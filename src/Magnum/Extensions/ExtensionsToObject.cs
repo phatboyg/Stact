@@ -89,5 +89,23 @@ namespace Magnum.Extensions
 
 			return result;
 		}
+
+		/// <summary>
+		/// Returns the value of the instance member, or the default value if the instance is null
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="TValue"></typeparam>
+		/// <param name="instance"></param>
+		/// <param name="accessor"></param>
+		/// <param name="defaultValue"></param>
+		/// <returns></returns>
+		public static TValue ValueOrDefault<T, TValue>(this T instance, Func<T, TValue> accessor, TValue defaultValue)
+			where T : class
+		{
+			if(null == instance)
+				return defaultValue;
+
+			return accessor(instance);
+		}
 	}
 }
