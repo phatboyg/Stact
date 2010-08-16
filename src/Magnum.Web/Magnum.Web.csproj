@@ -113,7 +113,6 @@
     <Compile Include="Actors\Configuration\WebRoutingRouteConfiguration.cs" />
     <Compile Include="Abstractions\ObjectWriterChannel.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
-    <Compile Include="ValueProviders\ExtensionsForValueProviders.cs" />
     <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />
     <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
   </ItemGroup>

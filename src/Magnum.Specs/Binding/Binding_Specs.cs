@@ -30,7 +30,7 @@ namespace Magnum.Specs.Binding
 				};
 
 			ValueProvider dictionaryProvider = new DictionaryValueProvider(_dictionary);
-			ValueProvider jsonProvider = new JsonValueProvider(@"{ SubClass: { ZipCode: ""90210"" } }");
+			ValueProvider jsonProvider = new JsonValueProvider(@"{ Names: [""One"", ""Two"", ""Three""], SubClass: { ZipCode: ""90210"" }, SubClasses: [ { ZipCode: ""68106"" }, { ZipCode: ""68154"" } ] }");
 
 			var providers = new MultipleValueProvider(new[] { dictionaryProvider, jsonProvider });
 
@@ -50,6 +50,8 @@ namespace Magnum.Specs.Binding
 			public TimeSpan Duration { get; set; }
 			public BinderSubClass SubClass { get; set; }
 			public BinderEnum AnEnum { get; set; }
+			public string[] Names { get; set; }
+			public BinderSubClass[] SubClasses { get; set; }
 		}
 
 		private class BinderSubClass
@@ -89,6 +91,20 @@ namespace Magnum.Specs.Binding
 		public void Should_bind_the_subclass_string()
 		{
 			_result.SubClass.Street.ShouldEqual("123 American Way");
+		}
+
+		[Test, NotYetImplemented, Ignore]
+		public void Should_have_three_names()
+		{
+			_result.Names.ShouldNotBeNull();
+			_result.Names.Length.ShouldEqual(3);
+		}
+
+		[Test, NotYetImplemented, Ignore]
+		public void Should_have_two_subclasses()
+		{
+			_result.SubClasses.ShouldNotBeNull();
+			_result.SubClasses.Length.ShouldEqual(2);
 		}
 
 		[Test]

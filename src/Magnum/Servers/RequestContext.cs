@@ -15,6 +15,8 @@ namespace Magnum.Servers
 	using System;
 	using System.Collections.Specialized;
 	using System.IO;
+	using System.Net;
+	using System.Text;
 
 
 	/// <summary>
@@ -51,5 +53,25 @@ namespace Magnum.Servers
 		/// The raw URL specified
 		/// </summary>
 		string RawUrl { get; }
+
+		Encoding ContentEncoding { get; }
+
+		long ContentLength { get; }
+		string ContentType { get; }
+		CookieCollection Cookies { get; }
+		string[] AcceptTypes { get; }
+		bool HasEntityBody { get; }
+		bool IsAuthenticated { get; }
+		bool IsLocal { get; }
+		bool IsSecureConnection { get; }
+		IPEndPoint LocalEndpoint { get; }
+		bool KeepAlive { get; }
+		Version ProtocolVersion { get; }
+		object RemoteEndpoint { get; }
+		Uri UrlReferrer { get; }
+		string UserAgent { get; }
+		string UserHostAddress { get; }
+		string UserHostName { get; }
+		string[] UserLanguages { get; }
 	}
 }

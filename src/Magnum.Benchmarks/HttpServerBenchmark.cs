@@ -17,21 +17,40 @@ namespace Magnum.Benchmarks
 	using Fibers;
 	using Servers;
 	using Servers.Events;
+	using ValueProviders;
 
 
 	public class HttpServerBenchmark
 	{
 		public void Run()
 		{
-			var input = new ChannelAdapter();
-			var connection = input.Connect(x =>
-			{
-				x.AddConsumerOf<ServerEvent>()
-					.OnCurrentSynchronizationContext()
-					.UsingConsumer(m => Console.WriteLine("Server " + m.EventType));
-			});
+			var provider = new CommandLineValueProvider();
 
-			var serverUri = new Uri("http://localhost:8008/MagnumBenchmark");
+			var buildUri = new UriBuilder("http://localhost:8008/MagnumBenchmark");
+
+			provider.GetValue("port", x =>
+				{
+					buildUri.Port = int.Parse(x.ToString());
+
+					return true;
+				});
+
+			provider.GetValue("path", x =>
+				{
+					buildUri.Path = x.ToString();
+					return true;
+				});
+
+			var input = new ChannelAdapter();
+			ChannelConnection connection = input.Connect(x =>
+				{
+					x.AddConsumerOf<ServerEvent>()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => Console.WriteLine("Server " + m.EventType));
+				});
+
+			var serverUri = buildUri.Uri;
+			Console.WriteLine("Using server uri: " + serverUri);
 			var server = new HttpServer(serverUri, new ThreadPoolFiber(), input, new[]
 				{
 					new VersionConnectionHandler(),

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -16,27 +16,29 @@ namespace Magnum.ValueProviders
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.IO;
-	using System.Web.Script.Serialization;
 	using Extensions;
+	using Newtonsoft.Json;
+	using Newtonsoft.Json.Linq;
 
 
 	public class JsonValueProvider :
 		ValueProvider
 	{
 		readonly ValueProvider _provider;
+		readonly IDictionary<string, object> _dictionary = new Dictionary<string, object>();
 
 		public JsonValueProvider(Stream bodyStream)
 		{
-			object data = GetDeserializedObject(bodyStream);
+			LoadJsonObject(bodyStream);
 
-			_provider = CreateDictionaryFromJson(data);
+			_provider = new DictionaryValueProvider(_dictionary);
 		}
 
 		public JsonValueProvider(string text)
 		{
-			object data = new JavaScriptSerializer().DeserializeObject(text);
+			LoadJsonObject(text);
 
-			_provider = CreateDictionaryFromJson(data);
+			_provider = new DictionaryValueProvider(_dictionary);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
@@ -65,16 +67,12 @@ namespace Magnum.ValueProviders
 
 		static object GetDeserializedObject(Stream inputStream)
 		{
-			string body = inputStream.ReadToEnd().ToUtf8String();
-			if (body.IsEmpty())
-				return null;
-
-			return new JavaScriptSerializer().DeserializeObject(body);
+			return inputStream.ReadJsonObject();
 		}
 
 		static void AddValueToDictionary(IDictionary<string, object> backingStore, string prefix, object value)
 		{
-			var dictionary = value as IDictionary<string, object>;
+			var dictionary = value as IDictionary<string,object>;
 			if (dictionary != null)
 			{
 				dictionary.Each(x => AddValueToDictionary(backingStore, MakePropertyKey(prefix, x.Key), x.Value));
@@ -91,6 +89,78 @@ namespace Magnum.ValueProviders
 
 			backingStore[prefix] = value;
 		}
+
+		void LoadJsonObject(string text)
+		{
+			using (var stringReader = new StringReader(text))
+				LoadJsonObject(stringReader);
+		}
+
+		void LoadJsonObject(Stream stream)
+		{
+			using (var reader = new StreamReader(stream))
+				LoadJsonObject(reader);
+		}
+
+		void LoadJsonObject(TextReader textReader)
+		{
+			using (var jsonReader = new JsonTextReader(textReader))
+			{
+				ReadObject(jsonReader, (k,i) => k);
+			}
+		}
+
+		void ReadObject(JsonReader reader, Func<string, int, string> keyFormatter)
+		{
+			int index = 0;
+            while (reader.Read())
+            {
+				if (reader.TokenType == JsonToken.EndObject)
+					return;
+
+				if (reader.TokenType == JsonToken.EndArray)
+					return;
+
+            	string key = null;
+				if (reader.TokenType == JsonToken.PropertyName)
+				{
+					key = reader.Value.ToString();
+					reader.Read();
+				}
+
+            	if (reader.TokenType == JsonToken.StartObject)
+            	{
+					ReadObject(reader, (k, i) =>
+						{
+							string prefix = keyFormatter(key, index);
+
+							return prefix == null ? k : prefix + "." + k;
+						});
+            	}
+				else if (reader.TokenType == JsonToken.StartArray)
+				{
+					ReadObject(reader, (k, i) =>
+					{
+						string prefix = keyFormatter(key, index);
+
+						if (prefix.IsEmpty())
+							prefix = "";
+
+						prefix = prefix + "[" + i.ToString(CultureInfo.InvariantCulture) + "]";
+						if (k.IsNotEmpty())
+							prefix = prefix + "." + k;
+
+						return prefix;
+					});
+				}
+				else
+				{
+					_dictionary.Add(keyFormatter(key, index), reader.Value);
+				}
+
+            	index++;
+            }
+        }
 
 		static string MakeArrayKey(string prefix, int index)
 		{

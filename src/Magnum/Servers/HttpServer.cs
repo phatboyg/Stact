@@ -22,20 +22,24 @@ namespace Magnum.Servers
 	using Internal;
 	using Logging;
 
-
+	/// <summary>
+	/// An HttpServer that can be used to asynchronously process HTTP/HTTPS requests from
+	/// within the application.
+	/// </summary>
 	public class HttpServer :
 		StreamServer<HttpServer>,
 		ServerContext
 	{
-		readonly PatternMatchConnectionHandler[] _connectionHandlers;
 		static readonly ILogger _log = Logger.GetLogger<HttpServer>();
+		readonly PatternMatchConnectionHandler[] _connectionHandlers;
 
 		int _concurrentConnectionLimit = 1000;
 		ChannelAdapter<ConnectionContext> _connectionChannel;
 		ChannelConnection _connectionChannelConnection;
 		HttpListener _httpListener;
 
-		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel, IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
+		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel,
+		                  IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
 			: base(uri, fiber, eventChannel)
 		{
 			_connectionHandlers = connectionHandlers.ToArray();
@@ -43,22 +47,29 @@ namespace Magnum.Servers
 
 		protected override void StartListener(Uri uri)
 		{
-			base.StartListener(uri);
+			try
+			{
+				base.StartListener(uri);
 
-			string prefix = GetPrefixForUri(uri);
+				string prefix = GetPrefixForUri(uri);
 
-			CreateChannelNetwork();
+				CreateChannelNetwork();
 
-			_httpListener = new HttpListener();
-			_httpListener.Prefixes.Add(prefix);
+				_httpListener = new HttpListener();
+				_httpListener.Prefixes.Add(prefix);
 
-			// TODO consider mapping the access types/schemes
-			_httpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
+				// TODO consider mapping the access types/schemes
+				_httpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
 
-			_log.Debug(x => x.Write("Starting HttpListener on {0}", prefix));
-			_httpListener.Start();
+				_log.Debug(x => x.Write("Starting HttpListener on {0}", prefix));
+				_httpListener.Start();
 
-			QueueAccept();
+				QueueAccept();
+			}
+			catch (HttpListenerException ex)
+			{
+				throw new HttpServerException("The server could not be started", ex);
+			}
 		}
 
 		void CreateChannelNetwork()
@@ -120,10 +131,17 @@ namespace Magnum.Servers
 
 		protected override void ShutdownListener()
 		{
-			_httpListener.Close();
-			_connectionChannelConnection.Dispose();
+			try
+			{
+				_httpListener.Close();
+				_connectionChannelConnection.Dispose();
 
-			base.ShutdownListener();
+				base.ShutdownListener();
+			}
+			catch (HttpListenerException ex)
+			{
+				throw new HttpServerException("An error occurred while shutting down the server", ex);
+			}
 		}
 
 		static string GetPrefixForUri(Uri uri)

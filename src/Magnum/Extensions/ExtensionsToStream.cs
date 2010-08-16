@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,8 +14,10 @@ namespace Magnum.Extensions
 {
 	using System.IO;
 	using System.Text;
+	using Newtonsoft.Json;
 
-    public static class ExtensionsToStream
+
+	public static class ExtensionsToStream
 	{
 		public static byte[] ReadToEnd(this Stream stream)
 		{
@@ -35,9 +37,24 @@ namespace Magnum.Extensions
 			}
 		}
 
-        public static string ReadToEndAsText(this Stream stream)
-        {
-            return Encoding.UTF8.GetString(stream.ReadToEnd());
-        }
+		public static string ReadToEndAsText(this Stream stream)
+		{
+			return Encoding.UTF8.GetString(stream.ReadToEnd());
+		}
+
+
+		public static T ReadJson<T>(this Stream context)
+		{
+			using (var streamReader = new StreamReader(context))
+			using (var jsonReader = new JsonTextReader(streamReader))
+				return (T)new JsonSerializer().Deserialize(jsonReader, typeof(T));
+		}
+
+		public static object ReadJsonObject(this Stream context)
+		{
+			using (var streamReader = new StreamReader(context))
+			using (var jsonReader = new JsonTextReader(streamReader))
+				return new JsonSerializer().Deserialize(jsonReader);
+		}
 	}
 }

@@ -74,6 +74,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -585,6 +588,8 @@
     <Compile Include="Serialization\TypeWriter.cs" />
     <Compile Include="Servers\ConnectionContext.cs" />
     <Compile Include="Servers\ConnectionHandler.cs" />
+    <Compile Include="Servers\ExtensionsToRequestContext.cs" />
+    <Compile Include="Servers\HttpServerException.cs" />
     <Compile Include="Servers\PatternMatchConnectionHandler.cs" />
     <Compile Include="Servers\Events\ServerRunning.cs" />
     <Compile Include="Servers\Events\ServerStopped.cs" />
@@ -605,6 +610,8 @@
     <Compile Include="Servers\Events\ServerEventType.cs" />
     <Compile Include="Servers\Events\ServerStarting.cs" />
     <Compile Include="Servers\StreamServerException.cs" />
+    <Compile Include="Servers\ValueProviders\ConnectionContextValueProvider.cs" />
+    <Compile Include="Servers\ValueProviders\RequestContextValueProvider.cs" />
     <Compile Include="Servers\VersionConnectionHandler.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
@@ -681,6 +688,7 @@
     <Compile Include="ValueProviders\CommandLineValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\EmptyValueProvider.cs" />
+    <Compile Include="ValueProviders\ExtensionsToValueProvider.cs" />
     <Compile Include="ValueProviders\FileValueProvider.cs" />
     <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\MultipleValueProvider.cs" />

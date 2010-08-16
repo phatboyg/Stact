@@ -27,15 +27,31 @@ namespace Magnum.ValueProviders
 		{
 		}
 
+		/// <summary>
+		/// Uses the default command-line for the process
+		/// </summary>
+		public CommandLineValueProvider()
+			: base(CreateDictionaryProvider())
+		{
+		}
+
 		protected override string ProviderName
 		{
 			get { return "command-line"; }
 		}
 
+		static ValueProvider CreateDictionaryProvider()
+		{
+			return CreateDictionaryProvider(CommandLine.Parse());
+		}
+
 		static ValueProvider CreateDictionaryProvider(string commandLine)
 		{
-			IEnumerable<ICommandLineElement> elements = new MonadicCommandLineParser().Parse(commandLine);
+			return CreateDictionaryProvider(new MonadicCommandLineParser().Parse(commandLine));
+		}
 
+		static ValueProvider CreateDictionaryProvider(IEnumerable<ICommandLineElement> elements)
+		{
 			Dictionary<string, object> dictionary = elements.Where(x => x is IDefinitionElement)
 				.Cast<IDefinitionElement>()
 				.Select(x => new Tuple<string, object>(x.Key, x.Value))

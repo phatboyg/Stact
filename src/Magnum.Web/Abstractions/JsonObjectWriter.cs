@@ -15,7 +15,7 @@ namespace Magnum.Web.Abstractions
 	using System.Web;
 	using System.Web.Script.Serialization;
 	using Magnum.ValueProviders;
-	using ValueProviders;
+
 
 	/// <summary>
 	/// Handles the serialization of an object to Json using the built-in .NET serializer

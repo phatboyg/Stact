@@ -37,9 +37,12 @@
     <copy todir="${dirs.merge.from}">
       <fileset basedir="${dirs.drop}\${folder.app.drop}\Magnum">
         <include name="Magnum.dll" />
+		<include name="Magnum.xml" />
         <include name="Magnum.FileSystem.dll" />
+		<include name="Magnum.FileSystem.xml" />
         <include name="System.Threading.dll" />
         <include name="Ionic.Zip.dll" />
+		<include name="Newtonsoft.Json.dll" />
       </fileset>
     </copy>
   </target>

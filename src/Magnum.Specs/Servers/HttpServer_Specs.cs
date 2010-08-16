@@ -35,7 +35,7 @@ namespace Magnum.Specs.Servers
 		ChannelConnection _connection;
 		ChannelAdapter _input;
 		Future<ServerRunning> _runningEventReceived;
-		protected HttpServer _server;
+		HttpServer _server;
 		Future<ServerStarting> _startingEventReceived;
 
 		public Uri ServerUri { get; private set; }
