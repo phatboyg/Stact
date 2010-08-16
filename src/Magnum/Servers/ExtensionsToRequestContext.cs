@@ -17,6 +17,7 @@ namespace Magnum.Servers
 	using System.Text.RegularExpressions;
 	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
+	using Serialization;
 
 
 	public static class ExtensionsToRequestContext

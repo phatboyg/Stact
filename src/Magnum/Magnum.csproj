@@ -589,7 +589,9 @@
     <Compile Include="Servers\ConnectionContext.cs" />
     <Compile Include="Servers\ConnectionHandler.cs" />
     <Compile Include="Servers\ExtensionsToRequestContext.cs" />
+    <Compile Include="Servers\ExtensionsToResponseContext.cs" />
     <Compile Include="Servers\HttpServerException.cs" />
+    <Compile Include="Servers\Internal\JsonEnumConverter.cs" />
     <Compile Include="Servers\PatternMatchConnectionHandler.cs" />
     <Compile Include="Servers\Events\ServerRunning.cs" />
     <Compile Include="Servers\Events\ServerStopped.cs" />
