@@ -29,7 +29,7 @@ namespace Magnum.Channels
 			return configurator;
 		}
 
-		public static WcfChannelConnectionConfigurator ReceiveFromWcfChannel(
+		public static WcfChannelHostConnectionConfigurator ReceiveFromWcfChannel(
 			this ConnectionConfigurator connectionConfigurator,
 			Uri endpointUri, string pipeName)
 		{
