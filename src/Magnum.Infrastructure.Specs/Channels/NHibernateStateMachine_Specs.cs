@@ -52,7 +52,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 				{
 					x.AddConsumersFor<TestStateMachineInstance>()
 						.BindUsing<TestStateMachineInstanceBinding, int>()
-						.ExecuteOnProducerThread()
+						.HandleOnCallingThread()
 						.CreateNewInstanceBy(id => new TestStateMachineInstance(id))
 						.PersistUsingNHibernate()
 						.UseSessionProvider(() => SessionFactory.OpenSession());

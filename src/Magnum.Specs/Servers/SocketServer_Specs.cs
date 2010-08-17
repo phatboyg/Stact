@@ -49,11 +49,11 @@ namespace Magnum.Specs.Servers
 				{
 					x.AddConsumerOf<ServerStarting>()
 						.UsingConsumer(_startingEventReceived.Complete)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 
 					x.AddConsumerOf<ServerRunning>()
 						.UsingConsumer(_runningEventReceived.Complete)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				});
 
 			_uri = new Uri("tcp://0.0.0.0:8008");

@@ -14,10 +14,11 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class WcfChannelHostConnectionConfiguratorImpl :
-		FiberModelConfigurator<WcfChannelHostConnectionConfigurator>,
+		FiberConfiguratorImpl<WcfChannelHostConnectionConfigurator>,
 		WcfChannelHostConnectionConfigurator,
 		ChannelConfigurator
 	{

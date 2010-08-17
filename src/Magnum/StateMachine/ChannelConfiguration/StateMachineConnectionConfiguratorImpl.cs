@@ -65,7 +65,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 
 	public class StateMachineConnectionConfiguratorImpl<T, TKey, TBinding> :
-		FiberProviderConfigurator<StateMachineConnectionConfigurator<T, TKey, TBinding>, TKey>,
+		FiberProviderConfiguratorImpl<StateMachineConnectionConfigurator<T, TKey, TBinding>, TKey>,
 		StateMachineConnectionConfigurator<T, TKey, TBinding>,
 		ChannelConfigurator
 		where T : StateMachine<T>
@@ -80,7 +80,7 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 		public StateMachineConnectionConfiguratorImpl()
 		{
-			ExecuteOnThreadPoolFiber();
+			HandleOnInstanceFiber();
 		}
 
 		public void ValidateConfiguration()

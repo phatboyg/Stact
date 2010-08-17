@@ -14,13 +14,14 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	/// <summary>
 	/// Exposes the configuration options for a WcfProxy
 	/// </summary>
 	public class WcfChannelConnectionConfiguratorImpl :
-		FiberModelConfigurator<WcfChannelConnectionConfigurator>,
+		FiberConfiguratorImpl<WcfChannelConnectionConfigurator>,
 		WcfChannelConnectionConfigurator,
 		ChannelConfigurator
 	{

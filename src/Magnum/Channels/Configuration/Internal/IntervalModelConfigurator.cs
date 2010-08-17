@@ -14,10 +14,11 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class IntervalModelConfigurator<T> :
-		FiberModelConfigurator<T>
+		FiberConfiguratorImpl<T>
 		where T : class
 	{
 		protected TimeSpan _interval;

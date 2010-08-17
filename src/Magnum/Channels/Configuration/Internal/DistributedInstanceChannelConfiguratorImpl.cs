@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,7 +14,7 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
-	using Magnum.Fibers.Configuration;
+	using Fibers.Configuration;
 
 
 	/// <summary>
@@ -26,7 +26,7 @@ namespace Magnum.Channels.Configuration.Internal
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TInstance"></typeparam>
 	public class DistributedInstanceChannelConfiguratorImpl<TInstance, TChannel, TKey> :
-		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>,
+		FiberProviderConfiguratorImpl<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>,
 		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>
 		where TInstance : class
 	{
@@ -37,10 +37,11 @@ namespace Magnum.Channels.Configuration.Internal
 		{
 			_keyAccessor = keyAccessor;
 
-			ExecuteOnThreadPoolFiber();
+			HandleOnInstanceFiber();
 		}
 
-		public void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
+		public void SetProviderFactory(
+			Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
 		}

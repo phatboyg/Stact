@@ -15,13 +15,14 @@ namespace Magnum.StateMachine.ChannelConfiguration
 	using System.Linq;
 	using Extensions;
 	using Fibers;
+	using Fibers.Configuration;
 	using Magnum.Channels;
 	using Magnum.Channels.Configuration;
 	using Magnum.Channels.Configuration.Internal;
 
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
-		FiberModelConfigurator<StateMachineInstanceConnectionConfigurator<T>>,
+		FiberConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,
 		ChannelConfigurator,
 		StateMachineInstanceConnectionConfigurator<T>
 		where T : StateMachine<T>

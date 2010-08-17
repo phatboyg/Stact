@@ -12,16 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.StateMachine.ChannelConfiguration
 {
-	using Fibers;
+	using Fibers.Configuration;
+	using Magnum.Channels.Configuration.Internal;
 
 
-	public interface StateMachineInstanceConnectionConfigurator<T>
+	public interface StateMachineInstanceConnectionConfigurator<T> :
+		FiberConfigurator<StateMachineInstanceConnectionConfigurator<T>>
 		where T : StateMachine
 	{
-		StateMachineInstanceConnectionConfigurator<T> ExecuteOnFiber(Fiber fiber);
-		StateMachineInstanceConnectionConfigurator<T> ExecuteOnThread();
-		StateMachineInstanceConnectionConfigurator<T> ExecuteOnProducerThread();
-		StateMachineInstanceConnectionConfigurator<T> ExecuteOnThreadPoolFiber();
-		StateMachineInstanceConnectionConfigurator<T> UseFiberFactory(FiberFactory fiberFactory);
 	}
 }

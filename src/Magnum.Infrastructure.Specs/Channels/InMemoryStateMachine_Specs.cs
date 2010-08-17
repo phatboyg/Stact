@@ -45,7 +45,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 				{
 					x.AddConsumersFor<TestStateMachineInstance>()
 						.BindUsing<TestStateMachineInstanceBinding, int>()
-						.ExecuteOnProducerThread()
+						.HandleOnCallingThread()
 						.CreateNewInstanceBy(id => new TestStateMachineInstance(id))
 						.PersistInMemoryUsing(_cache);
 				}))

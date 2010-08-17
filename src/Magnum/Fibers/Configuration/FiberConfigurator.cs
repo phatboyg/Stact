@@ -16,38 +16,39 @@ namespace Magnum.Fibers.Configuration
 	/// Configures the type of fiber to be used for handling messages
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <typeparam name="TKey"></typeparam>
-	public interface FiberProviderConfigurator<T, TKey>
+	public interface FiberConfigurator<T>
+		where T : class
 	{
 		/// <summary>
-		/// Handles the message on the calling thread (synchronously)
+		/// Handle on the calling thread (synchronously)
 		/// </summary>
 		/// <returns></returns>
 		T HandleOnCallingThread();
 
 		/// <summary>
-		/// Handles messages to all instances using a single shared fiber
+		/// Handle on a dedicated fiber (uses the thread pool, lightweight)
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnSingleFiber();
+		T HandleOnFiber();
 
 		/// <summary>
-		/// Each instance handles messages on its own fiber
+		/// Handle on the specified fiber
 		/// </summary>
+		/// <param name="fiber">The fiber to use</param>
 		/// <returns></returns>
-		T HandleOnInstanceFiber();
+		T HandleOnFiber(Fiber fiber);
 
 		/// <summary>
-		/// Handles messages to all instances using a single shared thread
+		/// Handle on a dedicated thread (operating system thread)
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnSingleThread();
+		T HandleOnThread();
 
 		/// <summary>
-		/// Specifies a specific fiber provider, which provides the fiber for each instance
+		/// Use the specified fiber factory
 		/// </summary>
-		/// <param name="fiberProvider"></param>
+		/// <param name="fiberFactory">The fiber factory to use</param>
 		/// <returns></returns>
-		T UseFiberProvider(FiberProvider<TKey> fiberProvider);
+		T UseFiberFactory(FiberFactory fiberFactory);
 	}
 }

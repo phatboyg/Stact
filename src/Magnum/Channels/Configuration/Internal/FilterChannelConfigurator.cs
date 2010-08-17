@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,13 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
+	using Fibers.Configuration;
+
+
 	/// <summary>
 	/// Used to configure the options on a channel that delivers messages at regular
 	/// intervals
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
 	public interface FilterChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>
+		ChannelConnectionConfigurator<TChannel>,
+		FiberConfigurator<FilterChannelConfigurator<TChannel>>
 	{
 	}
 }

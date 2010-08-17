@@ -35,7 +35,7 @@ namespace Magnum.RulesEngine.Specs.Graphing
 				{
 					x.AddConsumerOf<SomeEvent>()
 						.UsingConsumer(m => { })
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 
 					x.AddConsumerOf<AnyEvent>()
 						.UsingConsumer(m => { });
@@ -53,18 +53,18 @@ namespace Magnum.RulesEngine.Specs.Graphing
 						.BufferFor(5.Minutes())
 						.Distinct(m => m.Key)
 						.UsingConsumer(ms => { })
-						.ExecuteOnThreadPoolFiber();
+						.HandleOnFiber();
 
 					x.AddConsumerOf<AnyEvent>()
 						.Where(m => m.Key > 100)
 						.UsingConsumer(m => { })
-						.ExecuteOnThread();
+						.HandleOnThread();
 
 					x.AddConsumerOf<SomeEvent>()
 						.BufferFor(5.Minutes())
 						.Last()
 						.UsingConsumer(m => { })
-						.ExecuteOnThreadPoolFiber();
+						.HandleOnFiber();
 				});
 		}
 

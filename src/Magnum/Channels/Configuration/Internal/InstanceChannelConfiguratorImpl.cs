@@ -14,6 +14,7 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class InstanceChannelConfiguratorImpl<TChannel> :
@@ -53,7 +54,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 
 	public class InstanceChannelConfiguratorImpl<TInstance, TChannel> :
-		FiberModelConfigurator<InstanceChannelConfigurator<TInstance, TChannel>>,
+		FiberConfiguratorImpl<InstanceChannelConfigurator<TInstance, TChannel>>,
 		InstanceChannelConfigurator<TInstance, TChannel>,
 		ChannelConfigurator<TChannel>
 		where TInstance : class
@@ -62,7 +63,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public InstanceChannelConfiguratorImpl()
 		{
-			ExecuteOnProducerThread();
+			HandleOnCallingThread();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)

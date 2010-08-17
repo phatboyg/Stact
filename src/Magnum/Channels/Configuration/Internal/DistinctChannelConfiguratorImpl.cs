@@ -15,10 +15,11 @@ namespace Magnum.Channels.Configuration.Internal
 	using System;
 	using System.Collections.Generic;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class DistinctChannelConfiguratorImpl<TChannel, TKey> :
-		FiberModelConfigurator<DistinctChannelConfigurator<TChannel, TKey>>,
+		FiberConfiguratorImpl<DistinctChannelConfigurator<TChannel, TKey>>,
 		DistinctChannelConfigurator<TChannel, TKey>,
 		ChannelConfigurator<ICollection<TChannel>>
 	{
@@ -29,7 +30,7 @@ namespace Magnum.Channels.Configuration.Internal
 		{
 			_keyAccessor = keyAccessor;
 
-			ExecuteOnThreadPoolFiber();
+			HandleOnFiber();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<ICollection<TChannel>> connection)

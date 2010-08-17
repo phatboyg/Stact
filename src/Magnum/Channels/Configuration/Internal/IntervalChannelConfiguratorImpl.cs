@@ -29,7 +29,7 @@ namespace Magnum.Channels.Configuration.Internal
 			_interval = interval;
 
 			UsePrivateScheduler();
-			ExecuteOnThreadPoolFiber();
+			HandleOnFiber();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)

@@ -37,7 +37,7 @@ namespace Magnum.Specs.StateMachine
 					// adds a single state machine instance to the channel via listeners
 					x.AddConsumersFor<SampleStateMachine>()
 						.UsingInstance(_instance)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				});
 
 			_input.Send(new SampleStarted());

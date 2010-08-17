@@ -153,12 +153,15 @@
     <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelProviderConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelHostConnectionConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelHostConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\DelegateChannel.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
     <Compile Include="Channels\FastActivatorInstanceProvider.cs" />
@@ -182,7 +185,7 @@
     <Compile Include="Channels\Configuration\ExtensionsForIntervalChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForSelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForAddConsumer.cs" />
-    <Compile Include="Channels\Configuration\Internal\FiberModelConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\FilterChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\FilterChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelConfiguratorImpl.cs" />
@@ -252,6 +255,7 @@
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurationException.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberProviderConfiguratorImpl.cs" />
     <Compile Include="Fibers\DisposeCallback.cs" />
     <Compile Include="Fibers\ExtensionsToFiber.cs" />
     <Compile Include="Fibers\FiberCache.cs" />

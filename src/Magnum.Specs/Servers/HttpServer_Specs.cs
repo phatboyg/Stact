@@ -53,11 +53,11 @@ namespace Magnum.Specs.Servers
 				{
 					x.AddConsumerOf<ServerStarting>()
 						.UsingConsumer(_startingEventReceived.Complete)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 
 					x.AddConsumerOf<ServerRunning>()
 						.UsingConsumer(_runningEventReceived.Complete)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				});
 
 			ServerUri = new Uri("http://localhost:8008/Topshelf");
