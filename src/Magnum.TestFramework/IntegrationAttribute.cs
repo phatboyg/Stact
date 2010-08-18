@@ -15,15 +15,15 @@ namespace Magnum.TestFramework
     using NUnit.Framework;
 
 
-    public class IntergrationAttribute :
+    public class IntegrationAttribute :
         CategoryAttribute 
     {
-        public IntergrationAttribute() :
+        public IntegrationAttribute() :
             base("Integration")
         {
         }
 
-        public IntergrationAttribute(string reason) :
+        public IntegrationAttribute(string reason) :
             this()
         {
         }
