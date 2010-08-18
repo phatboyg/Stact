@@ -19,9 +19,19 @@ namespace Magnum.Benchmarks
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Magnum Benchmark Console");
+			try
+			{
+				Console.WriteLine("Magnum Benchmark Console");
 
-			new MessagePassingBenchmark().Run();
+				//new MessagePassingBenchmark().Run();
+
+				new HttpServerBenchmark().Run();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ABEND!");
+				Console.WriteLine(ex);
+			}
 		}
 	}
 }

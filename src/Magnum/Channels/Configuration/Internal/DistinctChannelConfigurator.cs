@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,7 @@
 namespace Magnum.Channels.Configuration.Internal
 {
 	using System.Collections.Generic;
-	using Fibers;
+	using Fibers.Configuration;
 
 
 	/// <summary>
@@ -21,13 +21,10 @@ namespace Magnum.Channels.Configuration.Internal
 	/// intervals
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
+	/// <typeparam name="TKey"></typeparam>
 	public interface DistinctChannelConfigurator<TChannel, TKey> :
-		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>
+		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>,
+		FiberConfigurator<DistinctChannelConfigurator<TChannel, TKey>>
 	{
-		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnFiber(Fiber fiber);
-		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnThread();
-		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnProducerThread();
-		DistinctChannelConfigurator<TChannel, TKey> ExecuteOnThreadPoolFiber();
-		DistinctChannelConfigurator<TChannel, TKey> UseFiberFactory(FiberFactory fiberFactory);
 	}
 }

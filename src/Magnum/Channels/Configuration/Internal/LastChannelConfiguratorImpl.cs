@@ -15,10 +15,11 @@ namespace Magnum.Channels.Configuration.Internal
 	using System;
 	using System.Collections.Generic;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class LastChannelConfiguratorImpl<TChannel> :
-		FiberModelConfigurator<LastChannelConfigurator<TChannel>>,
+		FiberConfiguratorImpl<LastChannelConfigurator<TChannel>>,
 		LastChannelConfigurator<TChannel>,
 		ChannelConfigurator<ICollection<TChannel>>
 	{
@@ -26,7 +27,7 @@ namespace Magnum.Channels.Configuration.Internal
 
 		public LastChannelConfiguratorImpl()
 		{
-			ExecuteOnProducerThread();
+			HandleOnCallingThread();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<ICollection<TChannel>> connection)

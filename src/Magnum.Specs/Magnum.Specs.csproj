@@ -51,6 +51,23 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Build|AnyCPU'">
+    <OutputPath>..\..\build_output\Magnum\Tests\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\tests\Magnum.Specs.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -118,6 +135,8 @@
     <Compile Include="Channels\ThreadPoolChannel_Specs.cs" />
     <Compile Include="Channels\UntypedChannelSubscription_Specs.cs" />
     <Compile Include="Channels\WcfSubscription_Specs.cs" />
+    <Compile Include="Collections\Index_Specs.cs" />
+    <Compile Include="Collections\RandomExtensions.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddFileCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\AddRemoteRepositoryCommand.cs" />
     <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />
@@ -152,6 +171,7 @@
     <Compile Include="Extensions\GenericExtension_Specs.cs" />
     <Compile Include="Extensions\ObjectExtension_Specs.cs" />
     <Compile Include="Extensions\StringExtension_Specs.cs" />
+    <Compile Include="Extensions\UriExtension_Specs.cs" />
     <Compile Include="FileSystem\FileSpecs\Directory_Specs.cs" />
     <Compile Include="FileSystem\FileSpecs\DotNetFileSystem_Specs.cs" />
     <Compile Include="FileSystem\FileSpecs\File_Specs.cs" />
@@ -225,6 +245,8 @@
     <Compile Include="Serialization\SimpleType_Specs.cs" />
     <Compile Include="Serialization\FastSerializerObjects_Specs.cs" />
     <Compile Include="Serialization\SerializationApi_Specs.cs" />
+    <Compile Include="Servers\SocketServer_Specs.cs" />
+    <Compile Include="Servers\HttpServer_Specs.cs" />
     <Compile Include="StateMachine\Anytime_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
     <Compile Include="StateMachine\Combine_Specs.cs" />

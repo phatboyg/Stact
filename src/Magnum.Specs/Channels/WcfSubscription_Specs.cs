@@ -52,7 +52,7 @@ namespace Magnum.Specs.Channels
 			_outputConnection = _output.Connect(x =>
 				{
 					x.SendToWcfChannel(_pipeUri, _pipeName)
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				});
 		}
 

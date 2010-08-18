@@ -32,10 +32,10 @@ namespace Magnum.Infrastructure.Specs.Channels
 						.UsingInstance()
 						.Of<TestInstance>()
 						.DistributedBy(m => m.Id)
-						.PersistedUsingNHibernate()
+						.PersistUsingNHibernate()
 						.UsingSessionProvider(m => (ISession)null)
 						.OnChannel(m => m.UpdateValueChannel)
-						.CreateMissingInstanceBy(m => new TestInstance(m.Id));
+						.CreateNewInstanceBy(m => new TestInstance(m.Id));
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]

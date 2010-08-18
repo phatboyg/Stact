@@ -13,6 +13,7 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
+	using Fibers.Configuration;
 	using Magnum.Channels;
 	using Magnum.Fibers;
 
@@ -22,18 +23,15 @@ namespace Magnum.StateMachine.ChannelConfiguration
 	{
 		StateMachineConnectionConfigurator<T, TKey, TBinding> BindUsing<TBinding, TKey>()
 			where TBinding : StateMachineBinding<T, TKey>;
+
+		StateMachineInstanceConnectionConfigurator<T> UsingInstance(T instance);
 	}
 
 
-	public interface StateMachineConnectionConfigurator<T, TKey, TBinding>
+	public interface StateMachineConnectionConfigurator<T, TKey, TBinding> :
+		FiberProviderConfigurator<StateMachineConnectionConfigurator<T, TKey, TBinding>, TKey>
 		where T : StateMachine<T>
 	{
-		StateMachineConnectionConfigurator<T, TKey, TBinding> ExecuteOnProducerThread();
-		StateMachineConnectionConfigurator<T, TKey, TBinding> ExecuteOnSharedFiber();
-		StateMachineConnectionConfigurator<T, TKey, TBinding> ExecuteOnThreadPoolFiber();
-		StateMachineConnectionConfigurator<T, TKey, TBinding> ExecuteOnSharedThread();
-		StateMachineConnectionConfigurator<T, TKey, TBinding> UseFiberProvider(FiberProvider<TKey> fiberProvider);
-
 		void SetNewInstanceFactory(Func<TKey, T> instanceFactory);
 		Func<TKey, T> GetConfiguredInstanceFactory();
 

@@ -55,7 +55,7 @@ namespace Magnum.Specs.Channels
 						.BufferFor(2.Seconds())
 						.Distinct(c => c.Value)
 						.UsingConsumer(message => future.Complete(message.Count))
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				}))
 			{
 				for (int i = 0; i < expected; i++)
@@ -89,13 +89,13 @@ namespace Magnum.Specs.Channels
 				{
 					x.AddConsumerOf<TestMessage>()
 						.BufferFor(2.Seconds())
-						.ExecuteOnProducerThread()
+						.HandleOnCallingThread()
 						.Last()
-						.ExecuteOnProducerThread()
+						.HandleOnCallingThread()
 						.UsingConsumer(message =>
 							{
 							})
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				}))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
@@ -139,7 +139,7 @@ namespace Magnum.Specs.Channels
 							{
 								future.Complete(message.Count);
 							})
-						.ExecuteOnProducerThread();
+						.HandleOnCallingThread();
 				}))
 			{
 				for (int i = 0; i < expected; i++)

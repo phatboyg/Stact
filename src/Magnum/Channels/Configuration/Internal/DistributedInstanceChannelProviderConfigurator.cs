@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels.Configuration.Internal
 {
-	using Magnum.Fibers;
+	using Fibers;
+	using Fibers.Configuration;
 
 
 	/// <summary>
@@ -22,15 +23,10 @@ namespace Magnum.Channels.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
 	public interface DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> :
-		InstanceChannelConfigurator<TInstance, TChannel>
+		InstanceChannelConfigurator<TInstance, TChannel>,
+		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>
 		where TInstance : class
 	{
-		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnProducerThread();
-		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnSharedFiber();
-		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnThreadPoolFiber();
-		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> ExecuteOnSharedThread();
-		DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> UseFiberProvider(FiberProvider<TKey> fiberProvider);
-
 		FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection);
 
 		KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor();

@@ -47,11 +47,11 @@ namespace Magnum.Infrastructure.Specs.Channels
 						.UsingInstance()
 						.Of<TestInstance>()
 						.DistributedBy(msg => msg.Id)
-						.ExecuteOnProducerThread()
-						.PersistedUsingNHibernate()
+						.HandleOnCallingThread()
+						.PersistUsingNHibernate()
 						.UsingSessionProvider(m => SessionFactory.OpenSession())
 						.OnChannel(m => m.UpdateValueChannel)
-						.CreateMissingInstanceBy(m => new TestInstance(m.Id));
+						.CreateNewInstanceBy(m => new TestInstance(m.Id));
 				}))
 			{
 				//

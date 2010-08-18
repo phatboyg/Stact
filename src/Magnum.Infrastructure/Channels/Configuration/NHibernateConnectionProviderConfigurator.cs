@@ -25,7 +25,5 @@ namespace Magnum.Infrastructure.Channels.Configuration
 
 		NHibernateConnectionProviderConfigurator<T, TKey> UseSessionProvider(
 			Func<ISession> sessionProvider);
-
-		void SetNewInstanceProvider(Func<TKey, T> instanceProvider);
 	}
 }

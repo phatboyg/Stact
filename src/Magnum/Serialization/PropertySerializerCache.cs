@@ -28,7 +28,7 @@ namespace Magnum.Serialization
 		public PropertySerializerCache(PropertyTypeSerializerCache typeSerializerCache)
 			: base(GetPropertySerializers(typeSerializerCache))
 		{
-			_each = GetAll();
+			_each = this.OrderBy(x => x.Name).ToArray();
 			_count = _each.Length;
 		}
 

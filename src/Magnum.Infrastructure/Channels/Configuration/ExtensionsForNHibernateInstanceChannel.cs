@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,13 +13,14 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Magnum.Channels.Configuration.Internal;
-	using Magnum.Infrastructure.Channels.Configuration;
+	using Configuration.Internal;
+	using Infrastructure.Channels.Configuration;
+	using Internal;
 
 
 	public static class ExtensionsForNHibernateInstanceChannel
 	{
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> PersistedUsingNHibernate
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> PersistUsingNHibernate
 			<TInstance, TChannel, TKey>(
 			this DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> configurator)
 			where TInstance : class
@@ -29,35 +30,55 @@ namespace Magnum.Channels
 			return providerConfigurator;
 		}
 
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateMissingInstanceBy
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateNewInstanceBy
 			<TInstance, TChannel, TKey>(
 			this NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> configurator, Func<TInstance> consumerFactory)
 			where TInstance : class
 		{
-			return CreateMissingInstanceBy(configurator, _ => consumerFactory());
+			return CreateNewInstanceBy(configurator, _ => consumerFactory());
 		}
 
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateMissingInstanceBy
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateNewInstanceBy
 			<TInstance, TChannel, TKey>(
 			this NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> configurator,
 			Func<TChannel, TInstance> consumerFactory)
 			where TInstance : class
 		{
-			Func<InstanceProvider<TInstance, TChannel>> instanceProvider =
-				() => new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory);
+			Func<InstanceChannelPolicy<TInstance, TChannel>> policyFactory =
+				() =>
+				new CreateOrUseExistingInstanceChannelPolicy<TInstance, TChannel>(
+					new DelegateInstanceProvider<TInstance, TChannel>(consumerFactory));
 
-			configurator.SetMissingInstanceFactory(instanceProvider);
+			configurator.SetInstanceChannelPolicyFactory(policyFactory);
 
 			return configurator;
 		}
 
-		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateMissingInstanceBy
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> CreateNewInstanceBy
 			<TInstance, TChannel, TKey>(
 			this NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> configurator,
 			InstanceProvider<TInstance, TChannel> instanceProvider)
 			where TInstance : class
 		{
-			configurator.SetMissingInstanceFactory(() => instanceProvider);
+			Func<InstanceChannelPolicy<TInstance, TChannel>> policyFactory =
+				() =>
+				new CreateOrUseExistingInstanceChannelPolicy<TInstance, TChannel>(instanceProvider);
+
+			configurator.SetInstanceChannelPolicyFactory(policyFactory);
+
+			return configurator;
+		}
+
+		public static NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> UseOnlyExistingInstance
+			<TInstance, TChannel, TKey>(
+			this NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> configurator)
+			where TInstance : class
+		{
+			Func<InstanceChannelPolicy<TInstance, TChannel>> policyFactory =
+				() =>
+				new ExistingInstanceChannelPolicy<TInstance, TChannel>();
+
+			configurator.SetInstanceChannelPolicyFactory(policyFactory);
 
 			return configurator;
 		}

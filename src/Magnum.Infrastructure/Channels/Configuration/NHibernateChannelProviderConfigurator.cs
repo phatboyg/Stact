@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,21 +13,7 @@
 namespace Magnum.Infrastructure.Channels.Configuration
 {
 	using System;
-	using Fibers;
 	using Magnum.Channels;
-
-
-	/// <summary>
-	/// Configures an NHibernate channel provider
-	/// </summary>
-	/// <typeparam name="TInstance"></typeparam>
-	/// <typeparam name="TChannel"></typeparam>
-	public interface NHibernateChannelProviderConfigurator<TInstance, TChannel>
-		where TInstance : class
-	{
-		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> IdentifiedByMessageProperty<TKey>(
-			KeyAccessor<TChannel, TKey> accessor);
-	}
 
 
 	/// <summary>
@@ -39,7 +25,7 @@ namespace Magnum.Infrastructure.Channels.Configuration
 	public interface NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey>
 		where TInstance : class
 	{
-		void SetMissingInstanceFactory(Func<InstanceProvider<TInstance, TChannel>> providerFactory);
+		void SetInstanceChannelPolicyFactory(Func<InstanceChannelPolicy<TInstance, TChannel>> policyFactory);
 
 		NHibernateChannelProviderConfigurator<TInstance, TChannel, TKey> OnChannel(
 			ChannelAccessor<TInstance, TChannel> accessor);

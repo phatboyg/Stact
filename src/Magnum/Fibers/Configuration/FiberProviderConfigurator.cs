@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,70 +12,42 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Fibers.Configuration
 {
-	using System;
-	using Channels.Configuration.Internal;
-
-
-	public class FiberProviderConfigurator<T, TKey>
-		where T : class
+	/// <summary>
+	/// Configures the type of fiber to be used for handling messages
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="TKey"></typeparam>
+	public interface FiberProviderConfigurator<T, TKey>
 	{
-		Func<FiberProvider<TKey>> _configuredProvider;
+		/// <summary>
+		/// Handles the message on the calling thread (synchronously)
+		/// </summary>
+		/// <returns></returns>
+		T HandleOnCallingThread();
 
-		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection connection)
-		{
-			if (_configuredProvider == null)
-				throw new FiberConfigurationException("No provider specified for FiberProvider");
+		/// <summary>
+		/// Handles messages to all instances using a single shared fiber
+		/// </summary>
+		/// <returns></returns>
+		T HandleOnSingleFiber();
 
-			FiberProvider<TKey> configuredProvider = _configuredProvider();
-			connection.AddDisposable(configuredProvider);
+		/// <summary>
+		/// Each instance handles messages on its own fiber
+		/// </summary>
+		/// <returns></returns>
+		T HandleOnInstanceFiber();
 
-			return configuredProvider;
-		}
+		/// <summary>
+		/// Handles messages to all instances using a single shared thread
+		/// </summary>
+		/// <returns></returns>
+		T HandleOnSingleThread();
 
-		public FiberProvider<TKey> GetConfiguredProvider<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
-		{
-			if (_configuredProvider == null)
-				throw new FiberConfigurationException("No provider specified for FiberProvider");
-
-			FiberProvider<TKey> configuredProvider = _configuredProvider();
-			connection.AddDisposable(configuredProvider);
-
-			return configuredProvider;
-		}
-
-		public T ExecuteOnProducerThread()
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new SynchronousFiber());
-
-			return this as T;
-		}
-
-		public T ExecuteOnThreadPoolFiber()
-		{
-			_configuredProvider = () => new FiberCache<TKey>(() => new ThreadPoolFiber());
-
-			return this as T;
-		}
-
-		public T ExecuteOnSharedFiber()
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new ThreadPoolFiber());
-
-			return this as T;
-		}
-
-		public T ExecuteOnSharedThread()
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new ThreadFiber());
-
-			return this as T;
-		}
-
-		public T UseFiberProvider(FiberProvider<TKey> fiberProvider)
-		{
-			_configuredProvider = () => fiberProvider;
-
-			return this as T;
-		}
+		/// <summary>
+		/// Specifies a specific fiber provider, which provides the fiber for each instance
+		/// </summary>
+		/// <param name="fiberProvider"></param>
+		/// <returns></returns>
+		T UseFiberProvider(FiberProvider<TKey> fiberProvider);
 	}
 }

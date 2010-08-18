@@ -30,7 +30,7 @@ namespace Magnum.Specs.Channels
 					x.AddConsumerOf<TestMessage>()
 						.OnCurrentSynchronizationContext()
 						.UsingConsumer(message => { })
-						.ExecuteOnThreadPoolFiber();
+						.HandleOnFiber();
 				}))
 			{
 			}

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,15 +13,16 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System.Linq;
-	using Channels;
-	using Channels.Configuration;
-	using Channels.Configuration.Internal;
 	using Extensions;
 	using Fibers;
+	using Fibers.Configuration;
+	using Magnum.Channels;
+	using Magnum.Channels.Configuration;
+	using Magnum.Channels.Configuration.Internal;
 
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
-		FiberModelConfigurator<StateMachineInstanceConnectionConfigurator<T>>,
+		FiberConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,
 		ChannelConfigurator,
 		StateMachineInstanceConnectionConfigurator<T>
 		where T : StateMachine<T>

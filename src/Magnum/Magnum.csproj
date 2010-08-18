@@ -55,7 +55,28 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Build|AnyCPU'">
+    <OutputPath>..\..\build_output\Magnum\Magnum\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>..\..\bin\Magnum.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>1591</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\bin\Magnum.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -67,6 +88,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Threading">
+      <HintPath>..\..\lib\Rx_Net35_SP1\System.Threading.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -129,12 +153,15 @@
     <Compile Include="Channels\Configuration\Internal\ChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelProviderConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\WcfChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\CreateChannelConnection.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelHostConnectionConfigurator.cs" />
+    <Compile Include="Channels\Configuration\Internal\WcfChannelHostConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\DelegateChannel.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
     <Compile Include="Channels\FastActivatorInstanceProvider.cs" />
@@ -158,7 +185,7 @@
     <Compile Include="Channels\Configuration\ExtensionsForIntervalChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForSelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForAddConsumer.cs" />
-    <Compile Include="Channels\Configuration\Internal\FiberModelConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\FilterChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\FilterChannelConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelConfiguratorImpl.cs" />
@@ -228,6 +255,7 @@
     <Compile Include="Extensions\ExtensionsToUri.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurationException.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfigurator.cs" />
+    <Compile Include="Fibers\Configuration\FiberProviderConfiguratorImpl.cs" />
     <Compile Include="Fibers\DisposeCallback.cs" />
     <Compile Include="Fibers\ExtensionsToFiber.cs" />
     <Compile Include="Fibers\FiberCache.cs" />
@@ -562,12 +590,50 @@
     <Compile Include="Serialization\TypeSerializers\UriSerializer.cs" />
     <Compile Include="Serialization\TypeSerializers\UShortSerializer.cs" />
     <Compile Include="Serialization\TypeWriter.cs" />
+    <Compile Include="Servers\ConnectionContext.cs" />
+    <Compile Include="Servers\ConnectionHandler.cs" />
+    <Compile Include="Servers\ExtensionsToRequestContext.cs" />
+    <Compile Include="Servers\ExtensionsToResponseContext.cs" />
+    <Compile Include="Servers\HttpServerException.cs" />
+    <Compile Include="Servers\Internal\JsonEnumConverter.cs" />
+    <Compile Include="Servers\PatternMatchConnectionHandler.cs" />
+    <Compile Include="Servers\Events\ServerRunning.cs" />
+    <Compile Include="Servers\Events\ServerStopped.cs" />
+    <Compile Include="Servers\Events\ServerStopping.cs" />
+    <Compile Include="Servers\ExtensionsToConnectionContext.cs" />
+    <Compile Include="Servers\Internal\BadRequestConnectionHandler.cs" />
+    <Compile Include="Servers\Internal\HttpConnectionChannelProvider.cs" />
+    <Compile Include="Servers\Internal\HttpConnectionContext.cs" />
+    <Compile Include="Servers\Internal\HttpRequestContext.cs" />
+    <Compile Include="Servers\Internal\HttpResponseContext.cs" />
+    <Compile Include="Servers\HttpServer.cs" />
+    <Compile Include="Servers\RequestContext.cs" />
+    <Compile Include="Servers\ResponseContext.cs" />
+    <Compile Include="Servers\ServerContext.cs" />
+    <Compile Include="Servers\SocketServer.cs" />
+    <Compile Include="Servers\StreamServer.cs" />
+    <Compile Include="Servers\Events\ServerEvent.cs" />
+    <Compile Include="Servers\Events\ServerEventType.cs" />
+    <Compile Include="Servers\Events\ServerStarting.cs" />
+    <Compile Include="Servers\StreamServerException.cs" />
+    <Compile Include="Servers\ValueProviders\ConnectionContextValueProvider.cs" />
+    <Compile Include="Servers\ValueProviders\RequestContextValueProvider.cs" />
+    <Compile Include="Servers\VersionConnectionHandler.cs" />
     <Compile Include="StateMachine\Activity.cs" />
     <Compile Include="StateMachine\BasicEvent.cs" />
     <Compile Include="StateMachine\BasicEventAction.cs" />
-    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachine.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfigurator.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheConnectionProviderConfiguratorImpl.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\CacheChannelProvider.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForStateMachineConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfigurator.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineConnectionConfiguratorImpl.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceChannelPolicyFactory.cs" />
+    <Compile Include="StateMachine\Channels\StateMachineEventChannel.cs" />
+    <Compile Include="Channels\Internal\CreateInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\Internal\CreateOrUseExistingInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\Internal\ExistingInstanceChannelPolicy.cs" />
+    <Compile Include="Channels\InstanceChannelPolicy.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceConnectionConfigurator.cs" />
     <Compile Include="StateMachine\DataEventBinder.cs" />
     <Compile Include="StateMachine\EventBinder.cs" />
@@ -579,7 +645,7 @@
     <Compile Include="StateMachine\EventActionList.cs" />
     <Compile Include="StateMachine\ExceptionActionDictionary.cs" />
     <Compile Include="StateMachine\ExpressionAction.cs" />
-    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForChannel.cs" />
+    <Compile Include="StateMachine\ChannelConfiguration\ExtensionsForConfigurator.cs" />
     <Compile Include="StateMachine\ExtensionsForStateMachineVisitor.cs" />
     <Compile Include="StateMachine\IStateMachineInspector.cs" />
     <Compile Include="StateMachine\IStateMachineInspectorSite.cs" />
@@ -628,6 +694,7 @@
     <Compile Include="ValueProviders\CommandLineValueProvider.cs" />
     <Compile Include="ValueProviders\DictionaryValueProvider.cs" />
     <Compile Include="ValueProviders\EmptyValueProvider.cs" />
+    <Compile Include="ValueProviders\ExtensionsToValueProvider.cs" />
     <Compile Include="ValueProviders\FileValueProvider.cs" />
     <Compile Include="ValueProviders\JsonValueProvider.cs" />
     <Compile Include="ValueProviders\MultipleValueProvider.cs" />

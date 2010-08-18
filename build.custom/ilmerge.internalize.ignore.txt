@@ -1,1 +1,1 @@
-uppercut.*
+Magnum.*

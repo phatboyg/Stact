@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,19 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Channels
 {
-	using System.Collections.Generic;
+	using Collections;
 
 
 	public class KeyedChannelProvider<TChannel, TKey> :
 		ChannelProvider<TChannel>
 	{
-		readonly Dictionary<TKey, Channel<TChannel>> _dictionary = new Dictionary<TKey, Channel<TChannel>>();
+		readonly Cache<TKey, Channel<TChannel>> _dictionary;
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 
 		public KeyedChannelProvider(ChannelProvider<TChannel> channelProvider, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			ChannelProvider = channelProvider;
 			_keyAccessor = keyAccessor;
+
+			_dictionary = new Cache<TKey, Channel<TChannel>>();
 		}
 
 		public ChannelProvider<TChannel> ChannelProvider { get; private set; }
@@ -33,15 +35,7 @@ namespace Magnum.Channels
 		{
 			TKey key = _keyAccessor(message);
 
-			Channel<TChannel> value;
-			if (_dictionary.TryGetValue(key, out value))
-				return value;
-
-			value = ChannelProvider.GetChannel(message);
-
-			_dictionary.Add(key, value);
-
-			return value;
+			return _dictionary.Retrieve(key, x => ChannelProvider.GetChannel(message));
 		}
 	}
 }

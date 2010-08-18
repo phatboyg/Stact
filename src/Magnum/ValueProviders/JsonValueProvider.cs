@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -16,27 +16,28 @@ namespace Magnum.ValueProviders
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.IO;
-	using System.Web.Script.Serialization;
 	using Extensions;
+	using Newtonsoft.Json;
 
 
 	public class JsonValueProvider :
 		ValueProvider
 	{
+		readonly IDictionary<string, object> _dictionary = new Dictionary<string, object>();
 		readonly ValueProvider _provider;
 
 		public JsonValueProvider(Stream bodyStream)
 		{
-			object data = GetDeserializedObject(bodyStream);
+			LoadJsonObject(bodyStream);
 
-			_provider = CreateDictionaryFromJson(data);
+			_provider = new DictionaryValueProvider(_dictionary);
 		}
 
 		public JsonValueProvider(string text)
 		{
-			object data = new JavaScriptSerializer().DeserializeObject(text);
+			LoadJsonObject(text);
 
-			_provider = CreateDictionaryFromJson(data);
+			_provider = new DictionaryValueProvider(_dictionary);
 		}
 
 		public bool GetValue(string key, Func<object, bool> matchingValueAction)
@@ -54,52 +55,72 @@ namespace Magnum.ValueProviders
 			_provider.GetAll(valueAction);
 		}
 
-		static DictionaryValueProvider CreateDictionaryFromJson(object data)
+		void LoadJsonObject(string text)
 		{
-			var backingStore = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-
-			AddValueToDictionary(backingStore, "", data);
-
-			return new DictionaryValueProvider(backingStore);
+			using (var stringReader = new StringReader(text))
+				LoadJsonObject(stringReader);
 		}
 
-		static object GetDeserializedObject(Stream inputStream)
+		void LoadJsonObject(Stream stream)
 		{
-			string body = inputStream.ReadToEnd().ToUtf8String();
-			if (body.IsEmpty())
-				return null;
-
-			return new JavaScriptSerializer().DeserializeObject(body);
+			using (var reader = new StreamReader(stream))
+				LoadJsonObject(reader);
 		}
 
-		static void AddValueToDictionary(IDictionary<string, object> backingStore, string prefix, object value)
+		void LoadJsonObject(TextReader textReader)
 		{
-			var dictionary = value as IDictionary<string, object>;
-			if (dictionary != null)
+			using (var jsonReader = new JsonTextReader(textReader))
+				ReadObject(jsonReader, (k, i) => k);
+		}
+
+		void ReadObject(JsonReader reader, Func<string, int, string> keyFormatter)
+		{
+			int index = 0;
+			while (reader.Read())
 			{
-				dictionary.Each(x => AddValueToDictionary(backingStore, MakePropertyKey(prefix, x.Key), x.Value));
-				return;
+				if (reader.TokenType == JsonToken.EndObject)
+					return;
+
+				if (reader.TokenType == JsonToken.EndArray)
+					return;
+
+				string key = null;
+				if (reader.TokenType == JsonToken.PropertyName)
+				{
+					key = reader.Value.ToString();
+					reader.Read();
+				}
+
+				if (reader.TokenType == JsonToken.StartObject)
+				{
+					ReadObject(reader, (k, i) =>
+						{
+							string prefix = keyFormatter(key, index);
+
+							return prefix == null ? k : prefix + "." + k;
+						});
+				}
+				else if (reader.TokenType == JsonToken.StartArray)
+				{
+					ReadObject(reader, (k, i) =>
+						{
+							string prefix = keyFormatter(key, index);
+
+							if (prefix.IsEmpty())
+								prefix = "";
+
+							prefix = prefix + "[" + i.ToString(CultureInfo.InvariantCulture) + "]";
+							if (k.IsNotEmpty())
+								prefix = prefix + "." + k;
+
+							return prefix;
+						});
+				}
+				else
+					_dictionary.Add(keyFormatter(key, index), reader.Value);
+
+				index++;
 			}
-
-			var list = value as IList<object>;
-			if (list != null)
-			{
-				for (int i = 0; i < list.Count; i++)
-					AddValueToDictionary(backingStore, MakeArrayKey(prefix, i), list[i]);
-				return;
-			}
-
-			backingStore[prefix] = value;
-		}
-
-		static string MakeArrayKey(string prefix, int index)
-		{
-			return prefix + "[" + index.ToString(CultureInfo.InvariantCulture) + "]";
-		}
-
-		static string MakePropertyKey(string prefix, string propertyName)
-		{
-			return prefix.IsEmpty() ? propertyName : prefix + "." + propertyName;
 		}
 	}
 }

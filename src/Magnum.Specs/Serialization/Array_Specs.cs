@@ -156,7 +156,7 @@ namespace Magnum.Specs.Serialization
 		[Then]
 		public void Should_create_the_proper_serialized_body()
 		{
-			_body.ShouldEqual("[{Id:46e921bdb16d482f93bcdb9642cfe55d,Name:Alpha,Keys:[1,2,3]},{Id:af8ae4c846a64ec2a060acccf06e0eda,Name:Beta,Keys:[4,5,6]},{Id:832773fa604d490d904e0df5334683cd,Name:Gemma}]");
+			_body.ShouldEqual("[{Id:46e921bdb16d482f93bcdb9642cfe55d,Keys:[1,2,3],Name:Alpha},{Id:af8ae4c846a64ec2a060acccf06e0eda,Keys:[4,5,6],Name:Beta},{Id:832773fa604d490d904e0df5334683cd,Name:Gemma}]");
 		}
 
 		[Then]

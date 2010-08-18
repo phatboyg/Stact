@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,6 +15,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 	using FluentNHibernate.Cfg;
 	using NHibernate;
 	using NHibernate.Tool.hbm2ddl;
+	using NUnit.Framework;
 	using TestFramework;
 
 
@@ -58,6 +59,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 
 	[Scenario]
+	[Category("Database")]
 	public class Given_an_empty_test_instance_table :
 		Given_an_nhibernate_session_factory
 	{

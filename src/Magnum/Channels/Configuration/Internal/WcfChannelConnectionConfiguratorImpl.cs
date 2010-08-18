@@ -14,13 +14,14 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	/// <summary>
 	/// Exposes the configuration options for a WcfProxy
 	/// </summary>
 	public class WcfChannelConnectionConfiguratorImpl :
-		FiberModelConfigurator<WcfChannelConnectionConfigurator>,
+		FiberConfiguratorImpl<WcfChannelConnectionConfigurator>,
 		WcfChannelConnectionConfigurator,
 		ChannelConfigurator
 	{
@@ -45,38 +46,6 @@ namespace Magnum.Channels.Configuration.Internal
 			Fiber fiber = GetConfiguredFiber(connection);
 
 			connection.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
-		}
-	}
-
-
-	public class WcfChannelHostConnectionConfiguratorImpl :
-		FiberModelConfigurator<WcfChannelConnectionConfigurator>,
-		WcfChannelConnectionConfigurator,
-		ChannelConfigurator
-	{
-		readonly Uri _endpointUri;
-		readonly string _pipeName;
-
-		public WcfChannelHostConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
-		{
-			Guard.AgainstNull(endpointUri);
-			Guard.AgainstNull(pipeName);
-
-			_endpointUri = endpointUri;
-			_pipeName = pipeName;
-		}
-
-		public void ValidateConfiguration()
-		{
-		}
-
-		public void Configure(ChannelConfiguratorConnection connection)
-		{
-			Fiber fiber = GetConfiguredFiber(connection);
-
-			var host = new WcfChannelHost(fiber, connection.Channel, _endpointUri, _pipeName);
-
-			connection.AddDisposable(host);
 		}
 	}
 }

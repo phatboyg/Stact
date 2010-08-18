@@ -14,10 +14,11 @@ namespace Magnum.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
+	using Fibers.Configuration;
 
 
 	public class FilterChannelConfiguratorImpl<TChannel> :
-		FiberModelConfigurator<FilterChannelConfigurator<TChannel>>,
+		FiberConfiguratorImpl<FilterChannelConfigurator<TChannel>>,
 		FilterChannelConfigurator<TChannel>,
 		ChannelConfigurator<TChannel>
 	{
@@ -28,7 +29,7 @@ namespace Magnum.Channels.Configuration.Internal
 		{
 			_filter = filter;
 
-			ExecuteOnThreadPoolFiber();
+			HandleOnFiber();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
