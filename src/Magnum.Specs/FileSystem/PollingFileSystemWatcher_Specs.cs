@@ -20,9 +20,73 @@ namespace Magnum.Specs.FileSystem
     using Magnum.Extensions;
     using Magnum.FileSystem;
     using Magnum.FileSystem.Events;
-    using NUnit.Framework;
     using TestFramework;
 
+
+    [Scenario]
+    public class Renaming_a_folder_in_the_services_folder_for_poller
+    {
+        string _baseDirectory;
+        ChannelAdapter _channel;
+        Future<FileCreated> _createdListener;
+        Future<FileSystemDeleted> _deletedListener;
+        PollingFileSystemEventProducer _producer;
+        Scheduler _scheduler;
+
+        [When]
+        public void A_file_is_created()
+        {
+            _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            string dir1 = Path.Combine(_baseDirectory, "dir1");
+            string dir2 = Path.Combine(_baseDirectory, "dir2");
+
+            if (System.IO.Directory.Exists(dir1))
+                System.IO.Directory.Delete(dir1, true);
+
+            if (System.IO.Directory.Exists(dir2))
+                System.IO.Directory.Delete(dir2, true);
+            
+            System.IO.Directory.CreateDirectory(dir1);
+
+            _createdListener = new Future<FileCreated>();
+            _deletedListener = new Future<FileSystemDeleted>();
+
+            _channel = new ChannelAdapter();
+            FiberFactory fiberFactory = () => new SynchronousFiber();
+            _scheduler = new TimerScheduler(fiberFactory());
+            _producer = new PollingFileSystemEventProducer(_baseDirectory, _channel, _scheduler, fiberFactory(),
+                                                           20.Seconds());
+
+            Thread.Sleep(5.Seconds());
+
+            using (_channel.Connect(x => 
+                {
+                    x.AddConsumerOf<FileCreated>().UsingConsumer(m => _createdListener.Complete(m));
+                    x.AddConsumerOf<FileSystemDeleted>().UsingConsumer(m => _deletedListener.Complete(m));
+                }))
+            {
+                System.IO.Directory.Move(dir1, dir2);
+
+                _createdListener.WaitUntilCompleted(10.Seconds());
+                _deletedListener.WaitUntilCompleted(10.Seconds());
+            }
+
+            _producer.Dispose();
+        }
+
+        [Then]
+        public void Should_produce_a_file_created_message()
+        {
+            _createdListener.IsCompleted.ShouldBeTrue();
+        }
+
+        [Then]
+        public void Should_produce_a_file_deleted_message()
+        {
+            _deletedListener.IsCompleted.ShouldBeTrue();
+        }
+    }
 
     [Scenario]
     public class Creating_a_file_in_a_folder_for_poller
@@ -65,20 +129,20 @@ namespace Magnum.Specs.FileSystem
             _producer.Dispose();
         }
 
-        [Then, Category("Slow")]
+        [Then, Slow]
         public void Should_produce_a_file_created_message()
         {
             _listener.IsCompleted.ShouldBeTrue();
         }
 
-		[Then, Category("Slow")]
-		public void Should_match_the_full_path_of_the_file()
+        [Then, Slow]
+        public void Should_match_the_full_path_of_the_file()
         {
             _listener.Value.Path.ShouldEqual(_path);
         }
 
-		[Then, Category("Slow")]
-		public void Should_match_the_name_of_the_file()
+        [Then, Slow]
+        public void Should_match_the_name_of_the_file()
         {
             _listener.Value.Name.ShouldEqual(_filename);
         }
