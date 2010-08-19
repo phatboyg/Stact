@@ -101,7 +101,7 @@ namespace Magnum.FileSystem
         void HandleFileSystemRenamed(FileSystemRenamed fileEvent)
         {
             HandleFileSystemChangedAndCreated(fileEvent);
-            HandleFileSystemDeleted(new FileSystemDeletedImpl(fileEvent.OldPath, fileEvent.OldName));
+            HandleFileSystemDeleted(new FileSystemDeletedImpl(fileEvent.OldName, fileEvent.OldPath));
         }
 
         void HandleFileSystemDeleted(FileSystemEvent fileEvent)
