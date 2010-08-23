@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,35 +10,35 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Logging
+namespace Magnum.Logging.Internal
 {
 	using System;
+	using Channels;
+	using Messages;
+	using Messages.Internal;
+
 
 	/// <summary>
 	/// Abstract base class which provides most logging method
 	/// overloads for an <see cref="ILogger"/> implementation.
 	/// </summary>
-	public abstract class LoggerFacade :
+	public class LogMessageLogger :
 		ILogger
 	{
-		readonly ILogWriter _debug;
-		readonly ILogWriter _error;
-		readonly ILogWriter _fatal;
-		readonly ILogWriter _info;
-		readonly ILogWriter _warn;
+		readonly LogWriter _debug;
+		readonly LogWriter _error;
+		readonly LogWriter _fatal;
+		readonly LogWriter _info;
+		readonly LogWriter _warn;
 
-		protected LoggerFacade(string name, ILogWriter debug, ILogWriter info, ILogWriter warn, ILogWriter error, ILogWriter fatal)
+		public LogMessageLogger(string source, UntypedChannel output)
 		{
-			Name = name;
-
-			_debug = debug;
-			_info = info;
-			_warn = warn;
-			_error = error;
-			_fatal = fatal;
+			_debug = new LogMessageFormatter<DebugLogMessage>(output, (s, e) => new DebugLogMessageImpl(source, s, e));
+			_info = new LogMessageFormatter<InfoLogMessage>(output, (s, e) => new InfoLogMessageImpl(source, s, e));
+			_warn = new LogMessageFormatter<WarnLogMessage>(output, (s, e) => new WarnLogMessageImpl(source, s, e));
+			_error = new LogMessageFormatter<ErrorLogMessage>(output, (s, e) => new ErrorLogMessageImpl(source, s, e));
+			_fatal = new LogMessageFormatter<FatalLogMessage>(output, (s, e) => new FatalLogMessageImpl(source, s, e));
 		}
-
-		public string Name { get; private set; }
 
 		public void Debug(object obj)
 		{
@@ -60,7 +60,7 @@ namespace Magnum.Logging
 			_debug.Write(exception, message);
 		}
 
-		public void Debug(Action<ILogWriter> logAction)
+		public void Debug(Action<LogWriter> logAction)
 		{
 			_debug.Write(logAction);
 		}
@@ -85,7 +85,7 @@ namespace Magnum.Logging
 			_info.Write(exception, message);
 		}
 
-		public void Info(Action<ILogWriter> logAction)
+		public void Info(Action<LogWriter> logAction)
 		{
 			_info.Write(logAction);
 		}
@@ -110,7 +110,7 @@ namespace Magnum.Logging
 			_warn.Write(exception, message);
 		}
 
-		public void Warn(Action<ILogWriter> logAction)
+		public void Warn(Action<LogWriter> logAction)
 		{
 			_warn.Write(logAction);
 		}
@@ -135,7 +135,7 @@ namespace Magnum.Logging
 			_error.Write(exception, message);
 		}
 
-		public void Error(Action<ILogWriter> logAction)
+		public void Error(Action<LogWriter> logAction)
 		{
 			_error.Write(logAction);
 		}
@@ -160,7 +160,7 @@ namespace Magnum.Logging
 			_fatal.Write(exception, message);
 		}
 
-		public void Fatal(Action<ILogWriter> logAction)
+		public void Fatal(Action<LogWriter> logAction)
 		{
 			_fatal.Write(logAction);
 		}

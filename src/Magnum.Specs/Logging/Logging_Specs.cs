@@ -15,17 +15,23 @@ namespace Magnum.Specs.Logging
 	using System;
 	using Magnum.Logging;
 	using NUnit.Framework;
+	using TestFramework;
 
-	[TestFixture]
-	public class Using_an_expression_based_logger
+
+	[Scenario]
+	public class Using_the_trace_logger_to_write_messages
 	{
-		static readonly ILogger _log = Logger.GetLogger<Using_an_expression_based_logger>();
+		static readonly ILogger _log = Logger.GetLogger<Using_the_trace_logger_to_write_messages>();
+
+		[Given]
+		public void A_trace_logger_is_configured()
+		{
+			TraceLogger.Configure(LogLevel.Info);
+		}
 
 		[Test]
 		public void Should_allow_me_to_provide_enough_information_for_logging()
 		{
-			string name = "Chris";
-
 			try
 			{
 				throw new InvalidOperationException("Boom!");

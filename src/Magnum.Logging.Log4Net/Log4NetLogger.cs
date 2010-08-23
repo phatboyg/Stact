@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,44 +10,80 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Logging.Log4Net
+namespace Magnum.Logging
 {
+	using System;
+	using System.IO;
+	using Channels;
+	using Collections;
+	using Fibers;
 	using log4net;
+	using Log4Net;
+	using log4net.Config;
+	using Messages;
 
-	public class Log4NetLogger :
-		LoggerFacade
+
+	public static class Log4NetLogger
 	{
-		readonly ILog _log;
-
-		public Log4NetLogger(string name, ILog log)
-			: base(name, GetDebug(log), GetInfo(log), GetWarn(log), GetError(log), GetFatal(log))
+		public static void Configure()
 		{
-			_log = log;
+			Fiber consoleFiber = new ThreadPoolFiber();
+
+			var listeners = new Cache<string, Log4NetLogInstance>(key => new Log4NetLogInstance(key));
+
+			Logger.LogChannel.Connect(x =>
+				{
+					x.AddConsumerOf<DebugLogMessage>()
+						.UsingInstance().Of<Log4NetLogInstance>()
+						.DistributedBy(m => m.Source)
+						.HandleOnFiber(consoleFiber)
+						.ObtainedBy(m => listeners[m.Source])
+						.OnChannel(c => c.DebugChannel);
+
+					x.AddConsumerOf<InfoLogMessage>()
+						.UsingInstance().Of<Log4NetLogInstance>()
+						.DistributedBy(m => m.Source)
+						.HandleOnFiber(consoleFiber)
+						.ObtainedBy(m => listeners[m.Source])
+						.OnChannel(c => c.InfoChannel);
+
+					x.AddConsumerOf<WarnLogMessage>()
+						.UsingInstance().Of<Log4NetLogInstance>()
+						.DistributedBy(m => m.Source)
+						.HandleOnFiber(consoleFiber)
+						.ObtainedBy(m => listeners[m.Source])
+						.OnChannel(c => c.WarnChannel);
+
+					x.AddConsumerOf<ErrorLogMessage>()
+						.UsingInstance().Of<Log4NetLogInstance>()
+						.DistributedBy(m => m.Source)
+						.HandleOnFiber(consoleFiber)
+						.ObtainedBy(m => listeners[m.Source])
+						.OnChannel(c => c.ErrorChannel);
+
+					x.AddConsumerOf<FatalLogMessage>()
+						.UsingInstance().Of<Log4NetLogInstance>()
+						.DistributedBy(m => m.Source)
+						.HandleOnFiber(consoleFiber)
+						.ObtainedBy(m => listeners[m.Source])
+						.OnChannel(c => c.FatalChannel);
+				});
 		}
 
-		static ILogWriter GetDebug(ILog log)
+		public static void Configure(FileInfo fileInfo)
 		{
-			return new Log4NetLogWriter(() => log.IsDebugEnabled, o => log.Debug(o), (x, o) => log.Debug(o, x));
-		}
+			try
+			{
+				XmlConfigurator.Configure(fileInfo);
 
-		static ILogWriter GetInfo(ILog log)
-		{
-			return new Log4NetLogWriter(() => log.IsInfoEnabled, o => log.Info(o), (x, o) => log.Info(o, x));
-		}
+				LogManager.GetLogger(typeof(Log4NetLogger));
 
-		static ILogWriter GetWarn(ILog log)
-		{
-			return new Log4NetLogWriter(() => log.IsWarnEnabled, o => log.Warn(o), (x, o) => log.Warn(o, x));
-		}
-
-		static ILogWriter GetError(ILog log)
-		{
-			return new Log4NetLogWriter(() => log.IsErrorEnabled, o => log.Error(o), (x, o) => log.Error(o, x));
-		}
-
-		static ILogWriter GetFatal(ILog log)
-		{
-			return new Log4NetLogWriter(() => log.IsFatalEnabled, o => log.Fatal(o), (x, o) => log.Fatal(o, x));
+				Configure();
+			}
+			catch (Exception ex)
+			{
+				throw new LoggerException("The Log4Net assembly is not referenced or could not be initialized", ex);
+			}
 		}
 	}
 }

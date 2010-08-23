@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,21 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Logging
+namespace Magnum.Logging.Messages.Internal
 {
-	/// <summary>
-	/// Provides the relevant context for a log provider to output the log message
-	/// </summary>
-	public interface ILogSource
-	{
-		/// <summary>
-		/// The name of the logger (usually the type generating the log message)
-		/// </summary>
-		string Name { get; }
+	using System;
 
-		/// <summary>
-		/// The level of the message
-		/// </summary>
-		LogLevel Level { get; }
+
+	public class WarnLogMessageImpl :
+		LogMessageImpl,
+		WarnLogMessage
+	{
+		public WarnLogMessageImpl(string source, Func<string> messageBuilder, Exception exception)
+			: base(source, LogLevel.Warn, messageBuilder, exception)
+		{
+		}
+
+		public WarnLogMessageImpl(string source, Func<string> messageBuilder)
+			: base(source, LogLevel.Warn, messageBuilder)
+		{
+		}
 	}
 }

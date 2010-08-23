@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,38 +13,66 @@
 namespace Magnum.Logging
 {
 	using System;
+	using Channels;
+	using Fibers;
+	using Messages;
 
-	public class ConsoleLogger :
-		LoggerFacade
+
+	public static class ConsoleLogger
 	{
-		public ConsoleLogger(string name, ConsoleLogProvider provider)
-			: base(name, GetDebug(provider), GetInfo(provider), GetWarn(provider), GetError(provider), GetFatal(provider))
+		static void WriteLine(LogMessage message, ConsoleColor color)
 		{
+			Console.ForegroundColor = color;
+
+			Console.WriteLine(message.Message);
+			if (message.Exception != null)
+				Console.WriteLine(message.Exception);
+			Console.ResetColor();
 		}
 
-		private static ILogWriter GetDebug(ConsoleLogProvider log)
+
+		public static void Configure()
 		{
-			return new ConsoleLogWriter(() => log.IsEnabled(LogLevel.Debug), ConsoleColor.Cyan);
+			Configure(LogLevel.Info);
 		}
 
-		private static ILogWriter GetInfo(ConsoleLogProvider log)
+		public static void Configure(LogLevel logLevel)
 		{
-			return new ConsoleLogWriter(() => log.IsEnabled(LogLevel.Info), ConsoleColor.White);
-		}
+			Fiber consoleFiber = new ThreadPoolFiber();
 
-		private static ILogWriter GetWarn(ConsoleLogProvider log)
-		{
-			return new ConsoleLogWriter(() => log.IsEnabled(LogLevel.Warn), ConsoleColor.Yellow);
-		}
-
-		private static ILogWriter GetError(ConsoleLogProvider log)
-		{
-			return new ConsoleLogWriter(() => log.IsEnabled(LogLevel.Error), ConsoleColor.Red);
-		}
-
-		private static ILogWriter GetFatal(ConsoleLogProvider log)
-		{
-			return new ConsoleLogWriter(() => log.IsEnabled(LogLevel.Fatal), ConsoleColor.Red);
+			Logger.LogChannel.Connect(x =>
+				{
+					x.AddConsumerOf<DebugLogMessage>()
+						.Where(m => m.Level.IsEnabledForLevel(logLevel))
+						.HandleOnCallingThread()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => WriteLine(m, ConsoleColor.Cyan))
+						.HandleOnFiber(consoleFiber);
+					x.AddConsumerOf<InfoLogMessage>()
+						.Where(m => m.Level.IsEnabledForLevel(logLevel))
+						.HandleOnCallingThread()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => WriteLine(m, ConsoleColor.White))
+						.HandleOnFiber(consoleFiber);
+					x.AddConsumerOf<WarnLogMessage>()
+						.Where(m => m.Level.IsEnabledForLevel(logLevel))
+						.HandleOnCallingThread()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => WriteLine(m, ConsoleColor.Yellow))
+						.HandleOnFiber(consoleFiber);
+					x.AddConsumerOf<ErrorLogMessage>()
+						.Where(m => m.Level.IsEnabledForLevel(logLevel))
+						.HandleOnCallingThread()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => WriteLine(m, ConsoleColor.Red))
+						.HandleOnFiber(consoleFiber);
+					x.AddConsumerOf<FatalLogMessage>()
+						.Where(m => m.Level.IsEnabledForLevel(logLevel))
+						.HandleOnCallingThread()
+						.OnCurrentSynchronizationContext()
+						.UsingConsumer(m => WriteLine(m, ConsoleColor.Red))
+						.HandleOnFiber(consoleFiber);
+				});
 		}
 	}
 }

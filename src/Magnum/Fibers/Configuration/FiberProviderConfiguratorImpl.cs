@@ -50,6 +50,13 @@ namespace Magnum.Fibers.Configuration
 			return this as T;
 		}
 
+		public T HandleOnFiber(Fiber fiber)
+		{
+			_configuredProvider = () => new SharedFiberProvider<TKey>(fiber);
+
+			return this as T;
+		}
+
 		public T UseFiberProvider(FiberProvider<TKey> fiberProvider)
 		{
 			_configuredProvider = () => fiberProvider;

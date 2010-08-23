@@ -29,7 +29,7 @@ namespace Magnum.Specs.Channels
 		[Category("Slow")]
 		public void Should_property_adapt_itself_to_a_channel_network()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
 			log.Debug("Starting");
 

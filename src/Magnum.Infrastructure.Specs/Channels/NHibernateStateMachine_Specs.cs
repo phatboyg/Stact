@@ -35,7 +35,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 		[When]
 		public void Sending_a_message_to_an_nhibernate_backed_state_machine()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 
 			_newValue = new Random().Next(1, 500000)/100m;
 

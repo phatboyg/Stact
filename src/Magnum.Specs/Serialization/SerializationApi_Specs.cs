@@ -25,7 +25,7 @@ namespace Magnum.Specs.Serialization
 		[SetUp]
 		public void Setup()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 
 			_serializer = new FastTextSerializer();
 		}

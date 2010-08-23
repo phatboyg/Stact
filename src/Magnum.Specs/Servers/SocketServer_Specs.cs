@@ -39,7 +39,7 @@ namespace Magnum.Specs.Servers
 		[When]
 		public void Starting_a_socket_server()
 		{
-			TraceLogProvider.Configure(LogLevel.Info);
+			TraceLogger.Configure(LogLevel.Info);
 
 			_startingEventReceived = new Future<ServerStarting>();
 			_runningEventReceived = new Future<ServerRunning>();

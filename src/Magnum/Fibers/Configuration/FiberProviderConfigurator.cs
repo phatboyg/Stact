@@ -44,6 +44,13 @@ namespace Magnum.Fibers.Configuration
 		T HandleOnSingleThread();
 
 		/// <summary>
+		/// Handle all requests on a single fiber, specified
+		/// </summary>
+		/// <param name="fiber"></param>
+		/// <returns></returns>
+		T HandleOnFiber(Fiber fiber);
+
+		/// <summary>
 		/// Specifies a specific fiber provider, which provides the fiber for each instance
 		/// </summary>
 		/// <param name="fiberProvider"></param>

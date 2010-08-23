@@ -47,7 +47,7 @@ namespace Magnum.Specs.Actions
 		[Test]
 		public void Should_result_in_no_waiting_actions_in_the_queue()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 
 			Fiber fiber = new ThreadPoolFiber();
 

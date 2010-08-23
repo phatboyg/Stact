@@ -54,7 +54,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_properly_arrive_at_the_destination()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 			_log = Logger.GetLogger<Sending_a_message_to_a_remote_channel_via_wcf>();
 			_log.Debug("Starting");
 

@@ -27,7 +27,7 @@ namespace Magnum.Specs.Configuration
 		[When]
 		public void Configuration_values_are_read_from_a_series_of_json_files()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 
 			if (File.Exists("global.json"))
 				File.Delete("global.json");

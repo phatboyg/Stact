@@ -19,7 +19,7 @@ namespace Magnum.Logging
 	/// the format string if the log level is not set to a level that will allow the output
 	/// to be generated.
 	/// </summary>
-	public interface ILogWriter
+	public interface LogWriter
 	{
 		void Write(object obj);
 		void Write(string message);
@@ -29,6 +29,6 @@ namespace Magnum.Logging
 		void Write(Exception exception, string message);
 		void Write(Exception exception, string format, params object[] args);
 		void Write(Exception exception, IFormatProvider provider, string format, params object[] args);
-		void Write(Action<ILogWriter> logAction);
+		void Write(Action<LogWriter> logAction);
 	}
 }

@@ -37,7 +37,7 @@ namespace Magnum.Specs.Channels
 		[TestFixtureSetUp]
 		public void SetupAll()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 		}
 
 		[Test]

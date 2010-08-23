@@ -79,9 +79,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Log4NetLogInstance.cs" />
     <Compile Include="Log4NetLogger.cs" />
-    <Compile Include="Log4NetLogWriter.cs" />
-    <Compile Include="Log4NetLogProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

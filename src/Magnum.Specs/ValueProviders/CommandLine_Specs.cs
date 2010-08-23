@@ -30,7 +30,7 @@ namespace Magnum.Specs.ValueProviders
 		[Given]
 		public void A_command_line()
 		{
-			TraceLogProvider.Configure(LogLevel.Debug);
+			TraceLogger.Configure(LogLevel.Debug);
 
 			CommandLineText = "-name:phatboyg -password:really_long_one --secure";
 

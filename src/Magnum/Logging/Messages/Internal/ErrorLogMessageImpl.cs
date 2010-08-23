@@ -10,36 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Logging
+namespace Magnum.Logging.Messages.Internal
 {
-	using Channels;
-	using Collections;
-	using Internal;
+	using System;
 
 
-	public static class Logger
+	public class ErrorLogMessageImpl :
+		LogMessageImpl,
+		ErrorLogMessage
 	{
-		static readonly UntypedChannel _logChannel = new ChannelAdapter();
-		static readonly Cache<string, ILogger> _loggers = new Cache<string, ILogger>(CreateLogger);
-
-		public static UntypedChannel LogChannel
+		public ErrorLogMessageImpl(string source, Func<string> messageBuilder, Exception exception)
+			: base(source, LogLevel.Error, messageBuilder, exception)
 		{
-			get { return _logChannel; }
 		}
 
-		public static ILogger GetLogger<T>()
+		public ErrorLogMessageImpl(string source, Func<string> messageBuilder)
+			: base(source, LogLevel.Error, messageBuilder)
 		{
-			return GetLogger(typeof(T).FullName);
-		}
-
-		public static ILogger GetLogger(string name)
-		{
-			return _loggers[name];
-		}
-
-		static ILogger CreateLogger(string source)
-		{
-			return new LogMessageLogger(source, _logChannel);
 		}
 	}
 }

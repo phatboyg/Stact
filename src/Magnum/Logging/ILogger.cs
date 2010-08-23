@@ -20,30 +20,30 @@ namespace Magnum.Logging
 		void Debug(string message);
 		void Debug(Exception exception);
 		void Debug(Exception exception, string message);
-		void Debug(Action<ILogWriter> logAction);
+		void Debug(Action<LogWriter> logAction);
 
 		void Info(object obj);
 		void Info(string message);
 		void Info(Exception exception);
 		void Info(Exception exception, string message);
-		void Info(Action<ILogWriter> logAction);
+		void Info(Action<LogWriter> logAction);
 
 		void Warn(object obj);
 		void Warn(string message);
 		void Warn(Exception exception);
 		void Warn(Exception exception, string message);
-		void Warn(Action<ILogWriter> logAction);
+		void Warn(Action<LogWriter> logAction);
 
 		void Error(object obj);
 		void Error(string message);
 		void Error(Exception exception);
 		void Error(Exception exception, string message);
-		void Error(Action<ILogWriter> logAction);
+		void Error(Action<LogWriter> logAction);
 
 		void Fatal(object obj);
 		void Fatal(string message);
 		void Fatal(Exception exception);
 		void Fatal(Exception exception, string message);
-		void Fatal(Action<ILogWriter> logAction);
+		void Fatal(Action<LogWriter> logAction);
 	}
 }
