@@ -23,9 +23,9 @@ namespace Magnum.Logging.Log4Net
 		readonly ILog _log;
 		readonly Fiber _fiber;
 
-		public Log4NetLogInstance(string source)
+		public Log4NetLogInstance(Fiber fiber, string source)
 		{
-			_fiber = new ThreadPoolFiber();
+			_fiber = fiber;
 			_log = LogManager.GetLogger(source);
 
 			DebugChannel = new ConsumerChannel<DebugLogMessage>(_fiber, Debug);

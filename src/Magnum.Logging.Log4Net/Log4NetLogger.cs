@@ -27,44 +27,42 @@ namespace Magnum.Logging
 	{
 		public static void Configure()
 		{
-			Fiber consoleFiber = new ThreadPoolFiber();
-
-			var listeners = new Cache<string, Log4NetLogInstance>(key => new Log4NetLogInstance(key));
+			var listeners = new Cache<string, Log4NetLogInstance>(key => new Log4NetLogInstance(new SynchronousFiber(), key));
 
 			Logger.LogChannel.Connect(x =>
 				{
 					x.AddConsumerOf<DebugLogMessage>()
 						.UsingInstance().Of<Log4NetLogInstance>()
 						.DistributedBy(m => m.Source)
-						.HandleOnFiber(consoleFiber)
+						.HandleOnCallingThread()
 						.ObtainedBy(m => listeners[m.Source])
 						.OnChannel(c => c.DebugChannel);
 
 					x.AddConsumerOf<InfoLogMessage>()
 						.UsingInstance().Of<Log4NetLogInstance>()
 						.DistributedBy(m => m.Source)
-						.HandleOnFiber(consoleFiber)
+						.HandleOnCallingThread()
 						.ObtainedBy(m => listeners[m.Source])
 						.OnChannel(c => c.InfoChannel);
 
 					x.AddConsumerOf<WarnLogMessage>()
 						.UsingInstance().Of<Log4NetLogInstance>()
 						.DistributedBy(m => m.Source)
-						.HandleOnFiber(consoleFiber)
+						.HandleOnCallingThread()
 						.ObtainedBy(m => listeners[m.Source])
 						.OnChannel(c => c.WarnChannel);
 
 					x.AddConsumerOf<ErrorLogMessage>()
 						.UsingInstance().Of<Log4NetLogInstance>()
 						.DistributedBy(m => m.Source)
-						.HandleOnFiber(consoleFiber)
+						.HandleOnCallingThread()
 						.ObtainedBy(m => listeners[m.Source])
 						.OnChannel(c => c.ErrorChannel);
 
 					x.AddConsumerOf<FatalLogMessage>()
 						.UsingInstance().Of<Log4NetLogInstance>()
 						.DistributedBy(m => m.Source)
-						.HandleOnFiber(consoleFiber)
+						.HandleOnCallingThread()
 						.ObtainedBy(m => listeners[m.Source])
 						.OnChannel(c => c.FatalChannel);
 				});

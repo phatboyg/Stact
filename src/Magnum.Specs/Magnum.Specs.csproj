@@ -186,6 +186,7 @@
     <Compile Include="Invoker\Classes\ClassWithSimpleMethods.cs" />
     <Compile Include="Invoker\FastInvoker_Specs.cs" />
     <Compile Include="Invoker\Performance_Specs.cs" />
+    <Compile Include="Logging\Log4NetLogging_Specs.cs" />
     <Compile Include="Logging\Logging_Specs.cs" />
     <Compile Include="Monads\Currying_Specs.cs" />
     <Compile Include="Monads\SetProperty_Specs.cs" />
@@ -287,6 +288,10 @@
       <Project>{17018E20-C3AE-4E82-AB5C-40CE810345C9}</Project>
       <Name>Magnum.FileSystem</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Magnum.Logging.Log4Net\Magnum.Logging.Log4Net.csproj">
+      <Project>{66A05739-70C4-47D7-B7D0-69C038864457}</Project>
+      <Name>Magnum.Logging.Log4Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
       <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>
       <Name>Magnum.TestFramework</Name>
@@ -302,6 +307,9 @@
     </Content>
     <Content Include="bob.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Logging\log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
