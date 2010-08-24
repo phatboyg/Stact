@@ -21,7 +21,7 @@ namespace Magnum.Serialization
 	public class FastTextSerializer :
 		Serializer
 	{
-		static TypeSerializerCache _typeSerializerCache;
+		static readonly TypeSerializerCache _typeSerializerCache;
 
 		[ThreadStatic]
 		static FastTextTypeSerializerCache _typeSerializers;

@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,22 +15,23 @@ namespace Magnum.Serialization
 	using System;
 	using Collections;
 
+
 	/// <summary>
 	///   Wraps the cache for TypeSerializer implementations
 	/// </summary>
 	public class TypeSerializerCacheImpl :
 		TypeSerializerCache
 	{
-		private static readonly Cache<Type, TypeSerializer> _defaultSerializers;
+		readonly Cache<Type, TypeSerializer> _defaultSerializers;
 
-		static TypeSerializerCacheImpl()
+		public TypeSerializerCacheImpl()
 		{
 			_defaultSerializers = new Cache<Type, TypeSerializer>(new TypeSerializerLoader().LoadBuiltInTypeSerializers());
 		}
 
 		public TypeSerializer<T> GetTypeSerializer<T>()
 		{
-			return _defaultSerializers[typeof (T)] as TypeSerializer<T>;
+			return _defaultSerializers[typeof(T)] as TypeSerializer<T>;
 		}
 
 		public void Each(Action<Type, TypeSerializer> action)

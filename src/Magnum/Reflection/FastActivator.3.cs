@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,15 +17,17 @@ namespace Magnum.Reflection
 	using System.Linq.Expressions;
 	using System.Reflection;
 
+
 	public class FastActivator<T, TArg0, TArg1> :
 		FastActivatorBase
 	{
-		private static FastActivator<T, TArg0, TArg1> _current;
+		[ThreadStatic]
+		static FastActivator<T, TArg0, TArg1> _current;
 
-		private Func<TArg0, TArg1, T> _new;
+		Func<TArg0, TArg1, T> _new;
 
-		private FastActivator()
-			: base(typeof (T))
+		FastActivator()
+			: base(typeof(T))
 		{
 			InitializeNew();
 		}
@@ -41,7 +43,7 @@ namespace Magnum.Reflection
 			}
 		}
 
-		private void InitializeNew()
+		void InitializeNew()
 		{
 			_new = (arg0, arg1) =>
 				{
@@ -54,7 +56,8 @@ namespace Magnum.Reflection
 
 					ParameterExpression[] parameters = constructorInfo.GetParameters().ToParameterExpressions().ToArray();
 
-					Func<TArg0, TArg1, T> lambda = Expression.Lambda<Func<TArg0, TArg1, T>>(Expression.New(constructorInfo, parameters), parameters).Compile();
+					Func<TArg0, TArg1, T> lambda =
+						Expression.Lambda<Func<TArg0, TArg1, T>>(Expression.New(constructorInfo, parameters), parameters).Compile();
 
 					_new = lambda;
 

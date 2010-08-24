@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -19,17 +19,19 @@ namespace Magnum.Reflection
 	using System.Reflection;
 	using Extensions;
 
+
 	public class FastActivator<T> :
 		FastActivatorBase,
 		IFastActivator<T>
 	{
-		private static FastActivator<T> _current;
+		[ThreadStatic]
+		static FastActivator<T> _current;
 
-		private readonly Dictionary<int, Func<object[], T>> _argGenerators;
-		private Func<T> _new;
+		readonly Dictionary<int, Func<object[], T>> _argGenerators;
+		Func<T> _new;
 
-		private FastActivator()
-			: base(typeof (T))
+		FastActivator()
+			: base(typeof(T))
 		{
 			_argGenerators = new Dictionary<int, Func<object[], T>>();
 
@@ -87,7 +89,7 @@ namespace Magnum.Reflection
 			return FastActivator<T, TArg0, TArg1>.Create(arg0, arg1);
 		}
 
-		private void InitializeNew()
+		void InitializeNew()
 		{
 			_new = () =>
 				{
@@ -96,7 +98,7 @@ namespace Magnum.Reflection
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new FastActivatorException(typeof (T), "No usable constructor found");
+						throw new FastActivatorException(typeof(T), "No usable constructor found");
 
 					Func<T> lambda = Expression.Lambda<Func<T>>(Expression.New(constructorInfo)).Compile();
 
@@ -106,10 +108,10 @@ namespace Magnum.Reflection
 				};
 		}
 
-		private T CreateFromArgs(object[] args)
+		T CreateFromArgs(object[] args)
 		{
-			if ( args == null)
-				args = new object[]{};
+			if (args == null)
+				args = new object[] {};
 
 			int offset = 0;
 			int key = args.Aggregate(0, (x, o) => x ^ (o == null ? offset : o.GetType().GetHashCode() << offset++));
@@ -121,9 +123,9 @@ namespace Magnum.Reflection
 						.SingleOrDefault();
 
 					if (constructorInfo == null)
-						throw new FastActivatorException(typeof (T), "No usable constructor found");
+						throw new FastActivatorException(typeof(T), "No usable constructor found");
 
-					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
+					ParameterExpression argsParameter = Expression.Parameter(typeof(object[]), "args");
 
 					Expression[] parameters = constructorInfo.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 

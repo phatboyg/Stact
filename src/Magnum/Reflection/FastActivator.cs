@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -18,17 +18,17 @@ namespace Magnum.Reflection
 	using System.Reflection;
 	using Extensions;
 
+
 	public class FastActivator
 	{
-		private static FastActivator _current;
+		[ThreadStatic]
+		static FastActivator _current;
 
-		private readonly Dictionary<Type, IFastActivator> _generators;
-		private readonly Dictionary<Type, IFastActivator> _genericGenerators;
+		readonly Dictionary<Type, IFastActivator> _generators;
 
-		private FastActivator()
+		FastActivator()
 		{
 			_generators = new Dictionary<Type, IFastActivator>();
-			_genericGenerators = new Dictionary<Type, IFastActivator>();
 		}
 
 		public static FastActivator Current
@@ -42,19 +42,19 @@ namespace Magnum.Reflection
 			}
 		}
 
-		private IFastActivator GetGenerator(Type type)
+		IFastActivator GetGenerator(Type type)
 		{
 			return _generators.Retrieve(type, () =>
 				{
 					const BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
 
-					return (IFastActivator) typeof (FastActivator<>).MakeGenericType(type)
-					                        	.GetProperty("Current", flags)
-					                        	.GetValue(null, flags, null, null, CultureInfo.InvariantCulture);
+					return (IFastActivator)typeof(FastActivator<>).MakeGenericType(type)
+					                       	.GetProperty("Current", flags)
+					                       	.GetValue(null, flags, null, null, CultureInfo.InvariantCulture);
 				});
 		}
 
-		private IFastActivator GetGenericGenerator(Type type)
+		IFastActivator GetGenericGenerator(Type type)
 		{
 			return _generators.Retrieve(type, () => new GenericFastActivator(type));
 		}
@@ -95,15 +95,18 @@ namespace Magnum.Reflection
 			return Current.GetGenerator(genericType).Create();
 		}
 
-		private static Type GetGenericType(Type type, Type[] genericTypes)
+		static Type GetGenericType(Type type, Type[] genericTypes)
 		{
-			if(!type.IsGenericType)
+			if (!type.IsGenericType)
 				throw new ArgumentException("The type specified must be a generic type");
 
 			Type[] genericArguments = type.GetGenericArguments();
 
-			if(genericArguments.Length != genericTypes.Length)
-				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length + " (needed " + genericArguments.Length + ")");
+			if (genericArguments.Length != genericTypes.Length)
+			{
+				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length
+				                            + " (needed " + genericArguments.Length + ")");
+			}
 
 			return type.MakeGenericType(genericTypes);
 		}

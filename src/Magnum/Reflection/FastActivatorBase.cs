@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,9 +15,10 @@ namespace Magnum.Reflection
 	using System;
 	using System.Reflection;
 
+
 	public abstract class FastActivatorBase
 	{
-		private const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+		const BindingFlags _constructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		protected readonly ConstructorInfo[] Constructors;
 
@@ -27,6 +28,6 @@ namespace Magnum.Reflection
 			Constructors = type.GetConstructors(_constructorBindingFlags);
 		}
 
-		public Type ObjectType { get; private set; }
+		protected Type ObjectType { get; set; }
 	}
 }

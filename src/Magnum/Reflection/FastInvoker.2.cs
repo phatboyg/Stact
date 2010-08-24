@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -19,16 +19,19 @@ namespace Magnum.Reflection
 	using System.Reflection;
 	using Extensions;
 
+
 	public class FastInvoker<T, TResult> :
 		FastInvokerBase,
 		IFastInvoker<T, TResult>
 	{
-		private static FastInvoker<T, TResult> _current;
-		private readonly Dictionary<int, Func<T, TResult>> _noArgs = new Dictionary<int, Func<T, TResult>>();
-		private readonly Dictionary<int, Func<T, object[], TResult>> _withArgs = new Dictionary<int, Func<T, object[], TResult>>();
+		[ThreadStatic]
+		static FastInvoker<T, TResult> _current;
 
-		private FastInvoker()
-			: base(typeof (T))
+		readonly Dictionary<int, Func<T, TResult>> _noArgs = new Dictionary<int, Func<T, TResult>>();
+		readonly Dictionary<int, Func<T, object[], TResult>> _withArgs = new Dictionary<int, Func<T, object[], TResult>>();
+
+		FastInvoker()
+			: base(typeof(T))
 		{
 		}
 
@@ -45,9 +48,9 @@ namespace Magnum.Reflection
 
 		public TResult FastInvoke(T target, string methodName)
 		{
-			int key = 97 * methodName.GetHashCode();
+			int key = 97*methodName.GetHashCode();
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, TResult> invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
 						.MatchingArguments()
@@ -63,14 +66,14 @@ namespace Magnum.Reflection
 			if (args == null || args.Length == 0)
 				return FastInvoke(target, methodName);
 
-			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), args);
+			int key = GetArgumentHashCode(97*methodName.GetHashCode(), args);
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, object[], TResult> invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
 						.MatchingArguments(args)
 						.Select(x => x.ToSpecializedMethod(args))
-						.Where(x => x.ReturnType == typeof (TResult))
+						.Where(x => x.ReturnType == typeof(TResult))
 						.First();
 
 					// TODO: Need to check return type after method has been specialized
@@ -81,16 +84,16 @@ namespace Magnum.Reflection
 
 		public TResult FastInvoke(T target, Type[] genericTypes, string methodName)
 		{
-			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes);
+			int key = GetArgumentHashCode(97*methodName.GetHashCode(), genericTypes);
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, TResult> invoker = GetInvoker(key, () =>
 				{
-					var empty = new object[] { };
+					var empty = new object[] {};
 
 					return MethodNameCache[methodName]
 						.MatchingArguments()
 						.Select(x => x.ToSpecializedMethod(genericTypes, empty))
-						.Where(x => x.ReturnType == typeof (TResult))
+						.Where(x => x.ReturnType == typeof(TResult))
 						.First();
 				});
 
@@ -102,14 +105,14 @@ namespace Magnum.Reflection
 			if (args == null || args.Length == 0)
 				return FastInvoke(target, genericTypes, methodName);
 
-			int key = GetArgumentHashCode(97 * methodName.GetHashCode(), genericTypes, args);
+			int key = GetArgumentHashCode(97*methodName.GetHashCode(), genericTypes, args);
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, object[], TResult> invoker = GetInvoker(key, () =>
 				{
 					return MethodNameCache[methodName]
 						.MatchingArguments(args)
 						.Select(x => x.ToSpecializedMethod(genericTypes, args))
-						.Where(x => x.ReturnType == typeof (TResult))
+						.Where(x => x.ReturnType == typeof(TResult))
 						.First();
 				}, args);
 
@@ -122,9 +125,9 @@ namespace Magnum.Reflection
 			if (call == null)
 				throw new ArgumentException("Only method call expressions are supported.", "expression");
 
-			int key = 61 * call.Method.GetHashCode();
+			int key = 61*call.Method.GetHashCode();
 
-			var invoker = GetInvoker(key, () => call.Method);
+			Func<T, TResult> invoker = GetInvoker(key, () => call.Method);
 
 			return invoker(target);
 		}
@@ -137,12 +140,16 @@ namespace Magnum.Reflection
 
 			MethodInfo method = call.Method;
 
-			int key = GetArgumentHashCode(61 * method.GetHashCode(), args);
+			int key = GetArgumentHashCode(61*method.GetHashCode(), args);
 
-			var invoker = GetInvoker(key, () =>
-				{
-					return method.IsGenericMethod ? method.GetGenericMethodDefinition().ToSpecializedMethod(args) : method;
-				}, args);
+			Func<T, object[], TResult> invoker = GetInvoker(key,
+			                                                () =>
+			                                                	{
+			                                                		return method.IsGenericMethod
+			                                                		       	? method.GetGenericMethodDefinition().ToSpecializedMethod(
+			                                                		       	                                                          args)
+			                                                		       	: method;
+			                                                	}, args);
 
 			return invoker(target, args);
 		}
@@ -155,9 +162,9 @@ namespace Magnum.Reflection
 
 			MethodInfo method = call.Method;
 
-			int key = GetArgumentHashCode(61 * method.GetHashCode(), genericTypes);
+			int key = GetArgumentHashCode(61*method.GetHashCode(), genericTypes);
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, TResult> invoker = GetInvoker(key, () =>
 				{
 					if (method.IsGenericMethod)
 						return GetGenericMethodFromTypes(method.GetGenericMethodDefinition(), genericTypes);
@@ -176,9 +183,9 @@ namespace Magnum.Reflection
 
 			MethodInfo method = call.Method;
 
-			int key = GetArgumentHashCode(61 * method.GetHashCode(), genericTypes, args);
+			int key = GetArgumentHashCode(61*method.GetHashCode(), genericTypes, args);
 
-			var invoker = GetInvoker(key, () =>
+			Func<T, object[], TResult> invoker = GetInvoker(key, () =>
 				{
 					if (method.IsGenericMethod)
 						return method.GetGenericMethodDefinition().ToSpecializedMethod(genericTypes, args);
@@ -189,13 +196,13 @@ namespace Magnum.Reflection
 			return invoker(target, args);
 		}
 
-		private Func<T, TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo)
+		Func<T, TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo)
 		{
 			return _noArgs.Retrieve(key, () =>
 				{
 					MethodInfo method = getMethodInfo();
 
-					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
+					ParameterExpression instanceParameter = Expression.Parameter(typeof(T), "target");
 
 					MethodCallExpression call = Expression.Call(instanceParameter, method);
 
@@ -203,14 +210,14 @@ namespace Magnum.Reflection
 				});
 		}
 
-		private Func<T, object[], TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo, object[] args)
+		Func<T, object[], TResult> GetInvoker(int key, Func<MethodInfo> getMethodInfo, object[] args)
 		{
 			return _withArgs.Retrieve(key, () =>
 				{
 					MethodInfo method = getMethodInfo();
 
-					ParameterExpression instanceParameter = Expression.Parameter(typeof (T), "target");
-					ParameterExpression argsParameter = Expression.Parameter(typeof (object[]), "args");
+					ParameterExpression instanceParameter = Expression.Parameter(typeof(T), "target");
+					ParameterExpression argsParameter = Expression.Parameter(typeof(object[]), "args");
 
 					Expression[] parameters = method.GetParameters().ToArrayIndexParameters(argsParameter).ToArray();
 

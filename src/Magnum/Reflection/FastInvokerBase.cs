@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,14 +13,14 @@
 namespace Magnum.Reflection
 {
 	using System;
-	using System.Linq;
 	using System.Reflection;
 	using Collections;
 	using Extensions;
 
+
 	public abstract class FastInvokerBase
 	{
-		private const BindingFlags _methodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+		const BindingFlags _methodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		protected readonly MultiDictionary<string, MethodInfo> MethodNameCache;
 
@@ -39,9 +39,7 @@ namespace Magnum.Reflection
 		{
 			int key = seed;
 			for (int i = 0; i < args.Length; i++)
-			{
 				key ^= args[i] == null ? 31*i : args[i].GetType().GetHashCode() << i;
-			}
 			return key;
 		}
 
@@ -49,9 +47,7 @@ namespace Magnum.Reflection
 		{
 			int key = seed;
 			for (int i = 0; i < genericTypes.Length; i++)
-			{
 				key ^= genericTypes[i] == null ? 27*i : genericTypes[i].GetHashCode()*101 << i;
-			}
 			return key;
 		}
 
@@ -59,13 +55,9 @@ namespace Magnum.Reflection
 		{
 			int key = seed;
 			for (int i = 0; i < genericTypes.Length; i++)
-			{
 				key ^= genericTypes[i] == null ? 27*i : genericTypes[i].GetHashCode()*101 << i;
-			}
 			for (int i = 0; i < args.Length; i++)
-			{
 				key ^= args[i] == null ? 31*i : args[i].GetType().GetHashCode() << i;
-			}
 			return key;
 		}
 
@@ -77,7 +69,10 @@ namespace Magnum.Reflection
 			Type[] genericArguments = method.GetGenericArguments();
 
 			if (genericArguments.Length != genericTypes.Length)
-				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length + " (needed " + genericArguments.Length + ")");
+			{
+				throw new ArgumentException("An incorrect number of generic arguments was specified: " + genericTypes.Length
+				                            + " (needed " + genericArguments.Length + ")");
+			}
 
 			method = method.GetGenericMethodDefinition().MakeGenericMethod(genericTypes);
 			return method;
