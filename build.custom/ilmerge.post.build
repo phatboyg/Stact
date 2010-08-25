@@ -14,7 +14,8 @@
   <property name="folder.app.drop" value="${project.name}" overwrite="false" />
   
   <property name="dirs.merge.from" value="${dirs.drop}\MagnumMerge" overwrite="false" />
-<property name="file.merge.name" value="Magnum.dll" overwrite="false" />
+  <property name="file.merge.name" value="Magnum.dll" overwrite="false" />
+  <property name="docs.merge.name" value="Magnum.xml" overwrite="false" />
 
   <target name="go" depends="delete_merged_files, push_magnum_down, delete_merge_directory" />
   
@@ -32,8 +33,11 @@
   <target name="push_magnum_down">
     <echo message="Pushing ${file.merge.name} down to code drop directories." />
     <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Magnum" overwrite="true" />
+    <copy file="${dirs.merge.from}\${docs.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Magnum" overwrite="true" />
     <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\TestFramework" overwrite="true" />
+    <copy file="${dirs.merge.from}\${docs.merge.name}" todir="${dirs.drop}\${folder.app.drop}\TestFramework" overwrite="true" />
     <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Visualizers" overwrite="true" />
+    <copy file="${dirs.merge.from}\${docs.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Visualizers" overwrite="true" />
   </target>
   
   <target name="delete_merge_directory">
