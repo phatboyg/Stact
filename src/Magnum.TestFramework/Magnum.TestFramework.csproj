@@ -105,7 +105,7 @@
     <Compile Include="DatabaseAttribute.cs" />
     <Compile Include="FinallyAttribute.cs" />
     <Compile Include="GivenAttribute.cs" />
-    <Compile Include="IntergrationAttribute.cs" />
+    <Compile Include="IntegrationAttribute.cs" />
     <Compile Include="LogSetup.cs" />
     <Compile Include="NotWorkingAttribute.cs" />
     <Compile Include="NotYetImplementedAttribute.cs" />
