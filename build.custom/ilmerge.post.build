@@ -31,9 +31,29 @@
   
   <target name="push_magnum_down">
     <echo message="Pushing ${file.merge.name} down to code drop directories." />
-    <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Magnum" overwrite="true" />
-    <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\TestFramework" overwrite="true" />
-    <copy file="${dirs.merge.from}\${file.merge.name}" todir="${dirs.drop}\${folder.app.drop}\Visualizers" overwrite="true" />
+    <copy todir="${dirs.drop}\${folder.app.drop}\Magnum">
+      <fileset basedir="${dirs.merge.from}">
+        <include name="Magnum.dll" />
+        <include name="Magnum.xml" />
+        <include name="Magnum.pdb" />
+      </fileset>
+    </copy>
+    
+    <copy todir="${dirs.drop}\${folder.app.drop}\TestFramework">
+      <fileset basedir="${dirs.merge.from}">
+        <include name="Magnum.dll" />
+        <include name="Magnum.xml" />
+        <include name="Magnum.pdb" />
+      </fileset>
+    </copy>
+    
+    <copy todir="${dirs.drop}\${folder.app.drop}\Visualizers">
+      <fileset basedir="${dirs.merge.from}">
+        <include name="Magnum.dll" />
+        <include name="Magnum.xml" />
+        <include name="Magnum.pdb" />
+      </fileset>
+    </copy>
   </target>
   
   <target name="delete_merge_directory">
