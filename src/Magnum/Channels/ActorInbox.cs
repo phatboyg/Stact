@@ -31,16 +31,7 @@ namespace Magnum.Channels
 		readonly Scheduler _scheduler;
 		readonly Cache<Type, object> _inboxCache;
 		readonly UntypedChannel _adapter;
-
-		public ActorInbox(Fiber fiber, Scheduler scheduler, TActor instance)
-			: this(fiber, scheduler)
-		{
-			_adapter.Connect(x =>
-				{
-					x.BindChannelsFor<TActor>()
-						.UsingInstance(instance);
-				});
-		}
+		ChannelConnection _actorConnection;
 
 		public ActorInbox(Fiber fiber, Scheduler scheduler)
 		{
@@ -57,7 +48,7 @@ namespace Magnum.Channels
 			_fiber.Add(() =>
 				{
 					GetInbox<T>();
-						
+
 					_adapter.Send(message);
 				});
 		}
@@ -88,6 +79,11 @@ namespace Magnum.Channels
 					return inbox;
 
 				}) as Inbox<T>;
+		}
+
+		public void UseInstance(TActor actor)
+		{
+			_actorConnection = _adapter.Connect(x => x.BindChannelsFor<TActor>().UsingInstance(actor));
 		}
 	}
 }

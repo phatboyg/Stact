@@ -17,6 +17,7 @@ namespace Magnum.Specs.Actors.Auctions
 	using Magnum.Actors;
 	using Magnum.Channels;
 	using Magnum.Channels.Context;
+	using Magnum.Extensions;
 
 
 	public class Auction :
@@ -24,18 +25,19 @@ namespace Magnum.Specs.Actors.Auctions
 	{
 		readonly Fiber _fiber;
 		readonly Inbox _inbox;
-		readonly Scheduler _scheduler;
+		decimal _currentBid = 1.00m;
 
-		public Auction(Fiber fiber, Scheduler scheduler)
+		public Auction(Fiber fiber, Inbox inbox, Guid id)
 		{
+			Id = id;
+			_inbox = inbox;
 			_fiber = fiber;
-			_scheduler = scheduler;
-	
+
 			AskChannel = new SelectiveConsumerChannel<Request<Ask>>(_fiber, HandleAsk);
-
-			_inbox = new ActorInbox<Auction>(_fiber, _scheduler, this);
-
 		}
+
+		public Guid Id { get; private set; }
+		public Channel<Request<Ask>> AskChannel { get; private set; }
 
 		Consumer<Request<Ask>> HandleAsk(Request<Ask> x)
 		{
@@ -44,23 +46,53 @@ namespace Magnum.Specs.Actors.Auctions
 
 			return message =>
 				{
+					Guid token = CombGuid.Generate();
+
 					x.Respond(new Status
 						{
-							CurrentBid = 1.00m,
+							CurrentBid = _currentBid,
 							AuctionId = Id,
+							Token = token,
 						});
+
+					_inbox.Receive<Request<Buy>>(buy =>
+						{
+							if (buy.Body.Token != token)
+								return null;
+
+							return buyMessage =>
+								{
+									buyMessage.Respond(new Purchased
+										{
+											AuctionId = Id,
+											Token = token,
+											Price = _currentBid,
+											Quantity = buy.Body.Quantity,
+										});
+								};
+
+						}, 1.Seconds(),
+						() =>
+							{
+								// nothing to do on timeout
+							});
 				};
-		}
-
-		public Guid Id { get; private set; }
-		public Channel<Request<Ask>> AskChannel { get; private set; }
-
-		public void Send<T>(T message)
-		{
-			_inbox.Send(message);
 		}
 	}
 
+	public class Purchased
+	{
+		public Guid AuctionId { get; set; }
+		public decimal Price { get; set; }
+		public int Quantity { get; set; }
+		public Guid Token { get; set; }
+	}
+
+	public class Buy
+	{
+		public Guid Token { get; set; }
+		public int Quantity { get; set; }
+	}
 
 	public class Ask
 	{
@@ -77,5 +109,7 @@ namespace Magnum.Specs.Actors.Auctions
 	{
 		public Guid AuctionId { get; set; }
 		public decimal CurrentBid { get; set; }
+
+		public Guid Token { get; set; }
 	}
 }

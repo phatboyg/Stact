@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors.Internal
 {
+	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Channels;
@@ -24,7 +25,7 @@ namespace Magnum.Actors.Internal
 	/// <typeparam name = "TChannel">The channel type</typeparam>
 	public class ActorChannelProvider<TActor, TChannel> :
 		ChannelProvider<TChannel>
-		where TActor : class
+		where TActor : class, Actor
 	{
 		private readonly ActorFactory<TActor> _actorFactory;
 		private readonly ChannelAccessor<TActor, TChannel> _channelAccessor;
@@ -41,9 +42,7 @@ namespace Magnum.Actors.Internal
 
 		public Channel<TChannel> GetChannel(TChannel message)
 		{
-			TActor actor = _actorFactory.GetActor();
-
-			return _channelAccessor(actor);
+			throw new NotImplementedException("This is changing to inbox usage");
 		}
 
 		private static ChannelAccessor<TActor, TChannel> CreateChannelAccessor(PropertyInfo property)

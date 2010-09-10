@@ -12,11 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
-	using Channels;
-
-
-	public interface Actor :
-		UntypedChannel
+	/// <summary>
+	/// Defines a role of actor for a class
+	/// </summary>
+	public interface Actor
 	{
 	}
 }

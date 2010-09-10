@@ -12,18 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
+	using Channels;
+
+
 	/// <summary>
 	/// A builder abstraction for creating actor instances when needed
 	/// </summary>
 	/// <typeparam name="TActor">The actor type</typeparam>
 	public interface ActorFactory<TActor>
-		where TActor : class
+		where TActor : class, Actor
 	{
 		/// <summary>
 		/// Returns an instance of an actor
 		/// </summary>
 		/// <returns></returns>
-		TActor GetActor();
+		Inbox GetActor();
 	}
 
 	public delegate TActor ActorProvider<TActor, TKey>(TKey key)

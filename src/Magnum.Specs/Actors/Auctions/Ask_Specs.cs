@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actors.Auctions
 {
+	using System;
 	using Fibers;
 	using Magnum.Channels;
 	using Magnum.Channels.Context;
@@ -22,13 +23,20 @@ namespace Magnum.Specs.Actors.Auctions
 	[Scenario]
 	public class Ask_Specs
 	{
-		Auction _auction;
+		Inbox _auction;
 		UntypedChannel _responseChannel;
+		Guid _id;
 
 		[Given]
 		public void An_active_auction()
 		{
-			_auction = new Auction(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
+			_id = CombGuid.Generate();
+
+			var factory = new DelegateActorFactory<Auction>(() => new ThreadPoolFiber(),
+			                                                () => new TimerScheduler(new ThreadPoolFiber()),
+			                                                (f, s, i) => new Auction(f, i, _id));
+
+			_auction = factory.GetActor();
 		}
 
 		[Then]
@@ -39,11 +47,30 @@ namespace Magnum.Specs.Actors.Auctions
 			_responseChannel = new ChannelAdapter();
 			_responseChannel.Connect(x => x.AddChannel(response));
 
-			_auction.Request(new Ask(_auction.Id), _responseChannel);
+			_auction.Request(new Ask(_id), _responseChannel);
 
 			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
-			response.Value.Body.AuctionId.ShouldEqual(_auction.Id);
+			response.Value.Body.AuctionId.ShouldEqual(_id);
+
+
+			// ThreadUtil.Sleep(2.Seconds());
+			// go ahead and buy something
+
+			var purchased = new FutureChannel<Response<Purchased>>();
+
+			_responseChannel.Connect(x => x.AddChannel(purchased));
+
+			_auction.Request(new Buy
+				{
+					Quantity = 15,
+					Token = response.Value.Body.Token
+				}, _responseChannel);
+
+			purchased.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for purchase");
+
+			purchased.Value.Body.Quantity.ShouldEqual(15);
+			purchased.Value.Body.Price.ShouldEqual(response.Value.Body.CurrentBid);
 		}
 	}
 }

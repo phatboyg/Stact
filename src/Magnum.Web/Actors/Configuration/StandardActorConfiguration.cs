@@ -28,7 +28,7 @@ namespace Magnum.Web.Actors.Configuration
 
 	public class StandardActorConfiguration<TActor> :
 		ActorConfiguration<TActor>
-		where TActor : class
+		where TActor : class, Actor
 	{
 		private static readonly ILogger _log = Logger.GetLogger<StandardActorConfiguration<TActor>>();
 		private ActorFactory<TActor> _actorFactory;
@@ -39,7 +39,7 @@ namespace Magnum.Web.Actors.Configuration
 		public StandardActorConfiguration()
 		{
 			_fiberFactory = ThreadPoolFiberProvider;
-			_actorFactory = new TransientActorFactory<TActor>(_fiberFactory);
+			_actorFactory = null;
 			_configure = DefaultConfigureAction;
 		}
 

@@ -107,7 +107,6 @@
     <Compile Include="Actors\ActorRepository.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
-    <Compile Include="Actors\Internal\TransientActorFactory.cs" />
     <Compile Include="Binding\BinderContext.cs" />
     <Compile Include="Binding\FastModelBinder.cs" />
     <Compile Include="Binding\FastObjectBinder.cs" />

@@ -21,6 +21,8 @@ namespace Magnum.Web.Actors.Configuration
 	using Extensions;
 	using Fibers;
 	using Internal;
+	using Magnum.Actors;
+
 
 	public class WebRoutingRouteConfiguration :
 		RouteConfiguration
@@ -56,7 +58,7 @@ namespace Magnum.Web.Actors.Configuration
 		}
 
 		public ActorConfigurator<TActor> Add<TActor>()
-			where TActor : class
+			where TActor : class, Actor
 		{
 			var actorRouteConfigurator = new StandardActorConfiguration<TActor>();
 			_actors.Add(actorRouteConfigurator.Apply);

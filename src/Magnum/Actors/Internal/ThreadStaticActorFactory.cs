@@ -13,6 +13,8 @@
 namespace Magnum.Actors.Internal
 {
 	using System;
+	using Channels;
+
 
 	/// <summary>
 	///   Maintains only one instance of an actor per thread
@@ -20,10 +22,10 @@ namespace Magnum.Actors.Internal
 	/// <typeparam name = "TActor">The actor type</typeparam>
 	public class ThreadStaticActorFactory<TActor> :
 		ActorFactory<TActor>
-		where TActor : class
+		where TActor : class, Actor
 	{
 		[ThreadStatic]
-		private static TActor _instance;
+		private static Inbox _instance;
 
 		public ThreadStaticActorFactory(ActorFactory<TActor> factory)
 		{
@@ -32,7 +34,7 @@ namespace Magnum.Actors.Internal
 
 		public ActorFactory<TActor> Factory { get; private set; }
 
-		public TActor GetActor()
+		public Inbox GetActor()
 		{
 			return _instance ?? (_instance = Factory.GetActor());
 		}

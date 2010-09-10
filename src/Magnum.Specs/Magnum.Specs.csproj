@@ -102,6 +102,7 @@
     <Compile Include="Actions\LoopbackAction_Specs.cs" />
     <Compile Include="Actors\Auctions\Ask_Specs.cs" />
     <Compile Include="Actors\Auctions\Auction.cs" />
+    <Compile Include="Actors\Auctions\DelegateActorFactory.cs" />
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Channels\Channel_Specs.cs" />
     <Compile Include="Actors\PingPongDemo\Ping.cs" />

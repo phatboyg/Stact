@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Web.Actors.Configuration
 {
+	using Magnum.Actors;
+
+
 	/// <summary>
 	/// Configures the actors into the routing collection
 	/// </summary>
@@ -28,6 +31,6 @@ namespace Magnum.Web.Actors.Configuration
 		/// </summary>
 		/// <typeparam name="TActor"></typeparam>
 		ActorConfigurator<TActor> Add<TActor>()
-			where TActor : class;
+			where TActor : class, Actor;
 	}
 }
