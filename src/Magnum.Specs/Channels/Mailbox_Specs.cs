@@ -20,17 +20,17 @@ namespace Magnum.Specs.Channels
 	using TestFramework;
 
 	[TestFixture]
-	public class Receiving_a_message_from_a_mailbox
+	public class Receiving_a_message_from_an_inbox
 	{
 		[SetUp]
 		public void Setup()
 		{
-			_mailbox = new DefaultMailbox<TestMessage>(new SynchronousFiber(), new TimerScheduler(new SynchronousFiber()));
+			_inbox = new SynchronousInbox<TestMessage>(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
 			_transactionId = CombGuid.Generate();
 			_received = new Future<TestMessage>();
 		}
 
-		private DefaultMailbox<TestMessage> _mailbox;
+		private SynchronousInbox<TestMessage> _inbox;
 		private Guid _transactionId;
 		private Future<TestMessage> _received;
 
@@ -42,7 +42,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_deliver_a_new_message_to_a_waiting_receiver()
 		{
-			_mailbox.Receive(message =>
+			_inbox.Receive(message =>
 				{
 					if (message.Id != _transactionId)
 						return null;
@@ -50,7 +50,7 @@ namespace Magnum.Specs.Channels
 					return msg => _received.Complete(msg);
 				});
 
-			_mailbox.Send(new TestMessage
+			_inbox.Send(new TestMessage
 				{
 					Id = _transactionId,
 				});
@@ -61,7 +61,7 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_not_deliver_an_unwanted_message_to_a_receiver()
 		{
-			_mailbox.Receive(message =>
+			_inbox.Receive(message =>
 				{
 					if (message.Id != _transactionId)
 						return null;
@@ -69,14 +69,14 @@ namespace Magnum.Specs.Channels
 					return msg => _received.Complete(msg);
 				});
 
-			_mailbox.Send(new TestMessage
+			_inbox.Send(new TestMessage
 				{
 					Id = CombGuid.Generate(),
 				});
 
 			_received.WaitUntilCompleted(2.Seconds()).ShouldBeFalse();
 
-			_mailbox.Receive(message => msg => _received.Complete(msg));
+			_inbox.Receive(message => msg => _received.Complete(msg));
 
 			_received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 		}
@@ -84,12 +84,12 @@ namespace Magnum.Specs.Channels
 		[Test]
 		public void Should_deliver_an_old_message_to_a_new_receiver()
 		{
-			_mailbox.Send(new TestMessage
+			_inbox.Send(new TestMessage
 			{
 				Id = _transactionId,
 			});
 
-			_mailbox.Receive(message =>
+			_inbox.Receive(message =>
 				{
 					if (message.Id != _transactionId)
 						return null;

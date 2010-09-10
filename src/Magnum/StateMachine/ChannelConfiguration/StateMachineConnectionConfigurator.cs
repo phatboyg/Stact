@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,9 +13,9 @@
 namespace Magnum.StateMachine.ChannelConfiguration
 {
 	using System;
+	using Fibers;
 	using Fibers.Configuration;
 	using Magnum.Channels;
-	using Magnum.Fibers;
 
 
 	public interface StateMachineConnectionConfigurator<T>
@@ -37,6 +37,6 @@ namespace Magnum.StateMachine.ChannelConfiguration
 
 		FiberProvider<TKey> GetConfiguredProvider();
 
-		void SetProviderFactory(ChannelProviderFactory<T,TKey> factory);
+		void SetProviderFactory(ChannelProviderFactory<T, TKey> factory);
 	}
 }

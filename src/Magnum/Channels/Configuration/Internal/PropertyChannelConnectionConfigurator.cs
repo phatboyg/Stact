@@ -10,13 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Channels.Configuration.Internal
 {
-	using Channels;
+	using Fibers.Configuration;
 
 
-	public interface Actor :
-		UntypedChannel
+	public interface PropertyChannelConnectionConfigurator<T> :
+		FiberConfigurator<PropertyChannelConnectionConfigurator<T>>
+		where T : class
 	{
+		PropertyChannelConnectionConfigurator<T> UsingInstance(T instance);
 	}
 }

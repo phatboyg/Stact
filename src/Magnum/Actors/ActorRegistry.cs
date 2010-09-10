@@ -75,7 +75,7 @@ namespace Magnum.Actors
 		/// </summary>
 		/// <param name="actorType">The type of actor to retrieve</param>
 		/// <returns>A list of actors matching the specified type</returns>
-		IList<Actor> GetAll(Type actorType);
+		IEnumerable<Actor> GetAll(Type actorType);
 
 		/// <summary>
 		/// Calls the callback for each actor in the registry

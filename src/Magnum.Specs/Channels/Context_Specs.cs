@@ -10,13 +10,34 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Specs.Channels
 {
-	using Channels;
+	using System;
+	using TestFramework;
 
 
-	public interface Actor :
-		UntypedChannel
+	[Scenario]
+	public class Given_a_message_type
 	{
+		const string TestMessageType = "urn:message:Magnum:Specs:Channels:TestMessageType";
+		Uri _messageType;
+
+		[Given]
+		public void A_message_type()
+		{
+			_messageType = new Uri(TestMessageType);
+		}
+
+		[Then]
+		public void Should_be_storable_in_a_uri()
+		{
+			_messageType.ToString().ShouldEqual(TestMessageType);
+		}
+
+		[Then]
+		public void Should_have_an_absolute_path_only()
+		{
+			_messageType.AbsolutePath.ShouldEqual(TestMessageType.Substring(4));
+		}
 	}
 }

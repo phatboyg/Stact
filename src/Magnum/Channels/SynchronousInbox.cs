@@ -17,15 +17,15 @@ namespace Magnum.Channels
 	using Extensions;
 	using Fibers;
 
-	public class DefaultMailbox<T> :
-		Mailbox<T>
+	public class SynchronousInbox<T> :
+		Inbox<T>
 	{
 		private readonly Fiber _fiber;
 		private readonly IList<SelectiveConsumer<T>> _receivers;
 		private readonly Scheduler _scheduler;
 		private readonly IList<T> _waitingMessages;
 
-		public DefaultMailbox(Fiber fiber, Scheduler scheduler)
+		public SynchronousInbox(Fiber fiber, Scheduler scheduler)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;

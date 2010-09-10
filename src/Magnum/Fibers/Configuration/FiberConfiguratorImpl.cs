@@ -71,6 +71,12 @@ namespace Magnum.Fibers.Configuration
 			return this as T;
 		}
 
+		protected void ValidateFiberConfiguration()
+		{
+			if (_fiberFactory == null)
+				throw new FiberException("No fiber configuration was specified");
+		}
+
 		protected Fiber GetConfiguredFiber(ChannelConfiguratorConnection connection)
 		{
 			Fiber fiber = _fiberFactory();

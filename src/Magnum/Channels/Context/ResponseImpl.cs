@@ -10,13 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Channels.Context
 {
-	using Channels;
-
-
-	public interface Actor :
-		UntypedChannel
+	public class ResponseImpl<TResponse> :
+		MessageImpl<TResponse>,
+		Response<TResponse>
 	{
+		public ResponseImpl(TResponse message)
+			: base(message)
+		{
+		}
+	}
+
+
+	public class ResponseImpl<TRequest, TResponse> :
+		MessageImpl<TResponse>,
+		Response<TRequest, TResponse>
+	{
+		public ResponseImpl(TResponse message)
+			: base(message)
+		{
+		}
 	}
 }

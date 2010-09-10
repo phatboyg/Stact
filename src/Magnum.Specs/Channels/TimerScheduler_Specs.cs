@@ -18,7 +18,7 @@ namespace Magnum.Specs.Actors
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ThreadActionScheduler_Specs
+	public class Timer_scheduler_should_work
 	{
 		[Test]
 		public void Schedule()

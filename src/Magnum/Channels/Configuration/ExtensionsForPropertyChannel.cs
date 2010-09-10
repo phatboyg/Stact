@@ -10,13 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Channels
 {
-	using Channels;
+	using Configuration;
+	using Configuration.Internal;
 
 
-	public interface Actor :
-		UntypedChannel
+	public static class ExtensionsForPropertyChannel
 	{
+		public static PropertyChannelConnectionConfigurator<T> BindChannelsFor<T>(this ConnectionConfigurator configurator)
+			where T : class
+		{
+			var typeConfigurator = new PropertyChannelConnectionConfiguratorImpl<T>();
+
+			configurator.RegisterChannelConfigurator(typeConfigurator);
+
+			return typeConfigurator;
+		}
 	}
 }
