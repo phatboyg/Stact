@@ -87,7 +87,7 @@ namespace Magnum.Actors.Internal
 		{
 			return _inboxCache.Retrieve(typeof(T), type =>
 				{
-					var inbox = new SynchronousInbox<T>(_fiber, _scheduler);
+					var inbox = new BufferedInbox<T>(_fiber, _scheduler);
 
 					_adapter.Connect(x => x.AddChannel(inbox));
 

@@ -57,7 +57,8 @@ namespace Magnum.Channels
 	///   directed receives, and dispatching to channels within a context, such as an actor
 	/// </summary>
 	public interface Inbox<T> :
-		Channel<T>
+		Channel<T>,
+		IDisposable
 	{
 		/// <summary>
 		///   Calls the specified method when a message of the requested type is received. The

@@ -15,11 +15,11 @@ namespace Magnum.Actors.Internal
 	using System;
 	using System.Collections.Generic;
 	using Channels;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
+	using Extensions;
+	using Fibers;
 
 
-	public class SynchronousInbox<T> :
+	public class BufferedInbox<T> :
 		Inbox<T>
 	{
 		readonly Fiber _fiber;
@@ -30,7 +30,7 @@ namespace Magnum.Actors.Internal
 
 		bool _disposed;
 
-		public SynchronousInbox(Fiber fiber, Scheduler scheduler)
+		public BufferedInbox(Fiber fiber, Scheduler scheduler)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;
@@ -97,7 +97,7 @@ namespace Magnum.Actors.Internal
 			Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
-		~SynchronousInbox()
+		~BufferedInbox()
 		{
 			Dispose(false);
 		}
@@ -110,7 +110,7 @@ namespace Magnum.Actors.Internal
 			{
 				_receivers.Clear();
 				_waitingMessages.Clear();
-				
+
 				_scheduledActions.Each(x => x.Cancel());
 				_scheduledActions.Clear();
 			}

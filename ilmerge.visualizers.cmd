@@ -1,1 +1,0 @@
-..\..\lib\ILMerge\ILMerge.exe Magnum.Visualizers.dll /allowDup /internalize:..\..\magnum.visualizers.internalize.exclude /target:library /attr:Magnum.Visualizers.dll /out:Magnum.DebugVisualizers.dll Magnum.dll Magnum.RulesEngine.dll Microsoft.GLEE.dll Microsoft.GLEE.Drawing.dll Microsoft.GLEE.GraphViewerGDI.dll QuickGraph.dll QuickGraph.Glee.dll 

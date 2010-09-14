@@ -26,12 +26,12 @@ namespace Magnum.Specs.Channels
 		[SetUp]
 		public void Setup()
 		{
-			_inbox = new SynchronousInbox<TestMessage>(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
+			_inbox = new BufferedInbox<TestMessage>(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
 			_transactionId = CombGuid.Generate();
 			_received = new Future<TestMessage>();
 		}
 
-		private SynchronousInbox<TestMessage> _inbox;
+		private BufferedInbox<TestMessage> _inbox;
 		private Guid _transactionId;
 		private Future<TestMessage> _received;
 

@@ -240,7 +240,7 @@
     <Compile Include="Channels\MessageConverter.cs" />
     <Compile Include="Channels\Configuration\Internal\DisconnectChannelVisitor.cs" />
     <Compile Include="Channels\SelectiveConsumer.cs" />
-    <Compile Include="Actors\Internal\SynchronousInbox.cs" />
+    <Compile Include="Actors\Internal\BufferedInbox.cs" />
     <Compile Include="Actors\Inbox.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
