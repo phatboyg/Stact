@@ -107,6 +107,8 @@
     <Compile Include="Actors\ActorProvider.cs" />
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\ActorRepository.cs" />
+    <Compile Include="Actors\AnonymousActor.cs" />
+    <Compile Include="Actors\AnonymousActorFactory.cs" />
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\DelegateActorFactory.cs" />
