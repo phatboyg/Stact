@@ -1,7 +1,6 @@
 namespace Magnum.Specs.Channels
 {
 	using Magnum.Channels;
-	using Magnum.Channels.Context;
 	using Magnum.Extensions;
 	using TestFramework;
 

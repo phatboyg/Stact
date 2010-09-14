@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2010 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,21 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Context
+namespace Magnum.Channels.Internal
 {
-	using System;
-
-
-	public class MessageImpl<T> :
-		Message<T>
+	public class ResponseImpl<TResponse> :
+		MessageImpl<TResponse>,
+		Response<TResponse>
 	{
-		public MessageImpl(T message)
+		public ResponseImpl(TResponse message)
+			: base(message)
 		{
-			Body = message;
-			BodyType = typeof(T).ToMessageUrn();
 		}
+	}
 
-		public T Body { get; private set; }
-		public Uri BodyType { get; private set; }
+
+	public class ResponseImpl<TRequest, TResponse> :
+		MessageImpl<TResponse>,
+		Response<TRequest, TResponse>
+	{
+		public ResponseImpl(TResponse message)
+			: base(message)
+		{
+		}
 	}
 }

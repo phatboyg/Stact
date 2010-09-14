@@ -10,18 +10,21 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels.Context
+namespace Magnum.Channels.Internal
 {
-	public class RequestImpl<T> :
-		MessageImpl<T>,
-		Request<T>
+	using System;
+
+
+	public class MessageImpl<T> :
+		Message<T>
 	{
-		public RequestImpl(UntypedChannel responseChannel, T message)
-			: base(message)
+		public MessageImpl(T message)
 		{
-			ResponseChannel = responseChannel;
+			Body = message;
+			BodyType = typeof(T).ToMessageUrn();
 		}
 
-		public UntypedChannel ResponseChannel { get; private set; }
+		public T Body { get; private set; }
+		public Uri BodyType { get; private set; }
 	}
 }

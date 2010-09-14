@@ -13,7 +13,6 @@
 namespace Magnum.Specs.Actors.Auctions
 {
 	using Magnum.Channels;
-	using Magnum.Channels.Context;
 	using Magnum.Extensions;
 	using TestFramework;
 

@@ -15,7 +15,6 @@ namespace Magnum.Specs.Actors
 	using Auctions;
 	using Magnum.Actors;
 	using Magnum.Channels;
-	using Magnum.Channels.Context;
 	using Magnum.Extensions;
 	using TestFramework;
 
@@ -31,9 +30,11 @@ namespace Magnum.Specs.Actors
 
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
-					Auction.Request(new Ask(Id), inbox);
-
-					inbox.Receive<Response<Status>>(m => status => response.Complete(status.Body));
+					Auction.Request(new Ask(Id), inbox)
+						//.Within(30.Seconds(), x =>
+						//{
+						.Receive<Response<Status>>(m => status => response.Complete(status.Body));
+					//});
 				});
 
 			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");

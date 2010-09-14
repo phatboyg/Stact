@@ -13,7 +13,7 @@
 namespace Magnum.Channels
 {
 	using System;
-	using Context;
+	using Internal;
 
 
 	public static class ExtensionsForContext
@@ -27,8 +27,11 @@ namespace Magnum.Channels
 		/// <param name="responseChannel">The channel where responses should be sent</param>
 		public static void Request<TRequest>(this UntypedChannel channel, TRequest request, UntypedChannel responseChannel)
 		{
-			channel.Send<Request<TRequest>>(new RequestImpl<TRequest>(responseChannel, request));
+			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+
+			channel.Send<Request<TRequest>>(requestImpl);
 		}
+
 
 		/// <summary>
 		/// Wraps a message in a response and sends it to the response channel of the request
@@ -39,7 +42,7 @@ namespace Magnum.Channels
 		/// <param name="response">The response message</param>
 		public static void Respond<TRequest, TResponse>(this Request<TRequest> request, TResponse response)
 		{
-			request.ResponseChannel.Send<Response<TRequest,TResponse>>(new ResponseImpl<TRequest,TResponse>(response));
+			request.ResponseChannel.Send<Response<TRequest, TResponse>>(new ResponseImpl<TRequest, TResponse>(response));
 		}
 
 		public static Uri ToMessageUrn(this Type type)

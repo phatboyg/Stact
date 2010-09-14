@@ -16,7 +16,6 @@ namespace Magnum.Specs.Actors.Auctions
 	using Fibers;
 	using Magnum.Actors;
 	using Magnum.Channels;
-	using Magnum.Channels.Context;
 	using Magnum.Extensions;
 
 
