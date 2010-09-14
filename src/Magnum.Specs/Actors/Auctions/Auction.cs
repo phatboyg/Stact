@@ -25,6 +25,7 @@ namespace Magnum.Specs.Actors.Auctions
 		readonly Fiber _fiber;
 		readonly Inbox _inbox;
 		decimal _currentBid = 1.00m;
+		bool _ended;
 
 		public Auction(Fiber fiber, Inbox inbox, Guid id)
 		{
@@ -33,10 +34,12 @@ namespace Magnum.Specs.Actors.Auctions
 			_fiber = fiber;
 
 			AskChannel = new SelectiveConsumerChannel<Request<Ask>>(_fiber, HandleAsk);
+			EndChannel = new ConsumerChannel<End>(_fiber, x => { _ended = true; });
 		}
 
 		public Guid Id { get; private set; }
 		public Channel<Request<Ask>> AskChannel { get; private set; }
+		public Channel<End> EndChannel { get; private set; }
 
 		Consumer<Request<Ask>> HandleAsk(Request<Ask> x)
 		{
@@ -45,6 +48,16 @@ namespace Magnum.Specs.Actors.Auctions
 
 			return message =>
 				{
+					if (_ended)
+					{
+						x.Respond(new Ended
+							{
+								AuctionId = Id,
+								HighBid = _currentBid,
+							});
+						return;
+					}
+
 					Guid token = CombGuid.Generate();
 
 					x.Respond(new Status
@@ -93,6 +106,11 @@ namespace Magnum.Specs.Actors.Auctions
 		public int Quantity { get; set; }
 	}
 
+	public class End
+	{
+
+	}
+
 	public class Ask
 	{
 		public Ask(Guid id)
@@ -103,6 +121,12 @@ namespace Magnum.Specs.Actors.Auctions
 		public Guid AuctionId { get; set; }
 	}
 
+
+	public class Ended
+	{
+		public Guid AuctionId { get; set; }
+		public decimal HighBid { get; set; }
+	}
 
 	public class Status
 	{

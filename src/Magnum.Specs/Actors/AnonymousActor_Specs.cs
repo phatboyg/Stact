@@ -31,10 +31,33 @@ namespace Magnum.Specs.Actors
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
-						//.Within(30.Seconds(), x =>
-						//{
-						.Receive<Response<Status>>(m => status => response.Complete(status.Body));
-					//});
+						.Within(30.Seconds(), x =>
+							{
+								x.Receive<Response<Status>>(m => status => response.Complete(status.Body));
+								x.Receive<Response<Ended>>(m => ended => { });
+							});
+				});
+
+			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
+
+			response.Value.AuctionId.ShouldEqual(Id);
+		}
+
+		[Then]
+		public void Should_receive_the_alternate_ending_if_it_is_such()
+		{
+			Auction.Send(new End());
+
+			var response = new FutureChannel<Ended>();
+
+			ActorInstance instance = AnonymousActor.New(inbox =>
+				{
+					Auction.Request(new Ask(Id), inbox)
+						.Within(30.Seconds(), x =>
+							{
+								x.Receive<Response<Status>>(m => status => { });
+								x.Receive<Response<Ended>>(m => ended => response.Complete(ended.Body));
+							});
 				});
 
 			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");

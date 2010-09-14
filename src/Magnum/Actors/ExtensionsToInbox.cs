@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
+	using System;
 	using Channels;
 	using Internal;
 
@@ -32,6 +33,14 @@ namespace Magnum.Actors
 			channel.Request(request, responseChannel);
 
 			return new SentRequestImpl<TRequest>(request, inbox);
+		}
+
+		public static SentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout,
+		                                                     Action<WithinTimeout> initializer)
+		{
+			new WithinTimeoutHandler(request, timeout, initializer);
+
+			return request;
 		}
 	}
 }
