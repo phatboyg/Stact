@@ -10,19 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Actors
+namespace Magnum.Actors.Internal
 {
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class, Actor
+	using Messages;
+
+
+	public class ExitImpl :
+		Exit
 	{
-		/// <summary>
-		/// Returns an instance of an actor
-		/// </summary>
-		/// <returns></returns>
-		ActorInstance GetActor();
 	}
 }

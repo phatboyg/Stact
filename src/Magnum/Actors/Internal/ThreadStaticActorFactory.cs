@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,6 @@
 namespace Magnum.Actors.Internal
 {
 	using System;
-	using Channels;
 
 
 	/// <summary>
@@ -25,7 +24,7 @@ namespace Magnum.Actors.Internal
 		where TActor : class, Actor
 	{
 		[ThreadStatic]
-		private static Inbox _instance;
+		static ActorInstance _instance;
 
 		public ThreadStaticActorFactory(ActorFactory<TActor> factory)
 		{
@@ -34,7 +33,7 @@ namespace Magnum.Actors.Internal
 
 		public ActorFactory<TActor> Factory { get; private set; }
 
-		public Inbox GetActor()
+		public ActorInstance GetActor()
 		{
 			return _instance ?? (_instance = Factory.GetActor());
 		}

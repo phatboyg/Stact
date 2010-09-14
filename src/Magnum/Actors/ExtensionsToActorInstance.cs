@@ -12,17 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Actors
 {
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class, Actor
+	using Internal;
+	using Messages;
+
+
+	public static class ExtensionsToActorInstance
 	{
 		/// <summary>
-		/// Returns an instance of an actor
+		/// Sends an Exit message to an actor instance
 		/// </summary>
-		/// <returns></returns>
-		ActorInstance GetActor();
+		/// <param name="instance">The actor instance</param>
+		public static void Exit(this ActorInstance instance)
+		{
+			instance.Send<Exit>(new ExitImpl());
+		}
+
+		/// <summary>
+		/// Sends a Kill message to an actor instance
+		/// </summary>
+		/// <param name="instance">The actor instance</param>
+		public static void Kill(this ActorInstance instance)
+		{
+			instance.Send<Kill>(new KillImpl());
+		}
 	}
 }

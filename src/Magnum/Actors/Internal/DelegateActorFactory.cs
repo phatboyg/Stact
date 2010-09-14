@@ -10,21 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Specs.Actors.Auctions
+namespace Magnum.Actors.Internal
 {
 	using System;
+	using Channels;
 	using Fibers;
-	using Magnum.Actors;
-	using Magnum.Channels;
 
 
 	public class DelegateActorFactory<TActor> :
 		ActorFactory<TActor>
 		where TActor : class, Actor
 	{
+		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
 		readonly Func<Fiber> _fiberFactory;
 		readonly Func<Scheduler> _schedulerFactory;
-		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
 
 		public DelegateActorFactory(Func<Fiber> fiberFactory, Func<Scheduler> schedulerFactory,
 		                            Func<Fiber, Scheduler, Inbox, TActor> factory)
@@ -34,17 +33,23 @@ namespace Magnum.Specs.Actors.Auctions
 			_factory = factory;
 		}
 
-		public Inbox GetActor()
+		public ActorInstance GetActor()
 		{
 			Fiber fiber = _fiberFactory();
 			Scheduler scheduler = _schedulerFactory();
 
 			var inbox = new ActorInbox<TActor>(fiber, scheduler);
 
-			TActor actor = _factory(fiber, scheduler, inbox);
-			inbox.UseInstance(actor);
+			TActor actor = CreateActorInstance(fiber, scheduler, inbox);
+
+			inbox.BindChannelsForInstance(actor);
 
 			return inbox;
+		}
+
+		TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, ActorInbox<TActor> inbox)
+		{
+			return _factory(fiber, scheduler, inbox);
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace Magnum.Specs.Actors.Auctions
 {
 	using System;
 	using Fibers;
+	using Magnum.Actors;
+	using Magnum.Actors.Internal;
 	using Magnum.Channels;
 	using Magnum.Channels.Context;
 	using Magnum.Extensions;
@@ -23,7 +25,7 @@ namespace Magnum.Specs.Actors.Auctions
 	[Scenario]
 	public class Ask_Specs
 	{
-		Inbox _auction;
+		ActorInstance _auction;
 		UntypedChannel _responseChannel;
 		Guid _id;
 
@@ -37,6 +39,12 @@ namespace Magnum.Specs.Actors.Auctions
 			                                                (f, s, i) => new Auction(f, i, _id));
 
 			_auction = factory.GetActor();
+		}
+
+		[Finally]
+		public void Finally()
+		{
+			_auction.Exit();
 		}
 
 		[Then]

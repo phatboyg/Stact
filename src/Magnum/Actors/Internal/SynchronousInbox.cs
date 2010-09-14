@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Channels
+namespace Magnum.Actors.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Extensions;
-	using Fibers;
+	using Channels;
+	using Magnum.Extensions;
+	using Magnum.Fibers;
+
 
 	public class SynchronousInbox<T> :
 		Inbox<T>
 	{
-		private readonly Fiber _fiber;
-		private readonly IList<SelectiveConsumer<T>> _receivers;
-		private readonly Scheduler _scheduler;
-		private readonly IList<T> _waitingMessages;
+		readonly Fiber _fiber;
+		readonly IList<SelectiveConsumer<T>> _receivers;
+		readonly HashSet<ScheduledAction> _scheduledActions;
+		readonly Scheduler _scheduler;
+		readonly IList<T> _waitingMessages;
+
+		bool _disposed;
 
 		public SynchronousInbox(Fiber fiber, Scheduler scheduler)
 		{
@@ -32,6 +37,13 @@ namespace Magnum.Channels
 
 			_receivers = new List<SelectiveConsumer<T>>();
 			_waitingMessages = new List<T>();
+			_scheduledActions = new HashSet<ScheduledAction>();
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		public void Send(T message)
@@ -62,6 +74,7 @@ namespace Magnum.Channels
 					return m =>
 						{
 							scheduledAction.Cancel();
+							_scheduledActions.Remove(scheduledAction);
 
 							c(m);
 						};
@@ -70,11 +83,13 @@ namespace Magnum.Channels
 			scheduledAction = _scheduler.Schedule(timeout, _fiber, () =>
 				{
 					_receivers.Remove(consumerProxy);
+					_scheduledActions.Remove(scheduledAction);
 
 					timeoutCallback();
 				});
 
 			_receivers.Add(consumerProxy);
+			_scheduledActions.Add(scheduledAction);
 		}
 
 		public void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
@@ -82,7 +97,28 @@ namespace Magnum.Channels
 			Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
-		private void HandleSend(T message)
+		~SynchronousInbox()
+		{
+			Dispose(false);
+		}
+
+		void Dispose(bool disposing)
+		{
+			if (_disposed)
+				return;
+			if (disposing)
+			{
+				_receivers.Clear();
+				_waitingMessages.Clear();
+				
+				_scheduledActions.Each(x => x.Cancel());
+				_scheduledActions.Clear();
+			}
+
+			_disposed = true;
+		}
+
+		void HandleSend(T message)
 		{
 			if (DeliverToWaitingReceiver(message))
 				return;
@@ -90,7 +126,7 @@ namespace Magnum.Channels
 			_waitingMessages.Add(message);
 		}
 
-		private bool ReceiveWaitingMessage(SelectiveConsumer<T> selectiveConsumer)
+		bool ReceiveWaitingMessage(SelectiveConsumer<T> selectiveConsumer)
 		{
 			for (int i = 0; i < _waitingMessages.Count; i++)
 			{
@@ -107,7 +143,7 @@ namespace Magnum.Channels
 			return false;
 		}
 
-		private bool DeliverToWaitingReceiver(T message)
+		bool DeliverToWaitingReceiver(T message)
 		{
 			for (int i = 0; i < _receivers.Count; i++)
 			{

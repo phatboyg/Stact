@@ -14,6 +14,7 @@ namespace Magnum.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum.Actors.Internal;
 	using Magnum.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;
