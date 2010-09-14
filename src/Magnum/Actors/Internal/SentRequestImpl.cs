@@ -42,19 +42,19 @@ namespace Magnum.Actors.Internal
 			_inbox.Send(message);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
 		{
-			_inbox.Receive(consumer);
+			return _inbox.Receive(consumer);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
-			_inbox.Receive(consumer, timeout, timeoutCallback);
+			return _inbox.Receive(consumer, timeout, timeoutCallback);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
 		{
-			_inbox.Receive(consumer, timeout, timeoutCallback);
+			return _inbox.Receive(consumer, timeout, timeoutCallback);
 		}
 	}
 }

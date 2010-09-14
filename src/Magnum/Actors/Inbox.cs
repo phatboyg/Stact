@@ -31,7 +31,7 @@ namespace Magnum.Actors
 		/// </summary>
 		/// <typeparam name = "T">The requested message type</typeparam>
 		/// <param name = "consumer">The consumer</param>
-		void Receive<T>(SelectiveConsumer<T> consumer);
+		PendingReceive Receive<T>(SelectiveConsumer<T> consumer);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -41,7 +41,7 @@ namespace Magnum.Actors
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
+		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -51,7 +51,7 @@ namespace Magnum.Actors
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
+		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
 	}
 
 
@@ -71,7 +71,7 @@ namespace Magnum.Actors
 		/// </summary>
 		/// <typeparam name = "T">The requested message type</typeparam>
 		/// <param name = "consumer">The consumer</param>
-		void Receive(SelectiveConsumer<T> consumer);
+		PendingReceive Receive(SelectiveConsumer<T> consumer);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -81,7 +81,7 @@ namespace Magnum.Actors
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
+		PendingReceive Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
 
 		/// <summary>
 		///   Specifies a method to call when a message is recieved. If a message is not received within
@@ -91,6 +91,6 @@ namespace Magnum.Actors
 		/// <param name = "consumer">The consumer to call with the message</param>
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
+		PendingReceive Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
 	}
 }

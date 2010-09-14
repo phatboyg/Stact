@@ -13,6 +13,7 @@
 namespace Magnum.Actors.Internal
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Linq;
 	using Channels;
 	using Collections;
@@ -34,6 +35,7 @@ namespace Magnum.Actors.Internal
 	{
 		readonly UntypedChannel _adapter;
 		readonly Fiber _fiber;
+		readonly object _iFuckingHateThisShit = new object();
 		readonly Cache<Type, object> _inboxCache;
 		readonly Scheduler _scheduler;
 		ChannelConnection _actorConnection;
@@ -68,31 +70,32 @@ namespace Magnum.Actors.Internal
 				});
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
 		{
-			_fiber.Add(() => GetInbox<T>().Receive(consumer));
+			return GetInbox<T>().Receive(consumer);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
-			_fiber.Add(() => GetInbox<T>().Receive(consumer, timeout, timeoutCallback));
+			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
 		{
-			_fiber.Add(() => GetInbox<T>().Receive(consumer, timeout, timeoutCallback));
+			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
 		}
 
 		Inbox<T> GetInbox<T>()
 		{
-			return _inboxCache.Retrieve(typeof(T), type =>
-				{
-					var inbox = new BufferedInbox<T>(_fiber, _scheduler);
+			lock (_iFuckingHateThisShit)
+				return _inboxCache.Retrieve(typeof(T), type =>
+					{
+						var inbox = new BufferedInbox<T>(_fiber, _scheduler);
 
-					_adapter.Connect(x => x.AddChannel(inbox));
+						_adapter.Connect(x => x.AddChannel(inbox));
 
-					return inbox;
-				}) as Inbox<T>;
+						return inbox;
+					}) as Inbox<T>;
 		}
 
 		public void BindChannelsForInstance(TActor actor)

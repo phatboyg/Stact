@@ -115,11 +115,13 @@
     <Compile Include="Actors\Internal\DelegateActorFactory.cs" />
     <Compile Include="Actors\Internal\ExitImpl.cs" />
     <Compile Include="Actors\Internal\KillImpl.cs" />
+    <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />
     <Compile Include="Actors\Internal\WithinTimeout.cs" />
     <Compile Include="Actors\Internal\WithinTimeoutImpl.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
     <Compile Include="Actors\Messages\Exit.cs" />
     <Compile Include="Actors\Messages\Kill.cs" />
+    <Compile Include="Actors\PendingReceive.cs" />
     <Compile Include="Binding\BinderContext.cs" />
     <Compile Include="Binding\FastModelBinder.cs" />
     <Compile Include="Binding\FastObjectBinder.cs" />

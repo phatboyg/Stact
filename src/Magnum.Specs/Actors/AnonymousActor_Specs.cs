@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Specs.Actors
 {
+	using System;
 	using Auctions;
 	using Magnum.Actors;
 	using Magnum.Channels;
@@ -38,11 +39,12 @@ namespace Magnum.Specs.Actors
 							});
 				});
 
-			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
+			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
 			response.Value.AuctionId.ShouldEqual(Id);
 		}
 	}
+
 
 	[Scenario]
 	public class Sending_a_request_from_an_anonymous_actor_to_an_ended_auction :
@@ -65,9 +67,33 @@ namespace Magnum.Specs.Actors
 							});
 				});
 
-			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
+			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
 			response.Value.AuctionId.ShouldEqual(Id);
+		}
+	}
+
+
+	[Scenario]
+	public class Sending_a_request_from_an_anonymous_actor_to_an_auction :
+		Given_an_auction_actor_instance
+	{
+		[Then]
+		public void Should_not_receive_a_response_to_a_stupid_message()
+		{
+			var response = new FutureChannel<bool>();
+
+			ActorInstance instance = AnonymousActor.New(inbox =>
+				{
+					Auction.Request(new Ask(new Guid()), inbox)
+						.Within(1.Seconds(), x =>
+							{
+								x.Receive<Response<Status>>(m => status => { });
+								x.Otherwise(() => response.Complete(true));
+							});
+				});
+
+			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for otherwise to be called");
 		}
 	}
 }

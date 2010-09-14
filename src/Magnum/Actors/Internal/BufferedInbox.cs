@@ -23,8 +23,7 @@ namespace Magnum.Actors.Internal
 		Inbox<T>
 	{
 		readonly Fiber _fiber;
-		readonly IList<SelectiveConsumer<T>> _receivers;
-		readonly HashSet<ScheduledAction> _scheduledActions;
+		readonly List<PendingReceiveImpl<T>> _receivers;
 		readonly Scheduler _scheduler;
 		readonly IList<T> _waitingMessages;
 
@@ -35,9 +34,8 @@ namespace Magnum.Actors.Internal
 			_fiber = fiber;
 			_scheduler = scheduler;
 
-			_receivers = new List<SelectiveConsumer<T>>();
+			_receivers = new List<PendingReceiveImpl<T>>();
 			_waitingMessages = new List<T>();
-			_scheduledActions = new HashSet<ScheduledAction>();
 		}
 
 		public void Dispose()
@@ -51,50 +49,35 @@ namespace Magnum.Actors.Internal
 			_fiber.Add(() => HandleSend(message));
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer)
+		public PendingReceive Receive(SelectiveConsumer<T> consumer)
 		{
 			if (ReceiveWaitingMessage(consumer))
-				return;
+				return null;
 
-			_receivers.Add(consumer);
+			var pending = new PendingReceiveImpl<T>(consumer, x => _receivers.Remove(x));
+
+			_receivers.Add(pending);
+
+			return pending;
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		public PendingReceive Receive(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			if (ReceiveWaitingMessage(consumer))
-				return;
+				return null;
 
-			ScheduledAction scheduledAction = null;
-			SelectiveConsumer<T> consumerProxy = msg =>
-				{
-					Consumer<T> c = consumer(msg);
-					if (c == null)
-						return null;
+			var pending = new PendingReceiveImpl<T>(consumer, timeoutCallback, x => _receivers.Remove(x));
 
-					return m =>
-						{
-							scheduledAction.Cancel();
-							_scheduledActions.Remove(scheduledAction);
+			pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
 
-							c(m);
-						};
-				};
+			_receivers.Add(pending);
 
-			scheduledAction = _scheduler.Schedule(timeout, _fiber, () =>
-				{
-					_receivers.Remove(consumerProxy);
-					_scheduledActions.Remove(scheduledAction);
-
-					timeoutCallback();
-				});
-
-			_receivers.Add(consumerProxy);
-			_scheduledActions.Add(scheduledAction);
+			return pending;
 		}
 
-		public void Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
+		public PendingReceive Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
 		{
-			Receive(consumer, timeout.Milliseconds(), timeoutCallback);
+			return Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
 		~BufferedInbox()
@@ -108,11 +91,9 @@ namespace Magnum.Actors.Internal
 				return;
 			if (disposing)
 			{
-				_receivers.Clear();
-				_waitingMessages.Clear();
+				_receivers.ToArray().Each(x => x.Cancel());
 
-				_scheduledActions.Each(x => x.Cancel());
-				_scheduledActions.Clear();
+				_waitingMessages.Clear();
 			}
 
 			_disposed = true;
@@ -147,20 +128,14 @@ namespace Magnum.Actors.Internal
 		{
 			for (int i = 0; i < _receivers.Count; i++)
 			{
-				SelectiveConsumer<T> receiver = _receivers[i];
+				PendingReceiveImpl<T> receiver = _receivers[i];
 
-				Consumer<T> consumer = receiver(message);
+				Consumer<T> consumer = receiver.Accept(message);
 				if (consumer == null)
 					continue;
 
-				try
-				{
-					consumer(message);
-				}
-				finally
-				{
-					_receivers.RemoveAt(i);
-				}
+				consumer(message);
+
 				return true;
 			}
 
