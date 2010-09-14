@@ -16,7 +16,7 @@ namespace Magnum.Actors.Internal
 	using Channels;
 
 
-	public class WithinTimeoutHandler :
+	public class WithinTimeoutImpl :
 		WithinTimeout
 	{
 		readonly Inbox _inbox;
@@ -24,7 +24,7 @@ namespace Magnum.Actors.Internal
 		bool _handled;
 		Action _timeoutCallback = DoNothing;
 
-		public WithinTimeoutHandler(Inbox inbox, TimeSpan timeout, Action<WithinTimeout> initializer)
+		public WithinTimeoutImpl(Inbox inbox, TimeSpan timeout, Action<WithinTimeout> initializer)
 		{
 			_inbox = inbox;
 			_timeout = timeout;

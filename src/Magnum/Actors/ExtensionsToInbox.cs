@@ -38,7 +38,7 @@ namespace Magnum.Actors
 		public static SentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout,
 		                                                     Action<WithinTimeout> initializer)
 		{
-			new WithinTimeoutHandler(request, timeout, initializer);
+			new WithinTimeoutImpl(request, timeout, initializer);
 
 			return request;
 		}

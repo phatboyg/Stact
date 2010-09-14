@@ -42,7 +42,12 @@ namespace Magnum.Specs.Actors
 
 			response.Value.AuctionId.ShouldEqual(Id);
 		}
+	}
 
+	[Scenario]
+	public class Sending_a_request_from_an_anonymous_actor_to_an_ended_auction :
+		Given_an_auction_actor_instance
+	{
 		[Then]
 		public void Should_receive_the_alternate_ending_if_it_is_such()
 		{

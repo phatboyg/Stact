@@ -116,7 +116,7 @@
     <Compile Include="Actors\Internal\ExitImpl.cs" />
     <Compile Include="Actors\Internal\KillImpl.cs" />
     <Compile Include="Actors\Internal\WithinTimeout.cs" />
-    <Compile Include="Actors\Internal\WithinTimeoutHandler.cs" />
+    <Compile Include="Actors\Internal\WithinTimeoutImpl.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
     <Compile Include="Actors\Messages\Exit.cs" />
     <Compile Include="Actors\Messages\Kill.cs" />
