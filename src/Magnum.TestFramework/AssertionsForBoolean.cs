@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,6 +14,7 @@ namespace Magnum.TestFramework
 {
 	using NUnit.Framework;
 
+
 	public static class AssertionsForBoolean
 	{
 		public static bool ShouldBeTrue(this bool value)
@@ -23,16 +24,23 @@ namespace Magnum.TestFramework
 			return value;
 		}
 
-        public static bool ShouldBeTrue(this bool value, string message)
-        {
-            Assert.IsTrue(value, message);
+		public static bool ShouldBeTrue(this bool value, string message)
+		{
+			Assert.IsTrue(value, message);
 
-            return value;
-        }
+			return value;
+		}
 
-	    public static bool ShouldBeFalse(this bool value)
+		public static bool ShouldBeFalse(this bool value)
 		{
 			Assert.IsFalse(value);
+
+			return value;
+		}
+
+		public static bool ShouldBeFalse(this bool value, string message)
+		{
+			Assert.IsFalse(value, message);
 
 			return value;
 		}

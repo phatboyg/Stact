@@ -73,6 +73,36 @@ namespace Magnum.Specs.Actors
 		}
 	}
 
+	[Scenario]
+	public class When_one_receive_handler_has_been_called :
+		Given_an_auction_actor_instance
+	{
+		[Then]
+		public void Should_not_call_the_other_receive_handlers()
+		{
+			var statusResponse = new FutureChannel<Status>();
+			var endedResponse = new FutureChannel<Ended>();
+
+			ActorInstance instance = AnonymousActor.New(inbox =>
+				{
+					Auction.Request(new Ask(Id), inbox)
+						.Within(10.Seconds(), x =>
+							{
+								x.Receive<Response<Status>>(m => status =>
+									{
+										statusResponse.Complete(status.Body);
+										Auction.Send(new End());
+										Auction.Request(new Ask(Id), inbox);
+									});
+								x.Receive<Response<Ended>>(m => ended => endedResponse.Complete(ended.Body));
+							});
+				});
+
+			statusResponse.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
+			endedResponse.WaitUntilCompleted(2.Seconds()).ShouldBeFalse("The receiver for Ended should not have been called.");
+		}
+	}
+
 
 	[Scenario]
 	public class Sending_a_request_from_an_anonymous_actor_to_an_auction :

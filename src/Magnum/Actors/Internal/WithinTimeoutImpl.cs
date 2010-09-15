@@ -13,13 +13,16 @@
 namespace Magnum.Actors.Internal
 {
 	using System;
+	using System.Collections.Generic;
 	using Channels;
+	using Extensions;
 
 
 	public class WithinTimeoutImpl :
 		WithinTimeout
 	{
 		readonly Inbox _inbox;
+		readonly IList<PendingReceive> _receives;
 		readonly TimeSpan _timeout;
 		bool _handled;
 		Action _timeoutCallback = DoNothing;
@@ -29,12 +32,14 @@ namespace Magnum.Actors.Internal
 			_inbox = inbox;
 			_timeout = timeout;
 
+			_receives = new List<PendingReceive>();
+
 			initializer(this);
 		}
 
 		public void Receive<T>(SelectiveConsumer<T> consumer)
 		{
-			_inbox.Receive<T>(candidate =>
+			PendingReceive receive = _inbox.Receive<T>(candidate =>
 				{
 					Consumer<T> accepted = consumer(candidate);
 					if (accepted == null)
@@ -44,18 +49,16 @@ namespace Magnum.Actors.Internal
 						{
 							accepted(message);
 
-							_handled = true;
+							Complete();
 						};
 				}, _timeout, HandleTimeout);
+
+			_receives.Add(receive);
 		}
 
 		public void Otherwise(Action timeoutCallback)
 		{
 			_timeoutCallback = timeoutCallback;
-		}
-
-		static void DoNothing()
-		{
 		}
 
 		void HandleTimeout()
@@ -65,7 +68,24 @@ namespace Magnum.Actors.Internal
 
 			_timeoutCallback();
 
+			Complete();
+		}
+
+		void Complete()
+		{
+			RemovePendingReceives();
+
 			_handled = true;
+		}
+
+		void RemovePendingReceives()
+		{
+			_receives.Each(x => x.Cancel());
+			_receives.Clear();
+		}
+
+		static void DoNothing()
+		{
 		}
 	}
 }
