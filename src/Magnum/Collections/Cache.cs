@@ -31,13 +31,13 @@ namespace Magnum.Collections
 		Action<TKey, TValue> _valueAddedCallback = DefaultValueAddedAction;
 
 		public Cache()
-			: this(new Dictionary<TKey, TValue>())
 		{
+			_values = new ConcurrentDictionary<TKey, TValue>();
 		}
 
 		public Cache(IEqualityComparer<TKey> comparer)
-			: this(new ConcurrentDictionary<TKey, TValue>(comparer))
 		{
+			_values = new ConcurrentDictionary<TKey, TValue>(comparer);
 		}
 
 		public Cache(IDictionary<TKey, TValue> dictionary)
@@ -46,18 +46,20 @@ namespace Magnum.Collections
 		}
 
 		public Cache(Func<TKey, TValue> missingValueProvider)
-			: this(new ConcurrentDictionary<TKey, TValue>(), missingValueProvider)
 		{
+			_values = new ConcurrentDictionary<TKey, TValue>();
+			_missingValueProvider = missingValueProvider;
 		}
 
 		public Cache(Func<TKey, TValue> missingValueProvider, IEqualityComparer<TKey> comparer)
-			: this(new ConcurrentDictionary<TKey, TValue>(comparer), missingValueProvider)
 		{
+			_values = new ConcurrentDictionary<TKey, TValue>(comparer);
+			_missingValueProvider = missingValueProvider;
 		}
 
 		public Cache(IDictionary<TKey, TValue> dictionary, Func<TKey, TValue> missingValueProvider)
-			: this(dictionary)
 		{
+			_values = new ConcurrentDictionary<TKey, TValue>(dictionary);
 			_missingValueProvider = missingValueProvider;
 		}
 

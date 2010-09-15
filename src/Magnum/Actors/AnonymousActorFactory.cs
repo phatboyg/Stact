@@ -13,7 +13,6 @@
 namespace Magnum.Actors
 {
 	using System;
-	using Channels;
 	using Fibers;
 	using Internal;
 
@@ -39,9 +38,9 @@ namespace Magnum.Actors
 
 			var inbox = new ActorInbox<AnonymousActor>(fiber, scheduler);
 
-			initializer(inbox);
-
 			_factory(fiber, scheduler, inbox);
+
+			fiber.Add(() => initializer(inbox));
 
 			return inbox;
 		}

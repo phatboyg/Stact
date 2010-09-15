@@ -13,7 +13,6 @@
 namespace Magnum.Actors.Internal
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Linq;
 	using Channels;
 	using Collections;
@@ -35,7 +34,6 @@ namespace Magnum.Actors.Internal
 	{
 		readonly UntypedChannel _adapter;
 		readonly Fiber _fiber;
-		readonly object _iFuckingHateThisShit = new object();
 		readonly Cache<Type, object> _inboxCache;
 		readonly Scheduler _scheduler;
 		ChannelConnection _actorConnection;
@@ -87,15 +85,14 @@ namespace Magnum.Actors.Internal
 
 		Inbox<T> GetInbox<T>()
 		{
-			lock (_iFuckingHateThisShit)
-				return _inboxCache.Retrieve(typeof(T), type =>
-					{
-						var inbox = new BufferedInbox<T>(_fiber, _scheduler);
+			return _inboxCache.Retrieve(typeof(T), type =>
+				{
+					var inbox = new BufferedInbox<T>(_fiber, _scheduler);
 
-						_adapter.Connect(x => x.AddChannel(inbox));
+					_adapter.Connect(x => x.AddChannel(inbox));
 
-						return inbox;
-					}) as Inbox<T>;
+					return inbox;
+				}) as Inbox<T>;
 		}
 
 		public void BindChannelsForInstance(TActor actor)

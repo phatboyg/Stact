@@ -13,24 +13,29 @@
 namespace Magnum.Actors
 {
 	using System;
-	using Channels;
 	using Fibers;
 
 
 	public class AnonymousActor :
 		Actor
 	{
-		static AnonymousActorFactory _factory;
+		static readonly AnonymousActorFactory _factory;
+		readonly Fiber _fiber;
+		readonly Inbox _inbox;
+		readonly Scheduler _scheduler;
 
 		static AnonymousActor()
 		{
 			_factory = new AnonymousActorFactory(() => new ThreadPoolFiber(),
 			                                     () => new TimerScheduler(new ThreadPoolFiber()),
-			                                     (f, s, i) => new AnonymousActor());
+			                                     (f, s, i) => new AnonymousActor(f, s, i));
 		}
 
-		AnonymousActor()
+		AnonymousActor(Fiber fiber, Scheduler scheduler, Inbox inbox)
 		{
+			_fiber = fiber;
+			_scheduler = scheduler;
+			_inbox = inbox;
 		}
 
 		public static ActorInstance New(Action<Inbox> initializer)
