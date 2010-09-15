@@ -16,9 +16,9 @@ namespace Magnum.Actors.Internal
 	using Channels;
 
 
-	public interface WithinTimeout
+	public interface WithinSentRequest<TRequest>
 	{
-		void Receive<T>(SelectiveConsumer<T> consumer);
-		void Otherwise(Action timeoutCallback);
+		WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer);
+		WithinSentRequest<TRequest> Otherwise(Action timeoutCallback);
 	}
 }

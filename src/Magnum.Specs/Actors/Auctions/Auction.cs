@@ -102,6 +102,16 @@ namespace Magnum.Specs.Actors.Auctions
 
 	public class Buy
 	{
+		public Buy(Guid token, int quantity)
+		{
+			Token = token;
+			Quantity = quantity;
+		}
+
+		public Buy()
+		{
+		}
+
 		public Guid Token { get; set; }
 		public int Quantity { get; set; }
 	}

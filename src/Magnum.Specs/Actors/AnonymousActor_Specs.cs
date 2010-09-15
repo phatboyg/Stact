@@ -32,11 +32,9 @@ namespace Magnum.Specs.Actors
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
-						.Within(30.Seconds(), x =>
-							{
-								x.Receive<Response<Status>>(m => status => response.Complete(status.Body));
-								x.Receive<Response<Ended>>(m => ended => { });
-							});
+						.Within(30.Seconds())
+						.Receive<Response<Status>>(m => status => response.Complete(status.Body))
+						.Receive<Response<Ended>>(m => ended => { });
 				});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -60,11 +58,9 @@ namespace Magnum.Specs.Actors
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
-						.Within(30.Seconds(), x =>
-							{
-								x.Receive<Response<Status>>(m => status => { });
-								x.Receive<Response<Ended>>(m => ended => response.Complete(ended.Body));
-							});
+						.Within(30.Seconds())
+						.Receive<Response<Status>>(m => status => { })
+						.Receive<Response<Ended>>(m => ended => response.Complete(ended.Body));
 				});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -72,6 +68,41 @@ namespace Magnum.Specs.Actors
 			response.Value.AuctionId.ShouldEqual(Id);
 		}
 	}
+
+
+	[Scenario]
+	public class Sending_another_request_inside_a_receive :
+		Given_an_auction_actor_instance
+	{
+		[Then]
+		public void Should_properly_handle_the_response()
+		{
+			var response = new FutureChannel<Purchased>();
+			decimal price = 0.0m;
+
+			ActorInstance instance = AnonymousActor.New(inbox =>
+				{
+					Auction.Request(new Ask(Id), inbox)
+						.Within(30.Seconds())
+						.Receive<Response<Status>>(m => status =>
+							{
+								price = status.Body.CurrentBid;
+								Auction.Request(new Buy(status.Body.Token, 1), inbox)
+									.Within(30.Seconds())
+									.Receive<Response<Purchased>>(pm => pmsg => response.Complete(pmsg.Body))
+									.Otherwise(() => { });
+							})
+						.Receive<Response<Ended>>(m => ended => { });
+				});
+
+			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
+
+			response.Value.AuctionId.ShouldEqual(Id);
+			response.Value.Quantity.ShouldEqual(1);
+			response.Value.Price.ShouldEqual(price);
+		}
+	}
+
 
 	[Scenario]
 	public class When_one_receive_handler_has_been_called :
@@ -86,16 +117,14 @@ namespace Magnum.Specs.Actors
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
-						.Within(10.Seconds(), x =>
+						.Within(10.Seconds())
+						.Receive<Response<Status>>(m => status =>
 							{
-								x.Receive<Response<Status>>(m => status =>
-									{
-										statusResponse.Complete(status.Body);
-										Auction.Send(new End());
-										Auction.Request(new Ask(Id), inbox);
-									});
-								x.Receive<Response<Ended>>(m => ended => endedResponse.Complete(ended.Body));
-							});
+								statusResponse.Complete(status.Body);
+								Auction.Send(new End());
+								Auction.Request(new Ask(Id), inbox);
+							})
+						.Receive<Response<Ended>>(m => ended => endedResponse.Complete(ended.Body));
 				});
 
 			statusResponse.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -116,11 +145,9 @@ namespace Magnum.Specs.Actors
 			ActorInstance instance = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(new Guid()), inbox)
-						.Within(1.Seconds(), x =>
-							{
-								x.Receive<Response<Status>>(m => status => { });
-								x.Otherwise(() => response.Complete(true));
-							});
+						.Within(1.Seconds())
+						.Receive<Response<Status>>(m => status => { })
+						.Otherwise(() => response.Complete(true));
 				});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for otherwise to be called");

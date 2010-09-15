@@ -18,8 +18,8 @@ namespace Magnum.Actors.Internal
 	using Extensions;
 
 
-	public class WithinTimeoutImpl :
-		WithinTimeout
+	public class WithinSentRequestImpl<TRequest> :
+		WithinSentRequest<TRequest>
 	{
 		readonly Inbox _inbox;
 		readonly IList<PendingReceive> _receives;
@@ -27,17 +27,15 @@ namespace Magnum.Actors.Internal
 		bool _handled;
 		Action _timeoutCallback = DoNothing;
 
-		public WithinTimeoutImpl(Inbox inbox, TimeSpan timeout, Action<WithinTimeout> initializer)
+		public WithinSentRequestImpl(Inbox inbox, TimeSpan timeout)
 		{
 			_inbox = inbox;
 			_timeout = timeout;
 
 			_receives = new List<PendingReceive>();
-
-			initializer(this);
 		}
 
-		public void Receive<T>(SelectiveConsumer<T> consumer)
+		public WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer)
 		{
 			PendingReceive receive = _inbox.Receive<T>(candidate =>
 				{
@@ -54,11 +52,15 @@ namespace Magnum.Actors.Internal
 				}, _timeout, HandleTimeout);
 
 			_receives.Add(receive);
+
+			return this;
 		}
 
-		public void Otherwise(Action timeoutCallback)
+		public WithinSentRequest<TRequest> Otherwise(Action timeoutCallback)
 		{
 			_timeoutCallback = timeoutCallback;
+
+			return this;
 		}
 
 		void HandleTimeout()

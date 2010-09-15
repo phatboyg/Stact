@@ -116,8 +116,8 @@
     <Compile Include="Actors\Internal\ExitImpl.cs" />
     <Compile Include="Actors\Internal\KillImpl.cs" />
     <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />
-    <Compile Include="Actors\Internal\WithinTimeout.cs" />
-    <Compile Include="Actors\Internal\WithinTimeoutImpl.cs" />
+    <Compile Include="Actors\Internal\WithinSentRequest.cs" />
+    <Compile Include="Actors\Internal\WithinSentRequestImpl.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
     <Compile Include="Actors\Messages\Exit.cs" />
     <Compile Include="Actors\Messages\Kill.cs" />
