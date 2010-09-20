@@ -12,16 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Cryptography
 {
-    using System;
-    using System.IO;
-
-    public interface ICryptographyService :
-        IDisposable
+    public interface MacHashingService
     {
-        EncryptedText Encrypt(string clearText);
-        string Decrypt(EncryptedText cipherText);
-
-        EncryptedStream Encrypt(Stream clearStream);
-        Stream Decrypt(EncryptedStream cipherStream);
+        string Hash(string clearText);
+        byte[] Hash(byte[] clearBytes);
     }
 }

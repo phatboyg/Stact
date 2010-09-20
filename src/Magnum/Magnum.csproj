@@ -181,6 +181,8 @@
     <Compile Include="Channels\ExtensionsForContext.cs" />
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Actors\Internal\ActorInbox.cs" />
+    <Compile Include="Cryptography\MacHashingService.cs" />
+    <Compile Include="Cryptography\Sha512HMacHashingService.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConnectionConfigurator.cs" />
