@@ -113,6 +113,17 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Auditing\AuditEvent.cs" />
+    <Compile Include="Auditing\Internal\AuditEventImpl.cs" />
+    <Compile Include="Auditing\Internal\EventListener.cs" />
+    <Compile Include="Auditing\ExtensionsToConfiguration.cs" />
+    <Compile Include="Auditing\Internal\AuditEventConsumerChannelVisitor.cs" />
+    <Compile Include="Auditing\PostUpdateEvent.cs" />
+    <Compile Include="Auditing\Internal\PostUpdateEventImpl.cs" />
+    <Compile Include="Auditing\Internal\PostUpdateListener.cs" />
+    <Compile Include="Auditing\PreUpdateEvent.cs" />
+    <Compile Include="Auditing\Internal\PreUpdateEventImpl.cs" />
+    <Compile Include="Auditing\Internal\PreUpdateListener.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForNHibernateInstanceChannel.cs" />
     <Compile Include="Channels\Configuration\ExtentionsForNHibernateConnectionChannel.cs" />
     <Compile Include="Channels\Configuration\NHibernateChannelProviderConfigurator.cs" />
@@ -155,6 +166,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -113,6 +113,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auditing\Configuration_Specs.cs" />
+    <Compile Include="Auditing\Visitor_Specs.cs" />
     <Compile Include="Channels\InMemoryStateMachine_Specs.cs" />
     <Compile Include="Channels\Load_Specs.cs" />
     <Compile Include="Channels\NHibernateInstanceChannel_Specs.cs" />

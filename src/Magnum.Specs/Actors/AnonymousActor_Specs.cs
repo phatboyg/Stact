@@ -29,7 +29,7 @@ namespace Magnum.Specs.Actors
 		{
 			var response = new FutureChannel<Status>();
 
-			ActorInstance instance = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -55,7 +55,7 @@ namespace Magnum.Specs.Actors
 
 			var response = new FutureChannel<Ended>();
 
-			ActorInstance instance = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -80,7 +80,7 @@ namespace Magnum.Specs.Actors
 			var response = new FutureChannel<Purchased>();
 			decimal price = 0.0m;
 
-			ActorInstance instance = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -114,7 +114,7 @@ namespace Magnum.Specs.Actors
 			var statusResponse = new FutureChannel<Status>();
 			var endedResponse = new FutureChannel<Ended>();
 
-			ActorInstance instance = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(10.Seconds())
@@ -142,7 +142,7 @@ namespace Magnum.Specs.Actors
 		{
 			var response = new FutureChannel<bool>();
 
-			ActorInstance instance = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(new Guid()), inbox)
 						.Within(1.Seconds())
