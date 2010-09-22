@@ -113,8 +113,11 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Auditing\AuditEvent.cs" />
+    <Compile Include="Auditing\Internal\AuditEvent.cs" />
     <Compile Include="Auditing\Internal\AuditEventImpl.cs" />
+    <Compile Include="Auditing\Internal\EntityAuditEventImpl.cs" />
+    <Compile Include="Auditing\Internal\EntityEventListener.cs" />
+    <Compile Include="Auditing\Internal\PropertyChange.cs" />
     <Compile Include="Auditing\Internal\EventListener.cs" />
     <Compile Include="Auditing\ExtensionsToConfiguration.cs" />
     <Compile Include="Auditing\Internal\AuditEventConsumerChannelVisitor.cs" />

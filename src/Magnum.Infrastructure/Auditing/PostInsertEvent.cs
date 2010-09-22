@@ -12,8 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Auditing
 {
+	using System.Collections.Generic;
+	using Internal;
+
+
 	public interface PostInsertEvent<T> :
 		AuditEvent
 	{
+		T Entity { get; }
+		IList<PropertyChange> Changes { get; }
 	}
 }

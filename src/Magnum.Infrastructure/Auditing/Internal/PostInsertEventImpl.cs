@@ -12,16 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Auditing.Internal
 {
-	using System;
-
-
 	public class PostInsertEventImpl<T> :
-		AuditEventImpl,
+		EntityAuditEventImpl<T>,
 		PostInsertEvent<T>
 	{
-		public PostInsertEventImpl(DateTime timestamp, string user)
-			: base(timestamp, user)
-		{
-		}
 	}
 }

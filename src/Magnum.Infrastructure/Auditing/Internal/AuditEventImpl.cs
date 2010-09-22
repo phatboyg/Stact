@@ -13,17 +13,13 @@
 namespace Magnum.Infrastructure.Auditing.Internal
 {
 	using System;
+	using System.Security.Principal;
 
 
 	public abstract class AuditEventImpl
 	{
-		protected AuditEventImpl(DateTime timestamp, string user)
-		{
-			Timestamp = timestamp;
-			User = user;
-		}
-
-		public DateTime Timestamp { get; private set; }
-		public string User { get; private set; }
+		public Guid SessionId { get; set; }
+		public DateTime Timestamp { get; set; }
+		public IIdentity Identity { get; set; }
 	}
 }

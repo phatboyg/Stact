@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="Auditing\Configuration_Specs.cs" />
     <Compile Include="Auditing\NHibernateEvent_Specs.cs" />
+    <Compile Include="Auditing\PreInsert_Specs.cs" />
     <Compile Include="Auditing\Visitor_Specs.cs" />
     <Compile Include="Channels\InMemoryStateMachine_Specs.cs" />
     <Compile Include="Channels\Load_Specs.cs" />

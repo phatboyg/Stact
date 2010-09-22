@@ -16,37 +16,40 @@ namespace Magnum.Infrastructure.Auditing.Internal
 	using System.Collections.Generic;
 	using Magnum.Channels;
 	using NHibernate.Event;
+	using NHibernate.Persister.Entity;
 
 
-	public class PostUpdateListener :
-		EntityEventListener<PostUpdateEvent>,
-		IPostUpdateEventListener
+	public abstract class EntityEventListener<TEvent> :
+		EventListener<TEvent>
+		where TEvent : AbstractEvent
 	{
-		public PostUpdateListener(UntypedChannel channel, HashSet<Type> types)
+		public EntityEventListener(UntypedChannel channel, HashSet<Type> types)
 			: base(channel, types)
 		{
 		}
 
-		public void OnPostUpdate(PostUpdateEvent @event)
+		protected static IList<PropertyChange> GetChanges(IEntityPersister persister, object[] state)
 		{
-			OnEvent(@event);
-		}
+			IList<PropertyChange> changes = new List<PropertyChange>();
 
-		protected override Type GetDispatchKey(PostUpdateEvent e)
-		{
-			return e.Entity.GetType();
-		}
+			for (int i = 0; i < state.Length; i++)
+			{
+				if (state[i] == null)
+					continue;
 
-		protected override void SendEvent<T>(PostUpdateEvent e)
-		{
-			var entity = (T)e.Entity;
-			IList<PropertyChange> changes = GetChanges(e.Persister, e.State);
+				string propertyName = persister.PropertyNames[i];
+				object value = state[i];
 
-			PostUpdateEventImpl<T> message = SetGenericEventProperties(new PostUpdateEventImpl<T>(), e.Session);
-			message.Entity = entity;
-			message.Changes = changes;
+				changes.Add(new PropertyChange
+					{
+						Name = propertyName,
+						Value = value,
+						OriginalValue = null,
+					});
 
-			Send<PostUpdateEvent<T>>(message);
+				// consider whether or not we recurse into the entity for additional changes
+			}
+			return changes;
 		}
 	}
 }

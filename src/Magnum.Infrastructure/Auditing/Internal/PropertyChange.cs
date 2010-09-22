@@ -12,9 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Auditing.Internal
 {
-	public class PreUpdateEventImpl<T> :
-		EntityAuditEventImpl<T>,
-		PreUpdateEvent<T>
+	public class PropertyChange
 	{
+		public string Name { get; set; }
+		public object OriginalValue { get; set; }
+		public object Value { get; set; }
 	}
 }

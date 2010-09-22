@@ -17,6 +17,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 	using System.Security.Principal;
 	using System.Threading;
 	using Collections;
+	using Extensions;
 	using Magnum.Channels;
 	using NHibernate.Event;
 	using Reflection;
@@ -56,26 +57,37 @@ namespace Magnum.Infrastructure.Auditing.Internal
 			return SendEvent<T>;
 		}
 
-		protected virtual string GetUser()
-		{
-			const string unknown = "(Unknown)";
-
-			IPrincipal principal = Thread.CurrentPrincipal;
-			if (principal == null)
-				return unknown;
-
-			IIdentity identity = principal.Identity;
-			if (identity == null)
-				return unknown;
-
-			return identity.Name ?? unknown;
-		}
-
 		protected void Send<T>(T message)
 		{
 			_channel.Send(message);
 		}
 
 		protected abstract void SendEvent<T>(TEvent e);
+
+		protected static IIdentity GetIdentity()
+		{
+			IPrincipal principal = Thread.CurrentPrincipal;
+			if (principal != null)
+			{
+				IIdentity identity = principal.Identity;
+				if (identity != null)
+				{
+					if (identity.IsAuthenticated && identity.Name.IsNotEmpty())
+						return identity;
+				}
+			}
+
+			return WindowsIdentity.GetCurrent();
+		}
+
+		protected T SetGenericEventProperties<T>(T auditEvent, IEventSource session)
+			where T : AuditEventImpl
+		{
+			auditEvent.SessionId = session.SessionId;
+			auditEvent.Timestamp = new DateTime(session.Timestamp);
+			auditEvent.Identity = EventListener<PostInsertEvent>.GetIdentity();
+
+			return auditEvent;
+		}
 	}
 }

@@ -20,6 +20,13 @@ namespace Magnum.Infrastructure.Auditing
 
 	public static class ExtensionsToConfiguration
 	{
+		/// <summary>
+		/// Examines the channel network and identifies any audit event consumers and connects
+		/// the appropriate event listeners to the NHibernate configuration so that events are
+		/// sent from NHibernate to the channel network
+		/// </summary>
+		/// <param name="cfg">The NHibernate configuration being modified</param>
+		/// <param name="channel">The channel containing the audit event listeners</param>
 		public static void AddAuditEventListeners(this Configuration cfg, UntypedChannel channel)
 		{
 			var configurators = new EventListenerConfigurator[]

@@ -19,7 +19,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 
 
 	public class PostInsertListener :
-		EventListener<PostInsertEvent>,
+		EntityEventListener<PostInsertEvent>,
 		IPostInsertEventListener
 	{
 		public PostInsertListener(UntypedChannel channel, HashSet<Type> types)
@@ -37,9 +37,17 @@ namespace Magnum.Infrastructure.Auditing.Internal
 			return e.Entity.GetType();
 		}
 
-		protected override void SendEvent<T>(PostInsertEvent @event)
+		protected override void SendEvent<T>(PostInsertEvent e)
 		{
-			var message = new PostInsertEventImpl<T>(SystemUtil.UtcNow, GetUser());
+			//var persister = e.Persister as IOuterJoinLoadable;
+			//string tableName = e.Persister.PropertySpaces[0];
+
+			var entity = (T)e.Entity;
+			IList<PropertyChange> changes = GetChanges(e.Persister, e.State);
+
+			PostInsertEventImpl<T> message = SetGenericEventProperties(new PostInsertEventImpl<T>(), e.Session);
+			message.Entity = entity;
+			message.Changes = changes;
 
 			Send<PostInsertEvent<T>>(message);
 		}

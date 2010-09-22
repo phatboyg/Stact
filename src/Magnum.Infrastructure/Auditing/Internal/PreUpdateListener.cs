@@ -19,7 +19,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 
 
 	public class PreUpdateListener :
-		EventListener<PreUpdateEvent>,
+		EntityEventListener<PreUpdateEvent>,
 		IPreUpdateEventListener
 	{
 		public PreUpdateListener(UntypedChannel channel, HashSet<Type> types)
@@ -39,9 +39,14 @@ namespace Magnum.Infrastructure.Auditing.Internal
 			return e.Entity.GetType();
 		}
 
-		protected override void SendEvent<T>(PreUpdateEvent @event)
+		protected override void SendEvent<T>(PreUpdateEvent e)
 		{
-			var message = new PreUpdateEventImpl<T>(SystemUtil.UtcNow, GetUser());
+			var entity = (T)e.Entity;
+			IList<PropertyChange> changes = GetChanges(e.Persister, e.State);
+
+			PreUpdateEventImpl<T> message = SetGenericEventProperties(new PreUpdateEventImpl<T>(), e.Session);
+			message.Entity = entity;
+			message.Changes = changes;
 
 			Send<PreUpdateEvent<T>>(message);
 		}

@@ -16,7 +16,6 @@ namespace Magnum.Infrastructure.Specs.Auditing
 	using Infrastructure.Auditing;
 	using Magnum.Channels;
 	using NHibernate;
-	using NHibernate.Cfg;
 	using NUnit.Framework;
 	using TestFramework;
 

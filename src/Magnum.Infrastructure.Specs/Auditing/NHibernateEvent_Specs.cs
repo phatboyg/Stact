@@ -33,8 +33,8 @@ namespace Magnum.Infrastructure.Specs.Auditing
 			using (ITransaction transaction = session.BeginTransaction())
 			{
 				var instance = session.Get<TestInstance>(27);
-
-				session.Delete(instance);
+				if(instance != null)
+					session.Delete(instance);
 
 				transaction.Commit();
 			}

@@ -19,7 +19,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 
 
 	public class PreInsertListener :
-		EventListener<PreInsertEvent>,
+		EntityEventListener<PreInsertEvent>,
 		IPreInsertEventListener
 	{
 		public PreInsertListener(UntypedChannel channel, HashSet<Type> types)
@@ -39,9 +39,17 @@ namespace Magnum.Infrastructure.Auditing.Internal
 			return e.Entity.GetType();
 		}
 
-		protected override void SendEvent<T>(PreInsertEvent @event)
+		protected override void SendEvent<T>(PreInsertEvent e)
 		{
-			var message = new PreInsertEventImpl<T>(SystemUtil.UtcNow, GetUser());
+			//var persister = e.Persister as IOuterJoinLoadable;
+			//string tableName = e.Persister.PropertySpaces[0];
+
+			var entity = (T)e.Entity;
+			IList<PropertyChange> changes = GetChanges(e.Persister, e.State);
+
+			PreInsertEventImpl<T> message = SetGenericEventProperties(new PreInsertEventImpl<T>(), e.Session);
+			message.Entity = entity;
+			message.Changes = changes;
 
 			Send<PreInsertEvent<T>>(message);
 		}
