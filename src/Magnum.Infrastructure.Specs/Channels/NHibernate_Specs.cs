@@ -58,6 +58,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 
 
 	[Scenario]
+	[Category("Database")]
 	public class Given_an_empty_test_instance_table :
 		Given_an_nhibernate_session_factory
 	{

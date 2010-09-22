@@ -17,10 +17,12 @@ namespace Magnum.Infrastructure.Specs.Auditing
 	using Magnum.Channels;
 	using NHibernate;
 	using NHibernate.Cfg;
+	using NUnit.Framework;
 	using TestFramework;
 
 
 	[Scenario]
+	[Category("Database")]
 	public class When_configuring_event_listeners_for_nhibernate :
 		Given_an_nhibernate_session_factory
 	{
