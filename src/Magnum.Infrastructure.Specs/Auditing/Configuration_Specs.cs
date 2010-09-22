@@ -30,11 +30,6 @@ namespace Magnum.Infrastructure.Specs.Auditing
 		Future<PostUpdateEvent<TestInstance>> _postUpdate;
 		Future<PreUpdateEvent<TestInstance>> _preUpdate;
 
-		protected override void OnExposeConfiguration(Configuration cfg)
-		{
-			cfg.AddAuditEventListeners(_auditChannel);
-		}
-
 		[When]
 		public void Configuring_event_listeners_for_nhibernate()
 		{
@@ -54,6 +49,11 @@ namespace Magnum.Infrastructure.Specs.Auditing
 						.HandleOnCallingThread();
 				});
 
+			ExtraConfiguration = cfg =>
+				{
+					cfg.AddAuditEventListeners(_auditChannel);
+				};
+
 			using (ISession session = SessionFactory.OpenSession())
 			using (ITransaction transaction = session.BeginTransaction())
 			{
@@ -68,7 +68,7 @@ namespace Magnum.Infrastructure.Specs.Auditing
 			using (ITransaction transaction = session.BeginTransaction())
 			{
 				var instance = session.Get<TestInstance>(27);
-				instance.Value = 123.45m;
+				instance.UpdateValueChannel.Send(new UpdateValue(27, 123.45m));
 
 				transaction.Commit();
 			}
@@ -84,6 +84,26 @@ namespace Magnum.Infrastructure.Specs.Auditing
 		public void Should_call_the_post_update_event_handler()
 		{
 			_postUpdate.IsCompleted.ShouldBeTrue();
+		}
+
+		[Test]
+		public void Should_have_one_previous_value()
+		{
+			TestInstance instance;
+
+			using (ISession session = SessionFactory.OpenSession())
+			using (ITransaction transaction = session.BeginTransaction())
+			{
+				instance = session.Get<TestInstance>(27);
+
+				transaction.Commit();
+			}
+
+			instance.Value.ShouldEqual(123.45m);
+			instance.PreviousValues.ShouldNotBeNull();
+			instance.PreviousValues.Count.ShouldEqual(1);
+			instance.PreviousValues[0].Value.ShouldEqual(0.0m);
+
 		}
 	}
 }

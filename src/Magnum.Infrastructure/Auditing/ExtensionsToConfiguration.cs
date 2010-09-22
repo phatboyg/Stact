@@ -12,55 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Auditing
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
+	using Extensions;
 	using Internal;
 	using Magnum.Channels;
 	using NHibernate.Cfg;
-	using NHibernate.Event;
 
 
 	public static class ExtensionsToConfiguration
 	{
 		public static void AddAuditEventListeners(this Configuration cfg, UntypedChannel channel)
 		{
-			var visitor = new AuditEventConsumerChannelVisitor();
+			var configurators = new EventListenerConfigurator[]
+				{
+					new PreInsertEventConfigurator(),
+					new PostInsertEventConfigurator(),
+					new PreUpdateEventConfigurator(),
+					new PostUpdateEventConfigurator(),
+				};
 
-			visitor.GetAuditEvents(channel);
+			var visitor = new AuditEventConsumerChannelVisitor(configurators);
+			visitor.Configure(channel);
 
-			cfg.AddPreUpdateListener(channel, visitor.PreUpdateTypes);
-			cfg.AddPostUpdateListener(channel, visitor.PostUpdateTypes);
-		}
-
-		static void AddPreUpdateListener(this Configuration cfg, UntypedChannel channel, IEnumerable<Type> preUpdateTypes)
-		{
-			var types = new HashSet<Type>(preUpdateTypes);
-			if (types.Count == 0)
-				return;
-
-			IPreUpdateEventListener listener = new PreUpdateListener(channel, types);
-
-			cfg.EventListeners.PreUpdateEventListeners = cfg.EventListeners.PreUpdateEventListeners == null
-			                                             	? new[] {listener}
-			                                             	: cfg.EventListeners.PreUpdateEventListeners
-			                                             	  	.Concat(Enumerable.Repeat(listener, 1))
-			                                             	  	.ToArray();
-		}
-
-		static void AddPostUpdateListener(this Configuration cfg, UntypedChannel channel, IEnumerable<Type> postUpdateTypes)
-		{
-			var types = new HashSet<Type>(postUpdateTypes);
-			if (types.Count == 0)
-				return;
-
-			IPostUpdateEventListener listener = new PostUpdateListener(channel, types);
-
-			cfg.EventListeners.PostUpdateEventListeners = cfg.EventListeners.PostUpdateEventListeners == null
-			                                              	? new[] {listener}
-			                                              	: cfg.EventListeners.PostUpdateEventListeners
-			                                              	  	.Concat(Enumerable.Repeat(listener, 1))
-			                                              	  	.ToArray();
+			configurators.Each(x => x.ApplyTo(cfg, channel));
 		}
 	}
 }

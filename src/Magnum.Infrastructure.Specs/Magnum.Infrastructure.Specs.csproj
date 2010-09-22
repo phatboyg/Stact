@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auditing\Configuration_Specs.cs" />
+    <Compile Include="Auditing\NHibernateEvent_Specs.cs" />
     <Compile Include="Auditing\Visitor_Specs.cs" />
     <Compile Include="Channels\InMemoryStateMachine_Specs.cs" />
     <Compile Include="Channels\Load_Specs.cs" />
@@ -121,6 +122,8 @@
     <Compile Include="Channels\NHibernateStateMachine_Specs.cs" />
     <Compile Include="Channels\NHibernateSubscription_Specs.cs" />
     <Compile Include="Channels\NHibernate_Specs.cs" />
+    <Compile Include="Channels\PreviousValue.cs" />
+    <Compile Include="Channels\PreviousValueMap.cs" />
     <Compile Include="Channels\TestInstance.cs" />
     <Compile Include="Channels\TestInstanceMap.cs" />
     <Compile Include="Channels\TestStateMachineInstanceMap.cs" />

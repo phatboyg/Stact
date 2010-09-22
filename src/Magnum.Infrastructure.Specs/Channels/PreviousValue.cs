@@ -12,24 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Magnum.Infrastructure.Specs.Channels
 {
-	using FluentNHibernate.Mapping;
+	using System;
 
 
-	public class TestInstanceMap :
-		ClassMap<TestInstance>
+	public class PreviousValue
 	{
-		public TestInstanceMap()
+		public PreviousValue(DateTime updateDate, decimal value)
 		{
-			Not.LazyLoad();
-
-			Id(x => x.Id)
-				.GeneratedBy.Assigned().UnsavedValue(0);
-
-			Map(x => x.Value);
-
-			HasMany(x => x.PreviousValues)
-				.Not.LazyLoad()
-				.Cascade.AllDeleteOrphan();
+			UpdateDate = updateDate;
+			Value = value;
 		}
+
+		public PreviousValue()
+		{
+		}
+
+		public virtual int Id { get; private set; }
+		public virtual decimal Value { get; set; }
+		public virtual DateTime UpdateDate { get; set; }
 	}
 }

@@ -32,13 +32,35 @@ namespace Magnum.Infrastructure.Specs.Channels
 			get
 			{
 				if (_sessionFactory == null)
-					_sessionFactory = CreateSessionFactory(OnExposeConfiguration);
+					_sessionFactory = CreateSessionFactory();
 
 				return _sessionFactory;
 			}
 		}
 
-		static ISessionFactory CreateSessionFactory(Action<Configuration> onExposeConfiguration)
+		protected Action<Configuration> ExtraConfiguration { get; set; }
+
+		[Given]
+		public void An_nhibernate_session_factory()
+		{
+		}
+
+		[Finally]
+		public void Afterwards_man()
+		{
+			ResetSessionFactory();
+		}
+
+		protected void ResetSessionFactory()
+		{
+			if (_sessionFactory != null)
+			{
+				_sessionFactory.Dispose();
+				_sessionFactory = null;
+			}
+		}
+
+		protected ISessionFactory CreateSessionFactory()
 		{
 			return Fluently.Configure()
 				.Mappings(m => m.FluentMappings.AddFromAssemblyOf<Given_an_nhibernate_session_factory>())
@@ -46,13 +68,10 @@ namespace Magnum.Infrastructure.Specs.Channels
 					{
 						new SchemaExport(cfg).Create(false, true);
 
-						onExposeConfiguration(cfg);
+						if (ExtraConfiguration != null)
+							ExtraConfiguration(cfg);
 					})
 				.BuildSessionFactory();
-		}
-
-		protected virtual void OnExposeConfiguration(Configuration cfg)
-		{
 		}
 	}
 

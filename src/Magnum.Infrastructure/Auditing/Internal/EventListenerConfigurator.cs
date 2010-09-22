@@ -10,26 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Specs.Channels
+namespace Magnum.Infrastructure.Auditing.Internal
 {
-	using FluentNHibernate.Mapping;
+	using System;
+	using System.Collections.Generic;
+	using Magnum.Channels;
+	using NHibernate.Cfg;
 
 
-	public class TestInstanceMap :
-		ClassMap<TestInstance>
+	public interface EventListenerConfigurator
 	{
-		public TestInstanceMap()
-		{
-			Not.LazyLoad();
-
-			Id(x => x.Id)
-				.GeneratedBy.Assigned().UnsavedValue(0);
-
-			Map(x => x.Value);
-
-			HasMany(x => x.PreviousValues)
-				.Not.LazyLoad()
-				.Cascade.AllDeleteOrphan();
-		}
+		IEnumerable<Type> Types { get; }
+		bool IsHandled<T>();
+		void ApplyTo(Configuration cfg, UntypedChannel channel);
 	}
 }

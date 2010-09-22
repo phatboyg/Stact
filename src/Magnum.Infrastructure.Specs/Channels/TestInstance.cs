@@ -13,6 +13,7 @@
 namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System;
+	using System.Collections.Generic;
 	using Fibers;
 	using Magnum.Channels;
 
@@ -39,8 +40,11 @@ namespace Magnum.Infrastructure.Specs.Channels
 		public virtual int Id { get; private set; }
 		public virtual decimal Value { get; set; }
 
+		public virtual IList<PreviousValue> PreviousValues { get; set; }
+
 		void HandleUpdateValue(UpdateValue m)
 		{
+			PreviousValues.Add(new PreviousValue(SystemUtil.UtcNow, Value));
 			Value += m.Value;
 			m.MarkAsReceived();
 		}

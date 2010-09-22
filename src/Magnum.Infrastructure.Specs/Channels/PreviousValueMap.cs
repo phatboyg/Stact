@@ -15,21 +15,18 @@ namespace Magnum.Infrastructure.Specs.Channels
 	using FluentNHibernate.Mapping;
 
 
-	public class TestInstanceMap :
-		ClassMap<TestInstance>
+	public class PreviousValueMap :
+		ClassMap<PreviousValue>
 	{
-		public TestInstanceMap()
+		public PreviousValueMap()
 		{
 			Not.LazyLoad();
 
 			Id(x => x.Id)
 				.GeneratedBy.Assigned().UnsavedValue(0);
 
+			Map(x => x.UpdateDate);
 			Map(x => x.Value);
-
-			HasMany(x => x.PreviousValues)
-				.Not.LazyLoad()
-				.Cascade.AllDeleteOrphan();
 		}
 	}
 }

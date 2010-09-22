@@ -33,12 +33,17 @@ namespace Magnum.Infrastructure.Specs.Auditing
 						.UsingConsumer(msg => { });
 				});
 
-			var visitor = new AuditEventConsumerChannelVisitor();
-			
-			visitor.GetAuditEvents(network);
+			var configurator = new PostUpdateEventConfigurator();
 
-			visitor.PostUpdateTypes.Count().ShouldEqual(1);
-			visitor.PostUpdateTypes.First().ShouldEqual(typeof(TestInstance));
+			var visitor = new AuditEventConsumerChannelVisitor(new EventListenerConfigurator[]
+				{
+					configurator,
+				});
+
+			visitor.Configure(network);
+
+			configurator.Types.Count().ShouldEqual(1);
+			configurator.Types.First().ShouldEqual(typeof(TestInstance));
 		}
 	}
 }

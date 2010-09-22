@@ -10,26 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Specs.Channels
+namespace Magnum.Infrastructure.Auditing.Internal
 {
-	using FluentNHibernate.Mapping;
+	using NHibernate.Event;
 
 
-	public class TestInstanceMap :
-		ClassMap<TestInstance>
+	public class PostUpdateEventConfigurator :
+		EventListenerConfiguratorImpl<IPostUpdateEventListener>
 	{
-		public TestInstanceMap()
+		public PostUpdateEventConfigurator()
+			: base(typeof(PostUpdateEvent<>), (a, b) => new PostUpdateListener(a, b), x => x.PostUpdateEventListeners)
 		{
-			Not.LazyLoad();
-
-			Id(x => x.Id)
-				.GeneratedBy.Assigned().UnsavedValue(0);
-
-			Map(x => x.Value);
-
-			HasMany(x => x.PreviousValues)
-				.Not.LazyLoad()
-				.Cascade.AllDeleteOrphan();
 		}
 	}
 }

@@ -23,31 +23,19 @@ namespace Magnum.Infrastructure.Auditing.Internal
 	public class AuditEventConsumerChannelVisitor :
 		ChannelVisitor
 	{
-		readonly HashSet<Type> _postUpdateTypes;
-		readonly HashSet<Type> _preUpdateTypes;
+		readonly IEnumerable<EventListenerConfigurator> _configurators;
 
-		public AuditEventConsumerChannelVisitor()
+		public AuditEventConsumerChannelVisitor(IEnumerable<EventListenerConfigurator> configurators)
 		{
-			_preUpdateTypes = new HashSet<Type>();
-			_postUpdateTypes = new HashSet<Type>();
+			_configurators = configurators;
 		}
 
-		public IEnumerable<Type> PostUpdateTypes
-		{
-			get { return _postUpdateTypes; }
-		}
-
-		public IEnumerable<Type> PreUpdateTypes
-		{
-			get { return _preUpdateTypes; }
-		}
-
-		public void GetAuditEvents<T>(Channel<T> channel)
+		public void Configure<T>(Channel<T> channel)
 		{
 			Visit(channel);
 		}
 
-		public void GetAuditEvents(UntypedChannel channel)
+		public void Configure(UntypedChannel channel)
 		{
 			Visit(channel);
 		}
@@ -56,11 +44,9 @@ namespace Magnum.Infrastructure.Auditing.Internal
 		{
 			if (typeof(T).Implements<AuditEvent>())
 			{
-				if (typeof(T).Implements(typeof(PreUpdateEvent<>)))
-					_preUpdateTypes.Add(typeof(T).GetGenericTypeDeclarations(typeof(PreUpdateEvent<>)).First());
-				else if (typeof(T).Implements(typeof(PostUpdateEvent<>)))
-					_postUpdateTypes.Add(typeof(T).GetGenericTypeDeclarations(typeof(PostUpdateEvent<>)).First());
-				else
+				bool matched = _configurators.Any(x => x.IsHandled<T>());
+
+				if (!matched)
 					throw new InvalidOperationException("The audit type is not yet configured: " + typeof(T).ToShortTypeName());
 			}
 
