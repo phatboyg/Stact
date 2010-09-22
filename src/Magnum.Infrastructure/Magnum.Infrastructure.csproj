@@ -139,6 +139,9 @@
     <Compile Include="Data\NHibernateUnitOfWork.cs" />
     <Compile Include="Data\NHibernateRepository.cs" />
     <Compile Include="Data\NHibernateRepositoryFactory.cs" />
+    <Compile Include="Data\Primitives\Primitive.cs" />
+    <Compile Include="Data\Primitives\PrimitiveConvention.cs" />
+    <Compile Include="Data\Primitives\PrimitiveUserType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine\StateMachineUserType.cs" />
     <Compile Include="UriUserType.cs" />

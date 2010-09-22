@@ -126,6 +126,10 @@
     <Compile Include="Channels\TestStateMachineInstanceMap.cs" />
     <Compile Include="Data\NHibernateTransaction_Specs.cs" />
     <Compile Include="Data\NHibernateUnitOfWork_Specs.cs" />
+    <Compile Include="Data\Primitives\DatabaseBehaviour_Specs.cs" />
+    <Compile Include="Data\Primitives\Money.cs" />
+    <Compile Include="Data\Primitives\MoneyWithNoEqualsOverrides.cs" />
+    <Compile Include="Data\Primitives\ObjectBehaviour_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine\StateMachineStorage_Specs.cs" />
   </ItemGroup>
