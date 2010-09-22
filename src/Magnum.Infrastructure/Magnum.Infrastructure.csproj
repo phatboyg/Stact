@@ -128,6 +128,9 @@
     <Compile Include="Data\NHibernateUnitOfWork.cs" />
     <Compile Include="Data\NHibernateRepository.cs" />
     <Compile Include="Data\NHibernateRepositoryFactory.cs" />
+    <Compile Include="Data\Primitives\Primitive.cs" />
+    <Compile Include="Data\Primitives\PrimitiveConvention.cs" />
+    <Compile Include="Data\Primitives\PrimitiveUserType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine\StateMachineUserType.cs" />
     <Compile Include="UriUserType.cs" />
@@ -155,6 +158,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
