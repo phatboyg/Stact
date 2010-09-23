@@ -10,26 +10,32 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Parsers.Json
+namespace Magnum.Serialization.Yaml
 {
-	public class BooleanJsonElement :
-		JsonElement
+	using System.Collections.Generic;
+
+	public class YamlIListSerializer<T> :
+		YamlElementParser<T>,
+		TypeSerializer<IList<T>>
 	{
-		private BooleanJsonElement(bool value)
+		public YamlIListSerializer(TypeSerializer<T> elementTypeSerializer)
+			: base(elementTypeSerializer)
 		{
-			Value = value;
 		}
 
-		public bool Value { get; private set; }
-
-		public override string ToString()
+		public TypeReader<IList<T>> GetReader()
 		{
-			return Value.ToString().ToLower();
+			return value =>
+				{
+					List<T> elements = ListReader(value);
+
+					return elements;
+				};
 		}
 
-		public static JsonElement New(bool value)
+		public TypeWriter<IList<T>> GetWriter()
 		{
-			return new BooleanJsonElement(value);
+			return ListWriter;
 		}
 	}
 }
