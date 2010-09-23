@@ -10,15 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Auditing
+namespace Magnum.Infrastructure.Specs.Auditing.Complete
 {
-	using System.Collections.Generic;
-	using Internal;
+	using Channels;
+	using Infrastructure.Auditing;
+	using Magnum.StateMachine;
 
 
-	public interface PostInsertEvent<T> :
-		EntityAuditEvent<T>
+	public class TestInstanceAuditBinding :
+		StateMachineBinding<TestInstanceAudit, AuditKey>
 	{
-		IList<PropertyChange> Changes { get; }
+		public TestInstanceAuditBinding()
+		{
+			Id(x => x.Id);
+
+			Bind(TestInstanceAudit.Inserted, GetKey);
+		}
+
+		AuditKey GetKey(EntityAuditEvent<TestInstance> e)
+		{
+			return new AuditKey
+				{
+					TestInstanceId = e.Entity.Id,
+					SessionId = e.SessionId,
+					Timestamp = e.Timestamp,
+				};
+		}
 	}
 }

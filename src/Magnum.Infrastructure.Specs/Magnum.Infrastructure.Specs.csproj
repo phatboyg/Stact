@@ -66,36 +66,41 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Antlr3.Runtime, Version=3.1.0.39271, Culture=neutral, PublicKeyToken=3a9cab8f8d22bfb7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\nhibernate\Required_Bins\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\Castle.DynamicProxy2.dll</HintPath>
+      <HintPath>..\..\lib\castle.core\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FluentNHibernate, Version=0.1.0.483, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
+    <Reference Include="Castle.DynamicProxy2, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\FluentNHibernate.dll</HintPath>
+      <HintPath>..\..\lib\castle.dynamicproxy2\net-3.5\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
-    <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+    <Reference Include="FluentNHibernate, Version=1.0.0.593, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\lib\fluentnhibernate\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\nhibernate\Required_Bins\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\log4net.dll</HintPath>
+      <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate, Version=2.0.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+    <Reference Include="NHibernate, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\NHibernate.dll</HintPath>
+      <HintPath>..\..\lib\nhibernate\Required_Bins\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate.ByteCode.Castle">
-      <HintPath>..\..\lib\FluentNHibernate\NHibernate.ByteCode.Castle.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate.Linq, Version=1.0.0.0, Culture=neutral, PublicKeyToken=444cf6a87fdab271, processorArchitecture=MSIL">
+    <Reference Include="NHibernate.ByteCode.Castle, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\FluentNHibernate\NHibernate.Linq.dll</HintPath>
+      <HintPath>..\..\lib\nhibernate\Required_For_LazyLoading\Castle\NHibernate.ByteCode.Castle.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.Linq, Version=1.0.0.4000, Culture=neutral, PublicKeyToken=444cf6a87fdab271, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\nhibernate\Required_Bins\NHibernate.Linq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -113,9 +118,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auditing\Complete\AuditKey.cs" />
+    <Compile Include="Auditing\Complete\AuditKeyMap.cs" />
+    <Compile Include="Auditing\Complete\Audit_Specs.cs" />
     <Compile Include="Auditing\Configuration_Specs.cs" />
     <Compile Include="Auditing\NHibernateEvent_Specs.cs" />
     <Compile Include="Auditing\PreInsert_Specs.cs" />
+    <Compile Include="Auditing\Complete\TestInstanceAudit.cs" />
+    <Compile Include="Auditing\Complete\TestInstanceAuditBinding.cs" />
+    <Compile Include="Auditing\Complete\TestInstanceAuditMap.cs" />
     <Compile Include="Auditing\Visitor_Specs.cs" />
     <Compile Include="Channels\InMemoryStateMachine_Specs.cs" />
     <Compile Include="Channels\Load_Specs.cs" />

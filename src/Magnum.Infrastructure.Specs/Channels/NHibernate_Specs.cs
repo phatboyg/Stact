@@ -14,6 +14,7 @@ namespace Magnum.Infrastructure.Specs.Channels
 {
 	using System;
 	using FluentNHibernate.Cfg;
+	using Infrastructure.StateMachine;
 	using NHibernate;
 	using NHibernate.Cfg;
 	using NHibernate.Tool.hbm2ddl;
@@ -63,7 +64,13 @@ namespace Magnum.Infrastructure.Specs.Channels
 		protected ISessionFactory CreateSessionFactory()
 		{
 			return Fluently.Configure()
-				.Mappings(m => m.FluentMappings.AddFromAssemblyOf<Given_an_nhibernate_session_factory>())
+				.Mappings(m =>
+					{
+						m.FluentMappings
+							.Conventions
+							.Add<StateMachineUserTypeConvention>()
+							.AddFromAssemblyOf<Given_an_nhibernate_session_factory>();
+					})
 				.ExposeConfiguration(cfg =>
 					{
 						new SchemaExport(cfg).Create(false, true);

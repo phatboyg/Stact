@@ -10,16 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Auditing.Internal
+namespace Magnum.Infrastructure.Specs.Auditing.Complete
 {
-	using System;
-	using System.Security.Principal;
+	using FluentNHibernate.Mapping;
 
 
-	public interface AuditEvent
-	{
-		Guid SessionId { get; }
-		DateTime Timestamp { get; }
-		IIdentity Identity { get; }
-	}
+//	public class AuditKeyMap :
+//		ClassMap<AuditKey>
+//	{
+//		public AuditKeyMap()
+//		{
+//			CompositeId()
+//				.KeyProperty(x => x.SessionId, "SessionId")
+//				.KeyProperty(x => x.Timestamp, "Timestamp")
+//				.KeyProperty(x => x.TestInstanceId, "TestInstanceId");
+//		}
+//	}
 }

@@ -19,7 +19,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 	public abstract class AuditEventImpl
 	{
 		public Guid SessionId { get; set; }
-		public DateTime Timestamp { get; set; }
+		public long Timestamp { get; set; }
 		public IIdentity Identity { get; set; }
 	}
 }

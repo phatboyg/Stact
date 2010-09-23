@@ -10,15 +10,27 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Auditing
+namespace Magnum.Infrastructure.Specs.Auditing.Complete
 {
-	using System.Collections.Generic;
-	using Internal;
+	using FluentNHibernate.Mapping;
 
 
-	public interface PostInsertEvent<T> :
-		EntityAuditEvent<T>
+	public class TestInstanceAuditMap :
+		ClassMap<TestInstanceAudit>
 	{
-		IList<PropertyChange> Changes { get; }
+		public TestInstanceAuditMap()
+		{
+			CompositeId(x => x.Id)
+				.KeyProperty(x => x.SessionId)
+				.KeyProperty(x => x.Timestamp)
+				.KeyProperty(x => x.TestInstanceId);
+
+			Map(x => x.CurrentState);
+
+			Map(x => x.Value);
+			Map(x => x.OriginalValue);
+
+			Map(x => x.UserName);
+		}
 	}
 }

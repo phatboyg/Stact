@@ -10,34 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Magnum.Infrastructure.Specs.Channels
+namespace Magnum.Infrastructure.Specs.Auditing.Complete
 {
 	using System;
 
 
-	public class PreviousValue
+	[Serializable]
+	public class AuditKey
 	{
-		public PreviousValue(DateTime updateDate, decimal value)
-		{
-			UpdateDate = updateDate;
-			Value = value;
-		}
+		public virtual Guid SessionId { get; set; }
+		public virtual long Timestamp { get; set; }
+		public virtual int TestInstanceId { get; set; }
 
-		public PreviousValue()
-		{
-		}
-
-		public virtual int Id { get; private set; }
-		public virtual decimal Value { get; set; }
-		public virtual DateTime UpdateDate { get; set; }
-
-		public virtual bool Equals(PreviousValue other)
+		public virtual bool Equals(AuditKey other)
 		{
 			if (ReferenceEquals(null, other))
 				return false;
 			if (ReferenceEquals(this, other))
 				return true;
-			return other.Id == Id;
+			return other.SessionId.Equals(SessionId) && other.Timestamp == Timestamp && other.TestInstanceId == TestInstanceId;
 		}
 
 		public override bool Equals(object obj)
@@ -46,14 +37,20 @@ namespace Magnum.Infrastructure.Specs.Channels
 				return false;
 			if (ReferenceEquals(this, obj))
 				return true;
-			if (obj.GetType() != typeof(PreviousValue))
+			if (obj.GetType() != typeof(AuditKey))
 				return false;
-			return Equals((PreviousValue)obj);
+			return Equals((AuditKey)obj);
 		}
 
 		public override int GetHashCode()
 		{
-			return Id;
+			unchecked
+			{
+				int result = SessionId.GetHashCode();
+				result = (result*397) ^ Timestamp.GetHashCode();
+				result = (result*397) ^ TestInstanceId;
+				return result;
+			}
 		}
 	}
 }

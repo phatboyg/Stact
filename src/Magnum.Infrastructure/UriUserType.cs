@@ -18,6 +18,7 @@ namespace Magnum.Infrastructure
 	using NHibernate.SqlTypes;
 	using NHibernate.UserTypes;
 
+
 	/// <summary>
 	/// An NHibernate user type for storing a Uri
 	/// </summary>

@@ -84,7 +84,7 @@ namespace Magnum.Infrastructure.Auditing.Internal
 			where T : AuditEventImpl
 		{
 			auditEvent.SessionId = session.SessionId;
-			auditEvent.Timestamp = new DateTime(session.Timestamp);
+			auditEvent.Timestamp = session.Timestamp;
 			auditEvent.Identity = EventListener<PostInsertEvent>.GetIdentity();
 
 			return auditEvent;

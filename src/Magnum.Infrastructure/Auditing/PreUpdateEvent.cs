@@ -17,9 +17,8 @@ namespace Magnum.Infrastructure.Auditing
 
 
 	public interface PreUpdateEvent<T> :
-		AuditEvent
+		EntityAuditEvent<T>
 	{
-		T Entity { get; }
 		IList<PropertyChange> Changes { get; }
 	}
 }

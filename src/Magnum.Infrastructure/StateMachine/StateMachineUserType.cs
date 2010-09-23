@@ -22,7 +22,8 @@ namespace Magnum.Infrastructure.StateMachine
 	using NHibernate.UserTypes;
 	using Threading;
 
-    /// <summary>
+
+	/// <summary>
 	/// An NHibernate user type for persisting state machines current state
 	/// </summary>
 	[Serializable]
