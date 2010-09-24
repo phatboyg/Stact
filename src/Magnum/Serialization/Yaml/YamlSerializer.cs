@@ -1,11 +1,12 @@
 using System;
 using System.IO;
 using System.Text;
-using Magnum.Parsers.Yaml;
+
 
 namespace Magnum.Serialization.Yaml
 {
     public class YamlSerializer :
+        YamlParser,
         Serializer
     {
         static readonly TypeSerializerCache _typeSerializerCache;
@@ -21,11 +22,11 @@ namespace Magnum.Serialization.Yaml
 		public void Serialize<T>(T obj, TextWriter writer)
 		{
 			YamlTypeSerializer serializer = GetTypeSerializer(typeof(T));
-            //TODO: add start here
-            writer.Write("---");
+            writer.Write(DocumentStartString);
+
 			serializer.Serialize(obj, writer.Write);
-            //TODO: add stop here
-            writer.Write("...");
+
+            writer.Write(DocumentEndString);
 		}
 
 		public string Serialize<T>(T obj)

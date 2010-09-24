@@ -18,7 +18,6 @@ namespace Magnum.Serialization.Yaml
     using System.Linq;
     using Collections;
     using Extensions;
-    using Parsers.Yaml;
     using Reflection;
     using TypeSerializers;
 

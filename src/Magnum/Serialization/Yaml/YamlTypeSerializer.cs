@@ -1,8 +1,9 @@
-using System;
-using Magnum.Serialization;
-
-namespace Magnum.Parsers.Yaml
+namespace Magnum.Serialization.Yaml
 {
+    using System;
+    using Magnum.Serialization;
+
+
     public interface YamlTypeSerializer
     {
         void Serialize<T>(T obj, Action<string> output);

@@ -16,6 +16,8 @@ namespace Magnum.Serialization.Yaml
 
 	public class YamlParser
 	{
+	    public const string DocumentStartString = "---";
+	    public const string DocumentEndString = "...";
 		public const string DoubleQuoteString = "\"\"";
 		public const string EmptyMap = "{}";
 		public const char ItemSeparator = ','; //TODO: hmmm \r\n is on oddity
