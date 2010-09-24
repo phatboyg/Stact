@@ -21,8 +21,11 @@ namespace Magnum.Serialization.Yaml
 		public void Serialize<T>(T obj, TextWriter writer)
 		{
 			YamlTypeSerializer serializer = GetTypeSerializer(typeof(T));
-
+            //TODO: add start here
+            writer.Write("---");
 			serializer.Serialize(obj, writer.Write);
+            //TODO: add stop here
+            writer.Write("...");
 		}
 
 		public string Serialize<T>(T obj)

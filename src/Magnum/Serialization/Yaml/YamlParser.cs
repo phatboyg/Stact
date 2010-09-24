@@ -18,19 +18,19 @@ namespace Magnum.Serialization.Yaml
 	{
 		public const string DoubleQuoteString = "\"\"";
 		public const string EmptyMap = "{}";
-		public const char ItemSeparator = ',';
-		public const string ItemSeparatorString = ",";
+		public const char ItemSeparator = ','; //TODO: hmmm \r\n is on oddity
+		public const string ItemSeparatorString = "\r\n";
 		public const char ListEnd = ']';
 		public const string ListEndString = "]";
 		public const char ListStart = '[';
 		public const string ListStartString = "[";
-		public const char MapEnd = '}';
-		public const string MapEndString = "}";
 		public const string MapNullValue = "\"\"";
 		public const char MapSeparator = ':';
 		public const string MapSeparatorString = ":";
-		public const char MapStart = '{';
-		public const string MapStartString = "{";
+		public const char MapStart = ' ';//TODO: we don't have a start, just an indent increase
+		public const string MapStartString = "\r\n"; //TODO: chris
+		public const char MapEnd = ' '; //TODO: we don't have a stop just a dedent 
+		public const string MapEndString = "\r\n";
 		public const char Quote = '"';
 		public const string QuoteString = "\"";
 		public static readonly char[] EscapeChars = new[] {Quote, ItemSeparator, MapStart, MapEnd, ListStart, ListEnd};

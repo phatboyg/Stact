@@ -34,7 +34,16 @@ namespace Magnum.Specs.Serialization
 
 			string text = _serializer.Serialize(parentMessage);
 
-			text.ShouldEqual("{Body:{Boo:true,Dub:3.14159,Flt:1.234,Int:47,Long:8675309,Now:2010-03-01}}");
+			text.ShouldEqual(@"---
+Body:
+Boo:true
+Dub:3.14159
+Flt:1.234
+Int:47
+Long:8675309
+Now:2010-03-01
+
+...");
 		}
 
 		[Test, Explicit]
@@ -73,7 +82,9 @@ namespace Magnum.Specs.Serialization
 
 			string text = _serializer.Serialize(message);
 
-			text.ShouldEqual("{Id:" + message.Id.ToString("N") + "}");
+			text.ShouldEqual(@"---
+Id:" + message.Id.ToString("N") + @"
+...");
 		}
 
 		[Test]
@@ -91,7 +102,14 @@ namespace Magnum.Specs.Serialization
 
 			string text = _serializer.Serialize(message);
 
-			text.ShouldEqual("{Boo:true,Dub:3.14159,Flt:1.234,Int:47,Long:8675309,Now:2010-03-01}");
+			text.ShouldEqual(@"---
+Boo:true
+Dub:3.14159
+Flt:1.234
+Int:47
+Long:8675309
+Now:2010-03-01
+...");
 		}
 
 		private Serializer _serializer;
