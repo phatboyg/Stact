@@ -295,9 +295,9 @@
       <Project>{17018E20-C3AE-4E82-AB5C-40CE810345C9}</Project>
       <Name>Magnum.FileSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Magnum.Logging.Log4Net\Magnum.Logging.Log4Net.csproj">
+    <ProjectReference Include="..\Magnum.ForLog4Net\Magnum.ForLog4Net.csproj">
       <Project>{66A05739-70C4-47D7-B7D0-69C038864457}</Project>
-      <Name>Magnum.Logging.Log4Net</Name>
+      <Name>Magnum.ForLog4Net</Name>
     </ProjectReference>
     <ProjectReference Include="..\Magnum.TestFramework\Magnum.TestFramework.csproj">
       <Project>{D741FD13-08D7-4A71-916E-0D61816D8A80}</Project>
