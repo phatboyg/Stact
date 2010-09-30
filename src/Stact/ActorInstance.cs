@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,10 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
+	using Channels;
+
+
 	/// <summary>
-	/// Declares the class is an actor. This is a marker interface.
+	/// An ActorInstance is used to send messages to an actor instance. This abstraction
+	/// helps avoid tight coupling with the actor class definition.
 	/// </summary>
-	public interface Actor
+	public interface ActorInstance :
+		UntypedChannel
 	{
 	}
 }

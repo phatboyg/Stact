@@ -16,14 +16,16 @@ namespace Stact.Actors
 	using Fibers;
 	using Internal;
 
-
+	/// <summary>
+	/// Creates anonymous actor instances using the provided factory methods
+	/// </summary>
 	public class AnonymousActorFactory
 	{
 		readonly Func<Fiber, Scheduler, Inbox, AnonymousActor> _factory;
-		readonly Func<Fiber> _fiberFactory;
-		readonly Func<Scheduler> _schedulerFactory;
+		readonly FiberFactory _fiberFactory;
+		readonly SchedulerFactory _schedulerFactory;
 
-		public AnonymousActorFactory(Func<Fiber> fiberFactory, Func<Scheduler> schedulerFactory,
+		public AnonymousActorFactory(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
 		                             Func<Fiber, Scheduler, Inbox, AnonymousActor> factory)
 		{
 			_fiberFactory = fiberFactory;

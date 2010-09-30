@@ -10,18 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors
+namespace Stact
 {
-	using Channels;
+	public interface Response<T> :
+		Message<T>
+	{
+	}
 
 
-	/// <summary>
-	/// A reference to an actor instance
-	/// This is mostly an abstraction to avoid passing around the infrastructure
-	/// interface of an Inbox
-	/// </summary>
-	public interface ActorInstance :
-		UntypedChannel
+	public interface Response<TRequest, T> :
+		Response<T>
 	{
 	}
 }

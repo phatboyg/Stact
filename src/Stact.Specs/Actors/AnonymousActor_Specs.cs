@@ -15,10 +15,8 @@ namespace Stact.Specs.Actors
 	using System;
 	using Auctions;
 	using Magnum.Extensions;
-	using Stact.Actors;
-	using Stact.Channels;
-	using Magnum.Extensions;
 	using Magnum.TestFramework;
+	using Stact.Channels;
 
 
 	[Scenario]

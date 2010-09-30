@@ -10,16 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Channels
+namespace Stact.Fibers
 {
-	public interface Response<T> :
-		Message<T>
-	{
-	}
-
-
-	public interface Response<TRequest, T> :
-		Response<T>
-	{
-	}
+	public delegate Scheduler SchedulerFactory();
 }

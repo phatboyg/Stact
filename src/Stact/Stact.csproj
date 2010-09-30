@@ -104,16 +104,15 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actor.cs" />
+    <Compile Include="ActorInstance.cs" />
     <Compile Include="Actors\ActorCache.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
-    <Compile Include="Actors\ActorInstance.cs" />
     <Compile Include="Actors\ActorProvider.cs" />
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\ActorRepository.cs" />
-    <Compile Include="Actors\AnonymousActor.cs" />
+    <Compile Include="AnonymousActor.cs" />
     <Compile Include="Actors\AnonymousActorFactory.cs" />
-    <Compile Include="Actors\ExtensionsToActorInstance.cs" />
-    <Compile Include="Actors\ExtensionsToInbox.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\DelegateActorFactory.cs" />
     <Compile Include="Actors\Internal\ExitImpl.cs" />
@@ -138,15 +137,14 @@
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelProviderConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfiguratorImpl.cs" />
-    <Compile Include="Channels\Message.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Channels\Internal\MessageImpl.cs" />
-    <Compile Include="Channels\Request.cs" />
+    <Compile Include="Request.cs" />
     <Compile Include="Channels\Internal\RequestImpl.cs" />
-    <Compile Include="Channels\Response.cs" />
+    <Compile Include="Response.cs" />
     <Compile Include="Channels\Internal\ResponseImpl.cs" />
     <Compile Include="Actors\SentRequest.cs" />
     <Compile Include="Actors\Internal\SentRequestImpl.cs" />
-    <Compile Include="Channels\ExtensionsForContext.cs" />
     <Compile Include="Channels\TypedChannelAdapter.cs" />
     <Compile Include="Actors\Internal\ActorInbox.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurator.cs" />
@@ -218,7 +216,8 @@
     <Compile Include="Channels\Configuration\Internal\DisconnectChannelVisitor.cs" />
     <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Actors\Internal\BufferedInbox.cs" />
-    <Compile Include="Actors\Inbox.cs" />
+    <Compile Include="Actors\Inbox.1.cs" />
+    <Compile Include="Inbox.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
@@ -237,6 +236,7 @@
     <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ScheduledActionList.cs" />
     <Compile Include="Fibers\Internal\SingleScheduledAction.cs" />
+    <Compile Include="Fibers\SchedulerFactory.cs" />
     <Compile Include="Fibers\SynchronousFiber.cs" />
     <Compile Include="Fibers\SharedFiberProvider.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
