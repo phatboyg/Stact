@@ -13,17 +13,17 @@
   <property name="dirs.drop" value="${dirs.current}\${path.to.toplevel}\${folder.code_drop}" overwrite="false" />
   <property name="folder.app.drop" value="${project.name}" overwrite="false" />
   
-  <property name="dirs.merge.from" value="${dirs.drop}\MagnumMerge" overwrite="false" />
+  <property name="dirs.merge.from" value="${dirs.drop}\StactMerge" overwrite="false" />
   <property name="dirs.merge.to" value="${dirs.drop}\merge" overwrite="false" />
-  <property name="file.merge.name" value="Magnum.dll" overwrite="false" />
+  <property name="file.merge.name" value="Stact.dll" overwrite="false" />
   <!-- exe winexe dll -->
   <property name="merge.target.type" value="dll" overwrite="false" />
 
   <target name="go" depends="set_environment_variables, prepare_merge_from_directory" />
  
   <target name="set_environment_variables">
-    <property name="dirs.merge.from" value="${dirs.drop}\MagnumMerge" />
-    <property name="file.merge.name" value="Magnum.dll" />
+    <property name="dirs.merge.from" value="${dirs.drop}\StactMerge" />
+    <property name="file.merge.name" value="Stact.dll" />
     <property name="merge.target.type" value="dll" />
     <setenv name="uc.dirs.merge.from" value="${dirs.merge.from}"/>
     <setenv name="uc.file.merge.name" value="${file.merge.name}"/>
@@ -33,16 +33,13 @@
   <target name="prepare_merge_from_directory">
     <echo message="Before merging - Get things into ${dirs.merge.from}."/>
     <mkdir dir="${dirs.merge.from}" />
-    <echo message="Copying files from ${dirs.drop}\${folder.app.drop}\Magnum to ${dirs.merge.from}."/>
+    <echo message="Copying files from ${dirs.drop}\${folder.app.drop}\Stact to ${dirs.merge.from}."/>
     <copy todir="${dirs.merge.from}">
-      <fileset basedir="${dirs.drop}\${folder.app.drop}\Magnum">
+      <fileset basedir="${dirs.drop}\${folder.app.drop}\Stact">
+        <include name="Stact.dll" />
+        <include name="Stact.xml" />
+        <include name="Stact.pdb" />
         <include name="Magnum.dll" />
-        <include name="Magnum.xml" />
-        <include name="Magnum.pdb" />
-        <include name="Magnum.FileSystem.*" />
-        <include name="System.Threading.*" />
-        <include name="Ionic.Zip.*" />
-        <include name="Newtonsoft.Json.*" />
       </fileset>
     </copy>
   </target>

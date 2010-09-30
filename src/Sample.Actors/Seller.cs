@@ -13,8 +13,8 @@
 namespace Sample.Actors
 {
 	using System;
-	using Magnum.Actors;
-	using Magnum.Channels;
+	using Stact.Actors;
+	using Stact.Channels;
 
 	public class Seller :
 		Actor

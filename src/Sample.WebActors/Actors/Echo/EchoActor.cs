@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.WebActors.Actors.Echo
 {
-	using Magnum.Channels;
-	using Magnum.Fibers;
+	using Stact.Channels;
+	using Stact.Fibers;
 
 	/// <summary>
 	/// A simple actor that echoes the input to the output channel

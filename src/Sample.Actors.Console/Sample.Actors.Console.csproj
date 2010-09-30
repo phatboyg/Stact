@@ -69,9 +69,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Magnum\Magnum.csproj">
+    <ProjectReference Include="..\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum</Name>
+      <Name>Stact</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sample.Actors\Sample.Actors.csproj">
       <Project>{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}</Project>

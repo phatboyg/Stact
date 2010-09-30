@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.WebActors", "Sample.WebActors.csproj", "{BFEF0078-BC40-4DBA-97C2-AC8C5795DDC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "..\Magnum\Magnum.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact", "..\Stact\Stact.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Web", "..\Magnum.Web\Magnum.Web.csproj", "{716A460C-0F8C-4336-8448-5ED8C24F31EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.Web", "..\Stact.Web\Stact.Web.csproj", "{716A460C-0F8C-4336-8448-5ED8C24F31EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.TestFramework", "..\Magnum.TestFramework\Magnum.TestFramework.csproj", "{D741FD13-08D7-4A71-916E-0D61816D8A80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.TestFramework", "..\Stact.TestFramework\Stact.TestFramework.csproj", "{D741FD13-08D7-4A71-916E-0D61816D8A80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "..\Magnum.Specs\Magnum.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.Specs", "..\Stact.Specs\Stact.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Web.Specs", "..\Magnum.Web.Specs\Magnum.Web.Specs.csproj", "{296C852C-988C-4E01-A653-E3BF95536049}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.Web.Specs", "..\Stact.Web.Specs\Stact.Web.Specs.csproj", "{296C852C-988C-4E01-A653-E3BF95536049}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Actors", "..\Sample.Actors\Sample.Actors.csproj", "{21FDEA6E-13A1-4AE9-9E0A-70E7D34955D7}"
 EndProject

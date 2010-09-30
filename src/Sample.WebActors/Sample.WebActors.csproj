@@ -111,13 +111,13 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Magnum.Web\Magnum.Web.csproj">
+    <ProjectReference Include="..\Stact.Web\Stact.Web.csproj">
       <Project>{716A460C-0F8C-4336-8448-5ED8C24F31EB}</Project>
-      <Name>Magnum.Web</Name>
+      <Name>Stact.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Magnum\Magnum.csproj">
+    <ProjectReference Include="..\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum</Name>
+      <Name>Stact</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

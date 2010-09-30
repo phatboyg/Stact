@@ -88,9 +88,9 @@
     <Compile Include="TriggerEnabled.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Magnum\Magnum.csproj">
+    <ProjectReference Include="..\..\..\src\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
-      <Name>Magnum %28Magnum\Magnum%29</Name>
+      <Name>Stact %28Stact\Stact%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

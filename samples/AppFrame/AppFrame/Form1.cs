@@ -15,7 +15,7 @@ namespace AppFrame
     using System;
     using System.ComponentModel;
     using System.Windows.Forms;
-    using Magnum.Pipeline;
+    using Stact.Pipeline;
 
     public partial class MainForm :
         Form

@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.Actors.Console
 {
-	using Magnum.Actors;
-	using Magnum.Fibers;
+	using Stact.Actors;
+	using Stact.Fibers;
 	using StructureMap;
 
 	public class Bootstrapper

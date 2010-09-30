@@ -1,7 +1,7 @@
-Magnum - A library for the LARGER than average developer
+Stact - A library for the LARGER than average developer
 =======
 
-![Magnum](Magnum/raw/master/docs/logo/magnum_logo.png "Magnum - For the LARGER than average developer")
+![Stact](Stact/raw/master/docs/logo/Stact_logo.png "Stact - For the LARGER than average developer")
 
 # LICENSE
 Apache 2.0 - see docs/legal (just LEGAL in the zip folder)
@@ -11,7 +11,7 @@ NOTE: If you are looking at the source - please run build.bat before opening the
 
 # INFO
 ## Overview
-Magnum is a collection of different tools that help you work smarter.  
+Stact is a collection of different tools that help you work smarter.  
   
 * State Machine  
 * Fast Model Binding  
@@ -19,24 +19,24 @@ Magnum is a collection of different tools that help you work smarter.
 * Concurrency  
 * Expanding...  
 
-Check out the site at [http://magnum-project.net/](http://magnum-project.net/)  
+Check out the site at [http://Stact-project.net/](http://Stact-project.net/)  
   
-## Getting started with Magnum
+## Getting started with Stact
 ### Downloads
-You can also download magnum from the build server at [http://teamcity.codebetter.com](http://teamcity.codebetter.com).
+You can also download Stact from the build server at [http://teamcity.codebetter.com](http://teamcity.codebetter.com).
   
 ### Gems & Nubular (Nu)  
-If you have Ruby 1.8.6+ (and Gems 1.3.7+) installed, you can get the current release of Magnum to your machine the fastest!  
+If you have Ruby 1.8.6+ (and Gems 1.3.7+) installed, you can get the current release of Stact to your machine the fastest!  
   
 1. Ensure you have nu installed. 'gem install nu'  
-2. At the top level directory (trunk or branch name) type 'nu install magnum' for bringing in magnum to your project.  
+2. At the top level directory (trunk or branch name) type 'nu install Stact' for bringing in Stact to your project.  
   
 ### Source
 This is the best way to get to the bleeding edge of what we are doing.  
 
 1. Clone the source down to your machine.  
-  `git clone git://github.com/phatboyg/Magnum.git`  
-2. Type `cd magnum`  
+  `git clone git://github.com/phatboyg/Stact.git`  
+2. Type `cd Stact`  
 3. Type `git config core.autocrlf false` to set line endings to auto convert for this repository  
 4. Type `git status`. You should not see any files to change.
 5. Run `build.bat`. NOTE: You must have git on the path (open a regular command line and type git).  

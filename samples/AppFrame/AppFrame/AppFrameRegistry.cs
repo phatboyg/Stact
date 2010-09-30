@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace AppFrame
 {
-    using Magnum.Pipeline;
-    using Magnum.Pipeline.Segments;
+    using Stact.Pipeline;
+    using Stact.Pipeline.Segments;
     using StructureMap.Attributes;
     using StructureMap.Configuration.DSL;
 

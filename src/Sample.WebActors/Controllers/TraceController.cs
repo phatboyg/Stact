@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace Sample.WebActors.Controllers
 {
 	using System.Text;
-	using Magnum.Web.ValueProviders;
+	using Stact.Web.ValueProviders;
 
 	public class TraceController : Controller
     {

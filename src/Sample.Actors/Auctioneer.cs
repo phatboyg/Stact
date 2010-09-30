@@ -12,9 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.Actors
 {
-	using Magnum.Actors;
-	using Magnum.Channels;
-	using Magnum.Fibers;
+	using Stact.Actors;
+	using Stact.Channels;
+	using Stact.Fibers;
 	using Messages;
 
 	public class Auctioneer :

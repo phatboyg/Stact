@@ -13,10 +13,10 @@
 namespace Sample.WebActors.Actors.Auction
 {
 	using System;
-	using Magnum;
-	using Magnum.Actors;
-	using Magnum.Channels;
-	using Magnum.Fibers;
+	using Stact;
+	using Stact.Actors;
+	using Stact.Channels;
+	using Stact.Fibers;
 
 	/// <summary>
 	///   A model representation of an auction, of which each auction running in a system would have

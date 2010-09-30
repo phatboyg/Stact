@@ -13,7 +13,7 @@
 namespace AppFrame
 {
     using System.Windows.Forms;
-    using Magnum.Pipeline;
+    using Stact.Pipeline;
 
     public class TriggerController
     {

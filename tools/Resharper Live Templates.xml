@@ -39,7 +39,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Stact.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -70,7 +70,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Stact.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -126,7 +126,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Stact.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -157,7 +157,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Stact.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -246,7 +246,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Stact.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -277,7 +277,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Stact.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -366,7 +366,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Magnum.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="90b721cf-c7f0-4713-8572-d541904d983b" shortcut="ndevent" description="New Data Event" text="public static Stact.StateMachine.Event&lt;$TYPE$&gt; $NAME$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>
@@ -397,7 +397,7 @@
     </Variables>
     <CustomProperties />
   </Template>
-  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Magnum.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
+  <Template uid="5e43991b-0f7b-44aa-9c1b-ad6cf1dcab3e" shortcut="nstate" description="New State" text="public static Stact.StateMachine.State $STATE$ { get; set; }&#xD;&#xA;$END$" reformat="True" shortenQualifiedReferences="True">
     <Context>
       <CSharpContext context="TypeMember" minimumLanguageVersion="3.0" />
     </Context>

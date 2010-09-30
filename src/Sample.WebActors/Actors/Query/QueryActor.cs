@@ -14,9 +14,9 @@ namespace Sample.WebActors.Actors.Query
 {
 	using System.Threading;
 	using Echo;
-	using Magnum.Channels;
-	using Magnum.Fibers;
-	using Magnum.Logging;
+	using Stact.Channels;
+	using Stact.Fibers;
+	using Stact.Logging;
 
 	public class QueryActor
 	{

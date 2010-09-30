@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFrame", "AppFrame\AppFrame.csproj", "{DD6E72BD-AB5A-4D9A-8B67-0DA65F49B456}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Magnum", "Magnum", "{AAA63F83-7E1F-45C2-B72C-5C267EE61375}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stact", "Stact", "{AAA63F83-7E1F-45C2-B72C-5C267EE61375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum", "..\..\src\Magnum\Magnum.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact", "..\..\src\Stact\Stact.csproj", "{C3650C32-0850-48B4-BE71-ECE9FACBD356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Magnum.Specs", "..\..\src\Magnum.Specs\Magnum.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.Specs", "..\..\src\Stact.Specs\Stact.Specs.csproj", "{0BEBC5E0-BDC4-421C-971B-2C5BE3204F7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

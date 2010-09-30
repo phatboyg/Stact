@@ -15,8 +15,8 @@ namespace Sample.WebActors
 	using System.Web.Routing;
 	using Actors.Echo;
 	using Actors.Query;
-	using Magnum.Logging;
-	using Magnum.Web.Actors;
+	using Stact.Logging;
+	using Stact.Web.Actors;
 
 	public class Bootstrapper
 	{

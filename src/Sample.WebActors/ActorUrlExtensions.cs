@@ -17,10 +17,10 @@ namespace Sample.WebActors
 	using System.Reflection;
 	using System.Web.Mvc;
 	using System.Web.Routing;
-	using Magnum;
-	using Magnum.Channels;
-	using Magnum.Extensions;
-	using Magnum.Web.Actors.Configuration;
+	using Stact;
+	using Stact.Channels;
+	using Stact.Extensions;
+	using Stact.Web.Actors.Configuration;
 
 	public static class ActorUrlExtensions
 	{

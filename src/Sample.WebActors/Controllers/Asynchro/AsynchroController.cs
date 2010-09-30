@@ -15,10 +15,10 @@ namespace Sample.WebActors.Controllers.Asynchro
 	using System;
 	using System.Threading;
 	using System.Web.Mvc;
-	using Magnum;
-	using Magnum.Channels;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
+	using Stact;
+	using Stact.Channels;
+	using Stact.Extensions;
+	using Stact.Fibers;
 
 	public class AsynchroController :
 		AsyncController

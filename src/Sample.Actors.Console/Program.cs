@@ -13,9 +13,9 @@
 namespace Sample.Actors.Console
 {
 	using System;
-	using Magnum.Actors;
-	using Magnum.Extensions;
-	using Magnum.Fibers;
+	using Stact.Actors;
+	using Stact.Extensions;
+	using Stact.Fibers;
 	using Messages;
 	using StructureMap;
 

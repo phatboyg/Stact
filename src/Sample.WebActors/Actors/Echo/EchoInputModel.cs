@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Sample.WebActors.Actors.Echo
 {
-	using Magnum.Channels;
+	using Stact.Channels;
 
 	public class EchoInputModel
 	{

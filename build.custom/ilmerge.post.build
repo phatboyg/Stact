@@ -13,49 +13,30 @@
   <property name="dirs.drop" value="${dirs.current}\${path.to.toplevel}\${folder.code_drop}" overwrite="false" />
   <property name="folder.app.drop" value="${project.name}" overwrite="false" />
   
-  <property name="dirs.merge.from" value="${dirs.drop}\MagnumMerge" overwrite="false" />
-<property name="file.merge.name" value="Magnum.dll" overwrite="false" />
+  <property name="dirs.merge.from" value="${dirs.drop}\StactMerge" overwrite="false" />
+<property name="file.merge.name" value="Stact.dll" overwrite="false" />
 
-  <target name="go" depends="delete_merged_files, push_magnum_down, delete_merge_directory" />
+  <target name="go" depends="delete_merged_files, push_Stact_down, delete_merge_directory" />
   
   <target name="delete_merged_files">
     <echo message="Before putting merged assembly back in drop folders, remove the assemblies that were used in the merge."/>
     <delete>
       <fileset basedir="${dirs.drop}\${folder.app.drop}">
-        <include name="**/Magnum.FileSystem.*" />
-        <include name="**/System.Threading.*" />
-        <include name="**/Ionic.Zip.*" />
+        <include name="**/Magnum.dll" />
       </fileset>
     </delete>
   </target>
   
-  <target name="push_magnum_down">
+  <target name="push_Stact_down">
     <echo message="Pushing ${file.merge.name} down to code drop directories." />
-    <copy todir="${dirs.drop}\${folder.app.drop}\Magnum">
+    <copy todir="${dirs.drop}\${folder.app.drop}\Stact">
       <fileset basedir="${dirs.merge.from}">
-        <include name="Magnum.dll" />
-        <include name="Magnum.xml" />
-        <include name="Magnum.pdb" />
+        <include name="Stact.dll" />
+        <include name="Stact.xml" />
+        <include name="Stact.pdb" />
       </fileset>
     </copy>
     
-    <copy todir="${dirs.drop}\${folder.app.drop}\TestFramework">
-      <fileset basedir="${dirs.merge.from}">
-        <include name="Magnum.dll" />
-        <include name="Magnum.xml" />
-        <include name="Magnum.pdb" />
-      </fileset>
-    </copy>
-    
-    <copy todir="${dirs.drop}\${folder.app.drop}\Visualizers">
-      <fileset basedir="${dirs.merge.from}">
-        <include name="Magnum.dll" />
-        <include name="Magnum.xml" />
-        <include name="Magnum.pdb" />
-      </fileset>
-    </copy>
-  </target>
-  
   <target name="delete_merge_directory">
     <echo message="Removing ${dirs.merge.from} directory." />
     <delete dir="${dirs.merge.from}" failonerror="false" />
