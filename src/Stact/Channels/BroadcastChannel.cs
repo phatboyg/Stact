@@ -15,7 +15,7 @@ namespace Stact.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Logging;
+	using Magnum.Logging;
 
 	/// <summary>
 	/// A BroadcastChannel sends a message to zero or more listeners
@@ -29,14 +29,14 @@ namespace Stact.Channels
 
 		public BroadcastChannel(IEnumerable<UntypedChannel> listeners)
 		{
-			Guard.AgainstNull(listeners, "listeners");
+			Magnum.Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners.ToArray();
 		}
 
 		public BroadcastChannel(UntypedChannel[] listeners)
 		{
-			Guard.AgainstNull(listeners, "listeners");
+			Magnum.Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners;
 		}
@@ -75,14 +75,14 @@ namespace Stact.Channels
 
 		public BroadcastChannel(IEnumerable<Channel<T>> listeners)
 		{
-			Guard.AgainstNull(listeners, "listeners");
+			Magnum.Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners.ToArray();
 		}
 
 		public BroadcastChannel(Channel<T>[] listeners)
 		{
-			Guard.AgainstNull(listeners, "listeners");
+			Magnum.Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners;
 		}

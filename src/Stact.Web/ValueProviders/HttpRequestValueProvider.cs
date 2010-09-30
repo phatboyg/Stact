@@ -17,9 +17,9 @@ namespace Stact.Web.ValueProviders
 	using System.Reflection;
 	using System.Web;
 	using System.Web.Routing;
-	using Collections;
-	using Extensions;
-	using Stact.ValueProviders;
+	using Magnum.Collections;
+	using Magnum.Extensions;
+	using Magnum.ValueProviders;
 
 	public class HttpRequestValueProvider :
 		ValueProvider

@@ -13,7 +13,7 @@
 namespace Stact.Fibers
 {
 	using System;
-	using Extensions;
+	using Magnum.Extensions;
 
 	/// <summary>
 	/// A synchronous fiber will execute an action immediately on the calling thread

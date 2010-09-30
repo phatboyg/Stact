@@ -13,8 +13,8 @@
 namespace Stact.Channels
 {
 	using System;
-	using Extensions;
-	using Reflection;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
 
 
 	public class FastActivatorInstanceProvider<TInstance, TChannel> :

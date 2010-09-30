@@ -14,12 +14,12 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum.Logging;
 	using Stact.Channels;
 	using Stact.Channels.Visitors;
-	using Stact.Extensions;
-	using Stact.Logging;
+	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Building_an_aggregator_network
@@ -37,7 +37,7 @@ namespace Stact.Specs.Channels
 		[TestFixtureSetUp]
 		public void SetupAll()
 		{
-			TraceLogger.Configure(LogLevel.Debug);
+			TraceLogger.Configure();
 		}
 
 		[Test]

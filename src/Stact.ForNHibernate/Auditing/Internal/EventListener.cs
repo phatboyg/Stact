@@ -16,11 +16,11 @@ namespace Stact.ForNHibernate.Auditing.Internal
 	using System.Collections.Generic;
 	using System.Security.Principal;
 	using System.Threading;
-	using Collections;
-	using Extensions;
+	using Magnum.Collections;
+	using Magnum.Extensions;
 	using Stact.Channels;
 	using NHibernate.Event;
-	using Reflection;
+	using Magnum.Reflection;
 
 
 	public abstract class EventListener<TEvent>

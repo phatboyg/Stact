@@ -16,7 +16,7 @@ namespace Stact.Channels
 	using System.ServiceModel;
 	using Fibers;
 	using Internal;
-	using Serialization;
+	using Magnum.Serialization;
 
 	/// <summary>
 	/// Receives messages from a named pipe via WCF and forwards them to the specific channel. Messages

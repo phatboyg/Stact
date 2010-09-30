@@ -16,7 +16,7 @@ namespace Stact.Web.Actors.Internal
 	using System.Threading;
 	using System.Web;
 	using Channels;
-	using Logging;
+	using Magnum.Logging;
 
 	/// <summary>
 	/// A handler is bound to the route by input type, which is the only thing used to build

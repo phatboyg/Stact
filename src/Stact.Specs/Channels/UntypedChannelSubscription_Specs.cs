@@ -17,7 +17,7 @@ namespace Stact.Specs.Channels
 	using Stact.Channels;
 	using Stact.Channels.Visitors;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Subscribing_to_an_untyped_channel_adapter

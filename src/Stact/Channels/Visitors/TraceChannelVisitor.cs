@@ -15,7 +15,7 @@ namespace Stact.Channels.Visitors
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using Extensions;
+	using Magnum.Extensions;
 
 	public class TraceChannelVisitor :
 		ChannelVisitor

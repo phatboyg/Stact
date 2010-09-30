@@ -13,12 +13,12 @@
 namespace Stact.StateMachine.ChannelConfiguration
 {
 	using Fibers.Configuration;
-	using Stact.Channels.Configuration.Internal;
+	using Magnum.StateMachine;
 
 
 	public interface StateMachineInstanceConnectionConfigurator<T> :
 		FiberConfigurator<StateMachineInstanceConnectionConfigurator<T>>
-		where T : StateMachine
+		where T : StateMachine<T>
 	{
 	}
 }

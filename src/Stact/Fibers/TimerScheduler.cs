@@ -16,9 +16,10 @@ namespace Stact.Fibers
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
-	using Extensions;
+	using Magnum.Extensions;
 	using Internal;
-	using Logging;
+	using Magnum;
+	using Magnum.Logging;
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
 	public class TimerScheduler :

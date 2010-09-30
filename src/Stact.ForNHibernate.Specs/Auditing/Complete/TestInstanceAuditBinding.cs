@@ -14,6 +14,7 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 {
 	using Channels;
 	using ForNHibernate.Auditing;
+	using Magnum.StateMachine;
 	using Stact.StateMachine;
 
 

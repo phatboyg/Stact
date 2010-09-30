@@ -14,7 +14,7 @@ namespace Stact.Actors
 {
 	using System;
 	using Channels;
-	using Collections;
+	using Magnum.Collections;
 
 
 	public class ActorCache<TActor, TKey> :

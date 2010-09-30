@@ -32,8 +32,8 @@ namespace Stact.Actors.Internal
 
 		public ActorChannelProvider(ActorFactory<TActor> actorFactory, PropertyInfo property)
 		{
-			Guard.AgainstNull(actorFactory, "actorInstanceProvider");
-			Guard.AgainstNull(property, "property");
+			Magnum.Guard.AgainstNull(actorFactory, "actorInstanceProvider");
+			Magnum.Guard.AgainstNull(property, "property");
 
 			_actorFactory = actorFactory;
 

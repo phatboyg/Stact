@@ -13,7 +13,7 @@
 namespace Stact.Specs.Activator
 {
 	using Classes;
-	using Stact.Reflection;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 
 	public class When_generating_an_object<T>

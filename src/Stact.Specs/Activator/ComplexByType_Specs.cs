@@ -14,9 +14,9 @@ namespace Stact.Specs.Activator
 {
 	using System;
 	using Classes;
-	using Stact.Reflection;
+	using Magnum.Reflection;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class When_creating_an_object_with_multiple_arguments

@@ -17,7 +17,7 @@ namespace Stact.ForNHibernate.Specs.Auditing
 	using ForNHibernate.Auditing;
 	using ForNHibernate.Auditing.Internal;
 	using Stact.Channels;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

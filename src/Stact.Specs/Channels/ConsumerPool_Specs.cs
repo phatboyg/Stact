@@ -14,9 +14,10 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum;
 	using Stact.Channels;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[TestFixture]
@@ -74,11 +75,11 @@ namespace Stact.Specs.Channels
 			{
 				_fiber = fiber;
 
-				Called = new Future<MyCommand>();
+				Called = new Stact.Future<MyCommand>();
 				CommandChannel = new ConsumerChannel<MyCommand>(_fiber, HandleMyCommand);
 			}
 
-			public Future<MyCommand> Called { get; private set; }
+			public Stact.Future<MyCommand> Called { get; private set; }
 
 			public Channel<MyCommand> CommandChannel { get; private set; }
 

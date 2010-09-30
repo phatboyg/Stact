@@ -14,10 +14,10 @@ namespace Stact.Channels
 {
 	using System;
 	using System.ServiceModel;
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
 	using Internal;
-	using Serialization;
+	using Magnum.Serialization;
 
 
 	public class WcfChannelProxy :

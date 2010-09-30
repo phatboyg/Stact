@@ -28,7 +28,7 @@ namespace Stact.Channels.Internal
 
 		public AsyncResult(AsyncCallback callback, object state)
 		{
-			Guard.AgainstNull(callback, "callback");
+			Magnum.Guard.AgainstNull(callback, "callback");
 
 			_callback = callback;
 			_state = state;

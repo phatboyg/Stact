@@ -15,8 +15,8 @@ namespace Stact.Actors.Internal
 	using System;
 	using System.Linq;
 	using Channels;
-	using Collections;
-	using Extensions;
+	using Magnum.Collections;
+	using Magnum.Extensions;
 	using Fibers;
 	using Messages;
 

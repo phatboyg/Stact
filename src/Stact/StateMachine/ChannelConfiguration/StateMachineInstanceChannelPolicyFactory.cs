@@ -12,9 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.StateMachine.ChannelConfiguration
 {
-	using Stact.Channels;
-	using Stact.Channels.Internal;
-	using Stact.StateMachine;
+	using Magnum.StateMachine;
 
 
 	public class StateMachineInstanceChannelPolicyFactory<T>

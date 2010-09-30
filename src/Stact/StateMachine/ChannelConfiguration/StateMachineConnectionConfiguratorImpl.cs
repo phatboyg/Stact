@@ -14,13 +14,14 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using Channels;
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
 	using Fibers.Configuration;
-	using Logging;
+	using Magnum.Logging;
 	using Stact.Channels;
 	using Stact.Channels.Configuration.Internal;
-	using Reflection;
+	using Magnum.Reflection;
+	using Magnum.StateMachine;
 
 
 	public class StateMachineConnectionConfiguratorImpl<T> :

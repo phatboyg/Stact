@@ -22,7 +22,7 @@ namespace Stact.Channels
 	{
 		public static ChannelConnection Connect<T>(this Channel<T> channel, Action<ConnectionConfigurator<T>> subscriberActions)
 		{
-			Guard.AgainstNull(channel, "channel");
+			Magnum.Guard.AgainstNull(channel, "channel");
 
 			var subscriber = new ConnectionConfiguratorImpl<T>(channel);
 
@@ -33,7 +33,7 @@ namespace Stact.Channels
 
 		public static ChannelConnection Connect(this UntypedChannel channel, Action<ConnectionConfigurator> subscriberActions)
 		{
-			Guard.AgainstNull(channel, "channel");
+			Magnum.Guard.AgainstNull(channel, "channel");
 
 			var subscriber = new ConnectionConfiguratorImpl(channel);
 

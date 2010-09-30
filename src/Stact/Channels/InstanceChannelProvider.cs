@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	/// <summary>
@@ -32,8 +32,8 @@ namespace Stact.Channels
 		public InstanceChannelProvider(InstanceProvider<TInstance, TChannel> instanceProvider,
 		                               ChannelAccessor<TInstance, TChannel> accessor)
 		{
-			Guard.AgainstNull(instanceProvider);
-			Guard.AgainstNull(accessor);
+			Magnum.Guard.AgainstNull(instanceProvider);
+			Magnum.Guard.AgainstNull(accessor);
 
 			_instanceProvider = instanceProvider;
 			_accessor = accessor;

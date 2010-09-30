@@ -4,7 +4,7 @@ namespace Stact.Specs.Channels
 	using Fibers;
 	using Stact.Channels;
 	using Stact.Channels.Visitors;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 
 	[TestFixture]

@@ -15,6 +15,7 @@ namespace Stact.ForNHibernate.Channels.Configuration
 	using System;
 	using Stact.StateMachine;
 	using NHibernate;
+	using Magnum.StateMachine;
 
 
 	public interface NHibernateConnectionProviderConfigurator<T, TKey>

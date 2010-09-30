@@ -32,9 +32,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 		public CacheChannelProvider(FiberProvider<TKey> fiberProvider, ChannelProvider<TChannel> channelProvider,
 		                            KeyAccessor<TChannel, TKey> keyAccessor)
 		{
-			Guard.AgainstNull(fiberProvider);
-			Guard.AgainstNull(channelProvider);
-			Guard.AgainstNull(keyAccessor);
+			Magnum.Guard.AgainstNull(fiberProvider);
+			Magnum.Guard.AgainstNull(channelProvider);
+			Magnum.Guard.AgainstNull(keyAccessor);
 
 			_fiberProvider = fiberProvider;
 			_channelProvider = channelProvider;

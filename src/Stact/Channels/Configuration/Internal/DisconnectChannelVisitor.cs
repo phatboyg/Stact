@@ -15,9 +15,9 @@ namespace Stact.Channels.Configuration.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
-	using Reflection;
+	using Magnum.Reflection;
 	using Visitors;
 
 

@@ -28,7 +28,7 @@ namespace Stact.Channels
 
 		public ThreadPoolChannel(ChannelProvider<T> instanceProvider, int channelLimit)
 		{
-			Guard.GreaterThan(0, channelLimit, "channelLimit");
+			Magnum.Guard.GreaterThan(0, channelLimit, "channelLimit");
 
 			_channelLimit = channelLimit;
 			_channelCount = 0;

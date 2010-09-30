@@ -14,11 +14,12 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum;
 	using Stact.Actors.Internal;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Receiving_a_message_from_an_inbox
@@ -28,12 +29,12 @@ namespace Stact.Specs.Channels
 		{
 			_inbox = new BufferedInbox<TestMessage>(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
 			_transactionId = CombGuid.Generate();
-			_received = new Future<TestMessage>();
+			_received = new Stact.Future<TestMessage>();
 		}
 
 		private BufferedInbox<TestMessage> _inbox;
 		private Guid _transactionId;
-		private Future<TestMessage> _received;
+		private Stact.Future<TestMessage> _received;
 
 		private class TestMessage
 		{

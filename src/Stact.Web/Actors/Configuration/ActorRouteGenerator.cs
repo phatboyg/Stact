@@ -17,13 +17,13 @@ namespace Stact.Web.Actors.Configuration
 	using System.Reflection;
 	using System.Web.Routing;
 	using Channels;
-	using Extensions;
+	using Magnum.Extensions;
 
 	public static class ActorRouteGenerator
 	{
 		public static RouteValueDictionary GetRouteValuesForActor<TActor, TInput>(Expression<Func<TActor, Channel<TInput>>> expression)
 		{
-			Guard.AgainstNull(expression, "expression");
+			Magnum.Guard.AgainstNull(expression, "expression");
 
 			PropertyInfo property = expression.GetMemberPropertyInfo();
 

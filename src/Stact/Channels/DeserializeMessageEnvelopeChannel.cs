@@ -14,9 +14,9 @@ namespace Stact.Channels
 {
 	using System;
 	using Fibers;
-	using Logging;
-	using Reflection;
-	using Serialization;
+	using Magnum.Logging;
+	using Magnum.Reflection;
+	using Magnum.Serialization;
 
 	/// <summary>
 	/// Accepts a MessageEnvelope as input and deserializes the message body on the supplied fiber,

@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System.Collections.Generic;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	public class ConnectionConfiguratorImpl :

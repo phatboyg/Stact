@@ -13,8 +13,8 @@
 namespace Stact.Channels
 {
 	using System;
-	using Collections;
-	using StateMachine;
+	using Magnum.Collections;
+	using Magnum.StateMachine;
 	using StateMachine.ChannelConfiguration;
 
 

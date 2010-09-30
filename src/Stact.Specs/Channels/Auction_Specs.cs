@@ -14,8 +14,9 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum;
 	using Stact.Channels;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

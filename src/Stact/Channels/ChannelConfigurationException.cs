@@ -14,7 +14,7 @@ namespace Stact.Channels
 {
 	using System;
 	using System.Runtime.Serialization;
-	using Extensions;
+	using Magnum.Extensions;
 
 	/// <summary>
 	/// Thrown when an invalid configuration is supplied when configuring a channel

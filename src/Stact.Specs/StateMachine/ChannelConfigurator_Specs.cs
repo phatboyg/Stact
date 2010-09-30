@@ -1,30 +1,17 @@
-// Copyright 2007-2008 The Apache Software Foundation.
-//  
-// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
-// this file except in compliance with the License. You may obtain a copy of the 
-// License at 
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0 
-// 
-// Unless required by applicable law or agreed to in writing, software distributed 
-// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
-// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
-// specific language governing permissions and limitations under the License.
 namespace Stact.Specs.StateMachine
 {
 	using System.Linq;
+	using Magnum.Extensions;
+	using Magnum.StateMachine;
+	using Magnum.TestFramework;
 	using Stact.Channels;
-	using Stact.Extensions;
-	using Stact.StateMachine;
-	using TestFramework;
-
 
 	[Scenario]
 	public class Connecting_a_state_machine_class_to_an_untyped_channel
 	{
-		ChannelConnection _disconnect;
-		ChannelAdapter _input;
-		SampleStateMachine _instance;
+		private ChannelConnection _disconnect;
+		private ChannelAdapter _input;
+		private SampleStateMachine _instance;
 
 		[When]
 		public void A_state_machine_is_connected_to_an_untyped_channel()
@@ -56,12 +43,12 @@ namespace Stact.Specs.StateMachine
 		{
 			_input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 				{
-					typeof(ChannelAdapter),
-					typeof(BroadcastChannel),
-					typeof(TypedChannelAdapter<SampleStarted>),
-					typeof(ConsumerChannel<SampleStarted>),
-					typeof(TypedChannelAdapter<SampleStopped>),
-					typeof(ConsumerChannel<SampleStopped>),
+					typeof (ChannelAdapter),
+					typeof (BroadcastChannel),
+					typeof (TypedChannelAdapter<SampleStarted>),
+					typeof (ConsumerChannel<SampleStarted>),
+					typeof (TypedChannelAdapter<SampleStopped>),
+					typeof (ConsumerChannel<SampleStopped>),
 				});
 		}
 
@@ -91,9 +78,9 @@ namespace Stact.Specs.StateMachine
 				Define(() =>
 					{
 						Initially(
-						          When(Started)
-						          	.Call((s, m) => s.WasStarted.Complete(m))
-						          	.TransitionTo(Running));
+							When(Started)
+								.Call((s, m) => s.WasStarted.Complete(m))
+								.TransitionTo(Running));
 
 						During(Running,
 						       When(Stopped)

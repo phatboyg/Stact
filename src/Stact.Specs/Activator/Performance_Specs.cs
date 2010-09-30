@@ -15,7 +15,7 @@ namespace Stact.Specs.Activator
 	using System;
 	using System.Diagnostics;
 	using Classes;
-	using Stact.Reflection;
+	using Magnum.Reflection;
 	using NUnit.Framework;
 
 	[TestFixture, Explicit]

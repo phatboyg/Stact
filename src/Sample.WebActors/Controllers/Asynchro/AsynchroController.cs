@@ -17,7 +17,7 @@ namespace Sample.WebActors.Controllers.Asynchro
 	using System.Web.Mvc;
 	using Stact;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using Stact.Fibers;
 
 	public class AsynchroController :

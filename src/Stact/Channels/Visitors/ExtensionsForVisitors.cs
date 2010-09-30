@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels.Visitors
 {
-	using Reflection;
+	using Magnum.Reflection;
 
 
 	public static class ExtensionsForVisitors

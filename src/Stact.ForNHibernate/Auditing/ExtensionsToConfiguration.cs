@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.ForNHibernate.Auditing
 {
-	using Extensions;
+	using Magnum.Extensions;
 	using Internal;
 	using Stact.Channels;
 	using NHibernate.Cfg;

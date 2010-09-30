@@ -14,11 +14,11 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using System.Runtime.Serialization;
+	using Magnum.Logging;
+	using Magnum.TestFramework;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using Stact.Fibers;
-	using Stact.Logging;
-	using Stact.TestFramework;
 	using NUnit.Framework;
 
 
@@ -29,7 +29,7 @@ namespace Stact.Specs.Channels
 		[Category("Slow")]
 		public void Should_property_adapt_itself_to_a_channel_network()
 		{
-			TraceLogger.Configure(LogLevel.Debug);
+			TraceLogger.Configure();
 			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
 			log.Debug("Starting");
 

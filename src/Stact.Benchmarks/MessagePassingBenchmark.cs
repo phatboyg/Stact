@@ -15,8 +15,8 @@ namespace Stact.Benchmarks
 	using System;
 	using System.Diagnostics;
 	using Channels;
-	using Concurrency;
-	using Extensions;
+	using Magnum.Concurrency;
+	using Magnum.Extensions;
 	using Fibers;
 
 

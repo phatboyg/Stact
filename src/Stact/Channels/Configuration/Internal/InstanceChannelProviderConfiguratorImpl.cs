@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	public class InstanceChannelProviderConfiguratorImpl<TInstance, TChannel> :

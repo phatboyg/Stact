@@ -17,8 +17,9 @@ namespace Stact.Fibers
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
-	using Concurrency;
-	using Logging;
+	using Magnum.Concurrency;
+	using Magnum;
+	using Magnum.Logging;
 
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]

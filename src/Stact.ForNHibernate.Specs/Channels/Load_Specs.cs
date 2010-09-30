@@ -16,12 +16,12 @@ namespace Stact.ForNHibernate.Specs.Channels
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using Concurrency;
-	using Extensions;
+	using Magnum.Concurrency;
+	using Magnum.Extensions;
 	using Stact.Channels;
 	using NHibernate;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[TestFixture]

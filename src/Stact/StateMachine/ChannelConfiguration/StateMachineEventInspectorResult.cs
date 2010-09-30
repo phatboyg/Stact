@@ -18,6 +18,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using Stact.Channels;
 	using Stact.Channels.Configuration.Internal;
 	using Stact.Channels.Internal;
+	using Magnum.StateMachine;
 
 
 	public interface StateMachineEventInspectorResult<T>

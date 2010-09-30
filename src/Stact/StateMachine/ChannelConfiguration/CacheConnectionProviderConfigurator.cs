@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.StateMachine.ChannelConfiguration
 {
+	using Magnum.StateMachine;
+
 	public interface CacheConnectionProviderConfigurator<T, TKey>
 		where T : StateMachine<T>
 	{

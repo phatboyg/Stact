@@ -13,7 +13,7 @@
 namespace Stact.Specs.Channels
 {
 	using System;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

@@ -27,8 +27,8 @@ namespace Stact.Channels.Configuration.Internal
 
 		public WcfChannelHostConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
 		{
-			Guard.AgainstNull(endpointUri);
-			Guard.AgainstNull(pipeName);
+			Magnum.Guard.AgainstNull(endpointUri);
+			Magnum.Guard.AgainstNull(pipeName);
 
 			_endpointUri = endpointUri;
 			_pipeName = pipeName;

@@ -14,8 +14,8 @@ namespace Stact.Channels.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Extensions;
-	using Logging;
+	using Magnum.Extensions;
+	using Magnum.Logging;
 
 
 	public abstract class AbstractChannelConnection
@@ -28,7 +28,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		protected AbstractChannelConnection(Action<IEnumerable<Channel>> disconnect)
 		{
-			Guard.AgainstNull(disconnect);
+			Magnum.Guard.AgainstNull(disconnect);
 
 			_disconnect = disconnect;
 

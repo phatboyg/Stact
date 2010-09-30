@@ -16,10 +16,9 @@ namespace Stact.Specs.Actions
 	using System.Diagnostics;
 	using System.Threading;
 	using Fibers;
-	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
+	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using TestFramework;
 
 	[TestFixture]
 	public class When_sending_actions_back_into_itself

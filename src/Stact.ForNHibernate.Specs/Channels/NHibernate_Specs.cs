@@ -14,12 +14,12 @@ namespace Stact.ForNHibernate.Specs.Channels
 {
 	using System;
 	using FluentNHibernate.Cfg;
-	using ForNHibernate.StateMachine;
+	using Magnum.ForNHibernate.StateMachine;
 	using NHibernate;
 	using NHibernate.Cfg;
 	using NHibernate.Tool.hbm2ddl;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

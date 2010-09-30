@@ -14,7 +14,7 @@ namespace Stact
 {
 	using System;
 	using System.Threading;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	/// <summary>
@@ -36,7 +36,7 @@ namespace Stact
 
 		public Future(AsyncCallback callback, object state)
 		{
-			Guard.AgainstNull(callback, "callback");
+			Magnum.Guard.AgainstNull(callback, "callback");
 
 			_callback = callback;
 			_state = state;

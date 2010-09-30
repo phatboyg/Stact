@@ -15,9 +15,9 @@ namespace Stact.Specs.Channels
 	using System.Collections.Generic;
 	using Fibers;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Sending_to_an_interval_subscriber

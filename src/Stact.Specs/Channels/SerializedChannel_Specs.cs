@@ -14,10 +14,11 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using Fibers;
+	using Magnum;
+	using Magnum.Serialization;
 	using Stact.Channels;
-	using Stact.Serialization;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Sending_a_message_through_a_serialized_channel
@@ -27,7 +28,7 @@ namespace Stact.Specs.Channels
 		{
 			var message = new TestMessage {Id = CombGuid.Generate(), Name = "Chris"};
 
-			var future = new Future<TestMessage>();
+			var future = new Stact.Future<TestMessage>();
 
 			var consumerChannel = new ConsumerChannel<TestMessage>(new SynchronousFiber(), future.Complete);
 			var deserializeChannel = new DeserializeChannel<TestMessage>(new SynchronousFiber(), new FastTextSerializer(),

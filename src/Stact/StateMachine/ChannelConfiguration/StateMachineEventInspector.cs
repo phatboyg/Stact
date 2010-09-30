@@ -14,8 +14,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
-	using Extensions;
-	using Reflection;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
+	using Magnum.StateMachine;
 
 
 	public class StateMachineEventInspector<TStateMachine> :

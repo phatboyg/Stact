@@ -3,7 +3,7 @@ namespace Stact.ForNHibernate.Specs.Auditing
 	using Channels;
 	using NHibernate;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

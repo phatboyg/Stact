@@ -13,8 +13,9 @@
 namespace Stact.ForNHibernate.Channels.Configuration
 {
 	using System;
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
+	using Magnum.StateMachine;
 	using Stact.Channels;
 	using Stact.StateMachine;
 	using Stact.StateMachine.ChannelConfiguration;
@@ -40,9 +41,9 @@ namespace Stact.ForNHibernate.Channels.Configuration
 		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor,
 		                                                              InstanceChannelPolicy<T, TChannel> channelPolicy)
 		{
-			Guard.AgainstNull(channelAccessor, "channelAccessor");
-			Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
-			Guard.AgainstNull(channelPolicy, "channelPolicy");
+			Magnum.Guard.AgainstNull(channelAccessor, "channelAccessor");
+			Magnum.Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
+			Magnum.Guard.AgainstNull(channelPolicy, "channelPolicy");
 
 			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();
 

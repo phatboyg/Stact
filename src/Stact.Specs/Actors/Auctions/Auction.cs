@@ -14,9 +14,10 @@ namespace Stact.Specs.Actors.Auctions
 {
 	using System;
 	using Fibers;
+	using Magnum;
 	using Stact.Actors;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 
 
 	public class Auction :

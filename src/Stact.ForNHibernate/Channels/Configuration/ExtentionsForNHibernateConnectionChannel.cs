@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using ForNHibernate.Channels.Configuration;
-	using StateMachine;
+	using Magnum.StateMachine;
 	using StateMachine.ChannelConfiguration;
 
 

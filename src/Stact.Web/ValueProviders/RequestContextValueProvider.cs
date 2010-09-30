@@ -16,7 +16,7 @@ namespace Stact.Web.ValueProviders
 	using System.Web;
 	using System.Web.Routing;
 	using Abstractions;
-	using Stact.ValueProviders;
+	using Magnum.ValueProviders;
 
 
 	/// <summary>

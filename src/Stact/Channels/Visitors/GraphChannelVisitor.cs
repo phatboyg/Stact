@@ -15,8 +15,8 @@ namespace Stact.Channels.Visitors
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using Extensions;
-	using Graphing;
+	using Magnum.Extensions;
+	using Magnum.Graphing;
 
 
 	public class GraphChannelVisitor :

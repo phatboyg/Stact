@@ -13,8 +13,9 @@
 namespace Stact.ForNHibernate.Specs.Channels
 {
 	using FluentNHibernate.Mapping;
-	using Stact.ForNHibernate.StateMachine;
+	using Magnum.ForNHibernate.StateMachine;
 	using Stact.Specs.StateMachine;
+	using StateMachine;
 
 
 	public class TestStateMachineInstanceMap :

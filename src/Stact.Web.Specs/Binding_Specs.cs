@@ -16,7 +16,7 @@ namespace Stact.Web.Specs
 	using System.Collections.Generic;
 	using Binding;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Binding_a_dictionary_to_an_object

@@ -73,6 +73,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Magnum">
+      <HintPath>..\..\lib\Magnum\Magnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Magnum.TestFramework">
+      <HintPath>..\..\lib\Magnum\Magnum.TestFramework.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\nunit\net-2.0\nunit.framework.dll</HintPath>
@@ -113,12 +119,6 @@
     <Compile Include="Actors\PingPongDemo\PongActor.cs" />
     <Compile Include="Actors\PingPong_Example.cs" />
     <Compile Include="Channels\TimerScheduler_Specs.cs" />
-    <Compile Include="Binding\Binding_Specs.cs" />
-    <Compile Include="Binding\TestModelBinderContext.cs" />
-    <Compile Include="Cache_Specs.cs" />
-    <Compile Include="Calendar\IsHoliday_Specs.cs" />
-    <Compile Include="Calendar\MemorialDayObservedCheck.cs" />
-    <Compile Include="BehaviorTest.cs" />
     <Compile Include="Channels\Aggregator_Specs.cs" />
     <Compile Include="Channels\Auction_Specs.cs" />
     <Compile Include="Channels\ChannelQueue_Specs.cs" />
@@ -141,21 +141,6 @@
     <Compile Include="Channels\ThreadPoolChannel_Specs.cs" />
     <Compile Include="Channels\UntypedChannelSubscription_Specs.cs" />
     <Compile Include="Channels\WcfSubscription_Specs.cs" />
-    <Compile Include="Collections\Index_Specs.cs" />
-    <Compile Include="Collections\RandomExtensions.cs" />
-    <Compile Include="CommandLineParser\PlugInCommands\AddFileCommand.cs" />
-    <Compile Include="CommandLineParser\PlugInCommands\AddRemoteRepositoryCommand.cs" />
-    <Compile Include="CommandLineParser\PlugInCommands\LinqSpecification_Specs.cs" />
-    <Compile Include="CommandLineParser\PlugInCommands\RemoveRemoteRepositoryCommand.cs" />
-    <Compile Include="Concurrency\List_Specs.cs" />
-    <Compile Include="Concurrency\Load_Specs.cs" />
-    <Compile Include="Configuration\CommandLineConfigurationSpecs.cs" />
-    <Compile Include="Configuration\ConfigurationBinder_Specs.cs" />
-    <Compile Include="Configuration\ConfigurationOverridesSpecs.cs" />
-    <Compile Include="Configuration\ConfigurationSpecs.cs" />
-    <Compile Include="Configuration\NestedValue_Specs.cs" />
-    <Compile Include="Cryptography\DpapiCryptographyService_Specs.cs" />
-    <Compile Include="Cryptography\RsaCryptographyService_Specs.cs" />
     <Compile Include="Activator\Classes\ClassWithAConstrainedGenericArgument.cs" />
     <Compile Include="Activator\Classes\ClassWithDefaultConstructor.cs" />
     <Compile Include="Activator\Classes\ClassWithGuidConstraint.cs" />
@@ -173,139 +158,14 @@
     <Compile Include="Activator\Generator_Specs.cs" />
     <Compile Include="Activator\GenericType_Specs.cs" />
     <Compile Include="Activator\Performance_Specs.cs" />
-    <Compile Include="Data\TransactionalWorker_Specs.cs" />
-    <Compile Include="Extensions\GenericExtension_Specs.cs" />
-    <Compile Include="Extensions\ObjectExtension_Specs.cs" />
-    <Compile Include="Extensions\StringExtension_Specs.cs" />
-    <Compile Include="Extensions\UriExtension_Specs.cs" />
-    <Compile Include="FileSystem\FileSpecs\Directory_Specs.cs" />
-    <Compile Include="FileSystem\FileSpecs\DotNetFileSystem_Specs.cs" />
-    <Compile Include="FileSystem\FileSpecs\File_Specs.cs" />
-    <Compile Include="FileSystem\FileSpecs\Given_a_FileSystemLocator.cs" />
-    <Compile Include="FileSystem\FileSpecs\LocalFileSystemLocator_Specs.cs" />
-    <Compile Include="FileSystem\FileSpecs\ZippedFile_specs.cs" />
-    <Compile Include="FileSystem\PollingFileSystemWatcher_Specs.cs" />
-    <Compile Include="FileSystem\FileSystemWatcher_Specs.cs" />
-    <Compile Include="Framework\AssertExtension_Specs.cs" />
-    <Compile Include="Guard_Specs.cs" />
-    <Compile Include="Invoker\Classes\ClassWithGenericMethods.cs" />
-    <Compile Include="Invoker\Classes\ClassWithSimpleMethods.cs" />
-    <Compile Include="Invoker\FastInvoker_Specs.cs" />
-    <Compile Include="Invoker\Performance_Specs.cs" />
-    <Compile Include="Logging\Log4NetLogging_Specs.cs" />
-    <Compile Include="Logging\Logging_Specs.cs" />
-    <Compile Include="Monads\Currying_Specs.cs" />
-    <Compile Include="Monads\SetProperty_Specs.cs" />
-    <Compile Include="Policies\ExceptionPolicy_Specs.cs" />
-    <Compile Include="CommandLineParser\EchoCommand.cs" />
-    <Compile Include="CommandLineParser\Executor_Specs.cs" />
-    <Compile Include="CommandLineParser\ICommand.cs" />
-    <Compile Include="CommandLineParser\MoveCommand.cs" />
-    <Compile Include="CommandLineParser\MoveCommandArguments.cs" />
-    <Compile Include="CommandLineParser\RequiredAttribute.cs" />
-    <Compile Include="CommandLineParser\VersionCommand.cs" />
-    <Compile Include="Concurrency\Queue_Specs.cs" />
-    <Compile Include="RangeParser_Specs.cs" />
-    <Compile Include="CommandLineParser\Parser_Specs.cs" />
-    <Compile Include="Cryptography\RijndaelCryptographyService_Specs.cs" />
-    <Compile Include="Data\UnitOfWork_Specs.cs" />
-    <Compile Include="Extensions\DateTimeExtension_Specs.cs" />
-    <Compile Include="Extensions\DictionaryExtension_Specs.cs" />
-    <Compile Include="Extensions\TypeExtension_Specs.cs" />
-    <Compile Include="Linq\ExpressionHelpers_Specs.cs" />
-    <Compile Include="Linq\Index_Specs.cs" />
-    <Compile Include="Metrics\Counter_Specs.cs" />
-    <Compile Include="Monads\WorkingMemoryParser_Specs.cs" />
-    <Compile Include="Pipeline\AsyncConsumer_Specs.cs" />
-    <Compile Include="Pipeline\AutoRegister_Specs.cs" />
-    <Compile Include="Pipeline\Consumers\LongRunningMessageConsumer.cs" />
-    <Compile Include="Pipeline\Examples.cs" />
-    <Compile Include="Pipeline\IntervalSubscriber_Specs.cs" />
-    <Compile Include="Pipeline\Messages\ClaimCreated.cs" />
-    <Compile Include="Pipeline\Messages\CustomerChanged.cs" />
-    <Compile Include="Pipeline\Messages\CustomerRatingDowngraded.cs" />
-    <Compile Include="Pipeline\Messages\IDomainEvent.cs" />
-    <Compile Include="Pipeline\Messages\ClaimModified.cs" />
-    <Compile Include="Pipeline\Consumers\MultipleMessageConsumer.cs" />
-    <Compile Include="Pipeline\Filter_Specs.cs" />
-    <Compile Include="Pipeline\Interceptor_Specs.cs" />
-    <Compile Include="Pipeline\InterfaceSubscriber_Specs.cs" />
-    <Compile Include="Pipeline\MoreInterceptor_Specs.cs" />
-    <Compile Include="Pipeline\Pipeline_Specs.cs" />
-    <Compile Include="Pipeline\Consumers\SingleMessageConsumer.cs" />
-    <Compile Include="Pipeline\SubscriberAdded_Specs.cs" />
-    <Compile Include="Pipeline\Throughput_Specs.cs" />
-    <Compile Include="Pipeline\Trace_Specs.cs" />
-    <Compile Include="Pipeline\TypedPipeline_Specs.cs" />
-    <Compile Include="Reflection\ExtensionsToGenericTypes.cs" />
-    <Compile Include="Reflection\FastProperty_Specs.cs" />
-    <Compile Include="Reflection\GenericMethodInvoker_Specs.cs" />
-    <Compile Include="Reflection\GenericTypeReflection_Specs.cs" />
-    <Compile Include="Reflection\Generic_AdditionalSpecs.cs" />
-    <Compile Include="Reflection\PropertyPerformance_Specs.cs" />
-    <Compile Include="Reflection\SafePropertyVisitor_Specs.cs" />
-    <Compile Include="Reflection\SafeProperty_Specs.cs" />
-    <Compile Include="Serialization\Array_Specs.cs" />
-    <Compile Include="Serialization\Dictionary_Specs.cs" />
-    <Compile Include="Serialization\Interface_Specs.cs" />
-    <Compile Include="Serialization\Object_Specs.cs" />
-    <Compile Include="Serialization\SimpleType_Specs.cs" />
-    <Compile Include="Serialization\FastSerializerObjects_Specs.cs" />
-    <Compile Include="Serialization\SerializationApi_Specs.cs" />
-    <Compile Include="Serialization\YamlSerializerObject_Specs.cs" />
-    <Compile Include="Servers\SocketServer_Specs.cs" />
-    <Compile Include="Servers\HttpServer_Specs.cs" />
-    <Compile Include="StateMachine\Anytime_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
-    <Compile Include="StateMachine\Combine_Specs.cs" />
-    <Compile Include="StateMachine\EventException_Specs.cs" />
-    <Compile Include="StateMachine\FileImportWorkflow.cs" />
-    <Compile Include="StateMachine\OrderStateMachine.cs" />
-    <Compile Include="StateMachine\Reflection_Specs.cs" />
-    <Compile Include="StateMachine\StateVisualizer_Specs.cs" />
-    <Compile Include="StateMachine\TestStateMachineInstance.cs" />
-    <Compile Include="StateMachine\TestStateMachineInstanceBinding.cs" />
-    <Compile Include="Tree\BuildingATree.cs" />
-    <Compile Include="TypedKey_Specs.cs" />
-    <Compile Include="Mapping_Specs.cs" />
-    <Compile Include="Metric_Specs.cs" />
-    <Compile Include="ObjectExtension_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Range_Specs.cs" />
-    <Compile Include="Reflection\Customer.cs" />
-    <Compile Include="Reflection\FastCollection_Specs.cs" />
-    <Compile Include="Reflection\Visibility_Specs.cs" />
-    <Compile Include="Repository\Repository_Specs.cs" />
-    <Compile Include="SpecificationBase.cs" />
-    <Compile Include="StateMachine\AccountManagementWorkflow.cs" />
-    <Compile Include="StateMachine\ExampleWorkflow.cs" />
-    <Compile Include="StateMachine\ExampleStateMachine.cs" />
-    <Compile Include="StateMachine\StateSerialization_Specs.cs" />
-    <Compile Include="StateMachine\State_Specs.cs" />
-    <Compile Include="Threading\Continuation_Specs.cs" />
-    <Compile Include="Threading\DeferFor_Specs.cs" />
-    <Compile Include="Threading\ErlangInfluencedStyle_Specs.cs" />
-    <Compile Include="Threading\LamdbaIsTheNewDisposable_Specs.cs" />
-    <Compile Include="Threading\UpgradeableLock_Specs.cs" />
-    <Compile Include="Threading\WrappedObjectLocking_Specs.cs" />
-    <Compile Include="ValueProviders\CommandLine_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Stact</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="alice.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="bob.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Logging\log4net.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -325,11 +185,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="FileSystem\FileSpecs\sample.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

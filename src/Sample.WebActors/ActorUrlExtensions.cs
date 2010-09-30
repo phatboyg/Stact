@@ -19,18 +19,18 @@ namespace Sample.WebActors
 	using System.Web.Routing;
 	using Stact;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using Stact.Web.Actors.Configuration;
 
 	public static class ActorUrlExtensions
 	{
 		public static string Actor<TActor>(this UrlHelper url, Expression<Func<TActor, object>> expression)
 		{
-			Guard.AgainstNull(expression, "expression");
+			Magnum.Guard.AgainstNull(expression, "expression");
 
 			PropertyInfo property = expression.GetMemberPropertyInfo();
 
-			Guard.IsTrue(x => x.Implements(typeof (Channel<>)), property.PropertyType, "Property must be a channel");
+			Magnum.Guard.IsTrue(x => x.Implements(typeof (Channel<>)), property.PropertyType, "Property must be a channel");
 
 			RouteValueDictionary rvd = ActorRouteGenerator.GetRouteValuesForActor<TActor>(property);
 

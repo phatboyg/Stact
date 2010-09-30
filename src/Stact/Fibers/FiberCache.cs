@@ -13,8 +13,8 @@
 namespace Stact.Fibers
 {
 	using System;
-	using Collections;
-	using Extensions;
+	using Magnum.Collections;
+	using Magnum.Extensions;
 
 
 	/// <summary>

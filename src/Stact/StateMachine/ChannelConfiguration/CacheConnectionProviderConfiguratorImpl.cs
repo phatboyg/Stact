@@ -14,8 +14,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using Stact.Channels;
-	using Collections;
+	using Magnum.Collections;
 	using Fibers;
+	using Magnum.StateMachine;
 
 
 	public class CacheConnectionProviderConfiguratorImpl<T, TKey, TBinding> :
@@ -44,8 +45,8 @@ namespace Stact.StateMachine.ChannelConfiguration
 		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor,
 			InstanceChannelPolicy<T,TChannel> channelPolicy)
 		{
-			Guard.AgainstNull(channelAccessor, "channelAccessor");
-			Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
+			Magnum.Guard.AgainstNull(channelAccessor, "channelAccessor");
+			Magnum.Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
 
 			if (_cache == null)
 			{

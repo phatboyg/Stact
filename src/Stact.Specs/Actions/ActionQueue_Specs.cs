@@ -15,11 +15,10 @@ namespace Stact.Specs.Actions
 	using System.Diagnostics;
 	using System.Threading;
 	using Fibers;
-	using Stact.Channels;
-	using Stact.Extensions;
-	using Stact.Logging;
+	using Magnum.Extensions;
+	using Magnum.Logging;
+	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using TestFramework;
 
 	[TestFixture]
 	public class Disabling_the_action_queue

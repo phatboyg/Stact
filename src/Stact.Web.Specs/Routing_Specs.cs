@@ -17,7 +17,7 @@ namespace Stact.Web.Specs
 	using Channels;
 	using Fibers;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Configuring_an_actor_with_one_channel

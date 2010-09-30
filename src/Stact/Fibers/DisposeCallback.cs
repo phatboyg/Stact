@@ -25,7 +25,7 @@ namespace Stact.Fibers
 
 		public DisposeCallback(Action disposeCallback)
 		{
-			Guard.AgainstNull(disposeCallback);
+			Magnum.Guard.AgainstNull(disposeCallback);
 
 			_disposeCallback = disposeCallback;
 		}

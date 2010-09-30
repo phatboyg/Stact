@@ -14,9 +14,10 @@ namespace Stact.Specs.Actors.Auctions
 {
 	using System;
 	using Fibers;
+	using Magnum;
 	using Stact.Actors;
 	using Stact.Actors.Internal;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[Scenario]

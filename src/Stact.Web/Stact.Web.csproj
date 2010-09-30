@@ -72,6 +72,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Magnum">
+      <HintPath>..\..\lib\Magnum\Magnum.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -98,19 +101,15 @@
     <Compile Include="Actors\Internal\ActorRequestContext.cs" />
     <Compile Include="Actors\Configuration\ActorConfigurator.cs" />
     <Compile Include="Actors\Configuration\ActorRouteGenerator.cs" />
-    <Compile Include="Actors\Internal\ActorRouteHandler.cs" />
     <Compile Include="Abstractions\HttpResponseContentWriter.cs" />
     <Compile Include="Abstractions\JsonObjectWriter.cs" />
     <Compile Include="Actors\Configuration\RouteConfiguration.cs" />
     <Compile Include="Actors\Configuration\ActorConfiguration.cs" />
-    <Compile Include="Actors\ConfigurationExtensions.cs" />
     <Compile Include="Actors\Configuration\StandardActorConfiguration.cs" />
-    <Compile Include="Actors\Internal\HttpActorRequestContext.cs" />
     <Compile Include="Abstractions\ObjectWriter.cs" />
     <Compile Include="Abstractions\MediaType.cs" />
     <Compile Include="Abstractions\ContentWriter.cs" />
     <Compile Include="Actors\Configuration\RouteConfigurator.cs" />
-    <Compile Include="Actors\Configuration\WebRoutingRouteConfiguration.cs" />
     <Compile Include="Abstractions\ObjectWriterChannel.cs" />
     <Compile Include="Security\SecureSessionHttpModule.cs" />
     <Compile Include="ValueProviders\HttpRequestValueProvider.cs" />

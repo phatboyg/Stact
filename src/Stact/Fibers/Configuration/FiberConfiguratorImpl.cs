@@ -14,7 +14,7 @@ namespace Stact.Fibers.Configuration
 {
 	using System;
 	using Channels.Configuration.Internal;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	public class FiberConfiguratorImpl<T> :

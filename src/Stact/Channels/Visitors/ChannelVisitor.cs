@@ -13,9 +13,9 @@
 namespace Stact.Channels.Visitors
 {
 	using System.Collections.Generic;
-	using Extensions;
-	using Logging;
-	using Reflection;
+	using Magnum.Extensions;
+	using Magnum.Logging;
+	using Magnum.Reflection;
 
 
 	public class ChannelVisitor

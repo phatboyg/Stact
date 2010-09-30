@@ -15,11 +15,11 @@ namespace Stact.Specs.Channels
 	using System;
 	using System.Linq;
 	using Fibers;
+	using Magnum.Logging;
 	using Stact.Channels;
-	using Stact.Extensions;
-	using Stact.Logging;
+	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[TestFixture]
@@ -54,7 +54,7 @@ namespace Stact.Specs.Channels
 		[Test]
 		public void Should_properly_arrive_at_the_destination()
 		{
-			TraceLogger.Configure(LogLevel.Debug);
+			TraceLogger.Configure();
 			_log = Logger.GetLogger<Sending_a_message_to_a_remote_channel_via_wcf>();
 			_log.Debug("Starting");
 

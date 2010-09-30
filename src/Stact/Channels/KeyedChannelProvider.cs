@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels
 {
-	using Collections;
+	using Magnum.Collections;
 
 
 	public class KeyedChannelProvider<TChannel, TKey> :

@@ -38,11 +38,11 @@ namespace Stact.ForNHibernate.Channels
 		                                         ChannelAccessor<TInstance, TChannel> channelAccessor,
 		                                         InstanceChannelPolicy<TInstance, TChannel> instanceChannelPolicy)
 		{
-			Guard.AgainstNull(fiberProvider);
-			Guard.AgainstNull(sessionProvider);
-			Guard.AgainstNull(keyAccessor);
-			Guard.AgainstNull(channelAccessor);
-			Guard.AgainstNull(instanceChannelPolicy);
+			Magnum.Guard.AgainstNull(fiberProvider);
+			Magnum.Guard.AgainstNull(sessionProvider);
+			Magnum.Guard.AgainstNull(keyAccessor);
+			Magnum.Guard.AgainstNull(channelAccessor);
+			Magnum.Guard.AgainstNull(instanceChannelPolicy);
 
 			_fiberProvider = fiberProvider;
 			_sessionProvider = sessionProvider;

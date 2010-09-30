@@ -16,7 +16,7 @@ namespace Stact.Specs.Actors
 	using System.Threading;
 	using Fibers;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 
 	[TestFixture]

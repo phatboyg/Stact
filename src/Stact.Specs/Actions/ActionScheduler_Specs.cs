@@ -15,10 +15,9 @@ namespace Stact.Specs.Actions
 	using System;
 	using System.Diagnostics;
 	using Fibers;
-	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 	[TestFixture]
 	public class Scheduling_an_action_for_now

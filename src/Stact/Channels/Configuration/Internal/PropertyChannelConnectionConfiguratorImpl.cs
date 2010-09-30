@@ -17,11 +17,11 @@ namespace Stact.Channels.Configuration.Internal
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
 	using Fibers.Configuration;
-	using Logging;
-	using Reflection;
+	using Magnum.Logging;
+	using Magnum.Reflection;
 
 
 	public class PropertyChannelConnectionConfiguratorImpl<T> :

@@ -23,9 +23,7 @@ namespace Stact.Benchmarks
 			{
 				Console.WriteLine("Stact Benchmark Console");
 
-				//new MessagePassingBenchmark().Run();
-
-				new HttpServerBenchmark().Run();
+				new MessagePassingBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

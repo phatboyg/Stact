@@ -17,11 +17,11 @@ namespace Stact.ForNHibernate.Auditing.Internal
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Extensions;
+	using Magnum.Extensions;
 	using Stact.Channels;
 	using NHibernate.Cfg;
 	using NHibernate.Event;
-	using Reflection;
+	using Magnum.Reflection;
 
 
 	public delegate TListener ListenerFactory<TListener>(UntypedChannel output, HashSet<Type> types);
@@ -38,9 +38,9 @@ namespace Stact.ForNHibernate.Auditing.Internal
 		public EventListenerConfiguratorImpl(Type eventType, ListenerFactory<TListener> listenerFactory,
 		                                     Expression<Func<EventListeners, TListener[]>> listenerAccessor)
 		{
-			Guard.IsTrue(x => x.IsGenericTypeDefinition, eventType, "eventType", "Must be a generic type definition");
-			Guard.AgainstNull(listenerFactory, "listenerFactory");
-			Guard.AgainstNull(listenerAccessor, "listenerAccessor");
+			Magnum.Guard.IsTrue(x => x.IsGenericTypeDefinition, eventType, "eventType", "Must be a generic type definition");
+			Magnum.Guard.AgainstNull(listenerFactory, "listenerFactory");
+			Magnum.Guard.AgainstNull(listenerAccessor, "listenerAccessor");
 
 			_types = new HashSet<Type>();
 			_eventType = eventType;

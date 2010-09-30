@@ -15,14 +15,16 @@ namespace Stact.ForNHibernate.Specs.Channels
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Concurrency;
-	using Extensions;
-	using Logging;
+	using Magnum.Concurrency;
+	using Magnum.Extensions;
+	using Magnum.Logging;
+	using Magnum.Logging;
 	using Stact.Channels;
 	using Stact.Specs.StateMachine;
 	using NHibernate;
 	using NUnit.Framework;
-	using TestFramework;
+	using Magnum.TestFramework;
+	using StateMachine;
 
 
 	[Scenario]
@@ -35,7 +37,7 @@ namespace Stact.ForNHibernate.Specs.Channels
 		[When]
 		public void Sending_a_message_to_an_nhibernate_backed_state_machine()
 		{
-			TraceLogger.Configure(LogLevel.Debug);
+			TraceLogger.Configure();
 
 			_newValue = new Random().Next(1, 500000)/100m;
 

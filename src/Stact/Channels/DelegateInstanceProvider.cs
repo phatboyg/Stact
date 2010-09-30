@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Extensions;
+	using Magnum.Extensions;
 
 
 	public class DelegateInstanceProvider<TInstance, TChannel> :
@@ -24,7 +24,7 @@ namespace Stact.Channels
 
 		public DelegateInstanceProvider(Func<TChannel, TInstance> provider)
 		{
-			Guard.AgainstNull(provider);
+			Magnum.Guard.AgainstNull(provider);
 
 			_provider = provider;
 		}

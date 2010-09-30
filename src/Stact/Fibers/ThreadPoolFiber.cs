@@ -16,8 +16,9 @@ namespace Stact.Fibers
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Threading;
-	using Concurrency;
-	using Logging;
+	using Magnum.Concurrency;
+	using Magnum;
+	using Magnum.Logging;
 
 
 	/// <summary>

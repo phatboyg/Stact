@@ -14,7 +14,7 @@ namespace Stact.Web.Abstractions
 {
 	using System.Web;
 	using System.Web.Script.Serialization;
-	using Stact.ValueProviders;
+	using Magnum.ValueProviders;
 
 
 	/// <summary>

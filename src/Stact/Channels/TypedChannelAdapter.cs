@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Reflection;
+	using Magnum.Reflection;
 
 	/// <summary>
 	/// Converts an untyped channel to a typed channel, passing only messages

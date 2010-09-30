@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels.Configuration.Internal
 {
-	using Extensions;
+	using Magnum.Extensions;
 	using Fibers;
 
 
@@ -23,7 +23,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public ChannelConfiguratorImpl(UntypedChannel channel)
 		{
-			Guard.AgainstNull(channel);
+			Magnum.Guard.AgainstNull(channel);
 
 			_channel = channel;
 		}
@@ -47,7 +47,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public ChannelConfiguratorImpl(Channel<TChannel> channel)
 		{
-			Guard.AgainstNull(channel);
+			Magnum.Guard.AgainstNull(channel);
 
 			_channel = channel;
 		}

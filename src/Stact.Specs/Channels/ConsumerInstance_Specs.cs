@@ -16,10 +16,10 @@ namespace Stact.Specs.Channels
 	using System.Threading;
 	using Fibers;
 	using Stact.Channels;
-	using Stact.Extensions;
+	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Rhino.Mocks;
-	using TestFramework;
+	using Magnum.TestFramework;
 
 
 	[TestFixture]

@@ -14,9 +14,10 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 {
 	using System.Linq;
 	using Channels;
-	using Extensions;
+	using Magnum.Extensions;
 	using ForNHibernate.Auditing;
 	using Stact.StateMachine;
+	using Magnum.StateMachine;
 
 
 	public class TestInstanceAudit :

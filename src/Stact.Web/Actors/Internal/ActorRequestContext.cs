@@ -13,7 +13,7 @@
 namespace Stact.Web.Actors.Internal
 {
 	using System;
-	using Binding;
+	using Magnum.Binding;
 
 	public interface ActorRequestContext :
 		ModelBinderContext,

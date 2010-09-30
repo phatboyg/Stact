@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using Fibers;
-	using Serialization;
+	using Magnum.Serialization;
 
 	public class SerializeChannel<T> :
 		Channel<T>

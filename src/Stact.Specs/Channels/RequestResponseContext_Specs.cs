@@ -1,8 +1,8 @@
 namespace Stact.Specs.Channels
 {
 	using Stact.Channels;
-	using Stact.Extensions;
-	using TestFramework;
+	using Magnum.Extensions;
+	using Magnum.TestFramework;
 
 
 	[Scenario]
