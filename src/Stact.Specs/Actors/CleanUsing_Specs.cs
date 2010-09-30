@@ -16,7 +16,7 @@ namespace Stact.Specs.Actors
 
 
 	[Scenario]
-	public class Using_an_actor
+	public class Using_an_anonymous_actor
 	{
 		[Then]
 		public void Should_not_require_extensive_namespace_references()
@@ -25,25 +25,33 @@ namespace Stact.Specs.Actors
 				{
 					inbox.Receive<Request<MyRequest>>(request =>
 						{
-							return message =>
-								{
-									// send our response
-									message.Respond(new MyResponse());
-								};
+							// send our response
+							request.Respond(new MyResponse());
 						});
 				});
 
 			ActorInstance client = AnonymousActor.New(inbox =>
 				{
 					server.Request(new MyRequest(), inbox)
-						.Receive<MyResponse>(response =>
-							{
-								return message =>
-									{
-										// do nothing
-									};
-							});
+						.Receive<MyResponse>(response => { });
 				});
+		}
+
+
+		class MyAgent :
+			Actor
+		{
+			public MyAgent(Fiber fiber)
+			{
+				this.Connect(x => x.MyRequestPort, fiber, MyRequestHandler);
+			}
+
+			public Port<Request<MyRequest>> MyRequestPort { get; private set; }
+
+			void MyRequestHandler(Request<MyRequest> message)
+			{
+				message.Respond(new MyResponse());
+			}
 		}
 
 

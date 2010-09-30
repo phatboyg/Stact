@@ -115,6 +115,8 @@ namespace Stact.Fibers
 				{
 					_timer.Dispose();
 				}
+
+				_fiber.Shutdown(60.Seconds());
 			}
 		}
 

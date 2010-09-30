@@ -10,9 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Messages
+namespace Stact.Actors
 {
-	public interface Exit
+	using Channels;
+
+
+	public class PortImpl<T> :
+		Port<T>
 	{
+		Channel<T> _channel;
+
+		public PortImpl(Channel<T> channel)
+		{
+			_channel = channel;
+		}
+
+		public void Send(T message)
+		{
+			_channel.Send(message);
+		}
 	}
 }

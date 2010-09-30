@@ -13,11 +13,15 @@
 namespace Stact
 {
 	using System;
+	using System.Linq.Expressions;
+	using System.Reflection;
 	using Actors;
 	using Actors.Internal;
-	using Actors.Messages;
 	using Channels;
 	using Channels.Internal;
+	using Fibers;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
 
 
 	public static class Extensions
@@ -102,6 +106,20 @@ namespace Stact
 		public static WithinSentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout)
 		{
 			return new WithinSentRequestImpl<TRequest>(request, timeout);
+		}
+
+
+
+		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Port<TPort>>> portProperty, Fiber fiber, Consumer<TPort> consumer)
+			where TActor : Actor
+		{
+			PropertyInfo propertyInfo = portProperty.GetMemberPropertyInfo();
+			var property = new FastProperty<TActor, Port<TPort>>(propertyInfo);
+
+			var channel = new ConsumerChannel<TPort>(fiber, consumer);
+			var port = new PortImpl<TPort>(channel);
+
+			property.Set(actor, port);
 		}
 	}
 }

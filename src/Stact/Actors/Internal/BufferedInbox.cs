@@ -75,11 +75,6 @@ namespace Stact.Actors.Internal
 			return pending;
 		}
 
-		public PendingReceive Receive(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
-		{
-			return Receive(consumer, timeout.Milliseconds(), timeoutCallback);
-		}
-
 		~BufferedInbox()
 		{
 			Dispose(false);

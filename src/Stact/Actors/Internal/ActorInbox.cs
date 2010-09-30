@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,8 +17,6 @@ namespace Stact.Actors.Internal
 	using Channels;
 	using Magnum.Collections;
 	using Magnum.Extensions;
-	using Fibers;
-	using Messages;
 
 
 	/// <summary>
@@ -74,11 +72,6 @@ namespace Stact.Actors.Internal
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
-		{
-			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
-		}
-
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
 		{
 			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
 		}

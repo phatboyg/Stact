@@ -110,6 +110,7 @@
     <Compile Include="Actors\ActorProvider.cs" />
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\ActorRepository.cs" />
+    <Compile Include="Actors\PortImpl.cs" />
     <Compile Include="AnonymousActor.cs" />
     <Compile Include="Actors\AnonymousActorFactory.cs" />
     <Compile Include="Extensions.cs" />
@@ -121,8 +122,8 @@
     <Compile Include="Actors\Internal\WithinSentRequest.cs" />
     <Compile Include="Actors\Internal\WithinSentRequestImpl.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
-    <Compile Include="Actors\Messages\Exit.cs" />
-    <Compile Include="Actors\Messages\Kill.cs" />
+    <Compile Include="Actors\Exit.cs" />
+    <Compile Include="Actors\Kill.cs" />
     <Compile Include="Actors\PendingReceive.cs" />
     <Compile Include="Channels\ChannelProviderFactory.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistributedChannels.cs" />
@@ -137,8 +138,10 @@
     <Compile Include="Channels\Configuration\Internal\DistributedInstanceChannelProviderConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfiguratorImpl.cs" />
+    <Compile Include="ExtensionsToInbox.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Channels\Internal\MessageImpl.cs" />
+    <Compile Include="Port.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Channels\Internal\RequestImpl.cs" />
     <Compile Include="Response.cs" />
@@ -228,10 +231,10 @@
     <Compile Include="Fibers\DisposeCallback.cs" />
     <Compile Include="Fibers\ExtensionsToFiber.cs" />
     <Compile Include="Fibers\FiberCache.cs" />
-    <Compile Include="Fibers\Fiber.cs" />
+    <Compile Include="Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
     <Compile Include="Fibers\FiberProvider.cs" />
-    <Compile Include="Fibers\Scheduler.cs" />
+    <Compile Include="Scheduler.cs" />
     <Compile Include="Fibers\ScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ExecuteScheduledAction.cs" />
     <Compile Include="Fibers\Internal\ScheduledActionList.cs" />
@@ -291,6 +294,7 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Actors\Messages\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

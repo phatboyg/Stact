@@ -51,10 +51,5 @@ namespace Stact.Actors.Internal
 		{
 			return _inbox.Receive(consumer, timeout, timeoutCallback);
 		}
-
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback)
-		{
-			return _inbox.Receive(consumer, timeout, timeoutCallback);
-		}
 	}
 }

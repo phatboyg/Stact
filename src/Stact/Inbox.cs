@@ -43,15 +43,5 @@ namespace Stact
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
 		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
-
-		/// <summary>
-		///   Specifies a method to call when a message is recieved. If a message is not received within
-		///   the specified timeout, a timeout callback is called instead and the receiver is removed from 
-		///   the waiting list of receivers.
-		/// </summary>
-		/// <param name = "consumer">The consumer to call with the message</param>
-		/// <param name = "timeout">The time period to wait for a message</param>
-		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, int timeout, Action timeoutCallback);
 	}
 }

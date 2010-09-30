@@ -14,13 +14,22 @@ namespace Stact
 {
 	using System;
 
-
+	/// <summary>
+	/// The base message header, non-generic to allow use in any method
+	/// </summary>
 	public interface Message
 	{
+		/// <summary>
+		/// The message body type in URN-format
+		/// eg. urn:message:Stact.Exit
+		/// </summary>
 		Uri BodyType { get; }
 	}
 
-
+	/// <summary>
+	/// The message header, generic matching the type of the message body
+	/// </summary>
+	/// <typeparam name="T">The message body type</typeparam>
 	public interface Message<T> :
 		Message
 	{
