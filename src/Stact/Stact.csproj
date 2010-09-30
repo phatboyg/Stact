@@ -103,7 +103,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actor.cs" />
     <Compile Include="Actors\ActorCache.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
     <Compile Include="Actors\ActorInstance.cs" />
