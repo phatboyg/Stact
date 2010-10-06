@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -37,6 +37,20 @@ namespace Stact.Specs.Actors
 				});
 		}
 
+		[Then]
+		public void Should_map_actors_by_convention()
+		{
+			ActorFactory<MyAgent> factory = ActorFactory.Create<MyAgent>(x => x.CreateNewInstanceBy(f => new MyAgent(f)));
+
+			ActorInstance server = factory.GetActor();
+
+			ActorInstance client = AnonymousActor.New(inbox =>
+			{
+				server.Request(new MyRequest(), inbox)
+					.Receive<MyResponse>(response => { });
+			});
+		}
+
 
 		class MyAgent :
 			Actor
@@ -46,7 +60,7 @@ namespace Stact.Specs.Actors
 				this.Connect(x => x.MyRequestPort, fiber, MyRequestHandler);
 			}
 
-			public Port<Request<MyRequest>> MyRequestPort { get; private set; }
+			public Channel<Request<MyRequest>> MyRequestPort { get; private set; }
 
 			void MyRequestHandler(Request<MyRequest> message)
 			{

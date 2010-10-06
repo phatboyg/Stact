@@ -34,9 +34,9 @@ namespace Stact
 
 		static AnonymousActor()
 		{
-			_fiberFactory = () => new ThreadPoolFiber();
+			_fiberFactory = () => new PoolFiber();
 
-			_schedulerFactory = () => new TimerScheduler(new ThreadPoolFiber());
+			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
 
 			CreateAnonymousActorFactory();
 		}

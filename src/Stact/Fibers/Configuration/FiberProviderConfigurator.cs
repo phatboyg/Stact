@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,38 +17,21 @@ namespace Stact.Fibers.Configuration
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
-	public interface FiberProviderConfigurator<T, TKey>
+	public interface FiberProviderConfigurator<T, TKey> :
+		FiberFactoryConfigurator<T>
+		where T : class
 	{
 		/// <summary>
-		/// Handles the message on the calling thread (synchronously)
+		/// Share one fiber for every key value
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnCallingThread();
+		T ShareFiberAcrossInstances();
 
 		/// <summary>
-		/// Handles messages to all instances using a single shared fiber
+		/// Create a new fiber for each key value
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnSingleFiber();
-
-		/// <summary>
-		/// Each instance handles messages on its own fiber
-		/// </summary>
-		/// <returns></returns>
-		T HandleOnInstanceFiber();
-
-		/// <summary>
-		/// Handles messages to all instances using a single shared thread
-		/// </summary>
-		/// <returns></returns>
-		T HandleOnSingleThread();
-
-		/// <summary>
-		/// Handle all requests on a single fiber, specified
-		/// </summary>
-		/// <param name="fiber"></param>
-		/// <returns></returns>
-		T HandleOnFiber(Fiber fiber);
+		T CreateFiberPerInstance();
 
 		/// <summary>
 		/// Specifies a specific fiber provider, which provides the fiber for each instance

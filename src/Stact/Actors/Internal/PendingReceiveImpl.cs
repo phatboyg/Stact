@@ -24,7 +24,7 @@ namespace Stact.Actors.Internal
 		readonly SelectiveConsumer<T> _selectiveConsumer;
 		readonly Action _timeoutCallback;
 		bool _cancel;
-		ScheduledAction _scheduledAction;
+		ScheduledOperation _scheduledAction;
 
 		public PendingReceiveImpl(SelectiveConsumer<T> selectiveConsumer, Action timeoutCallback,
 		                          Action<PendingReceiveImpl<T>> onComplete)
@@ -46,7 +46,7 @@ namespace Stact.Actors.Internal
 			_onComplete(this);
 		}
 
-		public void ScheduleTimeout(Func<PendingReceiveImpl<T>, ScheduledAction> scheduleAction)
+		public void ScheduleTimeout(Func<PendingReceiveImpl<T>, ScheduledOperation> scheduleAction)
 		{
 			_scheduledAction = scheduleAction(this);
 		}

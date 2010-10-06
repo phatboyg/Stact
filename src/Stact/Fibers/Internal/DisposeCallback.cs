@@ -10,29 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Fibers
+namespace Stact.Fibers.Internal
 {
-	using Magnum.Extensions;
+	using System;
 
 
-	public class SharedFiberProvider<TKey> :
-		FiberProvider<TKey>
+	/// <summary>
+	/// Wraps a callback as an IDisposable to allow it to be called when the object is disposed.
+	/// </summary>
+	public class DisposeCallback :
+		IDisposable
 	{
-		readonly Fiber _fiber;
+		readonly Action _disposeCallback;
 
-		public SharedFiberProvider(Fiber fiber)
+		public DisposeCallback(Action disposeCallback)
 		{
-			_fiber = fiber;
-		}
+			Magnum.Guard.AgainstNull(disposeCallback);
 
-		public Fiber GetFiber(TKey key)
-		{
-			return _fiber;
+			_disposeCallback = disposeCallback;
 		}
 
 		public void Dispose()
 		{
-			_fiber.Shutdown(60.Seconds());
+			_disposeCallback();
 		}
 	}
 }

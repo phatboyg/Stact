@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -20,14 +20,14 @@ namespace Stact
 		/// <summary>
 		/// Enqueue a single action to the queue
 		/// </summary>
-		/// <param name="action"></param>
-		void Add(Action action);
+		/// <param name="operation"></param>
+		void Add(Action operation);
 
 		/// <summary>
 		/// Enqueue a series of actions to the queue
 		/// </summary>
-		/// <param name="actions"></param>
-		void AddMany(params Action[] actions);
+		/// <param name="operations"></param>
+		void AddMany(params Action[] operations);
 
 		/// <summary>
 		/// Runs all remaining actions, waiting until all actions have been executed or until the

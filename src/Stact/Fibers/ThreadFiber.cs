@@ -59,14 +59,14 @@ namespace Stact.Fibers
 			}
 		}
 
-		public void Add(Action action)
+		public void Add(Action operation)
 		{
-			Add(x => x.Add(action));
+			Add(x => x.Add(operation));
 		}
 
-		public void AddMany(params Action[] actions)
+		public void AddMany(params Action[] operations)
 		{
-			Add(x => x.AddMany(actions));
+			Add(x => x.AddMany(operations));
 		}
 
 		public void Shutdown(TimeSpan timeout)

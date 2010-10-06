@@ -10,8 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors
+namespace Stact
 {
+	using System;
+	using Actors;
+
+
+	public static class ActorFactory
+	{
+		public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator) 
+			where TActor : class, Actor
+		{
+			var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TActor>();
+
+			configurator(factoryConfiguratorImpl);
+			
+			return factoryConfiguratorImpl.CreateActorFactory();
+		}
+	}
+
 	/// <summary>
 	/// A builder abstraction for creating actor instances when needed
 	/// </summary>

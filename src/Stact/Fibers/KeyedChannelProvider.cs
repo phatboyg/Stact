@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,21 +14,21 @@ namespace Stact.Fibers
 {
 	using System;
 	using Magnum.Collections;
-	using Magnum.Extensions;
 
 
 	/// <summary>
 	/// Keeps track of a keyed fiber collection
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
-	public class FiberCache<TKey> :
+	public class KeyedChannelProvider<TKey> :
 		FiberProvider<TKey>
 	{
 		readonly Cache<TKey, Fiber> _cache;
-		readonly TimeSpan _timeout = 60.Seconds();
+		readonly TimeSpan _timeout;
 
-		public FiberCache(FiberFactory missingFiberFactory)
+		public KeyedChannelProvider(FiberFactory missingFiberFactory, TimeSpan timeout)
 		{
+			_timeout = timeout;
 			_cache = new Cache<TKey, Fiber>(k => missingFiberFactory());
 		}
 

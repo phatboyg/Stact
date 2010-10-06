@@ -12,11 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Fibers.Configuration
 {
+	using System;
+
+
 	/// <summary>
 	/// Configures the type of fiber to be used for handling messages
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface FiberConfigurator<T>
+	public interface FiberFactoryConfigurator<T>
 		where T : class
 	{
 		/// <summary>
@@ -29,7 +32,7 @@ namespace Stact.Fibers.Configuration
 		/// Handle on a dedicated fiber (uses the thread pool, lightweight)
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnFiber();
+		T HandleOnPoolFiber();
 
 		/// <summary>
 		/// Handle on the specified fiber
@@ -42,7 +45,7 @@ namespace Stact.Fibers.Configuration
 		/// Handle on a dedicated thread (operating system thread)
 		/// </summary>
 		/// <returns></returns>
-		T HandleOnThread();
+		T HandleOnThreadFiber();
 
 		/// <summary>
 		/// Use the specified fiber factory
@@ -50,5 +53,12 @@ namespace Stact.Fibers.Configuration
 		/// <param name="fiberFactory">The fiber factory to use</param>
 		/// <returns></returns>
 		T UseFiberFactory(FiberFactory fiberFactory);
+
+		/// <summary>
+		/// Configure the shutdown timeout for the fiber
+		/// </summary>
+		/// <param name="timeout"></param>
+		/// <returns></returns>
+		T UseShutdownTimeout(TimeSpan timeout);
 	}
 }

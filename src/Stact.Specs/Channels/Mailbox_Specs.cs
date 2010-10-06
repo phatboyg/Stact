@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -27,7 +27,7 @@ namespace Stact.Specs.Channels
 		[SetUp]
 		public void Setup()
 		{
-			_inbox = new BufferedInbox<TestMessage>(new ThreadPoolFiber(), new TimerScheduler(new ThreadPoolFiber()));
+			_inbox = new BufferedInbox<TestMessage>(new PoolFiber(), new TimerScheduler(new PoolFiber()));
 			_transactionId = CombGuid.Generate();
 			_received = new Stact.Future<TestMessage>();
 		}

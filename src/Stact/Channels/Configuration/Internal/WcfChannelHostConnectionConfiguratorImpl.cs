@@ -18,7 +18,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class WcfChannelHostConnectionConfiguratorImpl :
-		FiberConfiguratorImpl<WcfChannelHostConnectionConfigurator>,
+		FiberFactoryConfiguratorImpl<WcfChannelHostConnectionConfigurator>,
 		WcfChannelHostConnectionConfigurator,
 		ChannelConfigurator
 	{
@@ -40,7 +40,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			var host = new WcfChannelHost(fiber, connection.Channel, _endpointUri, _pipeName);
 

@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,13 +14,17 @@ namespace Stact.Fibers
 {
 	using System;
 
-	public interface ScheduledAction
+
+	public interface ScheduledOperation
 	{
+		/// <summary>
+		/// The time coordinates when the operation is scheduled to execute
+		/// </summary>
 		DateTime ScheduledAt { get; }
 
-        /// <summary>
-        /// Stops the ScheduledAction from firing again. 
-        /// </summary>
+		/// <summary>
+		/// Cancels the scheduled operation, ensuring that it does not execute
+		/// </summary>
 		void Cancel();
 	}
 }

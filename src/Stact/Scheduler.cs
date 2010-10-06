@@ -18,10 +18,10 @@ namespace Stact
 
 	public interface Scheduler
 	{
-		ScheduledAction Schedule(TimeSpan interval, Fiber fiber, Action action);
-		ScheduledAction Schedule(int interval, Fiber fiber, Action action);
-		ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action);
-		ScheduledAction Schedule(int interval, int periodicInterval, Fiber fiber, Action action);
+		ScheduledOperation Schedule(TimeSpan interval, Fiber fiber, Action action);
+		ScheduledOperation Schedule(int interval, Fiber fiber, Action action);
+		ScheduledOperation Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action);
+		ScheduledOperation Schedule(int interval, int periodicInterval, Fiber fiber, Action action);
 
 		void Stop();
 	}

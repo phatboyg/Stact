@@ -31,8 +31,8 @@ namespace Stact.Specs.Actors.Auctions
 		{
 			Id = CombGuid.Generate();
 
-			var factory = new DelegateActorFactory<Auction>(() => new ThreadPoolFiber(),
-			                                                () => new TimerScheduler(new ThreadPoolFiber()),
+			var factory = new DelegateActorFactory<Auction>(() => new PoolFiber(),
+			                                                () => new TimerScheduler(new PoolFiber()),
 			                                                (f, s, i) => new Auction(f, i, Id));
 
 			Auction = factory.GetActor();

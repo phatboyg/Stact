@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -27,7 +27,7 @@ namespace Stact.Fibers
 	{
 		private static readonly ILogger _log = Logger.GetLogger<TimerScheduler>();
 
-		private readonly ScheduledActionList _actions = new ScheduledActionList();
+		private readonly ScheduledOperationList _operations = new ScheduledOperationList();
 		private readonly Fiber _fiber;
 		private readonly object _lock = new object();
 		private readonly TimeSpan _noPeriod = -1.Milliseconds();
@@ -47,7 +47,7 @@ namespace Stact.Fibers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		protected int Count
 		{
-			get { return _actions.Count; }
+			get { return _operations.Count; }
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -56,35 +56,35 @@ namespace Stact.Fibers
 			get
 			{
 				DateTime scheduledAt;
-				if (_actions.GetNextScheduledActionTime(Now, out scheduledAt))
+				if (_operations.GetNextScheduledTime(Now, out scheduledAt))
 					return scheduledAt.ToString();
 
 				return "None";
 			}
 		}
 
-		public ScheduledAction Schedule(int interval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(int interval, Fiber fiber, Action action)
 		{
 			return Schedule(interval.Milliseconds(), fiber, action);
 		}
 
-		public ScheduledAction Schedule(TimeSpan interval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(TimeSpan interval, Fiber fiber, Action action)
 		{
-			var scheduled = new SingleScheduledAction(GetScheduledTime(interval), fiber, action);
+			var scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, action);
 			Schedule(scheduled);
 
 			return scheduled;
 		}
 
-		public ScheduledAction Schedule(int interval, int periodicInterval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(int interval, int periodicInterval, Fiber fiber, Action action)
 		{
 			return Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, action);
 		}
 
-		public ScheduledAction Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action)
 		{
-			SingleScheduledAction scheduled = null;
-			scheduled = new SingleScheduledAction(GetScheduledTime(interval), fiber, () =>
+			ScheduledOperationExecuterImpl scheduled = null;
+			scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, () =>
 				{
 					try
 					{
@@ -120,11 +120,11 @@ namespace Stact.Fibers
 			}
 		}
 
-		private void Schedule(ExecuteScheduledAction action)
+		private void Schedule(ScheduledOperationExecuter action)
 		{
 			_fiber.Add(() =>
 				{
-					_actions.Add(action);
+					_operations.Add(action);
 
 					ExecuteExpiredActions();
 				});
@@ -135,7 +135,7 @@ namespace Stact.Fibers
 			DateTime now = Now;
 
 			DateTime scheduledAt;
-			if (_actions.GetNextScheduledActionTime(now, out scheduledAt))
+			if (_operations.GetNextScheduledTime(now, out scheduledAt))
 			{
 				lock (_lock)
 				{
@@ -158,8 +158,8 @@ namespace Stact.Fibers
 			if (_stopped)
 				return;
 
-			ExecuteScheduledAction[] expiredActions;
-			while ((expiredActions = _actions.GetExpiredActions(Now)).Length > 0)
+			ScheduledOperationExecuter[] expiredActions;
+			while ((expiredActions = _operations.GetExpiredActions(Now)).Length > 0)
 			{
 				expiredActions.Each(action =>
 					{

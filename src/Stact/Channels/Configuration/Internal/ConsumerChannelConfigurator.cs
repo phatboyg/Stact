@@ -16,7 +16,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public interface ConsumerChannelConfigurator<TChannel> :
-		FiberConfigurator<ConsumerChannelConfigurator<TChannel>>
+		FiberFactoryConfigurator<ConsumerChannelConfigurator<TChannel>>
 	{
 	}
 }

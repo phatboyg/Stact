@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -53,11 +53,11 @@ namespace Stact.Specs.Channels
 	public class SomeActorInstance
 	{
 		private readonly Future<MyMessage> _future;
-		private readonly ThreadPoolFiber _fiber;
+		private readonly PoolFiber _fiber;
 
 		public SomeActorInstance()
 		{
-			_fiber = new ThreadPoolFiber();
+			_fiber = new PoolFiber();
 			_future = new Future<MyMessage>();
 
 			MessageChannel = new ConsumerChannel<MyMessage>(_fiber, Consume);

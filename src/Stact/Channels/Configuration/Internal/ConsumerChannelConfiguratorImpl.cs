@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,7 +17,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class ConsumerChannelConfiguratorImpl<TChannel> :
-		FiberConfiguratorImpl<ConsumerChannelConfigurator<TChannel>>,
+		FiberFactoryConfiguratorImpl<ConsumerChannelConfigurator<TChannel>>,
 		ConsumerChannelConfigurator<TChannel>,
 		ChannelConfigurator,
 		ChannelConfigurator<TChannel>
@@ -37,14 +37,14 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
 		}

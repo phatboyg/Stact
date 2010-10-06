@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,14 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Channels;
-
 	/// <summary>
-	/// A port is a stereotype of a channel, and is a property of an actor if available
+	/// A channel to which any message type can be sent
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface Port<T> :
-		Channel<T>
+	public interface UntypedChannel :
+		Channel
 	{
+		/// <summary>
+		///   Send a message to an untyped channel
+		/// </summary>
+		/// <typeparam name = "T">The message type</typeparam>
+		/// <param name = "message">The message</param>
+		void Send<T>(T message);
 	}
 }

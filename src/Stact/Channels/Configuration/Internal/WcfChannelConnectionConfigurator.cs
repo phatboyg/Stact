@@ -16,7 +16,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public interface WcfChannelConnectionConfigurator :
-		FiberConfigurator<WcfChannelConnectionConfigurator>
+		FiberFactoryConfigurator<WcfChannelConnectionConfigurator>
 	{
 	}
 }

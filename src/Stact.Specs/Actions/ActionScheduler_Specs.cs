@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -25,7 +25,7 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_run_the_action_immediately()
 		{
-			Fiber fiber = new ThreadPoolFiber();
+			Fiber fiber = new PoolFiber();
 			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
@@ -42,7 +42,7 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_wait_until_the_appropriate_time_for_the_action_to_execute()
 		{
-			Fiber fiber = new ThreadPoolFiber();
+			Fiber fiber = new PoolFiber();
 			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
@@ -62,8 +62,8 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_run_the_new_action_immediately()
 		{
-			Fiber fiber = new ThreadPoolFiber();
-			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
+			Fiber fiber = new PoolFiber();
+			Scheduler scheduler = new TimerScheduler(new PoolFiber());
 
 			var called = new Future<bool>();
 
@@ -80,8 +80,8 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_not_run_any_pending_actions()
 		{
-			Fiber fiber = new ThreadPoolFiber();
-			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
+			Fiber fiber = new PoolFiber();
+			Scheduler scheduler = new TimerScheduler(new PoolFiber());
 
 			var called = new Future<bool>();
 
@@ -99,8 +99,8 @@ namespace Stact.Specs.Actions
 		[Test, Ignore("Should not be managing exceptions automatically")]
 		public void Should_not_stall_the_scheduler()
 		{
-			Fiber fiber = new ThreadPoolFiber();
-			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
+			Fiber fiber = new PoolFiber();
+			Scheduler scheduler = new TimerScheduler(new PoolFiber());
 
 			var called = new Future<bool>();
 
@@ -117,8 +117,8 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_run_the_action_until_disabled()
 		{
-			Fiber fiber = new ThreadPoolFiber();
-			Scheduler scheduler = new TimerScheduler(new ThreadPoolFiber());
+			Fiber fiber = new PoolFiber();
+			Scheduler scheduler = new TimerScheduler(new PoolFiber());
 
 			Stopwatch elapsed = Stopwatch.StartNew();
 
@@ -126,7 +126,7 @@ namespace Stact.Specs.Actions
 			var called = new Future<int>();
 			var failed = new Future<bool>();
 
-			ScheduledAction scheduledAction = null;
+			ScheduledOperation scheduledAction = null;
 			scheduledAction = scheduler.Schedule(TimeSpan.Zero, 100.Milliseconds(), fiber, () =>
 				{
 					count++;

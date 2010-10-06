@@ -22,7 +22,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using Magnum.StateMachine;
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
-		FiberConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,
+		FiberFactoryConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,
 		ChannelConfigurator,
 		StateMachineInstanceConnectionConfigurator<T>
 		where T : StateMachine<T>
@@ -49,7 +49,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			foreach (var result in _results)
 				result.Connect(connection, fiber, _instance);

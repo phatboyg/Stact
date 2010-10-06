@@ -16,7 +16,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public interface PropertyChannelConnectionConfigurator<T> :
-		FiberConfigurator<PropertyChannelConnectionConfigurator<T>>
+		FiberFactoryConfigurator<PropertyChannelConnectionConfigurator<T>>
 		where T : class
 	{
 		PropertyChannelConnectionConfigurator<T> UsingInstance(T instance);

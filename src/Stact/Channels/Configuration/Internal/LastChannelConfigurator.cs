@@ -21,7 +21,7 @@ namespace Stact.Channels.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	public interface LastChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<TChannel>,
-		FiberConfigurator<LastChannelConfigurator<TChannel>>
+		FiberFactoryConfigurator<LastChannelConfigurator<TChannel>>
 	{
 	}
 }

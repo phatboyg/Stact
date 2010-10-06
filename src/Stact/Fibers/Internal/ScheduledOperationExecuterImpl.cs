@@ -10,24 +10,37 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors
+namespace Stact.Fibers.Internal
 {
-	using Channels;
+	using System;
 
-
-	public class PortImpl<T> :
-		Port<T>
+	public class ScheduledOperationExecuterImpl :
+		ScheduledOperationExecuter
 	{
-		Channel<T> _channel;
+		private readonly Action _operation;
+		private readonly Fiber _fiber;
+		private bool _cancelled;
 
-		public PortImpl(Channel<T> channel)
+		public ScheduledOperationExecuterImpl(DateTime scheduledAt, Fiber fiber, Action operation)
 		{
-			_channel = channel;
+			ScheduledAt = scheduledAt;
+			_fiber = fiber;
+			_operation = operation;
 		}
 
-		public void Send(T message)
+		public DateTime ScheduledAt { get; set; }
+
+		public void Cancel()
 		{
-			_channel.Send(message);
+			_cancelled = true;
+		}
+
+		public void Execute()
+		{
+			if (_cancelled)
+				return;
+
+			_fiber.Add(_operation);
 		}
 	}
 }

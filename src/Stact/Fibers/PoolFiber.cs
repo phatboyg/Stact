@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -18,7 +18,6 @@ namespace Stact.Fibers
 	using System.Threading;
 	using Magnum.Concurrency;
 	using Magnum;
-	using Magnum.Logging;
 
 
 	/// <summary>
@@ -26,14 +25,12 @@ namespace Stact.Fibers
 	/// actions.
 	/// </summary>
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count} )")]
-	public class ThreadPoolFiber :
+	public class PoolFiber :
 		Fiber
 	{
-		static readonly ILogger _log = Logger.GetLogger<ThreadPoolFiber>();
-
 		readonly object _lock = new object();
 
-		Atomic<ImmutableList<Action>> _actions = Atomic.Create(ImmutableList<Action>.EmptyList);
+		readonly Atomic<ImmutableList<Action>> _operations = Atomic.Create(ImmutableList<Action>.EmptyList);
 
 		bool _executorQueued;
 		bool _shuttingDown;
@@ -41,20 +38,20 @@ namespace Stact.Fibers
 
 		protected int Count
 		{
-			get { return _actions.Value.Count; }
+			get { return _operations.Value.Count; }
 		}
 
-		public void Add(Action action)
+		public void Add(Action operation)
 		{
-			Add(x => x.Add(action));
+			Add(x => x.Add(operation));
 		}
 
-		public void AddMany(params Action[] actions)
+		public void AddMany(params Action[] operations)
 		{
-			Add(x => x.AddMany(actions));
+			Add(x => x.AddMany(operations));
 		}
 
-		public virtual void Shutdown(TimeSpan timeout)
+		public void Shutdown(TimeSpan timeout)
 		{
 			DateTime waitUntil = SystemUtil.Now + timeout;
 
@@ -63,7 +60,7 @@ namespace Stact.Fibers
 				_shuttingDown = true;
 				Monitor.PulseAll(_lock);
 
-				while (_actions.Value.Count > 0 || _executorQueued)
+				while (_operations.Value.Count > 0 || _executorQueued)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -85,8 +82,7 @@ namespace Stact.Fibers
 			if (_shuttingDown)
 				throw new FiberException("The fiber is no longer accepting actions");
 
-			ImmutableList<Action> previous = _actions.Set(mutator);
-
+			ImmutableList<Action> previous = _operations.Set(mutator);
 			if (previous.Count == 0)
 			{
 				lock (_lock)
@@ -107,13 +103,13 @@ namespace Stact.Fibers
 
 		bool Execute()
 		{
-			IEnumerable<Action> actions = RemoveAll();
+			IEnumerable<Action> operations = RemoveAll();
 
-			ExecuteActions(actions);
+			ExecuteActions(operations);
 
 			lock (_lock)
 			{
-				if (_actions.Value.Count > 0)
+				if (_operations.Value.Count > 0)
 					QueueWorkItem();
 				else
 				{
@@ -126,22 +122,20 @@ namespace Stact.Fibers
 			return true;
 		}
 
-		void ExecuteActions(IEnumerable<Action> actions)
+		void ExecuteActions(IEnumerable<Action> operations)
 		{
-			foreach (Action action in actions)
+			foreach (Action operation in operations)
 			{
 				if (_stopping)
 					break;
 
-				action();
+				operation();
 			}
 		}
 
 		IEnumerable<Action> RemoveAll()
 		{
-			ImmutableList<Action> runActions = _actions.Set(x => ImmutableList<Action>.EmptyList);
-
-			return runActions;
+			return _operations.Set(x => ImmutableList<Action>.EmptyList);
 		}
 	}
 }

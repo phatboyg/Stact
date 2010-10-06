@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,26 +17,27 @@ namespace Stact.Fibers.Internal
 	using System.Linq;
 	using Magnum.Extensions;
 
-	public class ScheduledActionList
+	public class ScheduledOperationList
 	{
-		private readonly SortedList<DateTime, List<ExecuteScheduledAction>> _actions;
+		private readonly SortedList<DateTime, List<ScheduledOperationExecuter>> _operations;
 		private readonly object _lock = new object();
 
-		public ScheduledActionList()
+		public ScheduledOperationList()
 		{
-			_actions = new SortedList<DateTime, List<ExecuteScheduledAction>>();
+			_operations = new SortedList<DateTime, List<ScheduledOperationExecuter>>();
 		}
 
 		public int Count
 		{
-			get { lock (_lock) return _actions.Count; }
+			get { lock (_lock) return _operations.Count; }
 		}
 
-		public ExecuteScheduledAction[] GetExpiredActions(DateTime now)
+		public ScheduledOperationExecuter[] GetExpiredActions(DateTime now)
 		{
+			// TODO refactor to incremental removeal 
 			lock (_lock)
 			{
-				ExecuteScheduledAction[] expired = _actions
+				ScheduledOperationExecuter[] expired = _operations
 					.Where(x => x.Key <= now)
 					.OrderBy(x => x.Key)
 					.SelectMany(x => x.Value)
@@ -44,24 +45,24 @@ namespace Stact.Fibers.Internal
 
 				expired.Each(x =>
 					{
-						if (_actions.ContainsKey(x.ScheduledAt))
-							_actions.Remove(x.ScheduledAt);
+						if (_operations.ContainsKey(x.ScheduledAt))
+							_operations.Remove(x.ScheduledAt);
 					});
 
 				return expired;
 			}
 		}
 
-		public bool GetNextScheduledActionTime(DateTime now, out DateTime scheduledAt)
+		public bool GetNextScheduledTime(DateTime now, out DateTime scheduledAt)
 		{
 			scheduledAt = now;
 
 			lock (_lock)
 			{
-				if (_actions.Count == 0)
+				if (_operations.Count == 0)
 					return false;
 
-				foreach (var pair in _actions)
+				foreach (var pair in _operations)
 				{
 					if (now >= pair.Key)
 						return true;
@@ -74,19 +75,19 @@ namespace Stact.Fibers.Internal
 			return false;
 		}
 
-		public void Add(ExecuteScheduledAction action)
+		public void Add(ScheduledOperationExecuter operation)
 		{
 			lock (_lock)
 			{
-				List<ExecuteScheduledAction> list;
-				if (_actions.TryGetValue(action.ScheduledAt, out list))
+				List<ScheduledOperationExecuter> list;
+				if (_operations.TryGetValue(operation.ScheduledAt, out list))
 				{
-					list.Add(action);
+					list.Add(operation);
 				}
 				else
 				{
-					list = new List<ExecuteScheduledAction> {action};
-					_actions[action.ScheduledAt] = list;
+					list = new List<ScheduledOperationExecuter> {operation};
+					_operations[operation.ScheduledAt] = list;
 				}
 			}
 		}

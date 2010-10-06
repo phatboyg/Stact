@@ -13,7 +13,6 @@
 namespace Stact.Actors.Internal
 {
 	using System;
-	using Channels;
 	using Fibers;
 
 
@@ -22,10 +21,10 @@ namespace Stact.Actors.Internal
 		where TActor : class, Actor
 	{
 		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
-		readonly Func<Fiber> _fiberFactory;
-		readonly Func<Scheduler> _schedulerFactory;
+		readonly FiberFactory _fiberFactory;
+		readonly SchedulerFactory _schedulerFactory;
 
-		public DelegateActorFactory(Func<Fiber> fiberFactory, Func<Scheduler> schedulerFactory,
+		public DelegateActorFactory(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
 		                            Func<Fiber, Scheduler, Inbox, TActor> factory)
 		{
 			_fiberFactory = fiberFactory;

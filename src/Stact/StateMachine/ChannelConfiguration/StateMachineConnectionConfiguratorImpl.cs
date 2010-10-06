@@ -81,7 +81,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 		public StateMachineConnectionConfiguratorImpl()
 		{
-			HandleOnInstanceFiber();
+			HandleOnPoolFiber();
 		}
 
 		public void ValidateConfiguration()
@@ -98,7 +98,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			_fiberProvider = GetConfiguredProvider(connection);
+			_fiberProvider = GetConfiguredFiberProvider(connection);
 
 			_log.Debug(x => x.Write("Configuring State Machine Binder for {0}", typeof(T).ToShortTypeName()));
 

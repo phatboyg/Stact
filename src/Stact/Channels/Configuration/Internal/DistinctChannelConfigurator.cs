@@ -24,7 +24,7 @@ namespace Stact.Channels.Configuration.Internal
 	/// <typeparam name="TKey"></typeparam>
 	public interface DistinctChannelConfigurator<TChannel, TKey> :
 		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>,
-		FiberConfigurator<DistinctChannelConfigurator<TChannel, TKey>>
+		FiberFactoryConfigurator<DistinctChannelConfigurator<TChannel, TKey>>
 	{
 	}
 }

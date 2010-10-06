@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -30,7 +30,7 @@ namespace Stact.Channels
 		readonly MessageList<T> _messages;
 		readonly Scheduler _scheduler;
 		bool _disposed;
-		ScheduledAction _scheduledAction;
+		ScheduledOperation _scheduledAction;
 
 		/// <summary>
 		/// Constructs a channel

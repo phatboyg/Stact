@@ -25,7 +25,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class PropertyChannelConnectionConfiguratorImpl<T> :
-		FiberConfiguratorImpl<PropertyChannelConnectionConfigurator<T>>,
+		FiberFactoryConfiguratorImpl<PropertyChannelConnectionConfigurator<T>>,
 		PropertyChannelConnectionConfigurator<T>,
 		ChannelConfigurator
 		where T : class
@@ -37,7 +37,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void ValidateConfiguration()
 		{
-			ValidateFiberConfiguration();
+			ValidateFiberFactoryConfiguration();
 
 			if (_instance == null)
 				throw new ChannelConfigurationException("No instance was provided for " + typeof(T).ToShortTypeName());
@@ -47,7 +47,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			_propertyBinders.Each(x => x(connection, fiber, _instance));
 		}

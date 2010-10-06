@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -56,7 +56,7 @@ namespace Stact.Specs.Actors
 	{
 		private readonly string _name;
 		private IPingPongPlayer _actorProxy;
-		private Fiber _fiber = new ThreadPoolFiber();
+		private Fiber _fiber = new PoolFiber();
 		private Stopwatch _watch = Stopwatch.StartNew();
 
 		public PingPongPlayer(string name)

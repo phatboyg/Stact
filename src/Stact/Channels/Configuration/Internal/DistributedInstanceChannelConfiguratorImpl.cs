@@ -37,7 +37,7 @@ namespace Stact.Channels.Configuration.Internal
 		{
 			_keyAccessor = keyAccessor;
 
-			HandleOnInstanceFiber();
+			HandleOnPoolFiber();
 		}
 
 		public void SetProviderFactory(
@@ -48,7 +48,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			return base.GetConfiguredProvider(connection);
+			return base.GetConfiguredFiberProvider(connection);
 		}
 
 		public KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor()

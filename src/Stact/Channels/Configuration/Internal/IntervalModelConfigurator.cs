@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -18,7 +18,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class IntervalModelConfigurator<T> :
-		FiberConfiguratorImpl<T>
+		FiberFactoryConfiguratorImpl<T>
 		where T : class
 	{
 		protected TimeSpan _interval;
@@ -26,7 +26,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public T UsePrivateScheduler()
 		{
-			_schedulerFactory = () => new TimerScheduler(new ThreadPoolFiber());
+			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
 
 			return this as T;
 		}

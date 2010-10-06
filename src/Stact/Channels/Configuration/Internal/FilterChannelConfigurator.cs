@@ -22,7 +22,7 @@ namespace Stact.Channels.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	public interface FilterChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<TChannel>,
-		FiberConfigurator<FilterChannelConfigurator<TChannel>>
+		FiberFactoryConfigurator<FilterChannelConfigurator<TChannel>>
 	{
 	}
 }

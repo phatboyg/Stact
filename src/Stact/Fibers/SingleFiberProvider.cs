@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,19 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Channels
+namespace Stact.Fibers
 {
-	/// <summary>
-	/// A channel to which any message type can be sent
-	/// </summary>
-	public interface UntypedChannel :
-		Channel
+	using System;
+
+
+	public class SingleFiberProvider<TKey> :
+		FiberProvider<TKey>
 	{
-		/// <summary>
-		///   Send a message to an untyped channel
-		/// </summary>
-		/// <typeparam name = "T">The message type</typeparam>
-		/// <param name = "message">The message</param>
-		void Send<T>(T message);
+		readonly Fiber _fiber;
+		readonly TimeSpan _timeout;
+
+		public SingleFiberProvider(FiberFactory factory, TimeSpan timeout)
+		{
+			_timeout = timeout;
+			_fiber = factory();
+		}
+
+		public Fiber GetFiber(TKey key)
+		{
+			return _fiber;
+		}
+
+		public void Dispose()
+		{
+			_fiber.Shutdown(_timeout);
+		}
 	}
 }

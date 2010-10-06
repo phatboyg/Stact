@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -54,7 +54,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class InstanceChannelConfiguratorImpl<TInstance, TChannel> :
-		FiberConfiguratorImpl<InstanceChannelConfigurator<TInstance, TChannel>>,
+		FiberFactoryConfiguratorImpl<InstanceChannelConfigurator<TInstance, TChannel>>,
 		InstanceChannelConfigurator<TInstance, TChannel>,
 		ChannelConfigurator<TChannel>
 		where TInstance : class
@@ -70,7 +70,7 @@ namespace Stact.Channels.Configuration.Internal
 		{
 			ChannelProvider<TChannel> provider = _providerFactory(connection);
 
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
 		}

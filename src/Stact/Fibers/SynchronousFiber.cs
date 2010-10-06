@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -24,17 +24,17 @@ namespace Stact.Fibers
 	{
 		private bool _stopping;
 
-		public void Add(Action action)
+		public void Add(Action operation)
 		{
 			if (_stopping)
 				return;
 
-			action();
+			operation();
 		}
 
-		public void AddMany(params Action[] actions)
+		public void AddMany(params Action[] operations)
 		{
-			actions.Each(Add);
+			operations.Each(Add);
 		}
 
 		public void Stop()

@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -18,7 +18,7 @@ namespace Stact.Channels.Configuration.Internal
 
 
 	public class FilterChannelConfiguratorImpl<TChannel> :
-		FiberConfiguratorImpl<FilterChannelConfigurator<TChannel>>,
+		FiberFactoryConfiguratorImpl<FilterChannelConfigurator<TChannel>>,
 		FilterChannelConfigurator<TChannel>,
 		ChannelConfigurator<TChannel>
 	{
@@ -29,12 +29,12 @@ namespace Stact.Channels.Configuration.Internal
 		{
 			_filter = filter;
 
-			HandleOnFiber();
+			HandleOnPoolFiber();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			var filterConnection = new ChannelConfiguratorConnectionDecorator(connection, fiber, _filter);
 

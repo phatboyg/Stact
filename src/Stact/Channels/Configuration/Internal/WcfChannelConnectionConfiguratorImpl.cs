@@ -1,4 +1,4 @@
-﻿// Copyright 2007-2008 The Apache Software Foundation.
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -21,7 +21,7 @@ namespace Stact.Channels.Configuration.Internal
 	/// Exposes the configuration options for a WcfProxy
 	/// </summary>
 	public class WcfChannelConnectionConfiguratorImpl :
-		FiberConfiguratorImpl<WcfChannelConnectionConfigurator>,
+		FiberFactoryConfiguratorImpl<WcfChannelConnectionConfigurator>,
 		WcfChannelConnectionConfigurator,
 		ChannelConfigurator
 	{
@@ -43,7 +43,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetConfiguredFiber(connection);
+			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
 		}

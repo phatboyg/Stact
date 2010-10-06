@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,30 +17,21 @@ namespace Stact.Fibers.Configuration
 	using Magnum.Extensions;
 
 
-	public class FiberConfiguratorImpl<T> :
-		FiberConfigurator<T>
+	public class FiberFactoryConfiguratorImpl<T> :
+		FiberFactoryConfigurator<T>
 		where T : class
 	{
 		FiberFactory _fiberFactory;
 		TimeSpan _shutdownTimeout = 1.Minutes();
 
-		protected FiberConfiguratorImpl()
+		protected FiberFactoryConfiguratorImpl()
 		{
-			HandleOnFiber();
+			HandleOnPoolFiber();
 		}
 
-		public T HandleOnFiber(Fiber fiber)
+		protected TimeSpan ShutdownTimeout
 		{
-			_fiberFactory = () => fiber;
-
-			return this as T;
-		}
-
-		public T HandleOnThread()
-		{
-			_fiberFactory = () => new ThreadFiber();
-
-			return this as T;
+			get { return _shutdownTimeout; }
 		}
 
 		public T HandleOnCallingThread()
@@ -50,9 +41,23 @@ namespace Stact.Fibers.Configuration
 			return this as T;
 		}
 
-		public T HandleOnFiber()
+		public T HandleOnPoolFiber()
 		{
-			_fiberFactory = () => new ThreadPoolFiber();
+			_fiberFactory = () => new PoolFiber();
+
+			return this as T;
+		}
+
+		public T HandleOnFiber(Fiber fiber)
+		{
+			_fiberFactory = () => fiber;
+
+			return this as T;
+		}
+
+		public T HandleOnThreadFiber()
+		{
+			_fiberFactory = () => new ThreadFiber();
 
 			return this as T;
 		}
@@ -64,31 +69,36 @@ namespace Stact.Fibers.Configuration
 			return this as T;
 		}
 
-		protected T SetShutdownTimeout(TimeSpan timeout)
+		public T UseShutdownTimeout(TimeSpan timeout)
 		{
 			_shutdownTimeout = timeout;
 
 			return this as T;
 		}
 
-		protected void ValidateFiberConfiguration()
+		protected void ValidateFiberFactoryConfiguration()
 		{
 			if (_fiberFactory == null)
 				throw new FiberException("No fiber configuration was specified");
 		}
 
-		protected Fiber GetConfiguredFiber(ChannelConfiguratorConnection connection)
+		protected FiberFactory GetConfiguredFiberFactory()
+		{
+			return _fiberFactory;
+		}
+
+		protected Fiber GetFiberUsingConfiguredFactory(ChannelConfiguratorConnection connection)
 		{
 			Fiber fiber = _fiberFactory();
-			connection.AddDisposable(fiber.GetShutdownDisposable(_shutdownTimeout));
+			connection.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
 
 			return fiber;
 		}
 
-		protected Fiber GetConfiguredFiber<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		protected Fiber GetFiberUsingConfiguredFactory<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
 		{
 			Fiber fiber = _fiberFactory();
-			connection.AddDisposable(fiber.GetShutdownDisposable(_shutdownTimeout));
+			connection.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
 
 			return fiber;
 		}

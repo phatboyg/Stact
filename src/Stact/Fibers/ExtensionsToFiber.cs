@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,9 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Fibers
+namespace Stact
 {
 	using System;
+	using Fibers.Internal;
 
 
 	public static class ExtensionsToFiber
@@ -24,7 +25,7 @@ namespace Stact.Fibers
 		/// <param name="fiber">The fiber to shutdown</param>
 		/// <param name="timeout">The timeout to wait for the shutdown to complete</param>
 		/// <returns>An IDisposable object</returns>
-		public static IDisposable GetShutdownDisposable(this Fiber fiber, TimeSpan timeout)
+		public static IDisposable ShutdownOnDispose(this Fiber fiber, TimeSpan timeout)
 		{
 			return new DisposeCallback(() => fiber.Shutdown(timeout));
 		}
@@ -35,7 +36,7 @@ namespace Stact.Fibers
 		/// </summary>
 		/// <param name="fiber">The fiber to stop</param>
 		/// <returns>An IDisposable object</returns>
-		public static IDisposable GetStopDisposable(this Fiber fiber)
+		public static IDisposable StopOnDispose(this Fiber fiber)
 		{
 			return new DisposeCallback(fiber.Stop);
 		}

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -17,73 +17,62 @@ namespace Stact.Fibers.Configuration
 
 
 	public class FiberProviderConfiguratorImpl<T, TKey> :
+		FiberFactoryConfiguratorImpl<T>,
 		FiberProviderConfigurator<T, TKey>
 		where T : class
 	{
-		Func<FiberProvider<TKey>> _configuredProvider;
+		Func<FiberFactory, TimeSpan, FiberProvider<TKey>> _configuredProvider;
 
-		public T HandleOnCallingThread()
+		protected FiberProviderConfiguratorImpl()
 		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new SynchronousFiber());
+			CreateFiberPerInstance();
+		}
+
+		public T ShareFiberAcrossInstances()
+		{
+			_configuredProvider = (factory, timeout) => new SingleFiberProvider<TKey>(factory, timeout);
 
 			return this as T;
 		}
 
-		public T HandleOnInstanceFiber()
+		public T CreateFiberPerInstance()
 		{
-			_configuredProvider = () => new FiberCache<TKey>(() => new ThreadPoolFiber());
-
-			return this as T;
-		}
-
-		public T HandleOnSingleFiber()
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new ThreadPoolFiber());
-
-			return this as T;
-		}
-
-		public T HandleOnSingleThread()
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(new ThreadFiber());
-
-			return this as T;
-		}
-
-		public T HandleOnFiber(Fiber fiber)
-		{
-			_configuredProvider = () => new SharedFiberProvider<TKey>(fiber);
+			_configuredProvider = (factory, timeout) => new KeyedChannelProvider<TKey>(factory, timeout);
 
 			return this as T;
 		}
 
 		public T UseFiberProvider(FiberProvider<TKey> fiberProvider)
 		{
-			_configuredProvider = () => fiberProvider;
+			_configuredProvider = (factory, timeout) => fiberProvider;
 
 			return this as T;
 		}
 
-		protected FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection connection)
+		protected FiberProvider<TKey> GetConfiguredFiberProvider(ChannelConfiguratorConnection connection)
 		{
-			if (_configuredProvider == null)
-				throw new FiberConfigurationException("No provider specified for FiberProvider");
-
-			FiberProvider<TKey> configuredProvider = _configuredProvider();
+			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
 			connection.AddDisposable(configuredProvider);
 
 			return configuredProvider;
 		}
 
-		protected FiberProvider<TKey> GetConfiguredProvider<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		protected FiberProvider<TKey> GetConfiguredFiberProvider<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
+		}
+
+		FiberProvider<TKey> GetConfiguredFiberProvider()
 		{
 			if (_configuredProvider == null)
 				throw new FiberConfigurationException("No provider specified for FiberProvider");
 
-			FiberProvider<TKey> configuredProvider = _configuredProvider();
-			connection.AddDisposable(configuredProvider);
+			FiberFactory fiberFactory = GetConfiguredFiberFactory();
 
-			return configuredProvider;
+			return _configuredProvider(fiberFactory, ShutdownTimeout);
 		}
 	}
 }

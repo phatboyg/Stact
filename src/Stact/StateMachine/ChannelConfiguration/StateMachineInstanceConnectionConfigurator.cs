@@ -17,7 +17,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 
 	public interface StateMachineInstanceConnectionConfigurator<T> :
-		FiberConfigurator<StateMachineInstanceConnectionConfigurator<T>>
+		FiberFactoryConfigurator<StateMachineInstanceConnectionConfigurator<T>>
 		where T : StateMachine<T>
 	{
 	}

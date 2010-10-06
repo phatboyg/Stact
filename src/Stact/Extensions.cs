@@ -110,16 +110,15 @@ namespace Stact
 
 
 
-		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Port<TPort>>> portProperty, Fiber fiber, Consumer<TPort> consumer)
+		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Channel<TPort>>> portProperty, Fiber fiber, Consumer<TPort> consumer)
 			where TActor : Actor
 		{
 			PropertyInfo propertyInfo = portProperty.GetMemberPropertyInfo();
-			var property = new FastProperty<TActor, Port<TPort>>(propertyInfo);
+			var property = new FastProperty<TActor, Channel<TPort>>(propertyInfo, BindingFlags.NonPublic);
 
 			var channel = new ConsumerChannel<TPort>(fiber, consumer);
-			var port = new PortImpl<TPort>(channel);
 
-			property.Set(actor, port);
+			property.Set(actor, channel);
 		}
 	}
 }

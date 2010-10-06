@@ -1,4 +1,4 @@
-// Copyright 2007-2008 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -32,11 +32,11 @@ namespace Stact.Specs.Channels
 
 		private class Pinger
 		{
-			private readonly ThreadPoolFiber _fiber;
+			private readonly PoolFiber _fiber;
 
 			public Pinger()
 			{
-				_fiber = new ThreadPoolFiber();
+				_fiber = new PoolFiber();
 
 				Ponged = new Future<Pong>();
 
@@ -62,11 +62,11 @@ namespace Stact.Specs.Channels
 
 		private class Ponger
 		{
-			private readonly ThreadPoolFiber _fiber;
+			private readonly PoolFiber _fiber;
 
 			public Ponger()
 			{
-				_fiber = new ThreadPoolFiber();
+				_fiber = new PoolFiber();
 
 				Pinged = new Future<Ping>();
 
