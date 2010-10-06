@@ -10,8 +10,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Fibers.Configuration
+namespace Stact.Configuration
 {
+	using Fibers;
+
+
 	/// <summary>
 	/// Configures the type of fiber to be used for handling messages
 	/// </summary>

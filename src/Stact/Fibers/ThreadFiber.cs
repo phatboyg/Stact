@@ -71,6 +71,16 @@ namespace Stact.Fibers
 
 		public void Shutdown(TimeSpan timeout)
 		{
+			if (timeout == TimeSpan.Zero)
+			{
+				lock (_lock)
+				{
+					_shuttingDown = true;
+				}
+
+				return;
+			}
+
 			DateTime waitUntil = SystemUtil.Now + timeout;
 
 			lock (_lock)

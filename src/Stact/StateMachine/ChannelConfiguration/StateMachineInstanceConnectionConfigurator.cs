@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.StateMachine.ChannelConfiguration
 {
-	using Fibers.Configuration;
+	using Configuration;
 	using Magnum.StateMachine;
 
 

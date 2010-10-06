@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels.Configuration.Internal
 {
-	using Fibers.Configuration;
+	using Stact.Configuration;
 
 
 	public interface ConsumerChannelConfigurator<TChannel> :

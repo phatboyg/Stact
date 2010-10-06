@@ -15,7 +15,7 @@ namespace Stact.Channels.Configuration.Internal
 	using System;
 	using System.Collections.Generic;
 	using Fibers;
-	using Fibers.Configuration;
+	using Stact.Configuration;
 
 
 	public class LastChannelConfiguratorImpl<TChannel> :

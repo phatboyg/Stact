@@ -13,6 +13,7 @@
 namespace Stact.Actors.Internal
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using Channels;
 	using Magnum.Collections;
@@ -33,21 +34,23 @@ namespace Stact.Actors.Internal
 		readonly UntypedChannel _adapter;
 		readonly Fiber _fiber;
 		readonly Cache<Type, object> _inboxCache;
+		IList<ChannelConnection> _connections;
 		readonly Scheduler _scheduler;
-		ChannelConnection _actorConnection;
-		ChannelConnection _internalConnection;
+		ChannelConnection _inboxConnection;
 
 		public ActorInbox(Fiber fiber, Scheduler scheduler)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;
+			_connections = new List<ChannelConnection>();
 
 			_adapter = new ChannelAdapter();
-			_internalConnection = _adapter.Connect(x =>
+			_inboxConnection = _adapter.Connect(x =>
 				{
-					x.AddConsumerOf<Exit>()
+					x.AddConsumerOf<Request<Exit>>()
 						.UsingConsumer(HandleExit)
 						.HandleOnFiber(_fiber);
+
 					x.AddConsumerOf<Kill>()
 						.UsingConsumer(HandleKill)
 						.HandleOnCallingThread();
@@ -82,7 +85,7 @@ namespace Stact.Actors.Internal
 				{
 					var inbox = new BufferedInbox<T>(_fiber, _scheduler);
 
-					_adapter.Connect(x => x.AddChannel(inbox));
+					ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
 
 					return inbox;
 				}) as Inbox<T>;
@@ -90,7 +93,7 @@ namespace Stact.Actors.Internal
 
 		public void BindChannelsForInstance(TActor actor)
 		{
-			_actorConnection = _adapter.Connect(x =>
+			_connections.Add(_adapter.Connect(x =>
 				{
 					x.BindChannelsFor<TActor>()
 						.UsingInstance(actor)
@@ -100,22 +103,24 @@ namespace Stact.Actors.Internal
 					// the actor itself defines the calling style for the actual
 					// channel - making this essentially a passthrough of Send()
 					// to the actor channel implementation
-				});
+				}));
 		}
 
-		void HandleExit(Exit message)
+		void HandleExit(Request<Exit> message)
 		{
-			if (_actorConnection != null)
-			{
-				_actorConnection.Dispose();
-				_actorConnection = null;
-			}
+			_connections.Each(x =>
+				{
+					x.Dispose();
+				});
+			_connections.Clear();
 
 			_inboxCache.GetAll().Cast<IDisposable>().Each(x => x.Dispose());
 			_inboxCache.ClearAll();
 
-			_internalConnection.Dispose();
-			_internalConnection = null;
+			_inboxConnection.Dispose();
+			_inboxConnection = null;
+
+			_fiber.Shutdown(TimeSpan.Zero);
 		}
 
 		void HandleKill(Kill message)

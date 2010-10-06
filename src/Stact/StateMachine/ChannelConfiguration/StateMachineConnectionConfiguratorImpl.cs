@@ -14,9 +14,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using Channels;
+	using Configuration;
 	using Magnum.Extensions;
 	using Fibers;
-	using Fibers.Configuration;
 	using Magnum.Logging;
 	using Stact.Channels;
 	using Stact.Channels.Configuration.Internal;
@@ -94,6 +94,14 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_log.Debug(x => x.Write("Validating StateMachineBinding for {0}", typeof(T).ToShortTypeName()));
 
 			_binding.Validate(_instanceFactory(default(TKey)));
+		}
+
+		FiberProvider<TKey> GetConfiguredFiberProvider(ChannelConfiguratorConnection connection)
+		{
+			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
 		}
 
 		public void Configure(ChannelConfiguratorConnection connection)

@@ -16,7 +16,6 @@ namespace Stact.Actors.Internal
 	using System.Collections.Generic;
 	using Channels;
 	using Magnum.Extensions;
-	using Fibers;
 
 
 	public class BufferedInbox<T> :

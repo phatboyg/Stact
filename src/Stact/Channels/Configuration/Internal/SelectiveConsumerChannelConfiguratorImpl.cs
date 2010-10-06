@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using Fibers;
-	using Fibers.Configuration;
+	using Stact.Configuration;
 
 
 	public class SelectiveConsumerChannelConfiguratorImpl<TChannel> :

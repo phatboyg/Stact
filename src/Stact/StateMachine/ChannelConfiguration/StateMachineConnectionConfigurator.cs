@@ -13,8 +13,8 @@
 namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
+	using Configuration;
 	using Fibers;
-	using Fibers.Configuration;
 	using Magnum.StateMachine;
 	using Stact.Channels;
 

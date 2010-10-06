@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Channels;
-
-
 	/// <summary>
 	/// An ActorInstance is used to send messages to an actor instance. This abstraction
 	/// helps avoid tight coupling with the actor class definition.

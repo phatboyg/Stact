@@ -14,7 +14,7 @@ namespace Stact.Channels.Configuration.Internal
 {
 	using System;
 	using Fibers;
-	using Fibers.Configuration;
+	using Stact.Configuration;
 
 
 	/// <summary>
@@ -48,7 +48,10 @@ namespace Stact.Channels.Configuration.Internal
 
 		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			return base.GetConfiguredFiberProvider(connection);
+			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
 		}
 
 		public KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor()

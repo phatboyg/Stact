@@ -14,20 +14,57 @@ namespace Stact
 {
 	using System;
 	using Actors;
+	using Configuration;
+	using Internal;
 
 
 	public static class ActorFactory
 	{
-		public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator) 
+		public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator)
 			where TActor : class, Actor
 		{
 			var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TActor>();
 
 			configurator(factoryConfiguratorImpl);
-			
+
 			return factoryConfiguratorImpl.CreateActorFactory();
 		}
+
+		public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)
+			where TActor : class, Actor
+		{
+			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+		}
+
+		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, TActor> actorFactory)
+			where TActor : class, Actor
+		{
+			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+		}
+
+		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Inbox, TActor> actorFactory)
+			where TActor : class, Actor
+		{
+			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+		}
+
+		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
+			where TActor : class, Actor
+		{
+			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+		}
+
+		public static AnonymousActorFactory CreateAnonymousActorFactory(Action<ActorFactoryConfigurator<AnonymousActor>> configurator)
+		{
+			var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<AnonymousActor>();
+
+			configurator(factoryConfiguratorImpl);
+
+			return factoryConfiguratorImpl.CreateActorFactory() as AnonymousActorFactory;
+		}
+
 	}
+
 
 	/// <summary>
 	/// A builder abstraction for creating actor instances when needed

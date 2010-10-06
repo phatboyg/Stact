@@ -14,6 +14,7 @@ namespace Stact.Specs.Actors.Auctions
 {
 	using System;
 	using Fibers;
+	using Internal;
 	using Magnum;
 	using Stact.Actors;
 	using Stact.Actors.Internal;
@@ -31,7 +32,7 @@ namespace Stact.Specs.Actors.Auctions
 		{
 			Id = CombGuid.Generate();
 
-			var factory = new DelegateActorFactory<Auction>(() => new PoolFiber(),
+			var factory = new ActorFactoryImpl<Auction>(() => new PoolFiber(),
 			                                                () => new TimerScheduler(new PoolFiber()),
 			                                                (f, s, i) => new Auction(f, i, Id));
 

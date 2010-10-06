@@ -19,9 +19,9 @@ namespace Stact.Channels.Configuration.Internal
 	using System.Reflection;
 	using Magnum.Extensions;
 	using Fibers;
-	using Fibers.Configuration;
 	using Magnum.Logging;
 	using Magnum.Reflection;
+	using Stact.Configuration;
 
 
 	public class PropertyChannelConnectionConfiguratorImpl<T> :
@@ -75,9 +75,6 @@ namespace Stact.Channels.Configuration.Internal
 							Action<ChannelConfiguratorConnection, Fiber, T>>(new[] {inputType}, "GetChannelConfigurator", property);
 					})
 				.ToList();
-
-			if (_propertyBinders.Count == 0)
-				throw new ArgumentException("No channels were found for instance: " + typeof(T).Name);
 		}
 
 		Action<ChannelConfiguratorConnection, Fiber, T> GetChannelConfigurator<TChannel>(PropertyInfo property)

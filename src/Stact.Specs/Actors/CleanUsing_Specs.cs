@@ -1,4 +1,4 @@
-// // Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
+	using Magnum.Extensions;
 	using Magnum.TestFramework;
 
 
@@ -21,6 +22,8 @@ namespace Stact.Specs.Actors
 		[Then]
 		public void Should_not_require_extensive_namespace_references()
 		{
+			var responded = new Future<MyResponse>();
+
 			ActorInstance server = AnonymousActor.New(inbox =>
 				{
 					inbox.Receive<Request<MyRequest>>(request =>
@@ -33,22 +36,33 @@ namespace Stact.Specs.Actors
 			ActorInstance client = AnonymousActor.New(inbox =>
 				{
 					server.Request(new MyRequest(), inbox)
-						.Receive<MyResponse>(response => { });
+						.Receive<Response<MyResponse>>(response => responded.Complete(response.Body));
 				});
+
+			responded.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+
+			server.Exit();
+			client.Exit();
 		}
 
 		[Then]
 		public void Should_map_actors_by_convention()
 		{
-			ActorFactory<MyAgent> factory = ActorFactory.Create<MyAgent>(x => x.CreateNewInstanceBy(f => new MyAgent(f)));
+			var responded = new Future<MyResponse>();
 
+			var factory = ActorFactory.Create(fiber => new MyAgent(fiber));
 			ActorInstance server = factory.GetActor();
 
 			ActorInstance client = AnonymousActor.New(inbox =>
-			{
-				server.Request(new MyRequest(), inbox)
-					.Receive<MyResponse>(response => { });
-			});
+				{
+					server.Request(new MyRequest(), inbox)
+						.Receive<Response<MyResponse>>(response => responded.Complete(response.Body));
+				});
+
+			responded.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+
+			server.Exit();
+			client.Exit();
 		}
 
 

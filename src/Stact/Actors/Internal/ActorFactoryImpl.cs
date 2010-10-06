@@ -10,22 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Internal
+namespace Stact.Internal
 {
 	using System;
+	using Actors.Internal;
 	using Fibers;
 
 
-	public class DelegateActorFactory<TActor> :
-		ActorFactory<TActor>
+	public class ActorFactoryImpl<TActor> :
+		ActorFactory<TActor>,
+		AnonymousActorFactory
 		where TActor : class, Actor
 	{
 		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
 		readonly FiberFactory _fiberFactory;
 		readonly SchedulerFactory _schedulerFactory;
 
-		public DelegateActorFactory(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
-		                            Func<Fiber, Scheduler, Inbox, TActor> factory)
+		public ActorFactoryImpl(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
+		                        Func<Fiber, Scheduler, Inbox, TActor> factory)
 		{
 			_fiberFactory = fiberFactory;
 			_schedulerFactory = schedulerFactory;
@@ -33,6 +35,11 @@ namespace Stact.Actors.Internal
 		}
 
 		public ActorInstance GetActor()
+		{
+			return GetActor(null);
+		}
+
+		public ActorInstance GetActor(Action<Inbox> initializer)
 		{
 			Fiber fiber = _fiberFactory();
 			Scheduler scheduler = _schedulerFactory();
@@ -42,6 +49,9 @@ namespace Stact.Actors.Internal
 			TActor actor = CreateActorInstance(fiber, scheduler, inbox);
 
 			inbox.BindChannelsForInstance(actor);
+
+			if (initializer != null)
+				fiber.Add(() => initializer(inbox));
 
 			return inbox;
 		}

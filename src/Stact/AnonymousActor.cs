@@ -13,8 +13,8 @@
 namespace Stact
 {
 	using System;
-	using Actors;
 	using Fibers;
+	using Internal;
 	using Magnum;
 
 
@@ -67,9 +67,12 @@ namespace Stact
 
 		static void CreateAnonymousActorFactory()
 		{
-			_factory = new AnonymousActorFactory(_fiberFactory,
-			                                     _schedulerFactory,
-			                                     CreateAnonymousActor);
+			_factory = ActorFactory.CreateAnonymousActorFactory(x =>
+				{
+					x.CreateNewInstanceBy(CreateAnonymousActor);
+					x.UseSchedulerFactory(_schedulerFactory);
+					x.UseFiberFactory(_fiberFactory);
+				});
 		}
 
 		static AnonymousActor CreateAnonymousActor(Fiber fiber, Scheduler scheduler, Inbox inbox)
@@ -79,7 +82,7 @@ namespace Stact
 
 		public static ActorInstance New(Action<Inbox> initializer)
 		{
-			return _factory.Create(initializer);
+			return _factory.GetActor(initializer);
 		}
 	}
 }
