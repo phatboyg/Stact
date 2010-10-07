@@ -18,7 +18,7 @@ namespace Stact.ForNHibernate.Specs.Channels
 	using System.Linq;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate;
 	using NUnit.Framework;
 	using Magnum.TestFramework;

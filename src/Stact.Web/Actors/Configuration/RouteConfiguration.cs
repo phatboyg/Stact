@@ -13,7 +13,7 @@
 namespace Stact.Web.Actors.Configuration
 {
 	using System.Reflection;
-	using Channels;
+	
 
 	/// <summary>
 	/// The configuration is used after the routes have been configured to apply the requested changes

@@ -15,7 +15,7 @@ namespace Stact.Specs.Channels
 	using System;
 	
 	using Internal;
-	using Stact.Channels;
+	using Stact;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 	using Magnum.TestFramework;

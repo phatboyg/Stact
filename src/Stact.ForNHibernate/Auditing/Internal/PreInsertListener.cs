@@ -14,7 +14,7 @@ namespace Stact.ForNHibernate.Auditing.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate.Event;
 
 

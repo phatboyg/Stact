@@ -13,7 +13,7 @@
 namespace Stact.ForNHibernate.Channels
 {
 	
-	using Stact.Channels;
+	using Stact;
 
 
 	/// <summary>

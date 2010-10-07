@@ -4,7 +4,7 @@ namespace Stact.ForNHibernate.Specs.Auditing
 	using Channels;
 	using ForNHibernate.Auditing;
 	using ForNHibernate.Auditing.Internal;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate;
 	using NUnit.Framework;
 	using Magnum.TestFramework;

@@ -13,7 +13,7 @@
 namespace Stact.ForNHibernate.Specs.Channels
 {
 	using System;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate;
 	using NUnit.Framework;
 	using Magnum.TestFramework;

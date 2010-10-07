@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	using Channels;
+	
 
 
 	public interface WithinSentRequest<TRequest>

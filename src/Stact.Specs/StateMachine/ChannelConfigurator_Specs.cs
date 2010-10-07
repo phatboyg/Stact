@@ -4,7 +4,7 @@ namespace Stact.Specs.StateMachine
 	using Magnum.Extensions;
 	using Magnum.StateMachine;
 	using Magnum.TestFramework;
-	using Stact.Channels;
+	using Stact;
 
 	[Scenario]
 	public class Connecting_a_state_machine_class_to_an_untyped_channel

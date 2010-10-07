@@ -17,7 +17,7 @@ namespace Stact.ForNHibernate.Specs.Channels
 	
 	using Internal;
 	using Magnum;
-	using Stact.Channels;
+	using Stact;
 
 
 	public class TestInstance

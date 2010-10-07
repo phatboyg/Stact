@@ -15,7 +15,7 @@ namespace Stact
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Channels;
+	
 	using Internal;
 	using Magnum.Extensions;
 	using Magnum.Reflection;

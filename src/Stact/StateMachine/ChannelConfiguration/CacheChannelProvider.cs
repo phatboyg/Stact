@@ -13,7 +13,7 @@
 namespace Stact.StateMachine.ChannelConfiguration
 {
 	
-	using Stact.Channels;
+	using Stact;
 
 
 	/// <summary>

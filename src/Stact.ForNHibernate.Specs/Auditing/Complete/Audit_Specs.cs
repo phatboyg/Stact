@@ -15,7 +15,7 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 	using System.Linq;
 	using Channels;
 	using ForNHibernate.Auditing;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate;
 	using NHibernate.Linq;
 	using NUnit.Framework;

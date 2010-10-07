@@ -13,7 +13,7 @@
 namespace Stact.StateMachine.Channels
 {
 	using Magnum.StateMachine;
-	using Stact.Channels;
+	using Stact;
 
 
 	public class StateMachineEventChannel<T, TChannel> :

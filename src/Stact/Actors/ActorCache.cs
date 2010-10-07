@@ -13,7 +13,7 @@
 namespace Stact.Actors
 {
 	using System;
-	using Channels;
+	
 	using Magnum.Collections;
 
 

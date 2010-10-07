@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	using Channels;
+	
 	using Internal;
 	using Magnum.Extensions;
 

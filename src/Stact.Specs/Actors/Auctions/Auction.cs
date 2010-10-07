@@ -15,7 +15,7 @@ namespace Stact.Specs.Actors.Auctions
 	using System;
 	
 	using Magnum;
-	using Stact.Channels;
+	using Stact;
 	using Magnum.Extensions;
 
 

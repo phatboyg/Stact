@@ -19,7 +19,7 @@ namespace Stact.ForNHibernate.Specs.Channels
 	using Magnum.Extensions;
 	using Magnum.Logging;
 	using Magnum.Logging;
-	using Stact.Channels;
+	using Stact;
 	using Stact.Specs.StateMachine;
 	using NHibernate;
 	using NUnit.Framework;

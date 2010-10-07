@@ -16,9 +16,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using Configuration;
 	using Magnum.Extensions;
 	
-	using Stact.Channels;
-	using Stact.Channels.Configuration;
-	using Stact.Channels.Configuration.Internal;
+	using Stact;
+	using Stact.Configuration;
+	using Stact.Configuration.Internal;
 	using Magnum.StateMachine;
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :

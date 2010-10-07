@@ -1,4 +1,4 @@
-namespace Stact.Channels.Visitors
+namespace Stact.Visitors
 {
 	using System;
 	using System.Collections.Generic;

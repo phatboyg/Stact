@@ -14,8 +14,8 @@ namespace Stact.Actors
 {
 	using System;
 	using System.Collections.Generic;
-	using Channels;
-	using Channels.Configuration;
+	
+	using Configuration;
 
 	/// <summary>
 	/// An actor registry provide running storage for actors that are active in the system

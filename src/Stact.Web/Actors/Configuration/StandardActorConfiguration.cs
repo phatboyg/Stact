@@ -17,7 +17,7 @@ namespace Stact.Web.Actors.Configuration
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Channels;
+	
 	using Magnum.Extensions;
 	
 	using Internal;

@@ -3,8 +3,8 @@ namespace Stact.Specs.Channels
 	using System.Collections.Generic;
 	
 	using Internal;
-	using Stact.Channels;
-	using Stact.Channels.Visitors;
+	using Stact;
+	using Stact.Visitors;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 

@@ -15,7 +15,7 @@ namespace Stact.Web.Actors.Internal
 	using System;
 	using System.Threading;
 	using System.Web;
-	using Channels;
+	
 	using Magnum.Logging;
 
 	/// <summary>

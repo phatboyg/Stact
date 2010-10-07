@@ -13,7 +13,7 @@
 namespace Stact.Web.Abstractions
 {
 	using System;
-	using Channels;
+	
 	
 
 	/// <summary>

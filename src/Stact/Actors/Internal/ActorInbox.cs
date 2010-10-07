@@ -15,7 +15,7 @@ namespace Stact.Actors.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Channels;
+	
 	using Magnum.Collections;
 	using Magnum.Extensions;
 	using Stact.Internal;

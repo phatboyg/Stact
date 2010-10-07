@@ -14,7 +14,7 @@ namespace Stact.ForNHibernate.Auditing
 {
 	using Magnum.Extensions;
 	using Internal;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate.Cfg;
 
 

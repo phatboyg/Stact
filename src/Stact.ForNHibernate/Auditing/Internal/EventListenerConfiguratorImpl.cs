@@ -18,7 +18,7 @@ namespace Stact.ForNHibernate.Auditing.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Magnum.Extensions;
-	using Stact.Channels;
+	using Stact;
 	using NHibernate.Cfg;
 	using NHibernate.Event;
 	using Magnum.Reflection;

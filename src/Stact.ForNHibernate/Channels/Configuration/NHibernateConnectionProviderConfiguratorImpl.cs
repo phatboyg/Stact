@@ -10,16 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.ForNHibernate.Channels.Configuration
+namespace Stact.ForNHibernate.Configuration
 {
 	using System;
+	using Channels;
+	using Magnum;
 	using Magnum.Extensions;
-	
 	using Magnum.StateMachine;
-	using Stact.Channels;
-	using Stact.StateMachine;
-	using Stact.StateMachine.ChannelConfiguration;
 	using NHibernate;
+	using Stact.Configuration;
+	using StateMachine.ChannelConfiguration;
 
 
 	public class NHibernateConnectionProviderConfiguratorImpl<T, TKey, TBinding> :
@@ -41,9 +41,9 @@ namespace Stact.ForNHibernate.Channels.Configuration
 		                                                              KeyAccessor<TChannel, TKey> messageKeyAccessor,
 		                                                              InstanceChannelPolicy<T, TChannel> channelPolicy)
 		{
-			Magnum.Guard.AgainstNull(channelAccessor, "channelAccessor");
-			Magnum.Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
-			Magnum.Guard.AgainstNull(channelPolicy, "channelPolicy");
+			Guard.AgainstNull(channelAccessor, "channelAccessor");
+			Guard.AgainstNull(messageKeyAccessor, "messageKeyAccessor");
+			Guard.AgainstNull(channelPolicy, "channelPolicy");
 
 			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider();
 

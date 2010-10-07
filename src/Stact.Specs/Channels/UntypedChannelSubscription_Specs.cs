@@ -15,8 +15,8 @@ namespace Stact.Specs.Channels
 	using System.Diagnostics;
 	
 	using Internal;
-	using Stact.Channels;
-	using Stact.Channels.Visitors;
+	using Stact;
+	using Stact.Visitors;
 	using NUnit.Framework;
 	using Magnum.TestFramework;
 

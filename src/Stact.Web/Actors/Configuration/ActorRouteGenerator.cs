@@ -16,7 +16,7 @@ namespace Stact.Web.Actors.Configuration
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Web.Routing;
-	using Channels;
+	
 	using Magnum.Extensions;
 
 	public static class ActorRouteGenerator

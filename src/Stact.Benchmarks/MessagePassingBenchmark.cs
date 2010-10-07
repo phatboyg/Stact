@@ -14,7 +14,7 @@ namespace Stact.Benchmarks
 {
 	using System;
 	using System.Diagnostics;
-	using Channels;
+	
 	using Internal;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;

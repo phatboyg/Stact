@@ -16,7 +16,7 @@ namespace Stact.Specs.Actors
 	using System.Threading;
 	
 	using Internal;
-	using Stact.Channels;
+	using Stact;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 

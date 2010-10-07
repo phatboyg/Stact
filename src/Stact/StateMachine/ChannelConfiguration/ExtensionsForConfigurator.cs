@@ -1,4 +1,4 @@
-namespace Stact.Channels
+namespace Stact
 {
 	using Configuration;
 	using StateMachine.ChannelConfiguration;

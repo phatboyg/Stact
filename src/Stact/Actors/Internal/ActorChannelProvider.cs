@@ -15,7 +15,7 @@ namespace Stact.Actors.Internal
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Channels;
+	
 
 	/// <summary>
 	///   Provides a channel from an actor, based on the property information which is used

@@ -16,8 +16,8 @@ namespace Stact.ForNHibernate.Auditing.Internal
 	using System.Collections.Generic;
 	using System.Linq;
 	using Magnum.Extensions;
-	using Stact.Channels;
-	using Stact.Channels.Visitors;
+	using Stact;
+	using Stact.Visitors;
 
 
 	public class AuditEventConsumerChannelVisitor :

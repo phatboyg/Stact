@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors.Auctions
 {
-	using Stact.Channels;
+	using Stact;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 
