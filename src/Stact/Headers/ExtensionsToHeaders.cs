@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
 	using Internal;
 
 
@@ -33,7 +32,6 @@ namespace Stact
 		}
 
 
-
 		/// <summary>
 		///   Wraps a message in a response and sends it to the response channel of the request
 		/// </summary>
@@ -45,7 +43,5 @@ namespace Stact
 		{
 			request.ResponseChannel.Send<Response<TRequest, TResponse>>(new ResponseImpl<TRequest, TResponse>(response));
 		}
-
-
 	}
 }

@@ -63,32 +63,22 @@ namespace Stact.Internal
 			}
 		}
 
-		public ScheduledOperation Schedule(int interval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(TimeSpan interval, Fiber fiber, Action operation)
 		{
-			return Schedule(interval.Milliseconds(), fiber, action);
-		}
-
-		public ScheduledOperation Schedule(TimeSpan interval, Fiber fiber, Action action)
-		{
-			var scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, action);
+			var scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, operation);
 			Schedule(scheduled);
 
 			return scheduled;
 		}
 
-		public ScheduledOperation Schedule(int interval, int periodicInterval, Fiber fiber, Action action)
-		{
-			return Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, action);
-		}
-
-		public ScheduledOperation Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action action)
+		public ScheduledOperation Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action operation)
 		{
 			ScheduledOperationExecuterImpl scheduled = null;
 			scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, () =>
 				{
 					try
 					{
-						action();
+						operation();
 					}
 					catch (Exception ex)
 					{
