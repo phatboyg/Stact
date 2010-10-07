@@ -4,7 +4,6 @@ code_drop/*
 **/*.suo
 **/**/*.suo
 **/*.user
-**/*.sln*
 bin
 obj
 _ReSharper*
