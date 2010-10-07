@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Fibers;
+	
 
 	/// <summary>
 	/// An interceptor channel can be placed in front of any other channel and provides

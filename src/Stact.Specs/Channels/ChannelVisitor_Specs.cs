@@ -1,7 +1,8 @@
 namespace Stact.Specs.Channels
 {
 	using System.Collections.Generic;
-	using Fibers;
+	
+	using Internal;
 	using Stact.Channels;
 	using Stact.Channels.Visitors;
 	using Magnum.Extensions;

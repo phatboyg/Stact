@@ -13,8 +13,8 @@
 namespace Stact
 {
 	using System;
-	using Actors;
 	using Channels;
+	using Internal;
 	using Magnum.Extensions;
 
 
@@ -115,6 +115,28 @@ namespace Stact
 		                                        Action timeoutCallback)
 		{
 			return inbox.Receive(consumer, timeout.Milliseconds(), timeoutCallback);
+		}
+
+
+		/// <summary>
+		///   Wraps the message in a request and sends it to the channel
+		/// </summary>
+		/// <typeparam name = "TRequest">The type of the request message</typeparam>
+		/// <param name = "channel">The channel where the message should be sent</param>
+		/// <param name = "request">The request message</param>
+		/// <param name = "inbox">The response inbox</param>
+		public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, TRequest request, Inbox inbox)
+		{
+			UntypedChannel responseChannel = inbox;
+
+			channel.Request(request, responseChannel);
+
+			return new SentRequestImpl<TRequest>(request, inbox);
+		}
+
+		public static WithinSentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout)
+		{
+			return new WithinSentRequestImpl<TRequest>(request, timeout);
 		}
 	}
 }

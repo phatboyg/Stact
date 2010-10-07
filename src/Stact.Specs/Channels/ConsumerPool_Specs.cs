@@ -13,7 +13,8 @@
 namespace Stact.Specs.Channels
 {
 	using System;
-	using Fibers;
+	
+	using Internal;
 	using Magnum;
 	using Stact.Channels;
 	using NUnit.Framework;

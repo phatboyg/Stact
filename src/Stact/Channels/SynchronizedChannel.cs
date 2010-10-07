@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System.Threading;
-	using Fibers;
+	
 
 
 	/// <summary>

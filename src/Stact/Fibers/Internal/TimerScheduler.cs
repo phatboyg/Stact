@@ -10,36 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Fibers
+namespace Stact.Internal
 {
 	using System;
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Extensions;
-	using Internal;
 	using Magnum;
+	using Magnum.Extensions;
 	using Magnum.Logging;
+
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
 	public class TimerScheduler :
 		Scheduler
 	{
-		private static readonly ILogger _log = Logger.GetLogger<TimerScheduler>();
+		static readonly ILogger _log = Logger.GetLogger<TimerScheduler>();
 
-		private readonly ScheduledOperationList _operations = new ScheduledOperationList();
-		private readonly Fiber _fiber;
-		private readonly object _lock = new object();
-		private readonly TimeSpan _noPeriod = -1.Milliseconds();
-		private bool _stopped;
-		private Timer _timer;
+		readonly Fiber _fiber;
+		readonly object _lock = new object();
+		readonly TimeSpan _noPeriod = -1.Milliseconds();
+		readonly ScheduledOperationList _operations = new ScheduledOperationList();
+		bool _stopped;
+		Timer _timer;
 
 		public TimerScheduler(Fiber fiber)
 		{
 			_fiber = fiber;
 		}
 
-		private static DateTime Now
+		static DateTime Now
 		{
 			get { return SystemUtil.UtcNow; }
 		}
@@ -112,15 +112,13 @@ namespace Stact.Fibers
 			lock (_lock)
 			{
 				if (_timer != null)
-				{
 					_timer.Dispose();
-				}
 
 				_fiber.Shutdown(60.Seconds());
 			}
 		}
 
-		private void Schedule(ScheduledOperationExecuter action)
+		void Schedule(ScheduledOperationExecuter action)
 		{
 			_fiber.Add(() =>
 				{
@@ -130,7 +128,7 @@ namespace Stact.Fibers
 				});
 		}
 
-		private void ScheduleTimer()
+		void ScheduleTimer()
 		{
 			DateTime now = Now;
 
@@ -142,18 +140,14 @@ namespace Stact.Fibers
 					TimeSpan dueTime = scheduledAt - now;
 
 					if (_timer != null)
-					{
 						_timer.Change(dueTime, _noPeriod);
-					}
 					else
-					{
 						_timer = new Timer(x => _fiber.Add(ExecuteExpiredActions), this, dueTime, _noPeriod);
-					}
 				}
 			}
 		}
 
-		private void ExecuteExpiredActions()
+		void ExecuteExpiredActions()
 		{
 			if (_stopped)
 				return;
@@ -177,7 +171,7 @@ namespace Stact.Fibers
 			ScheduleTimer();
 		}
 
-		private static DateTime GetScheduledTime(TimeSpan interval)
+		static DateTime GetScheduledTime(TimeSpan interval)
 		{
 			return Now + interval;
 		}

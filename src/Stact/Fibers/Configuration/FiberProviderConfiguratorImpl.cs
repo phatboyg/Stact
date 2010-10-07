@@ -13,7 +13,7 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Fibers;
+	using Stact.Internal;
 
 
 	public class FiberProviderConfiguratorImpl<T, TKey> :
@@ -37,7 +37,7 @@ namespace Stact.Configuration
 
 		public T CreateFiberPerInstance()
 		{
-			_configuredProvider = (factory, timeout) => new KeyedChannelProvider<TKey>(factory, timeout);
+			_configuredProvider = (factory, timeout) => new KeyedFiberProvider<TKey>(factory, timeout);
 
 			return this as T;
 		}

@@ -10,16 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Internal
+namespace Stact.Internal
 {
 	using System;
 	using Channels;
 
 
 	/// <summary>
-	/// A decorator for sent requests that enables method chaining
+	///   A decorator for sent requests that enables method chaining
 	/// </summary>
-	/// <typeparam name="TRequest"></typeparam>
+	/// <typeparam name = "TRequest"></typeparam>
 	public class SentRequestImpl<TRequest> :
 		SentRequest<TRequest>
 	{

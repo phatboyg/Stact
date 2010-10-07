@@ -14,7 +14,7 @@ namespace Stact.Channels
 {
 	using System.Collections.Generic;
 	using Magnum.Extensions;
-	using Fibers;
+	
 	using Internal;
 
 

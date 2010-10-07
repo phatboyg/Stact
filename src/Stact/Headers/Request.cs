@@ -12,17 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Channels;
-
 	/// <summary>
-	/// A request message wrapper
+	///   A request message wrapper
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name = "T"></typeparam>
 	public interface Request<T> :
 		Message<T>
 	{
 		/// <summary>
-		/// Where responses to the request should be sent
+		///   Where responses to the request should be sent
 		/// </summary>
 		UntypedChannel ResponseChannel { get; }
 	}

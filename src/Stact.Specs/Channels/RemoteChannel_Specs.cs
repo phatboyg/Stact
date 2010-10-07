@@ -14,7 +14,8 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using System.Linq;
-	using Fibers;
+	
+	using Internal;
 	using Magnum.Logging;
 	using Stact.Channels;
 	using Magnum.Extensions;

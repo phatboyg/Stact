@@ -13,8 +13,9 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Fibers;
+	
 	using Stact.Configuration;
+	using Stact.Internal;
 
 
 	public class IntervalModelConfigurator<T> :

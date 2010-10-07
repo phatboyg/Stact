@@ -15,7 +15,8 @@ namespace Stact.Specs.Actions
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Threading;
-	using Fibers;
+	
+	using Internal;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;

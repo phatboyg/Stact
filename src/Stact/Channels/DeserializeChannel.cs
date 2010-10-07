@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels
 {
-	using Fibers;
+	
 	using Magnum.Serialization;
 
 	public class DeserializeChannel<T> :

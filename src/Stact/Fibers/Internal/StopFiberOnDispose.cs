@@ -10,18 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Channels.Internal
+namespace Stact.Internal
 {
-	public class RequestImpl<T> :
-		MessageImpl<T>,
-		Request<T>
+	using System;
+
+
+	public class StopFiberOnDispose :
+		IDisposable
 	{
-		public RequestImpl(UntypedChannel responseChannel, T message)
-			: base(message)
+		readonly Fiber _fiber;
+
+		public StopFiberOnDispose(Fiber fiber)
 		{
-			ResponseChannel = responseChannel;
+			_fiber = fiber;
 		}
 
-		public UntypedChannel ResponseChannel { get; private set; }
+		public void Dispose()
+		{
+			_fiber.Stop();
+		}
 	}
 }

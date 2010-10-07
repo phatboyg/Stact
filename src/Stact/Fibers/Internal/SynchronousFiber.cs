@@ -10,21 +10,41 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
+	using Magnum.Extensions;
 
 
-	public interface ScheduledOperation
+	/// <summary>
+	///   A synchronous fiber will execute an action immediately on the calling thread
+	///   without any protection from an exception
+	/// </summary>
+	public class SynchronousFiber :
+		Fiber
 	{
-		/// <summary>
-		///   The time coordinates when the operation is scheduled to execute
-		/// </summary>
-		DateTime ScheduledAt { get; }
+		bool _stopping;
 
-		/// <summary>
-		///   Cancels the scheduled operation, ensuring that it does not execute
-		/// </summary>
-		void Cancel();
+		public void Add(Action operation)
+		{
+			if (_stopping)
+				return;
+
+			operation();
+		}
+
+		public void AddMany(params Action[] operations)
+		{
+			operations.Each(Add);
+		}
+
+		public void Stop()
+		{
+			_stopping = true;
+		}
+
+		public void Shutdown(TimeSpan timeout)
+		{
+		}
 	}
 }

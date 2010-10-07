@@ -13,7 +13,6 @@
 namespace Stact
 {
 	using System;
-	using Actors;
 	using Configuration;
 	using Internal;
 

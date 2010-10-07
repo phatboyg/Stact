@@ -115,17 +115,20 @@
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
+    <Compile Include="Channels\Configuration\ExtensionsForFiberConfiguration.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ActorFactoryImpl.cs" />
-    <Compile Include="Actors\Internal\ExitImpl.cs" />
-    <Compile Include="Actors\Internal\KillImpl.cs" />
+    <Compile Include="Fibers\Internal\ShutdownFiberOnDispose.cs" />
+    <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
+    <Compile Include="Messages\Internal\ExitImpl.cs" />
+    <Compile Include="Messages\Internal\KillImpl.cs" />
     <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />
-    <Compile Include="Actors\Internal\WithinSentRequest.cs" />
+    <Compile Include="Actors\WithinSentRequest.cs" />
     <Compile Include="Actors\Internal\WithinSentRequestImpl.cs" />
     <Compile Include="Actors\Internal\ThreadStaticActorFactory.cs" />
-    <Compile Include="Actors\Exit.cs" />
-    <Compile Include="Actors\Kill.cs" />
+    <Compile Include="Messages\Exit.cs" />
+    <Compile Include="Messages\Kill.cs" />
     <Compile Include="Actors\PendingReceive.cs" />
     <Compile Include="Channels\ChannelProviderFactory.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForDistributedChannels.cs" />
@@ -141,12 +144,13 @@
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\PropertyChannelConnectionConfiguratorImpl.cs" />
     <Compile Include="ExtensionsToInbox.cs" />
+    <Compile Include="Headers\ExtensionsToHeaders.cs" />
     <Compile Include="Headers\Message.cs" />
-    <Compile Include="Channels\Internal\MessageImpl.cs" />
+    <Compile Include="Headers\Internal\MessageImpl.cs" />
     <Compile Include="Headers\Request.cs" />
-    <Compile Include="Channels\Internal\RequestImpl.cs" />
+    <Compile Include="Headers\Internal\RequestImpl.cs" />
     <Compile Include="Headers\Response.cs" />
-    <Compile Include="Channels\Internal\ResponseImpl.cs" />
+    <Compile Include="Headers\Internal\ResponseImpl.cs" />
     <Compile Include="Actors\SentRequest.cs" />
     <Compile Include="Actors\Internal\SentRequestImpl.cs" />
     <Compile Include="Channels\TypedChannelAdapter.cs" />
@@ -220,8 +224,8 @@
     <Compile Include="Channels\Configuration\Internal\DisconnectChannelVisitor.cs" />
     <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Actors\Internal\BufferedInbox.cs" />
-    <Compile Include="Actors\Inbox.1.cs" />
-    <Compile Include="Inbox.cs" />
+    <Compile Include="Actors\Internal\Inbox.1.cs" />
+    <Compile Include="Actors\Inbox.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
     <Compile Include="UntypedChannel.cs" />
@@ -231,8 +235,8 @@
     <Compile Include="Fibers\Configuration\FiberProviderConfiguratorImpl.cs" />
     <Compile Include="Fibers\Internal\DisposeCallback.cs" />
     <Compile Include="Fibers\ExtensionsToFiber.cs" />
-    <Compile Include="Fibers\KeyedChannelProvider.cs" />
-    <Compile Include="Fiber.cs" />
+    <Compile Include="Fibers\Internal\KeyedFiberProvider.cs" />
+    <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="Fibers\FiberException.cs" />
     <Compile Include="Fibers\FiberProvider.cs" />
     <Compile Include="Scheduler.cs" />
@@ -241,11 +245,11 @@
     <Compile Include="Fibers\Internal\ScheduledOperationList.cs" />
     <Compile Include="Fibers\Internal\ScheduledOperationExecuterImpl.cs" />
     <Compile Include="Fibers\SchedulerFactory.cs" />
-    <Compile Include="Fibers\SynchronousFiber.cs" />
-    <Compile Include="Fibers\SingleFiberProvider.cs" />
-    <Compile Include="Fibers\ThreadFiber.cs" />
-    <Compile Include="Fibers\PoolFiber.cs" />
-    <Compile Include="Fibers\TimerScheduler.cs" />
+    <Compile Include="Fibers\Internal\SynchronousFiber.cs" />
+    <Compile Include="Fibers\Internal\SingleFiberProvider.cs" />
+    <Compile Include="Fibers\Internal\ThreadFiber.cs" />
+    <Compile Include="Fibers\Internal\PoolFiber.cs" />
+    <Compile Include="Fibers\Internal\TimerScheduler.cs" />
     <Compile Include="Fibers\FiberFactory.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
@@ -295,7 +299,6 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Actors\Messages\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

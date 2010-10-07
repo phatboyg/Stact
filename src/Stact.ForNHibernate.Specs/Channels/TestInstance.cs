@@ -14,7 +14,8 @@ namespace Stact.ForNHibernate.Specs.Channels
 {
 	using System;
 	using System.Collections.Generic;
-	using Fibers;
+	
+	using Internal;
 	using Magnum;
 	using Stact.Channels;
 

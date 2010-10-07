@@ -13,52 +13,51 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Fibers;
 
 
 	/// <summary>
-	/// Configures the type of fiber to be used for handling messages
+	///   Configures the type of fiber to be used for handling messages
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name = "T"></typeparam>
 	public interface FiberFactoryConfigurator<T>
 		where T : class
 	{
 		/// <summary>
-		/// Handle on the calling thread (synchronously)
+		///   Handle on the calling thread (synchronously)
 		/// </summary>
 		/// <returns></returns>
 		T HandleOnCallingThread();
 
 		/// <summary>
-		/// Handle on a dedicated fiber (uses the thread pool, lightweight)
+		///   Handle on a dedicated fiber (uses the thread pool, lightweight)
 		/// </summary>
 		/// <returns></returns>
 		T HandleOnPoolFiber();
 
 		/// <summary>
-		/// Handle on the specified fiber
+		///   Handle on the specified fiber
 		/// </summary>
-		/// <param name="fiber">The fiber to use</param>
+		/// <param name = "fiber">The fiber to use</param>
 		/// <returns></returns>
 		T HandleOnFiber(Fiber fiber);
 
 		/// <summary>
-		/// Handle on a dedicated thread (operating system thread)
+		///   Handle on a dedicated thread (operating system thread)
 		/// </summary>
 		/// <returns></returns>
 		T HandleOnThreadFiber();
 
 		/// <summary>
-		/// Use the specified fiber factory
+		///   Use the specified fiber factory
 		/// </summary>
-		/// <param name="fiberFactory">The fiber factory to use</param>
+		/// <param name = "fiberFactory">The fiber factory to use</param>
 		/// <returns></returns>
 		T UseFiberFactory(FiberFactory fiberFactory);
 
 		/// <summary>
-		/// Configure the shutdown timeout for the fiber
+		///   Configure the shutdown timeout for the fiber
 		/// </summary>
-		/// <param name="timeout"></param>
+		/// <param name = "timeout"></param>
 		/// <returns></returns>
 		T UseShutdownTimeout(TimeSpan timeout);
 	}

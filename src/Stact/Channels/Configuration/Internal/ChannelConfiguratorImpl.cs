@@ -13,7 +13,8 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using Magnum.Extensions;
-	using Fibers;
+	
+	using Stact.Internal;
 
 
 	public class ChannelConfiguratorImpl :

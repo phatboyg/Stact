@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Fibers;
+	
 
 
 	public interface ChannelConfiguratorConnection

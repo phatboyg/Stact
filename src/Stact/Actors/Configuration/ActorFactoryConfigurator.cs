@@ -13,7 +13,6 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Fibers;
 
 
 	public interface ActorFactoryConfigurator<TActor> :

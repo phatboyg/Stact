@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Channels
 {
-	using Fibers;
+	
+	using Internal;
 	using Stact.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;

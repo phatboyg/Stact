@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,40 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Fibers
+namespace Stact.Internal
 {
 	using System;
-	using Magnum.Extensions;
+	using Magnum.Collections;
+
 
 	/// <summary>
-	/// A synchronous fiber will execute an action immediately on the calling thread
-	/// without any protection from an exception
+	/// Keeps track of a keyed fiber collection
 	/// </summary>
-	public class SynchronousFiber :
-		Fiber
+	/// <typeparam name="TKey"></typeparam>
+	public class KeyedFiberProvider<TKey> :
+		FiberProvider<TKey>
 	{
-		private bool _stopping;
+		readonly Cache<TKey, Fiber> _cache;
+		readonly TimeSpan _timeout;
 
-		public void Add(Action operation)
+		public KeyedFiberProvider(FiberFactory missingFiberFactory, TimeSpan timeout)
 		{
-			if (_stopping)
-				return;
-
-			operation();
+			_timeout = timeout;
+			_cache = new Cache<TKey, Fiber>(k => missingFiberFactory());
 		}
 
-		public void AddMany(params Action[] operations)
+		public Fiber GetFiber(TKey key)
 		{
-			operations.Each(Add);
+			return _cache[key];
 		}
 
-		public void Stop()
+		public void Dispose()
 		{
-			_stopping = true;
-		}
-
-		public void Shutdown(TimeSpan timeout)
-		{
+			_cache.Each(x => x.Shutdown(_timeout));
 		}
 	}
 }

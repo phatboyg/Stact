@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors.PingPongDemo
 {
-	using Fibers;
+	
+	using Internal;
+
 
 	public class PongActor :
 		Pong

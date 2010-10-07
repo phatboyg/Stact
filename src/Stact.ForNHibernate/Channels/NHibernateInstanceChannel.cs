@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.ForNHibernate.Channels
 {
-	using Fibers;
+	
 	using Stact.Channels;
 	using NHibernate;
 

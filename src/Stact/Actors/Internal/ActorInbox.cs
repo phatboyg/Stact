@@ -18,6 +18,7 @@ namespace Stact.Actors.Internal
 	using Channels;
 	using Magnum.Collections;
 	using Magnum.Extensions;
+	using Stact.Internal;
 
 
 	/// <summary>

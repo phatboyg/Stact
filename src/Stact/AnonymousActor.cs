@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	using Fibers;
+	
 	using Internal;
 	using Magnum;
 

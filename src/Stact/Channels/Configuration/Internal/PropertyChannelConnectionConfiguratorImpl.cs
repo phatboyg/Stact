@@ -18,7 +18,7 @@ namespace Stact.Channels.Configuration.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Magnum.Extensions;
-	using Fibers;
+	
 	using Magnum.Logging;
 	using Magnum.Reflection;
 	using Stact.Configuration;
@@ -47,7 +47,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			_propertyBinders.Each(x => x(connection, fiber, _instance));
 		}

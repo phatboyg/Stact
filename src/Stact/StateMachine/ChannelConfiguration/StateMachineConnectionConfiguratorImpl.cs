@@ -15,8 +15,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using System;
 	using Channels;
 	using Configuration;
+	using Internal;
 	using Magnum.Extensions;
-	using Fibers;
+	
 	using Magnum.Logging;
 	using Stact.Channels;
 	using Stact.Channels.Configuration.Internal;

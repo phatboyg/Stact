@@ -19,12 +19,14 @@ namespace Stact.Web.Actors.Configuration
 	using System.Reflection;
 	using Channels;
 	using Magnum.Extensions;
-	using Fibers;
+	
 	using Internal;
 	using Magnum.Logging;
 	using Stact.Actors;
 	using Stact.Actors.Internal;
 	using Magnum.Reflection;
+	using Stact.Internal;
+
 
 	public class StandardActorConfiguration<TActor> :
 		ActorConfiguration<TActor>

@@ -14,7 +14,8 @@ namespace Stact.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using Fibers;
+	
+	using Internal;
 	using Stact.Channels;
 	using Magnum.Extensions;
 	using NUnit.Framework;

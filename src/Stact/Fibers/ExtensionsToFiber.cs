@@ -1,4 +1,4 @@
-// // Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,32 +13,32 @@
 namespace Stact
 {
 	using System;
-	using Fibers.Internal;
+	using Internal;
 
 
 	public static class ExtensionsToFiber
 	{
 		/// <summary>
-		/// Creates a disposable object that calls Shutdown on the fiber when it is
-		/// disposed
+		///   Creates a disposable object that calls Shutdown on the fiber when it is
+		///   disposed
 		/// </summary>
-		/// <param name="fiber">The fiber to shutdown</param>
-		/// <param name="timeout">The timeout to wait for the shutdown to complete</param>
+		/// <param name = "fiber">The fiber to shutdown</param>
+		/// <param name = "timeout">The timeout to wait for the shutdown to complete</param>
 		/// <returns>An IDisposable object</returns>
 		public static IDisposable ShutdownOnDispose(this Fiber fiber, TimeSpan timeout)
 		{
-			return new DisposeCallback(() => fiber.Shutdown(timeout));
+			return new ShutdownFiberOnDispose(fiber, timeout);
 		}
 
 		/// <summary>
-		/// Creates a disposable object that calls Stop on the fiber when it is
-		/// disposed
+		///   Creates a disposable object that calls Stop on the fiber when it is
+		///   disposed
 		/// </summary>
-		/// <param name="fiber">The fiber to stop</param>
+		/// <param name = "fiber">The fiber to stop</param>
 		/// <returns>An IDisposable object</returns>
 		public static IDisposable StopOnDispose(this Fiber fiber)
 		{
-			return new DisposeCallback(fiber.Stop);
+			return new StopFiberOnDispose(fiber);
 		}
 	}
 }

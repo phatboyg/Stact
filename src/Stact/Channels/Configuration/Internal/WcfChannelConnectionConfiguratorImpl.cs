@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Fibers;
+	
 	using Stact.Configuration;
 
 
@@ -43,7 +43,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
 		}

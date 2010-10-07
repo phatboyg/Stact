@@ -13,7 +13,8 @@
 namespace Stact.Specs.Channels
 {
 	using System.Diagnostics;
-	using Fibers;
+	
+	using Internal;
 	using Stact.Channels;
 	using Stact.Channels.Visitors;
 	using NUnit.Framework;

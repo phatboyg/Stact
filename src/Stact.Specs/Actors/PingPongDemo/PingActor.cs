@@ -14,7 +14,9 @@ namespace Stact.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Fibers;
+	
+	using Internal;
+
 
 	public class PingActor :
 		Ping

@@ -14,7 +14,8 @@ namespace Stact.Specs.Actors
 {
 	using System;
 	using System.Threading;
-	using Fibers;
+	
+	using Internal;
 	using NUnit.Framework;
 
 	[TestFixture]

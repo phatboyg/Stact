@@ -14,7 +14,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
-	using Fibers;
+	
 	using Stact.Channels;
 	using Stact.Channels.Configuration.Internal;
 	using Stact.Channels.Internal;

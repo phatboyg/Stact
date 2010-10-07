@@ -14,7 +14,7 @@ namespace Stact.Internal
 {
 	using System;
 	using Actors.Internal;
-	using Fibers;
+	
 
 
 	public class ActorFactoryImpl<TActor> :
@@ -56,7 +56,7 @@ namespace Stact.Internal
 			return inbox;
 		}
 
-		TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, ActorInbox<TActor> inbox)
+		TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, Inbox inbox)
 		{
 			return _factory(fiber, scheduler, inbox);
 		}

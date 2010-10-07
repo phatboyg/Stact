@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels.Configuration.Internal
 {
-	using Fibers;
+	
 	using Stact.Configuration;
 
 
@@ -31,14 +31,14 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
 		}

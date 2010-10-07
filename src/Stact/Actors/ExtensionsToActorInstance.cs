@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	using Fibers.Internal;
+	using Internal;
 
 
 	public static class ExtensionsToActorInstance

@@ -1,4 +1,4 @@
-﻿// // Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,9 +13,8 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Fibers;
-	using Channels.Configuration.Internal;
 	using Magnum.Extensions;
+	using Stact.Internal;
 
 
 	public class FiberFactoryConfiguratorImpl<T> :
@@ -30,7 +29,7 @@ namespace Stact.Configuration
 			HandleOnPoolFiber();
 		}
 
-		protected TimeSpan ShutdownTimeout
+		public TimeSpan ShutdownTimeout
 		{
 			get { return _shutdownTimeout; }
 		}
@@ -83,25 +82,9 @@ namespace Stact.Configuration
 				throw new FiberException("No fiber configuration was specified");
 		}
 
-		protected FiberFactory GetConfiguredFiberFactory()
+		public FiberFactory GetConfiguredFiberFactory()
 		{
 			return _fiberFactory;
-		}
-
-		protected Fiber GetFiberUsingConfiguredFactory(ChannelConfiguratorConnection connection)
-		{
-			Fiber fiber = _fiberFactory();
-			connection.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
-
-			return fiber;
-		}
-
-		protected Fiber GetFiberUsingConfiguredFactory<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
-		{
-			Fiber fiber = _fiberFactory();
-			connection.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
-
-			return fiber;
 		}
 	}
 }

@@ -13,7 +13,7 @@
 namespace Stact.Specs.Actors.Auctions
 {
 	using System;
-	using Fibers;
+	
 	using Internal;
 	using Magnum;
 	using Stact.Actors;

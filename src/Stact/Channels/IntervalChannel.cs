@@ -14,7 +14,7 @@ namespace Stact.Channels
 {
 	using System;
 	using System.Collections.Generic;
-	using Fibers;
+	
 	using Internal;
 
 

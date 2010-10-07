@@ -14,7 +14,7 @@ namespace Stact.Web.Abstractions
 {
 	using System;
 	using Channels;
-	using Fibers;
+	
 
 	/// <summary>
 	/// Provides a channel that can be used to write an object out to the ObjectWriter,

@@ -13,8 +13,8 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Fibers;
-	using Internal;
+	
+	using Stact.Internal;
 
 
 	public class ActorFactoryConfiguratorImpl<TActor> :
@@ -36,7 +36,7 @@ namespace Stact.Configuration
 				() =>
 					{
 						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                        (f, s, i) => { return actorFactory(i); });
+						                                    (f, s, i) => { return actorFactory(i); });
 					};
 
 			return this;
@@ -48,7 +48,7 @@ namespace Stact.Configuration
 				() =>
 					{
 						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                        (f, s, i) => { return actorFactory(f); });
+						                                    (f, s, i) => { return actorFactory(f); });
 					};
 
 			return this;
@@ -60,7 +60,7 @@ namespace Stact.Configuration
 				() =>
 					{
 						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                        (f, s, i) => { return actorFactory(f, i); });
+						                                    (f, s, i) => { return actorFactory(f, i); });
 					};
 
 			return this;

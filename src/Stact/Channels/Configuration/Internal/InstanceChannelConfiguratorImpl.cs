@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Fibers;
+	
 	using Stact.Configuration;
 
 
@@ -70,7 +70,7 @@ namespace Stact.Channels.Configuration.Internal
 		{
 			ChannelProvider<TChannel> provider = _providerFactory(connection);
 
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
 		}

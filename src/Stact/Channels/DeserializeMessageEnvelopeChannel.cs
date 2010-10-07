@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Fibers;
+	
 	using Magnum.Logging;
 	using Magnum.Reflection;
 	using Magnum.Serialization;

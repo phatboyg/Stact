@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,21 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
 
 
-	public interface ScheduledOperation
+	public class SingleFiberProvider<TKey> :
+		FiberProvider<TKey>
 	{
-		/// <summary>
-		///   The time coordinates when the operation is scheduled to execute
-		/// </summary>
-		DateTime ScheduledAt { get; }
+		readonly Fiber _fiber;
+		readonly TimeSpan _timeout;
 
-		/// <summary>
-		///   Cancels the scheduled operation, ensuring that it does not execute
-		/// </summary>
-		void Cancel();
+		public SingleFiberProvider(FiberFactory factory, TimeSpan timeout)
+		{
+			_timeout = timeout;
+			_fiber = factory();
+		}
+
+		public Fiber GetFiber(TKey key)
+		{
+			return _fiber;
+		}
+
+		public void Dispose()
+		{
+			_fiber.Shutdown(_timeout);
+		}
 	}
 }

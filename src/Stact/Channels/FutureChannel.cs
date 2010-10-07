@@ -13,7 +13,7 @@
 namespace Stact.Channels
 {
 	using System;
-	using Fibers;
+	
 
 
 	public class FutureChannel<T> :

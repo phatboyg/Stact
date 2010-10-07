@@ -14,7 +14,7 @@ namespace Stact.Channels
 {
 	using System;
 	using System.ServiceModel;
-	using Fibers;
+	
 	using Internal;
 	using Magnum.Serialization;
 

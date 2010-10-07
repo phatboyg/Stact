@@ -15,7 +15,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using System.Linq;
 	using Configuration;
 	using Magnum.Extensions;
-	using Fibers;
+	
 	using Stact.Channels;
 	using Stact.Channels.Configuration;
 	using Stact.Channels.Configuration.Internal;
@@ -49,7 +49,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			foreach (var result in _results)
 				result.Connect(connection, fiber, _instance);

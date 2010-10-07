@@ -14,7 +14,8 @@ namespace Stact.Channels.Configuration.Internal
 {
 	using System;
 	using System.Threading;
-	using Fibers;
+	
+	using Stact.Internal;
 
 
 	public class SynchronizedChannelConnectionConfiguratorImpl<TChannel> :

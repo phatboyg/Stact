@@ -14,7 +14,8 @@ namespace Stact.Specs.Actors.PingPongDemo
 {
 	using System.Diagnostics;
 	using System.Threading;
-	using Fibers;
+	
+	using Internal;
 	using NUnit.Framework;
 
 	[TestFixture]

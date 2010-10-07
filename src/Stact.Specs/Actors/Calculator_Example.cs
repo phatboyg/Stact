@@ -13,7 +13,8 @@
 namespace Stact.Specs.Actors
 {
 	using System.Diagnostics;
-	using Fibers;
+	
+	using Internal;
 	using NUnit.Framework;
 
 	[TestFixture]

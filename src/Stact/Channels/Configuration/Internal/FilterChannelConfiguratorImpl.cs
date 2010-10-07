@@ -13,7 +13,7 @@
 namespace Stact.Channels.Configuration.Internal
 {
 	using System;
-	using Fibers;
+	
 	using Stact.Configuration;
 
 
@@ -34,7 +34,7 @@ namespace Stact.Channels.Configuration.Internal
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
-			Fiber fiber = GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
 
 			var filterConnection = new ChannelConfiguratorConnectionDecorator(connection, fiber, _filter);
 

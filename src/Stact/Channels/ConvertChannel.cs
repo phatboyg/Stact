@@ -14,7 +14,7 @@ namespace Stact.Channels
 {
 	using System;
 	using System.Linq.Expressions;
-	using Fibers;
+	
 
 	/// <summary>
 	///   Tranforms a message from one type to another

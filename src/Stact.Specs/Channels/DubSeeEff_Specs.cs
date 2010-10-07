@@ -14,11 +14,11 @@ namespace Stact.Specs.Channels
 {
 	using System;
 	using System.Runtime.Serialization;
+	using Internal;
 	using Magnum.Logging;
 	using Magnum.TestFramework;
 	using Stact.Channels;
 	using Magnum.Extensions;
-	using Stact.Fibers;
 	using NUnit.Framework;
 
 
