@@ -15,7 +15,9 @@ namespace Stact
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using Magnum;
 	using Magnum.Logging;
+
 
 	/// <summary>
 	/// A BroadcastChannel sends a message to zero or more listeners
@@ -23,20 +25,20 @@ namespace Stact
 	public class BroadcastChannel :
 		UntypedChannel
 	{
-		private static readonly ILogger _log = Logger.GetLogger<BroadcastChannel>();
+		static readonly ILogger _log = Logger.GetLogger<BroadcastChannel>();
 
-		private readonly UntypedChannel[] _listeners;
+		readonly UntypedChannel[] _listeners;
 
 		public BroadcastChannel(IEnumerable<UntypedChannel> listeners)
 		{
-			Magnum.Guard.AgainstNull(listeners, "listeners");
+			Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners.ToArray();
 		}
 
 		public BroadcastChannel(UntypedChannel[] listeners)
 		{
-			Magnum.Guard.AgainstNull(listeners, "listeners");
+			Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners;
 		}
@@ -62,6 +64,7 @@ namespace Stact
 		}
 	}
 
+
 	/// <summary>
 	/// A BroadcastChannel sends a message to zero or more listeners
 	/// </summary>
@@ -69,20 +72,20 @@ namespace Stact
 	public class BroadcastChannel<T> :
 		Channel<T>
 	{
-		private static readonly ILogger _log = Logger.GetLogger<BroadcastChannel<T>>();
+		static readonly ILogger _log = Logger.GetLogger<BroadcastChannel<T>>();
 
-		private readonly Channel<T>[] _listeners;
+		readonly Channel<T>[] _listeners;
 
 		public BroadcastChannel(IEnumerable<Channel<T>> listeners)
 		{
-			Magnum.Guard.AgainstNull(listeners, "listeners");
+			Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners.ToArray();
 		}
 
 		public BroadcastChannel(Channel<T>[] listeners)
 		{
-			Magnum.Guard.AgainstNull(listeners, "listeners");
+			Guard.AgainstNull(listeners, "listeners");
 
 			_listeners = listeners;
 		}

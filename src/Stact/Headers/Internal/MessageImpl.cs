@@ -21,10 +21,13 @@ namespace Stact.Internal
 		public MessageImpl(T message)
 		{
 			Body = message;
-			BodyType = typeof(T).ToMessageUrn();
 		}
 
 		public T Body { get; private set; }
-		public Uri BodyType { get; private set; }
+
+		public Uri BodyType
+		{
+			get { return typeof(T).ToMessageUrn(); }
+		}
 	}
 }

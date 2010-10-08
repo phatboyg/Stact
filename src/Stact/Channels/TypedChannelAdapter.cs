@@ -13,7 +13,8 @@
 namespace Stact
 {
 	using System;
-	using Magnum.Reflection;
+	using System.Linq.Expressions;
+
 
 	/// <summary>
 	/// Converts an untyped channel to a typed channel, passing only messages
@@ -23,22 +24,54 @@ namespace Stact
 	public class TypedChannelAdapter<TOutput> :
 		UntypedChannel
 	{
+		[ThreadStatic]
+		static Func<object, TOutput> _convert;
+
+		readonly Channel<TOutput> _output;
+
 		public TypedChannelAdapter(Channel<TOutput> output)
 		{
-			Output = output;
-			OutputType = typeof (TOutput);
+			_output = output;
 		}
 
-		public Channel<TOutput> Output { get; private set; }
+		public Channel<TOutput> Output
+		{
+			get { return _output; }
+		}
 
-		public Type OutputType { get; private set; }
+		public Type OutputType
+		{
+			get { return typeof(TOutput); }
+		}
 
 		public void Send<T>(T message)
 		{
-			if (OutputType.IsAssignableFrom(typeof (T)))
-			{
-				Output.FastInvoke(new[] {OutputType}, "Send", message);
-			}
+			if (typeof(TOutput).IsAssignableFrom(typeof(T)))
+				_output.Send(Convert(message));
+		}
+
+		static TOutput Convert(object obj)
+		{
+			if (_convert == null)
+				GenerateConvertMethod();
+
+			return _convert(obj);
+		}
+
+		static void GenerateConvertMethod()
+		{
+			ParameterExpression value = Expression.Parameter(typeof(object), "value");
+
+			// value as T is slightly faster than (T)value, so if it's not a value type, use that
+			UnaryExpression castValue;
+			if (typeof(TOutput).IsValueType)
+				castValue = Expression.Convert(value, typeof(TOutput));
+			else
+				castValue = Expression.TypeAs(value, typeof(TOutput));
+
+			Expression<Func<object, TOutput>> expression = Expression.Lambda<Func<object, TOutput>>(castValue, value);
+
+			_convert = expression.Compile();
 		}
 	}
 }

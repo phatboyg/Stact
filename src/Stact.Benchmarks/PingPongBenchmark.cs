@@ -24,6 +24,10 @@ namespace Stact.Benchmarks
 		{
 			var serverFactory = ActorFactory.Create(fiber => new PingServer(fiber));
 			var server = serverFactory.GetActor();
+			var server2 = serverFactory.GetActor();
+
+			ActorInstance[] servers = new[] {server, server2};
+
 
 			Stopwatch timer = Stopwatch.StartNew();
 
@@ -38,6 +42,7 @@ namespace Stact.Benchmarks
 
 			for (int i = 0; i < actorCount; i++)
 			{
+				var s = servers[i%2];
 				actors[i] = AnonymousActor.New(inbox =>
 					{
 						var ping = new Ping();
@@ -45,7 +50,7 @@ namespace Stact.Benchmarks
 						Action loop = null;
 						loop = () =>
 							{
-								server.Request(ping, inbox)
+								s.Request(ping, inbox)
 									.Receive<Response<Pong>>(response =>
 										{
 											latch.CountDown();
