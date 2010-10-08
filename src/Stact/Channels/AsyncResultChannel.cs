@@ -20,7 +20,6 @@ namespace Stact
 	/// Wraps a channel in an IAsyncResult compatible wrapper to support asynchronous usage with
 	/// frameworks that support asynchronous callbacks
 	/// </summary>
-	/// <typeparam name="T">The channel type supported</typeparam>
 	public class AsyncResultChannel :
 		AsyncResult,
 		UntypedChannel

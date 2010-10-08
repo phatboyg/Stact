@@ -41,6 +41,7 @@ namespace Stact
 		/// <summary>
 		/// Disables the scheduler, preventing any further scheduled operations from being executed
 		/// </summary>
-		void Stop();
+		/// <param name="timeout">The time period to wait for the scheduler to shutdown</param>
+		void Stop(TimeSpan timeout);
 	}
 }

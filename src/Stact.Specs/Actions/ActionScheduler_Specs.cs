@@ -88,7 +88,7 @@ namespace Stact.Specs.Actions
 
 			scheduler.Schedule(1.Seconds(), fiber, () => called.Complete(true));
 
-			scheduler.Stop();
+			scheduler.Stop(60.Seconds());
 
 			called.WaitUntilCompleted(2.Seconds()).ShouldBeFalse();
 		}
@@ -97,18 +97,21 @@ namespace Stact.Specs.Actions
 	[TestFixture]
 	public class A_scheduled_item_throwing_an_exception
 	{
-		[Test, Ignore("Should not be managing exceptions automatically")]
+		[Test]
 		public void Should_not_stall_the_scheduler()
 		{
-			Fiber fiber = new PoolFiber();
+			Fiber stopped = new PoolFiber();
+			stopped.Stop();
+
+			Fiber running = new PoolFiber();
 			Scheduler scheduler = new TimerScheduler(new PoolFiber());
 
 			var called = new Future<bool>();
 
-			scheduler.Schedule(200.Milliseconds(), fiber, () => { throw new InvalidOperationException("Bugger!"); });
-			scheduler.Schedule(400.Milliseconds(), fiber, () => called.Complete(true));
+			scheduler.Schedule(200.Milliseconds(), stopped, () => { });
+			scheduler.Schedule(400.Milliseconds(), running, () => called.Complete(true));
 
-			called.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
+			called.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
 		}
 	}
 

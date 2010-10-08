@@ -116,11 +116,14 @@
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForFiberConfiguration.cs" />
+    <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfigurator.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ActorFactoryImpl.cs" />
     <Compile Include="Fibers\Internal\ShutdownFiberOnDispose.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
+    <Compile Include="Fibers\SchedulerException.cs" />
+    <Compile Include="Fibers\StactException.cs" />
     <Compile Include="Messages\Internal\ExitImpl.cs" />
     <Compile Include="Messages\Internal\KillImpl.cs" />
     <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />
@@ -164,9 +167,7 @@
     <Compile Include="Configuration\Channels\Internal\CreateChannelConnection.cs" />
     <Compile Include="Configuration\Channels\Internal\WcfChannelHostConnectionConfigurator.cs" />
     <Compile Include="Configuration\Channels\Internal\WcfChannelHostConnectionConfiguratorImpl.cs" />
-    <Compile Include="Channels\DelegateChannel.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
-    <Compile Include="Channels\FastActivatorInstanceProvider.cs" />
     <Compile Include="Channels\InstanceProvider.cs" />
     <Compile Include="Channels\Internal\AsyncResult.cs" />
     <Compile Include="Channels\ChannelConnection.cs" />
@@ -192,7 +193,7 @@
     <Compile Include="Configuration\Channels\Internal\FilterChannelConfiguratorImpl.cs" />
     <Compile Include="Configuration\Channels\Internal\InstanceChannelConfiguratorImpl.cs" />
     <Compile Include="Configuration\Channels\Internal\IntervalChannelConfigurator.cs" />
-    <Compile Include="Configuration\Channels\Internal\IntervalModelConfigurator.cs" />
+    <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfiguratorImpl.cs" />
     <Compile Include="Configuration\Channels\Internal\LastChannelConfigurator.cs" />
     <Compile Include="Configuration\Channels\Internal\LastChannelConfiguratorImpl.cs" />
     <Compile Include="Configuration\Channels\Internal\SelectiveConsumerChannelConfiguratorImpl.cs" />

@@ -21,7 +21,6 @@ namespace Stact
 	/// will be delivered on the specified user interface thread, to avoid issues when
 	/// writing to the UI
 	/// </summary>
-	/// <typeparam name="T">The channel type</typeparam>
 	public class SynchronizedChannel :
 		UntypedChannel
 	{

@@ -13,6 +13,8 @@
 namespace Stact
 {
 	using System.Threading;
+	using Magnum;
+
 
 	/// <summary>
 	/// Keeps a fixed number of channels available, which presumably are doing some form of synchronous processing
@@ -22,13 +24,13 @@ namespace Stact
 	public class ThreadPoolChannel<T> :
 		Channel<T>
 	{
-		private readonly int _channelLimit;
-		private readonly object _lock = new object();
-		private int _channelCount;
+		readonly int _channelLimit;
+		readonly object _lock = new object();
+		int _channelCount;
 
 		public ThreadPoolChannel(ChannelProvider<T> instanceProvider, int channelLimit)
 		{
-			Magnum.Guard.GreaterThan(0, channelLimit, "channelLimit");
+			Guard.GreaterThan(0, channelLimit, "channelLimit");
 
 			_channelLimit = channelLimit;
 			_channelCount = 0;
@@ -42,9 +44,7 @@ namespace Stact
 			lock (_lock)
 			{
 				while (_channelCount >= _channelLimit)
-				{
 					Monitor.Wait(_lock);
-				}
 
 				_channelCount++;
 
@@ -52,7 +52,7 @@ namespace Stact
 			}
 		}
 
-		private void SendMessageToChannel(T message)
+		void SendMessageToChannel(T message)
 		{
 			try
 			{

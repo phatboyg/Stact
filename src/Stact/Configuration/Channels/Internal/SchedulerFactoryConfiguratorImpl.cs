@@ -12,22 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
-	
-	using Stact.Configuration;
 	using Stact.Internal;
 
 
-	public class IntervalModelConfigurator<T> :
-		FiberFactoryConfiguratorImpl<T>
+	public class SchedulerFactoryConfiguratorImpl<T> :
+		FiberFactoryConfiguratorImpl<T>,
+		SchedulerFactoryConfigurator<T>
 		where T : class
 	{
-		protected TimeSpan _interval;
-		protected Func<Scheduler> _schedulerFactory;
+		SchedulerFactory _schedulerFactory;
+		bool _owned;
 
-		public T UsePrivateScheduler()
+		public T UseTimerScheduler()
 		{
 			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
+			_owned = true;
 
 			return this as T;
 		}
@@ -35,15 +34,33 @@ namespace Stact.Configuration.Internal
 		public T UseScheduler(Scheduler scheduler)
 		{
 			_schedulerFactory = () => scheduler;
+			_owned = false;
 
 			return this as T;
 		}
 
-		public T WithSchedulerFactory(Func<Scheduler> schedulerFactory)
+		public T UseSchedulerFactory(SchedulerFactory schedulerFactory)
 		{
 			_schedulerFactory = schedulerFactory;
+			_owned = false;
 
 			return this as T;
+		}
+
+		protected void ValidateSchedulerFactoryConfiguration()
+		{
+			if (_schedulerFactory == null)
+				throw new SchedulerException("A SchedulerFactory was not configured");
+		}
+
+		public Scheduler GetSchedulerUsingConfiguredFactory<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		{
+			Scheduler scheduler = _schedulerFactory();
+			
+			if(_owned)
+				connection.AddDisposable(new DisposeCallback(() => scheduler.Stop(ShutdownTimeout)));
+
+			return scheduler;
 		}
 	}
 }

@@ -12,10 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
 	using System.Collections.Generic;
-	
-	using Stact.Configuration;
 
 
 	/// <summary>
@@ -25,10 +22,8 @@ namespace Stact.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	public interface IntervalChannelConfigurator<TChannel> :
 		ChannelConnectionConfigurator<ICollection<TChannel>>,
-		FiberFactoryConfigurator<IntervalChannelConfigurator<TChannel>>
+		FiberFactoryConfigurator<IntervalChannelConfigurator<TChannel>>,
+		SchedulerFactoryConfigurator<IntervalChannelConfigurator<TChannel>>
 	{
-		IntervalChannelConfigurator<TChannel> UsePrivateScheduler();
-		IntervalChannelConfigurator<TChannel> UseScheduler(Scheduler scheduler);
-		IntervalChannelConfigurator<TChannel> WithSchedulerFactory(Func<Scheduler> schedulerFactory);
 	}
 }

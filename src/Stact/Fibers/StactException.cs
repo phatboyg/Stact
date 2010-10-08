@@ -10,13 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.ForNHibernate
+namespace Stact
 {
-	using FluentNHibernate.Conventions;
+	using System;
+	using System.Runtime.Serialization;
 
 
-	public class UriUserTypeConvention :
-		UserTypeConvention<UriUserType>
+	[Serializable]
+	public class StactException :
+		Exception
 	{
+		public StactException()
+		{
+		}
+
+		public StactException(string message)
+			: base(message)
+		{
+		}
+
+		public StactException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
+		protected StactException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
 	}
 }

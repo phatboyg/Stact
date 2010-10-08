@@ -15,7 +15,6 @@ namespace Stact
 	using System;
 	using Configuration;
 	using Configuration.Internal;
-	using Stact.Configuration.Internal;
 
 
 	public static class ExtensionsForIntervalChannels
@@ -36,6 +35,5 @@ namespace Stact
 
 			return intervalConfigurator;
 		}
-
 	}
 }

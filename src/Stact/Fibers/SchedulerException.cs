@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,25 +15,26 @@ namespace Stact
 	using System;
 	using System.Runtime.Serialization;
 
+
 	[Serializable]
-	public class FiberException :
+	public class SchedulerException :
 		StactException
 	{
-		public FiberException()
+		public SchedulerException()
 		{
 		}
 
-		public FiberException(string message)
+		public SchedulerException(string message)
 			: base(message)
 		{
 		}
 
-		public FiberException(string message, Exception innerException)
+		public SchedulerException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 
-		protected FiberException(SerializationInfo info, StreamingContext context)
+		protected SchedulerException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

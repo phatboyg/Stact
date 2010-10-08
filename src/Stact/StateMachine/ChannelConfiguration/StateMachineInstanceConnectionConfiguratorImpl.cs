@@ -14,12 +14,10 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System.Linq;
 	using Configuration;
+	using Configuration.Internal;
 	using Magnum.Extensions;
-	
-	using Stact;
-	using Stact.Configuration;
-	using Stact.Configuration.Internal;
 	using Magnum.StateMachine;
+
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
 		FiberFactoryConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,

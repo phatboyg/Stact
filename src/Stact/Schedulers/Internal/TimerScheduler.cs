@@ -95,7 +95,7 @@ namespace Stact.Internal
 			return scheduled;
 		}
 
-		public void Stop()
+		public void Stop(TimeSpan timeout)
 		{
 			_stopped = true;
 
@@ -104,7 +104,7 @@ namespace Stact.Internal
 				if (_timer != null)
 					_timer.Dispose();
 
-				_fiber.Shutdown(60.Seconds());
+				_fiber.Shutdown(timeout);
 			}
 		}
 

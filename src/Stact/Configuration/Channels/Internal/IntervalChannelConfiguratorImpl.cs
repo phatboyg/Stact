@@ -14,31 +14,30 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	
-	using Configuration.Internal;
 
 
 	public class IntervalChannelConfiguratorImpl<TChannel> :
-		IntervalModelConfigurator<IntervalChannelConfigurator<TChannel>>,
+		SchedulerFactoryConfiguratorImpl<IntervalChannelConfigurator<TChannel>>,
 		IntervalChannelConfigurator<TChannel>,
 		ChannelConfigurator<TChannel>
 	{
 		ChannelConfigurator<ICollection<TChannel>> _configurator;
+		TimeSpan _interval;
 
 		public IntervalChannelConfiguratorImpl(TimeSpan interval)
 		{
 			_interval = interval;
 
-			UsePrivateScheduler();
+			UseTimerScheduler();
 			HandleOnPoolFiber();
 		}
 
 		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
 		{
 			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Scheduler scheduler = GetSchedulerUsingConfiguredFactory(connection);
 
-			_configurator.Configure(new IntervalChannelConfiguratorConnection(connection, fiber, _schedulerFactory(),
-			                                                                  _interval));
+			_configurator.Configure(new IntervalChannelConfiguratorConnection(connection, fiber, scheduler, _interval));
 		}
 
 		public void ValidateConfiguration()
@@ -47,6 +46,9 @@ namespace Stact.Configuration.Internal
 				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
 
 			_configurator.ValidateConfiguration();
+
+			ValidateFiberFactoryConfiguration();
+			ValidateSchedulerFactoryConfiguration();
 		}
 
 		public void SetChannelConfigurator(ChannelConfigurator<ICollection<TChannel>> configurator)

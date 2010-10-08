@@ -14,7 +14,7 @@ namespace Stact
 {
 	using System;
 	using System.Linq.Expressions;
-	
+
 
 	/// <summary>
 	///   Tranforms a message from one type to another
@@ -24,7 +24,12 @@ namespace Stact
 	public class ConvertChannel<TInput, TOutput> :
 		Channel<TInput>
 	{
-		private readonly Fiber _fiber;
+		[ThreadStatic]
+		static MessageConverter<TInput, TOutput> _defaultConverter;
+
+		readonly MessageConverter<TInput, TOutput> _converter;
+		readonly Fiber _fiber;
+		readonly Channel<TOutput> _output;
 
 		public ConvertChannel(Fiber fiber, Channel<TOutput> output)
 			: this(fiber, output, CreateDefaultConverter())
@@ -34,34 +39,45 @@ namespace Stact
 		public ConvertChannel(Fiber fiber, Channel<TOutput> output, MessageConverter<TInput, TOutput> converter)
 		{
 			_fiber = fiber;
-			Output = output;
-			Converter = converter;
+			_output = output;
+			_converter = converter;
 		}
 
-		public MessageConverter<TInput, TOutput> Converter { get; private set; }
+		public MessageConverter<TInput, TOutput> Converter
+		{
+			get { return _converter; }
+		}
 
-		public Channel<TOutput> Output { get; private set; }
+		public Channel<TOutput> Output
+		{
+			get { return _output; }
+		}
 
 		public void Send(TInput message)
 		{
-			_fiber.Add(() =>
-				{
-					TOutput outputMessage = Converter(message);
-
-					Output.Send(outputMessage);
-				});
+			_fiber.Add(() => _output.Send(_converter(message)));
 		}
 
-		private static MessageConverter<TInput, TOutput> CreateDefaultConverter()
+		static MessageConverter<TInput, TOutput> CreateDefaultConverter()
 		{
-			Type inputType = typeof (TInput);
-			Type outType = typeof (TOutput);
+			if (_defaultConverter != null)
+				return _defaultConverter;
 
-			var input = Expression.Parameter(inputType, "input");
-			var body = inputType.IsValueType ? Expression.Convert(input, outType) : Expression.TypeAs(input, outType);
-			var lambda = Expression.Lambda<MessageConverter<TInput, TOutput>>(body, new[] {input});
+			Type inputType = typeof(TInput);
+			Type outType = typeof(TOutput);
 
-			return lambda.Compile();
+			ParameterExpression input = Expression.Parameter(inputType, "input");
+			UnaryExpression body;
+			if (inputType.IsValueType)
+				body = Expression.Convert(input, outType);
+			else
+				body = Expression.TypeAs(input, outType);
+
+			var lambda = Expression.Lambda<MessageConverter<TInput, TOutput>>(body, input);
+
+			_defaultConverter = lambda.Compile();
+
+			return _defaultConverter;
 		}
 	}
 }
