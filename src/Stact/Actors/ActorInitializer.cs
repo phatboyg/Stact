@@ -12,18 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// Used by dispatching channels to retrieve the appropriate channel for
-	/// a message.
-	/// </summary>
-	/// <typeparam name="T">The channel type</typeparam>
-	public interface ChannelProvider<T>
+	using System;
+	using System.Linq.Expressions;
+
+
+	public interface ActorInitializer<TActor>
 	{
-		/// <summary>
-		/// Get a channel for the message
-		/// </summary>
-		/// <param name="message">The message to use to select the channel</param>
-		/// <returns>The channel that should process the message, or null</returns>
-		Channel<T> GetChannel(T message);
+		PropertyChannelConfigurator<TActor, TChannel> Property<TChannel>(Expression<Func<TActor, Channel<TChannel>>> property,
+		                                                                 Consumer<TChannel> consumer);
+	}
+
+
+	public interface PropertyChannelConfigurator<TActor, TChannel>
+	{
 	}
 }

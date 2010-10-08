@@ -104,6 +104,7 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\ActorInitializer.cs" />
     <Compile Include="Actors\ActorInstance.cs" />
     <Compile Include="Actors\ActorCache.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
@@ -138,7 +139,7 @@
     <Compile Include="Configuration\Channels\ExtensionsForPropertyChannel.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForSynchronizedChannels.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForWcfChannels.cs" />
-    <Compile Include="Configuration\Channels\Internal\AbstractChannelConnection.cs" />
+    <Compile Include="Configuration\Channels\Internal\ChannelConnectionBase.cs" />
     <Compile Include="Configuration\Channels\Internal\ChannelConfiguratorConnection.cs" />
     <Compile Include="Configuration\Channels\Internal\ChannelConfiguratorConnectionImpl.cs" />
     <Compile Include="Configuration\Channels\Internal\ChannelConnectionConfiguratorImpl.cs" />

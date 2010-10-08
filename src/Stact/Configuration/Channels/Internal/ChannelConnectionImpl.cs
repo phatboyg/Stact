@@ -19,7 +19,7 @@ namespace Stact.Configuration.Internal
 	/// The channel connection implementation
 	/// </summary>
 	public class ChannelConnectionImpl :
-		AbstractChannelConnection,
+		ChannelConnectionBase,
 		ChannelConnection,
 		CreateChannelConnection
 	{
@@ -36,7 +36,7 @@ namespace Stact.Configuration.Internal
 
 
 	public class ChannelConnectionImpl<T> :
-		AbstractChannelConnection,
+		ChannelConnectionBase,
 		ChannelConnection,
 		CreateChannelConnection
 	{

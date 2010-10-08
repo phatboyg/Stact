@@ -56,6 +56,10 @@ namespace Stact
 			instance.Send<Kill>(new KillImpl());
 		}
 
+		public static void Initialize<TActor>(this TActor actor, Action<ActorInitializer<TActor>> initializer)
+		{
+		}
+
 		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Channel<TPort>>> portProperty,
 		                                          Fiber fiber, Consumer<TPort> consumer)
 			where TActor : Actor

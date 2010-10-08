@@ -22,7 +22,7 @@ namespace Stact.Configuration
 	/// </summary>
 	[Serializable]
 	public class ChannelConfigurationException :
-		Exception
+		StactException
 	{
 		public ChannelConfigurationException()
 		{

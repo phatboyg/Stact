@@ -14,21 +14,22 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Magnum;
 	using Magnum.Extensions;
 	using Magnum.Logging;
 
 
-	public abstract class AbstractChannelConnection
+	public abstract class ChannelConnectionBase
 	{
-		readonly Action<IEnumerable<Channel>> _disconnect;
-		static readonly ILogger _log = Logger.GetLogger<AbstractChannelConnection>();
+		static readonly ILogger _log = Logger.GetLogger<ChannelConnectionBase>();
 		readonly HashSet<Channel> _connectedChannels;
+		readonly Action<IEnumerable<Channel>> _disconnect;
 		readonly HashSet<IDisposable> _disposables;
 		bool _disposed;
 
-		protected AbstractChannelConnection(Action<IEnumerable<Channel>> disconnect)
+		protected ChannelConnectionBase(Action<IEnumerable<Channel>> disconnect)
 		{
-			Magnum.Guard.AgainstNull(disconnect);
+			Guard.AgainstNull(disconnect);
 
 			_disconnect = disconnect;
 
@@ -93,7 +94,7 @@ namespace Stact.Configuration.Internal
 			_disposables.Clear();
 		}
 
-		~AbstractChannelConnection()
+		~ChannelConnectionBase()
 		{
 			Dispose(false);
 		}
