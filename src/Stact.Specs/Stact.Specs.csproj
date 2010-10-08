@@ -106,6 +106,7 @@
     <Compile Include="Actions\ActionQueue_Specs.cs" />
     <Compile Include="Actions\ActionScheduler_Specs.cs" />
     <Compile Include="Actions\LoopbackAction_Specs.cs" />
+    <Compile Include="Actions\OrderedOperation_Specs.cs" />
     <Compile Include="Actors\AnonymousActor_Specs.cs" />
     <Compile Include="Actors\Auctions\Ask_Specs.cs" />
     <Compile Include="Actors\Auctions\Auction.cs" />

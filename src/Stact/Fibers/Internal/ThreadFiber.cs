@@ -13,6 +13,7 @@
 namespace Stact.Internal
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
@@ -30,8 +31,7 @@ namespace Stact.Internal
 		readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
 		readonly Thread _thread;
 
-		Atomic<ImmutableList<Action>> _actions;
-		StackTrace _createdBy;
+		ConcurrentQueue<Action> _operations = new ConcurrentQueue<Action>();
 
 		bool _isActive;
 		bool _shuttingDown;
@@ -39,10 +39,6 @@ namespace Stact.Internal
 
 		public ThreadFiber()
 		{
-			_actions = Atomic.Create(ImmutableList<Action>.EmptyList);
-
-			_createdBy = new StackTrace(true);
-
 			_thread = CreateThread();
 			_thread.Start();
 		}
@@ -61,12 +57,29 @@ namespace Stact.Internal
 
 		public void Add(Action operation)
 		{
-			Add(x => x.Add(operation));
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			lock (_lock)
+			{
+				_operations.Enqueue(operation);
+
+				Monitor.PulseAll(_lock);
+			}
 		}
 
 		public void AddMany(params Action[] operations)
 		{
-			Add(x => x.AddMany(operations));
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			lock (_lock)
+			{
+				for (int i = 0; i < operations.Length; i++)
+					_operations.Enqueue(operations[i]);
+
+				Monitor.PulseAll(_lock);
+			}
 		}
 
 		public void Shutdown(TimeSpan timeout)
@@ -76,6 +89,7 @@ namespace Stact.Internal
 				lock (_lock)
 				{
 					_shuttingDown = true;
+					Monitor.PulseAll(_lock);
 				}
 
 				return;
@@ -89,7 +103,7 @@ namespace Stact.Internal
 
 				Monitor.PulseAll(_lock);
 
-				while (_actions.Value.Count > 0 || _isActive)
+				while (!_operations.IsEmpty || _isActive)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -110,22 +124,6 @@ namespace Stact.Internal
 				_stopping = true;
 
 				Monitor.PulseAll(_lock);
-			}
-		}
-
-		void Add(Func<ImmutableList<Action>, ImmutableList<Action>> mutator)
-		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			ImmutableList<Action> previous = _actions.Set(mutator);
-
-			if (previous.Count == 0)
-			{
-				lock (_lock)
-				{
-					Monitor.PulseAll(_lock);
-				}
 			}
 		}
 
@@ -172,7 +170,7 @@ namespace Stact.Internal
 			if (!WaitForActions())
 				return false;
 
-			IEnumerable<Action> actions = RemoveAll();
+			Action[] actions = RemoveAll();
 			if (actions == null)
 				return false;
 
@@ -180,7 +178,7 @@ namespace Stact.Internal
 
 			lock (_lock)
 			{
-				if (_actions.Value.Count == 0)
+				if (_operations.IsEmpty)
 					Monitor.PulseAll(_lock);
 			}
 
@@ -191,42 +189,40 @@ namespace Stact.Internal
 		{
 			lock (_lock)
 			{
-				while (_actions.Value.Count == 0 && !_stopping && !_shuttingDown)
+				while (_operations.IsEmpty && !_stopping && !_shuttingDown)
 					Monitor.Wait(_lock);
 
 				if (_stopping)
 					return false;
 
 				if (_shuttingDown)
-					return _actions.Value.Count > 0;
+					return !_operations.IsEmpty;
 			}
 
 			return true;
 		}
 
-		void ExecuteActions(IEnumerable<Action> actions)
+		void ExecuteActions(Action[] operations)
 		{
-			foreach (Action action in actions)
+			for (int i = 0; i < operations.Length; i++)
 			{
 				if (_stopping)
 					break;
 
-				action();
+				operations[i]();
 			}
 		}
 
-		IEnumerable<Action> RemoveAll()
+		Action[] RemoveAll()
 		{
-			ImmutableList<Action> runActions = null;
+			lock (_lock)
+			{
+				var operations = _operations.ToArray();
 
-			_actions.Set(x =>
-				{
-					runActions = x;
+				_operations = new ConcurrentQueue<Action>();
 
-					return ImmutableList<Action>.EmptyList;
-				});
-
-			return runActions;
+				return operations;
+			}
 		}
 	}
 }

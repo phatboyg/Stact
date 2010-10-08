@@ -13,10 +13,9 @@
 namespace Stact.Internal
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Collections.Concurrent;
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Concurrency;
 	using Magnum;
 
 
@@ -30,7 +29,7 @@ namespace Stact.Internal
 	{
 		readonly object _lock = new object();
 
-		readonly Atomic<ImmutableList<Action>> _operations = Atomic.Create(ImmutableList<Action>.EmptyList);
+		ConcurrentQueue<Action> _operations = new ConcurrentQueue<Action>();
 
 		bool _executorQueued;
 		bool _shuttingDown;
@@ -38,17 +37,36 @@ namespace Stact.Internal
 
 		protected int Count
 		{
-			get { return _operations.Value.Count; }
+			get { return _operations.Count; }
 		}
 
 		public void Add(Action operation)
 		{
-			Add(x => x.Add(operation));
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			lock (_lock)
+			{
+				_operations.Enqueue(operation);
+				if (!_executorQueued)
+					QueueWorkItem();
+			}
 		}
 
 		public void AddMany(params Action[] operations)
 		{
-			Add(x => x.AddMany(operations));
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
+			lock (_lock)
+			{
+				for (int i = 0; i < operations.Length; i++)
+				{
+					_operations.Enqueue(operations[i]);
+				}
+				if (!_executorQueued)
+					QueueWorkItem();
+			}
 		}
 
 		public void Shutdown(TimeSpan timeout)
@@ -70,7 +88,7 @@ namespace Stact.Internal
 				_shuttingDown = true;
 				Monitor.PulseAll(_lock);
 
-				while (_operations.Value.Count > 0 || _executorQueued)
+				while (!_operations.IsEmpty || _executorQueued)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -87,22 +105,6 @@ namespace Stact.Internal
 			_stopping = true;
 		}
 
-		void Add(Func<ImmutableList<Action>, ImmutableList<Action>> mutator)
-		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			ImmutableList<Action> previous = _operations.Set(mutator);
-			if (previous.Count == 0)
-			{
-				lock (_lock)
-				{
-					if (!_executorQueued)
-						QueueWorkItem();
-				}
-			}
-		}
-
 		void QueueWorkItem()
 		{
 			if (!ThreadPool.QueueUserWorkItem(x => Execute()))
@@ -113,39 +115,45 @@ namespace Stact.Internal
 
 		bool Execute()
 		{
-			IEnumerable<Action> operations = RemoveAll();
+			Action[] operations = RemoveAll();
 
 			ExecuteActions(operations);
 
 			lock (_lock)
 			{
-				if (_operations.Value.Count > 0)
-					QueueWorkItem();
-				else
+				if (_operations.IsEmpty)
 				{
 					_executorQueued = false;
 
 					Monitor.PulseAll(_lock);
 				}
+				else
+					QueueWorkItem();
 			}
 
 			return true;
 		}
 
-		void ExecuteActions(IEnumerable<Action> operations)
+		void ExecuteActions(Action[] operations)
 		{
-			foreach (Action operation in operations)
+			for (int i = 0; i < operations.Length; i++)
 			{
 				if (_stopping)
 					break;
 
-				operation();
+				operations[i]();
 			}
 		}
 
-		IEnumerable<Action> RemoveAll()
+		Action[] RemoveAll()
 		{
-			return _operations.Set(x => ImmutableList<Action>.EmptyList);
+			lock (_lock)
+			{
+				var operations = _operations.ToArray();
+				_operations = new ConcurrentQueue<Action>();
+
+				return operations;
+			}
 		}
 	}
 }

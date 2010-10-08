@@ -15,7 +15,7 @@ namespace Stact
 	using System;
 	using System.Runtime.Serialization;
 
-
+	[Serializable]
 	public class FiberException :
 		Exception
 	{
