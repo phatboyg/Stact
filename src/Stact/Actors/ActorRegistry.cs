@@ -60,7 +60,7 @@ namespace Stact.Actors
 		/// Gets all actors from the registry
 		/// </summary>
 		/// <returns>All actors in the registry</returns>
-		IList<Actor> GetAll();
+		IList<ActorInstance> GetAll();
 
 		/// <summary>
 		/// Get all actors from the registry that are the specified type
@@ -109,6 +109,7 @@ namespace Stact.Actors
 		ChannelConnection Subscribe(Channel<ActorRegistered> listener);
 		ChannelConnection Subscribe(Channel<ActorUnregistered> listener);
 		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener, Channel<ActorUnregistered> unregisteredListener);
+		void Add(Guid auctionId, ActorInstance auction);
 	}
 
 	public interface ActorRegistryEvent

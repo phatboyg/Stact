@@ -83,7 +83,7 @@ namespace Stact.Configuration.Internal
 		{
 			var fiber = new SynchronousFiber();
 
-			connection.AddChannel<T>(fiber, x => new ConvertChannel<T, TChannel>(x, _channel));
+			connection.AddChannel<T>(fiber, x => new ConvertChannel<T, TChannel>(_channel));
 		}
 
 		public void ValidateConfiguration()

@@ -247,7 +247,7 @@ namespace Stact.Configuration.Internal
 			if (typeof(T) == typeof(TChannel))
 				return (Channel<T>)_newChannel;
 
-			return new ConvertChannel<T, TChannel>(new SynchronousFiber(), _newChannel);
+			return new ConvertChannel<T, TChannel>(_newChannel);
 		}
 
 		UntypedChannel GetUntypedChannel()

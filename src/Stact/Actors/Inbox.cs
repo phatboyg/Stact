@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	
+	using Configuration;
 
 
 	/// <summary>
@@ -42,5 +42,11 @@ namespace Stact
 		/// <param name = "timeout">The time period to wait for a message</param>
 		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
 		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
+
+		/// <summary>
+		/// Connects consumers to an inbox, for actors only
+		/// </summary>
+		/// <param name="subscriberActions"></param>
+		void Connect(Action<ConnectionConfigurator> subscriberActions);
 	}
 }

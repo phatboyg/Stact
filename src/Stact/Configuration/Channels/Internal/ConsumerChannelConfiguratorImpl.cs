@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	
+	using Magnum.Extensions;
 	using Stact.Configuration;
 
 

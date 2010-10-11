@@ -65,7 +65,7 @@ namespace Stact.Specs.Channels
 		public void Should_capture_the_transform_channel_types()
 		{
 			var channel = new ConsumerChannel<string>(new SynchronousFiber(), x => { });
-			var transform = new ConvertChannel<int, string>(new SynchronousFiber(), channel, x => x.ToString());
+			var transform = new ConvertChannel<int, string>(channel, x => x.ToString());
 
 			new ChannelVisitor().Visit(transform);
 		}

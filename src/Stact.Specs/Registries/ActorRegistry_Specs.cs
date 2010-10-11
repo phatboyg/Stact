@@ -10,22 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.ForNHibernate.Specs.Usage
+namespace Stact.Specs.Registries
 {
-	using Channels;
+	using System;
+	using Magnum;
 	using Magnum.TestFramework;
+	using Model;
+	using Stact.Actors;
 
 
 	[Scenario]
-	public class When_sending_messages_to_an_actor_stored_using_nhibernate :
-		Given_an_nhibernate_session_factory
+	public class When_adding_an_actor_to_a_registry
 	{
+		ActorFactory<Auction> _auctionFactory;
+		ActorRegistry _registry;
+		Guid _auctionId;
+
 		[When]
-		public void Sending_messages_to_an_instance_stored_using_nhibernate()
+		public void Adding_an_actor_to_a_registry()
 		{
-			var input = new ChannelAdapter();
-			using (input.Connect(x => { }))
-				;
+			_auctionFactory = ActorFactory.Create<Auction>(inbox => new Auction(inbox));
+
+			_auctionId = CombGuid.Generate();
+
+			var auction = _auctionFactory.GetActor();
+			
+
+
 		}
 	}
 }

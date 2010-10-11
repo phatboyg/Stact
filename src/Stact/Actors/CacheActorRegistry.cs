@@ -10,22 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.ForNHibernate.Specs.Usage
+namespace Stact
 {
-	using Channels;
-	using Magnum.TestFramework;
-
-
-	[Scenario]
-	public class When_sending_messages_to_an_actor_stored_using_nhibernate :
-		Given_an_nhibernate_session_factory
+	public class CacheActorRegistry :
+		Actor
 	{
-		[When]
-		public void Sending_messages_to_an_instance_stored_using_nhibernate()
-		{
-			var input = new ChannelAdapter();
-			using (input.Connect(x => { }))
-				;
-		}
 	}
 }

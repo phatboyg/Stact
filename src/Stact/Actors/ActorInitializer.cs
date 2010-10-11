@@ -18,6 +18,14 @@ namespace Stact
 
 	public interface ActorInitializer<TActor>
 	{
+		/// <summary>
+		/// Creates a ConsumerChannel with the actor fiber and the specified consumer
+		/// and sets the specified property to that channel
+		/// </summary>
+		/// <typeparam name="TChannel">The channel type</typeparam>
+		/// <param name="property">The property to set</param>
+		/// <param name="consumer">The consumer method</param>
+		/// <returns>A configurator for the property channel</returns>
 		PropertyChannelConfigurator<TActor, TChannel> Property<TChannel>(Expression<Func<TActor, Channel<TChannel>>> property,
 		                                                                 Consumer<TChannel> consumer);
 	}

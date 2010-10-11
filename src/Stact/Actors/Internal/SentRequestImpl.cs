@@ -13,7 +13,7 @@
 namespace Stact.Internal
 {
 	using System;
-	
+	using Configuration;
 
 
 	/// <summary>
@@ -50,6 +50,11 @@ namespace Stact.Internal
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			return _inbox.Receive(consumer, timeout, timeoutCallback);
+		}
+
+		public void Connect(Action<ConnectionConfigurator> subscriberActions)
+		{
+			throw new NotSupportedException("Connection cannot be added as part of a sent request");
 		}
 	}
 }

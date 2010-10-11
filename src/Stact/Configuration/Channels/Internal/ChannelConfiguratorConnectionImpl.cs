@@ -13,7 +13,8 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
+	using Magnum.Extensions;
+	using Stact.Internal;
 
 
 	public class ChannelConfiguratorConnectionImpl :
@@ -47,6 +48,20 @@ namespace Stact.Configuration.Internal
 			Channel<TChannel> channel = channelFactory(fiber);
 
 			new ConnectChannelVisitor<TChannel>(channel).ConnectTo(_channel);
+
+			_connection.AddChannel(channel);
+
+			AddConvertChannel(channel);
+		}
+
+		void AddConvertChannel<T>(Channel<T> channel)
+		{
+			if (typeof(T).Implements(typeof(Message<>)))
+				return;
+
+			Channel<Message<T>> transformer = new ConvertChannel<Message<T>, T>(channel, x => x.Body);
+
+			new ConnectChannelVisitor<Message<T>>(transformer).ConnectTo(_channel);
 
 			_connection.AddChannel(channel);
 		}
@@ -87,6 +102,8 @@ namespace Stact.Configuration.Internal
 			new ConnectChannelVisitor<TChannel>(channel).ConnectTo(_channel);
 
 			_connection.AddChannel(channel);
+
+			AddConvertChannel(channel);
 		}
 
 		public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
@@ -96,11 +113,37 @@ namespace Stact.Configuration.Internal
 			new ConnectChannelVisitor<T>(channel).ConnectTo(_channel);
 
 			_connection.AddChannel(channel);
+
+			AddConvertChannel(channel);
 		}
 
 		public void AddDisposable(IDisposable disposable)
 		{
 			_connection.AddDisposable(disposable);
+		}
+
+		void AddConvertChannel(Channel<TChannel> channel)
+		{
+			if (typeof(TChannel).Implements(typeof(Message<>)))
+				return;
+
+			Channel<Message<TChannel>> transformer = new ConvertChannel<Message<TChannel>, TChannel>(channel, x => x.Body);
+
+			new ConnectChannelVisitor<Message<TChannel>>(transformer).ConnectTo(_channel);
+
+			_connection.AddChannel(channel);
+		}
+
+		void AddConvertChannel<T>(Channel<T> channel)
+		{
+			if (typeof(T).Implements(typeof(Message<>)))
+				return;
+
+			Channel<Message<T>> transformer = new ConvertChannel<Message<T>, T>(channel, x => x.Body);
+
+			new ConnectChannelVisitor<Message<T>>(transformer).ConnectTo(_channel);
+
+			_connection.AddChannel(channel);
 		}
 	}
 }

@@ -15,7 +15,8 @@ namespace Stact.Actors.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	
+	using Configuration;
+	using Configuration.Internal;
 	using Magnum.Collections;
 	using Magnum.Extensions;
 	using Stact.Internal;
@@ -78,6 +79,15 @@ namespace Stact.Actors.Internal
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
+		}
+
+		public void Connect(Action<ConnectionConfigurator> subscriberActions)
+		{
+			var subscriber = new ConnectionConfiguratorImpl(_adapter);
+
+			subscriberActions(subscriber);
+
+			_connections.Add(subscriber.Complete());
 		}
 
 		Inbox<T> GetInbox<T>()

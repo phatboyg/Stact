@@ -16,13 +16,16 @@ namespace Stact
 	using System.Collections.Generic;
 	using Configuration;
 	using Configuration.Internal;
+	using Magnum;
 	using Visitors;
+
 
 	public static class ExtensionsForChannels
 	{
-		public static ChannelConnection Connect<T>(this Channel<T> channel, Action<ConnectionConfigurator<T>> subscriberActions)
+		public static ChannelConnection Connect<T>(this Channel<T> channel,
+		                                           Action<ConnectionConfigurator<T>> subscriberActions)
 		{
-			Magnum.Guard.AgainstNull(channel, "channel");
+			Guard.AgainstNull(channel, "channel");
 
 			var subscriber = new ConnectionConfiguratorImpl<T>(channel);
 
@@ -33,7 +36,7 @@ namespace Stact
 
 		public static ChannelConnection Connect(this UntypedChannel channel, Action<ConnectionConfigurator> subscriberActions)
 		{
-			Magnum.Guard.AgainstNull(channel, "channel");
+			Guard.AgainstNull(channel, "channel");
 
 			var subscriber = new ConnectionConfiguratorImpl(channel);
 

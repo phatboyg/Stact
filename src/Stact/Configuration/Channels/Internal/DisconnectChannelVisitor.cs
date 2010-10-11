@@ -99,7 +99,7 @@ namespace Stact.Configuration.Internal
 				return null;
 
 			if (output != channel.Output)
-				return new ConvertChannel<TInput, TOutput>(new SynchronousFiber(), output, channel.Converter);
+				return new ConvertChannel<TInput, TOutput>(output, channel.Converter);
 
 			return channel;
 		}

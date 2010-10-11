@@ -28,17 +28,15 @@ namespace Stact
 		static MessageConverter<TInput, TOutput> _defaultConverter;
 
 		readonly MessageConverter<TInput, TOutput> _converter;
-		readonly Fiber _fiber;
 		readonly Channel<TOutput> _output;
 
-		public ConvertChannel(Fiber fiber, Channel<TOutput> output)
-			: this(fiber, output, CreateDefaultConverter())
+		public ConvertChannel(Channel<TOutput> output)
+			: this(output, CreateDefaultConverter())
 		{
 		}
 
-		public ConvertChannel(Fiber fiber, Channel<TOutput> output, MessageConverter<TInput, TOutput> converter)
+		public ConvertChannel(Channel<TOutput> output, MessageConverter<TInput, TOutput> converter)
 		{
-			_fiber = fiber;
 			_output = output;
 			_converter = converter;
 		}
@@ -55,7 +53,7 @@ namespace Stact
 
 		public void Send(TInput message)
 		{
-			_fiber.Add(() => _output.Send(_converter(message)));
+			_output.Send(_converter(message));
 		}
 
 		static MessageConverter<TInput, TOutput> CreateDefaultConverter()
