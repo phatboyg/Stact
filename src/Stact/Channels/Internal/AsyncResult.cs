@@ -14,6 +14,7 @@ namespace Stact.Internal
 {
 	using System;
 	using System.Threading;
+	using Magnum;
 
 
 	/// <summary>
@@ -28,7 +29,7 @@ namespace Stact.Internal
 
 		public AsyncResult(AsyncCallback callback, object state)
 		{
-			Magnum.Guard.AgainstNull(callback, "callback");
+			Guard.AgainstNull(callback, "callback");
 
 			_callback = callback;
 			_state = state;
