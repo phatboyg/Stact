@@ -13,6 +13,7 @@
 namespace Stact.Specs.Headers
 {
 	using Internal;
+	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
 
@@ -38,6 +39,14 @@ namespace Stact.Specs.Headers
 		}
 
 		[Then]
+		public void Should_receive_the_derived_message_type()
+		{
+			_channel.Send(new SimpleImpl());
+
+			_received.IsCompleted.ShouldBeTrue("Message was not received");
+		}
+
+		[Then]
 		public void Should_receive_the_raw_message_type()
 		{
 			_channel.Send<Simple>(new SimpleImpl());
@@ -46,9 +55,17 @@ namespace Stact.Specs.Headers
 		}
 
 		[Then]
+		public void Should_receive_the_raw_interface_type()
+		{
+			_channel.Send<Simple>();
+
+			_received.IsCompleted.ShouldBeTrue("Message was not received");
+		}
+
+		[Then]
 		public void Should_receive_the_message_type()
 		{
-			_channel.Send<Message<Simple>>(new MessageImpl<Simple>(new SimpleImpl()));
+			_channel.Send(new MessageImpl<Simple>(new SimpleImpl()));
 
 			_received.IsCompleted.ShouldBeTrue("Message was not received");
 		}
@@ -58,7 +75,23 @@ namespace Stact.Specs.Headers
 		{
 			var responseChannel = new ChannelAdapter();
 
-			_channel.Request<Simple>(new SimpleImpl(), responseChannel);
+			_channel.Request<Simple>(responseChannel);
+
+			_received.IsCompleted.ShouldBeTrue("Message was not received");
+		}
+
+		[Then]
+		public void Should_receive_the_response_message_type()
+		{
+			var requestChannel = new ChannelAdapter();
+			requestChannel.Connect(x =>
+				{
+					x.AddConsumerOf<Request<Simple>>()
+						.UsingConsumer(request => request.Respond(new SimpleImpl()))
+						.HandleOnCallingThread();
+				});
+		
+			requestChannel.Request<Simple>(_channel);
 
 			_received.IsCompleted.ShouldBeTrue("Message was not received");
 		}

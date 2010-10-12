@@ -13,11 +13,7 @@
 namespace Stact.Specs.Actors.Auctions
 {
 	using System;
-	
-	using Internal;
 	using Magnum;
-	using Stact.Actors;
-	using Stact.Actors.Internal;
 	using Magnum.TestFramework;
 
 
@@ -32,9 +28,7 @@ namespace Stact.Specs.Actors.Auctions
 		{
 			Id = CombGuid.Generate();
 
-			var factory = new ActorFactoryImpl<Auction>(() => new PoolFiber(),
-			                                                () => new TimerScheduler(new PoolFiber()),
-			                                                (f, s, i) => new Auction(f, i, Id));
+			ActorFactory<Auction> factory = ActorFactory.Create((f, i) => new Auction(f, i, Id));
 
 			Auction = factory.GetActor();
 		}

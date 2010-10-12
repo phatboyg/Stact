@@ -18,9 +18,9 @@ namespace Stact.Specs.Channels
 
 
 	[Scenario]
-	public class Future_SpecsBase
+	public class Given_a_future_object
 	{
-		public Future<object> Future { get; set; }
+		protected Future<object> Future { get; private set; }
 
 		[Given]
 		public void A_future()
@@ -31,39 +31,37 @@ namespace Stact.Specs.Channels
 
 
 	[Scenario]
-	public class Completes_twice_same_objects :
-		Future_SpecsBase
+	public class When_complete_is_called :
+		Given_a_future_object
 	{
 		[When]
-		public void Complete_is_called_twice_with_the_same_object()
+		public void Complete_is_called()
 		{
 			var obj1 = new object();
 
 			Future.Complete(obj1);
-			Future.Complete(obj1);
 		}
 
 		[Then]
-		public void No_exception_is_thrown()
+		public void Should_have_been_completed()
 		{
 			Future.IsCompleted.ShouldBeTrue();
 		}
 	}
 
 
-	[TestFixture]
-	public class Completes_twice_different_objects
+	[Scenario]
+	public class When_complete_is_called_twice :
+		Given_a_future_object
 	{
-		[Test]
-		public void An_exception_is_thrown()
+		[Then]
+		public void Should_throw_an_exception()
 		{
-			var future = new Future<object>();
-
 			var obj1 = new object();
 			var obj2 = new object();
 
-			future.Complete(obj1);
-			Assert.That(() => future.Complete(obj2), Throws.TypeOf<InvalidOperationException>());
+			Future.Complete(obj1);
+			Assert.That(() => Future.Complete(obj2), Throws.TypeOf<InvalidOperationException>());
 		}
 	}
 }

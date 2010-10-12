@@ -119,6 +119,11 @@
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\AssignableTypeConverter.cs" />
+    <Compile Include="Channels\Internal\HeaderTypeAdapter.cs" />
+    <Compile Include="Channels\Internal\HeaderTypeConverter.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\MatchingTypeConverter.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\MessageTypeConverter.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForFiberConfiguration.cs" />
     <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfigurator.cs" />
     <Compile Include="Extensions.cs" />
@@ -128,6 +133,7 @@
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
     <Compile Include="Fibers\SchedulerException.cs" />
     <Compile Include="Fibers\StactException.cs" />
+    <Compile Include="Internal\ThreadSingleton.cs" />
     <Compile Include="Messages\Internal\ExitImpl.cs" />
     <Compile Include="Messages\Internal\KillImpl.cs" />
     <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />

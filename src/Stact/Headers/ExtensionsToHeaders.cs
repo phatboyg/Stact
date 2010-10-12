@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
+	using System;
 	using Internal;
+	using Magnum.Reflection;
 
 
 	public static class ExtensionsToHeaders
@@ -31,6 +33,43 @@ namespace Stact
 			channel.Send<Request<TRequest>>(requestImpl);
 		}
 
+		/// <summary>
+		///   Sends an uninitialized interface implementation as a request
+		/// </summary>
+		/// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
+		/// <param name = "channel">The target channel</param>
+		/// <param name = "responseChannel">The channel where responses should be sent</param>
+		public static void Request<TRequest>(this UntypedChannel channel, UntypedChannel responseChannel)
+		{
+			if (!typeof(TRequest).IsInterface)
+				throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+			Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+
+			var request = (TRequest)FastActivator.Create(requestImplType);
+
+			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+
+			channel.Send<Request<TRequest>>(requestImpl);
+		}
+
+		/// <summary>
+		///   Sends an uninitialized interface implementation
+		/// </summary>
+		/// <typeparam name = "T">The request message type, which must be an interface</typeparam>
+		/// <param name = "channel">The target channel</param>
+		public static void Send<T>(this UntypedChannel channel)
+		{
+			if (!typeof(T).IsInterface)
+				throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+			Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(T));
+
+			var message = (T)FastActivator.Create(requestImplType);
+
+			channel.Send(message);
+		}
+
 
 		/// <summary>
 		///   Wraps a message in a response and sends it to the response channel of the request
@@ -41,7 +80,9 @@ namespace Stact
 		/// <param name = "response">The response message</param>
 		public static void Respond<TRequest, TResponse>(this Request<TRequest> request, TResponse response)
 		{
-			request.ResponseChannel.Send<Response<TRequest, TResponse>>(new ResponseImpl<TRequest, TResponse>(response));
+			var responseImpl = new ResponseImpl<TRequest, TResponse>(request.Body, response);
+
+			request.ResponseChannel.Send<Response<TRequest, TResponse>>(responseImpl);
 		}
 	}
 }

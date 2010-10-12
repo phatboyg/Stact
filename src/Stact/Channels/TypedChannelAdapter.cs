@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	using System.Linq.Expressions;
+	using Internal;
 
 
 	/// <summary>
@@ -24,14 +24,13 @@ namespace Stact
 	public class TypedChannelAdapter<TOutput> :
 		UntypedChannel
 	{
-		[ThreadStatic]
-		static Func<object, TOutput> _convert;
-
+		readonly HeaderTypeAdapter<TOutput> _converter;
 		readonly Channel<TOutput> _output;
 
 		public TypedChannelAdapter(Channel<TOutput> output)
 		{
 			_output = output;
+			_converter = new HeaderTypeAdapter<TOutput>();
 		}
 
 		public Channel<TOutput> Output
@@ -46,32 +45,7 @@ namespace Stact
 
 		public void Send<T>(T message)
 		{
-			if (typeof(TOutput).IsAssignableFrom(typeof(T)))
-				_output.Send(Convert(message));
-		}
-
-		static TOutput Convert(object obj)
-		{
-			if (_convert == null)
-				GenerateConvertMethod();
-
-			return _convert(obj);
-		}
-
-		static void GenerateConvertMethod()
-		{
-			ParameterExpression value = Expression.Parameter(typeof(object), "value");
-
-			// value as T is slightly faster than (T)value, so if it's not a value type, use that
-			UnaryExpression castValue;
-			if (typeof(TOutput).IsValueType)
-				castValue = Expression.Convert(value, typeof(TOutput));
-			else
-				castValue = Expression.TypeAs(value, typeof(TOutput));
-
-			Expression<Func<object, TOutput>> expression = Expression.Lambda<Func<object, TOutput>>(castValue, value);
-
-			_convert = expression.Compile();
+			_converter.TryConvert(message, x => _output.Send(x));
 		}
 	}
 }

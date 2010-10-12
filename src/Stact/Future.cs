@@ -71,12 +71,6 @@ namespace Stact
 		{
 			if (_completed)
 			{
-				if (Value != null && Value.Equals(message))
-					return;
-
-				if (Value.Equals(message))
-					return;
-
 				throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
 				                                    	.FormatWith(Value, message));
 			}

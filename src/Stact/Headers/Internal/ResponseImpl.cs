@@ -27,9 +27,12 @@ namespace Stact.Internal
 		MessageImpl<TResponse>,
 		Response<TRequest, TResponse>
 	{
-		public ResponseImpl(TResponse message)
+		public ResponseImpl(TRequest request, TResponse message)
 			: base(message)
 		{
+			Request = request;
 		}
+
+		public TRequest Request { get; private set; }
 	}
 }

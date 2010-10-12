@@ -65,6 +65,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />

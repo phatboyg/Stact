@@ -13,8 +13,6 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	using Magnum.Extensions;
-	using Stact.Internal;
 
 
 	public class ChannelConfiguratorConnectionImpl :
@@ -38,32 +36,14 @@ namespace Stact.Configuration.Internal
 		{
 			UntypedChannel channel = channelFactory(fiber);
 
-			new ConnectChannelVisitor(channel).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
+			ConnectChannel(channel);
 		}
 
 		public void AddChannel<TChannel>(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
 		{
 			Channel<TChannel> channel = channelFactory(fiber);
 
-			new ConnectChannelVisitor<TChannel>(channel).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
-
-			AddConvertChannel(channel);
-		}
-
-		void AddConvertChannel<T>(Channel<T> channel)
-		{
-			if (typeof(T).Implements(typeof(Message<>)))
-				return;
-
-			Channel<Message<T>> transformer = new ConvertChannel<Message<T>, T>(channel, x => x.Body);
-
-			new ConnectChannelVisitor<Message<T>>(transformer).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
+			ConnectChannel(channel);
 		}
 
 		public UntypedChannel Channel
@@ -74,6 +54,20 @@ namespace Stact.Configuration.Internal
 		public void AddDisposable(IDisposable disposable)
 		{
 			_connection.AddDisposable(disposable);
+		}
+
+		void ConnectChannel<T>(Channel<T> channel)
+		{
+			new ConnectChannelVisitor<T>(channel).ConnectTo(_channel);
+
+			_connection.AddChannel(channel);
+		}
+
+		void ConnectChannel(UntypedChannel channel)
+		{
+			new ConnectChannelVisitor(channel).ConnectTo(_channel);
+
+			_connection.AddChannel(channel);
 		}
 	}
 
@@ -99,22 +93,14 @@ namespace Stact.Configuration.Internal
 		{
 			Channel<TChannel> channel = channelFactory(fiber);
 
-			new ConnectChannelVisitor<TChannel>(channel).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
-
-			AddConvertChannel(channel);
+			ConnectChannel(channel);
 		}
 
 		public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
 		{
 			Channel<T> channel = channelFactory(fiber);
 
-			new ConnectChannelVisitor<T>(channel).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
-
-			AddConvertChannel(channel);
+			ConnectChannel(channel);
 		}
 
 		public void AddDisposable(IDisposable disposable)
@@ -122,26 +108,9 @@ namespace Stact.Configuration.Internal
 			_connection.AddDisposable(disposable);
 		}
 
-		void AddConvertChannel(Channel<TChannel> channel)
+		void ConnectChannel<T>(Channel<T> channel)
 		{
-			if (typeof(TChannel).Implements(typeof(Message<>)))
-				return;
-
-			Channel<Message<TChannel>> transformer = new ConvertChannel<Message<TChannel>, TChannel>(channel, x => x.Body);
-
-			new ConnectChannelVisitor<Message<TChannel>>(transformer).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
-		}
-
-		void AddConvertChannel<T>(Channel<T> channel)
-		{
-			if (typeof(T).Implements(typeof(Message<>)))
-				return;
-
-			Channel<Message<T>> transformer = new ConvertChannel<Message<T>, T>(channel, x => x.Body);
-
-			new ConnectChannelVisitor<Message<T>>(transformer).ConnectTo(_channel);
+			new ConnectChannelVisitor<T>(channel).ConnectTo(_channel);
 
 			_connection.AddChannel(channel);
 		}
