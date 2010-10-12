@@ -56,19 +56,6 @@ namespace Stact
 			instance.Send<Kill>(new KillImpl());
 		}
 
-		/// <summary>
-		/// Initializes an actor, adding the appropriate channels, etc.
-		/// 
-		/// This is used since the final initializer that is generated is cached for performance
-		/// </summary>
-		/// <typeparam name="TActor">The actor type to initialize</typeparam>
-		/// <param name="actor">The actor instance to initialize</param>
-		/// <param name="fiber">The </param>
-		/// <param name="initializer">The initializer method, which is cached per actor type</param>
-		public static void Bind<TActor>(this TActor actor, Fiber fiber, Action<ActorInitializer<TActor>> initializer)
-		{
-		}
-
 		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Channel<TPort>>> portProperty,
 		                                          Fiber fiber, Consumer<TPort> consumer)
 			where TActor : Actor

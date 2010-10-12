@@ -13,7 +13,6 @@
 namespace Stact.Specs.Headers
 {
 	using Internal;
-	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
 
@@ -88,6 +87,22 @@ namespace Stact.Specs.Headers
 				{
 					x.AddConsumerOf<Request<Simple>>()
 						.UsingConsumer(request => request.Respond(new SimpleImpl()))
+						.HandleOnCallingThread();
+				});
+		
+			requestChannel.Request<Simple>(_channel);
+
+			_received.IsCompleted.ShouldBeTrue("Message was not received");
+		}
+
+		[Then]
+		public void Should_receive_the_response_message_type_of_declared_type()
+		{
+			var requestChannel = new ChannelAdapter();
+			requestChannel.Connect(x =>
+				{
+					x.AddConsumerOf<Request<Simple>>()
+						.UsingConsumer(request => request.Respond<Simple, Simple>(new SimpleImpl()))
 						.HandleOnCallingThread();
 				});
 		
