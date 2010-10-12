@@ -104,9 +104,7 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actors\Actor.cs" />
-    <Compile Include="Actors\ActorInitializer.cs" />
     <Compile Include="Actors\ActorInstance.cs" />
-    <Compile Include="Actors\ActorCache.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
     <Compile Include="Actors\CacheActorRegistry.cs" />
     <Compile Include="Actors\Configuration\ActorFactoryConfigurator.cs" />
