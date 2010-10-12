@@ -20,48 +20,46 @@ namespace Stact.Specs.Headers
 	[Scenario]
 	public class When_converting_messages_between_header_types
 	{
-		HeaderTypeAdapter<Simple> _adapter;
 		Future<Simple> _received;
 
 		[SetUp]
 		public void Converting_messages_between_header_types()
 		{
 			_received = new Future<Simple>();
-			_adapter = new HeaderTypeAdapter<Simple>();
 		}
 
 		[Then]
 		public void Should_pass_through_a_raw_message()
 		{
-			_adapter.TryConvert<Simple>(new SimpleImpl(), _received.Complete).ShouldBeTrue();
+			HeaderTypeAdapter<Simple>.TryConvert<Simple>(new SimpleImpl(), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
 		}
 
 		[Then]
 		public void Should_pass_an_implementation_to_an_interface_type()
 		{
-			_adapter.TryConvert(new SimpleImpl(), _received.Complete).ShouldBeTrue();
+			HeaderTypeAdapter<Simple>.TryConvert(new SimpleImpl(), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
 		}
 
 		[Then]
 		public void Should_downconvert_a_message_of_type_to_a_raw_message()
 		{
-			_adapter.TryConvert(new MessageImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
+			HeaderTypeAdapter<Simple>.TryConvert(new MessageImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
 		}
 
 		[Then]
 		public void Should_downconvert_a_message_of_an_implementation_of_type_to_a_raw_message()
 		{
-			_adapter.TryConvert(new MessageImpl<SimpleImpl>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
+			HeaderTypeAdapter<Simple>.TryConvert(new MessageImpl<SimpleImpl>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
 		}
 
 		[Then]
 		public void Should_downconvert_a_response_message_of_type_to_a_raw_message()
 		{
-			_adapter.TryConvert(new ResponseImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
+			HeaderTypeAdapter<Simple>.TryConvert(new ResponseImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
 		}
 	}

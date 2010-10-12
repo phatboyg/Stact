@@ -119,11 +119,11 @@
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
-    <Compile Include="Channels\Internal\TypeConverters\AssignableTypeConverter.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\AssignableTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\HeaderTypeAdapter.cs" />
-    <Compile Include="Channels\Internal\HeaderTypeConverter.cs" />
-    <Compile Include="Channels\Internal\TypeConverters\MatchingTypeConverter.cs" />
-    <Compile Include="Channels\Internal\TypeConverters\MessageTypeConverter.cs" />
+    <Compile Include="Channels\Internal\HeaderTypeConverterFactory.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\MatchingTypeConverterFactory.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\MessageTypeConverterFactory.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForFiberConfiguration.cs" />
     <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfigurator.cs" />
     <Compile Include="Extensions.cs" />

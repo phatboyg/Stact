@@ -17,52 +17,47 @@ namespace Stact.Internal
 	using TypeConverters;
 
 
-	public class HeaderTypeAdapter<T>
+	public static class HeaderTypeAdapter<T>
 	{
-		readonly ThreadSingleton<T, HeaderTypeConverter<T>[]> _conversions;
-		readonly ThreadSingleton<HeaderTypeAdapter<T>, IDictionary<Type, Func<object, T>>> _converters;
-		readonly ThreadSingleton<HeaderTypeAdapter<T>,HashSet<Type>> _ignored;
+		[ThreadStatic]
+		static HeaderTypeConverterFactory<T>[] _converterFactories;
 
-		public HeaderTypeAdapter()
+		[ThreadStatic]
+		static IDictionary<Type, Func<object, T>> _converters;
+
+		[ThreadStatic]
+		static HashSet<Type> _ignoredTypes;
+
+		public static bool TryConvert<TInput>(TInput input, Action<T> matchCallback)
 		{
-			_converters = new ThreadSingleton<HeaderTypeAdapter<T>, IDictionary<Type, Func<object, T>>>(() => new Dictionary<Type, Func<object, T>>());
-			_ignored = new ThreadSingleton<HeaderTypeAdapter<T>, HashSet<Type>>(() => new HashSet<Type>());
+			if (_converters == null)
+				_converters = new Dictionary<Type, Func<object, T>>();
 
-			Func<HeaderTypeConverter<T>[]> converterFactory = () =>
-				{
-					return new HeaderTypeConverter<T>[]
-						{
-							new MatchingTypeConverter<T>(),
-							new AssignableTypeConverter<T>(),
-							new MessageTypeConverter<T>(),
-						};
-				};
-
-			_conversions = new ThreadSingleton<T, HeaderTypeConverter<T>[]>(converterFactory);
-		}
-
-		public bool TryConvert<TInput>(TInput input, Action<T> matchCallback)
-		{
 			Func<object, T> converter;
-			if (!_converters.Value.TryGetValue(typeof(TInput), out converter))
+			if (!_converters.TryGetValue(typeof(TInput), out converter))
 			{
-				if (_ignored.Value.Contains(typeof(TInput)))
+				if (_ignoredTypes == null)
+					_ignoredTypes = new HashSet<Type>();
+
+				if (_ignoredTypes.Contains(typeof(TInput)))
 					return false;
 
-				var conversions = _conversions.Value;
-				for (int i = 0; i < conversions.Length; i++)
+				if (_converterFactories == null)
+					_converterFactories = CreateTypeConverters();
+
+				for (int i = 0; i < _converterFactories.Length; i++)
 				{
-					if (conversions[i].CanConvert(input, out converter))
+					if (_converterFactories[i].CanConvert(input, out converter))
 						break;
 				}
 
 				if (converter == null)
 				{
-					_ignored.Value.Add(typeof(TInput));
+					_ignoredTypes.Add(typeof(TInput));
 					return false;
 				}
 
-				_converters.Value.Add(typeof(TInput), converter);
+				_converters.Add(typeof(TInput), converter);
 			}
 
 			if (converter == null)
@@ -72,6 +67,16 @@ namespace Stact.Internal
 			matchCallback(output);
 
 			return true;
+		}
+
+		static HeaderTypeConverterFactory<T>[] CreateTypeConverters()
+		{
+			return new HeaderTypeConverterFactory<T>[]
+				{
+					new MatchingTypeConverterFactory<T>(),
+					new AssignableTypeConverterFactory<T>(),
+					new MessageTypeConverterFactory<T>(),
+				};
 		}
 	}
 }

@@ -20,13 +20,13 @@ namespace Stact.Internal.TypeConverters
 	using Magnum.Extensions;
 
 
-	public class MessageTypeConverter<T> :
-		HeaderTypeConverter<T>
+	public class MessageTypeConverterFactory<T> :
+		HeaderTypeConverterFactory<T>
 	{
 		readonly Func<object, T> _convert;
 		readonly IDictionary<Type, Func<object, T>> _typeConvert;
 
-		public MessageTypeConverter()
+		public MessageTypeConverterFactory()
 		{
 			_convert = GenerateConvertMethod();
 

@@ -15,7 +15,7 @@ namespace Stact.Internal
 	using System;
 
 
-	interface HeaderTypeConverter<T>
+	interface HeaderTypeConverterFactory<T>
 	{
 		bool CanConvert<TInput>(TInput input, out Func<object, T> converter);
 	}

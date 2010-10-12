@@ -16,12 +16,12 @@ namespace Stact.Internal.TypeConverters
 	using System.Linq.Expressions;
 
 
-	public class AssignableTypeConverter<T> :
-		HeaderTypeConverter<T>
+	class MatchingTypeConverterFactory<T> :
+		HeaderTypeConverterFactory<T>
 	{
 		Func<object, T> _convert;
 
-		public AssignableTypeConverter()
+		public MatchingTypeConverterFactory()
 		{
 			_convert = GenerateConvertMethod();
 		}
@@ -30,7 +30,7 @@ namespace Stact.Internal.TypeConverters
 		{
 			converter = null;
 
-			if (typeof(T).IsAssignableFrom(typeof(TInput)))
+			if (typeof(TInput) == typeof(T))
 			{
 				converter = _convert;
 				return true;

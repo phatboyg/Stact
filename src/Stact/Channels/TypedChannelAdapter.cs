@@ -24,13 +24,11 @@ namespace Stact
 	public class TypedChannelAdapter<TOutput> :
 		UntypedChannel
 	{
-		readonly HeaderTypeAdapter<TOutput> _converter;
 		readonly Channel<TOutput> _output;
 
 		public TypedChannelAdapter(Channel<TOutput> output)
 		{
 			_output = output;
-			_converter = new HeaderTypeAdapter<TOutput>();
 		}
 
 		public Channel<TOutput> Output
@@ -45,7 +43,7 @@ namespace Stact
 
 		public void Send<T>(T message)
 		{
-			_converter.TryConvert(message, x => _output.Send(x));
+			HeaderTypeAdapter<TOutput>.TryConvert(message, x => _output.Send(x));
 		}
 	}
 }
