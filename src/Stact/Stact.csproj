@@ -117,11 +117,16 @@
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
+    <Compile Include="Actors\Internal\PendingReceiveList.cs" />
+    <Compile Include="Actors\Internal\RepeatLoopImpl.cs" />
+    <Compile Include="Actors\RepeatLoop.cs" />
     <Compile Include="Channels\Internal\TypeConverters\AssignableTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\HeaderTypeAdapter.cs" />
     <Compile Include="Channels\Internal\HeaderTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\TypeConverters\MatchingTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\TypeConverters\MessageTypeConverterFactory.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\RequestTypeConverterFactory.cs" />
+    <Compile Include="Channels\Internal\TypeConverters\ResponseTypeConverterFactory.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForFiberConfiguration.cs" />
     <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfigurator.cs" />
     <Compile Include="Extensions.cs" />

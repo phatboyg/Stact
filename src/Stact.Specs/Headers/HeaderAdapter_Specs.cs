@@ -14,6 +14,7 @@ namespace Stact.Specs.Headers
 {
 	using Internal;
 	using Magnum.TestFramework;
+	using Model;
 	using NUnit.Framework;
 
 
@@ -33,6 +34,7 @@ namespace Stact.Specs.Headers
 		{
 			HeaderTypeAdapter<Simple>.TryConvert<Simple>(new SimpleImpl(), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
+			_received.Value.ShouldNotBeNull();
 		}
 
 		[Then]
@@ -40,6 +42,7 @@ namespace Stact.Specs.Headers
 		{
 			HeaderTypeAdapter<Simple>.TryConvert(new SimpleImpl(), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
+			_received.Value.ShouldNotBeNull();
 		}
 
 		[Then]
@@ -47,6 +50,7 @@ namespace Stact.Specs.Headers
 		{
 			HeaderTypeAdapter<Simple>.TryConvert(new MessageImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
+			_received.Value.ShouldNotBeNull();
 		}
 
 		[Then]
@@ -54,6 +58,7 @@ namespace Stact.Specs.Headers
 		{
 			HeaderTypeAdapter<Simple>.TryConvert(new MessageImpl<SimpleImpl>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
+			_received.Value.ShouldNotBeNull();
 		}
 
 		[Then]
@@ -61,6 +66,68 @@ namespace Stact.Specs.Headers
 		{
 			HeaderTypeAdapter<Simple>.TryConvert(new ResponseImpl<Simple>(new SimpleImpl()), _received.Complete).ShouldBeTrue();
 			_received.IsCompleted.ShouldBeTrue();
+			_received.Value.ShouldNotBeNull();
+		}
+
+		[Then]
+		public void Should_downconvert_a_request_message_of_type_to_a_request_message()
+		{
+			var received = new Future<Request<Simple>>();
+			HeaderTypeAdapter<Request<Simple>>.TryConvert(new RequestImpl<Simple>(null, new SimpleImpl()), received.Complete).ShouldBeTrue();
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+
+		}
+	}
+
+	[Scenario]
+	public class When_converting_request_types
+	{
+		[Then]
+		public void Should_downconvert_a_request_message_of_type_to_a_request_message()
+		{
+			var received = new Future<Request<Simple>>();
+			HeaderTypeAdapter<Request<Simple>>.TryConvert<Request<SimpleImpl>>(new RequestImpl<SimpleImpl>(null, new SimpleImpl()), received.Complete).ShouldBeTrue();
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+		}
+	}
+
+	[Scenario]
+	public class When_converting_response_types
+	{
+		[Then]
+		public void Should_downconvert_a_response_message_of_type_to_a_response_message()
+		{
+			var received = new Future<Response<Simple>>();
+			HeaderTypeAdapter<Response<Simple>>.TryConvert<Response<SimpleImpl>>(new ResponseImpl<SimpleImpl>(new SimpleImpl()), received.Complete).ShouldBeTrue();
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+		}
+
+		[Then]
+		public void Should_downconvert_a_response_message_of_type_to_a_response_message_with_a_request()
+		{
+			var received = new Future<Response<Simple>>();
+			HeaderTypeAdapter<Response<Simple>>.TryConvert<Response<Ask, SimpleImpl>>(new ResponseImpl<Ask, SimpleImpl>(null, new SimpleImpl()), received.Complete).ShouldBeTrue();
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+		}
+
+		[Then]
+		public void Should_work_through_a_channel_network()
+		{
+			var received = new FutureChannel<Request<Simple>>();
+
+			UntypedChannel channel = new ChannelAdapter();
+			channel.Connect(x => x.AddChannel(received));
+
+			var simpleImpl = new SimpleImpl();	
+			channel.Send(new RequestImpl<SimpleImpl>(null, simpleImpl));
+
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+			received.Value.Body.ShouldEqual(simpleImpl);
 		}
 	}
 }

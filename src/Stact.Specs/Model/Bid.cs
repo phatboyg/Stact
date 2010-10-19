@@ -12,8 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Model
 {
+	using System;
+
+
 	public interface Bid
 	{
 		decimal MaximumBid { get; }
+	}
+
+
+	class BidImpl : Bid
+	{
+		public BidImpl(decimal maximumBid)
+		{
+			MaximumBid = maximumBid;
+		}
+
+		public decimal MaximumBid { get; private set; }
 	}
 }

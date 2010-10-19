@@ -113,6 +113,7 @@
     <Compile Include="Actors\Auctions\Given_an_auction_actor_instance.cs" />
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
+    <Compile Include="Actors\Repeat_Specs.cs" />
     <Compile Include="Channels\Channel_Specs.cs" />
     <Compile Include="Actors\PingPongDemo\Ping.cs" />
     <Compile Include="Actors\PingPongDemo\PingActor.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Model\Ask.cs" />
     <Compile Include="Model\Auction.cs" />
     <Compile Include="Model\Bid.cs" />
+    <Compile Include="Model\Status.cs" />
     <Compile Include="Registries\ActorRegistry_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

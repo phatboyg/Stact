@@ -13,16 +13,13 @@
 namespace Stact.Internal
 {
 	using System;
-	using System.Collections.Generic;
-	
-	using Magnum.Extensions;
 
 
 	public class WithinSentRequestImpl<TRequest> :
 		WithinSentRequest<TRequest>
 	{
 		readonly Inbox _inbox;
-		readonly IList<PendingReceive> _receives;
+		readonly PendingReceiveList _receives;
 		readonly TimeSpan _timeout;
 		bool _handled;
 		Action _timeoutCallback = DoNothing;
@@ -32,7 +29,7 @@ namespace Stact.Internal
 			_inbox = inbox;
 			_timeout = timeout;
 
-			_receives = new List<PendingReceive>();
+			_receives = new PendingReceiveList();
 		}
 
 		public WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer)
@@ -47,7 +44,9 @@ namespace Stact.Internal
 						{
 							accepted(message);
 
-							Complete();
+							_receives.CancelAll();
+
+							_handled = true;
 						};
 				}, _timeout, HandleTimeout);
 
@@ -70,20 +69,9 @@ namespace Stact.Internal
 
 			_timeoutCallback();
 
-			Complete();
-		}
-
-		void Complete()
-		{
-			RemovePendingReceives();
+			_receives.CancelAll();
 
 			_handled = true;
-		}
-
-		void RemovePendingReceives()
-		{
-			_receives.Each(x => x.Cancel());
-			_receives.Clear();
 		}
 
 		static void DoNothing()

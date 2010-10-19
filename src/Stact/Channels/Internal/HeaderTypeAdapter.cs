@@ -76,6 +76,8 @@ namespace Stact.Internal
 					new MatchingTypeConverterFactory<T>(),
 					new AssignableTypeConverterFactory<T>(),
 					new MessageTypeConverterFactory<T>(),
+					new RequestTypeConverterFactory<T>(),
+					new ResponseTypeConverterFactory<T>(),
 				};
 		}
 	}

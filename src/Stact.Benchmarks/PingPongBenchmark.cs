@@ -31,8 +31,8 @@ namespace Stact.Benchmarks
 
 			Stopwatch timer = Stopwatch.StartNew();
 
-			const int actorCount = 1000;
-			const int pingCount = 100;
+			const int actorCount = 10;
+			const int pingCount = 20000;
 
 			var actors = new ActorInstance[actorCount];
 

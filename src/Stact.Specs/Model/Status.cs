@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,29 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Specs.Model
 {
-	using System;
-
-	/// <summary>
-	/// The base message header, non-generic to allow use in any method
-	/// </summary>
-	public interface Message
+	public interface Status
 	{
-		/// <summary>
-		/// The message body type in URN-format
-		/// eg. urn:message:Stact.Exit
-		/// </summary>
-		Uri BodyType { get; }
+		decimal CurrentBid { get; }
 	}
 
-	/// <summary>
-	/// The message header, generic matching the type of the message body
-	/// </summary>
-	/// <typeparam name="T">The message body type</typeparam>
-	public interface Message<out T> :
-		Message
+
+	class StatusImpl :
+		Status
 	{
-		T Body { get; }
+		public decimal CurrentBid { get; set; }
 	}
 }

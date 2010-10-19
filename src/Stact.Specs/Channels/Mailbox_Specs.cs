@@ -16,6 +16,7 @@ namespace Stact.Specs.Channels
 	
 	using Internal;
 	using Magnum;
+	using Rhino.Mocks;
 	using Stact.Actors.Internal;
 	using Stact;
 	using Magnum.Extensions;
@@ -28,7 +29,9 @@ namespace Stact.Specs.Channels
 		[SetUp]
 		public void Setup()
 		{
-			_inbox = new BufferedInbox<TestMessage>(new PoolFiber(), new TimerScheduler(new PoolFiber()));
+			Inbox inbox = MockRepository.GenerateMock<Inbox>();
+
+			_inbox = new BufferedInbox<TestMessage>(inbox, new PoolFiber(), new TimerScheduler(new PoolFiber()));
 			_transactionId = CombGuid.Generate();
 			_received = new Stact.Future<TestMessage>();
 		}

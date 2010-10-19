@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,27 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-
-	/// <summary>
-	/// The base message header, non-generic to allow use in any method
-	/// </summary>
-	public interface Message
+	public interface RepeatLoop :
+		Inbox
 	{
-		/// <summary>
-		/// The message body type in URN-format
-		/// eg. urn:message:Stact.Exit
-		/// </summary>
-		Uri BodyType { get; }
-	}
-
-	/// <summary>
-	/// The message header, generic matching the type of the message body
-	/// </summary>
-	/// <typeparam name="T">The message body type</typeparam>
-	public interface Message<out T> :
-		Message
-	{
-		T Body { get; }
 	}
 }

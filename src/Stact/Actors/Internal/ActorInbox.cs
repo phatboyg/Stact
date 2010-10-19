@@ -94,7 +94,7 @@ namespace Stact.Actors.Internal
 		{
 			return _inboxCache.Retrieve(typeof(T), type =>
 				{
-					var inbox = new BufferedInbox<T>(_fiber, _scheduler);
+					var inbox = new BufferedInbox<T>(this, _fiber, _scheduler);
 
 					ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
 

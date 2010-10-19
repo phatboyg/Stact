@@ -32,6 +32,11 @@ namespace Stact.Internal
 			_inbox = inbox;
 		}
 
+		public SentRequestImpl(Inbox inbox)
+		{
+			_inbox = inbox;
+		}
+
 		public TRequest Body
 		{
 			get { return _body; }

@@ -16,7 +16,7 @@ namespace Stact
 	///   A request message wrapper
 	/// </summary>
 	/// <typeparam name = "T"></typeparam>
-	public interface Request<T> :
+	public interface Request<out T> :
 		Message<T>
 	{
 		/// <summary>

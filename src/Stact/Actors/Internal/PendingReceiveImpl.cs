@@ -13,30 +13,33 @@
 namespace Stact.Internal
 {
 	using System;
-	
-	
+	using Configuration;
 
 
-	public class PendingReceiveImpl<T> :
+	public class PendingReceiveImpl<TMessage> :
 		PendingReceive
 	{
-		readonly Action<PendingReceiveImpl<T>> _onComplete;
-		readonly SelectiveConsumer<T> _selectiveConsumer;
+		readonly Action<PendingReceiveImpl<TMessage>> _onComplete;
+		readonly SelectiveConsumer<TMessage> _selectiveConsumer;
 		readonly Action _timeoutCallback;
 		bool _cancel;
+		Inbox _inbox;
 		ScheduledOperation _scheduledAction;
 
-		public PendingReceiveImpl(SelectiveConsumer<T> selectiveConsumer, Action timeoutCallback,
-		                          Action<PendingReceiveImpl<T>> onComplete)
+		public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer, Action timeoutCallback,
+		                          Action<PendingReceiveImpl<TMessage>> onComplete)
 		{
 			_selectiveConsumer = selectiveConsumer;
+			_inbox = inbox;
 			_timeoutCallback = timeoutCallback;
 			_onComplete = onComplete;
 		}
 
-		public PendingReceiveImpl(SelectiveConsumer<T> selectiveConsumer, Action<PendingReceiveImpl<T>> onComplete)
-			: this(selectiveConsumer, NoTimeoutCallback, onComplete)
+		public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer,
+		                          Action<PendingReceiveImpl<TMessage>> onComplete)
+			: this(inbox, selectiveConsumer, NoTimeoutCallback, onComplete)
 		{
+			_inbox = inbox;
 		}
 
 		public void Cancel()
@@ -46,7 +49,27 @@ namespace Stact.Internal
 			_onComplete(this);
 		}
 
-		public void ScheduleTimeout(Func<PendingReceiveImpl<T>, ScheduledOperation> scheduleAction)
+		public void Send<T>(T message)
+		{
+			_inbox.Send(message);
+		}
+
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
+		{
+			return _inbox.Receive(consumer);
+		}
+
+		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+		{
+			return _inbox.Receive(consumer, timeout, timeoutCallback);
+		}
+
+		public void Connect(Action<ConnectionConfigurator> subscriberActions)
+		{
+			_inbox.Connect(subscriberActions);
+		}
+
+		public void ScheduleTimeout(Func<PendingReceiveImpl<TMessage>, ScheduledOperation> scheduleAction)
 		{
 			_scheduledAction = scheduleAction(this);
 		}
@@ -55,12 +78,12 @@ namespace Stact.Internal
 		{
 		}
 
-		public Consumer<T> Accept(T message)
+		public Consumer<TMessage> Accept(TMessage message)
 		{
 			if (_cancel)
 				return null;
 
-			Consumer<T> consumer = _selectiveConsumer(message);
+			Consumer<TMessage> consumer = _selectiveConsumer(message);
 			if (consumer == null)
 				return null;
 

@@ -12,13 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface Response<T> :
+	public interface Response<out T> :
 		Message<T>
 	{
 	}
 
 
-	public interface Response<TRequest, T> :
+	public interface Response<out TRequest, out T> :
 		Response<T>
 	{
 		TRequest Request { get; }

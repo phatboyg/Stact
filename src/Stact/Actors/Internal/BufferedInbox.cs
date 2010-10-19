@@ -22,6 +22,7 @@ namespace Stact.Actors.Internal
 	public class BufferedInbox<T> :
 		Inbox<T>
 	{
+		readonly Inbox _inbox;
 		readonly Fiber _fiber;
 		readonly List<PendingReceiveImpl<T>> _receivers;
 		readonly Scheduler _scheduler;
@@ -29,8 +30,9 @@ namespace Stact.Actors.Internal
 
 		bool _disposed;
 
-		public BufferedInbox(Fiber fiber, Scheduler scheduler)
+		public BufferedInbox(Inbox inbox, Fiber fiber, Scheduler scheduler)
 		{
+			_inbox = inbox;
 			_fiber = fiber;
 			_scheduler = scheduler;
 
@@ -54,7 +56,7 @@ namespace Stact.Actors.Internal
 			if (ReceiveWaitingMessage(consumer))
 				return null;
 
-			var pending = new PendingReceiveImpl<T>(consumer, x => _receivers.Remove(x));
+			var pending = new PendingReceiveImpl<T>(_inbox, consumer, x => _receivers.Remove(x));
 
 			_receivers.Add(pending);
 
@@ -66,7 +68,7 @@ namespace Stact.Actors.Internal
 			if (ReceiveWaitingMessage(consumer))
 				return null;
 
-			var pending = new PendingReceiveImpl<T>(consumer, timeoutCallback, x => _receivers.Remove(x));
+			var pending = new PendingReceiveImpl<T>(_inbox, consumer, timeoutCallback, x => _receivers.Remove(x));
 
 			pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
 

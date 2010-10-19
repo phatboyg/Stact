@@ -67,6 +67,18 @@ namespace Stact
 			return inbox.Receive<T>(x => consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
+
+		/// <summary>
+		/// Repeats the contents of the repeat block until an Exit or Kill is received
+		/// </summary>
+		/// <param name="inbox"></param>
+		/// <returns></returns>
+		public static RepeatLoop Repeat(this Inbox inbox)
+		{
+			return new RepeatLoopImpl(inbox);
+		}
+
+
 		/// <summary>
 		///   Calls the specified method when a message of the requested type is received. The
 		///   consumer is asked if the message should be parsed, and returns a non-null action
@@ -133,6 +145,16 @@ namespace Stact
 
 			return new SentRequestImpl<TRequest>(request, inbox);
 		}
+
+		public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, Inbox inbox)
+		{
+			UntypedChannel responseChannel = inbox;
+
+			channel.Request<TRequest>(responseChannel);
+
+			return new SentRequestImpl<TRequest>(inbox);
+		}
+
 
 		public static WithinSentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout)
 		{
