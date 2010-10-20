@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
+	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -39,6 +40,11 @@ namespace Stact.Internal
 				return;
 
 			inbox.Connect(x => x.AddChannel(channel));
+		}
+
+		public bool Matches(ActorConvention<TActor> convention)
+		{
+			return typeof(PropertyChannelConvention<TActor, TChannel>).Equals(convention.GetType());
 		}
 
 		static ChannelAccessor<TActor, TChannel> GenerateChannelAccessor(PropertyInfo property)

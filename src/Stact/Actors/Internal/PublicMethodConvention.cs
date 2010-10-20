@@ -38,6 +38,11 @@ namespace Stact.Internal
 				});
 		}
 
+		public bool Matches(ActorConvention<TActor> convention)
+		{
+			return typeof(PublicMethodConvention<TActor, TChannel>).Equals(convention.GetType());
+		}
+
 		static Action<TActor, TChannel> GenerateConsumer(MethodInfo method)
 		{
 			ParameterExpression instance = Expression.Parameter(typeof(TActor), "instance");

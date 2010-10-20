@@ -59,7 +59,7 @@ namespace Stact.Specs.Actors
 							});
 				});
 
-			completed.WaitUntilCompleted(500.Seconds()).ShouldBeTrue();
+			completed.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 
 			bidder.Exit();
 			auction.Exit();

@@ -40,6 +40,11 @@ namespace Stact.Internal
 			_methods.Each(method => method.Initialize(instance, fiber, scheduler, inbox));
 		}
 
+		public bool Matches(ActorConvention<TActor> convention)
+		{
+			return typeof(PublicMethodsConvention<TActor>).Equals(convention.GetType());
+		}
+
 		static ActorConvention<TActor> CreateMethodConvention(MethodInfo method)
 		{
 			Type messageType = method.GetParameters().Single().ParameterType;

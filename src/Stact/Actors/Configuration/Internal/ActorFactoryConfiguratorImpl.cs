@@ -13,7 +13,6 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	using System.Collections.Generic;
 	using Stact.Internal;
 
 
@@ -22,13 +21,13 @@ namespace Stact.Configuration.Internal
 		ActorFactoryConfigurator<TActor>
 		where TActor : class, Actor
 	{
-		readonly IList<ActorConvention<TActor>> _conventions;
+		readonly ActorConventionSet<TActor> _conventions;
 		Func<ActorFactory<TActor>> _actorFactory;
 		SchedulerFactory _schedulerFactory;
 
 		public ActorFactoryConfiguratorImpl()
 		{
-			_conventions = new List<ActorConvention<TActor>>();
+			_conventions = new ActorConventionSet<TActor>(new PropertyChannelsConvention<TActor>());
 
 			UseSharedScheduler();
 		}

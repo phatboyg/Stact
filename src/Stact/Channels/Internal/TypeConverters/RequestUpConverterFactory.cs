@@ -19,20 +19,20 @@ namespace Stact.Internal.TypeConverters
 	using Magnum.Extensions;
 
 
-	public class MessageUpConverterFactory<T> :
+	public class RequestUpConverterFactory<T> :
 		HeaderTypeConverterFactory<T>
 	{
 		readonly Func<object, T> _converter;
 		readonly Type _messageType;
 		readonly bool _supported;
 
-		public MessageUpConverterFactory()
+		public RequestUpConverterFactory()
 		{
-			_supported = typeof(T).IsGenericType && typeof(Message<>).Equals(typeof(T).GetGenericTypeDefinition());
+			_supported = typeof(T).IsGenericType && typeof(Request<>).Equals(typeof(T).GetGenericTypeDefinition());
 			if (!_supported)
 				return;
 
-			_messageType = typeof(T).GetGenericTypeDeclarations(typeof(Message<>)).Single();
+			_messageType = typeof(T).GetGenericTypeDeclarations(typeof(Request<>)).Single();
 
 			_converter = GenerateConverterMethod(_messageType);
 		}
@@ -53,7 +53,10 @@ namespace Stact.Internal.TypeConverters
 
 		static Func<object, T> GenerateConverterMethod(Type messageType)
 		{
+			UntypedChannel shunt = new ShuntChannel();
+
 			ParameterExpression value = Expression.Parameter(typeof(object), "value");
+			ConstantExpression shuntArg = Expression.Constant(shunt, typeof(UntypedChannel));
 
 			UnaryExpression castValue;
 			if (typeof(T).IsValueType)
@@ -61,11 +64,11 @@ namespace Stact.Internal.TypeConverters
 			else
 				castValue = Expression.TypeAs(value, messageType);
 
-			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(messageType);
+			Type messageImplType = typeof(RequestImpl<>).MakeGenericType(messageType);
 
-			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] {messageType});
+			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] {typeof(UntypedChannel), messageType});
 
-			NewExpression constructor = Expression.New(constructorInfo, castValue);
+			NewExpression constructor = Expression.New(constructorInfo, shuntArg, castValue);
 
 			Expression<Func<object, T>> expression = Expression.Lambda<Func<object, T>>(constructor, value);
 
