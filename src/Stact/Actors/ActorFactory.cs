@@ -32,25 +32,25 @@ namespace Stact
 		public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)
 			where TActor : class, Actor
 		{
-			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+			return Create<TActor>(x => x.ConstructedBy(actorFactory));
 		}
 
 		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, TActor> actorFactory)
 			where TActor : class, Actor
 		{
-			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+			return Create<TActor>(x => x.ConstructedBy(actorFactory));
 		}
 
 		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Inbox, TActor> actorFactory)
 			where TActor : class, Actor
 		{
-			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+			return Create<TActor>(x => x.ConstructedBy(actorFactory));
 		}
 
 		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
 			where TActor : class, Actor
 		{
-			return Create<TActor>(x => x.CreateNewInstanceBy(actorFactory));
+			return Create<TActor>(x => x.ConstructedBy(actorFactory));
 		}
 
 		public static AnonymousActorFactory CreateAnonymousActorFactory(Action<ActorFactoryConfigurator<AnonymousActor>> configurator)

@@ -69,7 +69,7 @@ namespace Stact
 		{
 			_factory = ActorFactory.CreateAnonymousActorFactory(x =>
 				{
-					x.CreateNewInstanceBy(CreateAnonymousActor);
+					x.ConstructedBy(CreateAnonymousActor);
 					x.UseSchedulerFactory(_schedulerFactory);
 					x.UseFiberFactory(_fiberFactory);
 				});

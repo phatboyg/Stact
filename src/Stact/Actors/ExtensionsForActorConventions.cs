@@ -12,13 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	///   A conditional consumer is given a message to evaluate, after which it
-	///   can determine if it is interested in the message and return an action
-	///   to process the message or null
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	/// <param name = "message">The message</param>
-	/// <returns>An action to consume the message, or null</returns>
-	public delegate Consumer<T> SelectiveConsumer<in T>(T message);
+	using Configuration;
+
+
+	public static class ExtensionsForActorConventions
+	{
+		public static void ConnectPublicMessageMethods<TActor>(this ActorFactoryConfigurator<TActor> configurator)
+			where TActor : Actor
+		{
+			var convention = new PublicMessageMethodsConvention<TActor>();
+			configurator.AddConvention(convention);
+		}
+
+		public static void ConnectPropertyChannels<TActor>(this ActorFactoryConfigurator<TActor> configurator)
+			where TActor : Actor
+		{
+			var convention = new PropertyChannelsConvention<TActor>();
+			configurator.AddConvention(convention);
+		}
+	}
 }

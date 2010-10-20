@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,11 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
-	/// including Actions, void methods, etc.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="message"></param>
-	public delegate void Consumer<in T>(T message);
+	public interface ActorConvention<in TActor>
+	{
+		void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox);
+	}
 }

@@ -98,6 +98,8 @@ namespace Stact.Actors.Internal
 
 					ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
 
+					_connections.Add(connection);
+
 					return inbox;
 				}) as Inbox<T>;
 		}

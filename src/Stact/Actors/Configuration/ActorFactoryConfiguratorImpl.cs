@@ -13,7 +13,7 @@
 namespace Stact.Configuration
 {
 	using System;
-	
+	using System.Collections.Generic;
 	using Stact.Internal;
 
 
@@ -22,54 +22,40 @@ namespace Stact.Configuration
 		ActorFactoryConfigurator<TActor>
 		where TActor : class, Actor
 	{
+		readonly IList<ActorConvention<TActor>> _conventions;
 		Func<ActorFactory<TActor>> _actorFactory;
 		SchedulerFactory _schedulerFactory;
 
 		public ActorFactoryConfiguratorImpl()
 		{
+			_conventions = new List<ActorConvention<TActor>>();
+
 			UseSharedScheduler();
 		}
 
-		public ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Inbox, TActor> actorFactory)
+		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<TActor> actorFactory)
 		{
-			_actorFactory =
-				() =>
-					{
-						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                    (f, s, i) => { return actorFactory(i); });
-					};
-
-			return this;
+			return ConstructedBy((f, s, i) => actorFactory());
 		}
 
-		public ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, TActor> actorFactory)
+		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Inbox, TActor> actorFactory)
 		{
-			_actorFactory =
-				() =>
-					{
-						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                    (f, s, i) => { return actorFactory(f); });
-					};
-
-			return this;
+			return ConstructedBy((f, s, i) => actorFactory(i));
 		}
 
-		public ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, Inbox, TActor> actorFactory)
+		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, TActor> actorFactory)
 		{
-			_actorFactory =
-				() =>
-					{
-						return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory,
-						                                    (f, s, i) => { return actorFactory(f, i); });
-					};
-
-			return this;
+			return ConstructedBy((f, s, i) => actorFactory(f));
 		}
 
-		public ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
+		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Inbox, TActor> actorFactory)
 		{
-			_actorFactory =
-				() => { return new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory, actorFactory); };
+			return ConstructedBy((f, s, i) => actorFactory(f, i));
+		}
+
+		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
+		{
+			_actorFactory = () => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory, _conventions, actorFactory);
 
 			return this;
 		}
@@ -91,6 +77,13 @@ namespace Stact.Configuration
 		public ActorFactoryConfigurator<TActor> UseSchedulerFactory(SchedulerFactory schedulerFactory)
 		{
 			_schedulerFactory = schedulerFactory;
+
+			return this;
+		}
+
+		public ActorFactoryConfigurator<TActor> AddConvention(ActorConvention<TActor> convention)
+		{
+			_conventions.Add(convention);
 
 			return this;
 		}

@@ -13,8 +13,9 @@
 namespace Stact.Internal
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Actors.Internal;
-	
 
 
 	public class ActorFactoryImpl<TActor> :
@@ -25,12 +26,15 @@ namespace Stact.Internal
 		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
 		readonly FiberFactory _fiberFactory;
 		readonly SchedulerFactory _schedulerFactory;
+		readonly ActorConvention<TActor>[] _conventions;
 
 		public ActorFactoryImpl(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
+			IEnumerable<ActorConvention<TActor>> conventions,
 		                        Func<Fiber, Scheduler, Inbox, TActor> factory)
 		{
 			_fiberFactory = fiberFactory;
 			_schedulerFactory = schedulerFactory;
+			_conventions = conventions.ToArray();
 			_factory = factory;
 		}
 
@@ -46,14 +50,22 @@ namespace Stact.Internal
 
 			var inbox = new ActorInbox<TActor>(fiber, scheduler);
 
-			TActor actor = CreateActorInstance(fiber, scheduler, inbox);
+			TActor instance = CreateActorInstance(fiber, scheduler, inbox);
 
-			inbox.BindChannelsForInstance(actor);
-
+			ApplyConventions(instance, fiber, scheduler, inbox);
+		
 			if (initializer != null)
 				fiber.Add(() => initializer(inbox));
 
 			return inbox;
+		}
+
+		void ApplyConventions(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
+		{
+			for (int i = 0; i < _conventions.Length; i++)
+			{
+				_conventions[i].Initialize(instance, fiber, scheduler, inbox);
+			}
 		}
 
 		TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, Inbox inbox)

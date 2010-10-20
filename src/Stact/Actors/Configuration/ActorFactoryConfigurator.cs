@@ -18,13 +18,22 @@ namespace Stact.Configuration
 	public interface ActorFactoryConfigurator<TActor> :
 		FiberFactoryConfigurator<ActorFactoryConfigurator<TActor>>
 	{
-		ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Inbox, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, Inbox, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> CreateNewInstanceBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory);
+
+		ActorFactoryConfigurator<TActor> ConstructedBy(Func<TActor> actorFactory);
+		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Inbox, TActor> actorFactory);
+		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, TActor> actorFactory);
+		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Inbox, TActor> actorFactory);
+		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory);
 
 		ActorFactoryConfigurator<TActor> UseSharedScheduler();
 		ActorFactoryConfigurator<TActor> UseScheduler(Scheduler scheduler);
 		ActorFactoryConfigurator<TActor> UseSchedulerFactory(SchedulerFactory schedulerFactory);
+
+		/// <summary>
+		/// Add conventions to apply to actor instances as they are created
+		/// </summary>
+		/// <param name="convention">The convention to apply to the actor instance</param>
+		/// <returns>The configurator</returns>
+		ActorFactoryConfigurator<TActor> AddConvention(ActorConvention<TActor> convention);
 	}
 }

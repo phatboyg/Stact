@@ -104,6 +104,7 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\ActorConvention.cs" />
     <Compile Include="Actors\ActorInstance.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
     <Compile Include="Actors\CacheActorRegistry.cs" />
@@ -114,6 +115,11 @@
     <Compile Include="Actors\ActorRepository.cs" />
     <Compile Include="Actors\Configuration\DefaultInitializeActorConvention.cs" />
     <Compile Include="Actors\Configuration\InitializeActorConvention.cs" />
+    <Compile Include="Actors\PublicMessageMethodConvention.cs" />
+    <Compile Include="Actors\PropertyChannelConvention.cs" />
+    <Compile Include="Actors\PublicMessageMethodsConvention.cs" />
+    <Compile Include="Actors\PropertyChannelsConvention.cs" />
+    <Compile Include="Actors\ExtensionsForActorConventions.cs" />
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
@@ -125,8 +131,6 @@
     <Compile Include="Channels\Internal\HeaderTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\TypeConverters\MatchingTypeConverterFactory.cs" />
     <Compile Include="Channels\Internal\TypeConverters\MessageTypeConverterFactory.cs" />
-    <Compile Include="Channels\Internal\TypeConverters\RequestTypeConverterFactory.cs" />
-    <Compile Include="Channels\Internal\TypeConverters\ResponseTypeConverterFactory.cs" />
     <Compile Include="Configuration\Channels\ExtensionsForFiberConfiguration.cs" />
     <Compile Include="Configuration\Channels\Internal\SchedulerFactoryConfigurator.cs" />
     <Compile Include="Extensions.cs" />
@@ -136,6 +140,7 @@
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
     <Compile Include="Fibers\SchedulerException.cs" />
     <Compile Include="Fibers\StactException.cs" />
+    <Compile Include="Headers\Command.cs" />
     <Compile Include="Internal\ThreadSingleton.cs" />
     <Compile Include="Messages\Internal\ExitImpl.cs" />
     <Compile Include="Messages\Internal\KillImpl.cs" />
