@@ -10,19 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
 
-	public class PublicMessageMethodConvention<TActor, TChannel> :
+	public class PublicMethodConvention<TActor, TChannel> :
 		ActorConvention<TActor>
+		where TActor : Actor
 	{
 		readonly Action<TActor, TChannel> _instanceConsumer;
 
-		public PublicMessageMethodConvention(MethodInfo method)
+		public PublicMethodConvention(MethodInfo method)
 		{
 			_instanceConsumer = GenerateConsumer(method);
 		}

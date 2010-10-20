@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
 	using System.Linq;
@@ -19,12 +19,13 @@ namespace Stact
 	using Magnum.Reflection;
 
 
-	public class PublicMessageMethodsConvention<TActor> :
+	public class PublicMethodsConvention<TActor> :
 		ActorConvention<TActor>
+		where TActor : Actor
 	{
 		readonly ActorConvention<TActor>[] _methods;
 
-		public PublicMessageMethodsConvention()
+		public PublicMethodsConvention()
 		{
 			_methods = typeof(TActor)
 				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
@@ -47,7 +48,7 @@ namespace Stact
 
 			var args = new object[] {method};
 
-			return (ActorConvention<TActor>)FastActivator.Create(typeof(PublicMessageMethodConvention<,>), genericTypes, args);
+			return (ActorConvention<TActor>)FastActivator.Create(typeof(PublicMethodConvention<,>), genericTypes, args);
 		}
 	}
 }

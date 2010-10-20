@@ -22,16 +22,13 @@ namespace Stact.Specs.Channels
 		[Then]
 		public void Should_bind_channels_for_each_method()
 		{
-			Subject subject = null;
+			var subject = new Subject();
 
 			ActorFactory<Subject> factory = ActorFactory.Create<Subject>(x =>
 				{
-					x.ConstructedBy(() =>
-						{
-							subject = new Subject();
-							return subject;
-						});
-					x.ConnectPublicMessageMethods();
+					x.ConstructedBy(() => subject);
+
+					x.ConnectPublicMethods();
 					x.ConnectPropertyChannels();
 				});
 
@@ -74,10 +71,10 @@ namespace Stact.Specs.Channels
 		class Subject :
 			Actor
 		{
-			public Future<Message<A>> FutureA;
-			public Future<Message<B>> FutureB;
-			public Future<Message<C>> FutureC;
-			public FutureChannel<Message<D>> FutureD;
+			public readonly Future<Message<A>> FutureA;
+			public readonly Future<Message<B>> FutureB;
+			public readonly Future<Message<C>> FutureC;
+			public readonly FutureChannel<Message<D>> FutureD;
 
 			public Subject()
 			{

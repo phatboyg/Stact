@@ -16,6 +16,7 @@ namespace Stact.Internal
 	using System.Collections.Generic;
 	using System.Linq;
 	using Actors.Internal;
+	using Magnum;
 
 
 	public class ActorFactoryImpl<TActor> :
@@ -32,6 +33,11 @@ namespace Stact.Internal
 			IEnumerable<ActorConvention<TActor>> conventions,
 		                        Func<Fiber, Scheduler, Inbox, TActor> factory)
 		{
+			Guard.AgainstNull(fiberFactory, "fiberFactory");
+			Guard.AgainstNull(schedulerFactory, "schedulerFactory");
+			Guard.AgainstNull(conventions, "conventions");
+			Guard.AgainstNull(factory, "factory");
+
 			_fiberFactory = fiberFactory;
 			_schedulerFactory = schedulerFactory;
 			_conventions = conventions.ToArray();

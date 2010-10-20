@@ -94,6 +94,20 @@ namespace Stact.Specs.Headers
 	}
 
 	[Scenario]
+	public class When_sending_a_raw_message
+	{
+		[Then]
+		public void Should_upconvert_to_a_message_of_t()
+		{
+			var received = new Future<Message<Simple>>();
+
+			HeaderTypeAdapter<Message<Simple>>.TryConvert(new SimpleImpl(), received.Complete).ShouldBeTrue();
+			received.IsCompleted.ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
+		}
+	}
+
+	[Scenario]
 	public class When_converting_response_types
 	{
 		[Then]

@@ -14,6 +14,7 @@ namespace Stact
 {
 	using System;
 	using Configuration;
+	using Configuration.Internal;
 	using Internal;
 
 

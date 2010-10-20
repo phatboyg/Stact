@@ -26,6 +26,10 @@ namespace Stact.Actors.Internal
 		readonly Fiber _fiber;
 		readonly List<PendingReceiveImpl<T>> _receivers;
 		readonly Scheduler _scheduler;
+
+		//TODO look at keeping the messages in an untyped buffer to allow pattern matching
+		//across multiple messages (ie, Receive<First, Second, Third>((a,b.c) => to receive
+		//a set of messages once one of each type has arrived
 		readonly IList<T> _waitingMessages;
 
 		bool _disposed;

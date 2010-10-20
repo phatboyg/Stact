@@ -17,6 +17,7 @@ namespace Stact.Configuration
 
 	public interface ActorFactoryConfigurator<TActor> :
 		FiberFactoryConfigurator<ActorFactoryConfigurator<TActor>>
+		where TActor : Actor
 	{
 
 		ActorFactoryConfigurator<TActor> ConstructedBy(Func<TActor> actorFactory);

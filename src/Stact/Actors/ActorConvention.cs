@@ -13,6 +13,7 @@
 namespace Stact
 {
 	public interface ActorConvention<in TActor>
+		where TActor : Actor
 	{
 		void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox);
 	}
