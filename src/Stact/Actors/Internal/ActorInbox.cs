@@ -96,27 +96,15 @@ namespace Stact.Actors.Internal
 				{
 					var inbox = new BufferedInbox<T>(this, _fiber, _scheduler);
 
-					ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
+					// TODO for some reason the BufferedInbox<T> is blowing up the unsubscribe logic
+					// ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
+					//_connections.Add(connection);
 
-					_connections.Add(connection);
+					_adapter.Connect(x => x.AddChannel(inbox));
+
 
 					return inbox;
 				}) as Inbox<T>;
-		}
-
-		public void BindChannelsForInstance(TActor actor)
-		{
-			_connections.Add(_adapter.Connect(x =>
-				{
-					x.BindChannelsFor<TActor>()
-						.UsingInstance(actor)
-						.HandleOnCallingThread();
-
-					// actor channels are called from the calling thread since
-					// the actor itself defines the calling style for the actual
-					// channel - making this essentially a passthrough of Send()
-					// to the actor channel implementation
-				}));
 		}
 
 		void HandleExit(Request<Exit> message)
