@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,33 +10,40 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Routing
 {
 	using System;
+	using Internal;
 
 
-	class Program
+	public class DynamicRoutingEngine :
+		RoutingEngine
 	{
-		static void Main(string[] args)
+		readonly Fiber _fiber;
+		readonly Activation _router;
+
+		public DynamicRoutingEngine(Fiber fiber)
 		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
+			_fiber = fiber;
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
+			_router = new TypeRouter(fiber);
+		}
 
-				//new ConcurrentQueueBenchmark().Run();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
-			}
+		public Activation Router
+		{
+			get { return _router; }
+		}
+
+		public void Send<T>(T message)
+		{
+			var context = new DynamicRoutingContext<T>(this, message);
+
+			_fiber.Add(() => _router.Activate(context));
+		}
+
+		public void Add(Action action)
+		{
+			_fiber.Add(action);
 		}
 	}
 }

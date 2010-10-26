@@ -83,7 +83,7 @@ namespace Stact
 			_listeners = listeners.ToArray();
 		}
 
-		public BroadcastChannel(Channel<T>[] listeners)
+		public BroadcastChannel(params Channel<T>[] listeners)
 		{
 			Guard.AgainstNull(listeners, "listeners");
 

@@ -10,33 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact
 {
 	using System;
 
 
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
-
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
-
-				//new ConcurrentQueueBenchmark().Run();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
-			}
-		}
-	}
+	public delegate void Continuation<T>(Action<T> callback);
 }

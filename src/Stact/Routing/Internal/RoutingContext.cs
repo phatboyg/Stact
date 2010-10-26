@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,33 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Routing.Internal
 {
 	using System;
+	using Magnum.Collections;
 
 
-	class Program
+	public interface RoutingContext
 	{
-		static void Main(string[] args)
-		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
+		// TODO keep track of a generation, to denote changes in the alpha/beta node structure
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
+		void Add(Action action);
+	}
 
-				//new ConcurrentQueueBenchmark().Run();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
-			}
-		}
+
+	public interface RoutingContext<T> :
+		RoutingContext
+	{
+		T Body { get; }
+
+		RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> second);
 	}
 }

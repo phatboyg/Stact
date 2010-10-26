@@ -66,6 +66,7 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="ChannelAdapterBenchmark.cs" />
+    <Compile Include="ConcurrentQueueBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />

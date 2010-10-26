@@ -10,33 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Routing.Internal
 {
 	using System;
 
 
-	class Program
+	/// <summary>
+	/// Always invokes on right activation for joining single alpha nodes
+	/// </summary>
+	/// <typeparam name="TChannel"></typeparam>
+	public class ConstantNode<TChannel> :
+		RightActivation<TChannel>
 	{
-		static void Main(string[] args)
+		public void RightActivate(Action<RoutingContext<TChannel>> callback)
 		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
+			// a constant node has no source, so it does not do a merge join
+		}
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
-
-				//new ConcurrentQueueBenchmark().Run();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
-			}
+		public void RightActivate(RoutingContext<TChannel> context, Action<RoutingContext<TChannel>> callback)
+		{
+			callback(context);
 		}
 	}
 }

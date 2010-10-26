@@ -24,7 +24,7 @@ namespace Stact
 	/// A one-way communication containing messages of the specified type
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface Channel<T> :
+	public interface Channel<in T> :
 		Channel
 	{
 		/// <summary>

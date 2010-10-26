@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,33 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Routing
 {
-	using System;
+	using Stact.Internal;
 
 
-	class Program
+	public static class ExtensionsToRoutingEngine
 	{
-		static void Main(string[] args)
+		public static PendingReceive Receive<T>(this RoutingEngine engine, Consumer<T> consumer)
 		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
+			ConsumerNode<T> consumerNode = null;
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
+			var locator = new JoinNodeLocator<T>(joinNode =>
+				{
+					consumerNode = new ConsumerNode<T>(new SynchronousFiber(), m =>
+						{
+							joinNode.RemoveActivation(consumerNode);
+							consumer(m);
+						});
 
-				//new ConcurrentQueueBenchmark().Run();
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
-			}
+					joinNode.AddActivation(consumerNode);
+				});
+
+			locator.Search(engine);
+
+			return null;
 		}
 	}
 }

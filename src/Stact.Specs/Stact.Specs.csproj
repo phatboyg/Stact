@@ -91,12 +91,19 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.CoreEx">
+      <HintPath>..\..\lib\Rx_Net35_SP1\System.CoreEx.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Threading, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Rx_Net35_SP1\System.Threading.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
@@ -114,6 +121,7 @@
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
     <Compile Include="Actors\Repeat_Specs.cs" />
+    <Compile Include="AsyncIO\AsyncIO_Specs.cs" />
     <Compile Include="Channels\Channel_Specs.cs" />
     <Compile Include="Actors\PingPongDemo\Ping.cs" />
     <Compile Include="Actors\PingPongDemo\PingActor.cs" />
@@ -152,6 +160,9 @@
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="Registries\ActorRegistry_Specs.cs" />
+    <Compile Include="Routing\Memory_Specs.cs" />
+    <Compile Include="Routing\Routing_Specs.cs" />
+    <Compile Include="Routing\Visualizer_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -34,6 +34,20 @@ namespace Stact
 		}
 
 		/// <summary>
+		///   Wraps the message in a request and sends it to the channel
+		/// </summary>
+		/// <typeparam name = "TRequest">The type of the request message</typeparam>
+		/// <param name = "channel">The channel where the message should be sent</param>
+		/// <param name = "request">The request message</param>
+		/// <param name = "responseChannel">The channel where responses should be sent</param>
+		public static void Request<TRequest>(this Channel<Request<TRequest>> channel, TRequest request, UntypedChannel responseChannel)
+		{
+			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+
+			channel.Send(requestImpl);
+		}
+
+		/// <summary>
 		///   Sends an uninitialized interface implementation as a request
 		/// </summary>
 		/// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
@@ -51,6 +65,26 @@ namespace Stact
 			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
 
 			channel.Send<Request<TRequest>>(requestImpl);
+		}
+
+		/// <summary>
+		///   Sends an uninitialized interface implementation as a request
+		/// </summary>
+		/// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
+		/// <param name = "channel">The target channel</param>
+		/// <param name = "responseChannel">The channel where responses should be sent</param>
+		public static void Request<TRequest>(this Channel<Request<TRequest>> channel, UntypedChannel responseChannel)
+		{
+			if (!typeof(TRequest).IsInterface)
+				throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+			Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+
+			var request = (TRequest)FastActivator.Create(requestImplType);
+
+			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+
+			channel.Send(requestImpl);
 		}
 
 		/// <summary>
