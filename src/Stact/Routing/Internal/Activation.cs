@@ -25,6 +25,8 @@ namespace Stact.Routing.Internal
 	/// <typeparam name="T">The message type</typeparam>
 	public interface Activation<T>
 	{
+		bool IsAlive { get; }
+
 		void Activate(RoutingContext<T> context);
 	}
 }

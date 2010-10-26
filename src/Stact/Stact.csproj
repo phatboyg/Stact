@@ -251,8 +251,11 @@
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
     <Compile Include="Routing\ConsumerNode.cs" />
     <Compile Include="Routing\DynamicRoutingContext.cs" />
+    <Compile Include="Routing\Internal\AlphaMemory.cs" />
     <Compile Include="Routing\Internal\JoinNode.2.cs" />
     <Compile Include="Routing\Internal\RightActivation.cs" />
+    <Compile Include="Routing\Internal\Tuple.cs" />
+    <Compile Include="Routing\Internal\TupleImpl.cs" />
     <Compile Include="Routing\JoinNodeLocator.cs" />
     <Compile Include="Routing\ExtensionsToRoutingEngine.cs" />
     <Compile Include="Routing\Internal\Activation.cs" />
@@ -262,7 +265,7 @@
     <Compile Include="Routing\Internal\ConstantNode.cs" />
     <Compile Include="Routing\Internal\ExtensionsToList.cs" />
     <Compile Include="Routing\Internal\JoinNode.cs" />
-    <Compile Include="Routing\Internal\MessageList.cs" />
+    <Compile Include="Routing\Internal\ActivatedMessageList.cs" />
     <Compile Include="Routing\Internal\AlphaNode.cs" />
     <Compile Include="Routing\Internal\ConditionNode.cs" />
     <Compile Include="Routing\Internal\RoutingContext.cs" />

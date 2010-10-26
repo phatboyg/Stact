@@ -13,22 +13,29 @@
 namespace Stact.Routing.Internal
 {
 	using System;
-	using Magnum.Collections;
 
 
 	public interface RoutingContext
 	{
 		// TODO keep track of a generation, to denote changes in the alpha/beta node structure
 
+		bool IsAlive { get; }
+
+
 		void Add(Action action);
+
+		/// <summary>
+		/// Evicts a context from the engine, preventing it from being matched to activations
+		/// </summary>
+		void Evict();
 	}
 
 
-	public interface RoutingContext<T> :
+	public interface RoutingContext<out T> :
 		RoutingContext
 	{
 		T Body { get; }
 
-		RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> second);
+		RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> other);
 	}
 }

@@ -35,9 +35,9 @@ namespace Stact.Routing.Internal
 
 		public void Activate<T>(RoutingContext<T> message)
 		{
-			Activation typeChannel = _types.Retrieve(typeof(T), _ => (Activation)new AlphaNode<T>());
+			_types.Retrieve(typeof(T), _ => (Activation)new AlphaNode<T>());
 
-			typeChannel.Activate(message);
+			_types.Each(activation => activation.Activate(message));
 		}
 
 		public Activation GetActivation(Type type)

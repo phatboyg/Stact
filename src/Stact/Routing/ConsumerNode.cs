@@ -29,10 +29,12 @@ namespace Stact.Routing
 
 		public void Activate(RoutingContext<TChannel> message)
 		{
-			_fiber.Add(() =>
-				{
-					_consumer(message.Body);
-				});
+			_fiber.Add(() => _consumer(message.Body));
+		}
+
+		public bool IsAlive
+		{
+			get { return true; }
 		}
 	}
 }

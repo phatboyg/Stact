@@ -18,16 +18,16 @@ namespace Stact.Routing.Internal
 	/// <summary>
 	/// Always invokes on right activation for joining single alpha nodes
 	/// </summary>
-	/// <typeparam name="TChannel"></typeparam>
-	public class ConstantNode<TChannel> :
-		RightActivation<TChannel>
+	/// <typeparam name="T"></typeparam>
+	public class ConstantNode<T> :
+		RightActivation<T>
 	{
-		public void RightActivate(Action<RoutingContext<TChannel>> callback)
+		public void RightActivate(Func<RoutingContext<T>, bool> callback)
 		{
-			// a constant node has no source, so it does not do a merge join
+			// ConstantNodes are not activated, so they would never push joins back to the calling node
 		}
 
-		public void RightActivate(RoutingContext<TChannel> context, Action<RoutingContext<TChannel>> callback)
+		public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
 		{
 			callback(context);
 		}

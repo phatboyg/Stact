@@ -12,26 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
-
-
-	/// <summary>
-	/// A beta channel supports activation via a typed input and activates
-	/// any successors upon receipt
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class BetaMemory<T> :
-		AlphaMemory<T>,
-		RightActivation<T>
+	public class TupleImpl<T1, T2> :
+		Tuple<T1, T2>
 	{
-		public void RightActivate(Func<RoutingContext<T>, bool> callback)
+		public TupleImpl(T1 item1, T2 item2)
 		{
-			Messages.All(callback);
+			Item1 = item1;
+			Item2 = item2;
 		}
 
-		public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
-		{
-			Messages.Any(context, callback);
-		}
+		public T1 Item1 { get; private set; }
+
+		public T2 Item2 { get; private set; }
 	}
 }

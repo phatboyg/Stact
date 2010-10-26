@@ -57,7 +57,12 @@ namespace Stact.Routing.Internal
 			_rightActivation.RightActivate(context, match => _betaMemory.Activate(match));
 		}
 
-		public void RightActivate(Action<RoutingContext<T>> callback)
+		public bool IsAlive
+		{
+			get { return true; }
+		}
+
+		public void RightActivate(Func<RoutingContext<T>, bool> callback)
 		{
 			_betaMemory.RightActivate(callback);
 		}

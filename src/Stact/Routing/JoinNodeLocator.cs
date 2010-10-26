@@ -88,4 +88,61 @@ namespace Stact.Routing
 			return base.Visit(node);
 		}
 	}
+
+	public class JoinNodeLocator<T1,T2> :
+		AbstractRoutingEngineVisitor<JoinNodeLocator<T1,T2>>
+	{
+		readonly Action<JoinNode<T1,T2>> _callback;
+		JoinNode<T1,T2> _joinNode;
+		JoinNode<T1> _leftJoin;
+		JoinNode<T2> _rightJoin;
+
+		public JoinNodeLocator(Action<JoinNode<T1,T2>> callback)
+		{
+			_callback = callback;
+		}
+
+		public void Search(UntypedChannel node)
+		{
+				new JoinNodeLocator<T1>(left =>
+					{
+						_leftJoin = left;
+
+						new JoinNodeLocator<T2>(right =>
+							{
+								_rightJoin = right;
+
+								Visit(left);
+
+								if(_joinNode == null)
+								{
+									var newJoinNode = new JoinNode<T1, T2>(right);
+									left.AddActivation(newJoinNode);
+
+									_joinNode = newJoinNode;
+								}
+							})
+							.Search(node);
+					})
+					.Search(node);
+
+			if (_joinNode != null)
+				_callback(_joinNode);
+		}
+
+		protected override bool Visit<TLeft, TRight>(JoinNode<TLeft, TRight> node)
+		{
+			var match = node as JoinNode<T1, T2>;
+			if(match != null)
+			{
+				var right = match.RightActivation as JoinNode<T2>;
+				if (right != null && right == _rightJoin)
+				{
+					_joinNode = match;
+				}
+			}
+
+			return base.Visit(node);
+		}
+	}
 }

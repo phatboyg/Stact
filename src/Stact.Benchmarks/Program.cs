@@ -23,14 +23,14 @@ namespace Stact.Benchmarks
 			{
 				Console.WriteLine("Stact Benchmark Console");
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
+//				new ChannelAdapterBenchmark().Run();
+//				new ChannelAdapterBenchmark().Run();
+//				new MessagePassingBenchmark().Run();
+//				new MessagePassingBenchmark().Run();
+//				new PingPongBenchmark().Run();
+//				new PingPongBenchmark().Run();
 
-				//new ConcurrentQueueBenchmark().Run();
+				new RoutingEngineBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

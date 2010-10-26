@@ -26,7 +26,6 @@ namespace Stact.Specs
 		[Then]
 		public void Should_properly_invoke_the_message_receiver()
 		{
-			Future<A> receivedA = new Future<A>();
 
 			RoutingEngine engine = new DynamicRoutingEngine(new SynchronousFiber());
 
@@ -40,14 +39,17 @@ namespace Stact.Specs
 //					});
 
 
-			new ConditionNode<A>(x => true);
 
+			Future<A> receivedA = new Future<A>();
+			Future<B> receivedB = new Future<B>();
 
 			engine.Receive<A>(receivedA.Complete);
+			engine.Receive<B>(receivedB.Complete);
 
-			engine.Send(new A());
+			engine.Send(new B());
 
-			receivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+			receivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("A not received");
+			receivedB.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("B not received");
 		}
 
 

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
+	using System;
 	using System.Diagnostics;
 	using Internal;
 	using Magnum.Extensions;
@@ -20,44 +21,62 @@ namespace Stact.Routing.Visualizers
 	public class RoutingEngineTextVisualizer :
 		AbstractRoutingEngineVisitor<RoutingEngineTextVisualizer>
 	{
+		Action<string> _output = s => Trace.WriteLine(s);
+
+		public Action<string> Output
+		{
+			set { _output = value ?? NoOutput; }
+		}
+
+		static void NoOutput(string s)
+		{
+		}
+
 		protected override bool Visit(DynamicRoutingEngine engine)
 		{
-			Trace.WriteLine(engine.GetType().ToShortTypeName());
+			_output(engine.GetType().ToShortTypeName());
 
 			return base.Visit(engine);
 		}
 
 		protected override bool Visit(TypeRouter router)
 		{
-			Trace.WriteLine(router.GetType().ToShortTypeName());
+			_output(router.GetType().ToShortTypeName());
 
 			return base.Visit(router);
 		}
 
 		protected override bool Visit<TChannel>(AlphaNode<TChannel> node)
 		{
-			Trace.WriteLine(node.GetType().ToShortTypeName());
+			_output(node.GetType().ToShortTypeName());
 
 			return base.Visit(node);
 		}
 
 		protected override bool Visit<TChannel>(JoinNode<TChannel> node)
 		{
-			Trace.WriteLine(node.GetType().ToShortTypeName());
+			_output(node.GetType().ToShortTypeName());
+
+			return base.Visit(node);
+		}
+
+		protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
+		{
+			_output(node.GetType().ToShortTypeName());
 
 			return base.Visit(node);
 		}
 
 		protected override bool Visit<TChannel>(ConstantNode<TChannel> node)
 		{
-			Trace.WriteLine(node.GetType().ToShortTypeName());
+			_output(node.GetType().ToShortTypeName());
 
 			return base.Visit(node);
 		}
 
 		protected override bool Visit<TChannel>(ConsumerNode<TChannel> node)
 		{
-			Trace.WriteLine(node.GetType().ToShortTypeName());
+			_output(node.GetType().ToShortTypeName());
 
 			return base.Visit(node);
 		}

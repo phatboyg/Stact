@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -49,6 +50,11 @@ namespace Stact.Routing.Internal
 				return;
 
 			_activations.All(activation => context.Add(() => activation.Activate(context)));
+		}
+
+		public bool IsAlive
+		{
+			get { return true; }
 		}
 
 		static Expression<Filter<RoutingContext<TChannel>>> GetRoutingContextFilter(

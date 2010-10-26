@@ -40,8 +40,8 @@ namespace Stact.Specs
 			var visualizer = new RoutingEngineTextVisualizer();
 
 			var received = new Future<A>();
-
 			engine.Receive<A>(received.Complete);
+
 			var block = new Future<int>();
 			engine.Add(() =>
 				{
@@ -51,13 +51,17 @@ namespace Stact.Specs
 			block.WaitUntilCompleted(2.Seconds());
 
 			engine.Send(new A());
+			received.WaitUntilCompleted(2.Seconds());
+
 			engine.Send(new B());
 
 			var receivedB = new Future<B>();
 			engine.Receive<B>(receivedB.Complete);
 
-			received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
-			receivedB.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+			received.WaitUntilCompleted(200.Seconds()).ShouldBeTrue();
+			receivedB.WaitUntilCompleted(200.Seconds()).ShouldBeTrue();
+
+			//engine.Receive<A, B>(x => { });
 
 			visualizer.Visit(engine);
 		}

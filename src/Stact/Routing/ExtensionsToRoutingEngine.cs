@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
+	using Internal;
+	using Magnum.Extensions;
 	using Stact.Internal;
 
 
@@ -19,6 +21,8 @@ namespace Stact.Routing
 	{
 		public static void Receive<T>(this RoutingEngine engine, Consumer<T> consumer)
 		{
+			var result = new Future<PendingReceive>();
+
 			engine.Add(() =>
 				{
 					ConsumerNode<T> consumerNode = null;
@@ -27,7 +31,32 @@ namespace Stact.Routing
 						{
 							consumerNode = new ConsumerNode<T>(new PoolFiber(), m =>
 								{
-									joinNode.RemoveActivation(consumerNode);
+									//joinNode.RemoveActivation(consumerNode);
+									consumer(m);
+								});
+
+							joinNode.AddActivation(consumerNode);
+						});
+
+					locator.Search(engine);
+
+					result.Complete(null);
+				});
+
+			result.WaitUntilCompleted(30.Seconds());
+		}
+
+		public static void Receive<T1, T2>(this RoutingEngine engine, Consumer<Tuple<T1,T2>> consumer)
+		{
+			engine.Add(() =>
+				{
+					ConsumerNode<Tuple<T1,T2>> consumerNode = null;
+
+					var locator = new JoinNodeLocator<T1,T2>(joinNode =>
+						{
+							consumerNode = new ConsumerNode<Tuple<T1,T2>>(new PoolFiber(), m =>
+								{
+									//joinNode.RemoveActivation(consumerNode);
 									consumer(m);
 								});
 

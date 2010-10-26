@@ -14,16 +14,14 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum.Collections;
 
 
 	public class JoinNode<T1, T2> :
 		Activation<T1>,
 		RightActivation<Tuple<T1, T2>>
 	{
+		readonly BetaMemory<Tuple<T1, T2>> _betaMemory;
 		readonly RightActivation<T2> _rightActivation;
-
-		BetaMemory<Tuple<T1, T2>> _betaMemory;
 
 		public JoinNode(RightActivation<T2> rightActivation)
 		{
@@ -44,10 +42,22 @@ namespace Stact.Routing.Internal
 
 		public void Activate(RoutingContext<T1> context)
 		{
-			_rightActivation.RightActivate(match => _betaMemory.Activate(context.Join(match)));
+			_rightActivation.RightActivate(match =>
+				{
+					if (!context.IsAlive)
+						return false;
+
+					_betaMemory.Activate(context.Join(match));
+					return true;
+				});
 		}
 
-		public void RightActivate(Action<RoutingContext<Tuple<T1, T2>>> callback)
+		public bool IsAlive
+		{
+			get { return true; }
+		}
+
+		public void RightActivate(Func<RoutingContext<Tuple<T1, T2>>, bool> callback)
 		{
 			_betaMemory.RightActivate(callback);
 		}
@@ -55,6 +65,16 @@ namespace Stact.Routing.Internal
 		public void RightActivate(RoutingContext<Tuple<T1, T2>> context, Action<RoutingContext<Tuple<T1, T2>>> callback)
 		{
 			_betaMemory.RightActivate(context, callback);
+		}
+
+		public void AddActivation(Activation<Tuple<T1, T2>> activation)
+		{
+			_betaMemory.AddActivation(activation);
+		}
+
+		public void RemoveActivation(Activation<Tuple<T1, T2>> activation)
+		{
+			_betaMemory.RemoveActivation(activation);
 		}
 	}
 }
