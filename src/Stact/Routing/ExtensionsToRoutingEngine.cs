@@ -17,24 +17,25 @@ namespace Stact.Routing
 
 	public static class ExtensionsToRoutingEngine
 	{
-		public static PendingReceive Receive<T>(this RoutingEngine engine, Consumer<T> consumer)
+		public static void Receive<T>(this RoutingEngine engine, Consumer<T> consumer)
 		{
-			ConsumerNode<T> consumerNode = null;
-
-			var locator = new JoinNodeLocator<T>(joinNode =>
+			engine.Add(() =>
 				{
-					consumerNode = new ConsumerNode<T>(new SynchronousFiber(), m =>
+					ConsumerNode<T> consumerNode = null;
+
+					var locator = new JoinNodeLocator<T>(joinNode =>
 						{
-							joinNode.RemoveActivation(consumerNode);
-							consumer(m);
+							consumerNode = new ConsumerNode<T>(new PoolFiber(), m =>
+								{
+									joinNode.RemoveActivation(consumerNode);
+									consumer(m);
+								});
+
+							joinNode.AddActivation(consumerNode);
 						});
 
-					joinNode.AddActivation(consumerNode);
+					locator.Search(engine);
 				});
-
-			locator.Search(engine);
-
-			return null;
 		}
 	}
 }

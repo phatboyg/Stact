@@ -21,13 +21,10 @@ namespace Stact.Routing.Internal
 	public class TypeRouter :
 		Activation
 	{
-		readonly Fiber _fiber;
 		readonly Cache<Type, Activation> _types;
 
-		public TypeRouter(Fiber fiber)
+		public TypeRouter()
 		{
-			_fiber = fiber;
-
 			_types = new Cache<Type, Activation>();
 		}
 
@@ -38,12 +35,9 @@ namespace Stact.Routing.Internal
 
 		public void Activate<T>(RoutingContext<T> message)
 		{
-			_fiber.Add(() =>
-				{
-					Activation typeChannel = _types.Retrieve(typeof(T), _ => (Activation)new AlphaNode<T>());
+			Activation typeChannel = _types.Retrieve(typeof(T), _ => (Activation)new AlphaNode<T>());
 
-					typeChannel.Activate(message);
-				});
+			typeChannel.Activate(message);
 		}
 
 		public Activation GetActivation(Type type)

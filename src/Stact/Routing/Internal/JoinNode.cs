@@ -54,7 +54,7 @@ namespace Stact.Routing.Internal
 
 		public void Activate(RoutingContext<T> context)
 		{
-			_rightActivation.RightActivate(match => _betaMemory.Activate(match));
+			_rightActivation.RightActivate(context, match => _betaMemory.Activate(match));
 		}
 
 		public void RightActivate(Action<RoutingContext<T>> callback)

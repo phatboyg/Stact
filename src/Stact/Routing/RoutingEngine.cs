@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
+	using System;
+
+
 	/// <summary>
 	/// A routing engine managed the distribution of messages to consumers using
 	/// a rules engine style to allow for highly complex routing rules without
@@ -20,5 +23,6 @@ namespace Stact.Routing
 	public interface RoutingEngine :
 		UntypedChannel
 	{
+		void Add(Action operation);
 	}
 }

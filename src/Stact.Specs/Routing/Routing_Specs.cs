@@ -43,7 +43,7 @@ namespace Stact.Specs
 			new ConditionNode<A>(x => true);
 
 
-			//engine.Receive<A>(msg => receivedA.Complete(msg));
+			engine.Receive<A>(receivedA.Complete);
 
 			engine.Send(new A());
 

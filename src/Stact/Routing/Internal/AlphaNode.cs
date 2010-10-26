@@ -55,7 +55,7 @@ namespace Stact.Routing.Internal
 		{
 			_activations.Add(activation);
 
-			_messages.All(activation.Activate);
+			_messages.All(context => context.Add(() => activation.Activate(context)));
 		}
 	}
 

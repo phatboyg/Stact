@@ -26,7 +26,7 @@ namespace Stact.Routing
 		{
 			_fiber = fiber;
 
-			_router = new TypeRouter(fiber);
+			_router = new TypeRouter();
 		}
 
 		public Activation Router
