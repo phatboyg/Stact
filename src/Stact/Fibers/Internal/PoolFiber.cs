@@ -13,7 +13,7 @@
 namespace Stact.Internal
 {
 	using System;
-	using System.Collections.Concurrent;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Threading;
 	using Magnum;
@@ -29,7 +29,7 @@ namespace Stact.Internal
 	{
 		readonly object _lock = new object();
 
-		ConcurrentQueue<Action> _operations = new ConcurrentQueue<Action>();
+		IList<Action> _operations = new List<Action>();
 
 		bool _executorQueued;
 		bool _shuttingDown;
@@ -47,23 +47,7 @@ namespace Stact.Internal
 
 			lock (_lock)
 			{
-				_operations.Enqueue(operation);
-				if (!_executorQueued)
-					QueueWorkItem();
-			}
-		}
-
-		public void AddMany(params Action[] operations)
-		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			lock (_lock)
-			{
-				for (int i = 0; i < operations.Length; i++)
-				{
-					_operations.Enqueue(operations[i]);
-				}
+				_operations.Add(operation);
 				if (!_executorQueued)
 					QueueWorkItem();
 			}
@@ -88,7 +72,7 @@ namespace Stact.Internal
 				_shuttingDown = true;
 				Monitor.PulseAll(_lock);
 
-				while (!_operations.IsEmpty || _executorQueued)
+				while (_operations.Count > 0 || _executorQueued)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -115,13 +99,13 @@ namespace Stact.Internal
 
 		bool Execute()
 		{
-			Action[] operations = RemoveAll();
+			IList<Action> operations = RemoveAll();
 
 			ExecuteActions(operations);
 
 			lock (_lock)
 			{
-				if (_operations.IsEmpty)
+				if (_operations.Count == 0)
 				{
 					_executorQueued = false;
 
@@ -134,9 +118,9 @@ namespace Stact.Internal
 			return true;
 		}
 
-		void ExecuteActions(Action[] operations)
+		void ExecuteActions(IList<Action> operations)
 		{
-			for (int i = 0; i < operations.Length; i++)
+			for (int i = 0; i < operations.Count; i++)
 			{
 				if (_stopping)
 					break;
@@ -145,12 +129,13 @@ namespace Stact.Internal
 			}
 		}
 
-		Action[] RemoveAll()
+		IList<Action> RemoveAll()
 		{
 			lock (_lock)
 			{
-				var operations = _operations.ToArray();
-				_operations = new ConcurrentQueue<Action>();
+				var operations = _operations;
+				
+				_operations = new List<Action>();
 
 				return operations;
 			}

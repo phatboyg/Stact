@@ -13,7 +13,6 @@
 namespace Stact.Internal
 {
 	using System;
-	using Magnum.Extensions;
 
 
 	/// <summary>
@@ -23,19 +22,18 @@ namespace Stact.Internal
 	public class SynchronousFiber :
 		Fiber
 	{
+		bool _shuttingDown;
 		bool _stopping;
 
 		public void Add(Action operation)
 		{
+			if (_shuttingDown)
+				throw new FiberException("The fiber is no longer accepting actions");
+
 			if (_stopping)
 				return;
 
 			operation();
-		}
-
-		public void AddMany(params Action[] operations)
-		{
-			operations.Each(Add);
 		}
 
 		public void Stop()
@@ -45,6 +43,8 @@ namespace Stact.Internal
 
 		public void Shutdown(TimeSpan timeout)
 		{
+			_shuttingDown = true;
+			_stopping = true;
 		}
 	}
 }

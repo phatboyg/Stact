@@ -31,7 +31,7 @@ namespace Stact.Internal
 		readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
 		readonly Thread _thread;
 
-		ConcurrentQueue<Action> _operations = new ConcurrentQueue<Action>();
+		IList<Action> _operations = new List<Action>();
 
 		bool _isActive;
 		bool _shuttingDown;
@@ -62,21 +62,7 @@ namespace Stact.Internal
 
 			lock (_lock)
 			{
-				_operations.Enqueue(operation);
-
-				Monitor.PulseAll(_lock);
-			}
-		}
-
-		public void AddMany(params Action[] operations)
-		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			lock (_lock)
-			{
-				for (int i = 0; i < operations.Length; i++)
-					_operations.Enqueue(operations[i]);
+				_operations.Add(operation);
 
 				Monitor.PulseAll(_lock);
 			}
@@ -103,7 +89,7 @@ namespace Stact.Internal
 
 				Monitor.PulseAll(_lock);
 
-				while (!_operations.IsEmpty || _isActive)
+				while (_operations.Count > 0 || _isActive)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -164,13 +150,12 @@ namespace Stact.Internal
 			_log.Debug(x => x.Write("{0} Exiting", _thread.Name));
 		}
 
-
-		protected bool Execute()
+		bool Execute()
 		{
 			if (!WaitForActions())
 				return false;
 
-			Action[] actions = RemoveAll();
+			IList<Action> actions = RemoveAll();
 			if (actions == null)
 				return false;
 
@@ -178,7 +163,7 @@ namespace Stact.Internal
 
 			lock (_lock)
 			{
-				if (_operations.IsEmpty)
+				if (_operations.Count == 0)
 					Monitor.PulseAll(_lock);
 			}
 
@@ -189,22 +174,22 @@ namespace Stact.Internal
 		{
 			lock (_lock)
 			{
-				while (_operations.IsEmpty && !_stopping && !_shuttingDown)
+				while (_operations.Count == 0 && !_stopping && !_shuttingDown)
 					Monitor.Wait(_lock);
 
 				if (_stopping)
 					return false;
 
 				if (_shuttingDown)
-					return !_operations.IsEmpty;
+					return _operations.Count > 0;
 			}
 
 			return true;
 		}
 
-		void ExecuteActions(Action[] operations)
+		void ExecuteActions(IList<Action> operations)
 		{
-			for (int i = 0; i < operations.Length; i++)
+			for (int i = 0; i < operations.Count; i++)
 			{
 				if (_stopping)
 					break;
@@ -213,13 +198,13 @@ namespace Stact.Internal
 			}
 		}
 
-		Action[] RemoveAll()
+		IList<Action> RemoveAll()
 		{
 			lock (_lock)
 			{
-				var operations = _operations.ToArray();
+				var operations = _operations;
 
-				_operations = new ConcurrentQueue<Action>();
+				_operations = new List<Action>();
 
 				return operations;
 			}

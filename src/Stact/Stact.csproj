@@ -140,8 +140,8 @@
     <Compile Include="Actors\Internal\ActorFactoryImpl.cs" />
     <Compile Include="Fibers\Internal\ShutdownFiberOnDispose.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
-    <Compile Include="Fibers\SchedulerException.cs" />
-    <Compile Include="Fibers\StactException.cs" />
+    <Compile Include="Schedulers\SchedulerException.cs" />
+    <Compile Include="StactException.cs" />
     <Compile Include="Headers\Command.cs" />
     <Compile Include="Internal\ThreadSingleton.cs" />
     <Compile Include="Messages\Internal\ExitImpl.cs" />

@@ -24,12 +24,6 @@ namespace Stact
 		void Add(Action operation);
 
 		/// <summary>
-		/// Enqueue a series of actions to the queue
-		/// </summary>
-		/// <param name="operations"></param>
-		void AddMany(params Action[] operations);
-
-		/// <summary>
 		/// Runs all remaining actions, waiting until all actions have been executed or until the
 		/// timeout expires. If the timeout expires, an exception is thrown.
 		/// </summary>
