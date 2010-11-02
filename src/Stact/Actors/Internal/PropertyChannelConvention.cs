@@ -39,7 +39,7 @@ namespace Stact.Internal
 			if (channel == null)
 				return;
 
-			inbox.Connect(x => x.AddChannel(channel));
+			inbox.Repeat().Receive<TChannel>(x => channel.Send(x));
 		}
 
 		public bool Matches(ActorConvention<TActor> convention)

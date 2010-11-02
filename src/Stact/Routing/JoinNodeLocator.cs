@@ -89,6 +89,7 @@ namespace Stact.Routing
 		}
 	}
 
+
 	public class JoinNodeLocator<T1,T2> :
 		AbstractRoutingEngineVisitor<JoinNodeLocator<T1,T2>>
 	{

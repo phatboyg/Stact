@@ -249,6 +249,17 @@
     <Compile Include="Actors\Inbox.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
+    <Compile Include="Routing\AlphaNodeSelector.cs" />
+    <Compile Include="Routing\ChannelNode.cs" />
+    <Compile Include="Routing\Configuration\Internal\DynamicRoutingEngineConfigurator.cs" />
+    <Compile Include="Routing\Configuration\ReceiveConfigurator.cs" />
+    <Compile Include="Routing\Configuration\ReceiveConfiguratorImpl.cs" />
+    <Compile Include="Routing\Configuration\RoutingEngineConfiguration.cs" />
+    <Compile Include="Routing\Configuration\RoutingConfigurator.cs" />
+    <Compile Include="Routing\Configuration\RoutingEngineConfigurator.cs" />
+    <Compile Include="Routing\Configuration\WhenConfigurator.cs" />
+    <Compile Include="Routing\Configuration\WhenConfiguratorImpl.cs" />
+    <Compile Include="Routing\Configuration\WhenExtensions.cs" />
     <Compile Include="Routing\ConsumerNode.cs" />
     <Compile Include="Routing\DynamicRoutingContext.cs" />
     <Compile Include="Routing\Internal\AlphaMemory.cs" />
@@ -271,6 +282,7 @@
     <Compile Include="Routing\Internal\RoutingContext.cs" />
     <Compile Include="Routing\Internal\TypeRouter.cs" />
     <Compile Include="Routing\RoutingEngine.cs" />
+    <Compile Include="Routing\SelectiveConsumerNode.cs" />
     <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />
     <Compile Include="Routing\Visualizers\RoutingEngineTextVisualizer.cs" />
     <Compile Include="Schedulers\ExtensionsToScheduler.cs" />

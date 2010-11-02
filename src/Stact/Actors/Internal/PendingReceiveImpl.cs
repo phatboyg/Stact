@@ -13,7 +13,6 @@
 namespace Stact.Internal
 {
 	using System;
-	using Configuration;
 
 
 	public class PendingReceiveImpl<TMessage> :
@@ -39,7 +38,6 @@ namespace Stact.Internal
 		                          Action<PendingReceiveImpl<TMessage>> onComplete)
 			: this(inbox, selectiveConsumer, NoTimeoutCallback, onComplete)
 		{
-			_inbox = inbox;
 		}
 
 		public void Cancel()
@@ -62,11 +60,6 @@ namespace Stact.Internal
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
 			return _inbox.Receive(consumer, timeout, timeoutCallback);
-		}
-
-		public void Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			_inbox.Connect(subscriberActions);
 		}
 
 		public void ScheduleTimeout(Func<PendingReceiveImpl<TMessage>, ScheduledOperation> scheduleAction)

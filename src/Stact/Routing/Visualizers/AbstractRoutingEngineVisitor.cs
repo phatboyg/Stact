@@ -16,7 +16,6 @@ namespace Stact.Routing.Visualizers
 	using Magnum.Extensions;
 	using Magnum.Reflection;
 
-
 	public abstract class AbstractRoutingEngineVisitor<T> :
 		ReflectiveVisitorBase<T>
 		where T : AbstractRoutingEngineVisitor<T>

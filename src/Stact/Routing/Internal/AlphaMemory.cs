@@ -56,7 +56,9 @@ namespace Stact.Routing.Internal
 					if (!activation.IsAlive)
 						return false;
 
-					context.Add(() => activation.Activate(context));
+					if(context.IsAlive)
+						activation.Activate(context);
+
 					return true;
 				});
 		}

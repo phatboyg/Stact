@@ -12,44 +12,43 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Magnum.Extensions;
 
 
-	public class ConditionNode<TChannel> :
-		Activation<TChannel>
+	public class ConditionNode<T> :
+		Activation<T>
 	{
-		readonly ActivationList<TChannel> _activations;
-		readonly Filter<RoutingContext<TChannel>> _filter;
-		readonly Expression<Filter<TChannel>> _filterExpression;
+		readonly ActivationList<T> _activations;
+		readonly Filter<RoutingContext<T>> _filter;
+		readonly Expression<Filter<T>> _filterExpression;
 
-		public ConditionNode(Expression<Filter<TChannel>> filterExpression)
+		public ConditionNode(Expression<Filter<T>> filterExpression)
 		{
-			_activations = new ActivationList<TChannel>();
+			_activations = new ActivationList<T>();
 
 			_filterExpression = filterExpression;
 			_filter = GetRoutingContextFilter(filterExpression).Compile();
 		}
 
-		public IEnumerable<Activation<TChannel>> Activations
+		public IEnumerable<Activation<T>> Activations
 		{
 			get { return _activations; }
 		}
 
-		public Expression<Filter<TChannel>> FilterExpression
+		public Expression<Filter<T>> FilterExpression
 		{
 			get { return _filterExpression; }
 		}
 
-		public void Activate(RoutingContext<TChannel> context)
+		public void Activate(RoutingContext<T> context)
 		{
 			if (!_filter(context))
 				return;
 
-			_activations.All(activation => context.Add(() => activation.Activate(context)));
+			_activations.All(activation => activation.Activate(context));
 		}
 
 		public bool IsAlive
@@ -57,19 +56,19 @@ namespace Stact.Routing.Internal
 			get { return true; }
 		}
 
-		static Expression<Filter<RoutingContext<TChannel>>> GetRoutingContextFilter(
-			Expression<Filter<TChannel>> filterExpression)
+		static Expression<Filter<RoutingContext<T>>> GetRoutingContextFilter(
+			Expression<Filter<T>> filterExpression)
 		{
-			ParameterExpression context = Expression.Parameter(typeof(RoutingContext<TChannel>), "value");
+			ParameterExpression context = Expression.Parameter(typeof(RoutingContext<T>), "value");
 
 			PropertyInfo bodyProperty =
-				ExtensionsToExpression.GetMemberPropertyInfo<RoutingContext<TChannel>, TChannel>(x => x.Body);
+				ExtensionsToExpression.GetMemberPropertyInfo<RoutingContext<T>, T>(x => x.Body);
 
 			MethodCallExpression body = Expression.Call(context, bodyProperty.GetGetMethod(true));
 
 			InvocationExpression invokeFilter = Expression.Invoke(filterExpression, body);
 
-			return Expression.Lambda<Filter<RoutingContext<TChannel>>>(invokeFilter, context);
+			return Expression.Lambda<Filter<RoutingContext<T>>>(invokeFilter, context);
 		}
 	}
 }

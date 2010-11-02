@@ -161,6 +161,7 @@
     <Compile Include="Model\Status.cs" />
     <Compile Include="Registries\ActorRegistry_Specs.cs" />
     <Compile Include="Routing\Memory_Specs.cs" />
+    <Compile Include="Routing\NewRouting_Specs.cs" />
     <Compile Include="Routing\Routing_Specs.cs" />
     <Compile Include="Routing\Visualizer_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />

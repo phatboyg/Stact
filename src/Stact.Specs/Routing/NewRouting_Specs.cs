@@ -10,34 +10,44 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Specs
 {
-	using System;
+	using Internal;
+	using Magnum.TestFramework;
+	using Routing;
+	using Routing.Configuration;
 
 
-	class Program
+	public class When_using_the_new_inbox
 	{
-		static void Main(string[] args)
+		[Then]
+		public void Should()
 		{
-			try
-			{
-				Console.WriteLine("Stact Benchmark Console");
+			ActorFactory<MyActor> factory = ActorFactory.Create(inbox => new MyActor(inbox));
 
-				new ChannelAdapterBenchmark().Run();
-				new ChannelAdapterBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new MessagePassingBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
-				new PingPongBenchmark().Run();
 
-				new RoutingEngineBenchmark().Run();
-				new RoutingEngineBenchmark().Run();
-			}
-			catch (Exception ex)
+
+
+
+
+		}
+
+		class A
+		{ }
+		class B
+		{ }
+
+		class MyActor :
+			Actor
+		{
+			readonly Inbox _inbox;
+
+			public MyActor(Inbox inbox)
 			{
-				Console.WriteLine("ABEND!");
-				Console.WriteLine(ex);
+				_inbox = inbox;
+
+				inbox.When<A>();
+
 			}
 		}
 	}

@@ -27,7 +27,9 @@ namespace Stact.Configuration.Internal
 
 		public ActorFactoryConfiguratorImpl()
 		{
-			_conventions = new ActorConventionSet<TActor>(new PropertyChannelsConvention<TActor>());
+			_conventions = new ActorConventionSet<TActor>(
+				new PropertyChannelsConvention<TActor>(),
+				new PublicMethodsConvention<TActor>());
 
 			UseSharedScheduler();
 		}
@@ -54,7 +56,8 @@ namespace Stact.Configuration.Internal
 
 		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
 		{
-			_actorFactory = () => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory, _conventions, actorFactory);
+			_actorFactory =
+				() => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory, _conventions, actorFactory);
 
 			return this;
 		}

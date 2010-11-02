@@ -30,12 +30,7 @@ namespace Stact.Internal
 
 		public void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
 		{
-			inbox.Connect(x =>
-				{
-					x.AddConsumerOf<TChannel>()
-						.UsingConsumer(message => _instanceConsumer(instance, message))
-						.HandleOnFiber(fiber);
-				});
+			inbox.Repeat().Receive<TChannel>(x => _instanceConsumer(instance, x));
 		}
 
 		public bool Matches(ActorConvention<TActor> convention)

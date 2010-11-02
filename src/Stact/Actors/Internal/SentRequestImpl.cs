@@ -56,10 +56,5 @@ namespace Stact.Internal
 		{
 			return _inbox.Receive(consumer, timeout, timeoutCallback);
 		}
-
-		public void Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			throw new NotSupportedException("Connection cannot be added as part of a sent request");
-		}
 	}
 }

@@ -83,9 +83,9 @@
 					});
 			}
 
-			var visualizer = new RoutingEngineTextVisualizer();
-			visualizer.Output = s => Console.WriteLine(s);
-			visualizer.Visit(engine);
+			//var visualizer = new RoutingEngineTextVisualizer();
+			//visualizer.Output = s => Console.WriteLine(s);
+			//visualizer.Visit(engine);
 
 			for (int i = 0; i < messageCount; i += 2)
 			{

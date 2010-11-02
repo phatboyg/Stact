@@ -1,3 +1,4 @@
+
 // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -28,6 +29,12 @@ namespace Stact
 			configurator(factoryConfiguratorImpl);
 
 			return factoryConfiguratorImpl.CreateActorFactory();
+		}
+
+		public static ActorFactory<TActor> Create<TActor>(Func<TActor> actorFactory)
+			where TActor : class, Actor
+		{
+			return Create<TActor>(x => x.ConstructedBy(actorFactory));
 		}
 
 		public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)

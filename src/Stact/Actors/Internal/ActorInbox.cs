@@ -1,4 +1,4 @@
-// Copyright 2007-2010 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,11 +14,9 @@ namespace Stact.Actors.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using Configuration;
-	using Configuration.Internal;
 	using Magnum.Collections;
-	using Magnum.Extensions;
+	using Routing;
+	using Routing.Internal;
 	using Stact.Internal;
 
 
@@ -33,100 +31,74 @@ namespace Stact.Actors.Internal
 		Inbox
 		where TActor : class, Actor
 	{
-		readonly UntypedChannel _adapter;
 		readonly Fiber _fiber;
-		readonly Cache<Type, object> _inboxCache;
-		IList<ChannelConnection> _connections;
 		readonly Scheduler _scheduler;
-		ChannelConnection _inboxConnection;
+		RoutingEngine _engine;
+
+		Cache<Type, object> _joinNodes;
+		HashSet<PendingReceive> _pending;
+
 
 		public ActorInbox(Fiber fiber, Scheduler scheduler)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;
-			_connections = new List<ChannelConnection>();
+			_engine = new DynamicRoutingEngine(fiber);
 
-			_adapter = new ChannelAdapter();
-			_inboxConnection = _adapter.Connect(x =>
-				{
-					x.AddConsumerOf<Request<Exit>>()
-						.UsingConsumer(HandleExit)
-						.HandleOnFiber(_fiber);
+			_joinNodes = new Cache<Type, object>();
 
-					x.AddConsumerOf<Kill>()
-						.UsingConsumer(HandleKill)
-						.HandleOnCallingThread();
-				});
-
-			_inboxCache = new Cache<Type, object>();
+			_pending = new HashSet<PendingReceive>();
+			_pending.Add(Receive<Request<Exit>>(x => HandleExit));
+			_pending.Add(Receive<Kill>(x => HandleKill));
 		}
 
 		public void Send<T>(T message)
 		{
-			_fiber.Add(() =>
-				{
-					GetInbox<T>();
-
-					_adapter.Send(message);
-				});
+			_engine.Send(message);
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
 		{
-			return GetInbox<T>().Receive(consumer);
+			var pending = new PendingReceiveImpl<T>(this, consumer, x => _pending.Remove(x));
+
+			return Receive(pending);
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
-			return GetInbox<T>().Receive(consumer, timeout, timeoutCallback);
-		}
+			var pending = new PendingReceiveImpl<T>(this, consumer, timeoutCallback, x => _pending.Remove(x));
 
-		public void Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			var subscriber = new ConnectionConfiguratorImpl(_adapter);
+			pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
 
-			subscriberActions(subscriber);
-
-			_connections.Add(subscriber.Complete());
-		}
-
-		Inbox<T> GetInbox<T>()
-		{
-			return _inboxCache.Retrieve(typeof(T), type =>
-				{
-					var inbox = new BufferedInbox<T>(this, _fiber, _scheduler);
-
-					// TODO for some reason the BufferedInbox<T> is blowing up the unsubscribe logic
-					// ChannelConnection connection = _adapter.Connect(x => x.AddChannel(inbox));
-					//_connections.Add(connection);
-
-					_adapter.Connect(x => x.AddChannel(inbox));
-
-
-					return inbox;
-				}) as Inbox<T>;
+			return Receive(pending);
 		}
 
 		void HandleExit(Request<Exit> message)
 		{
-			_connections.Each(x =>
-				{
-					x.Dispose();
-				});
-			_connections.Clear();
-
-			_inboxCache.GetAll().Cast<IDisposable>().Each(x => x.Dispose());
-			_inboxCache.ClearAll();
-
-			_inboxConnection.Dispose();
-			_inboxConnection = null;
-
 			_fiber.Shutdown(TimeSpan.Zero);
 		}
 
 		void HandleKill(Kill message)
 		{
 			_fiber.Stop();
+		}
+
+		PendingReceive Receive<T>(PendingReceiveImpl<T> receiver)
+		{
+			var consumerNode = new SelectiveConsumerNode<T>(receiver.Accept);
+
+			var joinNode = (JoinNode<T>)_joinNodes.Retrieve(typeof(T), x =>
+				{
+					JoinNode<T> result = null;
+					var locator = new JoinNodeLocator<T>(jNode => result = jNode);
+					locator.Search(_engine);
+					return result;
+				});
+
+			joinNode.AddActivation(consumerNode);
+
+			_pending.Add(receiver);
+			return receiver;
 		}
 	}
 }

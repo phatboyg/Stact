@@ -97,11 +97,6 @@ namespace Stact.Internal
 			return pendingReceive;
 		}
 
-		public void Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			throw new NotSupportedException("Connection cannot be added as part of a repeat loop");
-		}
-
 		Consumer<Request<Exit>> HandleExit(Request<Exit> request)
 		{
 			return message =>

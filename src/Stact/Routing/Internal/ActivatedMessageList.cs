@@ -13,7 +13,9 @@
 namespace Stact.Routing.Internal
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 
 
 	/// <summary>
@@ -22,7 +24,8 @@ namespace Stact.Routing.Internal
 	/// context property IsAvailable
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ActivatedMessageList<T>
+	public class ActivatedMessageList<T> :
+		IEnumerable<RoutingContext<T>>
 	{
 		readonly IList<Func<RoutingContext<T>, bool>> _joins;
 		readonly IList<RoutingContext<T>> _messages;
@@ -75,7 +78,15 @@ namespace Stact.Routing.Internal
 
 		void Join(Func<RoutingContext<T>, bool> callback)
 		{
-			for (int i = 0; i < _messages.Count;)
+			if (this.Any(message => false == callback(message)))
+				return;
+
+			_joins.Add(callback);
+		}
+
+		public IEnumerator<RoutingContext<T>> GetEnumerator()
+		{
+			for (int i = 0; i < _messages.Count; )
 			{
 				if (!_messages[i].IsAlive)
 				{
@@ -83,13 +94,15 @@ namespace Stact.Routing.Internal
 					continue;
 				}
 
-				if (false == callback(_messages[i]))
-					return;
-
+				yield return _messages[i];
+				
 				i++;
 			}
+		}
 
-			_joins.Add(callback);
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

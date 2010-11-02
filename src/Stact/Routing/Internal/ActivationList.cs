@@ -15,7 +15,6 @@ namespace Stact.Routing.Internal
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using Magnum.Extensions;
 
 
 	public class ActivationList<TChannel> :
@@ -30,7 +29,18 @@ namespace Stact.Routing.Internal
 
 		public IEnumerator<Activation<TChannel>> GetEnumerator()
 		{
-			return _activations.GetEnumerator();
+			for (int i = 0; i < _activations.Count;)
+			{
+				if (!_activations[i].IsAlive)
+				{
+					_activations.RemoveAt(i);
+					continue;
+				}
+
+				yield return _activations[i];
+
+				i++;
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -45,7 +55,8 @@ namespace Stact.Routing.Internal
 
 		public void All(Action<Activation<TChannel>> callback)
 		{
-			_activations.Each(callback);
+			foreach (var activation in this)
+				callback(activation);
 		}
 
 		public void Remove(Activation<TChannel> activation)
