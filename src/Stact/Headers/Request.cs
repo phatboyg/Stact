@@ -13,9 +13,10 @@
 namespace Stact
 {
 	/// <summary>
-	///   A request message wrapper
+	/// Request is a message stereotype that is applied to a message in which
+	/// a response is expected
 	/// </summary>
-	/// <typeparam name = "T"></typeparam>
+	/// <typeparam name = "T">The message type</typeparam>
 	public interface Request<out T> :
 		Message<T>
 	{
@@ -23,5 +24,10 @@ namespace Stact
 		///   Where responses to the request should be sent
 		/// </summary>
 		UntypedChannel ResponseChannel { get; }
+
+		/// <summary>
+		/// The request identifier which should be returned with a response
+		/// </summary>
+		string RequestId { get; }
 	}
 }

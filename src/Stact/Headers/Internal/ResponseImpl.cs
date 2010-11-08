@@ -16,10 +16,13 @@ namespace Stact.Internal
 		MessageImpl<TResponse>,
 		Response<TResponse>
 	{
-		public ResponseImpl(TResponse message)
+		public ResponseImpl(TResponse message, string requestId = null)
 			: base(message)
 		{
+			RequestId = requestId;
 		}
+
+		public string RequestId { get; private set; }
 	}
 
 
@@ -27,12 +30,18 @@ namespace Stact.Internal
 		MessageImpl<TResponse>,
 		Response<TRequest, TResponse>
 	{
-		public ResponseImpl(TRequest request, TResponse message)
+		public ResponseImpl(Request<TRequest> request, TResponse message)
 			: base(message)
 		{
-			Request = request;
+			if (request != null)
+			{
+				Request = request.Body;
+				RequestId = request.RequestId;
+			}
 		}
 
 		public TRequest Request { get; private set; }
+
+		public string RequestId { get; private set; }
 	}
 }

@@ -12,16 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
+	using Magnum;
+
+
 	public class RequestImpl<T> :
 		MessageImpl<T>,
 		Request<T>
 	{
 		public RequestImpl(UntypedChannel responseChannel, T message)
+			: this(responseChannel, message, CombGuid.Generate().ToString("N"))
+		{
+		}
+
+		public RequestImpl(UntypedChannel responseChannel, T message, string requestId)
 			: base(message)
 		{
 			ResponseChannel = responseChannel;
+			RequestId = requestId;
 		}
 
 		public UntypedChannel ResponseChannel { get; private set; }
+
+		public string RequestId { get; private set; }
 	}
 }

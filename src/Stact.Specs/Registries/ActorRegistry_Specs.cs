@@ -19,6 +19,7 @@ namespace Stact.Specs.Registries
 	using Magnum;
 	using Magnum.TestFramework;
 	using Model;
+	using NUnit.Framework;
 	using Stact.Actors;
 
 
@@ -29,7 +30,6 @@ namespace Stact.Specs.Registries
 		Guid _auctionId;
 		ActorRegistry _registry;
 
-		[When]
 		public void Adding_an_actor_to_a_registry()
 		{
 			_auctionFactory = ActorFactory.Create(inbox => new Auction(inbox));
@@ -39,9 +39,7 @@ namespace Stact.Specs.Registries
 			ActorInstance auction = _auctionFactory.GetActor();
 
 			ActorRegistry registry = new InMemoryActorRegistry(new PoolFiber());
-			registry.Register(auction, (key,actor) =>
-				{
-				});
+			registry.Register(auction, (key, actor) => { });
 
 			// need to proxy the channel with headers somehow... 
 
@@ -138,10 +136,8 @@ namespace Stact.Specs.Registries
 		{
 			_fiber.Add(() =>
 				{
-					foreach (var actor in _actors.Keys)
-					{
+					foreach (ActorInstance actor in _actors.Keys)
 						actor.Send<Exit>();
-					}
 				});
 		}
 

@@ -26,7 +26,7 @@ namespace Stact.Routing.Internal
 		public void Activate(RoutingContext<TChannel> context)
 		{
 			Consumer<TChannel> consumer = _selectiveConsumer(context.Body);
-			if (_selectiveConsumer == null)
+			if (consumer == null)
 				return;
 
 			var body = context.Body;

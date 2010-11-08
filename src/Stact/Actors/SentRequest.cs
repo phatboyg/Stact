@@ -12,9 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface SentRequest<T> :
+	public interface SentRequest<out T> :
 		Inbox
 	{
 		T Body { get; }
+		string RequestId { get; }
 	}
 }

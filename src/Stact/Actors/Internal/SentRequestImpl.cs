@@ -13,7 +13,9 @@
 namespace Stact.Internal
 {
 	using System;
-	using Configuration;
+	using System.Linq;
+	using Magnum.Extensions;
+	using Magnum.Reflection;
 
 
 	/// <summary>
@@ -23,12 +25,12 @@ namespace Stact.Internal
 	public class SentRequestImpl<TRequest> :
 		SentRequest<TRequest>
 	{
-		readonly TRequest _body;
 		readonly Inbox _inbox;
+		readonly Request<TRequest> _request;
 
-		public SentRequestImpl(TRequest body, Inbox inbox)
+		public SentRequestImpl(Request<TRequest> request, Inbox inbox)
 		{
-			_body = body;
+			_request = request;
 			_inbox = inbox;
 		}
 
@@ -39,7 +41,12 @@ namespace Stact.Internal
 
 		public TRequest Body
 		{
-			get { return _body; }
+			get { return _request.Body; }
+		}
+
+		public string RequestId
+		{
+			get { return _request.RequestId; }
 		}
 
 		public void Send<T>(T message)
@@ -49,12 +56,59 @@ namespace Stact.Internal
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
 		{
-			return _inbox.Receive(consumer);
+			return _inbox.Receive(CreateFilteredConsumer(consumer));
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
 		{
-			return _inbox.Receive(consumer, timeout, timeoutCallback);
+			return _inbox.Receive(CreateFilteredConsumer(consumer), timeout, timeoutCallback);
+		}
+
+		SelectiveConsumer<T> CreateFilteredConsumer<T>(SelectiveConsumer<T> consumer)
+		{
+			if (!typeof(T).Implements(typeof(Response<>)))
+				return consumer;
+
+			var types = new[]{typeof(TRequest), typeof(T), typeof(T).GetDeclaredGenericArguments().Single()};
+			var args = new object[] {RequestId};
+			var responseFilter = (ResponseFilter<T>)FastActivator.Create(typeof(RequestIdFilter<,>), types, args);
+
+			SelectiveConsumer<T> result =  candidate =>
+				{
+					if (!responseFilter.Accept(candidate))
+						return null;
+
+					return consumer(candidate);
+				};
+
+			return result;
+		}
+
+
+		class RequestIdFilter<T, TBody> :
+			ResponseFilter<T>
+			where T : Response<TBody>
+		{
+			readonly string _requestId;
+
+			public RequestIdFilter(string requestId)
+			{
+				_requestId = requestId;
+			}
+
+			public bool Accept(T message)
+			{
+				if (_requestId == null)
+					return message.RequestId == null;
+
+				return _requestId.Equals(message.RequestId);
+			}
+		}
+
+
+		interface ResponseFilter<T>
+		{
+			bool Accept(T message);
 		}
 	}
 }

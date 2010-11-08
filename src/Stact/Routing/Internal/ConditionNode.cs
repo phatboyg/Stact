@@ -12,43 +12,40 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
+	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Magnum.Collections;
 	using Magnum.Extensions;
 
 
-	public class ConditionNode<T> :
+	public class ConditionNode<T, TProperty> :
 		Activation<T>
 	{
-		readonly SuccessorList<T> _successors;
-		readonly Filter<RoutingContext<T>> _filter;
-		readonly Expression<Filter<T>> _filterExpression;
+		readonly Expression<Func<T, TProperty>> _keyAccessor;
+		readonly Cache<TProperty, SuccessorList<T>> _successors;
+		Func<T, TProperty> _getKey;
 
-		public ConditionNode(Expression<Filter<T>> filterExpression)
+		public ConditionNode(Expression<Func<T, TProperty>> keyAccessor)
 		{
-			_successors = new SuccessorList<T>();
-
-			_filterExpression = filterExpression;
-			_filter = GetRoutingContextFilter(filterExpression).Compile();
+			_keyAccessor = keyAccessor;
+			_getKey = _keyAccessor.Compile();
+			_successors = new Cache<TProperty, SuccessorList<T>>(x => new SuccessorList<T>());
 		}
 
 		public IEnumerable<Activation<T>> Successors
 		{
-			get { return _successors; }
+			get { return _successors.SelectMany(x => x); }
 		}
 
-		public Expression<Filter<T>> FilterExpression
-		{
-			get { return _filterExpression; }
-		}
 
 		public void Activate(RoutingContext<T> context)
 		{
-			if (!_filter(context))
-				return;
+			TProperty key = _getKey(context.Body);
 
-			_successors.All(activation => activation.Activate(context));
+			_successors.Retrieve(key).All(activation => activation.Activate(context));
 		}
 
 		public bool IsAlive

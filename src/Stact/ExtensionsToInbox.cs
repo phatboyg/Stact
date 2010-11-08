@@ -141,18 +141,18 @@ namespace Stact
 		{
 			UntypedChannel responseChannel = inbox;
 
-			channel.Request(request, responseChannel);
+			var sent = channel.Request(request, responseChannel);
 
-			return new SentRequestImpl<TRequest>(request, inbox);
+			return new SentRequestImpl<TRequest>(sent, inbox);
 		}
 
 		public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, Inbox inbox)
 		{
 			UntypedChannel responseChannel = inbox;
 
-			channel.Request<TRequest>(responseChannel);
+			var sent = channel.Request<TRequest>(responseChannel);
 
-			return new SentRequestImpl<TRequest>(inbox);
+			return new SentRequestImpl<TRequest>(sent, inbox);
 		}
 
 

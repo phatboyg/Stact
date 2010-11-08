@@ -12,15 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
+	/// <summary>
+	/// Response is a message stereotype applied to a message that is in response
+	/// to a Request message.
+	/// </summary>
+	/// <typeparam name="T">The message type</typeparam>
 	public interface Response<out T> :
 		Message<T>
 	{
+		/// <summary>
+		/// The request identifier to which this response is correlated
+		/// </summary>
+		string RequestId { get; }
 	}
 
 
 	public interface Response<out TRequest, out T> :
 		Response<T>
 	{
+		/// <summary>
+		/// The request to which this response is correlated
+		/// </summary>
 		TRequest Request { get; }
 	}
 }
