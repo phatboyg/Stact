@@ -37,7 +37,7 @@ namespace Stact.Routing.Internal
 
 		public IEnumerable<Activation<Tuple<T1, T2>>> Activations
 		{
-			get { return _betaMemory.Activations; }
+			get { return _betaMemory.Successors; }
 		}
 
 		public void Activate(RoutingContext<T1> context)

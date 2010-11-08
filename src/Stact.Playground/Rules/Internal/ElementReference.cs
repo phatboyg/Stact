@@ -10,31 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing
+namespace Stact.Internal
 {
-	using Internal;
-
-
-	public class ConsumerNode<TChannel> :
-		Activation<TChannel>
+	public interface ElementReference<T>
+		: ElementReference
 	{
-		readonly Consumer<TChannel> _consumer;
-		readonly Fiber _fiber;
+		Element<T> Element { get; }
+	}
 
-		public ConsumerNode(Fiber fiber, Consumer<TChannel> consumer)
-		{
-			_fiber = fiber;
-			_consumer = consumer;
-		}
 
-		public void Activate(RoutingContext<TChannel> message)
-		{
-			_fiber.Add(() => _consumer(message.Body));
-		}
-
-		public bool IsAlive
-		{
-			get { return true; }
-		}
+	public interface ElementReference
+	{
 	}
 }

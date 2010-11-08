@@ -23,26 +23,31 @@ namespace Stact.Actors
 	public interface ActorRegistry
 	{
 		/// <summary>
+		/// Adds an actor instance to the registry
+		/// </summary>
+		/// <param name="key">The unique identifier for the actor instance</param>
+		/// <param name="actor">The actor instance</param>
+		void Register(Guid key, ActorInstance actor);
+
+		/// <summary>
 		/// Adds an actor to the registry
 		/// </summary>
-		/// <typeparam name="T">The type of the actor</typeparam>
 		/// <param name="actor">The actor to add</param>
-		void Register<T>(T actor)
-			where T : Actor;
+		/// <param name="callback"></param>
+		void Register(ActorInstance actor, Action<Guid, ActorInstance> callback);
 
 		/// <summary>
 		/// Removes an actor from the registry
 		/// </summary>
 		/// <typeparam name="T">The type of the actor</typeparam>
 		/// <param name="actor">The actor to remove</param>
-		void Unregister<T>(T actor)
-			where T : Actor;
+		void Unregister(ActorInstance actor);
 
 		/// <summary>
 		/// Removes an actor from the registry
 		/// </summary>
-		/// <param name="id">The id of the actor to remove</param>
-		void Unregister(Guid id);
+		/// <param name="key">The id of the actor to remove</param>
+		void Unregister(Guid key);
 
 		/// <summary>
 		/// Stops all actors and removes them from the registry
@@ -52,52 +57,16 @@ namespace Stact.Actors
 		/// <summary>
 		/// Gets an actor from the registry
 		/// </summary>
-		/// <param name="id">The id of the actor</param>
-		/// <returns>The actor with the specified id</returns>
-		Actor Get(Guid id);
-
-		/// <summary>
-		/// Gets all actors from the registry
-		/// </summary>
-		/// <returns>All actors in the registry</returns>
-		IList<ActorInstance> GetAll();
-
-		/// <summary>
-		/// Get all actors from the registry that are the specified type
-		/// </summary>
-		/// <typeparam name="T">The type of actor to retrieve</typeparam>
-		/// <returns>A list of actors matching the specified type</returns>
-		IList<T> GetAll<T>()
-			where T : Actor;
-
-		/// <summary>
-		/// Get all actors from the registry that are the specified type
-		/// </summary>
-		/// <param name="actorType">The type of actor to retrieve</param>
-		/// <returns>A list of actors matching the specified type</returns>
-		IEnumerable<Actor> GetAll(Type actorType);
+		/// <param name="key">The id of the actor</param>
+		/// <param name="callback"></param>
+		/// <param name="notFoundCallback"></param>
+		void Get(Guid key, Action<ActorInstance> callback, Action notFoundCallback);
 
 		/// <summary>
 		/// Calls the callback for each actor in the registry
 		/// </summary>
 		/// <param name="callback">A method to call with each actor</param>
-		void Each(Action<Actor> callback);
-
-		/// <summary>
-		/// Calls the callback for each actor in the registry of the specified type
-		/// </summary>
-		/// <typeparam name="T">The type of actor to select</typeparam>
-		/// <param name="callback">The method to call with each actor</param>
-		void Each<T>(Action<T> callback)
-			where T : Actor;
-
-		/// <summary>
-		/// Calls the callback for each actor in the registry of the specified type
-		/// </summary>
-		/// <param name="actorType">The type of actor to select</param>
-		/// <param name="callback">The method to call with each actor</param>
-		void Each(Type actorType, Action<Actor> callback);
-
+		void Each(Action<Guid, ActorInstance> callback);
 
 		/// <summary>
 		/// Allow subscription to events that are produced by the actor registry as actors
@@ -106,25 +75,24 @@ namespace Stact.Actors
 		/// <param name="subscriberActions">The subscription actions</param>
 		/// <returns>A channel subscription</returns>
 		ChannelConnection Subscribe(Action<ConnectionConfigurator> subscriberActions);
+
 		ChannelConnection Subscribe(Channel<ActorRegistered> listener);
 		ChannelConnection Subscribe(Channel<ActorUnregistered> listener);
 		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener, Channel<ActorUnregistered> unregisteredListener);
-		void Add(Guid auctionId, ActorInstance auction);
 	}
 
 	public interface ActorRegistryEvent
 	{
+		ActorInstance Actor { get; }
 	}
     
 	public interface ActorRegistered :
 		ActorRegistryEvent
 	{
-		Actor Actor { get; }
 	}
 
 	public interface ActorUnregistered :
 		ActorRegistryEvent
 	{
-		Actor Actor { get; }
 	}
 }

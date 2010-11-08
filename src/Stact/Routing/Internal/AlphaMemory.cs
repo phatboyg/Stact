@@ -18,18 +18,18 @@ namespace Stact.Routing.Internal
 	public class AlphaMemory<T> :
 		Activation<T>
 	{
-		readonly ActivationList<T> _activations;
+		readonly SuccessorList<T> _successors;
 		readonly ActivatedMessageList<T> _messages;
 
 		public AlphaMemory()
 		{
 			_messages = new ActivatedMessageList<T>();
-			_activations = new ActivationList<T>();
+			_successors = new SuccessorList<T>();
 		}
 
-		public IEnumerable<Activation<T>> Activations
+		public IEnumerable<Activation<T>> Successors
 		{
-			get { return _activations; }
+			get { return _successors; }
 		}
 
 		protected ActivatedMessageList<T> Messages
@@ -49,7 +49,7 @@ namespace Stact.Routing.Internal
 
 		public void AddActivation(Activation<T> activation)
 		{
-			_activations.Add(activation);
+			_successors.Add(activation);
 
 			_messages.All(context =>
 				{
@@ -65,7 +65,7 @@ namespace Stact.Routing.Internal
 
 		public void RemoveActivation(Activation<T> activation)
 		{
-			_activations.Remove(activation);
+			_successors.Remove(activation);
 		}
 	}
 }

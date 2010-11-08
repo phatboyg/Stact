@@ -13,8 +13,7 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
-	using Stact.Configuration;
+	using Magnum;
 
 
 	public class WcfChannelHostConnectionConfiguratorImpl :
@@ -27,8 +26,8 @@ namespace Stact.Configuration.Internal
 
 		public WcfChannelHostConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
 		{
-			Magnum.Guard.AgainstNull(endpointUri);
-			Magnum.Guard.AgainstNull(pipeName);
+			Guard.AgainstNull(endpointUri);
+			Guard.AgainstNull(pipeName);
 
 			_endpointUri = endpointUri;
 			_pipeName = pipeName;

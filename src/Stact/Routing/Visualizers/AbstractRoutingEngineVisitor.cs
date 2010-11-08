@@ -34,7 +34,7 @@ namespace Stact.Routing.Visualizers
 
 		protected virtual bool Visit<TChannel>(AlphaNode<TChannel> node)
 		{
-			node.Activations.Each(activation => Visit(activation));
+			node.Successors.Each(activation => Visit(activation));
 			return true;
 		}
 

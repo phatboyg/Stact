@@ -30,12 +30,13 @@
 		{
 			Stopwatch timer = Stopwatch.StartNew();
 
-			const int consumerCount = 4;
-			const int messageCount = 1000;
+			const int consumerCount = 10;
+			const int messageCount = 2000;
 
 			var complete = new Future<int>();
 
-			bool completed = RunTest(consumerCount, messageCount, complete, value1Provider, value2Provider);
+			int totalMessageCount;
+			bool completed = RunTest(consumerCount, messageCount, complete, value1Provider, value2Provider, out totalMessageCount);
 
 			timer.Stop();
 
@@ -45,21 +46,21 @@
 				return;
 			}
 
-			long totalMessages = messageCount*consumerCount*2 + (long)Math.Pow(messageCount/2.0, 2)*consumerCount;
-
 			Console.WriteLine("Channel<{0}> Benchmark", typeof(T1).Name);
 
-			Console.WriteLine("Processed {0} messages with {1} consumers in {2}ms", totalMessages, consumerCount,
+			Console.WriteLine("Processed {0} messages with {1} consumers in {2}ms", totalMessageCount, consumerCount,
 			                  timer.ElapsedMilliseconds);
 
-			Console.WriteLine("That's {0} messages per second!", (totalMessages * 1000) / timer.ElapsedMilliseconds);
+			Console.WriteLine("That's {0}K messages per second!", totalMessageCount / timer.ElapsedMilliseconds);
 		}
 
-		bool RunTest<T1,T2>(int consumerCount, int messageCount, Future<int> complete, Func<T1> value1Provider, Func<T2> value2Provider)
+		bool RunTest<T1,T2>(int consumerCount, int messageCount, Future<int> complete, Func<T1> value1Provider, Func<T2> value2Provider, out int totalMessageCount)
 		{
 			var engine = new DynamicRoutingEngine(new PoolFiber());
 
-			var latch = new CountdownLatch(consumerCount*messageCount + (int)Math.Pow(messageCount / 2.0, 2) * 2, complete.Complete);
+			int joinCount = (messageCount/2)*(messageCount/2)*consumerCount;
+			totalMessageCount = consumerCount*messageCount + joinCount;
+			var latch = new CountdownLatch(totalMessageCount, complete.Complete);
 
 			int countA = 0;
 			int countB = 0;
@@ -93,7 +94,7 @@
 				engine.Send(value2Provider());
 			}
 
-			bool waitUntilCompleted = complete.WaitUntilCompleted(5.Seconds());
+			bool waitUntilCompleted = complete.WaitUntilCompleted(30.Seconds());
 
 				Console.WriteLine("Consumed A: " + countA);
 				Console.WriteLine("Consumed B: " + countB);

@@ -17,12 +17,12 @@ namespace Stact.Routing.Internal
 	using System.Collections.Generic;
 
 
-	public class ActivationList<TChannel> :
+	public class SuccessorList<TChannel> :
 		IEnumerable<Activation<TChannel>>
 	{
 		readonly IList<Activation<TChannel>> _activations;
 
-		public ActivationList(params Activation<TChannel>[] activations)
+		public SuccessorList(params Activation<TChannel>[] activations)
 		{
 			_activations = new List<Activation<TChannel>>(activations);
 		}

@@ -10,39 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing
+namespace Stact.Routing.Internal
 {
-	using Internal;
-
-
-	public class SelectiveConsumerNode<TChannel> :
+	public class ConsumerNode<TChannel> :
 		Activation<TChannel>
 	{
-		readonly SelectiveConsumer<TChannel> _selectiveConsumer;
-		bool _alive = true;
+		readonly Consumer<TChannel> _consumer;
+		readonly Fiber _fiber;
 
-		public SelectiveConsumerNode(SelectiveConsumer<TChannel> selectiveConsumer)
+		public ConsumerNode(Fiber fiber, Consumer<TChannel> consumer)
 		{
-			_selectiveConsumer = selectiveConsumer;
+			_fiber = fiber;
+			_consumer = consumer;
 		}
 
-		public void Activate(RoutingContext<TChannel> context)
+		public void Activate(RoutingContext<TChannel> message)
 		{
-			Consumer<TChannel> consumer = _selectiveConsumer(context.Body);
-			if (_selectiveConsumer == null)
-				return;
-
-			var body = context.Body;
-			context.Evict();
-
-			context.Add(() => consumer(body));
-
-			_alive = false;
+			_fiber.Add(() => _consumer(message.Body));
 		}
 
 		public bool IsAlive
 		{
-			get { return _alive; }
+			get { return true; }
 		}
 	}
 }

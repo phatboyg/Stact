@@ -10,36 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing
+namespace Stact.Internal
 {
-	using System;
 	using System.Collections.Generic;
-	using Internal;
 
 
-	public class ChannelNode<TChannel> :
-		Activation<TChannel>
+	public class ElementImpl<TElement> :
+		Element<TElement>
 	{
-		readonly Channel<TChannel> _channel;
+		IList<ElementReference<TElement>> _alphaMemoryReferences;
+		IList<NegativeJoinResult> _negativeJoinResults;
+		IList<Token<TElement>> _tokens;
 
-		public ChannelNode(Channel<TChannel> channel, IList<IDisposable> disposables)
+		public ElementImpl()
 		{
-			_channel = channel;
+			_alphaMemoryReferences = new List<ElementReference<TElement>>();
+			_negativeJoinResults = new List<NegativeJoinResult>();
+			_tokens = new List<Token<TElement>>();
 		}
 
-		public Channel<TChannel> Output
+		public void AddReference(ElementReference<TElement> reference)
 		{
-			get { return _channel; }
+			_alphaMemoryReferences.Insert(0, reference);
 		}
 
-		public bool IsAlive
+		public void AddToken(Token<TElement> token)
 		{
-			get { return true; }
-		}
-
-		public void Activate(RoutingContext<TChannel> context)
-		{
-			_channel.Send(context.Body);
+			_tokens.Insert(0, token);
 		}
 	}
 }

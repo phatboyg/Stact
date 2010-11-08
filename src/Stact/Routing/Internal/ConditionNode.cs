@@ -21,21 +21,21 @@ namespace Stact.Routing.Internal
 	public class ConditionNode<T> :
 		Activation<T>
 	{
-		readonly ActivationList<T> _activations;
+		readonly SuccessorList<T> _successors;
 		readonly Filter<RoutingContext<T>> _filter;
 		readonly Expression<Filter<T>> _filterExpression;
 
 		public ConditionNode(Expression<Filter<T>> filterExpression)
 		{
-			_activations = new ActivationList<T>();
+			_successors = new SuccessorList<T>();
 
 			_filterExpression = filterExpression;
 			_filter = GetRoutingContextFilter(filterExpression).Compile();
 		}
 
-		public IEnumerable<Activation<T>> Activations
+		public IEnumerable<Activation<T>> Successors
 		{
-			get { return _activations; }
+			get { return _successors; }
 		}
 
 		public Expression<Filter<T>> FilterExpression
@@ -48,7 +48,7 @@ namespace Stact.Routing.Internal
 			if (!_filter(context))
 				return;
 
-			_activations.All(activation => activation.Activate(context));
+			_successors.All(activation => activation.Activate(context));
 		}
 
 		public bool IsAlive

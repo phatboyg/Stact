@@ -130,6 +130,7 @@
     <Compile Include="Actors\PingPongDemo\PongActor.cs" />
     <Compile Include="Actors\PingPong_Example.cs" />
     <Compile Include="Channels\Convention_Specs.cs" />
+    <Compile Include="Channels\RequestWcf_Specs.cs" />
     <Compile Include="Channels\TimerScheduler_Specs.cs" />
     <Compile Include="Channels\Aggregator_Specs.cs" />
     <Compile Include="Channels\Auction_Specs.cs" />

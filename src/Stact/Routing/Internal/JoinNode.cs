@@ -49,7 +49,7 @@ namespace Stact.Routing.Internal
 
 		public IEnumerable<Activation<T>> Activations
 		{
-			get { return _betaMemory.Activations; }
+			get { return _betaMemory.Successors; }
 		}
 
 		public void Activate(RoutingContext<T> context)

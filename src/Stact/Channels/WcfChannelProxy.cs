@@ -14,9 +14,8 @@ namespace Stact
 {
 	using System;
 	using System.ServiceModel;
-	using Magnum.Extensions;
-	
 	using Internal;
+	using Magnum.Extensions;
 	using Magnum.Serialization;
 
 
