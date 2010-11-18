@@ -16,9 +16,7 @@ namespace Stact.Configuration.Internal
 	using System.Collections.Generic;
 	using System.Linq;
 	using Magnum.Extensions;
-	
 	using Magnum.Reflection;
-	using Stact.Internal;
 	using Visitors;
 
 
@@ -68,20 +66,23 @@ namespace Stact.Configuration.Internal
 
 		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
-			Channel<T> output = channel.Output;
+			channel.ChangeOutputChannel(output =>
+				{
+					Channel<T> replacement = output;
 
-			if (_channels.Contains(output))
-			{
-				var shunt = new ShuntChannel<T>();
-				channel.ChangeOutputChannel(output, shunt);
+					if (_channels.Contains(output))
+					{
+						replacement = new ShuntChannel<T>();
 
-				_channels.Remove(output);
-			}
+						_channels.Remove(output);
+					}
 
-			Channel<T> newOutput = Visit(output);
+					Channel<T> newOutput = Visit(output);
+					if (newOutput != output)
+						replacement = newOutput;
 
-			if (newOutput != output)
-				channel.ChangeOutputChannel(output, newOutput);
+					return replacement;
+				});
 
 			return channel;
 		}
@@ -155,21 +156,19 @@ namespace Stact.Configuration.Internal
 
 		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
-			UntypedChannel original = channel.Output;
+			channel.ChangeOutputChannel(output =>
+				{
+					UntypedChannel replacement = Visit(output);
 
-			UntypedChannel replacement = Visit(original);
+					if (_channels.Contains(output))
+					{
+						replacement = null;
 
-			if (_channels.Contains(replacement))
-			{
-				_channels.Remove(replacement);
-				replacement = null;
-			}
+						_channels.Remove(output);
+					}
 
-			if (replacement == null)
-				replacement = new ShuntChannel();
-
-			if (replacement != original)
-				channel.ChangeOutputChannel(original, replacement);
+					return replacement ?? new ShuntChannel();
+				});
 
 			return channel;
 		}

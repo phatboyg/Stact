@@ -15,6 +15,7 @@ namespace Stact
 	using System;
 	using System.Threading;
 
+
 	/// <summary>
 	/// A channel adapter is a mutable segment in a channel network. The output channel can
 	/// be replaced, allowing a new channel network (built via a ChannelVisitor) to be installed
@@ -25,7 +26,7 @@ namespace Stact
 	public class ChannelAdapter :
 		UntypedChannel
 	{
-		private UntypedChannel _output;
+		UntypedChannel _output;
 
 		public ChannelAdapter()
 			: this(new ShuntChannel())
@@ -47,13 +48,23 @@ namespace Stact
 			Output.Send(message);
 		}
 
-		public void ChangeOutputChannel(UntypedChannel original, UntypedChannel replacement)
+		public void ChangeOutputChannel(Func<UntypedChannel, UntypedChannel> mutator)
 		{
-			Interlocked.CompareExchange(ref _output, replacement, original);
-			if (_output != replacement)
-				throw new InvalidOperationException("The channel has been modified since it was last requested");
+			for (;;)
+			{
+				UntypedChannel originalValue = _output;
+
+				UntypedChannel changedValue = mutator(originalValue);
+
+				UntypedChannel previousValue = Interlocked.CompareExchange(ref _output, changedValue, originalValue);
+
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return;
+			}
 		}
 	}
+
 
 	/// <summary>
 	/// A channel adapter is a mutable segment in a channel network. The output channel can
@@ -65,7 +76,7 @@ namespace Stact
 	public class ChannelAdapter<T> :
 		Channel<T>
 	{
-		private Channel<T> _output;
+		Channel<T> _output;
 
 		public ChannelAdapter()
 			: this(new ShuntChannel<T>())
@@ -87,11 +98,20 @@ namespace Stact
 			Output.Send(message);
 		}
 
-		public void ChangeOutputChannel(Channel<T> original, Channel<T> replacement)
+		public void ChangeOutputChannel(Func<Channel<T>, Channel<T>> mutator)
 		{
-			Interlocked.CompareExchange(ref _output, replacement, original);
-			if (_output != replacement)
-				throw new InvalidOperationException("The channel has been modified since it was last requested");
+			for (;;)
+			{
+				Channel<T> originalValue = _output;
+
+				Channel<T> changedValue = mutator(originalValue);
+
+				Channel<T> previousValue = Interlocked.CompareExchange(ref _output, changedValue, originalValue);
+
+				// if the value returned is equal to the original value, we made the change
+				if (previousValue == originalValue)
+					return;
+			}
 		}
 	}
 }

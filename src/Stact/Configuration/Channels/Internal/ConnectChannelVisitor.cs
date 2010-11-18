@@ -72,21 +72,25 @@ namespace Stact.Configuration.Internal
 
 		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
-			UntypedChannel original = channel.Output;
+			bool wasAdded = _added;
 
-			UntypedChannel replacement = Visit(original);
-
-			if (!_added)
-			{
-				if (replacement.GetType() == typeof(ShuntChannel))
+			channel.ChangeOutputChannel(original =>
 				{
-					replacement = new BroadcastChannel(new[] {_newChannel});
-					_added = true;
-				}
-			}
+					_added = wasAdded;
 
-			if (original != replacement)
-				channel.ChangeOutputChannel(original, replacement);
+					UntypedChannel replacement = Visit(original);
+
+					if (!_added)
+					{
+						if (replacement.GetType() == typeof(ShuntChannel))
+						{
+							replacement = new BroadcastChannel(new[] { _newChannel });
+							_added = true;
+						}
+					}
+
+					return replacement;
+				});
 
 			return channel;
 		}
@@ -130,19 +134,22 @@ namespace Stact.Configuration.Internal
 
 		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
 		{
-			Channel<T> original = channel.Output;
+			bool wasAdded = _added;
 
-			Channel<T> replacement = Visit(original);
+			channel.ChangeOutputChannel(original =>
+				{
+					_added = wasAdded;
 
+					Channel<T> replacement = Visit(original);
 
-			if (!_added && typeof(T) == typeof(TChannel))
-			{
-				replacement = new BroadcastChannel<T>(new[] {replacement, GetChannel<T>()});
-				_added = true;
-			}
+					if (!_added && typeof(T) == typeof(TChannel))
+					{
+						replacement = new BroadcastChannel<T>(new[] {replacement, GetChannel<T>()});
+						_added = true;
+					}
 
-			if (original != replacement)
-				channel.ChangeOutputChannel(original, replacement);
+					return replacement;
+				});
 
 			return channel;
 		}
@@ -199,21 +206,25 @@ namespace Stact.Configuration.Internal
 
 		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
-			UntypedChannel original = channel.Output;
+			bool wasAdded = _added;
 
-			UntypedChannel replacement = Visit(original);
-
-			if (!_added)
+			channel.ChangeOutputChannel(original =>
 			{
-				if (replacement.GetType() == typeof(ShuntChannel))
-				{
-					replacement = new BroadcastChannel(new[] {GetUntypedChannel()});
-					_added = true;
-				}
-			}
+				_added = wasAdded;
 
-			if (original != replacement)
-				channel.ChangeOutputChannel(original, replacement);
+				UntypedChannel replacement = Visit(original);
+
+				if (!_added)
+				{
+					if (replacement.GetType() == typeof(ShuntChannel))
+					{
+						replacement = new BroadcastChannel(new[] { GetUntypedChannel() });
+						_added = true;
+					}
+				}
+
+				return replacement;
+			});
 
 			return channel;
 		}
