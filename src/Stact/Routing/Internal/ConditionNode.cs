@@ -53,8 +53,7 @@ namespace Stact.Routing.Internal
 			get { return true; }
 		}
 
-		static Expression<Filter<RoutingContext<T>>> GetRoutingContextFilter(
-			Expression<Filter<T>> filterExpression)
+		static Expression<Filter<RoutingContext<T>>> GetRoutingContextFilter(Expression<Filter<T>> filterExpression)
 		{
 			ParameterExpression context = Expression.Parameter(typeof(RoutingContext<T>), "value");
 

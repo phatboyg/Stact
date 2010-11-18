@@ -12,6 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
+	using System;
+	using System.Linq.Expressions;
 	using Internal;
 	using Magnum.Extensions;
 	using Stact.Internal;
@@ -45,6 +47,11 @@ namespace Stact.Routing
 
 			result.WaitUntilCompleted(30.Seconds());
 		}
+
+//		public static WhenCondition<T> When<T>(this RoutingEngine engine, Expression<Func<T, bool>> filterExpression)
+//		{
+//
+//		}
 
 
 		public static void Receive<T1, T2>(this RoutingEngine engine, Consumer<Tuple<T1,T2>> consumer)

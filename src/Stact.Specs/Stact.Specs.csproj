@@ -161,6 +161,7 @@
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="Registries\ActorRegistry_Specs.cs" />
+    <Compile Include="Routing\Condition_Specs.cs" />
     <Compile Include="Routing\Memory_Specs.cs" />
     <Compile Include="Routing\NewRouting_Specs.cs" />
     <Compile Include="Routing\Routing_Specs.cs" />

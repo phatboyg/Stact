@@ -17,7 +17,6 @@ namespace Stact.Specs
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using Routing;
-	using Routing.Internal;
 
 
 	[Scenario]
@@ -26,19 +25,7 @@ namespace Stact.Specs
 		[Then]
 		public void Should_properly_invoke_the_message_receiver()
 		{
-
 			RoutingEngine engine = new DynamicRoutingEngine(new SynchronousFiber());
-
-//			engine
-//				.When<A>(a => a.IsPreferred)
-//				.And<B>((a,b) => )
-//				.And<C>()
-//				.Receive((a, b, c) =>
-//					{
-//						
-//					});
-
-
 
 			Future<A> receivedA = new Future<A>();
 			Future<B> receivedB = new Future<B>();
