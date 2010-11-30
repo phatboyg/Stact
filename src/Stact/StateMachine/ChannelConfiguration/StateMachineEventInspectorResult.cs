@@ -14,10 +14,8 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
-	
-	using Stact;
-	using Stact.Configuration.Internal;
-	using Stact.Internal;
+	using Configuration.Internal;
+	using Internal;
 	using Magnum.StateMachine;
 
 

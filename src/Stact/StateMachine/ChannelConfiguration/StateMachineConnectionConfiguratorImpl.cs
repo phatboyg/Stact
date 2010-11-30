@@ -15,15 +15,11 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using System;
 	using Channels;
 	using Configuration;
+	using Configuration.Internal;
 	using Internal;
 	using Magnum.Extensions;
-	
-	using Magnum.Logging;
-	using Stact;
-	using Stact.Configuration.Internal;
 	using Magnum.Reflection;
 	using Magnum.StateMachine;
-
 
 	public class StateMachineConnectionConfiguratorImpl<T> :
 		StateMachineConnectionConfigurator<T>,
@@ -73,8 +69,6 @@ namespace Stact.StateMachine.ChannelConfiguration
 		where T : StateMachine<T>
 		where TBinding : StateMachineBinding<T, TKey>
 	{
-		static readonly ILogger _log = Logger.GetLogger<StateMachineConnectionConfiguratorImpl<T, TKey, TBinding>>();
-
 		TBinding _binding;
 		ChannelProviderFactory<T, TKey> _channelProviderFactory;
 		FiberProvider<TKey> _fiberProvider;
@@ -92,29 +86,15 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 			_binding = FastActivator<TBinding>.Create();
 
-			_log.Debug(x => x.Write("Validating StateMachineBinding for {0}", typeof(T).ToShortTypeName()));
-
 			_binding.Validate(_instanceFactory(default(TKey)));
-		}
-
-		FiberProvider<TKey> GetConfiguredFiberProvider(ChannelConfiguratorConnection connection)
-		{
-			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
-			connection.AddDisposable(configuredProvider);
-
-			return configuredProvider;
 		}
 
 		public void Configure(ChannelConfiguratorConnection connection)
 		{
 			_fiberProvider = GetConfiguredFiberProvider(connection);
 
-			_log.Debug(x => x.Write("Configuring State Machine Binder for {0}", typeof(T).ToShortTypeName()));
-
 			_binding.ForEachEvent((@event, binder, result) =>
 				{
-					_log.Debug(x => x.Write("Binding Event: " + @event.Name));
-
 					this.FastInvoke(new[] {result.EventType}, "ConfigureChannel", connection, @event, binder,
 					                result);
 				});
@@ -140,14 +120,19 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_channelProviderFactory = factory;
 		}
 
+		FiberProvider<TKey> GetConfiguredFiberProvider(ChannelConfiguratorConnection connection)
+		{
+			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
+			connection.AddDisposable(configuredProvider);
+
+			return configuredProvider;
+		}
+
 
 		public void ConfigureChannel<TChannel>(ChannelConfiguratorConnection connection,
 		                                       DataEvent<T, TChannel> @event, EventBinder<T, TKey, TChannel> binder,
 		                                       StateMachineEventInspectorResult<T> result)
 		{
-			_log.Debug(x => x.Write("Configuring channel for event {0}, message type {1}", @event.Name,
-			                        typeof(TChannel).ToShortTypeName()));
-
 			Func<TChannel, TKey> accessor = binder.GetBinder<TChannel>();
 			KeyAccessor<TChannel, TKey> keyAccessor = m => accessor(m);
 

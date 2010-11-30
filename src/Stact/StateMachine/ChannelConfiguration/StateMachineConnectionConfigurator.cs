@@ -14,9 +14,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using Configuration;
-	
 	using Magnum.StateMachine;
-	using Stact;
 
 
 	public interface StateMachineConnectionConfigurator<T>

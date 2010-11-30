@@ -15,6 +15,7 @@ namespace Stact
 	using System;
 	using Magnum.Collections;
 	using Magnum.StateMachine;
+	using StateMachine;
 	using StateMachine.ChannelConfiguration;
 
 

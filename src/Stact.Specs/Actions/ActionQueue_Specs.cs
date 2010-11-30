@@ -17,7 +17,6 @@ namespace Stact.Specs.Actions
 	
 	using Internal;
 	using Magnum.Extensions;
-	using Magnum.Logging;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
 
@@ -47,8 +46,6 @@ namespace Stact.Specs.Actions
 		[Test]
 		public void Should_result_in_no_waiting_actions_in_the_queue()
 		{
-			TraceLogger.Configure(LogLevel.Debug);
-
 			Fiber fiber = new PoolFiber();
 
 			var called = new Future<bool>();

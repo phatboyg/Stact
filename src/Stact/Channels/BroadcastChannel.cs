@@ -16,8 +16,6 @@ namespace Stact
 	using System.Collections.Generic;
 	using System.Linq;
 	using Magnum;
-	using Magnum.Logging;
-
 
 	/// <summary>
 	/// A BroadcastChannel sends a message to zero or more listeners
@@ -25,8 +23,6 @@ namespace Stact
 	public class BroadcastChannel :
 		UntypedChannel
 	{
-		static readonly ILogger _log = Logger.GetLogger<BroadcastChannel>();
-
 		readonly UntypedChannel[] _listeners;
 
 		public BroadcastChannel(IEnumerable<UntypedChannel> listeners)
@@ -52,14 +48,7 @@ namespace Stact
 		{
 			foreach (UntypedChannel subscriber in _listeners)
 			{
-				try
-				{
-					subscriber.Send(message);
-				}
-				catch (Exception ex)
-				{
-					_log.Error(ex, "Send on a listener threw an exception");
-				}
+				subscriber.Send(message);
 			}
 		}
 	}
@@ -72,8 +61,6 @@ namespace Stact
 	public class BroadcastChannel<T> :
 		Channel<T>
 	{
-		static readonly ILogger _log = Logger.GetLogger<BroadcastChannel<T>>();
-
 		readonly Channel<T>[] _listeners;
 
 		public BroadcastChannel(IEnumerable<Channel<T>> listeners)
@@ -99,14 +86,7 @@ namespace Stact
 		{
 			foreach (var channel in _listeners)
 			{
-				try
-				{
-					channel.Send(message);
-				}
-				catch (Exception ex)
-				{
-					_log.Error(ex, "Send on a listener threw an exception");
-				}
+				channel.Send(message);
 			}
 		}
 	}

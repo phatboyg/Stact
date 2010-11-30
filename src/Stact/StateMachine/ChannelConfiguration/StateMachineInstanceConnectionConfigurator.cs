@@ -15,7 +15,6 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using Configuration;
 	using Magnum.StateMachine;
 
-
 	public interface StateMachineInstanceConnectionConfigurator<T> :
 		FiberFactoryConfigurator<StateMachineInstanceConnectionConfigurator<T>>
 		where T : StateMachine<T>

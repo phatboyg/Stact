@@ -15,7 +15,6 @@ namespace Stact.Specs.Channels
 	using System;
 	using System.Runtime.Serialization;
 	using Internal;
-	using Magnum.Logging;
 	using Magnum.TestFramework;
 	using Stact;
 	using Magnum.Extensions;
@@ -29,36 +28,23 @@ namespace Stact.Specs.Channels
 		[Category("Slow")]
 		public void Should_property_adapt_itself_to_a_channel_network()
 		{
-			TraceLogger.Configure();
-			ILogger log = Logger.GetLogger<Sending_a_message_through_a_wcf_channel>();
-			log.Debug("Starting");
-
 			var serviceUri = new Uri("net.pipe://localhost/Pipe");
 			string pipeName = "Test";
 			Channel<TestMessage> adapter = new ChannelAdapter<TestMessage>();
 			using (var host = new WcfChannelHost<TestMessage>(adapter, serviceUri, pipeName))
 			{
-				log.Debug("Host started");
-
 				var future = new Future<TestMessage>();
 
 				using (adapter.Connect(x =>
 					{
-						x.AddConsumer(m =>
-							{
-								log.Debug(l => l.Write("Received: {0}", m.Value));
-								future.Complete(m);
-							});
+						x.AddConsumer(future.Complete);
 					}))
 				{
 					var client = new WcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);
-					log.Debug("Client started");
 
 					client.Send(new TestMessage("Hello!"));
 
 					future.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
-
-					log.Debug("Complete");
 				}
 			}
 		}

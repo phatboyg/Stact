@@ -13,14 +13,11 @@
 namespace Stact.Internal
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Threading;
-	using Magnum.Concurrency;
 	using Magnum;
-	using Magnum.Logging;
 
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]
@@ -28,7 +25,6 @@ namespace Stact.Internal
 		Fiber
 	{
 		readonly object _lock = new object();
-		readonly ILogger _log = Logger.GetLogger<ThreadFiber>();
 		readonly Thread _thread;
 
 		IList<Action> _operations = new List<Action>();
@@ -127,17 +123,14 @@ namespace Stact.Internal
 		{
 			_isActive = true;
 
-			_log.Debug(x => x.Write("{0} Started", _thread.Name));
-
 			try
 			{
 				while (Execute())
 				{
 				}
 			}
-			catch (Exception ex)
+			catch
 			{
-				_log.Error(ex);
 			}
 
 			_isActive = false;
@@ -146,8 +139,6 @@ namespace Stact.Internal
 			{
 				Monitor.PulseAll(_lock);
 			}
-
-			_log.Debug(x => x.Write("{0} Exiting", _thread.Name));
 		}
 
 		bool Execute()

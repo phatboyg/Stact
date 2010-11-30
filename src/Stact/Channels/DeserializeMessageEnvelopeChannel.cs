@@ -13,10 +13,9 @@
 namespace Stact
 {
 	using System;
-	
-	using Magnum.Logging;
 	using Magnum.Reflection;
 	using Magnum.Serialization;
+
 
 	/// <summary>
 	/// Accepts a MessageEnvelope as input and deserializes the message body on the supplied fiber,
@@ -27,10 +26,9 @@ namespace Stact
 		Channel<T>
 		where T : MessageEnvelope
 	{
-		private static readonly ILogger _log = Logger.GetLogger<DeserializeMessageEnvelopeChannel<T>>();
-		private readonly Fiber _fiber;
-		private readonly UntypedChannel _output;
-		private readonly Serializer _serializer;
+		readonly Fiber _fiber;
+		readonly UntypedChannel _output;
+		readonly Serializer _serializer;
 
 		/// <summary>
 		/// Constructs an instance
@@ -51,16 +49,13 @@ namespace Stact
 				{
 					Type messageType = Type.GetType(message.MessageType, true, true);
 					if (messageType == null)
-					{
-						_log.Warn(x => x.Write("Unknown message type {0}, unable to deserialize message", message.MessageType));
 						return;
-					}
 
 					this.FastInvoke(new[] {messageType}, "Deserialize", message.Body);
 				});
 		}
 
-		private void Deserialize<TMessage>(string body)
+		void Deserialize<TMessage>(string body)
 		{
 			var message = _serializer.Deserialize<TMessage>(body);
 

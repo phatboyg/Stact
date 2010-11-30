@@ -16,12 +16,9 @@ namespace Stact.Configuration.Internal
 	using System.Collections.Generic;
 	using Magnum;
 	using Magnum.Extensions;
-	using Magnum.Logging;
-
 
 	public abstract class ChannelConnectionBase
 	{
-		static readonly ILogger _log = Logger.GetLogger<ChannelConnectionBase>();
 		readonly HashSet<Channel> _connectedChannels;
 		readonly Action<IEnumerable<Channel>> _disconnect;
 		readonly HashSet<IDisposable> _disposables;
@@ -85,9 +82,8 @@ namespace Stact.Configuration.Internal
 					{
 						x.Dispose();
 					}
-					catch (Exception ex)
+					catch
 					{
-						_log.Error(l => l.Write(ex, "An exception occurred disposing of a connection object"));
 					}
 				});
 

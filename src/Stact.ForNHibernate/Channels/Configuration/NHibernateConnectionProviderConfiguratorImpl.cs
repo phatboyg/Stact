@@ -13,7 +13,6 @@
 namespace Stact.ForNHibernate.Configuration
 {
 	using System;
-	using Channels;
 	using Magnum;
 	using Magnum.Extensions;
 	using Magnum.StateMachine;

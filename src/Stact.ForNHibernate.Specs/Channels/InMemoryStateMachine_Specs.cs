@@ -18,9 +18,7 @@ namespace Stact.ForNHibernate.Specs.Channels
 	using Magnum.Collections;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;
-	using Magnum.Logging;
 	using Stact;
-	using Stact.Specs.StateMachine;
 	using Magnum.TestFramework;
 	using StateMachine;
 
@@ -37,8 +35,6 @@ namespace Stact.ForNHibernate.Specs.Channels
 		[When]
 		public void Sending_a_message_to_an_nhibernate_backed_state_machine()
 		{
-			TraceLogger.Configure();
-
 			_newValue = new Random().Next(1, 500000)/100m;
 
 			var input = new ChannelAdapter();

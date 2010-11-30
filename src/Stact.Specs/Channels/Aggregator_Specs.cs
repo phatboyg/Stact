@@ -13,21 +13,16 @@
 namespace Stact.Specs.Channels
 {
 	using System;
-	
 	using Internal;
-	using Magnum.Logging;
-	using Stact;
-	using Stact.Visitors;
 	using Magnum.Extensions;
-	using NUnit.Framework;
 	using Magnum.TestFramework;
+	using NUnit.Framework;
+	using Visitors;
+
 
 	[TestFixture]
 	public class Building_an_aggregator_network
 	{
-		private SynchronousFiber _fiber;
-		private TimeSpan _timeout;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -35,33 +30,29 @@ namespace Stact.Specs.Channels
 			_timeout = 100.Milliseconds();
 		}
 
-		[TestFixtureSetUp]
-		public void SetupAll()
-		{
-			TraceLogger.Configure();
-		}
-
 		[Test]
-		public void Should_send_to_a_adapter_consumer_chain()
+		public void Should_add_a_consumer_that_is_assignable_to_the_type()
 		{
-			Future<TestMessage> future = new Future<TestMessage>();
+			var firstFuture = new Future<TestMessage>();
+			var secondFuture = new Future<ITestMessage>();
 
-			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
-			var adapter = new ChannelAdapter<TestMessage>(consumer);
+			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
+			var subs = new BroadcastChannel<TestMessage>(new[] {first});
+			var adapter = new ChannelAdapter<TestMessage>(subs);
 
-			adapter.Send(new TestMessage());
+			var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);
 
-			future.IsCompleted.ShouldBeTrue();
+			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(second)))
+			{
+				new TraceChannelVisitor().Visit(adapter);
+
+				adapter.Send(new TestMessage());
+			}
+
+			firstFuture.IsCompleted.ShouldBeTrue();
+			secondFuture.IsCompleted.ShouldBeTrue();
 		}
 
-		private interface ITestMessage
-		{
-		}
-
-		private class TestMessage :
-			ITestMessage
-		{
-		}
 
 		[Test]
 		public void Should_add_a_consumer_to_an_empty_adapter_chain()
@@ -71,10 +62,7 @@ namespace Stact.Specs.Channels
 			var future = new Future<TestMessage>();
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
 
-			using (var scope = adapter.Connect(x =>
-				{
-					x.AddChannel(consumer);
-				}))
+			using (ChannelConnection scope = adapter.Connect(x => { x.AddChannel(consumer); }))
 			{
 				new TraceChannelVisitor().Visit(adapter);
 
@@ -96,30 +84,7 @@ namespace Stact.Specs.Channels
 
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
 
-			using (var scope = adapter.Connect(x => x.AddChannel(second)))
-			{
-				new TraceChannelVisitor().Visit(adapter);
-
-				adapter.Send(new TestMessage());
-			}
-
-			firstFuture.IsCompleted.ShouldBeTrue();
-			secondFuture.IsCompleted.ShouldBeTrue();
-		}
-
-		[Test]
-		public void Should_add_a_consumer_that_is_assignable_to_the_type()
-		{
-			var firstFuture = new Future<TestMessage>();
-			var secondFuture = new Future<ITestMessage>();
-
-			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var subs = new BroadcastChannel<TestMessage>(new[] {first});
-			var adapter = new ChannelAdapter<TestMessage>(subs);
-
-			var second = new ConsumerChannel<ITestMessage>(_fiber, secondFuture.Complete);
-
-			using (var scope = adapter.Connect(x => x.AddChannel(second)))
+			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(second)))
 			{
 				new TraceChannelVisitor().Visit(adapter);
 
@@ -139,10 +104,10 @@ namespace Stact.Specs.Channels
 			var adapter = new ChannelAdapter<TestMessage>(new ShuntChannel<TestMessage>());
 
 			var first = new ConsumerChannel<TestMessage>(_fiber, firstFuture.Complete);
-			var firstScope = adapter.Connect(x => x.AddChannel(first));
+			ChannelConnection firstScope = adapter.Connect(x => x.AddChannel(first));
 
 			var second = new ConsumerChannel<TestMessage>(_fiber, secondFuture.Complete);
-			var secondScope = adapter.Connect(x => x.AddChannel(second));
+			ChannelConnection secondScope = adapter.Connect(x => x.AddChannel(second));
 
 			firstScope.Dispose();
 
@@ -162,7 +127,7 @@ namespace Stact.Specs.Channels
 			var future = new Future<TestMessage>();
 
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
-			using (var scope = adapter.Connect(x => x.AddChannel(consumer)))
+			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(consumer)))
 			{
 			}
 
@@ -171,6 +136,38 @@ namespace Stact.Specs.Channels
 			adapter.Send(new TestMessage());
 
 			future.IsCompleted.ShouldBeFalse();
+		}
+
+		[Test]
+		public void Should_send_to_a_adapter_consumer_chain()
+		{
+			var future = new Future<TestMessage>();
+
+			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
+			var adapter = new ChannelAdapter<TestMessage>(consumer);
+
+			adapter.Send(new TestMessage());
+
+			future.IsCompleted.ShouldBeTrue();
+		}
+
+		SynchronousFiber _fiber;
+		TimeSpan _timeout;
+
+		[TestFixtureSetUp]
+		public void SetupAll()
+		{
+		}
+
+
+		interface ITestMessage
+		{
+		}
+
+
+		class TestMessage :
+			ITestMessage
+		{
 		}
 	}
 }

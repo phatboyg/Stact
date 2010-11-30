@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.ForNHibernate.Specs.StateMachine
 {
-	using Magnum.StateMachine;
+	using Channels;
+	using Stact.StateMachine;
+
 
 	public class TestStateMachineInstanceBinding :
 		StateMachineBinding<TestStateMachineInstance, int>

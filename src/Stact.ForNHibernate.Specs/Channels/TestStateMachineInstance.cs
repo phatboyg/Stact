@@ -10,12 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.ForNHibernate.Specs.StateMachine
+namespace Stact.ForNHibernate.Specs.Channels
 {
 	using System;
 	using Magnum;
 	using Magnum.Concurrency;
 	using Magnum.StateMachine;
+
 
 	public class TestStateMachineInstance :
 		StateMachine<TestStateMachineInstance>

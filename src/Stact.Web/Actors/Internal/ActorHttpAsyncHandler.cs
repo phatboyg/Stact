@@ -16,8 +16,6 @@ namespace Stact.Web.Actors.Internal
 	using System.Threading;
 	using System.Web;
 	
-	using Magnum.Logging;
-
 	/// <summary>
 	/// A handler is bound to the route by input type, which is the only thing used to build
 	/// the route. 
@@ -26,8 +24,6 @@ namespace Stact.Web.Actors.Internal
 	public class ActorHttpAsyncHandler<TInput> :
 		IHttpAsyncHandler
 	{
-		private static readonly ILogger _log = Logger.GetLogger<ActorHttpAsyncHandler<TInput>>();
-
 		private readonly ActorRequestContext _context;
 		private readonly Channel<TInput> _input;
 		private readonly TInput _inputModel;
@@ -51,7 +47,6 @@ namespace Stact.Web.Actors.Internal
 
 		public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
 		{
-			_log.Debug(x => x.Write("Request[{0}]: {1}", Thread.CurrentThread.ManagedThreadId, typeof (TInput).FullName));
 
 			_context.SetCallback(cb, extraData);
 

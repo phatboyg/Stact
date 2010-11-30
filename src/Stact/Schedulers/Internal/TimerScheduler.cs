@@ -18,15 +18,11 @@ namespace Stact.Internal
 	using System.Threading;
 	using Magnum;
 	using Magnum.Extensions;
-	using Magnum.Logging;
-
 
 	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, Next: {NextActionTime} )")]
 	public class TimerScheduler :
 		Scheduler
 	{
-		static readonly ILogger _log = Logger.GetLogger<TimerScheduler>();
-
 		readonly Fiber _fiber;
 		readonly object _lock = new object();
 		readonly TimeSpan _noPeriod = -1.Milliseconds();
@@ -80,9 +76,8 @@ namespace Stact.Internal
 					{
 						operation();
 					}
-					catch (Exception ex)
+					catch
 					{
-						_log.Error(ex);
 					}
 					finally
 					{
@@ -151,9 +146,8 @@ namespace Stact.Internal
 						{
 							action.Execute();
 						}
-						catch (Exception ex)
+						catch
 						{
-							_log.Error(ex);
 						}
 					});
 			}

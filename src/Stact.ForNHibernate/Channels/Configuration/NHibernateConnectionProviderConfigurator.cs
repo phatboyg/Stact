@@ -12,11 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.ForNHibernate.Configuration
 {
-	using System;
-	using Channels;
-	using Stact.StateMachine;
-	using NHibernate;
 	using Magnum.StateMachine;
+	using System;
+	using NHibernate;
 
 
 	public interface NHibernateConnectionProviderConfigurator<T, TKey>

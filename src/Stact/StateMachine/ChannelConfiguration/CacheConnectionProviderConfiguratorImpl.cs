@@ -15,9 +15,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using System;
 	using Stact;
 	using Magnum.Collections;
-	
 	using Magnum.StateMachine;
-
 
 	public class CacheConnectionProviderConfiguratorImpl<T, TKey, TBinding> :
 		CacheConnectionProviderConfigurator<T, TKey>,

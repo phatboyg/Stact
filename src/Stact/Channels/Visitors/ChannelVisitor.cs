@@ -14,13 +14,11 @@ namespace Stact.Visitors
 {
 	using System.Collections.Generic;
 	using Magnum.Extensions;
-	using Magnum.Logging;
 	using Magnum.Reflection;
 
 
 	public class ChannelVisitor
 	{
-		readonly ILogger _log = Logger.GetLogger<ChannelVisitor>();
 
 		public virtual Channel<T> Visit<T>(Channel<T> channel)
 		{
@@ -163,15 +161,11 @@ namespace Stact.Visitors
 
 		protected virtual Channel<T> Visitor<T>(Channel<T> channel)
 		{
-			_log.Warn(x => x.Write("Unknown channel implementation found: {0}", channel.GetType().FullName));
-
 			return channel;
 		}
 
 		protected virtual UntypedChannel Visitor(UntypedChannel channel)
 		{
-			_log.Warn(x => x.Write("Unknown untyped channel implementation found: {0}", channel.GetType().FullName));
-
 			return channel;
 		}
 

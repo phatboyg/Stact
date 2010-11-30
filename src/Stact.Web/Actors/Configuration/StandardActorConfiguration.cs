@@ -17,14 +17,9 @@ namespace Stact.Web.Actors.Configuration
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	
 	using Magnum.Extensions;
-	
-	using Internal;
-	using Magnum.Logging;
-	using Stact.Actors;
-	using Stact.Actors.Internal;
 	using Magnum.Reflection;
+	using Stact.Actors.Internal;
 	using Stact.Internal;
 
 
@@ -32,11 +27,10 @@ namespace Stact.Web.Actors.Configuration
 		ActorConfiguration<TActor>
 		where TActor : class, Actor
 	{
-		private static readonly ILogger _log = Logger.GetLogger<StandardActorConfiguration<TActor>>();
-		private ActorFactory<TActor> _actorFactory;
+		readonly FiberFactory _fiberFactory;
+		ActorFactory<TActor> _actorFactory;
 
-		private Action<RouteConfiguration> _configure;
-		private readonly FiberFactory _fiberFactory;
+		Action<RouteConfiguration> _configure;
 
 		public StandardActorConfiguration()
 		{
@@ -49,15 +43,14 @@ namespace Stact.Web.Actors.Configuration
 		{
 			var actions = new List<Action<RouteConfiguration>>();
 
-			Type actorType = typeof (TActor);
+			Type actorType = typeof(TActor);
 
 			actorType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
 				.Where(x => x.PropertyType.Implements<Channel>())
 				.Each(property =>
 					{
-						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof (Channel<>)).Single();
+						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
 
-						_log.Debug(x => x.Write("Configuring Channel<{0}> for {1}", inputType.Name, typeof (TActor).Name));
 
 						actions.Add(configurator =>
 							{
@@ -68,7 +61,7 @@ namespace Stact.Web.Actors.Configuration
 					});
 
 			if (actions.Count == 0)
-				throw new ArgumentException("No channels were found for actor: " + typeof (TActor).Name);
+				throw new ArgumentException("No channels were found for actor: " + typeof(TActor).Name);
 
 			_configure = configurator => actions.Each(r => r(configurator));
 
@@ -77,7 +70,7 @@ namespace Stact.Web.Actors.Configuration
 
 		public ActorConfigurator PerThread()
 		{
-			if (_actorFactory.GetType() == typeof (ThreadStaticActorFactory<TActor>))
+			if (_actorFactory.GetType() == typeof(ThreadStaticActorFactory<TActor>))
 				return this;
 
 			_actorFactory = new ThreadStaticActorFactory<TActor>(_actorFactory);
@@ -88,9 +81,8 @@ namespace Stact.Web.Actors.Configuration
 		{
 			PropertyInfo property = expression.GetMemberPropertyInfo();
 
-			Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof (Channel<>)).Single();
+			Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
 
-			_log.Debug(x => x.Write("Configuring Channel<{0}> for {1}", inputType.Name, typeof (TActor).Name));
 
 			_configure = configurator =>
 				{
@@ -109,19 +101,19 @@ namespace Stact.Web.Actors.Configuration
 			_configure(configuration);
 		}
 
-		private void AddRoute<TInput>(RouteConfiguration configuration, PropertyInfo property)
+		void AddRoute<TInput>(RouteConfiguration configuration, PropertyInfo property)
 		{
 			var channelProvider = new ActorChannelProvider<TActor, TInput>(_actorFactory, property);
 
 			configuration.AddRoute<TActor, TInput>(channelProvider, property);
 		}
 
-		private static void DefaultConfigureAction(RouteConfigurator obj)
+		static void DefaultConfigureAction(RouteConfigurator obj)
 		{
-			throw new InvalidOperationException("No channels have been specified for the actor: " + typeof (TActor).Name);
+			throw new InvalidOperationException("No channels have been specified for the actor: " + typeof(TActor).Name);
 		}
 
-		private static Fiber ThreadPoolFiberProvider()
+		static Fiber ThreadPoolFiberProvider()
 		{
 			return new PoolFiber();
 		}

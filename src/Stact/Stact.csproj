@@ -355,6 +355,7 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineInstanceConnectionConfiguratorImpl.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspector.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
+    <Compile Include="StateMachine\StateMachineBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

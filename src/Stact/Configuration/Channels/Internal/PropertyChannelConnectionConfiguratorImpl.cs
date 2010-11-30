@@ -18,10 +18,7 @@ namespace Stact.Configuration.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Magnum.Extensions;
-	
-	using Magnum.Logging;
 	using Magnum.Reflection;
-	using Stact.Configuration;
 
 
 	public class PropertyChannelConnectionConfiguratorImpl<T> :
@@ -30,8 +27,6 @@ namespace Stact.Configuration.Internal
 		ChannelConfigurator
 		where T : class
 	{
-		static readonly ILogger _log = Logger.GetLogger<PropertyChannelConnectionConfiguratorImpl<T>>();
-
 		T _instance;
 		IList<Action<ChannelConfiguratorConnection, Fiber, T>> _propertyBinders;
 
@@ -69,8 +64,6 @@ namespace Stact.Configuration.Internal
 					{
 						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
 
-						_log.Debug(x => x.Write("Configuring Channel<{0}> for {1}", inputType.Name, typeof(T).Name));
-
 						return this.FastInvoke<PropertyChannelConnectionConfiguratorImpl<T>,
 							Action<ChannelConfiguratorConnection, Fiber, T>>(new[] {inputType}, "GetChannelConfigurator", property);
 					})
@@ -79,9 +72,6 @@ namespace Stact.Configuration.Internal
 
 		Action<ChannelConfiguratorConnection, Fiber, T> GetChannelConfigurator<TChannel>(PropertyInfo property)
 		{
-			_log.Debug(x => x.Write("Configuring channel for message type {0}",
-			                        typeof(TChannel).ToShortTypeName()));
-
 			ParameterExpression target = Expression.Parameter(typeof(T), "x");
 			MethodCallExpression getter = Expression.Call(target, property.GetGetMethod(true));
 

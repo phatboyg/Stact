@@ -18,6 +18,5 @@ namespace Stact.StateMachine.ChannelConfiguration
 	public class StateMachineInstanceChannelPolicyFactory<T>
 		where T : StateMachine<T>
 	{
-		
 	}
 }

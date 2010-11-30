@@ -14,9 +14,8 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 {
 	using System.Linq;
 	using Channels;
-	using Magnum.Extensions;
 	using ForNHibernate.Auditing;
-	using Stact.StateMachine;
+	using Magnum.Extensions;
 	using Magnum.StateMachine;
 
 
@@ -57,9 +56,9 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 			          			msg.Changes.Where(x => x.Name == "Value").
 			          				Each(x =>
 			          					{
-											if(x.Value != null)
+			          						if (x.Value != null)
 			          							audit.Value = (decimal)x.Value;
-											if(x.OriginalValue != null)
+			          						if (x.OriginalValue != null)
 			          							audit.OriginalValue = (decimal)x.OriginalValue;
 			          					});
 			          			audit.UserName = msg.Identity.Name;

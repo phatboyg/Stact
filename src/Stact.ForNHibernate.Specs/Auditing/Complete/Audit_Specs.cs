@@ -20,7 +20,6 @@ namespace Stact.ForNHibernate.Specs.Auditing.Complete
 	using NHibernate.Linq;
 	using NUnit.Framework;
 	using Magnum.TestFramework;
-	using Magnum.StateMachine;
 
 
 	[Scenario]

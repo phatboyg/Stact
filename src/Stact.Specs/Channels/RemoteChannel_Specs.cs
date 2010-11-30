@@ -16,7 +16,6 @@ namespace Stact.Specs.Channels
 	using System.Linq;
 	
 	using Internal;
-	using Magnum.Logging;
 	using Stact;
 	using Magnum.Extensions;
 	using NUnit.Framework;
@@ -55,10 +54,6 @@ namespace Stact.Specs.Channels
 		[Test]
 		public void Should_properly_arrive_at_the_destination()
 		{
-			TraceLogger.Configure();
-			_log = Logger.GetLogger<Sending_a_message_to_a_remote_channel_via_wcf>();
-			_log.Debug("Starting");
-
 			var serviceUri = new Uri("net.pipe://localhost/pipe");
 			string pipeName = "test";
 
@@ -72,7 +67,6 @@ namespace Stact.Specs.Channels
 			UntypedChannel adapter = new ChannelAdapter();
 			using (var remote = new WcfChannelHost(new SynchronousFiber(), adapter, serviceUri, pipeName))
 			{
-				_log.Debug("Remote channel adapter created");
 				using (adapter.Connect(x =>
 					{
 						x.AddConsumerOf<TestMessage>()
@@ -80,7 +74,6 @@ namespace Stact.Specs.Channels
 					}))
 				{
 					var client = new WcfChannelProxy(new SynchronousFiber(), serviceUri, pipeName);
-					_log.Debug("Client created");
 
 					client.Send(message);
 
@@ -92,9 +85,6 @@ namespace Stact.Specs.Channels
 			future.Value.ShouldEqual(message);
 			future.Value.ShouldNotBeTheSameAs(message);
 		}
-
-
-		ILogger _log;
 
 
 		class TestMessage
