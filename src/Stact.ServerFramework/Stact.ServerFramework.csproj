@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{16EDA05C-FF95-4FA2-AED8-F14C40C6E96C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stact.ServerFramework</RootNamespace>
+    <AssemblyName>Stact.ServerFramework</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Magnum">
+      <HintPath>..\..\lib\Magnum\Magnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConnectionContext.cs" />
+    <Compile Include="ConnectionHandler.cs" />
+    <Compile Include="Events\ServerEvent.cs" />
+    <Compile Include="Events\ServerEventType.cs" />
+    <Compile Include="Events\ServerRunning.cs" />
+    <Compile Include="Events\ServerStarting.cs" />
+    <Compile Include="Events\ServerStopped.cs" />
+    <Compile Include="Events\ServerStopping.cs" />
+    <Compile Include="ExtensionsToConnectionContext.cs" />
+    <Compile Include="ExtensionsToRequestContext.cs" />
+    <Compile Include="ExtensionsToResponseContext.cs" />
+    <Compile Include="HttpServer.cs" />
+    <Compile Include="HttpServerException.cs" />
+    <Compile Include="Internal\BadRequestConnectionHandler.cs" />
+    <Compile Include="Internal\HttpConnectionChannelProvider.cs" />
+    <Compile Include="Internal\HttpConnectionContext.cs" />
+    <Compile Include="Internal\HttpRequestContext.cs" />
+    <Compile Include="Internal\HttpResponseContext.cs" />
+    <Compile Include="Internal\JsonEnumConverter.cs" />
+    <Compile Include="PatternMatchConnectionHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestContext.cs" />
+    <Compile Include="ResponseContext.cs" />
+    <Compile Include="ServerContext.cs" />
+    <Compile Include="SocketServer.cs" />
+    <Compile Include="StreamServer.cs" />
+    <Compile Include="StreamServerException.cs" />
+    <Compile Include="ValueProviders\ConnectionContextValueProvider.cs" />
+    <Compile Include="ValueProviders\RequestContextValueProvider.cs" />
+    <Compile Include="VersionConnectionHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stact\Stact.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Stact</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

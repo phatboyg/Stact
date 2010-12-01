@@ -1,1 +1,1 @@
-Stact.*
+Magnum.dll

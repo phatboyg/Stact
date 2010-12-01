@@ -37,9 +37,9 @@
     <copy todir="${dirs.merge.from}">
       <fileset basedir="${dirs.drop}\${folder.app.drop}\Stact">
         <include name="Stact.dll" />
-        <include name="Stact.xml" />
-        <include name="Stact.pdb" />
-        <include name="Magnum.dll" />
+	<include name="Stact.xml" />
+	<include name="Magnum.dll" />
+	<include name="Newtonsoft.Json.dll" />
       </fileset>
     </copy>
   </target>

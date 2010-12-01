@@ -22,7 +22,7 @@
     <echo message="Before putting merged assembly back in drop folders, remove the assemblies that were used in the merge."/>
     <delete>
       <fileset basedir="${dirs.drop}\${folder.app.drop}">
-        <include name="**/Magnum.dll" />
+	      <include name="**/Newtonsoft.Json.dll" />
       </fileset>
     </delete>
   </target>
@@ -36,7 +36,8 @@
         <include name="Stact.pdb" />
       </fileset>
     </copy>
-    
+  </target> 
+
   <target name="delete_merge_directory">
     <echo message="Removing ${dirs.merge.from} directory." />
     <delete dir="${dirs.merge.from}" failonerror="false" />
