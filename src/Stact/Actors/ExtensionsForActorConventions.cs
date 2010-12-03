@@ -13,6 +13,7 @@
 namespace Stact
 {
 	using Configuration;
+	using Configuration.Internal;
 	using Internal;
 
 

@@ -41,15 +41,21 @@ namespace Stact.Benchmarks
 
 						var server = actors[(i + 1)];
 
-						inbox
-							.Repeat()
-							.Receive<Request<Ping>>(request => request.Respond(pong));
+						inbox.Loop(loop =>
+							{
+								loop.Receive<Request<Ping>>(request =>
+									{
+										request.Respond(pong);
+										loop.Repeat();
+									});
+							});
 
 
 						if (i < actorCount)
 						{
 							var ping = new Ping();
 							int count = 0;
+
 							Action loop = null;
 							loop = () =>
 								{

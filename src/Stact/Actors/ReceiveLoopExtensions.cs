@@ -12,17 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface Kill
+	public static class ReceiveLoopExtensions
 	{
-	}
-
-	public interface Suspend
-	{
-		
-	}
-
-	public interface Resume
-	{
-		
+		public static ReceiveLoop Receive<T>(this ReceiveLoop loop, Consumer<T> consumer)
+		{
+			return loop.Receive<T>(x => consumer);
+		}
 	}
 }

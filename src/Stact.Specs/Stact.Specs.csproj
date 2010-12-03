@@ -120,6 +120,7 @@
     <Compile Include="Actors\Auctions\Given_an_auction_actor_instance.cs" />
     <Compile Include="Actors\Calculator_Example.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
+    <Compile Include="Actors\OrderedReceive_Specs.cs" />
     <Compile Include="Actors\Repeat_Specs.cs" />
     <Compile Include="AsyncIO\AsyncIO_Specs.cs" />
     <Compile Include="Channels\Channel_Specs.cs" />
@@ -145,7 +146,6 @@
     <Compile Include="Channels\DubSeeEff_Specs.cs" />
     <Compile Include="Channels\Future_Specs.cs" />
     <Compile Include="Channels\Interval_Specs.cs" />
-    <Compile Include="Channels\Mailbox_Specs.cs" />
     <Compile Include="Channels\PingPong_Specs.cs" />
     <Compile Include="Channels\RemoteChannel_Specs.cs" />
     <Compile Include="Channels\RequestResponseContext_Specs.cs" />
@@ -168,6 +168,7 @@
     <Compile Include="Routing\Visualizer_Specs.cs" />
     <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Usage\PausibleAgent_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact\Stact.csproj">
@@ -192,9 +193,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Usage\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

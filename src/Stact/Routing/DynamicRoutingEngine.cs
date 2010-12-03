@@ -14,17 +14,20 @@ namespace Stact.Routing
 {
 	using System;
 	using Internal;
+	using Stact.Internal;
 
 
 	public class DynamicRoutingEngine :
 		RoutingEngine
 	{
 		readonly Fiber _fiber;
+		readonly OperationList _operationList;
 		readonly Activation _router;
 
 		public DynamicRoutingEngine(Fiber fiber)
 		{
 			_fiber = fiber;
+			_operationList = new OperationList();
 
 			_router = new TypeRouter();
 		}
@@ -38,12 +41,17 @@ namespace Stact.Routing
 		{
 			var context = new DynamicRoutingContext<T>(this, message);
 
-			_fiber.Add(() => _router.Activate(context));
+			_fiber.Add(() =>
+				{
+					_operationList.Run();
+					_router.Activate(context);
+				});
 		}
 
 		public void Add(Action action)
 		{
-			_fiber.Add(action);
+			_operationList.Add(action);
+			_fiber.Add(() => _operationList.Run());
 		}
 	}
 }

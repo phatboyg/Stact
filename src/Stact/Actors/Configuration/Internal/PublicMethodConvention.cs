@@ -10,7 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.Configuration.Internal
 {
 	using System;
 	using System.Linq.Expressions;
@@ -30,7 +30,14 @@ namespace Stact.Internal
 
 		public void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
 		{
-			inbox.Repeat().Receive<TChannel>(x => _instanceConsumer(instance, x));
+			inbox.Loop(loop =>
+				{
+					loop.Receive<TChannel>(x =>
+						{
+							_instanceConsumer(instance, x);
+							loop.Repeat();
+						});
+				});
 		}
 
 		public bool Matches(ActorConvention<TActor> convention)
@@ -43,9 +50,8 @@ namespace Stact.Internal
 			ParameterExpression instance = Expression.Parameter(typeof(TActor), "instance");
 			ParameterExpression message = Expression.Parameter(typeof(TChannel), "message");
 			MethodCallExpression call = Expression.Call(instance, method, message);
-			Expression<Action<TActor, TChannel>> expression = Expression.Lambda<Action<TActor, TChannel>>(call, new[]{instance, message});
 
-			return expression.Compile();
+			return Expression.Lambda<Action<TActor, TChannel>>(call, new[] {instance, message}).Compile();
 		}
 	}
 }

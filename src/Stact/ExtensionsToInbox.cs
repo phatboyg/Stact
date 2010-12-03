@@ -1,4 +1,4 @@
-// Copyright 2007-2010 The Apache Software Foundation.
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,7 @@
 namespace Stact
 {
 	using System;
-	
+	using System.Diagnostics;
 	using Internal;
 	using Magnum.Extensions;
 
@@ -67,17 +67,30 @@ namespace Stact
 			return inbox.Receive<T>(x => consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
-
-		/// <summary>
-		/// Repeats the contents of the repeat block until an Exit or Kill is received
-		/// </summary>
-		/// <param name="inbox"></param>
-		/// <returns></returns>
-		public static RepeatLoop Repeat(this Inbox inbox)
+		public static void Loop(this Inbox inbox, Action<ReceiveLoop> loopAction)
 		{
-			return new RepeatLoopImpl(inbox);
+			var loop = new ReceiveLoopImpl(inbox);
+
+			loopAction(loop);
+
+			loop.Repeat();
 		}
 
+		public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, Inbox inbox)
+		{
+			return loop.Receive<Suspend>(pause =>
+				{
+					Trace.WriteLine("Suspending");
+
+					// we are going to only receive a continue until we get it
+					inbox.Receive<Resume>(x =>
+						{
+							Trace.WriteLine("Resuming");
+							// repeat the loop now
+							loop.Repeat();
+						});
+				});
+		}
 
 		/// <summary>
 		///   Calls the specified method when a message of the requested type is received. The
@@ -96,39 +109,6 @@ namespace Stact
 			return inbox.Receive(consumer, timeout.Milliseconds(), timeoutCallback);
 		}
 
-		/// <summary>
-		///   Calls the specified method when a message of the requested type is received. The
-		///   consumer is asked if the message should be parsed, and returns a non-null action
-		///   if the message should be passed to the consumer. At that point, the message is removed
-		///   from the mailbox and delivered to the consumer
-		/// </summary>
-		/// <typeparam name = "T">The requested message type</typeparam>
-		/// <param name="inbox">The inbox to receive the message from</param>
-		/// <param name = "consumer">The consumer</param>
-		/// <param name = "timeout">The time period to wait for a message</param>
-		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		public static PendingReceive Receive<T>(this Inbox<T> inbox, Consumer<T> consumer, int timeout, Action timeoutCallback)
-		{
-			return inbox.Receive(x => consumer, timeout.Milliseconds(), timeoutCallback);
-		}
-
-		/// <summary>
-		///   Calls the specified method when a message of the requested type is received. The
-		///   consumer is asked if the message should be parsed, and returns a non-null action
-		///   if the message should be passed to the consumer. At that point, the message is removed
-		///   from the mailbox and delivered to the consumer
-		/// </summary>
-		/// <typeparam name = "T">The requested message type</typeparam>
-		/// <param name="inbox">The inbox to receive the message from</param>
-		/// <param name = "consumer">The consumer</param>
-		/// <param name = "timeout">The time period to wait for a message</param>
-		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		public static PendingReceive Receive<T>(this Inbox<T> inbox, SelectiveConsumer<T> consumer, int timeout,
-		                                        Action timeoutCallback)
-		{
-			return inbox.Receive(consumer, timeout.Milliseconds(), timeoutCallback);
-		}
-
 
 		/// <summary>
 		///   Wraps the message in a request and sends it to the channel
@@ -141,7 +121,7 @@ namespace Stact
 		{
 			UntypedChannel responseChannel = inbox;
 
-			var sent = channel.Request(request, responseChannel);
+			Request<TRequest> sent = channel.Request(request, responseChannel);
 
 			return new SentRequestImpl<TRequest>(sent, inbox);
 		}
@@ -150,7 +130,7 @@ namespace Stact
 		{
 			UntypedChannel responseChannel = inbox;
 
-			var sent = channel.Request<TRequest>(responseChannel);
+			Request<TRequest> sent = channel.Request<TRequest>(responseChannel);
 
 			return new SentRequestImpl<TRequest>(sent, inbox);
 		}

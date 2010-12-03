@@ -29,24 +29,30 @@ namespace Stact.Specs.Actors
 				{
 					decimal currentBid = 0.0m;
 
-					inbox.Repeat()
-						.Receive<Request<Bid>>(request =>
-							{
-								if (request.Body.MaximumBid > currentBid)
-									currentBid = request.Body.MaximumBid;
+					inbox.Loop(loop =>
+						{
+							loop.Receive<Request<Bid>>(request =>
+								{
+									if (request.Body.MaximumBid > currentBid)
+										currentBid = request.Body.MaximumBid;
 
-								request.Respond(new StatusImpl
+									request.Respond(new StatusImpl
+										{
+											CurrentBid = currentBid
+										});
+
+									loop.Repeat();
+								})
+								.Receive<Request<Ask>>(request =>
 									{
-										CurrentBid = currentBid
+										request.Respond(new StatusImpl
+											{
+												CurrentBid = currentBid
+											});
+
+										loop.Repeat();
 									});
-							})
-						.Receive<Request<Ask>>(request =>
-							{
-								request.Respond(new StatusImpl
-									{
-										CurrentBid = currentBid
-									});
-							});
+						});
 				});
 
 			ActorInstance bidder = AnonymousActor.New(inbox =>

@@ -12,8 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface RepeatLoop :
-		Inbox
+	public interface ReceiveLoop
 	{
+		ReceiveLoop Receive<T>(SelectiveConsumer<T> consumer);
+		void Repeat();
 	}
 }

@@ -33,7 +33,7 @@ namespace Stact.Actors.Internal
 	{
 		readonly Fiber _fiber;
 		readonly Scheduler _scheduler;
-		RoutingEngine _engine;
+		UntypedChannel _engine;
 
 		Cache<Type, object> _joinNodes;
 		HashSet<PendingReceive> _pending;
