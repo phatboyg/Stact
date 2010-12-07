@@ -1,0 +1,46 @@
+﻿// Copyright 2010 Chris Patterson
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+namespace Stact.Workflow.Configuration
+{
+	using System;
+	using System.Linq.Expressions;
+	using Internal;
+
+
+	public class TransitionStateEventConfigurator<TWorkflow, TInstance> :
+		StateEventBuilderConfigurator<TWorkflow, TInstance>
+		where TWorkflow : class
+		where TInstance : class
+	{
+		readonly Expression<Func<TWorkflow, State>> _stateExpression;
+
+		public TransitionStateEventConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
+		{
+			_stateExpression = stateExpression;
+		}
+
+		public void ValidateConfigurator()
+		{
+			if (_stateExpression.WithPropertyExpression(x => x.DeclaringType != typeof(TWorkflow)))
+				throw new StateMachineWorkflowConfiguratorException("The target state is not a valid state");
+		}
+
+		public void Configure(StateEventBuilder<TWorkflow, TInstance> builder)
+		{
+			var stateEvent = new TransitionStateEvent<TInstance>(builder.CurrentStateAccessor, builder.State, builder.Event,
+			                                                     builder.GetState(_stateExpression));
+
+			builder.AddStateEvent(stateEvent);
+		}
+	}
+}
