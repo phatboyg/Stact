@@ -50,6 +50,9 @@ namespace Stact.Workflow
 		void RaiseEvent(TInstance instance, string eventName);
 		void RaiseEvent(TInstance instance, string eventName, object body);
 
+		void RaiseEvent(TInstance instance, Event eevent);
+		void RaiseEvent<TBody>(TInstance instance, Event<TBody> eevent, TBody body);
+
 		void RaiseEvent(TInstance instance, Expression<Func<TWorkflow, Event>> eventSelector);
 		void RaiseEvent<TBody>(TInstance instance, Expression<Func<TWorkflow, Event<TBody>>> eventSelector, TBody body);
 		

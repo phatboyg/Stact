@@ -20,6 +20,9 @@ namespace Stact.Workflow
 	{
 		void RaiseEvent(string eventName);
 		void RaiseEvent(string eventName, object body);
+
+		void RaiseEvent(Event eevent);
+		void RaiseEvent<TBody>(Event<TBody> eevent, TBody body);
 	}
 
 

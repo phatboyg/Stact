@@ -40,6 +40,16 @@ namespace Stact.Workflow.Internal
 			_workflow.RaiseEvent(_instance, eventName, body);
 		}
 
+		public void RaiseEvent(Event eevent)
+		{
+			_workflow.RaiseEvent(_instance, eevent);
+		}
+
+		public void RaiseEvent<TBody>(Event<TBody> eevent, TBody body)
+		{
+			_workflow.RaiseEvent(_instance, eevent, body);
+		}
+
 		public State CurrentState
 		{
 			get { return _workflow.GetCurrentState(_instance); }

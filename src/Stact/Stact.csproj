@@ -393,11 +393,14 @@
     <Compile Include="Workflow\Internal\StateMachineVisitor.cs" />
     <Compile Include="Workflow\StateMachineWorkflow.cs" />
     <Compile Include="Workflow\StateMachineConfiguratorExtensions.cs" />
+    <Compile Include="Workflow\EventChannel.cs" />
     <Compile Include="Workflow\StateMachineWorkflowException.cs" />
     <Compile Include="Workflow\Internal\AcceptStateMachineVisitor.cs" />
     <Compile Include="Workflow\TraceStateMachineVisitor.cs" />
     <Compile Include="Workflow\Internal\WorkflowInstance.cs" />
     <Compile Include="Workflow\Internal\StateMachineState.cs" />
+    <Compile Include="Workflow\UnknownEventException.cs" />
+    <Compile Include="Workflow\UnknownStateException.cs" />
     <Compile Include="Workflow\WorkflowDefinition.cs" />
     <Compile Include="Workflow\WorkflowInstance.cs" />
     <Compile Include="Workflow\WorkflowInstanceExtensions.cs" />
