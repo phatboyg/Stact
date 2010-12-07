@@ -101,16 +101,59 @@ namespace Stact.Workflow.Internal
 			return _currentStateAccessor.Get(instance);
 		}
 
+		public State GetState(string name)
+		{
+			return WithState(name, x => x);
+		}
+
+		public Event GetEvent(string name)
+		{
+			return WithEvent(name, e => e.Event);
+		}
+
+		public Event GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
+		{
+			return WithEvent(eventExpression.GetEventName(), e => e.Event);
+		}
+
+		public Event<TBody> GetEvent<TBody>(Expression<Func<TWorkflow, Event<TBody>>> eventExpression)
+		{
+			return WithEvent(eventExpression.GetEventName(), e => (Event<TBody>)e.Event);
+		}
+
+		public State GetState(Expression<Func<TWorkflow, State>> stateExpression)
+		{
+			return WithState(stateExpression.GetStateName(), x => x);
+		}
+
 		void WithEvent(string eventName, Action<EventRaiser<TInstance>> callback)
+		{
+			WithEvent(eventName, x =>
+				{
+					callback(x);
+
+					return true;
+				});
+		}
+
+		TResult WithEvent<TResult>(string eventName, Func<EventRaiser<TInstance>, TResult> callback)
 		{
 			EventRaiser<TInstance> e;
 			if (_events.TryGetValue(eventName, out e))
-				callback(e);
-			else
-			{
-				throw new StateMachineWorkflowException("Unknown event: {0}.{1}"
-				                                        	.FormatWith(typeof(TWorkflow).Name, eventName));
-			}
+				return callback(e);
+
+			throw new StateMachineWorkflowException("Unknown event: {0}.{1}"
+			                                        	.FormatWith(typeof(TWorkflow).Name, eventName));
+		}
+
+		TResult WithState<TResult>(string name, Func<State<TInstance>, TResult> callback)
+		{
+			State<TInstance> state;
+			if (_states.TryGetValue(name, out state))
+				return callback(state);
+
+			throw new StateMachineWorkflowException("Unknown state: {0}.{1}"
+			                                        	.FormatWith(typeof(TWorkflow).Name, name));
 		}
 	}
 }

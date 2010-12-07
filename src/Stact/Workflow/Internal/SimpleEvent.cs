@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	using System;
-
-
 	public class SimpleEvent :
 		Event
 	{
@@ -43,6 +40,31 @@ namespace Stact.Workflow.Internal
 		public override string ToString()
 		{
 			return _name;
+		}
+
+		public bool Equals(SimpleEvent other)
+		{
+			if (ReferenceEquals(null, other))
+				return false;
+			if (ReferenceEquals(this, other))
+				return true;
+			return Equals(other.Name, _name);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != typeof(SimpleEvent))
+				return false;
+			return Equals((SimpleEvent)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (_name != null ? _name.GetHashCode() : 0);
 		}
 	}
 }

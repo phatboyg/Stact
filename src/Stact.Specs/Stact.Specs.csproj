@@ -170,6 +170,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usage\PausibleAgent_Specs.cs" />
     <Compile Include="Workflow\Creating_Specs.cs" />
+    <Compile Include="Workflow\Transition_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact\Stact.csproj">

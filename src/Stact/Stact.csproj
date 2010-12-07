@@ -397,6 +397,7 @@
     <Compile Include="Workflow\TraceStateMachineVisitor.cs" />
     <Compile Include="Workflow\Internal\WorkflowInstance.cs" />
     <Compile Include="Workflow\Internal\StateMachineState.cs" />
+    <Compile Include="Workflow\WorkflowDefinition.cs" />
     <Compile Include="Workflow\WorkflowInstance.cs" />
     <Compile Include="Workflow\WorkflowInstanceExtensions.cs" />
   </ItemGroup>

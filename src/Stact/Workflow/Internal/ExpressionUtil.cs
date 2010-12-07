@@ -53,5 +53,16 @@ namespace Stact.Workflow
 					return x.Name;
 				});
 		}
+
+		public static string GetStateName<TWorkflow>(this Expression<Func<TWorkflow, State>> eventExpression)
+		{
+			return eventExpression.WithPropertyExpression(x =>
+				{
+					if (x.DeclaringType != typeof(TWorkflow))
+						throw new StateMachineWorkflowException("Expression must be a property of the workflow interface");
+
+					return x.Name;
+				});
+		}
 	}
 }

@@ -42,6 +42,7 @@ namespace Stact.Workflow
 	/// <typeparam name="TWorkflow">The interface that defines the states and events for the workflow</typeparam>
 	/// <typeparam name="TInstance">The instance that is used to track the state</typeparam>
 	public interface StateMachineWorkflow<TWorkflow, in TInstance> :
+		WorkflowDefinition<TWorkflow>,
 		AcceptStateMachineVisitor
 		where TWorkflow : class
 		where TInstance : class

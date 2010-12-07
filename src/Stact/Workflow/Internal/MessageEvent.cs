@@ -20,5 +20,28 @@ namespace Stact.Workflow.Internal
 			: base(name)
 		{
 		}
+
+		public bool Equals(MessageEvent<TBody> other)
+		{
+			if (ReferenceEquals(null, other))
+				return false;
+			if (ReferenceEquals(this, other))
+				return true;
+			return Equals(other.Name, Name);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			return Equals(obj as MessageEvent<TBody>);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 	}
 }

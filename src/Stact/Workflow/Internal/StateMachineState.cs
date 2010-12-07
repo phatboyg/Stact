@@ -87,5 +87,30 @@ namespace Stact.Workflow.Internal
 		{
 			return _name;
 		}
+
+		public bool Equals(StateMachineState<TInstance> other)
+		{
+			if (ReferenceEquals(null, other))
+				return false;
+			if (ReferenceEquals(this, other))
+				return true;
+			return Equals(other._name, _name);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != typeof(StateMachineState<TInstance>))
+				return false;
+			return Equals((StateMachineState<TInstance>)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (_name != null ? _name.GetHashCode() : 0);
+		}
 	}
 }
