@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
+	using System;
+
+
 	public class TransitionStateEvent<TInstance> :
 		StateEvent<TInstance>
 		where TInstance : class

@@ -31,5 +31,65 @@ namespace Stact.Workflow
 
 			return stateConfigurator;
 		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> When<TWorkflow, TInstance>(
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator, Expression<Func<TWorkflow, Event>> eventExpression)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var configurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(stateConfigurator, eventExpression);
+
+			stateConfigurator.AddConfigurator(configurator);
+
+			return configurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance, TBody> When<TWorkflow, TInstance, TBody>(
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator,
+			Expression<Func<TWorkflow, Event<TBody>>> eventExpression) where TWorkflow : class where TInstance : class
+		{
+			var configurator = new MessageStateEventConfigurator<TWorkflow, TInstance, TBody>(stateConfigurator, eventExpression);
+
+			stateConfigurator.AddConfigurator(configurator);
+
+			return configurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> TransitionTo<TWorkflow, TInstance>(
+			this StateEventConfigurator<TWorkflow, TInstance> configurator,
+			Expression<Func<TWorkflow, State>> targetStateExpression)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateEventConfigurator = new TransitionStateEventConfigurator<TWorkflow, TInstance>(targetStateExpression);
+
+			configurator.AddConfigurator(stateEventConfigurator);
+
+			return configurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> Then<TWorkflow, TInstance>(
+			this StateEventConfigurator<TWorkflow, TInstance> stateEventConfigurator, Action<TInstance> eventAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var configurator = new DelegateStateEventConfigurator<TWorkflow, TInstance>(eventAction);
+
+			stateEventConfigurator.AddConfigurator(configurator);
+
+			return stateEventConfigurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> Then<TWorkflow, TInstance, TBody>(
+			this StateEventConfigurator<TWorkflow, TInstance, TBody> stateEventConfigurator, Action<TInstance, TBody> eventAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var configurator = new DelegateStateEventConfigurator<TWorkflow, TInstance, TBody>(eventAction);
+
+			stateEventConfigurator.AddConfigurator(configurator);
+
+			return stateEventConfigurator;
+		}
 	}
 }
