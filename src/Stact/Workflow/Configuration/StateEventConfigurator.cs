@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Configuration
 {
-	using Internal;
-
-
 	public interface StateEventConfigurator<TWorkflow, TInstance> :
 		StateConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
@@ -25,7 +22,7 @@ namespace Stact.Workflow.Configuration
 
 
 	public interface StateEventConfigurator<TWorkflow, TInstance, TBody> :
-		StateConfigurator<TWorkflow, TInstance>
+		StateEventConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{

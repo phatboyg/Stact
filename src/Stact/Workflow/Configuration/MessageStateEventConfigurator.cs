@@ -16,6 +16,7 @@ namespace Stact.Workflow.Configuration
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using Internal;
+	using Magnum.Extensions;
 
 
 	public class MessageStateEventConfigurator<TWorkflow, TInstance, TBody> :
@@ -37,6 +38,22 @@ namespace Stact.Workflow.Configuration
 			_configurators = new List<StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>>();
 		}
 
+		public void ValidateConfiguration()
+		{
+			if (_eventExpression == null)
+				throw new StateMachineWorkflowConfiguratorException("Null event expression specified");
+		}
+
+		public void Configure(StateBuilder<TWorkflow, TInstance> builder)
+		{
+			MessageEvent<TBody> eevent = builder.GetEvent(_eventExpression);
+
+			var stateEventBuilder = new MessageStateEventBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
+
+			_configurators.Each(x => x.Configure(stateEventBuilder));
+
+		}
+
 		public void AddConfigurator(StateBuilderConfigurator<TWorkflow, TInstance> configurator)
 		{
 			_stateConfigurator.AddConfigurator(configurator);
@@ -47,14 +64,31 @@ namespace Stact.Workflow.Configuration
 			_configurators.Add(configurator);
 		}
 
-		public void ValidateConfiguration()
+		public void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator)
 		{
-			if (_eventExpression == null)
-				throw new StateMachineWorkflowConfiguratorException("Null event expression specified");
+			_configurators.Add(new ConfiguratorProxy(configurator));
 		}
 
-		public void Configure(StateBuilder<TWorkflow, TInstance> builder)
+
+		class ConfiguratorProxy : 
+			StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>
 		{
+			readonly StateEventBuilderConfigurator<TWorkflow, TInstance> _configurator;
+
+			public ConfiguratorProxy(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator)
+			{
+				_configurator = configurator;
+			}
+
+			public void ValidateConfigurator()
+			{
+				_configurator.ValidateConfigurator();
+			}
+
+			public void Configure(StateEventBuilder<TWorkflow, TInstance, TBody> builder)
+			{
+				_configurator.Configure(builder);
+			}
 		}
 	}
 }

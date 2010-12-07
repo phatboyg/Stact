@@ -20,27 +20,26 @@ namespace Stact.Workflow
 	public static class StateConfiguratorExtensions
 	{
 		public static StateEventConfigurator<TWorkflow, TInstance> When<TWorkflow, TInstance>(
-			this StateConfigurator<TWorkflow, TInstance> configurator, Expression<Func<TWorkflow, Event>> eventExpression)
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator, Expression<Func<TWorkflow, Event>> eventExpression)
 			where TWorkflow : class
 			where TInstance : class
 		{
-			var stateEventConfigurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(configurator, eventExpression);
+			var configurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(stateConfigurator, eventExpression);
 
-			configurator.AddConfigurator(stateEventConfigurator);
+			stateConfigurator.AddConfigurator(configurator);
 
-			return stateEventConfigurator;
+			return configurator;
 		}
 
 		public static StateEventConfigurator<TWorkflow, TInstance, TBody> When<TWorkflow, TInstance, TBody>(
-			this StateConfigurator<TWorkflow, TInstance> configurator,
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator,
 			Expression<Func<TWorkflow, Event<TBody>>> eventExpression) where TWorkflow : class where TInstance : class
 		{
-			var stateEventConfigurator = new MessageStateEventConfigurator<TWorkflow, TInstance, TBody>(configurator,
-			                                                                                            eventExpression);
+			var configurator = new MessageStateEventConfigurator<TWorkflow, TInstance, TBody>(stateConfigurator, eventExpression);
 
-			configurator.AddConfigurator(stateEventConfigurator);
+			stateConfigurator.AddConfigurator(configurator);
 
-			return stateEventConfigurator;
+			return configurator;
 		}
 	}
 }

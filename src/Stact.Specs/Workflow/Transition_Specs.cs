@@ -110,6 +110,59 @@ namespace Stact.Specs.Workflow
 	}
 
 	[Scenario]
+	public class When_a_message_event_changes_the_state
+	{
+		WorkflowInstance<TestWorkflow> _instance;
+		StateMachineWorkflow<TestWorkflow, TestInstance> _workflow;
+
+		[When]
+		public void A_message_event_changes_the_state()
+		{
+			_workflow = StateMachineWorkflow.New<TestWorkflow, TestInstance>(x =>
+				{
+					x.AccessCurrentState(y => y.CurrentState);
+
+					x.During(y => y.Initial)
+						.When(y => y.Finish)
+						.TransitionTo(y => y.Completed);
+				});
+
+			_instance = _workflow.GetInstance(new TestInstance());
+
+			_instance.RaiseEvent(x => x.Finish, new Result
+				{
+					Value = "Success"
+				});
+		}
+
+		[Then]
+		public void Should_result_in_the_target_state()
+		{
+			State current = _instance.CurrentState;
+
+			current.ShouldEqual(_workflow.GetState(x => x.Completed));
+		}
+
+		class TestInstance
+		{
+			public State CurrentState { get; set; }
+		}
+
+		class Result
+		{
+			public string Value { get; set; }
+		}
+
+		interface TestWorkflow
+		{
+			State Initial { get; }
+			State Completed { get; }
+
+			Event<Result> Finish { get; }
+		}
+	}
+
+	[Scenario]
 	public class When_raising_multiple_events
 	{
 		WorkflowInstance<TestWorkflow> _instance;

@@ -20,8 +20,10 @@ namespace Stact.Workflow.Internal
 	}
 
 
-	public interface StateEventBuilder<TWorkflow, TInstance, TBody>
+	public interface StateEventBuilder<TWorkflow, TInstance, TBody> :
+		StateEventBuilder<TWorkflow,TInstance>
+		where TInstance : class
 	{
-		Event<TBody> Event { get; }
+		new Event<TBody> Event { get; }
 	}
 }

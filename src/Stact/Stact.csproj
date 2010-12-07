@@ -356,6 +356,7 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspector.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
     <Compile Include="StateMachine\StateMachineBinding.cs" />
+    <Compile Include="Workflow\Internal\MessageStateEventBuilder.cs" />
     <Compile Include="Workflow\Internal\SimpleStateEventBuilder.cs" />
     <Compile Include="Workflow\Internal\CurrentStateAccessorImpl.cs" />
     <Compile Include="Workflow\Internal\EventCaller.cs" />
