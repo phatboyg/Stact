@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Workflow
 {
+	using System;
 	using System.Diagnostics;
 	using NUnit.Framework;
 	using Stact.Workflow;
@@ -36,8 +37,9 @@ namespace Stact.Specs.Workflow
 
 						x.During(y => y.Running)
 							.When(y => y.Interrupted)
-							.TransitionTo(y => y.Stopped)
+							.Then(i => i.CancelPendingRequest)
 							.When(y => y.Stop)
+							.Then(i => i.CancelAllPendingRequests)
 							.TransitionTo(y => y.Stopped);
 
 						x.During(y => y.Stopped)
@@ -57,6 +59,7 @@ namespace Stact.Specs.Workflow
 			WorkflowInstance<RemoteRequestEngineWorkflow> engineInstance = workflow.GetInstance(engine);
 
 			engineInstance.RaiseEvent(x => x.Start);
+			engineInstance.RaiseEvent(x => x.Interrupted, new InterruptImpl {Source = "End of the world" });
 			engineInstance.RaiseEvent(x => x.Stop);
 			engineInstance.RaiseEvent(x => x.Dispose);
 
@@ -67,6 +70,16 @@ namespace Stact.Specs.Workflow
 		class RemoteRequestEngine
 		{
 			public State CurrentState { get; set; }
+
+			public void CancelPendingRequest(Interrupt message)
+			{
+				Trace.WriteLine("Cancelling request: " + message.Source);
+			}
+
+			public void CancelAllPendingRequests()
+			{
+				Trace.WriteLine("Canceling all pending requests");
+			}
 		}
 
 
@@ -75,6 +88,11 @@ namespace Stact.Specs.Workflow
 			string Source { get; }
 		}
 
+		class InterruptImpl :
+			Interrupt
+		{
+			public string Source { get; set; }
+		}
 
 		/// <summary>
 		/// The interface defines the events and states supported by the workflow and is 
@@ -138,9 +156,6 @@ namespace Stact.Specs.Workflow
 							{
 								c.When(e => e.Start, t =>
 									{
-										t.When(v => v.Start)
-											.When(ky => ky.Interrupted);
-
 										t.TransitionTo(y => y.Running);
 									});
 

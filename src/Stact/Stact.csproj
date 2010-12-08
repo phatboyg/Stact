@@ -357,8 +357,10 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
     <Compile Include="StateMachine\StateMachineBinding.cs" />
     <Compile Include="Workflow\Configuration\DelegateStateEventConfigurator.cs" />
+    <Compile Include="Workflow\Configuration\MethodStateEventConfigurator.cs" />
     <Compile Include="Workflow\Internal\DelegateStateEvent.cs" />
     <Compile Include="Workflow\Internal\MessageStateEventBuilder.cs" />
+    <Compile Include="Workflow\Internal\MethodStateEvent.cs" />
     <Compile Include="Workflow\Internal\SimpleStateEventBuilder.cs" />
     <Compile Include="Workflow\Internal\CurrentStateAccessorImpl.cs" />
     <Compile Include="Workflow\Internal\EventCaller.cs" />
