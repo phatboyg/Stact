@@ -19,6 +19,14 @@ namespace Stact.Workflow
 
 	public static class StateMachineConfiguratorExtensions
 	{
+		/// <summary>
+		/// Selects a state to which events can be added
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="configurator"></param>
+		/// <param name="stateExpression"></param>
+		/// <returns></returns>
 		public static StateConfigurator<TWorkflow, TInstance> During<TWorkflow, TInstance>(
 			this StateMachineConfigurator<TWorkflow, TInstance> configurator,
 			Expression<Func<TWorkflow, State>> stateExpression)
@@ -32,6 +40,13 @@ namespace Stact.Workflow
 			return stateConfigurator;
 		}
 
+		/// <summary>
+		/// The initial state for a workflow (named Initial) to which events can be attached
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="configurator"></param>
+		/// <returns></returns>
 		public static StateConfigurator<TWorkflow, TInstance> Initially<TWorkflow, TInstance>(
 			this StateMachineConfigurator<TWorkflow, TInstance> configurator)
 			where TWorkflow : class
@@ -44,6 +59,13 @@ namespace Stact.Workflow
 			return stateConfigurator;
 		}
 
+		/// <summary>
+		/// Finally is triggered when the Completed state is entered
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="configurator"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> Finally<TWorkflow, TInstance>(
 			this StateMachineConfigurator<TWorkflow, TInstance> configurator)
 			where TWorkflow : class
@@ -60,6 +82,14 @@ namespace Stact.Workflow
 			return eventConfigurator;
 		}
 
+		/// <summary>
+		/// Selects an event that is accepted during the specified state
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="stateConfigurator"></param>
+		/// <param name="eventExpression"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> When<TWorkflow, TInstance>(
 			this StateConfigurator<TWorkflow, TInstance> stateConfigurator, Expression<Func<TWorkflow, Event>> eventExpression)
 			where TWorkflow : class
@@ -72,6 +102,16 @@ namespace Stact.Workflow
 			return configurator;
 		}
 
+
+		/// <summary>
+		/// Selects an event that is accepted during the specified state
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <typeparam name="TBody"></typeparam>
+		/// <param name="stateConfigurator"></param>
+		/// <param name="eventExpression"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance, TBody> When<TWorkflow, TInstance, TBody>(
 			this StateConfigurator<TWorkflow, TInstance> stateConfigurator,
 			Expression<Func<TWorkflow, Event<TBody>>> eventExpression) where TWorkflow : class where TInstance : class
@@ -83,6 +123,14 @@ namespace Stact.Workflow
 			return configurator;
 		}
 
+		/// <summary>
+		/// Transition the state machine to the specified state
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="configurator"></param>
+		/// <param name="targetStateExpression"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> TransitionTo<TWorkflow, TInstance>(
 			this StateEventConfigurator<TWorkflow, TInstance> configurator,
 			Expression<Func<TWorkflow, State>> targetStateExpression)
@@ -96,6 +144,13 @@ namespace Stact.Workflow
 			return configurator;
 		}
 
+		/// <summary>
+		/// Transition the state machine workflow to the Completed state
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="configurator"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> Complete<TWorkflow, TInstance>(
 			this StateEventConfigurator<TWorkflow, TInstance> configurator)
 			where TWorkflow : class
@@ -108,6 +163,14 @@ namespace Stact.Workflow
 			return configurator;
 		}
 
+		/// <summary>
+		/// Invoke an action with the state machine instance
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <param name="stateEventConfigurator"></param>
+		/// <param name="eventAction"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> Then<TWorkflow, TInstance>(
 			this StateEventConfigurator<TWorkflow, TInstance> stateEventConfigurator, Action<TInstance> eventAction)
 			where TWorkflow : class
@@ -120,6 +183,15 @@ namespace Stact.Workflow
 			return stateEventConfigurator;
 		}
 
+		/// <summary>
+		/// Invoke an action with the state machine instance and the body of the message event
+		/// </summary>
+		/// <typeparam name="TWorkflow"></typeparam>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <typeparam name="TBody"></typeparam>
+		/// <param name="stateEventConfigurator"></param>
+		/// <param name="eventAction"></param>
+		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance> Then<TWorkflow, TInstance, TBody>(
 			this StateEventConfigurator<TWorkflow, TInstance, TBody> stateEventConfigurator, Action<TInstance, TBody> eventAction)
 			where TWorkflow : class
