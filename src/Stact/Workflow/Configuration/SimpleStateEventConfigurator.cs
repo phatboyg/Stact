@@ -25,28 +25,38 @@ namespace Stact.Workflow.Configuration
 		where TWorkflow : class
 		where TInstance : class
 	{
-		readonly Expression<Func<TWorkflow, Event>> _eventExpression;
 		readonly StateConfigurator<TWorkflow, TInstance> _stateConfigurator;
-		IList<StateEventBuilderConfigurator<TWorkflow, TInstance>> _configurators;
+		readonly IList<StateEventBuilderConfigurator<TWorkflow, TInstance>> _configurators;
+		readonly Func<StateBuilder<TWorkflow, TInstance>, SimpleEvent> _getEvent;
 
 		public SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,
 		                                    Expression<Func<TWorkflow, Event>> eventExpression)
+			: this(stateConfigurator)
+		{
+			_getEvent = builder => builder.GetEvent(eventExpression);
+		}
+
+		public SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,string eventName)
+			: this(stateConfigurator)
+		{
+			_getEvent = builder => builder.GetEvent(eventName);
+		}
+
+		SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator)
 		{
 			_stateConfigurator = stateConfigurator;
-			_eventExpression = eventExpression;
-
 			_configurators = new List<StateEventBuilderConfigurator<TWorkflow, TInstance>>();
 		}
 
 		public void ValidateConfiguration()
 		{
-			if (_eventExpression == null)
+			if (_getEvent == null)
 				throw new StateMachineWorkflowConfiguratorException("Null event expression specified");
 		}
 
 		public void Configure(StateBuilder<TWorkflow, TInstance> builder)
 		{
-			SimpleEvent eevent = builder.GetEvent(_eventExpression);
+			SimpleEvent eevent = _getEvent(builder);
 
 			var stateEventBuilder = new SimpleStateEventBuilder<TWorkflow, TInstance>(builder, eevent);
 

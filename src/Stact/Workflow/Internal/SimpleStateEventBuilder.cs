@@ -30,6 +30,11 @@ namespace Stact.Workflow.Internal
 			_event = eevent;
 		}
 
+		public SimpleEvent GetEvent(string name)
+		{
+			return _builder.GetEvent(name);
+		}
+
 		public SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
 		{
 			return _builder.GetEvent(eventExpression);
@@ -43,6 +48,11 @@ namespace Stact.Workflow.Internal
 		public StateMachineState<TInstance> GetState(Expression<Func<TWorkflow, State>> stateExpression)
 		{
 			return _builder.GetState(stateExpression);
+		}
+
+		public StateMachineState<TInstance> GetState(string name)
+		{
+			return _builder.GetState(name);
 		}
 
 		public State<TInstance> State

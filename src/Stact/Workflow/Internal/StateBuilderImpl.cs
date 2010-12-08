@@ -34,9 +34,19 @@ namespace Stact.Workflow.Internal
 			get { return _state; }
 		}
 
+		public StateMachineState<TInstance> GetState(string name)
+		{
+			return _builder.GetState(name);
+		}
+
 		public StateAccessor<TInstance> CurrentStateAccessor
 		{
 			get { return _builder.CurrentStateAccessor; }
+		}
+
+		public SimpleEvent GetEvent(string name)
+		{
+			return _builder.GetEvent(name);
 		}
 
 		public SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)

@@ -28,18 +28,26 @@ namespace Stact.Specs.Workflow
 					{
 						x.AccessCurrentState(i => i.CurrentState);
 
-						x.During(w => w.Initial)
+						x.Initially()
 							.When(w => w.Start)
 							.TransitionTo(y => y.Running)
 							.When(y => y.Stop)
 							.TransitionTo(y => y.Stopped);
 
 						x.During(y => y.Running)
-							.When(y => y.Interrupted);
+							.When(y => y.Interrupted)
+							.TransitionTo(y => y.Stopped)
+							.When(y => y.Stop)
+							.TransitionTo(y => y.Stopped);
 
 						x.During(y => y.Stopped)
 							.When(y => y.Start)
-							.TransitionTo(y => y.Running);
+							.TransitionTo(y => y.Running)
+							.When(y => y.Dispose)
+							.Complete();
+
+						x.Finally()
+							.Then(instance => Trace.WriteLine("Completed"));
 					});
 
 			var visitor = new TraceStateMachineVisitor();
@@ -49,6 +57,8 @@ namespace Stact.Specs.Workflow
 			WorkflowInstance<RemoteRequestEngineWorkflow> engineInstance = workflow.GetInstance(engine);
 
 			engineInstance.RaiseEvent(x => x.Start);
+			engineInstance.RaiseEvent(x => x.Stop);
+			engineInstance.RaiseEvent(x => x.Dispose);
 
 			Trace.WriteLine("Final State: " + engineInstance.CurrentState);
 		}
@@ -75,12 +85,12 @@ namespace Stact.Specs.Workflow
 			// these are simple events with no body content
 			Event Start { get; }
 			Event Stop { get; }
+			Event Dispose { get; }
 
 			// this is a message event with body content specified by a type
 			Event<Interrupt> Interrupted { get; }
 
 			// these are states supported by the workflow
-			State Initial { get; }
 			State Running { get; }
 			State Stopped { get; }
 		}

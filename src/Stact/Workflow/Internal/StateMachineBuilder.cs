@@ -25,9 +25,14 @@ namespace Stact.Workflow.Internal
 		StateMachineBuilder
 		where TInstance : class
 	{
+		SimpleEvent GetEvent(string name);
 		SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression);
+
 		MessageEvent<TBody> GetEvent<TBody>(Expression<Func<TWorkflow, Event<TBody>>> eventExpression);
+
+		StateMachineState<TInstance> GetState(string name);
 		StateMachineState<TInstance> GetState(Expression<Func<TWorkflow, State>> stateExpression);
+
 		StateAccessor<TInstance> CurrentStateAccessor { get; }
 	}
 }

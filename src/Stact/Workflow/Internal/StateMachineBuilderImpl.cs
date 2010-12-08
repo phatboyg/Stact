@@ -17,7 +17,6 @@ namespace Stact.Workflow.Internal
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Magnum.Extensions;
 
 
 	public class StateMachineBuilderImpl<TWorkflow, TInstance> :
@@ -25,15 +24,16 @@ namespace Stact.Workflow.Internal
 		where TWorkflow : class
 		where TInstance : class
 	{
-		const string AnyStateName = "Any";
-		const string InitialStateName = "Initial";
+		public const string AnyStateName = "Any";
+		public const string CompletedStateName = "Completed";
+		public const string InitialStateName = "Initial";
 
 		const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
 		readonly State<TInstance> _anyState;
 		readonly StateAccessor<TInstance> _currentState;
 		readonly IDictionary<string, Event> _events;
-		readonly IDictionary<string, State<TInstance>> _states;
 		readonly State<TInstance> _initialState;
+		readonly IDictionary<string, State<TInstance>> _states;
 
 		public StateMachineBuilderImpl(Expression<Func<TInstance, State>> currentStateExpression)
 			: this()
@@ -56,9 +56,19 @@ namespace Stact.Workflow.Internal
 			return stateExpression.WithPropertyExpression(x => GetState(_states[x.Name]));
 		}
 
+		public StateMachineState<TInstance> GetState(string name)
+		{
+			return GetState(_states[name]);
+		}
+
 		public StateAccessor<TInstance> CurrentStateAccessor
 		{
 			get { return _currentState; }
+		}
+
+		public SimpleEvent GetEvent(string name)
+		{
+			return GetEvent(_events[name]);
 		}
 
 		public SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
@@ -108,7 +118,7 @@ namespace Stact.Workflow.Internal
 
 		static IEnumerable<State<TInstance>> GetStates()
 		{
-			var states = typeof(TWorkflow)
+			IEnumerable<State<TInstance>> states = typeof(TWorkflow)
 				.GetProperties(PropertyBindingFlags)
 				.Where(property => property.PropertyType == typeof(State))
 				.Select(property => new StateMachineState<TInstance>(property.Name))
@@ -117,9 +127,12 @@ namespace Stact.Workflow.Internal
 			if (!states.Any(x => x.Name == AnyStateName))
 				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(AnyStateName), 1));
 
-			if(!states.Any(x => x.Name == InitialStateName))
+			if (!states.Any(x => x.Name == InitialStateName))
 				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(InitialStateName), 1));
-			
+
+			if (!states.Any(x => x.Name == CompletedStateName))
+				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(CompletedStateName), 1));
+
 			return states;
 		}
 
@@ -127,10 +140,7 @@ namespace Stact.Workflow.Internal
 		{
 			var result = input as StateMachineState<TInstance>;
 			if (result == null)
-			{
-				throw new ArgumentException("[{0}] is not a valid state for workflow: {1}".FormatWith(input.Name,
-				                                                                                      typeof(TWorkflow).Name));
-			}
+				throw new UnknownStateException(typeof(TWorkflow), input.Name);
 
 			return result;
 		}
@@ -139,10 +149,7 @@ namespace Stact.Workflow.Internal
 		{
 			var result = input as SimpleEvent;
 			if (result == null)
-			{
-				throw new ArgumentException("[{0}] is not a valid event for workflow: {1}".FormatWith(input.Name,
-				                                                                                      typeof(TWorkflow).Name));
-			}
+				throw new UnknownEventException(typeof(TWorkflow), input.Name);
 
 			return result;
 		}
@@ -151,10 +158,7 @@ namespace Stact.Workflow.Internal
 		{
 			var result = input as MessageEvent<TBody>;
 			if (result == null)
-			{
-				throw new ArgumentException("[{0}] is not a valid event for workflow: {1}".FormatWith(input.Name,
-				                                                                                      typeof(TWorkflow).Name));
-			}
+				throw new UnknownEventException(typeof(TWorkflow), input.Name);
 
 			return result;
 		}

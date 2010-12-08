@@ -22,23 +22,28 @@ namespace Stact.Workflow.Configuration
 		where TWorkflow : class
 		where TInstance : class
 	{
-		readonly Expression<Func<TWorkflow, State>> _stateExpression;
+		Func<StateEventBuilder<TWorkflow, TInstance>, StateMachineState<TInstance>> _getState;
 
 		public TransitionStateEventConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
 		{
-			_stateExpression = stateExpression;
+			_getState = builder => builder.GetState(stateExpression);
+		}
+
+		public TransitionStateEventConfigurator(string stateName)
+		{
+			_getState = builder => builder.GetState(stateName);
 		}
 
 		public void ValidateConfigurator()
 		{
-			if (_stateExpression.WithPropertyExpression(x => x.DeclaringType != typeof(TWorkflow)))
-				throw new StateMachineWorkflowConfiguratorException("The target state is not a valid state");
 		}
 
 		public void Configure(StateEventBuilder<TWorkflow, TInstance> builder)
 		{
+			StateMachineState<TInstance> state = _getState(builder);
+
 			var stateEvent = new TransitionStateEvent<TInstance>(builder.CurrentStateAccessor, builder.State, builder.Event,
-			                                                     builder.GetState(_stateExpression));
+			                                                     state);
 
 			builder.AddStateEvent(stateEvent);
 		}

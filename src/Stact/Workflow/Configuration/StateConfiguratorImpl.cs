@@ -26,15 +26,26 @@ namespace Stact.Workflow.Configuration
 		where TInstance : class
 	{
 		readonly IList<StateBuilderConfigurator<TWorkflow, TInstance>> _configurators;
-		readonly Expression<Func<TWorkflow, State>> _stateExpression;
 		readonly StateMachineConfigurator<TWorkflow, TInstance> _stateMachineConfigurator;
+		readonly Func<StateMachineBuilder<TWorkflow,TInstance>,StateMachineState<TInstance>> _getState;
 
 		public StateConfiguratorImpl(StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator,
 		                             Expression<Func<TWorkflow, State>> stateExpression)
+			: this(stateMachineConfigurator)
+		{
+			_getState = builder => builder.GetState(stateExpression);
+		}
+
+		public StateConfiguratorImpl(StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator,
+		                             string stateName)
+			: this(stateMachineConfigurator)
+		{
+			_getState = builder => builder.GetState(stateName);
+		}
+
+		StateConfiguratorImpl(StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator)
 		{
 			_stateMachineConfigurator = stateMachineConfigurator;
-			_stateExpression = stateExpression;
-
 			_configurators = new List<StateBuilderConfigurator<TWorkflow, TInstance>>();
 		}
 
@@ -45,7 +56,7 @@ namespace Stact.Workflow.Configuration
 
 		public void Configure(StateMachineBuilder<TWorkflow, TInstance> stateMachineBuilder)
 		{
-			var state = stateMachineBuilder.GetState(_stateExpression);
+			var state = _getState(stateMachineBuilder);
 
 			var stateBuilder = new StateBuilderImpl<TWorkflow, TInstance>(stateMachineBuilder, state);
 
@@ -54,7 +65,7 @@ namespace Stact.Workflow.Configuration
 
 		public void ValidateConfiguration()
 		{
-			if (_stateExpression == null)
+			if (_getState == null)
 				throw new StateMachineWorkflowConfiguratorException("Null state expression specified");
 		}
 	}

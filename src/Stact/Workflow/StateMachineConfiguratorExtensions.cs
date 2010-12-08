@@ -32,6 +32,34 @@ namespace Stact.Workflow
 			return stateConfigurator;
 		}
 
+		public static StateConfigurator<TWorkflow, TInstance> Initially<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> configurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(configurator, "Initial");
+
+			configurator.AddConfigurator(stateConfigurator);
+
+			return stateConfigurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> Finally<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> configurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(configurator, "Completed");
+
+			configurator.AddConfigurator(stateConfigurator);
+
+			var eventConfigurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(stateConfigurator, "Completed.Enter");
+
+			stateConfigurator.AddConfigurator(eventConfigurator);
+
+			return eventConfigurator;
+		}
+
 		public static StateEventConfigurator<TWorkflow, TInstance> When<TWorkflow, TInstance>(
 			this StateConfigurator<TWorkflow, TInstance> stateConfigurator, Expression<Func<TWorkflow, Event>> eventExpression)
 			where TWorkflow : class
@@ -62,6 +90,18 @@ namespace Stact.Workflow
 			where TInstance : class
 		{
 			var stateEventConfigurator = new TransitionStateEventConfigurator<TWorkflow, TInstance>(targetStateExpression);
+
+			configurator.AddConfigurator(stateEventConfigurator);
+
+			return configurator;
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> Complete<TWorkflow, TInstance>(
+			this StateEventConfigurator<TWorkflow, TInstance> configurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateEventConfigurator = new TransitionStateEventConfigurator<TWorkflow, TInstance>("Completed");
 
 			configurator.AddConfigurator(stateEventConfigurator);
 
