@@ -19,6 +19,10 @@ namespace Stact.Workflow
 
 	public static class StateMachineConfiguratorExtensions
 	{
+		static void DoNothing<T>(T configurator)
+		{
+		}
+
 		/// <summary>
 		/// Selects a state to which events can be added
 		/// </summary>
@@ -33,9 +37,21 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
+			return configurator.During(stateExpression, DoNothing);
+		}
+
+		public static StateConfigurator<TWorkflow, TInstance> During<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> configurator,
+			Expression<Func<TWorkflow, State>> stateExpression,
+			Action<StateConfigurator<TWorkflow,TInstance>> configurationAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
 			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(configurator, stateExpression);
 
 			configurator.AddConfigurator(stateConfigurator);
+
+			configurationAction(stateConfigurator);
 
 			return stateConfigurator;
 		}
@@ -52,9 +68,20 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
+			return configurator.Initially(DoNothing);
+		}
+
+		public static StateConfigurator<TWorkflow, TInstance> Initially<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> configurator,
+			Action<StateConfigurator<TWorkflow,TInstance>> configurationAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
 			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(configurator, "Initial");
 
 			configurator.AddConfigurator(stateConfigurator);
+
+			configurationAction(stateConfigurator);
 
 			return stateConfigurator;
 		}
@@ -71,6 +98,15 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
+			return configurator.Finally(DoNothing);
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> Finally<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> configurator,
+			Action<StateEventConfigurator<TWorkflow,TInstance>> configurationAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
 			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(configurator, "Completed");
 
 			configurator.AddConfigurator(stateConfigurator);
@@ -78,6 +114,8 @@ namespace Stact.Workflow
 			var eventConfigurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(stateConfigurator, "Completed.Enter");
 
 			stateConfigurator.AddConfigurator(eventConfigurator);
+
+			configurationAction(eventConfigurator);
 
 			return eventConfigurator;
 		}
@@ -95,9 +133,20 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
+			return stateConfigurator.When(eventExpression, DoNothing);
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance> When<TWorkflow, TInstance>(
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator, Expression<Func<TWorkflow, Event>> eventExpression,
+			Action<StateEventConfigurator<TWorkflow,TInstance>> configurationAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
 			var configurator = new SimpleStateEventConfigurator<TWorkflow, TInstance>(stateConfigurator, eventExpression);
 
 			stateConfigurator.AddConfigurator(configurator);
+
+			configurationAction(configurator);
 
 			return configurator;
 		}
@@ -114,11 +163,25 @@ namespace Stact.Workflow
 		/// <returns></returns>
 		public static StateEventConfigurator<TWorkflow, TInstance, TBody> When<TWorkflow, TInstance, TBody>(
 			this StateConfigurator<TWorkflow, TInstance> stateConfigurator,
-			Expression<Func<TWorkflow, Event<TBody>>> eventExpression) where TWorkflow : class where TInstance : class
+			Expression<Func<TWorkflow, Event<TBody>>> eventExpression)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			return stateConfigurator.When(eventExpression, DoNothing);
+		}
+
+		public static StateEventConfigurator<TWorkflow, TInstance, TBody> When<TWorkflow, TInstance, TBody>(
+			this StateConfigurator<TWorkflow, TInstance> stateConfigurator,
+			Expression<Func<TWorkflow, Event<TBody>>> eventExpression,
+			Action<StateEventConfigurator<TWorkflow,TInstance,TBody>> configurationAction) 
+			where TWorkflow : class 
+			where TInstance : class
 		{
 			var configurator = new MessageStateEventConfigurator<TWorkflow, TInstance, TBody>(stateConfigurator, eventExpression);
 
 			stateConfigurator.AddConfigurator(configurator);
+
+			configurationAction(configurator);
 
 			return configurator;
 		}

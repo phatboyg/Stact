@@ -95,4 +95,110 @@ namespace Stact.Specs.Workflow
 			State Stopped { get; }
 		}
 	}
+
+
+	[TestFixture]
+	public class Creating_a_state_machine_workflow_with_heavy_nested_closure
+	{
+		[Test]
+		public void Should_be_easy()
+		{
+			StateMachineWorkflow<RemoteRequestEngineWorkflow, RemoteRequestEngine> workflow =
+				StateMachineWorkflow.New<RemoteRequestEngineWorkflow, RemoteRequestEngine>(x =>
+					{
+						x.AccessCurrentState(i => i.CurrentState);
+
+						x.Initially(c =>
+							{
+								c.When(e => e.Start, t =>
+									{
+										t.TransitionTo(y => y.Running);
+									});
+
+								c.When(e => e.Stop, t =>
+									{
+										t.TransitionTo(y => y.Stopped);
+									});
+							});
+
+						x.During(s => s.Running, c =>
+							{
+								c.When(e => e.Interrupted, t =>
+									{
+										t.TransitionTo(y => y.Stopped);
+									});
+
+								c.When(e => e.Stop, t =>
+									{
+										t.TransitionTo(y => y.Stopped);
+									});
+							});
+
+						x.During(s => s.Stopped, c =>
+							{
+								c.When(e => e.Start, t =>
+									{
+										t.When(v => v.Start)
+											.When(ky => ky.Interrupted);
+
+										t.TransitionTo(y => y.Running);
+									});
+
+								c.When(e => e.Dispose, t =>
+									{
+										t.Complete();
+									});
+							});
+
+						x.Finally(t =>
+							{
+								t.Then(instance => Trace.WriteLine("Completed"));
+							});
+					});
+
+			var visitor = new TraceStateMachineVisitor();
+			workflow.Accept(visitor);
+
+			var engine = new RemoteRequestEngine();
+			WorkflowInstance<RemoteRequestEngineWorkflow> engineInstance = workflow.GetInstance(engine);
+
+			engineInstance.RaiseEvent(x => x.Start);
+			engineInstance.RaiseEvent(x => x.Stop);
+			engineInstance.RaiseEvent(x => x.Dispose);
+
+			Trace.WriteLine("Final State: " + engineInstance.CurrentState);
+		}
+
+
+		class RemoteRequestEngine
+		{
+			public State CurrentState { get; set; }
+		}
+
+
+		interface Interrupt
+		{
+			string Source { get; }
+		}
+
+
+		/// <summary>
+		/// The interface defines the events and states supported by the workflow and is 
+		/// used for strongly-typed binding to avoid magic strings used as event/state names
+		/// </summary>
+		interface RemoteRequestEngineWorkflow
+		{
+			// these are simple events with no body content
+			Event Start { get; }
+			Event Stop { get; }
+			Event Dispose { get; }
+
+			// this is a message event with body content specified by a type
+			Event<Interrupt> Interrupted { get; }
+
+			// these are states supported by the workflow
+			State Running { get; }
+			State Stopped { get; }
+		}
+	}
 }
