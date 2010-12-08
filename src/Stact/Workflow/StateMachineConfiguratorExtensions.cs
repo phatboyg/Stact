@@ -268,7 +268,7 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
-			var configurator = new InstanceDelegateConfigurator<TWorkflow, TInstance>(eventAction);
+			var configurator = new DelegateInstanceConfigurator<TWorkflow, TInstance>(eventAction);
 
 			stateEventConfigurator.AddConfigurator(configurator);
 
@@ -289,7 +289,7 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
-			var configurator = new InstanceBodyDelegateActionConfigurator<TWorkflow, TInstance, TBody>(eventAction);
+			var configurator = new DelegateInstanceBodyConfigurator<TWorkflow, TInstance, TBody>(eventAction);
 
 			stateEventConfigurator.AddConfigurator(configurator);
 

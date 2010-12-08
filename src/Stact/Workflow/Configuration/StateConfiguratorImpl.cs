@@ -66,7 +66,7 @@ namespace Stact.Workflow.Configuration
 		public void ValidateConfiguration()
 		{
 			if (_getState == null)
-				throw new StateMachineWorkflowConfiguratorException("Null state expression specified");
+				throw new StateMachineConfigurationException("Null state expression specified");
 		}
 	}
 }

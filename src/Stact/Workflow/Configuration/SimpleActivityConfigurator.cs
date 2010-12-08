@@ -51,7 +51,7 @@ namespace Stact.Workflow.Configuration
 		public void ValidateConfiguration()
 		{
 			if (_getEvent == null)
-				throw new StateMachineWorkflowConfiguratorException("Null event expression specified");
+				throw new StateMachineConfigurationException("Null event expression specified");
 		}
 
 		public void Configure(StateBuilder<TWorkflow, TInstance> builder)

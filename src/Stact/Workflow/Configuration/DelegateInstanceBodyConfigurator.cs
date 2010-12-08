@@ -16,14 +16,14 @@ namespace Stact.Workflow.Configuration
 	using Internal;
 
 
-	public class InstanceBodyDelegateActionConfigurator<TWorkflow, TInstance, TBody> :
+	public class DelegateInstanceBodyConfigurator<TWorkflow, TInstance, TBody> :
 		ActivityBuilderConfigurator<TWorkflow, TInstance, TBody>
 		where TWorkflow : class
 		where TInstance : class
 	{
 		readonly Action<TInstance, TBody> _action;
 
-		public InstanceBodyDelegateActionConfigurator(Action<TInstance, TBody> action)
+		public DelegateInstanceBodyConfigurator(Action<TInstance, TBody> action)
 		{
 			_action = action;
 		}

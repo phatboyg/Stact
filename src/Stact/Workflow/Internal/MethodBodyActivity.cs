@@ -30,7 +30,7 @@ namespace Stact.Workflow.Internal
 		{
 			_methodInfo = new FindMethodCallVisitor().Find(methodExpression);
 			if (_methodInfo == null)
-				throw new StateMachineWorkflowConfiguratorException("The expression method info could not be found: "
+				throw new StateMachineConfigurationException("The expression method info could not be found: "
 				                                                    + methodExpression);
 
 			_method = CompileMethod(_methodInfo);

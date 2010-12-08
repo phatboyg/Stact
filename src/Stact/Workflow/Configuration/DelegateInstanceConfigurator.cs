@@ -13,30 +13,32 @@
 namespace Stact.Workflow.Configuration
 {
 	using System;
-	using System.Runtime.Serialization;
+	using Internal;
 
 
-	[Serializable]
-	public class StateMachineWorkflowConfiguratorException :
-		Exception
+	public class DelegateInstanceConfigurator<TWorkflow, TInstance> :
+		ActivityBuilderConfigurator<TWorkflow, TInstance>
+		where TWorkflow : class
+		where TInstance : class
 	{
-		public StateMachineWorkflowConfiguratorException()
+		readonly Action<TInstance> _action;
+
+		public DelegateInstanceConfigurator(Action<TInstance> action)
 		{
+			_action = action;
 		}
 
-		public StateMachineWorkflowConfiguratorException(string message)
-			: base(message)
+		public void ValidateConfigurator()
 		{
+			if (_action == null)
+				throw new StateMachineConfigurationException("Null action specified");
 		}
 
-		public StateMachineWorkflowConfiguratorException(string message, Exception innerException)
-			: base(message, innerException)
+		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
 		{
-		}
+			var activity = new DelegateInstanceActivity<TInstance>(builder.State, builder.Event, _action);
 
-		protected StateMachineWorkflowConfiguratorException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
+			builder.AddActivity(activity);
 		}
 	}
 }

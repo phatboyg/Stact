@@ -34,11 +34,11 @@ namespace Stact.Workflow.Configuration
 		{
 			var me = _methodExpression.Body as MemberExpression;
 			if (me == null || me.Member.MemberType != MemberTypes.Method)
-				throw new StateMachineWorkflowConfiguratorException("Must be a method expression");
+				throw new StateMachineConfigurationException("Must be a method expression");
 
 			var method = (MethodInfo)me.Member;
 			if (!typeof(TInstance).IsAssignableFrom(method.DeclaringType))
-				throw new StateMachineWorkflowConfiguratorException("Must be a method on the instance");
+				throw new StateMachineConfigurationException("Must be a method on the instance");
 		}
 
 		public void Configure(ActivityBuilder<TWorkflow, TInstance, TBody> builder)

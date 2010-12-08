@@ -57,7 +57,7 @@ namespace Stact.Workflow.Configuration
 		{
 			if (_currentStateExpression == null)
 			{
-				throw new StateMachineWorkflowConfiguratorException(
+				throw new StateMachineConfigurationException(
 					"No accessor for the current state on the instance was specified");
 			}
 
