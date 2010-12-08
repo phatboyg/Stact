@@ -14,17 +14,15 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	
-	using Stact.Configuration;
 
 
 	public class DistinctChannelConfiguratorImpl<TChannel, TKey> :
 		FiberFactoryConfiguratorImpl<DistinctChannelConfigurator<TChannel, TKey>>,
 		DistinctChannelConfigurator<TChannel, TKey>,
-		ChannelConfigurator<ICollection<TChannel>>
+		ConnectionBuilderConfigurator<ICollection<TChannel>>
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
-		ChannelConfigurator<IDictionary<TKey,TChannel>> _configurator;
+		ConnectionBuilderConfigurator<IDictionary<TKey, TChannel>> _configurator;
 
 		public DistinctChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
@@ -33,11 +31,11 @@ namespace Stact.Configuration.Internal
 			HandleOnPoolFiber();
 		}
 
-		public void Configure(ChannelConfiguratorConnection<ICollection<TChannel>> connection)
+		public void Configure(ConnectionBuilder<ICollection<TChannel>> builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			_configurator.Configure(new DistinctChannelConfiguratorConnection(connection, fiber, _keyAccessor));
+			_configurator.Configure(new DistinctConnectionBuilderDecorator(builder, fiber, _keyAccessor));
 		}
 
 		public void ValidateConfiguration()
@@ -48,23 +46,23 @@ namespace Stact.Configuration.Internal
 			_configurator.ValidateConfiguration();
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<IDictionary<TKey, TChannel>> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<IDictionary<TKey, TChannel>> configurator)
 		{
 			_configurator = configurator;
 		}
 
 
-		class DistinctChannelConfiguratorConnection :
-			ChannelConfiguratorConnection<IDictionary<TKey, TChannel>>
+		class DistinctConnectionBuilderDecorator :
+			ConnectionBuilder<IDictionary<TKey, TChannel>>
 		{
-			readonly ChannelConfiguratorConnection<ICollection<TChannel>> _connection;
+			readonly ConnectionBuilder<ICollection<TChannel>> _builder;
 			readonly Fiber _fiber;
 			readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 
-			public DistinctChannelConfiguratorConnection(ChannelConfiguratorConnection<ICollection<TChannel>> connection,
-			                                             Fiber fiber, KeyAccessor<TChannel, TKey> keyAccessor)
+			public DistinctConnectionBuilderDecorator(ConnectionBuilder<ICollection<TChannel>> builder,
+			                                          Fiber fiber, KeyAccessor<TChannel, TKey> keyAccessor)
 			{
-				_connection = connection;
+				_builder = builder;
 				_fiber = fiber;
 				_keyAccessor = keyAccessor;
 			}
@@ -73,7 +71,7 @@ namespace Stact.Configuration.Internal
 			{
 				Channel<IDictionary<TKey, TChannel>> channel = channelFactory(fiber);
 
-				_connection.AddChannel(fiber, x => new DistinctChannel<TChannel, TKey>(_fiber, _keyAccessor, channel));
+				_builder.AddChannel(fiber, x => new DistinctChannel<TChannel, TKey>(_fiber, _keyAccessor, channel));
 			}
 
 			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
@@ -83,7 +81,7 @@ namespace Stact.Configuration.Internal
 
 			public void AddDisposable(IDisposable disposable)
 			{
-				_connection.AddDisposable(disposable);
+				_builder.AddDisposable(disposable);
 			}
 		}
 	}

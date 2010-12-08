@@ -21,7 +21,7 @@ namespace Stact.Configuration.Internal
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
 	public interface IntervalChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<ICollection<TChannel>>,
+		ChannelConfigurator<ICollection<TChannel>>,
 		FiberFactoryConfigurator<IntervalChannelConfigurator<TChannel>>,
 		SchedulerFactoryConfigurator<IntervalChannelConfigurator<TChannel>>
 	{

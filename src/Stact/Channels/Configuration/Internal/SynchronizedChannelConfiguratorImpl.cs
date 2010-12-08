@@ -14,24 +14,23 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using System.Threading;
-	
 	using Stact.Internal;
 
 
-	public class SynchronizedChannelConnectionConfiguratorImpl<TChannel> :
-		SynchronizedChannelConnectionConfigurator<TChannel>,
-		ChannelConfigurator<TChannel>
+	public class SynchronizedChannelConfiguratorImpl<TChannel> :
+		SynchronizedChannelConfigurator<TChannel>,
+		ConnectionBuilderConfigurator<TChannel>
 	{
-		ChannelConfigurator<TChannel> _configurator;
-		object _state;
 		readonly SynchronizationContext _synchronizationContext;
+		ConnectionBuilderConfigurator<TChannel> _configurator;
+		object _state;
 
-		public SynchronizedChannelConnectionConfiguratorImpl()
+		public SynchronizedChannelConfiguratorImpl()
 		{
 			_synchronizationContext = SynchronizationContext.Current;
 		}
 
-		public SynchronizedChannelConnectionConfiguratorImpl(SynchronizationContext synchronizationContext)
+		public SynchronizedChannelConfiguratorImpl(SynchronizationContext synchronizationContext)
 		{
 			_synchronizationContext = synchronizationContext;
 		}
@@ -44,47 +43,47 @@ namespace Stact.Configuration.Internal
 			_configurator.ValidateConfiguration();
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
 			if (_synchronizationContext == null)
-				_configurator.Configure(connection);
+				_configurator.Configure(builder);
 			else
-				ConfigureUsingDecoratedConnection(connection);
+				ConfigureUsingDecoratedConnection(builder);
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
 		{
 			_configurator = configurator;
 		}
 
 
-		public SynchronizedChannelConnectionConfigurator<TChannel> WithState(object state)
+		public SynchronizedChannelConfigurator<TChannel> WithState(object state)
 		{
 			_state = state;
 
 			return this;
 		}
 
-		void ConfigureUsingDecoratedConnection(ChannelConfiguratorConnection<TChannel> connection)
+		void ConfigureUsingDecoratedConnection(ConnectionBuilder<TChannel> builder)
 		{
-			var synchronizedConnection = new SynchronizedChannelConfiguratorConnection(connection, _synchronizationContext,
-			                                                                           _state);
+			var synchronizedConnection = new SynchronizedConnectionBuilderDecorator(builder, _synchronizationContext,
+			                                                                        _state);
 
 			_configurator.Configure(synchronizedConnection);
 		}
 
 
-		class SynchronizedChannelConfiguratorConnection :
-			ChannelConfiguratorConnection<TChannel>
+		class SynchronizedConnectionBuilderDecorator :
+			ConnectionBuilder<TChannel>
 		{
-			readonly ChannelConfiguratorConnection<TChannel> _connection;
+			readonly ConnectionBuilder<TChannel> _builder;
 			readonly object _state;
 			readonly SynchronizationContext _synchronizationContext;
 
-			public SynchronizedChannelConfiguratorConnection(ChannelConfiguratorConnection<TChannel> connection,
-			                                                 SynchronizationContext synchronizationContext, object state)
+			public SynchronizedConnectionBuilderDecorator(ConnectionBuilder<TChannel> builder,
+			                                              SynchronizationContext synchronizationContext, object state)
 			{
-				_connection = connection;
+				_builder = builder;
 				_synchronizationContext = synchronizationContext;
 				_state = state;
 			}
@@ -93,19 +92,20 @@ namespace Stact.Configuration.Internal
 			{
 				Channel<TChannel> channel = channelFactory(new SynchronousFiber());
 
-				_connection.AddChannel<TChannel>(fiber, x => new SynchronizedChannel<TChannel>(x, channel, _synchronizationContext, _state));
+				_builder.AddChannel<TChannel>(fiber,
+				                              x => new SynchronizedChannel<TChannel>(x, channel, _synchronizationContext, _state));
 			}
 
 			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
 			{
 				Channel<T> channel = channelFactory(new SynchronousFiber());
 
-				_connection.AddChannel(fiber, x => new SynchronizedChannel<T>(x, channel, _synchronizationContext, _state));
+				_builder.AddChannel(fiber, x => new SynchronizedChannel<T>(x, channel, _synchronizationContext, _state));
 			}
 
 			public void AddDisposable(IDisposable disposable)
 			{
-				_connection.AddDisposable(disposable);
+				_builder.AddDisposable(disposable);
 			}
 		}
 	}

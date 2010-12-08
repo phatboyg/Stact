@@ -13,19 +13,17 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
-	using Stact.Configuration;
 
 
 	public class InstanceChannelConfiguratorImpl<TChannel> :
 		InstanceChannelConfigurator<TChannel>,
-		ChannelConfigurator<TChannel>
+		ConnectionBuilderConfigurator<TChannel>
 	{
-		ChannelConfigurator<TChannel> _configurator;
+		ConnectionBuilderConfigurator<TChannel> _configurator;
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			_configurator.Configure(connection);
+			_configurator.Configure(builder);
 		}
 
 		public void ValidateConfiguration()
@@ -46,7 +44,7 @@ namespace Stact.Configuration.Internal
 			return configurator;
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
 		{
 			_configurator = configurator;
 		}
@@ -56,23 +54,23 @@ namespace Stact.Configuration.Internal
 	public class InstanceChannelConfiguratorImpl<TInstance, TChannel> :
 		FiberFactoryConfiguratorImpl<InstanceChannelConfigurator<TInstance, TChannel>>,
 		InstanceChannelConfigurator<TInstance, TChannel>,
-		ChannelConfigurator<TChannel>
+		ConnectionBuilderConfigurator<TChannel>
 		where TInstance : class
 	{
-		Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> _providerFactory;
+		Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> _providerFactory;
 
 		public InstanceChannelConfiguratorImpl()
 		{
 			HandleOnCallingThread();
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			ChannelProvider<TChannel> provider = _providerFactory(connection);
+			ChannelProvider<TChannel> provider = _providerFactory(builder);
 
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
+			builder.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
 		}
 
 		public void ValidateConfiguration()
@@ -81,7 +79,7 @@ namespace Stact.Configuration.Internal
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
 		}
 
-		public void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
+		public void SetProviderFactory(Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
 		}

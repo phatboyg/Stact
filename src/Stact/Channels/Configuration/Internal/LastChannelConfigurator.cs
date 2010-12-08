@@ -12,15 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Stact.Configuration;
-
-
 	/// <summary>
 	/// Used to configure the last channel 
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
 	public interface LastChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>,
+		ChannelConfigurator<TChannel>,
 		FiberFactoryConfigurator<LastChannelConfigurator<TChannel>>
 	{
 	}

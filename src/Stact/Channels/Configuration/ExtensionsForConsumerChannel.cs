@@ -43,7 +43,7 @@ namespace Stact
 		/// <param name="consumer"></param>
 		/// <returns></returns>
 		public static ConsumerChannelConfigurator<TChannel> UsingConsumer<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator, Consumer<TChannel> consumer)
+			this ChannelConfigurator<TChannel> configurator, Consumer<TChannel> consumer)
 		{
 			var consumerConfigurator = new ConsumerChannelConfiguratorImpl<TChannel>(consumer);
 

@@ -21,7 +21,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 	public class StateMachineInstanceConnectionConfiguratorImpl<T> :
 		FiberFactoryConfiguratorImpl<StateMachineInstanceConnectionConfigurator<T>>,
-		ChannelConfigurator,
+		ConnectionBuilderConfigurator,
 		StateMachineInstanceConnectionConfigurator<T>
 		where T : StateMachine<T>
 	{
@@ -45,12 +45,12 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_results = inspector.GetResults().ToArray();
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
 			foreach (var result in _results)
-				result.Connect(connection, fiber, _instance);
+				result.Connect(builder, fiber, _instance);
 		}
 	}
 }

@@ -13,18 +13,17 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
 
 
-	public interface ChannelConfiguratorConnection
+	public interface ConnectionBuilder
 	{
-		void AddChannel(Fiber fiber, Func<Fiber, UntypedChannel> channelFactory);
-		void AddChannel<TChannel>(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory);
-
 		/// <summary>
 		/// The channel to which connections are being added
 		/// </summary>
 		UntypedChannel Channel { get; }
+
+		void AddChannel(Fiber fiber, Func<Fiber, UntypedChannel> channelFactory);
+		void AddChannel<TChannel>(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory);
 
 		/// <summary>
 		/// Add a disposable item to the connection
@@ -34,7 +33,7 @@ namespace Stact.Configuration.Internal
 	}
 
 
-	public interface ChannelConfiguratorConnection<TChannel>
+	public interface ConnectionBuilder<TChannel>
 	{
 		void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory);
 		void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory);

@@ -20,29 +20,29 @@ namespace Stact.Configuration.Internal
 		ConnectionConfigurator
 	{
 		readonly UntypedChannel _channel;
-		readonly List<ChannelConfigurator> _configurators;
+		readonly List<ConnectionBuilderConfigurator> _configurators;
 
 		public ConnectionConfiguratorImpl(UntypedChannel channel)
 		{
 			_channel = channel;
-			_configurators = new List<ChannelConfigurator>();
+			_configurators = new List<ConnectionBuilderConfigurator>();
 		}
 
 		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
-			var configurator = new ChannelConfiguratorImpl<TChannel>(channel);
+			var configurator = new TypedConnectionBuilderConfigurator<TChannel>(channel);
 
 			_configurators.Add(configurator);
 		}
 
 		public void AddUntypedChannel(UntypedChannel channel)
 		{
-			var configurator = new ChannelConfiguratorImpl(channel);
+			var configurator = new UntypedConnectionBuilderConfigurator(channel);
 
 			_configurators.Add(configurator);
 		}
 
-		public void RegisterChannelConfigurator(ChannelConfigurator configurator)
+		public void RegisterChannelConfigurator(ConnectionBuilderConfigurator configurator)
 		{
 			_configurators.Add(configurator);
 		}
@@ -51,7 +51,7 @@ namespace Stact.Configuration.Internal
 		{
 			_configurators.Each(x => x.ValidateConfiguration());
 			
-			var connection = new ChannelConfiguratorConnectionImpl(_channel);
+			var connection = new UntypedChannnelConnectionBuilder(_channel);
 
 			_configurators.Each(configurator => configurator.Configure(connection));
 
@@ -64,17 +64,17 @@ namespace Stact.Configuration.Internal
 		ConnectionConfigurator<T>
 	{
 		readonly Channel<T> _channel;
-		readonly List<ChannelConfigurator<T>> _configurators;
+		readonly List<ConnectionBuilderConfigurator<T>> _configurators;
 
 		public ConnectionConfiguratorImpl(Channel<T> channel)
 		{
 			_channel = channel;
-			_configurators = new List<ChannelConfigurator<T>>();
+			_configurators = new List<ConnectionBuilderConfigurator<T>>();
 		}
 
 		public void AddChannel<TChannel>(Channel<TChannel> channel)
 		{
-			var configurator = new ChannelConfiguratorImpl<T, TChannel>(channel);
+			var configurator = new TypedConnectionBuilderConfigurator<T, TChannel>(channel);
 
 			_configurators.Add(configurator);
 		}
@@ -84,14 +84,14 @@ namespace Stact.Configuration.Internal
 			return this.AddConsumer(channel.Send);
 		}
 
-		public void RegisterChannelConfigurator(ChannelConfigurator<T> configurator)
+		public void RegisterChannelConfigurator(ConnectionBuilderConfigurator<T> configurator)
 		{
 			_configurators.Add(configurator);
 		}
 
 		public ChannelConnection Complete()
 		{
-			var connection = new ChannelConfiguratorConnectionImpl<T>(_channel);
+			var connection = new TypedChannelConnectionBuilder<T>(_channel);
 
 			_configurators.Each(configurator => configurator.Configure(connection));
 

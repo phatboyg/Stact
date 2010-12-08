@@ -12,11 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Stact.Configuration;
-
-
-	public interface WcfChannelConnectionConfigurator :
-		FiberFactoryConfigurator<WcfChannelConnectionConfigurator>
+	public interface SynchronizedChannelConfigurator<TChannel> :
+		ChannelConfigurator<TChannel>
 	{
+		SynchronizedChannelConfigurator<TChannel> WithState(object state);
 	}
 }

@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	
-
 	/// <summary>
 	/// A channel that accepts a message and enqueues the consumer method via the
 	/// specified Fiber
@@ -22,8 +20,8 @@ namespace Stact
 	public class ConsumerChannel<T> :
 		Channel<T>
 	{
-		private readonly Consumer<T> _consumer;
-		private readonly Fiber _fiber;
+		readonly Consumer<T> _consumer;
+		readonly Fiber _fiber;
 
 		/// <summary>
 		/// Constructs a channel

@@ -12,88 +12,58 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Magnum.Extensions;
-	
-	using Stact.Internal;
-
-
-	public class ChannelConfiguratorImpl :
-		ChannelConfigurator
-	{
-		readonly UntypedChannel _channel;
-
-		public ChannelConfiguratorImpl(UntypedChannel channel)
-		{
-			Magnum.Guard.AgainstNull(channel);
-
-			_channel = channel;
-		}
-
-		public void ValidateConfiguration()
-		{
-		}
-
-		public void Configure(ChannelConfiguratorConnection connection)
-		{
-			connection.AddChannel(null, fiber => _channel);
-		}
-	}
+	using System;
 
 
 	public class ChannelConfiguratorImpl<TChannel> :
-		ChannelConfigurator,
-		ChannelConfigurator<TChannel>
+		ChannelConfigurator<TChannel>,
+		ConnectionBuilderConfigurator
 	{
-		readonly Channel<TChannel> _channel;
+		ConnectionBuilderConfigurator<TChannel> _configurator;
 
-		public ChannelConfiguratorImpl(Channel<TChannel> channel)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
 		{
-			Magnum.Guard.AgainstNull(channel);
-
-			_channel = channel;
+			_configurator = configurator;
 		}
 
 		public void ValidateConfiguration()
 		{
+			if (_configurator == null)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
+
+			_configurator.ValidateConfiguration();
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			connection.AddChannel(null, fiber => _channel);
+			_configurator.Configure(new ChannelConnectionBuilderDecorator(builder));
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+
+		class ChannelConnectionBuilderDecorator :
+			ConnectionBuilder<TChannel>
 		{
-			connection.AddChannel(null, fiber => _channel);
-		}
-	}
+			readonly ConnectionBuilder _builder;
 
+			public ChannelConnectionBuilderDecorator(ConnectionBuilder builder)
+			{
+				_builder = builder;
+			}
 
-	public class ChannelConfiguratorImpl<T, TChannel> :
-		ChannelConfigurator<T>
-	{
-		readonly Channel<TChannel> _channel;
+			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
+			{
+				_builder.AddChannel(fiber, channelFactory);
+			}
 
-		public ChannelConfiguratorImpl(Channel<TChannel> channel)
-		{
-			_channel = channel;
-		}
+			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+			{
+				_builder.AddChannel(fiber, channelFactory);
+			}
 
-		public void Configure(ChannelConfiguratorConnection<T> connection)
-		{
-			var fiber = new SynchronousFiber();
-
-			connection.AddChannel<T>(fiber, x => new ConvertChannel<T, TChannel>(_channel));
-		}
-
-		public void ValidateConfiguration()
-		{
-			if (_channel == null)
-				throw new ChannelConfigurationException("A null channel was specified");
-
-			if(!typeof(TChannel).Implements<T>())
-				throw new ChannelConfigurationException(typeof(TChannel), "The type {0} is not implemented by the channel type"
-					.FormatWith(typeof(T).ToShortTypeName()));
+			public void AddDisposable(IDisposable disposable)
+			{
+				_builder.AddDisposable(disposable);
+			}
 		}
 	}
 }

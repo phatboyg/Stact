@@ -61,7 +61,7 @@ namespace Stact.ForNHibernate.Configuration
 			_instanceChannelPolicy = policyFactory;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
+		public ChannelProvider<TChannel> GetChannelProvider(ConnectionBuilder<TChannel> connection)
 		{
 			if (_accessor == null)
 			{

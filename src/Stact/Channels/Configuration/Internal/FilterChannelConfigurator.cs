@@ -12,16 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Stact.Configuration;
-
-
 	/// <summary>
 	/// Used to configure the options on a channel that delivers messages at regular
 	/// intervals
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
 	public interface FilterChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>,
+		ChannelConfigurator<TChannel>,
 		FiberFactoryConfigurator<FilterChannelConfigurator<TChannel>>
 	{
 	}

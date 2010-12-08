@@ -15,15 +15,15 @@ namespace Stact.Configuration.Internal
 	using System;
 
 
-	public class ChannelConfiguratorConnectionImpl :
-		ChannelConfiguratorConnection
+	public class UntypedChannnelConnectionBuilder :
+		ConnectionBuilder
 	{
 		readonly UntypedChannel _channel;
-		readonly ChannelConnectionImpl _connection;
+		readonly UntypedChannelConnection _connection;
 
-		public ChannelConfiguratorConnectionImpl(UntypedChannel channel)
+		public UntypedChannnelConnectionBuilder(UntypedChannel channel)
 		{
-			_connection = new ChannelConnectionImpl(channel);
+			_connection = new UntypedChannelConnection(channel);
 			_channel = channel;
 		}
 
@@ -66,51 +66,6 @@ namespace Stact.Configuration.Internal
 		void ConnectChannel(UntypedChannel channel)
 		{
 			new ConnectChannelVisitor(channel).ConnectTo(_channel);
-
-			_connection.AddChannel(channel);
-		}
-	}
-
-
-	public class ChannelConfiguratorConnectionImpl<TChannel> :
-		ChannelConfiguratorConnection<TChannel>
-	{
-		readonly Channel<TChannel> _channel;
-		readonly ChannelConnectionImpl<TChannel> _connection;
-
-		public ChannelConfiguratorConnectionImpl(Channel<TChannel> channel)
-		{
-			_connection = new ChannelConnectionImpl<TChannel>(channel);
-			_channel = channel;
-		}
-
-		public ChannelConnection ChannelConnection
-		{
-			get { return _connection; }
-		}
-
-		public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
-		{
-			Channel<TChannel> channel = channelFactory(fiber);
-
-			ConnectChannel(channel);
-		}
-
-		public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
-		{
-			Channel<T> channel = channelFactory(fiber);
-
-			ConnectChannel(channel);
-		}
-
-		public void AddDisposable(IDisposable disposable)
-		{
-			_connection.AddDisposable(disposable);
-		}
-
-		void ConnectChannel<T>(Channel<T> channel)
-		{
-			new ConnectChannelVisitor<T>(channel).ConnectTo(_channel);
 
 			_connection.AddChannel(channel);
 		}

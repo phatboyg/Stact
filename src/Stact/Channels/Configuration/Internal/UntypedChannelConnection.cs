@@ -18,12 +18,12 @@ namespace Stact.Configuration.Internal
 	/// <summary>
 	/// The channel connection implementation
 	/// </summary>
-	public class ChannelConnectionImpl :
+	public class UntypedChannelConnection :
 		ChannelConnectionBase,
 		ChannelConnection,
 		CreateChannelConnection
 	{
-		public ChannelConnectionImpl(UntypedChannel channel)
+		public UntypedChannelConnection(UntypedChannel channel)
 			: base(x => DisconnectChannels(channel, x))
 		{
 		}
@@ -35,12 +35,12 @@ namespace Stact.Configuration.Internal
 	}
 
 
-	public class ChannelConnectionImpl<T> :
+	public class TypedChannelConnection<T> :
 		ChannelConnectionBase,
 		ChannelConnection,
 		CreateChannelConnection
 	{
-		public ChannelConnectionImpl(Channel<T> channel)
+		public TypedChannelConnection(Channel<T> channel)
 			: base(x => DisconnectChannels(channel, x))
 		{
 		}

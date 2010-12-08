@@ -19,20 +19,20 @@ namespace Stact
 
 	public static class ExtensionsForSynchronizedChannels
 	{
-		public static SynchronizedChannelConnectionConfigurator<TChannel> OnCurrentSynchronizationContext<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator)
+		public static SynchronizedChannelConfigurator<TChannel> OnCurrentSynchronizationContext<TChannel>(
+			this ChannelConfigurator<TChannel> configurator)
 		{
-			var synchronizedConfigurator = new SynchronizedChannelConnectionConfiguratorImpl<TChannel>();
+			var synchronizedConfigurator = new SynchronizedChannelConfiguratorImpl<TChannel>();
 
 			configurator.SetChannelConfigurator(synchronizedConfigurator);
 
 			return synchronizedConfigurator;
 		}
 
-		public static SynchronizedChannelConnectionConfigurator<TChannel> OnSynchronizationContext<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator, SynchronizationContext synchronizationContext)
+		public static SynchronizedChannelConfigurator<TChannel> OnSynchronizationContext<TChannel>(
+			this ChannelConfigurator<TChannel> configurator, SynchronizationContext synchronizationContext)
 		{
-			var synchronizedConfigurator = new SynchronizedChannelConnectionConfiguratorImpl<TChannel>(synchronizationContext);
+			var synchronizedConfigurator = new SynchronizedChannelConfiguratorImpl<TChannel>(synchronizationContext);
 
 			configurator.SetChannelConfigurator(synchronizedConfigurator);
 

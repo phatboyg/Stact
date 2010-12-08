@@ -20,8 +20,8 @@ namespace Stact.Configuration.Internal
 		SchedulerFactoryConfigurator<T>
 		where T : class
 	{
-		SchedulerFactory _schedulerFactory;
 		bool _owned;
+		SchedulerFactory _schedulerFactory;
 
 		public T UseTimerScheduler()
 		{
@@ -53,11 +53,11 @@ namespace Stact.Configuration.Internal
 				throw new SchedulerException("A SchedulerFactory was not configured");
 		}
 
-		public Scheduler GetSchedulerUsingConfiguredFactory<TChannel>(ChannelConfiguratorConnection<TChannel> connection)
+		public Scheduler GetSchedulerUsingConfiguredFactory<TChannel>(ConnectionBuilder<TChannel> connection)
 		{
 			Scheduler scheduler = _schedulerFactory();
-			
-			if(_owned)
+
+			if (_owned)
 				connection.AddDisposable(new DisposeCallback(() => scheduler.Stop(ShutdownTimeout)));
 
 			return scheduler;

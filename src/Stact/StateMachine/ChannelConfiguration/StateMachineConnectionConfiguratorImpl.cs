@@ -23,10 +23,10 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 	public class StateMachineConnectionConfiguratorImpl<T> :
 		StateMachineConnectionConfigurator<T>,
-		ChannelConfigurator
+		ConnectionBuilderConfigurator
 		where T : StateMachine<T>
 	{
-		ChannelConfigurator _configurator;
+		ConnectionBuilderConfigurator _configurator;
 
 		public void ValidateConfiguration()
 		{
@@ -36,9 +36,9 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_configurator.ValidateConfiguration();
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			_configurator.Configure(connection);
+			_configurator.Configure(builder);
 		}
 
 		public StateMachineConnectionConfigurator<T, TKey, TBinding> BindUsing<TBinding, TKey>()
@@ -65,7 +65,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	public class StateMachineConnectionConfiguratorImpl<T, TKey, TBinding> :
 		FiberProviderConfiguratorImpl<StateMachineConnectionConfigurator<T, TKey, TBinding>, TKey>,
 		StateMachineConnectionConfigurator<T, TKey, TBinding>,
-		ChannelConfigurator
+		ConnectionBuilderConfigurator
 		where T : StateMachine<T>
 		where TBinding : StateMachineBinding<T, TKey>
 	{
@@ -89,13 +89,13 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_binding.Validate(_instanceFactory(default(TKey)));
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			_fiberProvider = GetConfiguredFiberProvider(connection);
+			_fiberProvider = GetConfiguredFiberProvider(builder);
 
 			_binding.ForEachEvent((@event, binder, result) =>
 				{
-					this.FastInvoke(new[] {result.EventType}, "ConfigureChannel", connection, @event, binder,
+					this.FastInvoke(new[] {result.EventType}, "ConfigureChannel", builder, @event, binder,
 					                result);
 				});
 		}
@@ -120,7 +120,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 			_channelProviderFactory = factory;
 		}
 
-		FiberProvider<TKey> GetConfiguredFiberProvider(ChannelConfiguratorConnection connection)
+		FiberProvider<TKey> GetConfiguredFiberProvider(ConnectionBuilder connection)
 		{
 			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
 			connection.AddDisposable(configuredProvider);
@@ -129,7 +129,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 		}
 
 
-		public void ConfigureChannel<TChannel>(ChannelConfiguratorConnection connection,
+		public void ConfigureChannel<TChannel>(ConnectionBuilder connection,
 		                                       DataEvent<T, TChannel> @event, EventBinder<T, TKey, TChannel> binder,
 		                                       StateMachineEventInspectorResult<T> result)
 		{

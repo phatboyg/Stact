@@ -16,15 +16,18 @@ namespace Stact.Configuration.Internal
 	using Magnum;
 
 
-	public class WcfChannelHostConnectionConfiguratorImpl :
-		FiberFactoryConfiguratorImpl<WcfChannelHostConnectionConfigurator>,
-		WcfChannelHostConnectionConfigurator,
-		ChannelConfigurator
+	/// <summary>
+	/// Exposes the configuration options for a WcfProxy
+	/// </summary>
+	public class WcfConnectionConfiguratorImpl :
+		FiberFactoryConfiguratorImpl<WcfConnectionConfigurator>,
+		WcfConnectionConfigurator,
+		ConnectionBuilderConfigurator
 	{
 		readonly Uri _endpointUri;
 		readonly string _pipeName;
 
-		public WcfChannelHostConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
+		public WcfConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
 		{
 			Guard.AgainstNull(endpointUri);
 			Guard.AgainstNull(pipeName);
@@ -37,13 +40,11 @@ namespace Stact.Configuration.Internal
 		{
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			var host = new WcfChannelHost(fiber, connection.Channel, _endpointUri, _pipeName);
-
-			connection.AddDisposable(host);
+			builder.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
 		}
 	}
 }

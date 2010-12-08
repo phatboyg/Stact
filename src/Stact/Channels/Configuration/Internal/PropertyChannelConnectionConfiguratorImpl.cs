@@ -24,11 +24,11 @@ namespace Stact.Configuration.Internal
 	public class PropertyChannelConnectionConfiguratorImpl<T> :
 		FiberFactoryConfiguratorImpl<PropertyChannelConnectionConfigurator<T>>,
 		PropertyChannelConnectionConfigurator<T>,
-		ChannelConfigurator
+		ConnectionBuilderConfigurator
 		where T : class
 	{
 		T _instance;
-		IList<Action<ChannelConfiguratorConnection, Fiber, T>> _propertyBinders;
+		IList<Action<ConnectionBuilder, Fiber, T>> _propertyBinders;
 
 		public void ValidateConfiguration()
 		{
@@ -40,11 +40,11 @@ namespace Stact.Configuration.Internal
 			GetChannelBinders();
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			_propertyBinders.Each(x => x(connection, fiber, _instance));
+			_propertyBinders.Each(x => x(builder, fiber, _instance));
 		}
 
 		public PropertyChannelConnectionConfigurator<T> UsingInstance(T instance)
@@ -65,12 +65,12 @@ namespace Stact.Configuration.Internal
 						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
 
 						return this.FastInvoke<PropertyChannelConnectionConfiguratorImpl<T>,
-							Action<ChannelConfiguratorConnection, Fiber, T>>(new[] {inputType}, "GetChannelConfigurator", property);
+							Action<ConnectionBuilder, Fiber, T>>(new[] {inputType}, "GetChannelConfigurator", property);
 					})
 				.ToList();
 		}
 
-		Action<ChannelConfiguratorConnection, Fiber, T> GetChannelConfigurator<TChannel>(PropertyInfo property)
+		Action<ConnectionBuilder, Fiber, T> GetChannelConfigurator<TChannel>(PropertyInfo property)
 		{
 			ParameterExpression target = Expression.Parameter(typeof(T), "x");
 			MethodCallExpression getter = Expression.Call(target, property.GetGetMethod(true));
@@ -78,7 +78,10 @@ namespace Stact.Configuration.Internal
 			ChannelAccessor<T, TChannel> accessor =
 				Expression.Lambda<ChannelAccessor<T, TChannel>>(getter, new[] {target}).Compile();
 
-			return (connection, fiber, instance) => { connection.AddChannel(fiber, x => accessor(instance)); };
+			return (connection, fiber, instance) =>
+				{
+					connection.AddChannel(fiber, x => accessor(instance));
+				};
 		}
 	}
 }

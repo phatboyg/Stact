@@ -13,7 +13,6 @@
 namespace Stact.Configuration.Internal
 {
 	using System.Collections.Generic;
-	using Stact.Configuration;
 
 
 	/// <summary>
@@ -23,7 +22,7 @@ namespace Stact.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
 	public interface DistinctChannelConfigurator<TChannel, TKey> :
-		ChannelConnectionConfigurator<IDictionary<TKey, TChannel>>,
+		ChannelConfigurator<IDictionary<TKey, TChannel>>,
 		FiberFactoryConfigurator<DistinctChannelConfigurator<TChannel, TKey>>
 	{
 	}

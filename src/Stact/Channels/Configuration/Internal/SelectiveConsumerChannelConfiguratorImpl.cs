@@ -12,15 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	
-	using Stact.Configuration;
-
-
 	public class SelectiveConsumerChannelConfiguratorImpl<TChannel> :
 		FiberFactoryConfiguratorImpl<ConsumerChannelConfigurator<TChannel>>,
 		ConsumerChannelConfigurator<TChannel>,
-		ChannelConfigurator<TChannel>,
-		ChannelConfigurator
+		ConnectionBuilderConfigurator<TChannel>,
+		ConnectionBuilderConfigurator
 	{
 		readonly SelectiveConsumer<TChannel> _consumer;
 
@@ -29,18 +25,18 @@ namespace Stact.Configuration.Internal
 			_consumer = consumer;
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
+			builder.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			connection.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
+			builder.AddChannel(fiber, x => new SelectiveConsumerChannel<TChannel>(x, _consumer));
 		}
 
 		public void ValidateConfiguration()

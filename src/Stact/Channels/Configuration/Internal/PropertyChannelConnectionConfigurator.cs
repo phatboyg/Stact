@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Stact.Configuration;
-
-
 	public interface PropertyChannelConnectionConfigurator<T> :
 		FiberFactoryConfigurator<PropertyChannelConnectionConfigurator<T>>
 		where T : class

@@ -19,7 +19,7 @@ namespace Stact
 	public static class ExtensionsForFilterChannel
 	{
 		public static FilterChannelConfigurator<TChannel> Where<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator,
+			this ChannelConfigurator<TChannel> configurator,
 			Filter<TChannel> filter)
 		{
 			var filterConfigurator = new FilterChannelConfiguratorImpl<TChannel>(filter);

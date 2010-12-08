@@ -23,10 +23,10 @@ namespace Stact
 		/// </summary>
 		/// <typeparam name="TChannel">The channel type</typeparam>
 		/// <returns>A chainable method to configure additional options</returns>
-		public static ChannelConnectionConfigurator<TChannel> AddConsumerOf<TChannel>(
+		public static ChannelConfigurator<TChannel> AddConsumerOf<TChannel>(
 			this ConnectionConfigurator connectionConfigurator)
 		{
-			var configurator = new ChannelConnectionConfiguratorImpl<TChannel>();
+			var configurator = new ChannelConfiguratorImpl<TChannel>();
 
 			connectionConfigurator.RegisterChannelConfigurator(configurator);
 

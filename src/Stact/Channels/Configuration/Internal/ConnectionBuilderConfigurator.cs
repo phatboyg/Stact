@@ -10,23 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Configuration
+namespace Stact.Configuration.Internal
 {
-	using Internal;
-
-
-	public interface ChannelConnectionConfigurator
+	/// <summary>
+	/// Configures a channel on an untyped channel
+	/// </summary>
+	public interface ConnectionBuilderConfigurator :
+		Configurator
 	{
-		void SetChannelConfigurator(ChannelConfigurator configurator);
+		void Configure(ConnectionBuilder builder);
 	}
 
 
 	/// <summary>
-	/// A fluent syntax for configuration the options of a channel subscription
+	/// Configures a channel on a typed channel
 	/// </summary>
-	/// <typeparam name="TChannel">The channel type</typeparam>
-	public interface ChannelConnectionConfigurator<TChannel>
+	/// <typeparam name="TChannel"></typeparam>
+	public interface ConnectionBuilderConfigurator<TChannel> :
+		Configurator
 	{
-		void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator);
+		void Configure(ConnectionBuilder<TChannel> builder);
 	}
 }

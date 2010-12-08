@@ -17,13 +17,12 @@ namespace Stact.Routing.Configuration
 	using Routing.Internal;
 	using Stact.Configuration;
 	using Stact.Configuration.Internal;
-	using Stact.Internal;
 
 
 	public class WhenConfiguratorImpl<T> :
 		WhenConfigurator<T>
 	{
-		ChannelConfigurator<T> _configurator;
+		ConnectionBuilderConfigurator<T> _configurator;
 
 		public void ValidateConfiguration()
 		{
@@ -49,17 +48,18 @@ namespace Stact.Routing.Configuration
 			throw new NotImplementedException();
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<T> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<T> configurator)
 		{
 			_configurator = configurator;
 		}
 	}
 
+
 	public class NodeChannelConfiguratorConnectionImpl<TChannel> :
-		ChannelConfiguratorConnection<TChannel>
+		ConnectionBuilder<TChannel>
 	{
-		readonly JoinNode<TChannel> _joinNode;
 		readonly IList<IDisposable> _disposables;
+		readonly JoinNode<TChannel> _joinNode;
 
 		public NodeChannelConfiguratorConnectionImpl(JoinNode<TChannel> joinNode)
 		{

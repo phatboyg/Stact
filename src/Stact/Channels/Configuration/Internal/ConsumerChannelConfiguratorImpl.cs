@@ -12,15 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Magnum.Extensions;
-	using Stact.Configuration;
-
-
 	public class ConsumerChannelConfiguratorImpl<TChannel> :
 		FiberFactoryConfiguratorImpl<ConsumerChannelConfigurator<TChannel>>,
 		ConsumerChannelConfigurator<TChannel>,
-		ChannelConfigurator,
-		ChannelConfigurator<TChannel>
+		ConnectionBuilderConfigurator,
+		ConnectionBuilderConfigurator<TChannel>
 	{
 		readonly Consumer<TChannel> _consumer;
 
@@ -35,18 +31,18 @@ namespace Stact.Configuration.Internal
 				throw new ChannelConfigurationException(typeof(TChannel), "Consumer cannot be null");
 		}
 
-		public void Configure(ChannelConfiguratorConnection connection)
+		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			connection.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
+			builder.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			connection.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
+			builder.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
 		}
 	}
 }

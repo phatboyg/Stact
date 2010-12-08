@@ -16,7 +16,7 @@ namespace Stact.Configuration.Internal
 
 
 	public interface InstanceChannelConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>
+		ChannelConfigurator<TChannel>
 	{
 		InstanceChannelConfigurator<TInstance, TChannel> Of<TInstance>()
 			where TInstance : class;
@@ -31,7 +31,7 @@ namespace Stact.Configuration.Internal
 	public interface InstanceChannelConfigurator<TInstance, TChannel>
 		where TInstance : class
 	{
-		void SetProviderFactory(Func<ChannelConfiguratorConnection<TChannel>,ChannelProvider<TChannel>> providerFactory);
+		void SetProviderFactory(Func<ConnectionBuilder<TChannel>,ChannelProvider<TChannel>> providerFactory);
 	}
 
 

@@ -27,7 +27,7 @@ namespace Stact.Configuration.Internal
 		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>
 		where TInstance : class
 	{
-		FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection);
+		FiberProvider<TKey> GetConfiguredProvider(ConnectionBuilder<TChannel> connection);
 
 		KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor();
 	}

@@ -19,9 +19,9 @@ namespace Stact.Configuration.Internal
 	public class IntervalChannelConfiguratorImpl<TChannel> :
 		SchedulerFactoryConfiguratorImpl<IntervalChannelConfigurator<TChannel>>,
 		IntervalChannelConfigurator<TChannel>,
-		ChannelConfigurator<TChannel>
+		ConnectionBuilderConfigurator<TChannel>
 	{
-		ChannelConfigurator<ICollection<TChannel>> _configurator;
+		ConnectionBuilderConfigurator<ICollection<TChannel>> _configurator;
 		TimeSpan _interval;
 
 		public IntervalChannelConfiguratorImpl(TimeSpan interval)
@@ -32,12 +32,12 @@ namespace Stact.Configuration.Internal
 			HandleOnPoolFiber();
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
-			Scheduler scheduler = GetSchedulerUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
+			Scheduler scheduler = GetSchedulerUsingConfiguredFactory(builder);
 
-			_configurator.Configure(new IntervalChannelConfiguratorConnection(connection, fiber, scheduler, _interval));
+			_configurator.Configure(new IntervalConnectionBuilderDecorator(builder, fiber, scheduler, _interval));
 		}
 
 		public void ValidateConfiguration()
@@ -51,26 +51,24 @@ namespace Stact.Configuration.Internal
 			ValidateSchedulerFactoryConfiguration();
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<ICollection<TChannel>> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<ICollection<TChannel>> configurator)
 		{
 			_configurator = configurator;
 		}
 
 
-		class IntervalChannelConfiguratorConnection :
-			ChannelConfiguratorConnection<ICollection<TChannel>>
+		class IntervalConnectionBuilderDecorator :
+			ConnectionBuilder<ICollection<TChannel>>
 		{
-			readonly ChannelConfiguratorConnection<TChannel> _connection;
+			readonly ConnectionBuilder<TChannel> _builder;
 			readonly Fiber _fiber;
 			readonly TimeSpan _interval;
 			readonly Scheduler _scheduler;
 
-			public IntervalChannelConfiguratorConnection(ChannelConfiguratorConnection<TChannel> connection,
-			                                             Fiber fiber,
-			                                             Scheduler scheduler,
-			                                             TimeSpan interval)
+			public IntervalConnectionBuilderDecorator(ConnectionBuilder<TChannel> builder, Fiber fiber, Scheduler scheduler,
+			                                          TimeSpan interval)
 			{
-				_connection = connection;
+				_builder = builder;
 				_fiber = fiber;
 				_scheduler = scheduler;
 				_interval = interval;
@@ -80,7 +78,7 @@ namespace Stact.Configuration.Internal
 			{
 				Channel<ICollection<TChannel>> channel = channelFactory(fiber);
 
-				_connection.AddChannel(fiber, x => new IntervalChannel<TChannel>(_fiber, _scheduler, _interval, channel));
+				_builder.AddChannel(fiber, x => new IntervalChannel<TChannel>(_fiber, _scheduler, _interval, channel));
 			}
 
 			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
@@ -90,7 +88,7 @@ namespace Stact.Configuration.Internal
 
 			public void AddDisposable(IDisposable disposable)
 			{
-				_connection.AddDisposable(disposable);
+				_builder.AddDisposable(disposable);
 			}
 		}
 	}

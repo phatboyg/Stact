@@ -13,17 +13,15 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
-	using Stact.Configuration;
 
 
 	public class FilterChannelConfiguratorImpl<TChannel> :
 		FiberFactoryConfiguratorImpl<FilterChannelConfigurator<TChannel>>,
 		FilterChannelConfigurator<TChannel>,
-		ChannelConfigurator<TChannel>
+		ConnectionBuilderConfigurator<TChannel>
 	{
 		readonly Filter<TChannel> _filter;
-		ChannelConfigurator<TChannel> _configurator;
+		ConnectionBuilderConfigurator<TChannel> _configurator;
 
 		public FilterChannelConfiguratorImpl(Filter<TChannel> filter)
 		{
@@ -32,11 +30,11 @@ namespace Stact.Configuration.Internal
 			HandleOnPoolFiber();
 		}
 
-		public void Configure(ChannelConfiguratorConnection<TChannel> connection)
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(connection);
+			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
 
-			var filterConnection = new ChannelConfiguratorConnectionDecorator(connection, fiber, _filter);
+			var filterConnection = new FilterConnectionBuilderDecorator(builder, fiber, _filter);
 
 			_configurator.Configure(filterConnection);
 		}
@@ -49,23 +47,23 @@ namespace Stact.Configuration.Internal
 			_configurator.ValidateConfiguration();
 		}
 
-		public void SetChannelConfigurator(ChannelConfigurator<TChannel> configurator)
+		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
 		{
 			_configurator = configurator;
 		}
 
 
-		class ChannelConfiguratorConnectionDecorator :
-			ChannelConfiguratorConnection<TChannel>
+		class FilterConnectionBuilderDecorator :
+			ConnectionBuilder<TChannel>
 		{
-			readonly ChannelConfiguratorConnection<TChannel> _connection;
+			readonly ConnectionBuilder<TChannel> _builder;
 			readonly Fiber _fiber;
 			readonly Filter<TChannel> _filter;
 
-			public ChannelConfiguratorConnectionDecorator(ChannelConfiguratorConnection<TChannel> connection, Fiber fiber,
+			public FilterConnectionBuilderDecorator(ConnectionBuilder<TChannel> builder, Fiber fiber,
 			                                              Filter<TChannel> filter)
 			{
-				_connection = connection;
+				_builder = builder;
 				_fiber = fiber;
 				_filter = filter;
 			}
@@ -74,7 +72,7 @@ namespace Stact.Configuration.Internal
 			{
 				Channel<TChannel> channel = channelFactory(fiber);
 
-				_connection.AddChannel(fiber, x => new FilterChannel<TChannel>(_fiber, channel, _filter));
+				_builder.AddChannel(fiber, x => new FilterChannel<TChannel>(_fiber, channel, _filter));
 			}
 
 			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
@@ -83,12 +81,12 @@ namespace Stact.Configuration.Internal
 
 				Filter<T> filter = m => _filter((TChannel)(object)m);
 
-				_connection.AddChannel(_fiber, x => new FilterChannel<T>(x, channel, filter));
+				_builder.AddChannel(_fiber, x => new FilterChannel<T>(x, channel, filter));
 			}
 
 			public void AddDisposable(IDisposable disposable)
 			{
-				_connection.AddDisposable(disposable);
+				_builder.AddDisposable(disposable);
 			}
 		}
 	}

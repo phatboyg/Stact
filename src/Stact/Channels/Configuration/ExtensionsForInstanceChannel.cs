@@ -20,7 +20,7 @@ namespace Stact
 	public static class ExtensionsForInstanceChannel
 	{
 		public static InstanceChannelConfigurator<TChannel> UsingInstance<TChannel>(
-			this ChannelConnectionConfigurator<TChannel> configurator)
+			this ChannelConfigurator<TChannel> configurator)
 		{
 			var instanceConfigurator = new InstanceChannelConfiguratorImpl<TChannel>();
 

@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	public interface ConsumerChannelConfigurator<TChannel> :
-		FiberFactoryConfigurator<ConsumerChannelConfigurator<TChannel>>
+	public interface WcfHostConnectionConfigurator :
+		FiberFactoryConfigurator<WcfHostConnectionConfigurator>
 	{
 	}
 }

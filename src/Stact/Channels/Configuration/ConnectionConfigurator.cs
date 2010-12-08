@@ -34,7 +34,7 @@ namespace Stact.Configuration
 		void AddUntypedChannel(UntypedChannel channel);
 
 
-		void RegisterChannelConfigurator(ChannelConfigurator configurator);
+		void RegisterChannelConfigurator(ConnectionBuilderConfigurator configurator);
 	}
 
 
@@ -48,6 +48,6 @@ namespace Stact.Configuration
 
 		ConsumerChannelConfigurator<T> AddUntypedChannel(UntypedChannel channel);
 
-		void RegisterChannelConfigurator(ChannelConfigurator<T> configurator);
+		void RegisterChannelConfigurator(ConnectionBuilderConfigurator<T> configurator);
 	}
 }

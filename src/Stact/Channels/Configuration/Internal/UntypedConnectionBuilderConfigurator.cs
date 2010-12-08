@@ -12,9 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	public interface SynchronizedChannelConnectionConfigurator<TChannel> :
-		ChannelConnectionConfigurator<TChannel>
+	using Magnum;
+
+
+	public class UntypedConnectionBuilderConfigurator :
+		ConnectionBuilderConfigurator
 	{
-		SynchronizedChannelConnectionConfigurator<TChannel> WithState(object state);
+		readonly UntypedChannel _channel;
+
+		public UntypedConnectionBuilderConfigurator(UntypedChannel channel)
+		{
+			Guard.AgainstNull(channel);
+
+			_channel = channel;
+		}
+
+		public void ValidateConfiguration()
+		{
+		}
+
+		public void Configure(ConnectionBuilder builder)
+		{
+			builder.AddChannel(null, fiber => _channel);
+		}
 	}
 }

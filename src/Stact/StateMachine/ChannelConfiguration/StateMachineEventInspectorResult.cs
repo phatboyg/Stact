@@ -25,7 +25,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 		Event GenericEvent { get; }
 		Type EventType { get; }
 
-		void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance);
+		void Connect(ConnectionBuilder configurator, Fiber fiber, T instance);
 
 		InstanceChannelPolicy<T, TChannel> GetPolicy<TChannel>(InstanceProvider<T, TChannel> missingInstanceProvider);
 	}
@@ -66,7 +66,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 			get { return typeof(V); }
 		}
 
-		public void Connect(ChannelConfiguratorConnection configurator, Fiber fiber, T instance)
+		public void Connect(ConnectionBuilder configurator, Fiber fiber, T instance)
 		{
 			// TODO kill this crap
 			configurator.AddChannel(fiber, x => new ConsumerChannel<V>(x, m => instance.RaiseEvent(Event, m)));

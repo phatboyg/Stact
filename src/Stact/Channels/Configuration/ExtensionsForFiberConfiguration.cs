@@ -12,31 +12,31 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
-	using Configuration.Internal;
+	using Internal;
 
 
 	public static class ExtensionsForFiberConfiguration
 	{
 		public static Fiber GetFiberUsingConfiguredFactory<T>(this FiberFactoryConfiguratorImpl<T> configurator,
-		                                                      ChannelConfiguratorConnection connection)
+		                                                      ConnectionBuilder builder)
 			where T : class
 		{
 			FiberFactory fiberFactory = configurator.GetConfiguredFiberFactory();
 			Fiber fiber = fiberFactory();
 
-			connection.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
+			builder.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
 
 			return fiber;
 		}
 
 		public static Fiber GetFiberUsingConfiguredFactory<T, TChannel>(this FiberFactoryConfiguratorImpl<T> configurator,
-		                                                                ChannelConfiguratorConnection<TChannel> connection)
+		                                                                ConnectionBuilder<TChannel> builder)
 			where T : class
 		{
 			FiberFactory fiberFactory = configurator.GetConfiguredFiberFactory();
 			Fiber fiber = fiberFactory();
 
-			connection.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
+			builder.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
 
 			return fiber;
 		}

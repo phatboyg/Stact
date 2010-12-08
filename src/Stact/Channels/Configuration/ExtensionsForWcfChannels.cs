@@ -19,21 +19,21 @@ namespace Stact
 
 	public static class ExtensionsForWcfChannels
 	{
-		public static WcfChannelConnectionConfigurator SendToWcfChannel(this ConnectionConfigurator connectionConfigurator,
+		public static WcfConnectionConfigurator SendToWcfChannel(this ConnectionConfigurator connectionConfigurator,
 		                                                                Uri endpointUri, string pipeName)
 		{
-			var configurator = new WcfChannelConnectionConfiguratorImpl(endpointUri, pipeName);
+			var configurator = new WcfConnectionConfiguratorImpl(endpointUri, pipeName);
 
 			connectionConfigurator.RegisterChannelConfigurator(configurator);
 
 			return configurator;
 		}
 
-		public static WcfChannelHostConnectionConfigurator ReceiveFromWcfChannel(
+		public static WcfHostConnectionConfigurator ReceiveFromWcfChannel(
 			this ConnectionConfigurator connectionConfigurator,
 			Uri endpointUri, string pipeName)
 		{
-			var configurator = new WcfChannelHostConnectionConfiguratorImpl(endpointUri, pipeName);
+			var configurator = new WcfHostConnectionConfiguratorImpl(endpointUri, pipeName);
 
 			connectionConfigurator.RegisterChannelConfigurator(configurator);
 

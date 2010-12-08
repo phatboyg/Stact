@@ -31,7 +31,7 @@ namespace Stact.Configuration.Internal
 		where TInstance : class
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
-		Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> _providerFactory;
+		Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> _providerFactory;
 
 		public DistributedInstanceChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
@@ -41,12 +41,12 @@ namespace Stact.Configuration.Internal
 		}
 
 		public void SetProviderFactory(
-			Func<ChannelConfiguratorConnection<TChannel>, ChannelProvider<TChannel>> providerFactory)
+			Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
 		}
 
-		public FiberProvider<TKey> GetConfiguredProvider(ChannelConfiguratorConnection<TChannel> connection)
+		public FiberProvider<TKey> GetConfiguredProvider(ConnectionBuilder<TChannel> connection)
 		{
 			FiberProvider<TKey> configuredProvider = GetConfiguredFiberProvider();
 			connection.AddDisposable(configuredProvider);
@@ -59,7 +59,7 @@ namespace Stact.Configuration.Internal
 			return _keyAccessor;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider(ChannelConfiguratorConnection<TChannel> connection)
+		public ChannelProvider<TChannel> GetChannelProvider(ConnectionBuilder<TChannel> connection)
 		{
 			if (_providerFactory == null)
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
