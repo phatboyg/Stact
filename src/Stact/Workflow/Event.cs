@@ -13,6 +13,7 @@
 namespace Stact.Workflow
 {
 	using System;
+	using Internal;
 
 
 	public interface Event :

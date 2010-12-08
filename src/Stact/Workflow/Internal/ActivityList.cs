@@ -16,18 +16,18 @@ namespace Stact.Workflow.Internal
 	using System.Collections.Generic;
 
 
-	public class StateEventList<TInstance> :
-		IEnumerable<StateEvent<TInstance>>
+	public class ActivityList<TInstance> :
+		IEnumerable<Activity<TInstance>>
 		where TInstance : class
 	{
-		readonly IList<StateEvent<TInstance>> _events;
+		readonly IList<Activity<TInstance>> _events;
 
-		public StateEventList()
+		public ActivityList()
 		{
-			_events = new List<StateEvent<TInstance>>();
+			_events = new List<Activity<TInstance>>();
 		}
 
-		public IEnumerator<StateEvent<TInstance>> GetEnumerator()
+		public IEnumerator<Activity<TInstance>> GetEnumerator()
 		{
 			return _events.GetEnumerator();
 		}
@@ -53,9 +53,9 @@ namespace Stact.Workflow.Internal
 			}
 		}
 
-		public void Add(StateEvent<TInstance> stateEvent)
+		public void Add(Activity<TInstance> activity)
 		{
-			_events.Add(stateEvent);
+			_events.Add(activity);
 		}
 	}
 }

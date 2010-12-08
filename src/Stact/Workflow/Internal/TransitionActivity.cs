@@ -12,25 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	using System;
-
-
-	public class TransitionStateEvent<TInstance> :
-		StateEvent<TInstance>
+	public class TransitionActivity<TInstance> :
+		ActivityBase<TInstance>
 		where TInstance : class
 	{
 		readonly StateAccessor<TInstance> _currentStateAccessor;
-		readonly Event _event;
-		readonly State<TInstance> _state;
 		readonly State<TInstance> _targetState;
 
-		public TransitionStateEvent(StateAccessor<TInstance> currentStateAccessor, State<TInstance> state, Event eevent,
-		                            State<TInstance> targetState)
+		public TransitionActivity(StateAccessor<TInstance> currentStateAccessor, State<TInstance> state, Event eevent,
+		                             State<TInstance> targetState)
+			: base(state,eevent)
 		{
 			_currentStateAccessor = currentStateAccessor;
 			_targetState = targetState;
-			_event = eevent;
-			_state = state;
 		}
 
 		public State TargetState
@@ -38,44 +32,23 @@ namespace Stact.Workflow.Internal
 			get { return _targetState; }
 		}
 
-		public State State
-		{
-			get { return _state; }
-		}
-
-		public Event Event
-		{
-			get { return _event; }
-		}
-
-		public void Accept(StateMachineVisitor visitor)
-		{
-			visitor.Visit(this);
-		}
-
-		public void Execute(TInstance instance)
-		{
-			ChangeCurrentState(instance);
-		}
-
-		public void Execute<TBody>(TInstance instance, TBody body)
-		{
-			ChangeCurrentState(instance);
-		}
-
-		void ChangeCurrentState(TInstance instance)
+		public override void Execute(TInstance instance)
 		{
 			State<TInstance> currentState = _currentStateAccessor.Get(instance);
-
 			if (currentState == _targetState)
 				return;
 
 			if (currentState != null)
-				currentState.RaiseEvent(instance, currentState.Leave);
+				currentState.RaiseEvent(instance, currentState.Exit);
 
 			_currentStateAccessor.Set(instance, _targetState);
 
-			_targetState.RaiseEvent(instance, _targetState.Enter);
+			_targetState.RaiseEvent(instance, _targetState.Entry);
+		}
+
+		public override void Execute<TBody>(TInstance instance, TBody body)
+		{
+			Execute(instance);
 		}
 	}
 }

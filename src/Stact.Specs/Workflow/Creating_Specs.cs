@@ -46,7 +46,7 @@ namespace Stact.Specs.Workflow
 							.When(y => y.Start)
 							.TransitionTo(y => y.Running)
 							.When(y => y.Dispose)
-							.Complete();
+							.Finalize();
 
 						x.Finally()
 							.Then(instance => Trace.WriteLine("Completed"));
@@ -161,7 +161,7 @@ namespace Stact.Specs.Workflow
 
 								c.When(e => e.Dispose, t =>
 									{
-										t.Complete();
+										t.Finalize();
 									});
 							});
 

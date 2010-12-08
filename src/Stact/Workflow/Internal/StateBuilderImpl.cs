@@ -64,9 +64,9 @@ namespace Stact.Workflow.Internal
 			return _builder.GetState(stateExpression);
 		}
 
-		public void AddStateEvent(StateEvent<TInstance> stateEvent)
+		public void AddActivity(Activity<TInstance> activity)
 		{
-			_state.AddStateEvent(stateEvent);
+			_state.AddActivity(activity);
 		}
 	}
 }

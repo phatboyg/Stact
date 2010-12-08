@@ -24,15 +24,15 @@ namespace Stact.Workflow.Internal
 		where TWorkflow : class
 		where TInstance : class
 	{
-		public const string AnyStateName = "Any";
-		public const string CompletedStateName = "Completed";
-		public const string InitialStateName = "Initial";
-
 		const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
 		readonly State<TInstance> _anyState;
+		readonly string _anyStateName = StateMachineWorkflow.AnyStateName;
 		readonly StateAccessor<TInstance> _currentState;
 		readonly IDictionary<string, Event> _events;
+		readonly State<TInstance> _finalState;
+		readonly string _finalStateName = StateMachineWorkflow.FinalStateName;
 		readonly State<TInstance> _initialState;
+		readonly string _initialStateName = StateMachineWorkflow.InitialStateName;
 		readonly IDictionary<string, State<TInstance>> _states;
 
 		public StateMachineBuilderImpl(Expression<Func<TInstance, State>> currentStateExpression)
@@ -45,8 +45,9 @@ namespace Stact.Workflow.Internal
 		{
 			_states = new Dictionary<string, State<TInstance>>(GetStates().ToDictionary(x => x.Name));
 
-			_anyState = _states.Values.Where(x => x.Name == AnyStateName).Single();
-			_initialState = _states.Values.Where(x => x.Name == InitialStateName).Single();
+			_anyState = _states.Values.Where(x => x.Name == _anyStateName).Single();
+			_initialState = _states.Values.Where(x => x.Name == _initialStateName).Single();
+			_finalState = _states.Values.Where(x => x.Name == _finalStateName).Single();
 
 			_events = new Dictionary<string, Event>(GetEvents(_states.Values).ToDictionary(x => x.Name));
 		}
@@ -111,12 +112,12 @@ namespace Stact.Workflow.Internal
 
 			foreach (var state in states)
 			{
-				yield return state.Enter;
-				yield return state.Leave;
+				yield return state.Entry;
+				yield return state.Exit;
 			}
 		}
 
-		static IEnumerable<State<TInstance>> GetStates()
+		IEnumerable<State<TInstance>> GetStates()
 		{
 			IEnumerable<State<TInstance>> states = typeof(TWorkflow)
 				.GetProperties(PropertyBindingFlags)
@@ -124,14 +125,23 @@ namespace Stact.Workflow.Internal
 				.Select(property => new StateMachineState<TInstance>(property.Name))
 				.Cast<State<TInstance>>();
 
-			if (!states.Any(x => x.Name == AnyStateName))
-				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(AnyStateName), 1));
+			if (!states.Any(x => x.Name == _anyStateName))
+			{
+				states = states
+					.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(_anyStateName), 1));
+			}
 
-			if (!states.Any(x => x.Name == InitialStateName))
-				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(InitialStateName), 1));
+			if (!states.Any(x => x.Name == _initialStateName))
+			{
+				states = states
+					.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(_initialStateName), 1));
+			}
 
-			if (!states.Any(x => x.Name == CompletedStateName))
-				states = states.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(CompletedStateName), 1));
+			if (!states.Any(x => x.Name == _finalStateName))
+			{
+				states = states
+					.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(_finalStateName), 1));
+			}
 
 			return states;
 		}

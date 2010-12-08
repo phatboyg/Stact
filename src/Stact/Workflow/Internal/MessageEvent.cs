@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
+	using Magnum.Extensions;
+
+
 	public class MessageEvent<TBody> :
 		SimpleEvent,
 		Event<TBody>
@@ -19,6 +22,11 @@ namespace Stact.Workflow.Internal
 		public MessageEvent(string name)
 			: base(name)
 		{
+		}
+
+		public override string ToString()
+		{
+			return Name + "<" + typeof(TBody).ToShortTypeName() + ">";
 		}
 
 		public bool Equals(MessageEvent<TBody> other)

@@ -12,18 +12,35 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	public interface StateEventBuilder<TWorkflow, TInstance> :
-		StateBuilder<TWorkflow, TInstance>
+	public abstract class ActivityBase<TInstance> :
+		Activity<TInstance>
 		where TInstance : class
 	{
-		Event Event { get; }
-	}
+		readonly Event _event;
+		readonly State<TInstance> _state;
 
+		protected ActivityBase(State<TInstance> state, Event @event)
+		{
+			_state = state;
+			_event = @event;
+		}
 
-	public interface StateEventBuilder<TWorkflow, TInstance, TBody> :
-		StateEventBuilder<TWorkflow,TInstance>
-		where TInstance : class
-	{
-		new Event<TBody> Event { get; }
+		public State State
+		{
+			get { return _state; }
+		}
+
+		public Event Event
+		{
+			get { return _event; }
+		}
+
+		public abstract void Execute(TInstance instance);
+		public abstract void Execute<TBody>(TInstance instance, TBody body);
+
+		public virtual void Accept(StateMachineVisitor visitor)
+		{
+			visitor.Visit(this);
+		}
 	}
 }

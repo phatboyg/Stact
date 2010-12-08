@@ -12,23 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Configuration
 {
+	using System;
 	using Internal;
 
 
-	public interface StateEventBuilderConfigurator<TWorkflow, TInstance>
+	public class InstanceDelegateConfigurator<TWorkflow, TInstance> :
+		ActivityBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
-		void ValidateConfigurator();
-		void Configure(StateEventBuilder<TWorkflow, TInstance> builder);
-	}
+		readonly Action<TInstance> _action;
 
+		public InstanceDelegateConfigurator(Action<TInstance> action)
+		{
+			_action = action;
+		}
 
-	public interface StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>
-		where TWorkflow : class
-		where TInstance : class
-	{
-		void ValidateConfigurator();
-		void Configure(StateEventBuilder<TWorkflow, TInstance, TBody> builder);
+		public void ValidateConfigurator()
+		{
+			if (_action == null)
+				throw new StateMachineWorkflowConfiguratorException("Null action specified");
+		}
+
+		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
+		{
+			var activity = new DelegateInstanceActivity<TInstance>(builder.State, builder.Event, _action);
+
+			builder.AddActivity(activity);
+		}
 	}
 }

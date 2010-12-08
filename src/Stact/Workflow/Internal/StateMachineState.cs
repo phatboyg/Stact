@@ -12,8 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using Magnum.Extensions;
 
 
@@ -21,40 +23,46 @@ namespace Stact.Workflow.Internal
 		State<TInstance>
 		where TInstance : class
 	{
-		readonly SimpleEvent _enter;
-		readonly IDictionary<Event, StateEventList<TInstance>> _events;
-		readonly SimpleEvent _leave;
+		readonly SimpleEvent _entry;
+		readonly IDictionary<Event, ActivityList<TInstance>> _eventActivities;
+		readonly SimpleEvent _exit;
 		readonly string _name;
 
 		public StateMachineState(string name)
 		{
 			_name = name;
 
-			_enter = new SimpleEvent(Name + ".Enter");
-			_leave = new SimpleEvent(Name + ".Leave");
+			Expression<Func<State, Event>> entry = x => x.Entry;
+			Expression<Func<State, Event>> exit = x => x.Exit;
+			
+			string entryName = entry.MemberName();
+			string exitName = exit.MemberName();
 
-			_events = new Dictionary<Event, StateEventList<TInstance>>();
+			_entry = new SimpleEvent(Name + "." + entryName);
+			_exit = new SimpleEvent(Name + "." + exitName);
+
+			_eventActivities = new Dictionary<Event, ActivityList<TInstance>>();
 		}
 
 		public void Accept(StateMachineVisitor visitor)
 		{
 			visitor.Visit(this);
 
-			_events
+			_eventActivities
 				.OrderBy(x => x.Key)
 				.Select(x => x.Value)
 				.SelectMany(x => x)
 				.Each(x => x.Accept(visitor));
 		}
 
-		public Event Enter
+		public Event Entry
 		{
-			get { return _enter; }
+			get { return _entry; }
 		}
 
-		public Event Leave
+		public Event Exit
 		{
-			get { return _leave; }
+			get { return _exit; }
 		}
 
 		public string Name
@@ -64,23 +72,23 @@ namespace Stact.Workflow.Internal
 
 		public void RaiseEvent(TInstance instance, Event eevent)
 		{
-			StateEventList<TInstance> stateEvent;
-			if (_events.TryGetValue(eevent, out stateEvent))
-				stateEvent.Execute(instance);
+			ActivityList<TInstance> activityList;
+			if (_eventActivities.TryGetValue(eevent, out activityList))
+				activityList.Execute(instance);
 		}
 
 		public void RaiseEvent<TBody>(TInstance instance, Event<TBody> eevent, TBody body)
 		{
-			StateEventList<TInstance> stateEvent;
-			if (_events.TryGetValue(eevent, out stateEvent))
-				stateEvent.Execute(instance, body);
+			ActivityList<TInstance> activityList;
+			if (_eventActivities.TryGetValue(eevent, out activityList))
+				activityList.Execute(instance, body);
 		}
 
-		public void AddStateEvent(StateEvent<TInstance> stateEvent)
+		public void AddActivity(Activity<TInstance> activity)
 		{
-			StateEventList<TInstance> eventList = _events.Retrieve(stateEvent.Event, () => new StateEventList<TInstance>());
+			ActivityList<TInstance> activityList = _eventActivities.Retrieve(activity.Event, () => new ActivityList<TInstance>());
 
-			eventList.Add(stateEvent);
+			activityList.Add(activity);
 		}
 
 		public override string ToString()

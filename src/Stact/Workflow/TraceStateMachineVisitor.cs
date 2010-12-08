@@ -14,6 +14,7 @@ namespace Stact.Workflow
 {
 	using System.Diagnostics;
 	using Internal;
+	using Magnum.Extensions;
 	using Magnum.Reflection;
 
 
@@ -23,39 +24,90 @@ namespace Stact.Workflow
 	{
 		protected virtual bool Visit<TInstance>(State<TInstance> state)
 		{
-			Trace.WriteLine("State: " + state.Name);
+			Trace.WriteLine("(" + state.Name + ")");
 
 			return true;
 		}
 
 		protected virtual bool Visit(SimpleEvent simpleEvent)
 		{
-			Trace.WriteLine("Event: " + simpleEvent.Name);
+			Trace.WriteLine("[" + simpleEvent.Name + "]");
 
 			return true;
 		}
 
 		protected virtual bool Visit<TBody>(MessageEvent<TBody> messageEvent)
 		{
-			Trace.WriteLine("Event<" + typeof(TBody).Name + "> " + messageEvent.Name);
+			Trace.WriteLine("[" + messageEvent.Name + "<" + typeof(TBody).ToShortTypeName() +  ">]");
 
 			return true;
 		}
 
-		protected virtual bool Visit<TInstance>(StateEvent<TInstance> stateEvent)
+		protected virtual bool Visit<TInstance>(Activity<TInstance> activity)
 			where TInstance : class
 		{
-			Trace.WriteLine("StateEvent: " + stateEvent.State.Name + "[" + stateEvent.Event.Name + "]");
+			Trace.WriteLine("({0})[{1}] Unknown Action".FormatWith(activity.State, activity.Event));
 
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance>(TransitionActivity<TInstance> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] ==> ({2})".FormatWith(activity.State, activity.Event, activity.TargetState));
+
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance>(MethodActivity<TInstance> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] {2}.{3}".FormatWith(activity.State, activity.Event,
+			                                                typeof(TInstance).ToShortTypeName(), activity.MethodName));
+
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance, TBody>(MethodBodyActivity<TInstance, TBody> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] {2}.{3}({4})".FormatWith(activity.State, activity.Event,
+			                                                     typeof(TInstance).ToShortTypeName(), activity.MethodName,
+			                                                     typeof(TBody).ToShortTypeName()));
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance>(DelegateActivity<TInstance> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] Action({2})".FormatWith(activity.State, activity.Event,
+			                                                     typeof(TInstance).ToShortTypeName()));
+
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance>(DelegateInstanceActivity<TInstance> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] Action({2})".FormatWith(activity.State, activity.Event,
+			                                                     typeof(TInstance).ToShortTypeName()));
+
+			return true;
+		}
+
+		protected virtual bool Visit<TInstance, TBody>(DelegateInstanceBodyActivity<TInstance, TBody> activity)
+			where TInstance : class
+		{
+			Trace.WriteLine("({0})[{1}] Action({2},{3})".FormatWith(activity.State, activity.Event,
+			                                                        typeof(TInstance).ToShortTypeName(),
+			                                                        typeof(TBody).ToShortTypeName()));
 			return true;
 		}
 
 		protected virtual bool Visit<TWorkflow, TInstance>(StateMachineWorkflow<TWorkflow, TInstance> workflow)
-			where TWorkflow : class 
+			where TWorkflow : class
 			where TInstance : class
 		{
-			Trace.WriteLine("StateMachineWorkflow<" + typeof(TWorkflow).Name + ", " + typeof(TInstance).Name + ">");
-
 			return true;
 		}
 	}

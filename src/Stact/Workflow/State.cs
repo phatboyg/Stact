@@ -12,17 +12,27 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow
 {
+	using Internal;
+
+
 	public interface State :
 		AcceptStateMachineVisitor
 	{
-		Event Enter { get; }
-		Event Leave { get; }
+		/// <summary>
+		/// Triggered when the state becomes the current state
+		/// </summary>
+		Event Entry { get; }
+
+		/// <summary>
+		/// Triggered when the instance is transitioned to another state
+		/// </summary>
+		Event Exit { get; }
 
 		string Name { get; }
 	}
 
 
-	public interface State<TInstance> :
+	public interface State<in TInstance> :
 		State
 	{
 		void RaiseEvent(TInstance instance, Event e);

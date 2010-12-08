@@ -10,22 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Workflow.Configuration
+namespace Stact.Workflow.Internal
 {
-	public interface StateEventConfigurator<TWorkflow, TInstance> :
-		StateConfigurator<TWorkflow, TInstance>
-		where TWorkflow : class
-		where TInstance : class
-	{
-		void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator);
-	}
+	using System.Linq.Expressions;
+	using System.Reflection;
+	using Magnum.Reflection;
 
 
-	public interface StateEventConfigurator<TWorkflow, TInstance, TBody> :
-		StateEventConfigurator<TWorkflow, TInstance>
-		where TWorkflow : class
-		where TInstance : class
+	public class FindMethodCallVisitor :
+		ExpressionVisitor
 	{
-		void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance, TBody> configurator);
+		MethodInfo _methodInfo;
+
+		public MethodInfo Find(Expression e)
+		{
+			Visit(e);
+
+			return _methodInfo;
+		}
+
+		protected override Expression VisitConstant(ConstantExpression c)
+		{
+			if (c.Type == typeof(MethodInfo))
+				_methodInfo = c.Value as MethodInfo;
+
+			return base.VisitConstant(c);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,14 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Workflow.Internal
+namespace Stact.Workflow.Configuration
 {
-	public interface StateBuilder<TWorkflow, TInstance> :
-		StateMachineBuilder<TWorkflow, TInstance>
+	public interface ActivityConfigurator<TWorkflow, TInstance> :
+		StateConfigurator<TWorkflow, TInstance>
+		where TWorkflow : class
 		where TInstance : class
 	{
-		State<TInstance> State { get; }
+		void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator);
+	}
 
-		void AddActivity(Activity<TInstance> activity);
+
+	public interface ActivityConfigurator<TWorkflow, TInstance, TBody> :
+		ActivityConfigurator<TWorkflow, TInstance>
+		where TWorkflow : class
+		where TInstance : class
+	{
+		void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance, TBody> configurator);
 	}
 }

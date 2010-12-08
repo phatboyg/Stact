@@ -15,42 +15,29 @@ namespace Stact.Workflow.Internal
 	using System;
 
 
-	public class SimpleStateEvent<TInstance> :
-		StateEvent<TInstance>
+	public class DelegateInstanceBodyActivity<TInstance, TBody> :
+		ActivityBase<TInstance>
 		where TInstance : class
 	{
-		readonly Event _event;
-		readonly State _state;
+		readonly Action<TInstance, TBody> _action;
 
-		public SimpleStateEvent(State state, Event e)
+		public DelegateInstanceBodyActivity(State<TInstance> state, Event eevent, Action<TInstance, TBody> action)
+			: base(state, eevent)
 		{
-			_state = state;
-			_event = e;
+			_action = action;
 		}
 
-		public State State
+		public override void Execute(TInstance instance)
 		{
-			get { return _state; }
+			throw new StateMachineWorkflowException("Expected body on message was not present: " + Event.Name);
 		}
 
-		public Event Event
+		public override void Execute<T>(TInstance instance, T body)
 		{
-			get { return _event; }
-		}
+			if (typeof(TBody) != typeof(T))
+				throw new StateMachineWorkflowException("Body type mismatch for message event: " + Event.Name);
 
-		public void Accept(StateMachineVisitor visitor)
-		{
-			visitor.Visit(this);
-		}
-
-		public void Execute(TInstance instance)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Execute<TBody>(TInstance instance, TBody body)
-		{
-			throw new NotImplementedException();
+			_action(instance, (TBody)((object)body));
 		}
 	}
 }

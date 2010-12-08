@@ -19,23 +19,23 @@ namespace Stact.Workflow.Configuration
 	using Magnum.Extensions;
 
 
-	public class MessageStateEventConfigurator<TWorkflow, TInstance, TBody> :
-		StateEventConfigurator<TWorkflow, TInstance, TBody>,
+	public class MessageActivityConfigurator<TWorkflow, TInstance, TBody> :
+		ActivityConfigurator<TWorkflow, TInstance, TBody>,
 		StateBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
-		readonly IList<StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>> _configurators;
+		readonly IList<ActivityBuilderConfigurator<TWorkflow, TInstance, TBody>> _configurators;
 		readonly Expression<Func<TWorkflow, Event<TBody>>> _eventExpression;
 		readonly StateConfigurator<TWorkflow, TInstance> _stateConfigurator;
 
-		public MessageStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,
+		public MessageActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,
 		                                     Expression<Func<TWorkflow, Event<TBody>>> eventExpression)
 		{
 			_stateConfigurator = stateConfigurator;
 			_eventExpression = eventExpression;
 
-			_configurators = new List<StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>>();
+			_configurators = new List<ActivityBuilderConfigurator<TWorkflow, TInstance, TBody>>();
 		}
 
 		public void ValidateConfiguration()
@@ -48,7 +48,7 @@ namespace Stact.Workflow.Configuration
 		{
 			MessageEvent<TBody> eevent = builder.GetEvent(_eventExpression);
 
-			var stateEventBuilder = new MessageStateEventBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
+			var stateEventBuilder = new MessageActivityBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
 
 			_configurators.Each(x => x.Configure(stateEventBuilder));
 
@@ -59,23 +59,23 @@ namespace Stact.Workflow.Configuration
 			_stateConfigurator.AddConfigurator(configurator);
 		}
 
-		public void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance, TBody> configurator)
+		public void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance, TBody> configurator)
 		{
 			_configurators.Add(configurator);
 		}
 
-		public void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator)
+		public void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator)
 		{
 			_configurators.Add(new ConfiguratorProxy(configurator));
 		}
 
 
 		class ConfiguratorProxy : 
-			StateEventBuilderConfigurator<TWorkflow, TInstance, TBody>
+			ActivityBuilderConfigurator<TWorkflow, TInstance, TBody>
 		{
-			readonly StateEventBuilderConfigurator<TWorkflow, TInstance> _configurator;
+			readonly ActivityBuilderConfigurator<TWorkflow, TInstance> _configurator;
 
-			public ConfiguratorProxy(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator)
+			public ConfiguratorProxy(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator)
 			{
 				_configurator = configurator;
 			}
@@ -85,7 +85,7 @@ namespace Stact.Workflow.Configuration
 				_configurator.ValidateConfigurator();
 			}
 
-			public void Configure(StateEventBuilder<TWorkflow, TInstance, TBody> builder)
+			public void Configure(ActivityBuilder<TWorkflow, TInstance, TBody> builder)
 			{
 				_configurator.Configure(builder);
 			}

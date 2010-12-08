@@ -16,15 +16,15 @@ namespace Stact.Workflow.Internal
 	using System.Linq.Expressions;
 
 
-	public class MessageStateEventBuilder<TWorkflow, TInstance, TBody> :
-		StateEventBuilder<TWorkflow, TInstance, TBody>
+	public class MessageActivityBuilder<TWorkflow, TInstance, TBody> :
+		ActivityBuilder<TWorkflow, TInstance, TBody>
 		where TWorkflow : class
 		where TInstance : class
 	{
 		readonly StateBuilder<TWorkflow, TInstance> _builder;
 		readonly MessageEvent<TBody> _event;
 
-		public MessageStateEventBuilder(StateBuilder<TWorkflow, TInstance> builder, MessageEvent<TBody> eevent)
+		public MessageActivityBuilder(StateBuilder<TWorkflow, TInstance> builder, MessageEvent<TBody> eevent)
 		{
 			_builder = builder;
 			_event = eevent;
@@ -70,12 +70,12 @@ namespace Stact.Workflow.Internal
 			return _builder.GetState(stateExpression);
 		}
 
-		public void AddStateEvent(StateEvent<TInstance> stateEvent)
+		public void AddActivity(Activity<TInstance> activity)
 		{
-			_builder.AddStateEvent(stateEvent);
+			_builder.AddActivity(activity);
 		}
 
-		Event StateEventBuilder<TWorkflow, TInstance>.Event
+		Event ActivityBuilder<TWorkflow, TInstance>.Event
 		{
 			get { return _event; }
 		}

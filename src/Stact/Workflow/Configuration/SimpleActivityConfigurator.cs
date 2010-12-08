@@ -19,33 +19,33 @@ namespace Stact.Workflow.Configuration
 	using Magnum.Extensions;
 
 
-	public class SimpleStateEventConfigurator<TWorkflow, TInstance> :
-		StateEventConfigurator<TWorkflow, TInstance>,
+	public class SimpleActivityConfigurator<TWorkflow, TInstance> :
+		ActivityConfigurator<TWorkflow, TInstance>,
 		StateBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
 		readonly StateConfigurator<TWorkflow, TInstance> _stateConfigurator;
-		readonly IList<StateEventBuilderConfigurator<TWorkflow, TInstance>> _configurators;
+		readonly IList<ActivityBuilderConfigurator<TWorkflow, TInstance>> _configurators;
 		readonly Func<StateBuilder<TWorkflow, TInstance>, SimpleEvent> _getEvent;
 
-		public SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,
+		public SimpleActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,
 		                                    Expression<Func<TWorkflow, Event>> eventExpression)
 			: this(stateConfigurator)
 		{
 			_getEvent = builder => builder.GetEvent(eventExpression);
 		}
 
-		public SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,string eventName)
+		public SimpleActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,string eventName)
 			: this(stateConfigurator)
 		{
 			_getEvent = builder => builder.GetEvent(eventName);
 		}
 
-		SimpleStateEventConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator)
+		SimpleActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator)
 		{
 			_stateConfigurator = stateConfigurator;
-			_configurators = new List<StateEventBuilderConfigurator<TWorkflow, TInstance>>();
+			_configurators = new List<ActivityBuilderConfigurator<TWorkflow, TInstance>>();
 		}
 
 		public void ValidateConfiguration()
@@ -58,7 +58,7 @@ namespace Stact.Workflow.Configuration
 		{
 			SimpleEvent eevent = _getEvent(builder);
 
-			var stateEventBuilder = new SimpleStateEventBuilder<TWorkflow, TInstance>(builder, eevent);
+			var stateEventBuilder = new SimpleActivityBuilder<TWorkflow, TInstance>(builder, eevent);
 
 			_configurators.Each(x => x.Configure(stateEventBuilder));
 		}
@@ -68,7 +68,7 @@ namespace Stact.Workflow.Configuration
 			_stateConfigurator.AddConfigurator(configurator);
 		}
 
-		public void AddConfigurator(StateEventBuilderConfigurator<TWorkflow, TInstance> configurator)
+		public void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator)
 		{
 			_configurators.Add(configurator);
 		}

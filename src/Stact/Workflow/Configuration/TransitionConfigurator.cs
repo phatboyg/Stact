@@ -17,35 +17,34 @@ namespace Stact.Workflow.Configuration
 	using Internal;
 
 
-	public class TransitionStateEventConfigurator<TWorkflow, TInstance> :
-		StateEventBuilderConfigurator<TWorkflow, TInstance>
+	public class TransitionConfigurator<TWorkflow, TInstance> :
+		ActivityBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
-		Func<StateEventBuilder<TWorkflow, TInstance>, StateMachineState<TInstance>> _getState;
+		Func<ActivityBuilder<TWorkflow, TInstance>, StateMachineState<TInstance>> _getTargetState;
 
-		public TransitionStateEventConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
+		public TransitionConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
 		{
-			_getState = builder => builder.GetState(stateExpression);
+			_getTargetState = builder => builder.GetState(stateExpression);
 		}
 
-		public TransitionStateEventConfigurator(string stateName)
+		public TransitionConfigurator(string stateName)
 		{
-			_getState = builder => builder.GetState(stateName);
+			_getTargetState = builder => builder.GetState(stateName);
 		}
 
 		public void ValidateConfigurator()
 		{
 		}
 
-		public void Configure(StateEventBuilder<TWorkflow, TInstance> builder)
+		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
 		{
-			StateMachineState<TInstance> state = _getState(builder);
+			StateMachineState<TInstance> targetState = _getTargetState(builder);
 
-			var stateEvent = new TransitionStateEvent<TInstance>(builder.CurrentStateAccessor, builder.State, builder.Event,
-			                                                     state);
+			var activity = new TransitionActivity<TInstance>(builder.CurrentStateAccessor, builder.State, builder.Event, targetState);
 
-			builder.AddStateEvent(stateEvent);
+			builder.AddActivity(activity);
 		}
 	}
 }

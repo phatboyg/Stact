@@ -15,10 +15,15 @@ namespace Stact.Workflow
 	using System;
 	using System.Linq.Expressions;
 	using Configuration;
+	using Internal;
 
 
 	public static class StateMachineWorkflow
 	{
+		public const string AnyStateName = "Any";
+		public const string FinalStateName = "Final";
+		public const string InitialStateName = "Initial";
+
 		public static StateMachineWorkflow<TWorkflow, TInstance> New<TWorkflow, TInstance>(
 			Action<StateMachineConfigurator<TWorkflow, TInstance>> configure)
 			where TWorkflow : class

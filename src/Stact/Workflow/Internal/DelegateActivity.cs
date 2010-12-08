@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,12 +12,29 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	public interface StateBuilder<TWorkflow, TInstance> :
-		StateMachineBuilder<TWorkflow, TInstance>
+	using System;
+
+
+	public class DelegateActivity<TInstance> :
+		ActivityBase<TInstance>
 		where TInstance : class
 	{
-		State<TInstance> State { get; }
+		readonly Action _action;
 
-		void AddActivity(Activity<TInstance> activity);
+		public DelegateActivity(State<TInstance> state, Event eevent, Action action)
+			: base(state, eevent)
+		{
+			_action = action;
+		}
+
+		public override void Execute(TInstance instance)
+		{
+			_action();
+		}
+
+		public override void Execute<T>(TInstance instance, T body)
+		{
+			_action();
+		}
 	}
 }
