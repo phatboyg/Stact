@@ -13,7 +13,6 @@
 namespace Stact
 {
 	using System;
-	
 	using Internal;
 	using Magnum;
 

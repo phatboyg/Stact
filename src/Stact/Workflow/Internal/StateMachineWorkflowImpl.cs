@@ -40,6 +40,7 @@ namespace Stact.Workflow.Internal
 			_anyState = anyState;
 			_states = states;
 			_events = events.Select(x => new EventRaiser<TInstance>(x)).ToDictionary(x => x.Event.Name);
+			_eventsByKey = _events.Values.ToDictionary(x => x.Event);
 		}
 
 		public void Accept(StateMachineVisitor visitor)

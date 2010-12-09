@@ -14,6 +14,7 @@ namespace Stact.Workflow.Internal
 {
 	using System;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using Magnum.Reflection;
 
 
@@ -26,7 +27,7 @@ namespace Stact.Workflow.Internal
 		public CurrentStateAccessor(Expression<Func<TInstance, State>> currentStateExpression, State<TInstance> defaultState)
 		{
 			_defaultState = defaultState;
-			_property = currentStateExpression.WithPropertyExpression(x => new FastProperty<TInstance, State>(x));
+			_property = currentStateExpression.WithPropertyExpression(x => new FastProperty<TInstance, State>(x, BindingFlags.NonPublic));
 		}
 
 		public State<TInstance> Get(TInstance instance)

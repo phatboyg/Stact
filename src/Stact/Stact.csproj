@@ -122,10 +122,16 @@
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\AnonymousActor.cs" />
     <Compile Include="Actors\Internal\AnonymousActorFactory.cs" />
+    <Compile Include="Actors\Internal\InboxReceiveBinder.cs" />
     <Compile Include="Actors\Internal\PendingReceiveList.cs" />
     <Compile Include="Actors\Internal\ReceiveLoopImpl.cs" />
+    <Compile Include="Actors\Internal\StateMachineWorkflowEvent.cs" />
+    <Compile Include="Actors\Internal\StateMachineWorkflowEventBinder.cs" />
+    <Compile Include="Actors\Internal\StateMachineWorkflowEventVisitor.cs" />
     <Compile Include="Actors\ReceiveLoop.cs" />
     <Compile Include="Actors\ReceiveLoopExtensions.cs" />
+    <Compile Include="Actors\StateMachineActorFactory.cs" />
+    <Compile Include="Actors\StateMachineWorkflowBinder.cs" />
     <Compile Include="Channels\Configuration\Internal\TypedChannelConnectionBuilder.cs" />
     <Compile Include="Channels\Configuration\Internal\TypedConnectionBuilderConfigurator.cs" />
     <Compile Include="Channels\Internal\TypeConverters\AssignableTypeConverterFactory.cs" />
