@@ -39,17 +39,17 @@ namespace Stact.Workflow.Internal
 
 		public void Execute(TInstance instance)
 		{
-			foreach (var stateEvent in _events)
+			foreach (var activity in _events)
 			{
-				stateEvent.Execute(instance);
+				activity.Execute(instance);
 			}
 		}
 
 		public void Execute<TBody>(TInstance instance, TBody body)
 		{
-			foreach (var stateEvent in _events)
+			foreach (var activity in _events)
 			{
-				stateEvent.Execute(instance, body);
+				activity.Execute(instance, body);
 			}
 		}
 

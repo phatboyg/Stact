@@ -15,6 +15,7 @@ namespace Stact.Workflow.Internal
 	public interface StateBuilder<TWorkflow, TInstance> :
 		StateMachineBuilder<TWorkflow, TInstance>
 		where TInstance : class
+		where TWorkflow : class
 	{
 		State<TInstance> State { get; }
 

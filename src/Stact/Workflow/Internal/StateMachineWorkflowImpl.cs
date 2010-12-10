@@ -16,7 +16,6 @@ namespace Stact.Workflow.Internal
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using Magnum;
 	using Magnum.Extensions;
 
 
@@ -25,21 +24,14 @@ namespace Stact.Workflow.Internal
 		where TWorkflow : class
 		where TInstance : class
 	{
-		readonly State<TInstance> _anyState;
-		readonly StateAccessor<TInstance> _currentStateAccessor;
 		readonly IDictionary<string, EventRaiser<TInstance>> _events;
 		readonly IDictionary<Event, EventRaiser<TInstance>> _eventsByKey;
-		readonly IDictionary<string, State<TInstance>> _states;
+		readonly WorkflowModel<TWorkflow, TInstance> _model;
 
-		public StateMachineWorkflowImpl(StateAccessor<TInstance> currentStateAccessor,
-		                                IDictionary<string, State<TInstance>> states,
-		                                IEnumerable<Event> events,
-		                                State<TInstance> anyState)
+		public StateMachineWorkflowImpl(WorkflowModel<TWorkflow,TInstance> model)
 		{
-			_currentStateAccessor = currentStateAccessor;
-			_anyState = anyState;
-			_states = states;
-			_events = events.Select(x => new EventRaiser<TInstance>(x)).ToDictionary(x => x.Event.Name);
+			_model = model;
+			_events = model.Events.Select(x => new EventRaiser<TInstance>(x)).ToDictionary(x => x.Event.Name);
 			_eventsByKey = _events.Values.ToDictionary(x => x.Event);
 		}
 
@@ -47,8 +39,8 @@ namespace Stact.Workflow.Internal
 		{
 			visitor.Visit(this);
 
-			_states.Values.Each(x => x.Accept(visitor));
-			_events.Values.Each(x => x.Event.Accept(visitor));
+			_model.States.Each(x => x.Accept(visitor));
+			_model.Events.Each(x => x.Accept(visitor));
 		}
 
 		public void RaiseEvent(TInstance instance, string name)
@@ -57,7 +49,7 @@ namespace Stact.Workflow.Internal
 			if (!_events.TryGetValue(name, out e))
 				throw new UnknownEventException(typeof(TWorkflow), name);
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance);
 		}
@@ -68,7 +60,7 @@ namespace Stact.Workflow.Internal
 			if (!_events.TryGetValue(name, out e))
 				throw new UnknownEventException(typeof(TWorkflow), name);
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance, body);
 		}
@@ -79,10 +71,10 @@ namespace Stact.Workflow.Internal
 			if (!_eventsByKey.TryGetValue(eevent, out e))
 				throw new UnknownEventException(typeof(TWorkflow), eevent.Name);
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance);
-			e.RaiseEvent(_anyState, instance);
+			e.RaiseEvent(_model.AnyState, instance);
 		}
 
 		public void RaiseEvent<TBody>(TInstance instance, Event<TBody> eevent, TBody body)
@@ -91,10 +83,10 @@ namespace Stact.Workflow.Internal
 			if (!_eventsByKey.TryGetValue(eevent, out e))
 				throw new UnknownEventException(typeof(TWorkflow), eevent.Name);
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance, body);
-			e.RaiseEvent(_anyState, instance, body);
+			e.RaiseEvent(_model.AnyState, instance, body);
 		}
 
 		public void RaiseEvent(TInstance instance, Expression<Func<TWorkflow, Event>> eventSelector)
@@ -103,10 +95,10 @@ namespace Stact.Workflow.Internal
 			if (!_events.TryGetValue(eventSelector.GetEventName(), out e))
 				throw new UnknownEventException(typeof(TWorkflow), eventSelector.GetEventName());
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance);
-			e.RaiseEvent(_anyState, instance);
+			e.RaiseEvent(_model.AnyState, instance);
 		}
 
 		public void RaiseEvent<TBody>(TInstance instance, Expression<Func<TWorkflow, Event<TBody>>> eventSelector, TBody body)
@@ -115,60 +107,40 @@ namespace Stact.Workflow.Internal
 			if (!_events.TryGetValue(eventSelector.GetEventName(), out e))
 				throw new UnknownEventException(typeof(TWorkflow), eventSelector.GetEventName());
 
-			State<TInstance> state = _currentStateAccessor.Get(instance);
+			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance, body);
-			e.RaiseEvent(_anyState, instance, body);
+			e.RaiseEvent(_model.AnyState, instance, body);
 		}
 
 		public State GetCurrentState(TInstance instance)
 		{
-			Guard.AgainstNull(instance, "instance");
-
-			return _currentStateAccessor.Get(instance);
+			return _model.CurrentStateAccessor.Get(instance);
 		}
 
 		public State GetState(string name)
 		{
-			State<TInstance> state;
-			if (!_states.TryGetValue(name, out state))
-				throw new UnknownStateException(typeof(TWorkflow), name);
-
-			return state;
+			return _model.GetState(name);
 		}
 
 		public Event GetEvent(string name)
 		{
-			EventRaiser<TInstance> e;
-			if (!_events.TryGetValue(name, out e))
-				throw new UnknownEventException(typeof(TWorkflow), name);
-
-			return e.Event;
+			return _model.GetEvent(name);
 		}
 
 		public Event GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
 		{
-			string name = eventExpression.GetEventName();
-
-			return GetEvent(name);
+			return _model.GetEvent(eventExpression);
 		}
 
 		public Event<TBody> GetEvent<TBody>(Expression<Func<TWorkflow, Event<TBody>>> eventExpression)
 		{
-			string name = eventExpression.GetEventName();
-
-			return (Event<TBody>)GetEvent(name);
+			return _model.GetEvent(eventExpression);
 		}
 
 		public State GetState(Expression<Func<TWorkflow, State>> stateExpression)
 		{
-			string name = stateExpression.GetStateName();
-
-			State<TInstance> state;
-			if (!_states.TryGetValue(name, out state))
-				throw new UnknownStateException(typeof(TWorkflow), name);
-
-			return state;
+			return _model.GetState(stateExpression);
 		}
 	}
 }

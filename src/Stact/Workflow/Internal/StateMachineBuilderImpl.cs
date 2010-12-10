@@ -25,66 +25,33 @@ namespace Stact.Workflow.Internal
 		where TInstance : class
 	{
 		const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
-		readonly State<TInstance> _anyState;
 		readonly string _anyStateName = StateMachineWorkflow.AnyStateName;
-		readonly StateAccessor<TInstance> _currentState;
-		readonly IDictionary<string, Event> _events;
-		readonly State<TInstance> _finalState;
 		readonly string _finalStateName = StateMachineWorkflow.FinalStateName;
-		readonly State<TInstance> _initialState;
 		readonly string _initialStateName = StateMachineWorkflow.InitialStateName;
-		readonly IDictionary<string, State<TInstance>> _states;
+		readonly WorkflowModel<TWorkflow, TInstance> _model;
 
 		public StateMachineBuilderImpl(Expression<Func<TInstance, State>> currentStateExpression)
-			: this()
 		{
-			_currentState = new CurrentStateAccessor<TInstance>(currentStateExpression, _initialState);
+			var states = new Dictionary<string, State<TInstance>>(GetStates().ToDictionary(x => x.Name));
+			var events = new Dictionary<string, Event>(GetEvents(states.Values).ToDictionary(x => x.Name));
+
+			var anyState = states[_anyStateName];
+			var initialState = states[_initialStateName];
+			var finalState = states[_finalStateName];
+
+			var currentState = new CurrentStateAccessor<TInstance>(currentStateExpression, initialState);
+
+			_model = new WorkflowModelImpl<TWorkflow, TInstance>(states, events, currentState, anyState, initialState,finalState);
 		}
 
-		StateMachineBuilderImpl()
+		public WorkflowModel<TWorkflow, TInstance> Model
 		{
-			_states = new Dictionary<string, State<TInstance>>(GetStates().ToDictionary(x => x.Name));
-
-			_anyState = _states.Values.Where(x => x.Name == _anyStateName).Single();
-			_initialState = _states.Values.Where(x => x.Name == _initialStateName).Single();
-			_finalState = _states.Values.Where(x => x.Name == _finalStateName).Single();
-
-			_events = new Dictionary<string, Event>(GetEvents(_states.Values).ToDictionary(x => x.Name));
-		}
-
-		public StateMachineState<TInstance> GetState(Expression<Func<TWorkflow, State>> stateExpression)
-		{
-			return stateExpression.WithPropertyExpression(x => GetState(_states[x.Name]));
-		}
-
-		public StateMachineState<TInstance> GetState(string name)
-		{
-			return GetState(_states[name]);
-		}
-
-		public StateAccessor<TInstance> CurrentStateAccessor
-		{
-			get { return _currentState; }
-		}
-
-		public SimpleEvent GetEvent(string name)
-		{
-			return GetEvent(_events[name]);
-		}
-
-		public SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
-		{
-			return eventExpression.WithPropertyExpression(x => GetEvent(_events[x.Name]));
-		}
-
-		public MessageEvent<TBody> GetEvent<TBody>(Expression<Func<TWorkflow, Event<TBody>>> eventExpression)
-		{
-			return eventExpression.WithPropertyExpression(x => GetEvent<TBody>(_events[x.Name]));
+			get { return _model; }
 		}
 
 		public StateMachineWorkflow<TWorkflow, TInstance> Build()
 		{
-			var workflow = new StateMachineWorkflowImpl<TWorkflow, TInstance>(_currentState, _states, _events.Values, _anyState);
+			var workflow = new StateMachineWorkflowImpl<TWorkflow, TInstance>(_model);
 
 			return workflow;
 		}
@@ -144,33 +111,6 @@ namespace Stact.Workflow.Internal
 			}
 
 			return states;
-		}
-
-		static StateMachineState<TInstance> GetState(State input)
-		{
-			var result = input as StateMachineState<TInstance>;
-			if (result == null)
-				throw new UnknownStateException(typeof(TWorkflow), input.Name);
-
-			return result;
-		}
-
-		static SimpleEvent GetEvent(Event input)
-		{
-			var result = input as SimpleEvent;
-			if (result == null)
-				throw new UnknownEventException(typeof(TWorkflow), input.Name);
-
-			return result;
-		}
-
-		static MessageEvent<TBody> GetEvent<TBody>(Event input)
-		{
-			var result = input as MessageEvent<TBody>;
-			if (result == null)
-				throw new UnknownEventException(typeof(TWorkflow), input.Name);
-
-			return result;
 		}
 	}
 }

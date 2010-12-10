@@ -17,6 +17,7 @@ namespace Stact.Workflow.Configuration
 
 	public interface StateBuilderConfigurator<TWorkflow, TInstance>
 		where TInstance : class
+		where TWorkflow : class
 	{
 		void ValidateConfiguration();
 		void Configure(StateBuilder<TWorkflow, TInstance> builder);

@@ -12,10 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	using System;
-	using System.Linq.Expressions;
-
-
 	public class MessageActivityBuilder<TWorkflow, TInstance, TBody> :
 		ActivityBuilder<TWorkflow, TInstance, TBody>
 		where TWorkflow : class
@@ -23,6 +19,7 @@ namespace Stact.Workflow.Internal
 	{
 		readonly StateBuilder<TWorkflow, TInstance> _builder;
 		readonly MessageEvent<TBody> _event;
+		MessageEventExceptionHandler<TInstance, TBody> _exceptionHandler;
 
 		public MessageActivityBuilder(StateBuilder<TWorkflow, TInstance> builder, MessageEvent<TBody> eevent)
 		{
@@ -35,49 +32,43 @@ namespace Stact.Workflow.Internal
 			get { return _builder.State; }
 		}
 
-		public StateMachineState<TInstance> GetState(string name)
-		{
-			return _builder.GetState(name);
-		}
-
-		public StateAccessor<TInstance> CurrentStateAccessor
-		{
-			get { return _builder.CurrentStateAccessor; }
-		}
-
 		public Event<TBody> Event
 		{
 			get { return _event; }
 		}
 
-		public SimpleEvent GetEvent(string name)
+		public void AddExceptionHandler(EventExceptionHandler<TInstance, TBody> exceptionHandler)
 		{
-			return _builder.GetEvent(name);
+			if (_exceptionHandler == null)
+				_exceptionHandler = new MessageEventExceptionHandler<TInstance, TBody>();
+
+			_exceptionHandler.Add(exceptionHandler);
 		}
 
-		public SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression)
+		public void AddExceptionHandler(EventExceptionHandler<TInstance> exceptionHandler)
 		{
-			return _builder.GetEvent(eventExpression);
-		}
+			if (_exceptionHandler == null)
+				_exceptionHandler = new MessageEventExceptionHandler<TInstance, TBody>();
 
-		public MessageEvent<T> GetEvent<T>(Expression<Func<TWorkflow, Event<T>>> eventExpression)
-		{
-			return _builder.GetEvent(eventExpression);
-		}
-
-		public StateMachineState<TInstance> GetState(Expression<Func<TWorkflow, State>> stateExpression)
-		{
-			return _builder.GetState(stateExpression);
+			_exceptionHandler.Add(exceptionHandler);
 		}
 
 		public void AddActivity(Activity<TInstance> activity)
 		{
+			if (_exceptionHandler != null)
+				activity = new MessageActivityExecutor<TInstance, TBody>(activity, _exceptionHandler);
+
 			_builder.AddActivity(activity);
 		}
 
 		Event ActivityBuilder<TWorkflow, TInstance>.Event
 		{
 			get { return _event; }
+		}
+
+		public WorkflowModel<TWorkflow, TInstance> Model
+		{
+			get { return _builder.Model; }
 		}
 	}
 }

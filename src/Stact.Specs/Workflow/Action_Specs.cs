@@ -10,6 +10,7 @@ namespace Stact.Specs.Workflow
 		WorkflowInstance<TestWorkflow> _instance;
 		StateMachineWorkflow<TestWorkflow, TestInstance> _workflow;
 		TestInstance _testInstance;
+		bool _nonInstanceValue;
 
 		[When]
 		public void A_message_event_is_raised()
@@ -20,7 +21,9 @@ namespace Stact.Specs.Workflow
 
 				x.During(y => y.Initial)
 					.When(y => y.Finish)
-					.Then((instance, message) => instance.ResultValue = message.Value)
+					.Then(() => _nonInstanceValue = true)
+					.Then(instance => instance.MessageValue = "Success")
+					.Then((instance, message) => instance.MessageValue = message.Value)
 					.TransitionTo(y => y.Completed);
 			});
 
@@ -45,14 +48,22 @@ namespace Stact.Specs.Workflow
 		[Then]
 		public void Should_contain_the_result_in_the_instance_property()
 		{
-			_testInstance.ResultValue.ShouldEqual("Success");
+			_testInstance.MessageValue.ShouldEqual("Success");
 		}
+
+		[Then]
+		public void Should_have_set_happy_to_true()
+		{
+			_nonInstanceValue.ShouldBeTrue();
+		}
+
 
 		class TestInstance
 		{
 			public State CurrentState { get; set; }
 
-			public string ResultValue { get; set; }
+			public string MessageValue { get; set; }
+			public string ConstantValue { get; set; }
 		}
 
 		class Result
@@ -75,6 +86,7 @@ namespace Stact.Specs.Workflow
 		WorkflowInstance<TestWorkflow> _instance;
 		StateMachineWorkflow<TestWorkflow, TestInstance> _workflow;
 		TestInstance _testInstance;
+		bool _nonInstanceValue;
 
 		[When]
 		public void A_simple_event_is_raised()
@@ -85,7 +97,8 @@ namespace Stact.Specs.Workflow
 
 				x.During(y => y.Initial)
 					.When(y => y.Finish)
-					.Then(instance => instance.ResultValue = "Success")
+					.Then(() => _nonInstanceValue = true)
+					.Then(instance => instance.ConstantValue = "Success")
 					.TransitionTo(y => y.Completed);
 			});
 
@@ -107,14 +120,20 @@ namespace Stact.Specs.Workflow
 		[Then]
 		public void Should_contain_the_result_in_the_instance_property()
 		{
-			_testInstance.ResultValue.ShouldEqual("Success");
+			_testInstance.ConstantValue.ShouldEqual("Success");
+		}
+
+		[Then]
+		public void Should_have_set_happy_to_true()
+		{
+			_nonInstanceValue.ShouldBeTrue();
 		}
 
 		class TestInstance
 		{
 			public State CurrentState { get; set; }
 
-			public string ResultValue { get; set; }
+			public string ConstantValue { get; set; }
 		}
 
 		interface TestWorkflow

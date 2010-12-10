@@ -33,13 +33,13 @@ namespace Stact.Workflow.Configuration
 		                                    Expression<Func<TWorkflow, Event>> eventExpression)
 			: this(stateConfigurator)
 		{
-			_getEvent = builder => builder.GetEvent(eventExpression);
+			_getEvent = builder => builder.Model.GetEvent(eventExpression);
 		}
 
 		public SimpleActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator,string eventName)
 			: this(stateConfigurator)
 		{
-			_getEvent = builder => builder.GetEvent(eventName);
+			_getEvent = builder => builder.Model.GetEvent(eventName);
 		}
 
 		SimpleActivityConfigurator(StateConfigurator<TWorkflow, TInstance> stateConfigurator)

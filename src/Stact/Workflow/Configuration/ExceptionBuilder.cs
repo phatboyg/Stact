@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,17 +15,18 @@ namespace Stact.Workflow.Configuration
 	using Internal;
 
 
-	public interface StateMachineBuilderConfigurator
-	{
-		void ValidateConfiguration();
-	}
-
-
-	public interface StateMachineBuilderConfigurator<TWorkflow, TInstance> :
-		StateMachineBuilderConfigurator
+	public interface ExceptionBuilder<TWorkflow, TInstance> :
+		ActivityBuilder<TWorkflow, TInstance>
 		where TInstance : class
 		where TWorkflow : class
 	{
-		void Configure(StateMachineBuilder<TWorkflow, TInstance> stateMachineBuilder);
+	}
+
+
+	public interface ExceptionBuilder<TWorkflow, TInstance, TException> :
+		ExceptionBuilder<TWorkflow, TInstance>
+		where TWorkflow : class
+		where TInstance : class
+	{
 	}
 }

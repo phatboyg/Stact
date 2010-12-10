@@ -12,24 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	public interface ActivityBuilder<TWorkflow, TInstance> :
-		StateBuilder<TWorkflow, TInstance>
+	using System;
+	using System.Collections.Generic;
+	using Magnum.Extensions;
+
+
+	public class ActivityEventExceptionHandler<TInstance, TException> :
+		EventExceptionHandler<TInstance>
 		where TInstance : class
-		where TWorkflow : class
+		where TException : Exception
 	{
-		Event Event { get; }
+		readonly IList<Activity<TInstance>> _activities;
 
-		void AddExceptionHandler(EventExceptionHandler<TInstance> exceptionHandler);
-	}
+		public ActivityEventExceptionHandler(IList<Activity<TInstance>> activities)
+		{
+			_activities = activities;
+		}
 
+		public Type ExceptionType
+		{
+			get { return typeof(TException); }
+		}
 
-	public interface ActivityBuilder<TWorkflow, TInstance, TBody> :
-		ActivityBuilder<TWorkflow,TInstance>
-		where TInstance : class
-		where TWorkflow : class
-	{
-		new Event<TBody> Event { get; }
+		public ExceptionHandlerResult Handle(TInstance instance, Event eevent, Exception exception)
+		{
+			_activities.Each(x => x.Execute(instance));
 
-		void AddExceptionHandler(EventExceptionHandler<TInstance, TBody> exceptionHandler);
+			return ExceptionHandlerResult.Return;
+		}
 	}
 }

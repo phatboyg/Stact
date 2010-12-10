@@ -33,14 +33,14 @@ namespace Stact.Workflow.Configuration
 		                             Expression<Func<TWorkflow, State>> stateExpression)
 			: this(stateMachineConfigurator)
 		{
-			_getState = builder => builder.GetState(stateExpression);
+			_getState = builder => builder.Model.GetState(stateExpression);
 		}
 
 		public StateConfiguratorImpl(StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator,
 		                             string stateName)
 			: this(stateMachineConfigurator)
 		{
-			_getState = builder => builder.GetState(stateName);
+			_getState = builder => builder.Model.GetState(stateName);
 		}
 
 		StateConfiguratorImpl(StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator)

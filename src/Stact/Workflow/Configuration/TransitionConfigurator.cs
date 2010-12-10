@@ -18,20 +18,21 @@ namespace Stact.Workflow.Configuration
 
 
 	public class TransitionConfigurator<TWorkflow, TInstance> :
-		ActivityBuilderConfigurator<TWorkflow, TInstance>
+		ActivityBuilderConfigurator<TWorkflow, TInstance>,
+		ExceptionBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
-		Func<ActivityBuilder<TWorkflow, TInstance>, StateMachineState<TInstance>> _getTargetState;
+		Func<WorkflowModel<TWorkflow, TInstance>, StateMachineState<TInstance>> _getTargetState;
 
 		public TransitionConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
 		{
-			_getTargetState = builder => builder.GetState(stateExpression);
+			_getTargetState = m => m.GetState(stateExpression);
 		}
 
 		public TransitionConfigurator(string stateName)
 		{
-			_getTargetState = builder => builder.GetState(stateName);
+			_getTargetState = m => m.GetState(stateName);
 		}
 
 		public void ValidateConfigurator()
@@ -40,9 +41,20 @@ namespace Stact.Workflow.Configuration
 
 		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
 		{
-			StateMachineState<TInstance> targetState = _getTargetState(builder);
+			StateMachineState<TInstance> targetState = _getTargetState(builder.Model);
 
-			var activity = new TransitionActivity<TInstance>(builder.CurrentStateAccessor, builder.State, builder.Event, targetState);
+			var activity = new TransitionActivity<TInstance>(builder.Model.CurrentStateAccessor, builder.State, builder.Event,
+			                                                 targetState);
+
+			builder.AddActivity(activity);
+		}
+
+		public void Configure(ExceptionBuilder<TWorkflow, TInstance> builder)
+		{
+			StateMachineState<TInstance> targetState = _getTargetState(builder.Model);
+
+			var activity = new TransitionActivity<TInstance>(builder.Model.CurrentStateAccessor, builder.State, builder.Event,
+			                                                 targetState);
 
 			builder.AddActivity(activity);
 		}

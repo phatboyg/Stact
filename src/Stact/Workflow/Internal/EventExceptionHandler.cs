@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,22 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Workflow.Configuration
+namespace Stact.Workflow.Internal
 {
-	using Internal;
+	using System;
 
 
-	public interface StateMachineBuilderConfigurator
+	public interface EventExceptionHandler<in TInstance>
+		where TInstance : class
 	{
-		void ValidateConfiguration();
+		Type ExceptionType { get; }
+
+		ExceptionHandlerResult Handle(TInstance instance, Event eevent, Exception exception);
 	}
 
 
-	public interface StateMachineBuilderConfigurator<TWorkflow, TInstance> :
-		StateMachineBuilderConfigurator
+	public interface EventExceptionHandler<in TInstance, in TBody>
 		where TInstance : class
-		where TWorkflow : class
 	{
-		void Configure(StateMachineBuilder<TWorkflow, TInstance> stateMachineBuilder);
+		Type ExceptionType { get; }
+
+		ExceptionHandlerResult Handle(TInstance instance, Event eevent, TBody body, Exception exception);
 	}
 }

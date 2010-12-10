@@ -10,35 +10,35 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Workflow.Internal
+namespace Stact.Workflow.Configuration
 {
-	public class StateBuilderImpl<TWorkflow, TInstance> :
-		StateBuilder<TWorkflow, TInstance>
-		where TInstance : class
+	using System;
+	using Internal;
+
+
+	public class DelegateConfigurator<TWorkflow, TInstance> :
+		ActivityBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
+		where TInstance : class
 	{
-		readonly StateMachineBuilder<TWorkflow, TInstance> _builder;
-		StateMachineState<TInstance> _state;
+		readonly Action _action;
 
-		public StateBuilderImpl(StateMachineBuilder<TWorkflow, TInstance> builder, StateMachineState<TInstance> state)
+		public DelegateConfigurator(Action action)
 		{
-			_builder = builder;
-			_state = state;
+			_action = action;
 		}
 
-		public State<TInstance> State
+		public void ValidateConfigurator()
 		{
-			get { return _state; }
+			if (_action == null)
+				throw new StateMachineConfigurationException("Null action specified");
 		}
 
-		public void AddActivity(Activity<TInstance> activity)
+		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
 		{
-			_state.AddActivity(activity);
-		}
+			var activity = new DelegateActivity<TInstance>(builder.State, builder.Event, _action);
 
-		public WorkflowModel<TWorkflow, TInstance> Model
-		{
-			get { return _builder.Model; }
+			builder.AddActivity(activity);
 		}
 	}
 }

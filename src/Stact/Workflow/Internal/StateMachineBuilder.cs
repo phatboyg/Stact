@@ -12,10 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Internal
 {
-	using System;
-	using System.Linq.Expressions;
-
-
 	public interface StateMachineBuilder
 	{
 	}
@@ -24,15 +20,8 @@ namespace Stact.Workflow.Internal
 	public interface StateMachineBuilder<TWorkflow, TInstance> :
 		StateMachineBuilder
 		where TInstance : class
+		where TWorkflow : class
 	{
-		SimpleEvent GetEvent(string name);
-		SimpleEvent GetEvent(Expression<Func<TWorkflow, Event>> eventExpression);
-
-		MessageEvent<TBody> GetEvent<TBody>(Expression<Func<TWorkflow, Event<TBody>>> eventExpression);
-
-		StateMachineState<TInstance> GetState(string name);
-		StateMachineState<TInstance> GetState(Expression<Func<TWorkflow, State>> stateExpression);
-
-		StateAccessor<TInstance> CurrentStateAccessor { get; }
+		WorkflowModel<TWorkflow, TInstance> Model { get; }
 	}
 }

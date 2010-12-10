@@ -12,20 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Workflow.Configuration
 {
-	using Internal;
+	using System;
 
 
-	public interface StateMachineBuilderConfigurator
+	public interface ExceptionConfigurator<TWorkflow, TInstance>
+		where TWorkflow : class
+		where TInstance : class
 	{
-		void ValidateConfiguration();
+		ExceptionConfigurator<TWorkflow, TInstance, TException> Exception<TException>()
+			where TException : Exception;
 	}
 
 
-	public interface StateMachineBuilderConfigurator<TWorkflow, TInstance> :
-		StateMachineBuilderConfigurator
-		where TInstance : class
+	public interface ExceptionConfigurator<TWorkflow, TInstance, TException> :
+		ExceptionConfigurator<TWorkflow,TInstance>
 		where TWorkflow : class
+		where TInstance : class
+		where TException : Exception
 	{
-		void Configure(StateMachineBuilder<TWorkflow, TInstance> stateMachineBuilder);
+		void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator);
 	}
 }

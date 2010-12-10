@@ -172,6 +172,7 @@
     <Compile Include="Workflow\Action_Specs.cs" />
     <Compile Include="Workflow\Creating_Specs.cs" />
     <Compile Include="Workflow\EventVisitor_Specs.cs" />
+    <Compile Include="Workflow\Exception_Specs.cs" />
     <Compile Include="Workflow\StateMachineActor_Specs.cs" />
     <Compile Include="Workflow\Transition_Specs.cs" />
   </ItemGroup>
