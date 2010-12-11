@@ -23,7 +23,8 @@ namespace Stact.Workflow.Configuration
 	}
 
 
-	public interface ExceptionBuilder<TWorkflow, TInstance, TException> :
+	public interface ExceptionBuilder<TWorkflow, TInstance, TBody> :
+		ActivityBuilder<TWorkflow,TInstance,TBody>,
 		ExceptionBuilder<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class

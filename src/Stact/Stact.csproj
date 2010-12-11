@@ -369,6 +369,9 @@
     <Compile Include="Workflow\Configuration\ExceptionBuilderConfigurator.cs" />
     <Compile Include="Workflow\Configuration\ExceptionConfigurator.cs" />
     <Compile Include="Workflow\Configuration\ExceptionConfiguratorImpl.cs" />
+    <Compile Include="Workflow\Configuration\MessageExceptionBuilder.cs" />
+    <Compile Include="Workflow\Configuration\MessageExceptionConfigurator.cs" />
+    <Compile Include="Workflow\Configuration\MessageExceptionConfiguratorImpl.cs" />
     <Compile Include="Workflow\Configuration\MethodBodyConfigurator.cs" />
     <Compile Include="Workflow\Configuration\DelegateInstanceBodyConfigurator.cs" />
     <Compile Include="Workflow\Configuration\DelegateInstanceConfigurator.cs" />

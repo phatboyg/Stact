@@ -17,16 +17,16 @@ namespace Stact.Workflow.Configuration
 	using Internal;
 
 
-	public class SimpleExceptionBuilder<TWorkflow, TInstance, TException> :
-		ExceptionBuilder<TWorkflow, TInstance>
+	public class MessageExceptionBuilder<TWorkflow, TInstance, TException, TBody> :
+		ExceptionBuilder<TWorkflow, TInstance, TBody>
 		where TInstance : class
 		where TWorkflow : class
 		where TException : Exception
 	{
 		readonly IList<Activity<TInstance>> _activities;
-		readonly ActivityBuilder<TWorkflow, TInstance> _builder;
+		readonly ActivityBuilder<TWorkflow, TInstance, TBody> _builder;
 
-		public SimpleExceptionBuilder(ActivityBuilder<TWorkflow, TInstance> builder)
+		public MessageExceptionBuilder(ActivityBuilder<TWorkflow, TInstance, TBody> builder)
 		{
 			_builder = builder;
 			_activities = new List<Activity<TInstance>>();
@@ -52,14 +52,24 @@ namespace Stact.Workflow.Configuration
 			get { return _builder.Event; }
 		}
 
+		public void AddExceptionHandler(EventExceptionHandler<TInstance, TBody> exceptionHandler)
+		{
+			throw new NotImplementedException();
+		}
+
+		Event<TBody> ActivityBuilder<TWorkflow, TInstance, TBody>.Event
+		{
+			get { return _builder.Event; }
+		}
+
 		public void AddExceptionHandler(EventExceptionHandler<TInstance> exceptionHandler)
 		{
 			throw new InvalidOperationException("nested exception handlers are not supported");
 		}
 
-		public EventExceptionHandler<TInstance> CreateExceptionHandler()
+		public EventExceptionHandler<TInstance, TBody> CreateExceptionHandler()
 		{
-			return new ActivityEventExceptionHandler<TInstance, TException>(_activities);
+			return new ActivityEventExceptionHandler<TInstance, TException, TBody>(_activities);
 		}
 	}
 }

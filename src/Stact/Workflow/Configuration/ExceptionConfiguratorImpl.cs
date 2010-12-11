@@ -99,32 +99,5 @@ namespace Stact.Workflow.Configuration
 		{
 			_configurators.Add(configurator);
 		}
-
-		public void AddConfigurator(StateBuilderConfigurator<TWorkflow, TInstance> configurator)
-		{
-			_stateConfigurator.AddConfigurator(configurator);
-		}
-
-
-		class ConfiguratorProxy :
-			ExceptionBuilderConfigurator<TWorkflow, TInstance, TException>
-		{
-			readonly ExceptionBuilderConfigurator<TWorkflow, TInstance> _configurator;
-
-			public ConfiguratorProxy(ExceptionBuilderConfigurator<TWorkflow, TInstance> configurator)
-			{
-				_configurator = configurator;
-			}
-
-			public void ValidateConfigurator()
-			{
-				_configurator.ValidateConfigurator();
-			}
-
-			public void Configure(ExceptionBuilder<TWorkflow, TInstance, TException> builder)
-			{
-				_configurator.Configure(builder);
-			}
-		}
 	}
 }

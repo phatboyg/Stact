@@ -111,6 +111,7 @@ namespace Stact.Specs.Workflow
 		bool _instanceHandlerCalled;
 		Subject _subject;
 		StateMachineWorkflow<SubjectWorkflow, Subject> _workflow;
+		bool _instanceMessageCalled;
 
 		[When]
 		public void Throwing_an_exception_from_an_event_handler()
@@ -125,11 +126,15 @@ namespace Stact.Specs.Workflow
 						.TransitionTo(s => s.Created)
 						.InCaseOf()
 						.Exception<SubjectException>()
+						.Then(() => _handlerCalled = true)
 						.Then(i =>
 							{
 								_instanceHandlerCalled = true;
 							})
-						.Then(() => _handlerCalled = true)
+						.Then((i, m) =>
+							{
+								_instanceMessageCalled = true;
+							})
 						.TransitionTo(s => s.Failed);
 				});
 
@@ -156,6 +161,12 @@ namespace Stact.Specs.Workflow
 		public void Should_call_the_instance_handler_method()
 		{
 			_instanceHandlerCalled.ShouldBeTrue();
+		}
+
+		[Then]
+		public void Should_call_the_instance_message_method()
+		{
+			_instanceMessageCalled.ShouldBeTrue();
 		}
 
 

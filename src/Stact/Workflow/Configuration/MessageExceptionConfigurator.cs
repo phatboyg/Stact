@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,21 +15,22 @@ namespace Stact.Workflow.Configuration
 	using System;
 
 
-	public interface ExceptionConfigurator<TWorkflow, TInstance>
+	public interface MessageExceptionConfigurator<TWorkflow, TInstance, TBody>
 		where TWorkflow : class
 		where TInstance : class
 	{
-		ExceptionConfigurator<TWorkflow, TInstance, TException> Exception<TException>()
+		MessageExceptionConfigurator<TWorkflow, TInstance, TException, TBody> Exception<TException>()
 			where TException : Exception;
 	}
 
 
-	public interface ExceptionConfigurator<TWorkflow, TInstance, TException> :
-		ExceptionConfigurator<TWorkflow, TInstance>
+	public interface MessageExceptionConfigurator<TWorkflow, TInstance, TException, TBody> :
+		MessageExceptionConfigurator<TWorkflow,TInstance,TBody>,
+		ExceptionConfigurator<TWorkflow, TInstance, TException>
 		where TWorkflow : class
 		where TInstance : class
 		where TException : Exception
 	{
-		void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance> configurator);
+		void AddConfigurator(ActivityBuilderConfigurator<TWorkflow, TInstance, TBody> configurator);
 	}
 }

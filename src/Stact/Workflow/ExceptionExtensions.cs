@@ -28,5 +28,17 @@ namespace Stact.Workflow
 
 			return configurator;
 		}
+
+		public static MessageExceptionConfigurator<TWorkflow, TInstance, TBody> InCaseOf<TWorkflow, TInstance, TBody>(
+			this ActivityConfigurator<TWorkflow, TInstance, TBody> activityConfigurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var configurator = new MessageExceptionConfiguratorImpl<TWorkflow, TInstance, TBody>(activityConfigurator);
+
+			activityConfigurator.AddConfigurator(configurator);
+
+			return configurator;
+		}
 	}
 }

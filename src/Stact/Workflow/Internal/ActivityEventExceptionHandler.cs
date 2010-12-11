@@ -41,4 +41,30 @@ namespace Stact.Workflow.Internal
 			return ExceptionHandlerResult.Return;
 		}
 	}
+
+
+	public class ActivityEventExceptionHandler<TInstance, TException, TBody> :
+		EventExceptionHandler<TInstance, TBody>
+		where TInstance : class
+		where TException : Exception
+	{
+		readonly IList<Activity<TInstance>> _activities;
+
+		public ActivityEventExceptionHandler(IList<Activity<TInstance>> activities)
+		{
+			_activities = activities;
+		}
+
+		public Type ExceptionType
+		{
+			get { return typeof(TException); }
+		}
+
+		public ExceptionHandlerResult Handle(TInstance instance, Event eevent, TBody body, Exception exception)
+		{
+			_activities.Each(x => x.Execute(instance, body));
+
+			return ExceptionHandlerResult.Return;
+		}
+	}
 }
