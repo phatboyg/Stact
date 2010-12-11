@@ -20,11 +20,15 @@ namespace Stact.Workflow.Internal
 		readonly StateBuilder<TWorkflow, TInstance> _builder;
 		readonly SimpleEvent _event;
 		SimpleEventExceptionHandler<TInstance> _exceptionHandler;
+		SimpleActivityExecutor<TInstance> _executor;
 
 		public SimpleActivityBuilder(StateBuilder<TWorkflow, TInstance> builder, SimpleEvent eevent)
 		{
 			_builder = builder;
 			_event = eevent;
+
+			_exceptionHandler = new SimpleEventExceptionHandler<TInstance>();
+			_executor = new SimpleActivityExecutor<TInstance>(builder.State, eevent, _exceptionHandler);
 		}
 
 		public State<TInstance> State
@@ -34,10 +38,7 @@ namespace Stact.Workflow.Internal
 
 		public void AddActivity(Activity<TInstance> activity)
 		{
-			if (_exceptionHandler != null)
-				activity = new SimpleActivityExecutor<TInstance>(activity, _exceptionHandler);
-
-			_builder.AddActivity(activity);
+			_executor.Add(activity);
 		}
 
 		public Event Event
@@ -47,15 +48,17 @@ namespace Stact.Workflow.Internal
 
 		public void AddExceptionHandler(EventExceptionHandler<TInstance> exceptionHandler)
 		{
-			if (_exceptionHandler == null)
-				_exceptionHandler = new SimpleEventExceptionHandler<TInstance>();
-
 			_exceptionHandler.Add(exceptionHandler);
 		}
 
 		public WorkflowModel<TWorkflow, TInstance> Model
 		{
 			get { return _builder.Model; }
+		}
+
+		public Activity<TInstance> GetActivityExecutor()
+		{
+			return _executor;
 		}
 	}
 }

@@ -48,10 +48,11 @@ namespace Stact.Workflow.Configuration
 		{
 			MessageEvent<TBody> eevent = builder.Model.GetEvent(_eventExpression);
 
-			var stateEventBuilder = new MessageActivityBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
+			var activityBuilder = new MessageActivityBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
 
-			_configurators.Each(x => x.Configure(stateEventBuilder));
+			_configurators.Each(x => x.Configure(activityBuilder));
 
+			builder.AddActivity(activityBuilder.GetActivityExecutor());
 		}
 
 		public void AddConfigurator(StateBuilderConfigurator<TWorkflow, TInstance> configurator)

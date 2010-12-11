@@ -58,9 +58,11 @@ namespace Stact.Workflow.Configuration
 		{
 			SimpleEvent eevent = _getEvent(builder);
 
-			var stateEventBuilder = new SimpleActivityBuilder<TWorkflow, TInstance>(builder, eevent);
+			var activityBuilder = new SimpleActivityBuilder<TWorkflow, TInstance>(builder, eevent);
 
-			_configurators.Each(x => x.Configure(stateEventBuilder));
+			_configurators.Each(x => x.Configure(activityBuilder));
+
+			builder.AddActivity(activityBuilder.GetActivityExecutor());
 		}
 
 		public void AddConfigurator(StateBuilderConfigurator<TWorkflow, TInstance> configurator)

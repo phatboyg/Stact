@@ -20,11 +20,14 @@ namespace Stact.Workflow.Internal
 		readonly StateBuilder<TWorkflow, TInstance> _builder;
 		readonly MessageEvent<TBody> _event;
 		MessageEventExceptionHandler<TInstance, TBody> _exceptionHandler;
+		MessageActivityExecutor<TInstance, TBody> _executor;
 
 		public MessageActivityBuilder(StateBuilder<TWorkflow, TInstance> builder, MessageEvent<TBody> eevent)
 		{
 			_builder = builder;
 			_event = eevent;
+			_exceptionHandler = new MessageEventExceptionHandler<TInstance, TBody>();
+			_executor = new MessageActivityExecutor<TInstance, TBody>(builder.State, eevent, _exceptionHandler);
 		}
 
 		public State<TInstance> State
@@ -39,26 +42,17 @@ namespace Stact.Workflow.Internal
 
 		public void AddExceptionHandler(EventExceptionHandler<TInstance, TBody> exceptionHandler)
 		{
-			if (_exceptionHandler == null)
-				_exceptionHandler = new MessageEventExceptionHandler<TInstance, TBody>();
-
 			_exceptionHandler.Add(exceptionHandler);
 		}
 
 		public void AddExceptionHandler(EventExceptionHandler<TInstance> exceptionHandler)
 		{
-			if (_exceptionHandler == null)
-				_exceptionHandler = new MessageEventExceptionHandler<TInstance, TBody>();
-
 			_exceptionHandler.Add(exceptionHandler);
 		}
 
 		public void AddActivity(Activity<TInstance> activity)
 		{
-			if (_exceptionHandler != null)
-				activity = new MessageActivityExecutor<TInstance, TBody>(activity, _exceptionHandler);
-
-			_builder.AddActivity(activity);
+			_executor.Add(activity);
 		}
 
 		Event ActivityBuilder<TWorkflow, TInstance>.Event
@@ -69,6 +63,11 @@ namespace Stact.Workflow.Internal
 		public WorkflowModel<TWorkflow, TInstance> Model
 		{
 			get { return _builder.Model; }
+		}
+
+		public Activity<TInstance> GetActivityExecutor()
+		{
+			return _executor;
 		}
 	}
 }

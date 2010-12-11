@@ -31,6 +31,20 @@ namespace Stact.Workflow
 			return activityConfigurator;
 		}
 
+		public static ExceptionConfigurator<TWorkflow, TInstance, TException> Then<TWorkflow, TInstance, TException>(
+			this ExceptionConfigurator<TWorkflow, TInstance, TException> exceptionConfigurator, Action action)
+			where TWorkflow : class
+			where TInstance : class
+			where TException : Exception
+		{
+			var configurator = new DelegateConfigurator<TWorkflow, TInstance>(action);
+
+			exceptionConfigurator.AddConfigurator(configurator);
+
+			return exceptionConfigurator;
+		}
+
+
 		public static ActivityConfigurator<TWorkflow, TInstance, TBody> Then<TWorkflow, TInstance, TBody>(
 			this ActivityConfigurator<TWorkflow, TInstance, TBody> activityConfigurator, Action action)
 			where TWorkflow : class
@@ -62,6 +76,19 @@ namespace Stact.Workflow
 			activityConfigurator.AddConfigurator(configurator);
 
 			return activityConfigurator;
+		}
+
+		public static ExceptionConfigurator<TWorkflow, TInstance, TException> Then<TWorkflow, TInstance,TException>(
+			this ExceptionConfigurator<TWorkflow, TInstance,TException> exceptionConfigurator, Action<TInstance> action)
+			where TWorkflow : class
+			where TInstance : class
+			where TException : Exception
+		{
+			var configurator = new DelegateInstanceConfigurator<TWorkflow, TInstance>(action);
+
+			exceptionConfigurator.AddConfigurator(configurator);
+
+			return exceptionConfigurator;
 		}
 
 		public static ActivityConfigurator<TWorkflow, TInstance, TBody> Then<TWorkflow, TInstance, TBody>(

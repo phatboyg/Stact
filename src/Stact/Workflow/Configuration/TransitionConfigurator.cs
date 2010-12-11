@@ -18,8 +18,7 @@ namespace Stact.Workflow.Configuration
 
 
 	public class TransitionConfigurator<TWorkflow, TInstance> :
-		ActivityBuilderConfigurator<TWorkflow, TInstance>,
-		ExceptionBuilderConfigurator<TWorkflow, TInstance>
+		ActivityBuilderConfigurator<TWorkflow, TInstance>
 		where TWorkflow : class
 		where TInstance : class
 	{
@@ -40,16 +39,6 @@ namespace Stact.Workflow.Configuration
 		}
 
 		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)
-		{
-			StateMachineState<TInstance> targetState = _getTargetState(builder.Model);
-
-			var activity = new TransitionActivity<TInstance>(builder.Model.CurrentStateAccessor, builder.State, builder.Event,
-			                                                 targetState);
-
-			builder.AddActivity(activity);
-		}
-
-		public void Configure(ExceptionBuilder<TWorkflow, TInstance> builder)
 		{
 			StateMachineState<TInstance> targetState = _getTargetState(builder.Model);
 

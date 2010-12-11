@@ -379,6 +379,7 @@
     <Compile Include="Workflow\Internal\ActivityExceptionHandler.cs" />
     <Compile Include="Workflow\Internal\EventExceptionHandler.cs" />
     <Compile Include="Workflow\Internal\ExceptionHandlerResult.cs" />
+    <Compile Include="Workflow\Internal\MessageActivityExecutor.cs" />
     <Compile Include="Workflow\Internal\MessageEventExceptionHandler.cs" />
     <Compile Include="Workflow\Internal\SimpleActivityExecutor.cs" />
     <Compile Include="Workflow\Internal\SimpleEventExceptionHandler.cs" />

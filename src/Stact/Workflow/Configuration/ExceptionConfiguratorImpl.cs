@@ -25,11 +25,11 @@ namespace Stact.Workflow.Configuration
 		where TInstance : class
 	{
 		readonly IList<ActivityBuilderConfigurator<TWorkflow, TInstance>> _configurators;
-		readonly StateConfigurator<TWorkflow, TInstance> _stateConfigurator;
+		readonly ActivityConfigurator<TWorkflow, TInstance> _activityConfigurator;
 
-		public ExceptionConfiguratorImpl(StateConfigurator<TWorkflow, TInstance> stateConfigurator)
+		public ExceptionConfiguratorImpl(ActivityConfigurator<TWorkflow, TInstance> activityConfigurator)
 		{
-			_stateConfigurator = stateConfigurator;
+			_activityConfigurator = activityConfigurator;
 
 			_configurators = new List<ActivityBuilderConfigurator<TWorkflow, TInstance>>();
 		}
@@ -46,7 +46,7 @@ namespace Stact.Workflow.Configuration
 		public ExceptionConfigurator<TWorkflow, TInstance, TException> Exception<TException>()
 			where TException : Exception
 		{
-			var configurator = new ExceptionConfiguratorImpl<TWorkflow, TInstance, TException>(_stateConfigurator);
+			var configurator = new ExceptionConfiguratorImpl<TWorkflow, TInstance, TException>(_activityConfigurator);
 
 			_configurators.Add(configurator);
 

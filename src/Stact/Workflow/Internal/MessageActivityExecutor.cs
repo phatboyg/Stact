@@ -16,16 +16,16 @@ namespace Stact.Workflow.Internal
 	using Magnum.Extensions;
 
 
-	public class SimpleActivityExecutor<TInstance> :
+	public class MessageActivityExecutor<TInstance, TBody> :
 		Activity<TInstance>
 		where TInstance : class
 	{
-		readonly Event _event;
-		readonly EventExceptionHandler<TInstance> _exceptionHandler;
-		readonly State _state;
 		readonly ActivityList<TInstance> _activities;
+		readonly Event _event;
+		readonly EventExceptionHandler<TInstance, TBody> _exceptionHandler;
+		readonly State _state;
 
-		public SimpleActivityExecutor(State state, Event eevent, EventExceptionHandler<TInstance> exceptionHandler)
+		public MessageActivityExecutor(State state, Event eevent, EventExceptionHandler<TInstance, TBody> exceptionHandler)
 		{
 			_exceptionHandler = exceptionHandler;
 			_state = state;
@@ -33,21 +33,40 @@ namespace Stact.Workflow.Internal
 			_activities = new ActivityList<TInstance>();
 		}
 
-
 		public void Execute(TInstance instance)
 		{
+			try
+			{
+				_activities.Execute(instance);
+			}
+			catch (Exception innerException)
+			{
+				string message = "{0} occurred while handling {1} during {2}"
+					.FormatWith(innerException.GetType().ToShortTypeName(), _event.Name, _state.Name);
+
+				throw new StateMachineWorkflowException(message, innerException);
+			}
+		}
+
+		public void Execute<T>(TInstance instance, T bodyT)
+		{
+			if (typeof(TBody) != typeof(T))
+				throw new StateMachineWorkflowException("Body type mismatch for message event: " + Event.Name);
+
+			var body = (TBody)((object)bodyT);
+
 			while (true)
 			{
 				try
 				{
-					_activities.Execute(instance);
+					_activities.Execute(instance, body);
 					return;
 				}
 				catch (Exception ex)
 				{
 					try
 					{
-						ExceptionHandlerResult result = _exceptionHandler.Handle(instance, _event, ex);
+						ExceptionHandlerResult result = _exceptionHandler.Handle(instance, _event, body, ex);
 						if (result == ExceptionHandlerResult.Unhandled)
 							throw;
 
@@ -63,11 +82,6 @@ namespace Stact.Workflow.Internal
 					}
 				}
 			}
-		}
-
-		public void Execute<TBody>(TInstance instance, TBody body)
-		{
-			Execute(instance);
 		}
 
 		public void Accept(StateMachineVisitor visitor)
