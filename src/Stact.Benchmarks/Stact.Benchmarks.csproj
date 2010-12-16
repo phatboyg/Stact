@@ -65,6 +65,15 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Blackjack\Bet.cs" />
+    <Compile Include="Blackjack\Card.cs" />
+    <Compile Include="Blackjack\DrawnCard.cs" />
+    <Compile Include="Blackjack\CardSuit.cs" />
+    <Compile Include="Blackjack\Dealer.cs" />
+    <Compile Include="Blackjack\DrawCard.cs" />
+    <Compile Include="Blackjack\Player.cs" />
+    <Compile Include="Blackjack\Deck.cs" />
+    <Compile Include="Blackjack\Table.cs" />
     <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="ConcurrentQueueBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />

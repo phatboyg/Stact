@@ -13,38 +13,13 @@
 namespace Stact.Internal
 {
 	using System;
+	using System.Collections.Generic;
 
 
-	/// <summary>
-	///   A synchronous fiber will execute an action immediately on the calling thread
-	///   without any protection from an exception
-	/// </summary>
-	public class SynchronousFiber :
-		Fiber
+	public interface OperationExecutor
 	{
-		bool _shuttingDown;
-		bool _stopping;
-
-		public void Add(Action operation)
-		{
-			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
-
-			if (_stopping)
-				return;
-
-			operation();
-		}
-
-		public void Stop()
-		{
-			_stopping = true;
-		}
-
-		public void Shutdown(TimeSpan timeout)
-		{
-			_shuttingDown = true;
-			_stopping = true;
-		}
+		void Execute(Action operation);
+		void Execute(IList<Action> operations);
+		void Stop();
 	}
 }

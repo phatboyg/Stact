@@ -10,21 +10,28 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Benchmarks.Blackjack
 {
-	using System;
-
-
-	/// <summary>
-	/// Returns a fiber appropriate for the specified key
-	/// 
-	/// Designed for use with cases where there are multiple channels needed
-	/// for a particular object and the fiber needs to be acquired
-	/// </summary>
-	/// <typeparam name="TKey">The key type</typeparam>
-	public interface FiberProvider<in TKey> :
-		IDisposable
+	public class Player :
+		Actor
 	{
-		Fiber GetFiber(TKey key);
+		Bet _normalBet;
+
+		public Player(Inbox inbox)
+		{
+			_normalBet = new Bet(25.0m);
+
+			inbox.Loop(hand =>
+				{
+					hand.Receive<Request<Bet>>(x =>
+						{
+							x.Respond(_normalBet);
+
+							inbox.Loop(loop =>
+								{
+								});
+						});
+				});
+		}
 	}
 }

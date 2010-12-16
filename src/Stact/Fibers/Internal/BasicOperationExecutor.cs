@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,21 +10,39 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
+	using System.Collections.Generic;
 
 
-	/// <summary>
-	/// Returns a fiber appropriate for the specified key
-	/// 
-	/// Designed for use with cases where there are multiple channels needed
-	/// for a particular object and the fiber needs to be acquired
-	/// </summary>
-	/// <typeparam name="TKey">The key type</typeparam>
-	public interface FiberProvider<in TKey> :
-		IDisposable
+	public class BasicOperationExecutor :
+		OperationExecutor
 	{
-		Fiber GetFiber(TKey key);
+		bool _stopping;
+
+		public void Execute(Action operation)
+		{
+			if (_stopping)
+				return;
+
+			operation();
+		}
+
+		public void Execute(IList<Action> operations)
+		{
+			for (int i = 0; i < operations.Count; i++)
+			{
+				if (_stopping)
+					break;
+
+				Execute(operations[i]);
+			}
+		}
+
+		public void Stop()
+		{
+			_stopping = true;
+		}
 	}
 }

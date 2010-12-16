@@ -147,7 +147,9 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Actors\Internal\ActorChannelProvider.cs" />
     <Compile Include="Actors\Internal\ActorFactoryImpl.cs" />
-    <Compile Include="Fibers\Internal\RunFiber.cs" />
+    <Compile Include="Fibers\Internal\BasicOperationExecutor.cs" />
+    <Compile Include="Fibers\Internal\OperationExecutor.cs" />
+    <Compile Include="Fibers\Internal\OperationList.cs" />
     <Compile Include="Fibers\Internal\ShutdownFiberOnDispose.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
@@ -311,10 +313,10 @@
     <Compile Include="Schedulers\Internal\ScheduledOperationList.cs" />
     <Compile Include="Schedulers\Internal\ScheduledOperationExecuterImpl.cs" />
     <Compile Include="Schedulers\SchedulerFactory.cs" />
-    <Compile Include="Fibers\Internal\SynchronousFiber.cs" />
+    <Compile Include="Fibers\SynchronousFiber.cs" />
     <Compile Include="Fibers\Internal\SingleFiberProvider.cs" />
-    <Compile Include="Fibers\Internal\ThreadFiber.cs" />
-    <Compile Include="Fibers\Internal\PoolFiber.cs" />
+    <Compile Include="Fibers\ThreadFiber.cs" />
+    <Compile Include="Fibers\PoolFiber.cs" />
     <Compile Include="Schedulers\Internal\TimerScheduler.cs" />
     <Compile Include="Fibers\FiberFactory.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />

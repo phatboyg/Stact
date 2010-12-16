@@ -10,45 +10,38 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact
 {
 	using System;
 	using System.Collections.Generic;
-	using System.ComponentModel;
-	using System.Diagnostics;
 	using System.Threading;
+	using Internal;
 	using Magnum;
+	using Magnum.Extensions;
 
 
-	[DebuggerDisplay("{GetType().Name} ( Count: {Count}, ThreadId: {ThreadId} )")]
-	public class ThreadFiber :
+	/// <summary>
+	/// An Fiber that uses the .NET ThreadPool and QueueUserWorkItem to execute
+	/// actions.
+	/// </summary>
+	public class PoolFiber :
 		Fiber
 	{
+		readonly OperationExecutor _executor;
 		readonly object _lock = new object();
-		readonly Thread _thread;
 
+		bool _executorQueued;
 		IList<Action> _operations = new List<Action>();
-
-		bool _isActive;
 		bool _shuttingDown;
-		bool _stopping;
 
-		public ThreadFiber()
+		public PoolFiber()
+			: this(new BasicOperationExecutor())
 		{
-			_thread = CreateThread();
-			_thread.Start();
 		}
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected int ThreadId
+		public PoolFiber(OperationExecutor executor)
 		{
-			get
-			{
-				if (_thread != null)
-					return _thread.ManagedThreadId;
-
-				return -1;
-			}
+			_executor = executor;
 		}
 
 		public void Add(Action operation)
@@ -59,8 +52,8 @@ namespace Stact.Internal
 			lock (_lock)
 			{
 				_operations.Add(operation);
-
-				Monitor.PulseAll(_lock);
+				if (!_executorQueued)
+					QueueWorkItem();
 			}
 		}
 
@@ -71,7 +64,6 @@ namespace Stact.Internal
 				lock (_lock)
 				{
 					_shuttingDown = true;
-					Monitor.PulseAll(_lock);
 				}
 
 				return;
@@ -82,10 +74,9 @@ namespace Stact.Internal
 			lock (_lock)
 			{
 				_shuttingDown = true;
-
 				Monitor.PulseAll(_lock);
 
-				while (_operations.Count > 0 || _isActive)
+				while (_operations.Count > 0 || _executorQueued)
 				{
 					timeout = waitUntil - SystemUtil.Now;
 					if (timeout < TimeSpan.Zero)
@@ -94,106 +85,54 @@ namespace Stact.Internal
 					Monitor.Wait(_lock, timeout);
 				}
 			}
-
-			_thread.Join(timeout);
 		}
 
 		public void Stop()
 		{
-			lock (_lock)
-			{
-				_shuttingDown = true;
-				_stopping = true;
+			_shuttingDown = true;
 
-				Monitor.PulseAll(_lock);
-			}
+			_executor.Stop();
 		}
 
-		Thread CreateThread()
+		public override string ToString()
 		{
-			var thread = new Thread(Run);
-			thread.Name = GetType().Name + "-" + thread.ManagedThreadId;
-			thread.IsBackground = false;
-			thread.Priority = ThreadPriority.Normal;
-
-			return thread;
+			return "{0} (Count: {1})".FormatWith(typeof(ThreadFiber).Name, _operations.Count);
 		}
 
-		void Run()
+		void QueueWorkItem()
 		{
-			_isActive = true;
+			if (!ThreadPool.QueueUserWorkItem(x => Execute()))
+				throw new FiberException("QueueUserWorkItem did not accept our execute method");
 
-			try
-			{
-				while (Execute())
-				{
-				}
-			}
-			catch
-			{
-			}
-
-			_isActive = false;
-
-			lock (_lock)
-			{
-				Monitor.PulseAll(_lock);
-			}
+			_executorQueued = true;
 		}
 
 		bool Execute()
 		{
-			if (!WaitForActions())
-				return false;
+			IList<Action> operations = RemoveAll();
 
-			IList<Action> actions = RemoveAll();
-			if (actions == null)
-				return false;
-
-			ExecuteActions(actions);
+			_executor.Execute(operations);
 
 			lock (_lock)
 			{
 				if (_operations.Count == 0)
+				{
+					_executorQueued = false;
+
 					Monitor.PulseAll(_lock);
+				}
+				else
+					QueueWorkItem();
 			}
 
 			return true;
-		}
-
-		bool WaitForActions()
-		{
-			lock (_lock)
-			{
-				while (_operations.Count == 0 && !_stopping && !_shuttingDown)
-					Monitor.Wait(_lock);
-
-				if (_stopping)
-					return false;
-
-				if (_shuttingDown)
-					return _operations.Count > 0;
-			}
-
-			return true;
-		}
-
-		void ExecuteActions(IList<Action> operations)
-		{
-			for (int i = 0; i < operations.Count; i++)
-			{
-				if (_stopping)
-					break;
-
-				operations[i]();
-			}
 		}
 
 		IList<Action> RemoveAll()
 		{
 			lock (_lock)
 			{
-				var operations = _operations;
+				IList<Action> operations = _operations;
 
 				_operations = new List<Action>();
 
