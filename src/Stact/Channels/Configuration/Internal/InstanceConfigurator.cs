@@ -16,7 +16,7 @@ namespace Stact.Configuration.Internal
 	using Builders;
 
 
-	public interface InstanceConfigurator<TChannel> 
+	public interface InstanceConfigurator<TChannel>
 	{
 		InstanceConfigurator<TInstance, TChannel> Of<TInstance>()
 			where TInstance : class;
@@ -32,7 +32,7 @@ namespace Stact.Configuration.Internal
 		FiberFactoryConfigurator<InstanceConfigurator<TInstance, TChannel>>
 		where TInstance : class
 	{
-		void SetProviderFactory(Func<ChannelBuilder<TChannel>,ChannelProvider<TChannel>> providerFactory);
+		void SetProviderFactory(Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory);
 	}
 
 

@@ -37,7 +37,7 @@ namespace Stact.Configuration.Internal
 			return this;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider(ConnectionBuilder<TChannel> connection)
+		public ChannelProvider<TChannel> GetChannelProvider(ChannelBuilder<TChannel> connection)
 		{
 			if (_accessor == null)
 			{

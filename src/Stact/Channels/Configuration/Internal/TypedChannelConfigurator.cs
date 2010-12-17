@@ -69,7 +69,7 @@ namespace Stact.Configuration.Internal
 				throw new ChannelConfigurationException("A null channel was specified");
 
 			// probably need to use the header conversion thing for this to verify HeaderTypeAdapter.IsSupported() or something
-			if (!typeof(TChannel).Implements<T>())
+			if (!typeof(T).Implements<TChannel>())
 			{
 				throw new ChannelConfigurationException(typeof(TChannel), "The type {0} is not implemented by the channel type"
 				                                                          	.FormatWith(typeof(T).ToShortTypeName()));

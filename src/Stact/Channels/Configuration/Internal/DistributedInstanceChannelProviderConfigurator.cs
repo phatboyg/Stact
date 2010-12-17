@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
+	using System;
 	using Builders;
-	using Stact.Configuration;
 
 
 	/// <summary>
@@ -23,12 +23,13 @@ namespace Stact.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
 	public interface DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> :
-		InstanceConfigurator<TInstance, TChannel>,
 		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>
 		where TInstance : class
 	{
-		FiberProvider<TKey> GetConfiguredProvider(ConnectionBuilder<TChannel> connection);
+		FiberProvider<TKey> GetConfiguredProvider(ChannelBuilder<TChannel> connection);
 
 		KeyAccessor<TChannel, TKey> GetDistributionKeyAccessor();
+
+		void SetProviderFactory(Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory);
 	}
 }

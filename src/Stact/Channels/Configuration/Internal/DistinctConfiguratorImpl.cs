@@ -27,6 +27,7 @@ namespace Stact.Configuration.Internal
 		public DistinctConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
+			_configurators = new List<ChannelBuilderConfigurator<IDictionary<TKey, TChannel>>>();
 		}
 
 		public void Configure(ChannelBuilder<ICollection<TChannel>> builder)

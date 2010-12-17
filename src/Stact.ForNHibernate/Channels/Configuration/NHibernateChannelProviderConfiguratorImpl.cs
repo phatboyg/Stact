@@ -62,7 +62,7 @@ namespace Stact.ForNHibernate.Configuration
 			_instanceChannelPolicy = policyFactory;
 		}
 
-		public ChannelProvider<TChannel> GetChannelProvider(ConnectionBuilder<TChannel> connection)
+		public ChannelProvider<TChannel> GetChannelProvider(ChannelBuilder<TChannel> builder)
 		{
 			if (_accessor == null)
 			{
@@ -89,7 +89,7 @@ namespace Stact.ForNHibernate.Configuration
 				                                        + typeof(TInstance).ToShortTypeName());
 			}
 
-			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider(connection);
+			FiberProvider<TKey> fiberProvider = _configurator.GetConfiguredProvider(builder);
 
 			var channelProvider = new NHibernateInstanceChannelProvider<TInstance, TChannel, TKey>(fiberProvider,
 			                                                                                       _sessionProvider,
