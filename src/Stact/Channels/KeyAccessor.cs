@@ -19,5 +19,5 @@ namespace Stact
 	/// <typeparam name="TKey">The type of the key to return</typeparam>
 	/// <param name="source">The source from which to retrieve the key</param>
 	/// <returns>The value of the key for the source</returns>
-	public delegate TKey KeyAccessor<T, TKey>(T source);
+	public delegate TKey KeyAccessor<in T, out TKey>(T source);
 }

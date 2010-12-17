@@ -25,15 +25,19 @@ namespace Stact
 		/// <param name="connectionConfigurator">The connection configurator</param>
 		/// <param name="consumer">The consumer to add to the channel</param>
 		/// <returns>A consumer configurator to customize the consumer settings</returns>
-		public static ConsumerChannelConfigurator<TChannel> AddSelectiveConsumer<TChannel>(
+		public static ConsumerConfigurator<TChannel> AddSelectiveConsumer<TChannel>(
 			this ConnectionConfigurator<TChannel> connectionConfigurator,
 			SelectiveConsumer<TChannel> consumer)
 		{
-			var configurator = new SelectiveConsumerChannelConfiguratorImpl<TChannel>(consumer);
+			var channelConfigurator = new ChannelConfiguratorImpl<TChannel>();
 
-			connectionConfigurator.RegisterChannelConfigurator(configurator);
+			connectionConfigurator.AddConfigurator(channelConfigurator);
 
-			return configurator;
+			var consumerConfigurator = new SelectiveConsumerConfigurator<TChannel>(consumer);
+
+			channelConfigurator.AddConfigurator(consumerConfigurator);
+
+			return consumerConfigurator;
 		}
 
 		/// <summary>
@@ -42,12 +46,12 @@ namespace Stact
 		/// <param name="configurator"></param>
 		/// <param name="selectiveConsumer"></param>
 		/// <returns></returns>
-		public static ConsumerChannelConfigurator<TChannel> UsingSelectiveConsumer<TChannel>(
+		public static ConsumerConfigurator<TChannel> UsingSelectiveConsumer<TChannel>(
 			this ChannelConfigurator<TChannel> configurator, SelectiveConsumer<TChannel> selectiveConsumer)
 		{
-			var consumerConfigurator = new SelectiveConsumerChannelConfiguratorImpl<TChannel>(selectiveConsumer);
+			var consumerConfigurator = new SelectiveConsumerConfigurator<TChannel>(selectiveConsumer);
 
-			configurator.SetChannelConfigurator(consumerConfigurator);
+			configurator.AddConfigurator(consumerConfigurator);
 
 			return consumerConfigurator;
 		}

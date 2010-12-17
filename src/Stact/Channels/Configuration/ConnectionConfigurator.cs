@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
-	using Internal;
+	using Builders;
 
 
 	/// <summary>
@@ -20,34 +20,16 @@ namespace Stact.Configuration
 	/// </summary>
 	public interface ConnectionConfigurator
 	{
-		/// <summary>
-		/// Adds a channel directly without any modification
-		/// </summary>
-		/// <typeparam name="TChannel">The channel type</typeparam>
-		/// <param name="channel">The channel instance</param>
-		void AddChannel<TChannel>(Channel<TChannel> channel);
-
-		/// <summary>
-		/// Adds a channel directly without any modification
-		/// </summary>
-		/// <param name="channel">The channel instance</param>
-		void AddUntypedChannel(UntypedChannel channel);
-
-
-		void RegisterChannelConfigurator(ConnectionBuilderConfigurator configurator);
+		void AddConfigurator(ConnectionBuilderConfigurator configurator);
 	}
 
 
 	/// <summary>
 	/// Used to configure the connections to be added to a typed Channel
 	/// </summary>
-	/// <typeparam name="T">The channel type</typeparam>
-	public interface ConnectionConfigurator<T>
+	/// <typeparam name="TChannel">The channel type</typeparam>
+	public interface ConnectionConfigurator<out TChannel>
 	{
-		void AddChannel<TChannel>(Channel<TChannel> channel);
-
-		ConsumerChannelConfigurator<T> AddUntypedChannel(UntypedChannel channel);
-
-		void RegisterChannelConfigurator(ConnectionBuilderConfigurator<T> configurator);
+		void AddConfigurator(ConnectionBuilderConfigurator<TChannel> configurator);
 	}
 }

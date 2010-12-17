@@ -29,7 +29,7 @@ namespace Stact.Specs.Channels
 			var next = new ChannelAdapter();
 
 			var input = new ChannelAdapter();
-			using (input.Connect(x => { x.AddUntypedChannel(next); }))
+			using (input.Connect(x => { x.AddChannel(next); }))
 			{
 				input.Flatten().Select(c => c.GetType()).ShouldEqual(new[]
 					{
@@ -91,7 +91,6 @@ namespace Stact.Specs.Channels
 						.BufferFor(2.Seconds())
 						.HandleOnCallingThread()
 						.Last()
-						.HandleOnCallingThread()
 						.UsingConsumer(message =>
 							{
 							})

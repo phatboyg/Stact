@@ -17,14 +17,14 @@ namespace Stact
 
 	public static class ExtensionsForDistinctChannels
 	{
-		public static DistinctChannelConfigurator<TChannel, TKey> Distinct<TChannel, TKey>(
-			this IntervalChannelConfigurator<TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
+		public static DistinctConfigurator<TChannel, TKey> Distinct<TChannel, TKey>(
+			this IntervalConfigurator<TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
 		{
-			var intervalConfigurator = new DistinctChannelConfiguratorImpl<TChannel, TKey>(keyAccessor);
+			var distinctConfigurator = new DistinctConfiguratorImpl<TChannel, TKey>(keyAccessor);
 
-			configurator.SetChannelConfigurator(intervalConfigurator);
+			configurator.AddConfigurator(distinctConfigurator);
 
-			return intervalConfigurator;
+			return distinctConfigurator;
 		}
 	}
 }

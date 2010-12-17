@@ -17,12 +17,11 @@ namespace Stact
 
 	public static class ExtensionsForLastChannels
 	{
-		public static LastChannelConfigurator<TChannel> Last<TChannel>(
-			this IntervalChannelConfigurator<TChannel> configurator)
+		public static LastConfigurator<TChannel> Last<TChannel>(this IntervalConfigurator<TChannel> configurator)
 		{
-			var lastConfigurator = new LastChannelConfiguratorImpl<TChannel>();
+			var lastConfigurator = new LastConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelConfigurator(lastConfigurator);
+			configurator.AddConfigurator(lastConfigurator);
 
 			return lastConfigurator;
 		}

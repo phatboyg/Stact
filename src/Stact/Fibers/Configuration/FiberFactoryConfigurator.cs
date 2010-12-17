@@ -19,7 +19,7 @@ namespace Stact.Configuration
 	///   Configures the type of fiber to be used for handling messages
 	/// </summary>
 	/// <typeparam name = "T"></typeparam>
-	public interface FiberFactoryConfigurator<T>
+	public interface FiberFactoryConfigurator<out T>
 		where T : class
 	{
 		/// <summary>

@@ -13,6 +13,7 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
+	using Builders;
 	using Magnum;
 
 
@@ -29,8 +30,8 @@ namespace Stact.Configuration.Internal
 
 		public WcfConnectionConfiguratorImpl(Uri endpointUri, string pipeName)
 		{
-			Guard.AgainstNull(endpointUri);
-			Guard.AgainstNull(pipeName);
+			Guard.AgainstNull(endpointUri, "endpointUri");
+			Guard.AgainstEmpty(pipeName, "pipeName");
 
 			_endpointUri = endpointUri;
 			_pipeName = pipeName;
@@ -42,9 +43,11 @@ namespace Stact.Configuration.Internal
 
 		public void Configure(ConnectionBuilder builder)
 		{
-			Fiber fiber = this.GetFiberUsingConfiguredFactory(builder);
+			Fiber fiber = GetConfiguredFiber(builder);
 
-			builder.AddChannel(fiber, x => new WcfChannelProxy(x, _endpointUri, _pipeName));
+			var proxy = new WcfChannelProxy(fiber, _endpointUri, _pipeName);
+
+			builder.AddChannel(proxy);
 		}
 	}
 }

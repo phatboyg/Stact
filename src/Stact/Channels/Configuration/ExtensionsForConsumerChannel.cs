@@ -25,15 +25,15 @@ namespace Stact
 		/// <param name="connectionConfigurator">The connection configurator</param>
 		/// <param name="consumer">The consumer to add to the channel</param>
 		/// <returns>A consumer configurator to customize the consumer settings</returns>
-		public static ConsumerChannelConfigurator<TChannel> AddConsumer<TChannel>(
+		public static ConsumerConfigurator<TChannel> AddConsumer<TChannel>(
 			this ConnectionConfigurator<TChannel> connectionConfigurator,
 			Consumer<TChannel> consumer)
 		{
-			var configurator = new ConsumerChannelConfiguratorImpl<TChannel>(consumer);
+			var channelConfigurator = new ChannelConfiguratorImpl<TChannel>();
+			connectionConfigurator.AddConfigurator(channelConfigurator);
 
-			connectionConfigurator.RegisterChannelConfigurator(configurator);
-
-			return configurator;
+			return channelConfigurator
+				.UsingConsumer(consumer);
 		}
 
 		/// <summary>
@@ -42,12 +42,12 @@ namespace Stact
 		/// <param name="configurator"></param>
 		/// <param name="consumer"></param>
 		/// <returns></returns>
-		public static ConsumerChannelConfigurator<TChannel> UsingConsumer<TChannel>(
+		public static ConsumerConfigurator<TChannel> UsingConsumer<TChannel>(
 			this ChannelConfigurator<TChannel> configurator, Consumer<TChannel> consumer)
 		{
-			var consumerConfigurator = new ConsumerChannelConfiguratorImpl<TChannel>(consumer);
+			var consumerConfigurator = new ConsumerConfiguratorImpl<TChannel>(consumer);
 
-			configurator.SetChannelConfigurator(consumerConfigurator);
+			configurator.AddConfigurator(consumerConfigurator);
 
 			return consumerConfigurator;
 		}

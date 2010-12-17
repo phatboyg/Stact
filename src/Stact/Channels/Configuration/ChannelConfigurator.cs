@@ -12,21 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
-	using Internal;
+	using Builders;
 
 
 	public interface ChannelConfigurator
 	{
-		void SetChannelConfigurator(ConnectionBuilderConfigurator configurator);
+		void AddConfigurator(ChannelBuilderConfigurator configurator);
 	}
 
 
-	/// <summary>
-	/// A fluent syntax for configuration the options of a channel subscription
-	/// </summary>
-	/// <typeparam name="TChannel">The channel type</typeparam>
 	public interface ChannelConfigurator<TChannel>
 	{
-		void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator);
+		void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator);
 	}
 }

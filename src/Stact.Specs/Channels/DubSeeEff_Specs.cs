@@ -37,7 +37,8 @@ namespace Stact.Specs.Channels
 
 				using (adapter.Connect(x =>
 					{
-						x.AddConsumer(future.Complete);
+						x.AddConsumer(future.Complete)
+							.HandleOnCallingThread();
 					}))
 				{
 					var client = new WcfChannelProxy<TestMessage>(new SynchronousFiber(), serviceUri, pipeName);

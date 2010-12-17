@@ -19,25 +19,25 @@ namespace Stact
 
 	public static class ExtensionsForInstanceChannel
 	{
-		public static InstanceChannelConfigurator<TChannel> UsingInstance<TChannel>(
+		public static InstanceConfigurator<TChannel> UsingInstance<TChannel>(
 			this ChannelConfigurator<TChannel> configurator)
 		{
-			var instanceConfigurator = new InstanceChannelConfiguratorImpl<TChannel>();
+			var instanceConfigurator = new InstanceConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelConfigurator(instanceConfigurator);
+			configurator.AddConfigurator(instanceConfigurator);
 
 			return instanceConfigurator;
 		}
 
 		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
-			this InstanceChannelConfigurator<TInstance, TChannel> configurator, Func<TInstance> consumerFactory)
+			this InstanceConfigurator<TInstance, TChannel> configurator, Func<TInstance> consumerFactory)
 			where TInstance : class
 		{
 			return ObtainedBy(configurator, _ => consumerFactory());
 		}
 
 		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
-			this InstanceChannelConfigurator<TInstance, TChannel> configurator, Func<TChannel, TInstance> consumerFactory)
+			this InstanceConfigurator<TInstance, TChannel> configurator, Func<TChannel, TInstance> consumerFactory)
 			where TInstance : class
 		{
 			Func<InstanceProvider<TInstance, TChannel>> instanceProvider =
@@ -51,7 +51,7 @@ namespace Stact
 		}
 
 		public static InstanceChannelProviderConfigurator<TInstance, TChannel> ObtainedBy<TInstance, TChannel>(
-			this InstanceChannelConfigurator<TInstance, TChannel> configurator,
+			this InstanceConfigurator<TInstance, TChannel> configurator,
 			InstanceProvider<TInstance, TChannel> instanceProvider)
 			where TInstance : class
 		{

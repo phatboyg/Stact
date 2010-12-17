@@ -17,6 +17,7 @@ namespace Stact.ForNHibernate.Configuration
 	
 	using Stact;
 	using Stact.Configuration;
+	using Stact.Configuration.Builders;
 	using Stact.Configuration.Internal;
 
 

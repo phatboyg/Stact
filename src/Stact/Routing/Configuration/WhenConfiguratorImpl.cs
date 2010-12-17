@@ -16,6 +16,7 @@ namespace Stact.Routing.Configuration
 	using System.Collections.Generic;
 	using Routing.Internal;
 	using Stact.Configuration;
+	using Stact.Configuration.Builders;
 	using Stact.Configuration.Internal;
 
 
@@ -41,14 +42,14 @@ namespace Stact.Routing.Configuration
 					var locator = new JoinNodeLocator<T>(joinNode =>
 						{
 							var configurator = new NodeChannelConfiguratorConnectionImpl<T>(joinNode);
-							_configurator.Configure(configurator);
+						//	_configurator.Configure(configurator);
 						});
 				});
 
 			throw new NotImplementedException();
 		}
 
-		public void SetChannelConfigurator(ConnectionBuilderConfigurator<T> configurator)
+		public void AddConfigurator(ConnectionBuilderConfigurator<T> configurator)
 		{
 			_configurator = configurator;
 		}
@@ -56,7 +57,7 @@ namespace Stact.Routing.Configuration
 
 
 	public class NodeChannelConfiguratorConnectionImpl<TChannel> :
-		ConnectionBuilder<TChannel>
+		ChannelBuilder<TChannel>
 	{
 		readonly IList<IDisposable> _disposables;
 		readonly JoinNode<TChannel> _joinNode;
@@ -68,16 +69,16 @@ namespace Stact.Routing.Configuration
 			_disposables = new List<IDisposable>();
 		}
 
-		public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
+		public void AddChannel(Fiber channelFiber, Func<Fiber, Channel<TChannel>> createChannel)
 		{
-			Channel<TChannel> channel = channelFactory(fiber);
+			Channel<TChannel> channel = createChannel(channelFiber);
 
 			var channelNode = new ChannelNode<TChannel>(channel, _disposables);
 
 			_joinNode.AddActivation(channelNode);
 		}
 
-		public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
+		public void AddChannel<T>(Fiber channelFiber, Func<Fiber, Channel<T>> createChannel)
 		{
 			throw new InvalidOperationException("Not sure this is allowed yet");
 		}

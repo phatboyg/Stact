@@ -26,12 +26,12 @@ namespace Stact
 		/// <param name="configurator"></param>
 		/// <param name="interval">The time period of each interval</param>
 		/// <returns></returns>
-		public static IntervalChannelConfigurator<TChannel> BufferFor<TChannel>(
+		public static IntervalConfigurator<TChannel> BufferFor<TChannel>(
 			this ChannelConfigurator<TChannel> configurator, TimeSpan interval)
 		{
-			var intervalConfigurator = new IntervalChannelConfiguratorImpl<TChannel>(interval);
+			var intervalConfigurator = new IntervalConfiguratorImpl<TChannel>(interval);
 
-			configurator.SetChannelConfigurator(intervalConfigurator);
+			configurator.AddConfigurator(intervalConfigurator);
 
 			return intervalConfigurator;
 		}

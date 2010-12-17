@@ -31,6 +31,7 @@ namespace Stact.Specs.Channels
 		ChannelAdapter _output;
 		ChannelConnection _outputConnection;
 		Uri _pipeUri;
+		WcfChannelHost _host;
 
 		[When]
 		public void Connecting_two_services_through_a_wcf_proxy_and_host()
@@ -42,11 +43,11 @@ namespace Stact.Specs.Channels
 			_input = new ChannelAdapter();
 			_inputConnection = _input.Connect(x =>
 				{
-					x.ReceiveFromWcfChannel(_pipeUri, _pipeName);
-
 					x.AddConsumerOf<TestMessage>()
 						.UsingConsumer(_consumer.Complete);
 				});
+
+			_host = new WcfChannelHost(new PoolFiber(), _input, _pipeUri, _pipeName);
 
 			_output = new ChannelAdapter();
 			_outputConnection = _output.Connect(x =>
@@ -90,6 +91,9 @@ namespace Stact.Specs.Channels
 		[After]
 		public void After()
 		{
+			_host.Dispose();
+			_host = null;
+
 			_inputConnection.Dispose();
 			_inputConnection = null;
 			_input = null;

@@ -14,6 +14,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System;
 	using System.Collections.Generic;
+	using Configuration.Builders;
 	using Configuration.Internal;
 	using Internal;
 	using Magnum.StateMachine;
@@ -69,7 +70,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 		public void Connect(ConnectionBuilder configurator, Fiber fiber, T instance)
 		{
 			// TODO kill this crap
-			configurator.AddChannel(fiber, x => new ConsumerChannel<V>(x, m => instance.RaiseEvent(Event, m)));
+			configurator.AddChannel(new ConsumerChannel<V>(fiber, m => instance.RaiseEvent(Event, m)));
 		}
 
 		public InstanceChannelPolicy<T, TChannel> GetPolicy<TChannel>(InstanceProvider<T, TChannel> missingInstanceProvider)

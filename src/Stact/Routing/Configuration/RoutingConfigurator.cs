@@ -28,7 +28,6 @@ namespace Stact.Routing.Configuration
 
 
 	public interface RoutingConfigurator<T> :
-		ChannelConfigurator<T>,
 		RoutingConfigurator
 	{
 	}

@@ -19,7 +19,7 @@ namespace Stact
 	{
 		public static DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> DistributedBy
 			<TInstance, TChannel, TKey>(
-			this InstanceChannelConfigurator<TInstance, TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
+			this InstanceConfigurator<TInstance, TChannel> configurator, KeyAccessor<TChannel, TKey> keyAccessor)
 			where TInstance : class
 		{
 			var providerConfigurator = new DistributedInstanceChannelConfiguratorImpl<TInstance, TChannel, TKey>(keyAccessor);

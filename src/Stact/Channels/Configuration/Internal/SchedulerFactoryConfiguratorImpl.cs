@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
+	using Builders;
 	using Stact.Internal;
 
 
@@ -53,12 +54,12 @@ namespace Stact.Configuration.Internal
 				throw new SchedulerException("A SchedulerFactory was not configured");
 		}
 
-		public Scheduler GetSchedulerUsingConfiguredFactory<TChannel>(ConnectionBuilder<TChannel> connection)
+		public Scheduler GetConfiguredScheduler<TChannel>(ChannelBuilder<TChannel> builder)
 		{
 			Scheduler scheduler = _schedulerFactory();
 
 			if (_owned)
-				connection.AddDisposable(new DisposeCallback(() => scheduler.Stop(ShutdownTimeout)));
+				builder.AddDisposable(scheduler.ShutdownOnDispose(ShutdownTimeout));
 
 			return scheduler;
 		}

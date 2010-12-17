@@ -13,7 +13,7 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
-	
+	using Builders;
 	using Stact.Configuration;
 
 
@@ -31,7 +31,7 @@ namespace Stact.Configuration.Internal
 		where TInstance : class
 	{
 		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
-		Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> _providerFactory;
+		Func<ConnectionBuilder<TChannel>, ChannelProviderFactory<TChannel>> _providerFactory;
 
 		public DistributedInstanceChannelConfiguratorImpl(KeyAccessor<TChannel, TKey> keyAccessor)
 		{
@@ -41,7 +41,7 @@ namespace Stact.Configuration.Internal
 		}
 
 		public void SetProviderFactory(
-			Func<ConnectionBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory)
+			Func<ConnectionBuilder<TChannel>, ChannelProviderFactory<TChannel>> providerFactory)
 		{
 			_providerFactory = providerFactory;
 		}
@@ -64,9 +64,10 @@ namespace Stact.Configuration.Internal
 			if (_providerFactory == null)
 				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
 
-			ChannelProvider<TChannel> provider = _providerFactory(connection);
+			ChannelProviderFactory<TChannel> provider = _providerFactory(connection);
 
 			var keyedProvider = new KeyedChannelProvider<TChannel, TKey>(provider, _keyAccessor);
+			connection.AddDisposable(keyedProvider);
 
 			return keyedProvider;
 		}

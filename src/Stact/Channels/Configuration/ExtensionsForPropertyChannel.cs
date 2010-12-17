@@ -18,12 +18,12 @@ namespace Stact
 
 	public static class ExtensionsForPropertyChannel
 	{
-		public static PropertyChannelConnectionConfigurator<T> BindChannelsFor<T>(this ConnectionConfigurator configurator)
+		public static PropertyChannelsConfigurator<T> AddPropertyChannelsOf<T>(this ConnectionConfigurator configurator)
 			where T : class
 		{
-			var typeConfigurator = new PropertyChannelConnectionConfiguratorImpl<T>();
+			var typeConfigurator = new PropertyChannelsConfiguratorImpl<T>();
 
-			configurator.RegisterChannelConfigurator(typeConfigurator);
+			configurator.AddConfigurator(typeConfigurator);
 
 			return typeConfigurator;
 		}

@@ -214,7 +214,7 @@ namespace Stact.Visitors
 
 		protected virtual ChannelProvider<T> Visitor<T, TKey>(KeyedChannelProvider<T, TKey> provider)
 		{
-			Visit(provider.ChannelProvider);
+			//Visit(provider.ChannelProvider);
 
 			return provider;
 		}

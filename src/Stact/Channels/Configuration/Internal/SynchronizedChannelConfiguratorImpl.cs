@@ -12,50 +12,45 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
+	using System.Collections.Generic;
 	using System.Threading;
-	using Stact.Internal;
+	using Builders;
+	using Magnum.Extensions;
 
 
 	public class SynchronizedChannelConfiguratorImpl<TChannel> :
 		SynchronizedChannelConfigurator<TChannel>,
-		ConnectionBuilderConfigurator<TChannel>
+		ChannelBuilderConfigurator<TChannel>
 	{
+		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
 		readonly SynchronizationContext _synchronizationContext;
-		ConnectionBuilderConfigurator<TChannel> _configurator;
 		object _state;
 
 		public SynchronizedChannelConfiguratorImpl()
+			: this(SynchronizationContext.Current)
 		{
-			_synchronizationContext = SynchronizationContext.Current;
 		}
 
 		public SynchronizedChannelConfiguratorImpl(SynchronizationContext synchronizationContext)
 		{
 			_synchronizationContext = synchronizationContext;
+
+			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
 		}
 
 		public void ValidateConfiguration()
 		{
-			if (_configurator == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
-
-			_configurator.ValidateConfiguration();
+			_configurators.Each(x => x.ValidateConfiguration());
 		}
 
-		public void Configure(ConnectionBuilder<TChannel> builder)
+		public void Configure(ChannelBuilder<TChannel> builder)
 		{
-			if (_synchronizationContext == null)
-				_configurator.Configure(builder);
-			else
-				ConfigureUsingDecoratedConnection(builder);
-		}
+			ChannelBuilder<TChannel> syncBuilder = builder;
+			if (_synchronizationContext != null)
+				syncBuilder = new SynchronizedChannelBuilder<TChannel>(builder, _synchronizationContext, _state);
 
-		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
-		{
-			_configurator = configurator;
+			_configurators.Each(x => x.Configure(syncBuilder));
 		}
-
 
 		public SynchronizedChannelConfigurator<TChannel> WithState(object state)
 		{
@@ -64,49 +59,9 @@ namespace Stact.Configuration.Internal
 			return this;
 		}
 
-		void ConfigureUsingDecoratedConnection(ConnectionBuilder<TChannel> builder)
+		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
 		{
-			var synchronizedConnection = new SynchronizedConnectionBuilderDecorator(builder, _synchronizationContext,
-			                                                                        _state);
-
-			_configurator.Configure(synchronizedConnection);
-		}
-
-
-		class SynchronizedConnectionBuilderDecorator :
-			ConnectionBuilder<TChannel>
-		{
-			readonly ConnectionBuilder<TChannel> _builder;
-			readonly object _state;
-			readonly SynchronizationContext _synchronizationContext;
-
-			public SynchronizedConnectionBuilderDecorator(ConnectionBuilder<TChannel> builder,
-			                                              SynchronizationContext synchronizationContext, object state)
-			{
-				_builder = builder;
-				_synchronizationContext = synchronizationContext;
-				_state = state;
-			}
-
-			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
-			{
-				Channel<TChannel> channel = channelFactory(new SynchronousFiber());
-
-				_builder.AddChannel<TChannel>(fiber,
-				                              x => new SynchronizedChannel<TChannel>(x, channel, _synchronizationContext, _state));
-			}
-
-			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
-			{
-				Channel<T> channel = channelFactory(new SynchronousFiber());
-
-				_builder.AddChannel(fiber, x => new SynchronizedChannel<T>(x, channel, _synchronizationContext, _state));
-			}
-
-			public void AddDisposable(IDisposable disposable)
-			{
-				_builder.AddDisposable(disposable);
-			}
+			_configurators.Add(configurator);
 		}
 	}
 }

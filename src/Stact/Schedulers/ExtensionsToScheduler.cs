@@ -13,6 +13,7 @@
 namespace Stact
 {
 	using System;
+	using Internal;
 	using Magnum.Extensions;
 
 
@@ -46,5 +47,11 @@ namespace Stact
 		{
 			return scheduler.Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, operation);
 		}
+
+		public static IDisposable ShutdownOnDispose(this Scheduler scheduler, TimeSpan timeout)
+		{
+			return new ShutdownSchedulerOnDispose(scheduler, timeout);
+		}
+
 	}
 }

@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	
+	using Builders;
 	using Stact.Configuration;
 
 
@@ -23,7 +23,7 @@ namespace Stact.Configuration.Internal
 	/// <typeparam name="TChannel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
 	public interface DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey> :
-		InstanceChannelConfigurator<TInstance, TChannel>,
+		InstanceConfigurator<TInstance, TChannel>,
 		FiberProviderConfigurator<DistributedInstanceChannelConfigurator<TInstance, TChannel, TKey>, TKey>
 		where TInstance : class
 	{

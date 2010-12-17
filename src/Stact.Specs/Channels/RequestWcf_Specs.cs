@@ -18,6 +18,7 @@
 		ChannelAdapter _server;
 		ChannelConnection _serverConnection;
 		Uri _pipeUri;
+		WcfChannelHost _host;
 
 		[When]
 		public void A_request_is_sent_via_wcf()
@@ -39,11 +40,11 @@
 			_server = new ChannelAdapter();
 			_serverConnection = _server.Connect(x =>
 				{
-					x.ReceiveFromWcfChannel(_pipeUri, _pipeName);
-
 					x.AddConsumerOf<Request<TestMessage>>()
 						.UsingConsumer(request => request.Respond(request.Body));
 				});
+
+			_host = new WcfChannelHost(new PoolFiber(), _server, _pipeUri, _pipeName);
 		}
 
 		[Then]
@@ -84,6 +85,9 @@
 		[After]
 		public void After()
 		{
+			_host.Dispose();
+			_host = null;
+
 			_clientConnection.Dispose();
 			_clientConnection = null;
 			_client = null;

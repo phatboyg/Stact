@@ -13,8 +13,8 @@
 namespace Stact.Configuration
 {
 	using System;
+	using Builders;
 	using Magnum.Extensions;
-	using Stact.Internal;
 
 
 	public class FiberFactoryConfiguratorImpl<T> :
@@ -85,6 +85,33 @@ namespace Stact.Configuration
 		public FiberFactory GetConfiguredFiberFactory()
 		{
 			return _fiberFactory;
+		}
+
+		public Fiber GetConfiguredFiber(ConnectionBuilder builder)
+		{
+			Fiber fiber = _fiberFactory();
+
+			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+
+			return fiber;
+		}
+
+		public Fiber GetConfiguredFiber<TChannel>(ConnectionBuilder<TChannel> builder)
+		{
+			Fiber fiber = _fiberFactory();
+
+			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+
+			return fiber;
+		}
+
+		public Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
+		{
+			Fiber fiber = _fiberFactory();
+
+			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+
+			return fiber;
 		}
 	}
 }

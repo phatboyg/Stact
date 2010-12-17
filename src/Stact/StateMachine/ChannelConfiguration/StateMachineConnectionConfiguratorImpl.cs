@@ -15,8 +15,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 	using System;
 	using Channels;
 	using Configuration;
-	using Configuration.Internal;
-	using Internal;
+	using Configuration.Builders;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
 	using Magnum.StateMachine;
@@ -157,9 +156,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 
 			var keyedProvider = new KeyedChannelProvider<TChannel, TKey>(channelProvider, keyAccessor);
 
-			var fiber = new SynchronousFiber();
-
-			connection.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, keyedProvider));
+			connection.AddChannel(new InstanceChannel<TChannel>(new SynchronousFiber(), keyedProvider));
 		}
 	}
 }

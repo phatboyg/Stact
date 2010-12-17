@@ -12,58 +12,49 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
+	using System.Collections.Generic;
+	using Builders;
+	using Magnum.Extensions;
 
 
 	public class ChannelConfiguratorImpl<TChannel> :
 		ChannelConfigurator<TChannel>,
-		ConnectionBuilderConfigurator
+		ConnectionBuilderConfigurator,
+		ConnectionBuilderConfigurator<TChannel>
 	{
-		ConnectionBuilderConfigurator<TChannel> _configurator;
+		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
 
-		public void SetChannelConfigurator(ConnectionBuilderConfigurator<TChannel> configurator)
+		public ChannelConfiguratorImpl()
 		{
-			_configurator = configurator;
+			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
+		}
+
+
+		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+		{
+			_configurators.Add(configurator);
 		}
 
 		public void ValidateConfiguration()
 		{
-			if (_configurator == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
+			if (_configurators.Count == 0)
+				throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
 
-			_configurator.ValidateConfiguration();
+			_configurators.Each(x => x.ValidateConfiguration());
 		}
 
 		public void Configure(ConnectionBuilder builder)
 		{
-			_configurator.Configure(new ChannelConnectionBuilderDecorator(builder));
+			ChannelBuilder<TChannel> channelBuilder = new UntypedChannelBuilder<TChannel>(builder);
+
+			_configurators.Each(configurator => configurator.Configure(channelBuilder));
 		}
 
-
-		class ChannelConnectionBuilderDecorator :
-			ConnectionBuilder<TChannel>
+		public void Configure(ConnectionBuilder<TChannel> builder)
 		{
-			readonly ConnectionBuilder _builder;
+			ChannelBuilder<TChannel> channelBuilder = new TypedChannelBuilder<TChannel>(builder);
 
-			public ChannelConnectionBuilderDecorator(ConnectionBuilder builder)
-			{
-				_builder = builder;
-			}
-
-			public void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory)
-			{
-				_builder.AddChannel(fiber, channelFactory);
-			}
-
-			public void AddChannel<T>(Fiber fiber, Func<Fiber, Channel<T>> channelFactory)
-			{
-				_builder.AddChannel(fiber, channelFactory);
-			}
-
-			public void AddDisposable(IDisposable disposable)
-			{
-				_builder.AddDisposable(disposable);
-			}
+			_configurators.Each(x => x.Configure(channelBuilder));
 		}
 	}
 }

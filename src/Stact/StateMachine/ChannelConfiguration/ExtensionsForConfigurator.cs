@@ -24,7 +24,7 @@ namespace Stact
 		{
 			var stateMachineConfigurator = new StateMachineConnectionConfiguratorImpl<T>();
 
-			configurator.RegisterChannelConfigurator(stateMachineConfigurator);
+			configurator.AddConfigurator(stateMachineConfigurator);
 
 			return stateMachineConfigurator;
 		}

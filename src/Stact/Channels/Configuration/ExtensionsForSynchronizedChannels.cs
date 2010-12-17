@@ -24,7 +24,7 @@ namespace Stact
 		{
 			var synchronizedConfigurator = new SynchronizedChannelConfiguratorImpl<TChannel>();
 
-			configurator.SetChannelConfigurator(synchronizedConfigurator);
+			configurator.AddConfigurator(synchronizedConfigurator);
 
 			return synchronizedConfigurator;
 		}
@@ -34,7 +34,7 @@ namespace Stact
 		{
 			var synchronizedConfigurator = new SynchronizedChannelConfiguratorImpl<TChannel>(synchronizationContext);
 
-			configurator.SetChannelConfigurator(synchronizedConfigurator);
+			configurator.AddConfigurator(synchronizedConfigurator);
 
 			return synchronizedConfigurator;
 		}

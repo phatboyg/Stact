@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	public interface SchedulerFactoryConfigurator<T>
+	public interface SchedulerFactoryConfigurator<T> :
+		FiberFactoryConfigurator<T>
+		where T : class
 	{
 		T UseTimerScheduler();
 		T UseScheduler(Scheduler scheduler);

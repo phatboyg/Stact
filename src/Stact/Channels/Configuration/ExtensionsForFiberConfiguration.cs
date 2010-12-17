@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
+	using Builders;
 	using Internal;
 
 

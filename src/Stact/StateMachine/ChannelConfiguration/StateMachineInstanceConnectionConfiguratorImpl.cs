@@ -14,7 +14,7 @@ namespace Stact.StateMachine.ChannelConfiguration
 {
 	using System.Linq;
 	using Configuration;
-	using Configuration.Internal;
+	using Configuration.Builders;
 	using Magnum.Extensions;
 	using Magnum.StateMachine;
 
@@ -25,7 +25,6 @@ namespace Stact.StateMachine.ChannelConfiguration
 		StateMachineInstanceConnectionConfigurator<T>
 		where T : StateMachine<T>
 	{
-		readonly ConnectionConfigurator _configurator;
 		readonly T _instance;
 		StateMachineEventInspectorResult<T>[] _results;
 

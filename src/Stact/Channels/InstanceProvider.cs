@@ -18,7 +18,7 @@ namespace Stact
 	/// </summary>
 	/// <typeparam name="TInstance">The type of the class</typeparam>
 	/// <typeparam name="TChannel">The type of the message</typeparam>
-	public interface InstanceProvider<TInstance, TChannel>
+	public interface InstanceProvider<out TInstance, in TChannel>
 		where TInstance : class
 	{
 		TInstance GetInstance(TChannel message);

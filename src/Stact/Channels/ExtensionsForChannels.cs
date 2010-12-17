@@ -27,7 +27,7 @@ namespace Stact
 		{
 			Guard.AgainstNull(channel, "channel");
 
-			var subscriber = new ConnectionConfiguratorImpl<T>(channel);
+			var subscriber = new TypedConnectionConfigurator<T>(channel);
 
 			subscriberActions(subscriber);
 
@@ -38,11 +38,11 @@ namespace Stact
 		{
 			Guard.AgainstNull(channel, "channel");
 
-			var subscriber = new ConnectionConfiguratorImpl(channel);
+			var subscriber = new UntypedConnectionConfigurator(channel);
 
 			subscriberActions(subscriber);
 
-			return subscriber.Complete();
+			return subscriber.CreateConnection();
 		}
 
 		public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)

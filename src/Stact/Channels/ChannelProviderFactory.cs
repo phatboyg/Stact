@@ -12,7 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface ChannelProviderFactory<T, TKey>
+	public interface ChannelProviderFactory<TChannel>
+	{
+		ChannelProvider<TChannel> GetChannelProvider(TChannel channel);
+	}
+
+
+	public interface ChannelProviderFactory<T, in TKey>
 		where T : class
 	{
 		ChannelProvider<TChannel> GetChannelProvider<TChannel>(ChannelAccessor<T, TChannel> channelAccessor,
