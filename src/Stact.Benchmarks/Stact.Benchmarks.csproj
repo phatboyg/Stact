@@ -80,6 +80,7 @@
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
+    <Compile Include="SimpleRoutingEngineBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact\Stact.csproj">

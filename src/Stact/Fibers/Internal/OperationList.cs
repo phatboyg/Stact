@@ -32,6 +32,9 @@ namespace Stact.Internal
 
 		public void Run()
 		{
+			if (_operations.Count == 0)
+				return;
+
 			IList<Action> operations = _operations;
 			_operations = new List<Action>();
 

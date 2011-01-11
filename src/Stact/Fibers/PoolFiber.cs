@@ -32,6 +32,7 @@ namespace Stact
 
 		bool _executorQueued;
 		IList<Action> _operations = new List<Action>();
+		IList<Action> _empty = new List<Action>();
 		bool _shuttingDown;
 
 		public PoolFiber()
@@ -132,6 +133,9 @@ namespace Stact
 		{
 			lock (_lock)
 			{
+				if(_operations.Count == 0)
+					return _empty;
+
 				IList<Action> operations = _operations;
 
 				_operations = new List<Action>();
