@@ -17,12 +17,13 @@ namespace Stact.Specs.Workflow
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using Stact.Workflow;
+	using NUnit.Framework;
 
 
 	[Scenario]
 	public class StateMachineActor_Specs
 	{
-		[Then]
+		[Then, Ignore]
 		public void Easy_syntax_love()
 		{
 			ActorFactory<QuoteService> factory =
