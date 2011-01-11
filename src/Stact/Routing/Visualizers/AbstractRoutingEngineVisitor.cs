@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
+	using Actors.Internal;
 	using Internal;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
@@ -59,6 +60,19 @@ namespace Stact.Routing.Visualizers
 
 		protected virtual bool Visit<TChannel>(ConsumerNode<TChannel> node)
 		{
+			return true;
+		}
+
+		protected virtual bool Visit(ChannelAdapter adapter)
+		{
+			Visit(adapter.Output);
+			return true;
+		}
+
+		protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox) 
+			where TActor : class, Actor
+		{
+			Visit(inbox.Engine);
 			return true;
 		}
 	}

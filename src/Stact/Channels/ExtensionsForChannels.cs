@@ -14,6 +14,7 @@ namespace Stact
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 	using Configuration;
 	using Configuration.Internal;
 	using Magnum;
@@ -53,6 +54,44 @@ namespace Stact
 		public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
 		{
 			return new FlattenChannelVisitor().Flatten(channel);
+		}
+
+		public static bool SendRequestWaitForResponse<TRequest>(this UntypedChannel channel, TRequest request, TimeSpan timeout)
+		{
+			using (var reset = new ManualResetEvent(false))
+			{
+				var responseChannel = new ChannelAdapter();
+				using (responseChannel.Connect(x =>
+				{
+					x.AddConsumerOf<Response<TRequest>>()
+						.UsingConsumer(m => reset.Set())
+						.HandleOnCallingThread();
+				}))
+				{
+					channel.Request(request, responseChannel);
+
+					return reset.WaitOne(timeout, true);
+				}
+			}
+		}
+
+		public static bool SendRequestWaitForResponse<TRequest>(this UntypedChannel channel, TimeSpan timeout)
+		{
+			using (var reset = new ManualResetEvent(false))
+			{
+				var responseChannel = new ChannelAdapter();
+				using (responseChannel.Connect(x =>
+				{
+					x.AddConsumerOf<Response<TRequest>>()
+						.UsingConsumer(m => reset.Set())
+						.HandleOnCallingThread();
+				}))
+				{
+					channel.Request<TRequest>(responseChannel);
+
+					return reset.WaitOne(timeout, true);
+				}
+			}
 		}
 	}
 }

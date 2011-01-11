@@ -10,29 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Specs
 {
-	using System;
-	using Internal;
+	using Headers;
 	using Magnum.Extensions;
+	using Magnum.TestFramework;
+	using Routing;
 
 
-	public static class ExtensionsToActorInstance
+	[Scenario]
+	public class When_sending_a_raw_message
 	{
-		public static IDisposable ExitOnDispose(this ActorInstance actor)
+		[Then]
+		public void Should_upconvert_to_a_message_of_t()
 		{
-			return new DisposeCallback(() =>
-			{
-				actor.SendRequestWaitForResponse<Exit>(1.Days());
-			});
-		}
+			var received = new Future<Message<Simple>>();
 
-		public static IDisposable ExitOnDispose(this ActorInstance actor, TimeSpan timeout)
-		{
-			return new DisposeCallback(() =>
-				{
-					actor.SendRequestWaitForResponse<Exit>(timeout);
-				});
+			var engine = new DynamicRoutingEngine(new SynchronousFiber());
+			engine.Receive<Message<Simple>>(received.Complete);
+
+			engine.Send(new SimpleImpl());
+
+			received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+			received.Value.ShouldNotBeNull();
 		}
 	}
 }

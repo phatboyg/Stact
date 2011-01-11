@@ -169,6 +169,7 @@
     <Compile Include="Fibers\Internal\OperationList.cs" />
     <Compile Include="Fibers\Internal\ShutdownFiberOnDispose.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
+    <Compile Include="Routing\RoutingContextProxy.cs" />
     <Compile Include="Schedulers\Internal\ShutdownSchedulerOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
     <Compile Include="StactException.cs" />

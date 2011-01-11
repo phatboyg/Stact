@@ -15,6 +15,7 @@ namespace Stact.Actors.Internal
 	using System;
 	using System.Collections.Generic;
 	using Magnum.Collections;
+	using Magnum.Extensions;
 	using Routing;
 	using Routing.Internal;
 	using Stact.Internal;
@@ -33,28 +34,48 @@ namespace Stact.Actors.Internal
 	{
 		readonly Fiber _fiber;
 		readonly Scheduler _scheduler;
-		UntypedChannel _engine;
+		DynamicRoutingEngine _engine;
 
 		Cache<Type, object> _joinNodes;
 		HashSet<PendingReceive> _pending;
+		ChannelAdapter _adapter;
+		ChannelConnection _connected;
+		BroadcastChannel _inbound;
 
 
 		public ActorInbox(Fiber fiber, Scheduler scheduler)
 		{
 			_fiber = fiber;
 			_scheduler = scheduler;
-			_engine = new DynamicRoutingEngine(fiber);
 
+			_engine = new DynamicRoutingEngine(fiber);
 			_joinNodes = new Cache<Type, object>();
+	
+			_adapter = new ChannelAdapter();
+			_connected = _adapter.Connect(x =>
+				{
+					x.AddConsumerOf<Request<Exit>>()
+						.UsingConsumer(HandleExit)
+						.HandleOnCallingThread();
+
+					x.AddConsumerOf<Kill>()
+						.UsingConsumer(HandleKill)
+						.HandleOnCallingThread();
+				});
+
+			_inbound = new BroadcastChannel(new UntypedChannel[] { _engine, _adapter });
 
 			_pending = new HashSet<PendingReceive>();
-			_pending.Add(Receive<Request<Exit>>(x => HandleExit));
-			_pending.Add(Receive<Kill>(x => HandleKill));
+		}
+
+		public DynamicRoutingEngine Engine
+		{
+			get { return _engine; }
 		}
 
 		public void Send<T>(T message)
 		{
-			_engine.Send(message);
+			_inbound.Send(message);
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
@@ -75,11 +96,15 @@ namespace Stact.Actors.Internal
 
 		void HandleExit(Request<Exit> message)
 		{
-			_fiber.Shutdown(TimeSpan.Zero);
+			_engine.Shutdown();
+			_fiber.Shutdown(10.Seconds());
+
+			message.Respond(message.Body);
 		}
 
 		void HandleKill(Kill message)
 		{
+			_engine.Shutdown();
 			_fiber.Stop();
 		}
 

@@ -24,5 +24,6 @@ namespace Stact.Routing
 		UntypedChannel
 	{
 		void Add(Action operation);
+		void Shutdown();
 	}
 }

@@ -23,6 +23,7 @@ namespace Stact.Routing
 		readonly Fiber _fiber;
 		readonly OperationList _operationList;
 		readonly Activation _router;
+		bool _shutdown;
 
 		public DynamicRoutingEngine(Fiber fiber)
 		{
@@ -45,13 +46,22 @@ namespace Stact.Routing
 				{
 					_operationList.Run();
 					_router.Activate(context);
+					_operationList.Run();
 				});
 		}
 
 		public void Add(Action action)
 		{
+			if (_shutdown)
+				return;
+
 			_operationList.Add(action);
 			_fiber.Add(() => _operationList.Run());
+		}
+
+		public void Shutdown()
+		{
+			_shutdown = true;
 		}
 	}
 }

@@ -15,6 +15,7 @@ namespace Stact.Routing
 	using System;
 	using Internal;
 	using Magnum.Extensions;
+	using Stact.Internal;
 
 
 	public static class DynamicRoutingContext
@@ -70,10 +71,32 @@ namespace Stact.Routing
 			}
 		}
 
+		public void IsAssignableTo<TChannel>(Action<RoutingContext<TChannel>> callback)
+		{
+			if (typeof(TChannel) == typeof(T))
+				callback((RoutingContext<TChannel>)this);
+			else
+			{
+				HeaderTypeAdapter<TChannel>.TryConvert(_message, x =>
+					{
+						var proxy = new RoutingContextProxy<T, TChannel>(this, x);
+
+						callback(proxy);
+					});
+			}
+		}
+
+		public DynamicRoutingEngine Engine
+		{
+			get { return _engine; }
+		}
+
 		public RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> other)
 		{
 			return DynamicRoutingContext.Create(_engine, Body, other.Body);
 		}
+
+
 
 		public override bool Equals(object obj)
 		{

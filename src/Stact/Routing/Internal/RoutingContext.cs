@@ -37,5 +37,6 @@ namespace Stact.Routing.Internal
 		T Body { get; }
 
 		RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> other);
+		void IsAssignableTo<TChannel>(Action<RoutingContext<TChannel>> callback);
 	}
 }
