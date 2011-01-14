@@ -36,7 +36,8 @@ namespace Stact.Internal
 		readonly HashSet<State> _receiveStates;
 		readonly StateMachineWorkflow<TWorkflow, TActor> _workflow;
 
-		public StateMachineWorkflowEventBinder(StateMachineWorkflow<TWorkflow, TActor> workflow, Event<TBody> messageEvent, IEnumerable<State> receiveStates)
+		public StateMachineWorkflowEventBinder(StateMachineWorkflow<TWorkflow, TActor> workflow, Event<TBody> messageEvent,
+		                                       IEnumerable<State> receiveStates)
 		{
 			_receiveStates = new HashSet<State>(receiveStates);
 			_messageEvent = messageEvent;
@@ -60,7 +61,8 @@ namespace Stact.Internal
 
 		public PendingReceive Bind(Inbox inbox, TActor instance)
 		{
-			return inbox.Receive<TBody>(message =>
+			SelectiveConsumer<TBody> consumer = null;
+			consumer = message =>
 				{
 					State currentState = _workflow.GetCurrentState(instance);
 
@@ -69,9 +71,18 @@ namespace Stact.Internal
 
 					return m =>
 						{
-							_workflow.RaiseEvent(instance, _messageEvent, m);
+							try
+							{
+								_workflow.RaiseEvent(instance, _messageEvent, m);
+							}
+							finally
+							{
+								inbox.Receive(consumer);
+							}
 						};
-				});
+				};
+
+			return inbox.Receive(consumer);
 		}
 	}
 }

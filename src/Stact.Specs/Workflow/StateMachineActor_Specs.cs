@@ -12,18 +12,16 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Workflow
 {
-	using System;
 	using System.Diagnostics;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using Stact.Workflow;
-	using NUnit.Framework;
 
 
 	[Scenario]
 	public class StateMachineActor_Specs
 	{
-		[Then, Ignore]
+		[Then]
 		public void Easy_syntax_love()
 		{
 			ActorFactory<QuoteService> factory =
@@ -34,13 +32,12 @@ namespace Stact.Specs.Workflow
 						x.Initially()
 							.When(e => e.GetQuoteRequest)
 							.Then(i => i.SendQuoteRequest)
-							.Respond(() => new RequestSent())
 							.TransitionTo(s => s.WaitingForResponse);
 
 						x.During(s => s.WaitingForResponse)
 							.When(e => e.CancelRequest)
 							.Then(i => i.Cancel)
-							.Respond(() => new CancelledImpl());
+							.Finalize();
 					});
 
 			ActorInstance service = factory.GetActor();
@@ -54,21 +51,25 @@ namespace Stact.Specs.Workflow
 						{
 							Symbol = "MSFT"
 						}, inbox)
-						.Receive<Response<RequestSent>>(r => response.Complete(r));
-
+						.Receive<Response<RequestSent>>(r =>
+							{
+								service.Request(new GetQuote
+									{
+										Symbol = "AAPL"
+									}, inbox)
+									.Receive<Response<RequestSent>>(rr =>
+										{
+											response.Complete(r);
+										});
+							});
 				});
 
-			service.Exit();
-
 			response.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+
+			service.Exit();
 		}
 
 
-
-		class RequestSent
-		{
-			
-		}
 		interface Cancel
 		{
 		}
@@ -89,6 +90,7 @@ namespace Stact.Specs.Workflow
 			public string Symbol { get; set; }
 		}
 
+
 		interface InvalidSymbol
 		{
 		}
@@ -108,12 +110,14 @@ namespace Stact.Specs.Workflow
 
 			public State CurrentState { get; private set; }
 
+			public string Symbol { get; set; }
+
 			public void SendQuoteRequest(Request<GetQuote> request)
 			{
+				Trace.WriteLine("Symbol: " + request.Body.Symbol);
 				Symbol = request.Body.Symbol;
+				request.Respond(new RequestSent());
 			}
-
-			public string Symbol { get; set; }
 
 			public void Cancel(Request<Cancel> request)
 			{
@@ -126,8 +130,14 @@ namespace Stact.Specs.Workflow
 		{
 			State WaitingForResponse { get; }
 
+
 			Event<Request<GetQuote>> GetQuoteRequest { get; }
 			Event<Request<Cancel>> CancelRequest { get; }
+		}
+
+
+		class RequestSent
+		{
 		}
 	}
 }
