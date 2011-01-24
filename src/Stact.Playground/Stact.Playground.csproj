@@ -43,6 +43,41 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Data\Internal\CompElement.cs" />
+    <Compile Include="Data\Internal\Element.cs" />
+    <Compile Include="Data\Internal\FingerTree.cs" />
+    <Compile Include="Data\Internal\FingerTreeM.cs" />
+    <Compile Include="Data\Internal\FingerTreeSplits.cs" />
+    <Compile Include="Data\Internal\FNSeq.cs" />
+    <Compile Include="Data\Internal\Key.cs" />
+    <Compile Include="Data\Internal\KeyMonoid.cs" />
+    <Compile Include="Data\Internal\Measurable.cs" />
+    <Compile Include="Data\Internal\OrderedElement.cs" />
+    <Compile Include="Data\Internal\Seq.cs" />
+    <Compile Include="Data\Internal\Splittable.cs" />
+    <Compile Include="Data\Internal\Monoid.cs" />
+    <Compile Include="Data\Internal\OrderedSequence.cs" />
+    <Compile Include="Data\Internal\Prio.cs" />
+    <Compile Include="Data\Ordered_Tests.cs" />
+    <Compile Include="Data\Internal\PriorityQueue.cs" />
+    <Compile Include="Data\Internal\RandAccessSequence.cs" />
+    <Compile Include="Data\PriorityQueue_Benchmark.cs" />
+    <Compile Include="Functional\Data_Test.cs" />
+    <Compile Include="Functional\Either.cs" />
+    <Compile Include="Functional\EitherExtensions.cs" />
+    <Compile Include="Functional\ExtensionsToAction.cs" />
+    <Compile Include="Functional\ExtensionsToIdentity.cs" />
+    <Compile Include="Functional\ExtensionsToMaybe.cs" />
+    <Compile Include="Functional\Identity.cs" />
+    <Compile Include="Functional\Internal\LeftImpl.cs" />
+    <Compile Include="Functional\Internal\LeftProjectionImpl.cs" />
+    <Compile Include="Functional\Internal\RightImpl.cs" />
+    <Compile Include="Functional\Internal\RightProjectionImpl.cs" />
+    <Compile Include="Functional\LeftProjection.cs" />
+    <Compile Include="Functional\Maybe.cs" />
+    <Compile Include="Functional\Projection.cs" />
+    <Compile Include="Functional\Promise.cs" />
+    <Compile Include="Functional\RightProjection.cs" />
     <Compile Include="Rules\Internal\AlphaMemory.cs" />
     <Compile Include="Rules\Internal\AlphaMemoryElementReference.cs" />
     <Compile Include="Rules\Internal\AlphaMemoryImpl.cs" />
@@ -64,6 +99,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Functional\Data\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
