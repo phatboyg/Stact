@@ -166,8 +166,10 @@
     <Compile Include="Data\Internal\Empty.cs" />
     <Compile Include="Data\Internal\FingerTree.cs" />
     <Compile Include="Data\Internal\Four.cs" />
+    <Compile Include="Data\Internal\LeftView.cs" />
     <Compile Include="Data\Internal\MakeTree.cs" />
     <Compile Include="Data\Internal\MeasurePredicate.cs" />
+    <Compile Include="Data\Internal\RightView.cs" />
     <Compile Include="Data\Measured.cs" />
     <Compile Include="Data\Monoid.cs" />
     <Compile Include="Data\Internal\Node.cs" />

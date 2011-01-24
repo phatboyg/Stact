@@ -46,6 +46,16 @@ namespace Stact.Data.Internal
 			return f(z)(_v);
 		}
 
+		public override T Left
+		{
+			get { return _v; }
+		}
+
+		public override T Right
+		{
+			get { return _v; }
+		}
+
 		public override U Match<U>(Func<One<T, M>, U> one, Func<Two<T, M>, U> two, Func<Three<T, M>, U> three,
 		                           Func<Four<T, M>, U> four)
 		{

@@ -35,7 +35,7 @@ namespace Stact.Specs.Data
 		[Then]
 		public void Should_work_for_four_values()
 		{
-			InsertAndCompare(47, 27, 13, 11);
+			InsertAndCompare(47, 27, 13, 42);
 		}
 
 		[Then, NotYetImplemented("Need to split single digit suffix")]

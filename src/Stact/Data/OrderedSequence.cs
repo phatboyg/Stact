@@ -56,7 +56,7 @@ namespace Stact.Data
 		{
 			Pair<OrderedSequence<T, M>, OrderedSequence<T, M>> part = Partition(_measured.Measure(value));
 
-			return new OrderedSequence<T, M>(part.First._tree.snoc(value).append(part.Second._tree));
+			return new OrderedSequence<T, M>(part.First._tree.AddRight(value).Concat(part.Second._tree));
 		}
 
 		public bool Visit(Func<T, bool> callback)
@@ -67,11 +67,12 @@ namespace Stact.Data
 		public T[] ToArray()
 		{
 			var list = new List<T>();
-			_tree.Visit(x =>
-				{
-					list.Add(x);
-					return true;
-				});
+			var view = _tree.Left;
+			while(view != null)
+			{
+				list.Add(view.Head);
+				view = view.Tail.Left;
+			}
 
 			return list.ToArray();
 		}

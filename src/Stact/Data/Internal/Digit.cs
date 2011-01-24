@@ -37,6 +37,9 @@ namespace Stact.Data.Internal
 		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 		public abstract U FoldLeft<U>(Func<U, Func<T, U>> f, U z);
 
+		public abstract T Left { get; }
+		public abstract T Right { get; }
+
 		public T ReduceRight(Func<T, Func<T, T>> f)
 		{
 			return Match(one => one.V,
@@ -60,7 +63,7 @@ namespace Stact.Data.Internal
 			             	{
 			             		M value = _m.Append(acc, _m.Measure(two.V1));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(null, two.V1, new One<T, M>(_m, two.V2));
+			             			return new Split<T, Digit<T, M>, M>(null, two.V1, _mk.One(two.V2));
 
 			             		return new Split<T, Digit<T, M>, M>(_mk.One(two.V1), two.V2, null);
 			             	},

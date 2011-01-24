@@ -60,17 +60,17 @@ namespace Stact.Data
 
 		public Sequence<T> PushFront(T item)
 		{
-			return new Sequence<T>(_tree.cons(item));
+			return new Sequence<T>(_tree.AddLeft(item));
 		}
 
 		public Sequence<T> PushBack(T item)
 		{
-			return new Sequence<T>(_tree.snoc(item));
+			return new Sequence<T>(_tree.AddRight(item));
 		}
 
 		public Sequence<T> Append(Sequence<T> other)
 		{
-			return new Sequence<T>(_tree.append(other._tree));
+			return new Sequence<T>(_tree.Concat(other._tree));
 		}
 
 		public bool Visit(Func<T, bool> callback)

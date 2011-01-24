@@ -23,24 +23,29 @@ namespace Stact.Data.Internal
 		{
 		}
 
-		public override FingerTree<T, M> cons(T a)
+		public override FingerTree<T, M> AddLeft(T a)
 		{
 			return new Single<T, M>(Measured, a);
 		}
 
-		public override FingerTree<T, M> snoc(T a)
+		public override FingerTree<T, M> AddRight(T a)
 		{
-			return cons(a);
+			return AddLeft(a);
 		}
 
-		public override FingerTree<T, M> append(FingerTree<T, M> t)
+		public override FingerTree<T, M> Concat(FingerTree<T, M> t)
 		{
 			return t;
 		}
 
-		public override Func<T> Lookup(Func<M, int> o, int i)
+		public override LeftView<T, M> Left
 		{
-			throw new NotImplementedException("Tree is empty");
+			get { return null; }
+		}
+
+		public override RightView<T, M> Right
+		{
+			get { return null; }
 		}
 
 		public override U FoldRight<U>(Func<T, Func<U, U>> f, U z)

@@ -33,6 +33,16 @@ namespace Stact.Data.Internal
 			get { return _item; }
 		}
 
+		public override LeftView<T, M> Left
+		{
+			get { return new LeftView<T, M>(_item, _mk.Empty()); }
+		}
+
+		public override RightView<T, M> Right
+		{
+			get { return new RightView<T, M>(_item, _mk.Empty()); }
+		}
+
 		public override U FoldRight<U>(Func<T, Func<U, U>> f, U z)
 		{
 			return f(_item)(z);
@@ -68,24 +78,19 @@ namespace Stact.Data.Internal
 			return callback(_item);
 		}
 
-		public override FingerTree<T, M> cons(T a)
+		public override FingerTree<T, M> AddLeft(T a)
 		{
 			return _mk.Deep(_mk.One(a), new Empty<Node<T, M>, M>(Measured.Node), _mk.One(_item));
 		}
 
-		public override FingerTree<T, M> snoc(T a)
+		public override FingerTree<T, M> AddRight(T a)
 		{
 			return _mk.Deep(_mk.One(_item), new Empty<Node<T, M>, M>(Measured.Node), _mk.One(a));
 		}
 
-		public override FingerTree<T, M> append(FingerTree<T, M> t)
+		public override FingerTree<T, M> Concat(FingerTree<T, M> t)
 		{
-			return t.cons(_item);
-		}
-
-		public override Func<T> Lookup(Func<M, int> o, int i)
-		{
-			return () => _item;
+			return t.AddLeft(_item);
 		}
 
 		public override Pair<FingerTree<T, M>, FingerTree<T, M>> SplitSequence(MeasurePredicate<M> predicate)

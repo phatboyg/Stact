@@ -14,12 +14,6 @@ namespace Stact.Data.Internal
 {
 	using System;
 
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="T">The value type stored in the data structure</typeparam>
-	/// <typeparam name="M">The monoidal type used to annotate nodes</typeparam>
 	public abstract class FingerTree<T, M>
 	{
 		public readonly Measured<T, M> Measured;
@@ -33,8 +27,15 @@ namespace Stact.Data.Internal
 
 		public bool IsEmpty
 		{
-			get { return this is Empty<T, M>; }
+			get
+			{
+				return Match(e => true, s => false, d => false);
+			}
 		}
+
+		public abstract LeftView<T,M> Left { get; }
+
+		public abstract RightView<T, M> Right { get; }
 
 		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 		public abstract T ReduceRight(Func<T, Func<T, T>> f);
@@ -52,12 +53,11 @@ namespace Stact.Data.Internal
 			return new MakeTree<T, M>(m);
 		}
 
-		public abstract FingerTree<T, M> cons(T a);
-		public abstract FingerTree<T, M> snoc(T a);
+		public abstract FingerTree<T, M> AddLeft(T a);
+		public abstract FingerTree<T, M> AddRight(T a);
 
-		public abstract FingerTree<T, M> append(FingerTree<T, M> t);
+		public abstract FingerTree<T, M> Concat(FingerTree<T, M> t);
 
-		public abstract Func<T> Lookup(Func<M, int> o, int i);
 		public abstract Pair<FingerTree<T, M>, FingerTree<T, M>> SplitSequence(MeasurePredicate<M> predicate);
 		public abstract Split<T, FingerTree<T, M>, M> Split(MeasurePredicate<M> predicate, M acc);
 	}
