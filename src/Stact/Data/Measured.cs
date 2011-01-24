@@ -33,12 +33,12 @@ namespace Stact.Data
 
 		public Measured<Node<T, M>, M> Node
 		{
-			get { return _measureNode ?? (_measureNode = new Measured<Node<T, M>, M>(_monoid, node => node.Measure)); }
+			get { return _measureNode ?? (_measureNode = new Measured<Node<T, M>, M>(_monoid, node => node.Size)); }
 		}
 
-		public M Measure(T item)
+		public Element<T,M> Measure(T item)
 		{
-			return _measure(item);
+			return new Element<T, M>(_measure(item), item);
 		}
 
 		public M Append(M left, M right)

@@ -18,47 +18,42 @@ namespace Stact.Data.Internal
 	public class Two<T, M> :
 		Digit<T, M>
 	{
-		readonly T _v1;
-		readonly T _v2;
+		readonly Element<T, M> _v1;
+		readonly Element<T, M> _v2;
 
-		public Two(Measured<T, M> m, T v1, T v2)
-			: base(m, m.Append(m.Measure(v1), m.Measure(v2)))
+		public Two(Measured<T, M> m, Element<T, M> v1, Element<T, M> v2)
+			: base(m, m.Append(v1.Size, v2.Size))
 		{
 			_v1 = v1;
 			_v2 = v2;
 		}
 
-		public T V1
+		public Element<T, M> V1
 		{
 			get { return _v1; }
 		}
 
-		public T V2
+		public Element<T, M> V2
 		{
 			get { return _v2; }
 		}
 
-		public override bool Visit(Func<T, bool> callback)
-		{
-			return callback(_v1) && callback(_v2);
-		}
-
 		public override U FoldRight<U>(Func<T, Func<U, U>> f, U z)
 		{
-			return f(_v1)(f(_v2)(z));
+			return f(_v1.Value)(f(_v2.Value)(z));
 		}
 
 		public override U FoldLeft<U>(Func<U, Func<T, U>> f, U z)
 		{
-			return f(f(z)(_v2))(_v1);
+			return f(f(z)(_v2.Value))(_v1.Value);
 		}
 
-		public override T Left
+		public override Element<T, M> Left
 		{
 			get { return _v1; }
 		}
 
-		public override T Right
+		public override Element<T, M> Right
 		{
 			get { return _v2; }
 		}

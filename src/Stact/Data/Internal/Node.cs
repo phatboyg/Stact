@@ -17,28 +17,17 @@ namespace Stact.Data.Internal
 
 	public abstract class Node<T, M>
 	{
-		readonly Measured<T, M> _m;
-		readonly M _measure;
+		public readonly Measured<T, M> Measured;
+		public readonly M Size;
 
-		protected Node(Measured<T, M> m, M measure)
+		protected Node(Measured<T, M> m, M size)
 		{
-			_m = m;
-			_measure = measure;
+			Measured = m;
+			Size = size;
 		}
 
-		public M Measure
-		{
-			get { return _measure; }
-		}
-
-		public Measured<T, M> Measured
-		{
-			get { return _m; }
-		}
-
-		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 		public abstract U FoldLeft<U>(Func<U, Func<T, U>> f, U z);
-		public abstract bool Visit(Func<T, bool> callback);
+		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 
 		public static Func<U, Func<Node<T, M>, U>> FoldLeft<U>(Func<U, Func<T, U>> bff)
 		{
@@ -52,8 +41,9 @@ namespace Stact.Data.Internal
 
 		public Node<U, M> Map<U>(Func<T, U> f, Measured<U, M> m)
 		{
-			return Match<Node<U, M>>(node => new Node2<U, M>(m, f(node.V1), f(node.V2)),
-			                         node3 => new Node3<U, M>(m, f(node3.V1), f(node3.V2), f(node3.V3)));
+			return Match<Node<U, M>>(node => new Node2<U, M>(m, m.Measure(f(node.V1.Value)), m.Measure(f(node.V2.Value))),
+			                         node3 => new Node3<U, M>(m, m.Measure(f(node3.V1.Value)), m.Measure(f(node3.V2.Value)),
+			                                                  m.Measure(f(node3.V3.Value))));
 		}
 
 		public static Func<Node<T, M>, Node<U, M>> LiftM<U>(Func<T, U> f, Measured<U, M> m)

@@ -12,17 +12,20 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Data.Internal
 {
-	public class Split<T, U, M>
+	public struct Element<T, M>
 	{
-		public readonly Element<T, M> Item;
-		public readonly U Left;
-		public readonly U Right;
+		public readonly T Value;
+		public readonly M Size;
 
-		public Split(U left, Element<T,M> item, U right)
+		public Element(M size, T value)
 		{
-			Left = left;
-			Item = item;
-			Right = right;
+			Value = value;
+			Size = size;
 		}
+
+//		public static implicit operator T(Element<T, M> element)
+//		{
+//			return element.Value;
+//		}
 	}
 }

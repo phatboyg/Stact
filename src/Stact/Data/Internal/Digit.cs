@@ -28,27 +28,26 @@ namespace Stact.Data.Internal
 			_mk = new MakeTree<T, M>(m);
 		}
 
-		public abstract bool Visit(Func<T, bool> callback);
 		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 		public abstract U FoldLeft<U>(Func<U, Func<T, U>> f, U z);
 
-		public abstract T Left { get; }
-		public abstract T Right { get; }
+		public abstract Element<T,M> Left { get; }
+		public abstract Element<T,M> Right { get; }
 
 		public T ReduceRight(Func<T, Func<T, T>> f)
 		{
-			return Match(one => one.V,
-			             two => f(two.V1)(two.V2),
-			             three => f(three.V1)(f(three.V2)(three.V3)),
-			             four => f(four.V1)(f(four.V2)(f(four.V3)(four.V4))));
+			return Match(one => one.V.Value,
+			             two => f(two.V1.Value)(two.V2.Value),
+			             three => f(three.V1.Value)(f(three.V2.Value)(three.V3.Value)),
+			             four => f(four.V1.Value)(f(four.V2.Value)(f(four.V3.Value)(four.V4.Value))));
 		}
 
 		public T ReduceLeft(Func<T, Func<T, T>> f)
 		{
-			return Match(one => one.V,
-			             two => f(two.V2)(two.V1),
-			             three => f(three.V3)(f(three.V2)(three.V1)),
-			             four => f(four.V4)(f(four.V3)(f(four.V2)(four.V1))));
+			return Match(one => one.V.Value,
+			             two => f(two.V2.Value)(two.V1.Value),
+			             three => f(three.V3.Value)(f(three.V2.Value)(three.V1.Value)),
+			             four => f(four.V4.Value)(f(four.V3.Value)(f(four.V2.Value)(four.V1.Value))));
 		}
 
 		public Split<T, Digit<T, M>, M> Split(MeasurePredicate<M> predicate, M acc)
@@ -56,7 +55,7 @@ namespace Stact.Data.Internal
 			return Match(x1 => new Split<T, Digit<T, M>, M>(null, x1.V, null),
 			             x2 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(x2.V1));
+			             		M value = _m.Append(acc, x2.V1.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(null, x2.V1, _mk.One(x2.V2));
 
@@ -64,10 +63,10 @@ namespace Stact.Data.Internal
 			             	},
 			             x3 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(x3.V1));
+			             		M value = _m.Append(acc, x3.V1.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(null, x3.V1, _mk.Two(x3.V2, x3.V3));
-			             		value = _m.Append(value, _m.Measure(x3.V2));
+			             		value = _m.Append(value, x3.V2.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(_mk.One(x3.V1), x3.V2, _mk.One(x3.V3));
 
@@ -75,13 +74,13 @@ namespace Stact.Data.Internal
 			             	},
 			             x4 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(x4.V1));
+			             		M value = _m.Append(acc, x4.V1.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(null, x4.V1, _mk.Three(x4.V2, x4.V3, x4.V4));
-			             		value = _m.Append(value, _m.Measure(x4.V2));
+			             		value = _m.Append(value, x4.V2.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(_mk.One(x4.V1), x4.V2, _mk.Two(x4.V3, x4.V4));
-			             		value = _m.Append(value, _m.Measure(x4.V3));
+			             		value = _m.Append(value, x4.V3.Size);
 			             		if (predicate(value))
 			             			return new Split<T, Digit<T, M>, M>(_mk.Two(x4.V1, x4.V2), x4.V3, _mk.One(x4.V4));
 
@@ -91,10 +90,10 @@ namespace Stact.Data.Internal
 
 		public Digit<U, M> Map<U>(Func<T, U> f, Measured<U, M> m)
 		{
-			return Match<Digit<U, M>>(one => new One<U, M>(m, f(one.V)),
-			                          two => new Two<U, M>(m, f(two.V1), f(two.V2)),
-			                          three => new Three<U, M>(m, f(three.V1), f(three.V2), f(three.V3)),
-			                          four => new Four<U, M>(m, f(four.V1), f(four.V2), f(four.V3), f(four.V4)));
+			return Match<Digit<U, M>>(one => new One<U, M>(m, m.Measure(f(one.V.Value))),
+			                          two => new Two<U, M>(m, m.Measure(f(two.V1.Value)), m.Measure(f(two.V2.Value))),
+			                          three => new Three<U, M>(m, m.Measure(f(three.V1.Value)), m.Measure(f(three.V2.Value)), m.Measure(f(three.V3.Value))),
+			                          four => new Four<U, M>(m,m.Measure(f(four.V1.Value)), m.Measure(f(four.V2.Value)), m.Measure(f(four.V3.Value)), m.Measure(f(four.V4.Value))));
 		}
 
 		public FingerTree<T, M> ToTree()

@@ -47,15 +47,13 @@ namespace Stact.Data.Internal
 
 		public abstract U Match<U>(Func<Empty<T, M>, U> empty, Func<Single<T, M>, U> single, Func<Deep<T, M>, U> deep);
 
-		public abstract bool Visit(Func<T, bool> callback);
-
 		public static MakeTree<T, M> MakeTree(Measured<T, M> m)
 		{
 			return new MakeTree<T, M>(m);
 		}
 
-		public abstract FingerTree<T, M> AddLeft(T a);
-		public abstract FingerTree<T, M> AddRight(T a);
+		public abstract FingerTree<T, M> AddLeft(Element<T,M> a);
+		public abstract FingerTree<T, M> AddRight(Element<T,M> a);
 
 		public abstract FingerTree<T, M> Concat(FingerTree<T, M> t);
 

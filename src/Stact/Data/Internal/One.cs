@@ -18,42 +18,38 @@ namespace Stact.Data.Internal
 	public class One<T, M> :
 		Digit<T, M>
 	{
-		readonly T _v;
+		readonly Element<T, M> _v;
 
-		public One(Measured<T, M> m, T v)
-			: base(m, m.Measure(v))
+
+		public One(Measured<T, M> m, Element<T, M> v)
+			: base(m, v.Size)
 		{
 			_v = v;
 		}
 
-		public T V
+		public Element<T, M> V
 		{
 			get { return _v; }
 		}
 
-		public override bool Visit(Func<T, bool> callback)
+		public override Element<T, M> Left
 		{
-			return callback(_v);
+			get { return _v; }
+		}
+
+		public override Element<T, M> Right
+		{
+			get { return _v; }
 		}
 
 		public override U FoldRight<U>(Func<T, Func<U, U>> f, U z)
 		{
-			return f(_v)(z);
+			return f(_v.Value)(z);
 		}
 
 		public override U FoldLeft<U>(Func<U, Func<T, U>> f, U z)
 		{
-			return f(z)(_v);
-		}
-
-		public override T Left
-		{
-			get { return _v; }
-		}
-
-		public override T Right
-		{
-			get { return _v; }
+			return f(z)(_v.Value);
 		}
 
 		public override U Match<U>(Func<One<T, M>, U> one, Func<Two<T, M>, U> two, Func<Three<T, M>, U> three,

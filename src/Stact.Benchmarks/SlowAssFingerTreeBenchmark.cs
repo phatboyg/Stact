@@ -13,9 +13,11 @@
 namespace Stact.Benchmarks
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 	using Data;
+	using Data.Internal;
 
 
 	public class SlowAssFingerTreeBenchmark
@@ -24,8 +26,41 @@ namespace Stact.Benchmarks
 
 		public void Run()
 		{
-			RunTest(10);
-			RunTest(10000);
+			//RunTest(10);
+			//RunTest(10000);
+
+			RunQueueTest(10);
+			RunQueueTest(100000);
+
+			CompareToQueue(100000);
+		}
+
+		void RunQueueTest(int count)
+		{
+			_timer = Stopwatch.StartNew();
+			var deque = new Deque<int>();
+			for (int i = 0; i < count; i++)
+			{
+				deque = deque.AddTail(i);
+			}
+			_timer.Stop();
+
+			if (count >= 100)
+				Console.WriteLine("Append to Deque Elapsed Time (" + count + "): " + _timer.ElapsedMilliseconds + "ms"); 
+		}
+
+		void CompareToQueue(int count)
+		{
+			_timer = Stopwatch.StartNew();
+			var queue = new Queue<int>();
+			for (int i = 0; i < count; i++)
+			{
+				queue.Enqueue(i);
+			}
+			_timer.Stop();
+
+			if (count >= 100)
+				Console.WriteLine("Append to Queue Elapsed Time (" + count + "): " + _timer.ElapsedMilliseconds + "ms"); 
 		}
 
 		void RunTest(int count)
@@ -42,7 +77,7 @@ namespace Stact.Benchmarks
 			_timer.Stop();
 
 			if(count >= 100)
-				Console.WriteLine("Finger Tree Elapsed Time (" + count + "): " + _timer.ElapsedMilliseconds + "ms");
+				Console.WriteLine("Insert Into Ordered Finger Tree Sequence Elapsed Time (" + count + "): " + _timer.ElapsedMilliseconds + "ms");
 		}
 	}
 }

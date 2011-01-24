@@ -55,23 +55,20 @@ namespace Stact.Data
 
 		public OrderedSequence<T, M> Insert(T value)
 		{
-			Pair<OrderedSequence<T, M>, OrderedSequence<T, M>> part = Partition(_measured.Measure(value));
+			var element = _measured.Measure(value);
 
-			return new OrderedSequence<T, M>(part.First._tree.AddRight(value).Concat(part.Second._tree));
+			Pair<OrderedSequence<T, M>, OrderedSequence<T, M>> part = Partition(element.Size);
+
+			return new OrderedSequence<T, M>(part.First._tree.AddRight(element).Concat(part.Second._tree));
 		}
-
-		public bool Visit(Func<T, bool> callback)
-		{
-			return _tree.Visit(callback);
-		}
-
+		
 		public T[] ToArray()
 		{
 			var list = new List<T>();
 			var view = _tree.Left;
 			while(view != null)
 			{
-				list.Add(view.Head);
+				list.Add(view.Head.Value);
 				view = view.Tail.Left;
 			}
 

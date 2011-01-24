@@ -14,10 +14,10 @@ namespace Stact.Data.Internal
 {
 	public class RightView<T, M>
 	{
-		public readonly T Head;
+		public readonly Element<T, M> Head;
 		public readonly FingerTree<T, M> Tail;
 
-		public RightView(T head, FingerTree<T, M> tail)
+		public RightView(Element<T, M> head, FingerTree<T, M> tail)
 		{
 			Head = head;
 			Tail = tail;

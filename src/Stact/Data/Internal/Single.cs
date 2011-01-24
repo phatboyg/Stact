@@ -18,17 +18,17 @@ namespace Stact.Data.Internal
 	public class Single<T, M> :
 		FingerTree<T, M>
 	{
-		readonly T _item;
+		readonly Element<T, M> _item;
 		readonly MakeTree<T, M> _mk;
 
-		public Single(Measured<T, M> m, T item)
-			: base(m, m.Measure(item))
+		public Single(Measured<T, M> m, Element<T,M> item)
+			: base(m, item.Size)
 		{
 			_item = item;
 			_mk = new MakeTree<T, M>(m);
 		}
 
-		public T Item
+		public Element<T, M> Item
 		{
 			get { return _item; }
 		}
@@ -45,27 +45,29 @@ namespace Stact.Data.Internal
 
 		public override U FoldRight<U>(Func<T, Func<U, U>> f, U z)
 		{
-			return f(_item)(z);
+			return f(_item.Value)(z);
 		}
 
 		public override T ReduceRight(Func<T, Func<T, T>> f)
 		{
-			return _item;
+			return _item.Value;
 		}
 
 		public override U FoldLeft<U>(Func<U, Func<T, U>> f, U z)
 		{
-			return f(z)(_item);
+			return f(z)(_item.Value);
 		}
 
 		public override T ReduceLeft(Func<T, Func<T, T>> f)
 		{
-			return _item;
+			return _item.Value;
 		}
 
 		public override FingerTree<U, M> Map<U>(Func<T, U> f, Measured<U, M> m)
 		{
-			return new Single<U, M>(m, f(_item));
+			var value = f(_item.Value);
+
+			return new Single<U, M>(m, m.Measure(value));
 		}
 
 		public override U Match<U>(Func<Empty<T, M>, U> empty, Func<Single<T, M>, U> single, Func<Deep<T, M>, U> deep)
@@ -73,17 +75,12 @@ namespace Stact.Data.Internal
 			return single(this);
 		}
 
-		public override bool Visit(Func<T, bool> callback)
-		{
-			return callback(_item);
-		}
-
-		public override FingerTree<T, M> AddLeft(T a)
+		public override FingerTree<T, M> AddLeft(Element<T,M> a)
 		{
 			return _mk.Deep(_mk.One(a), new Empty<Node<T, M>, M>(Measured.Node), _mk.One(_item));
 		}
 
-		public override FingerTree<T, M> AddRight(T a)
+		public override FingerTree<T, M> AddRight(Element<T, M> a)
 		{
 			return _mk.Deep(_mk.One(_item), new Empty<Node<T, M>, M>(Measured.Node), _mk.One(a));
 		}

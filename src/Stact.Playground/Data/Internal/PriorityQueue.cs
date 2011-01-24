@@ -17,6 +17,19 @@ namespace Stact.Data
 	using FingerTree;
 	using Internal;
 
+	public class Split<T, U, M>
+	{
+		public readonly T Item;
+		public readonly U Left;
+		public readonly U Right;
+
+		public Split(U left, T item, U right)
+		{
+			Left = left;
+			Item = item;
+			Right = right;
+		}
+	}
 
 	public class PriorityQueue<T> :
 		FTreeM<CompElement<T>, double>

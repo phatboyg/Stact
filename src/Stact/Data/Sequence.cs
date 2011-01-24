@@ -55,27 +55,22 @@ namespace Stact.Data
 
 		public static Sequence<T> Single(T item)
 		{
-			return new Sequence<T>(_mk.Single(item));
+			return new Sequence<T>(_mk.Single(_measured.Measure(item)));
 		}
 
 		public Sequence<T> PushFront(T item)
 		{
-			return new Sequence<T>(_tree.AddLeft(item));
+			return new Sequence<T>(_tree.AddLeft(_measured.Measure(item)));
 		}
 
 		public Sequence<T> PushBack(T item)
 		{
-			return new Sequence<T>(_tree.AddRight(item));
+			return new Sequence<T>(_tree.AddRight(_measured.Measure(item)));
 		}
 
 		public Sequence<T> Append(Sequence<T> other)
 		{
 			return new Sequence<T>(_tree.Concat(other._tree));
-		}
-
-		public bool Visit(Func<T, bool> callback)
-		{
-			return _tree.Visit(callback);
 		}
 	}
 }

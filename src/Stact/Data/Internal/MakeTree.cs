@@ -26,7 +26,7 @@ namespace Stact.Data.Internal
 			return new Empty<T, M>(_m);
 		}
 
-		public FingerTree<T, M> Single(T item)
+		public FingerTree<T, M> Single(Element<T, M> item)
 		{
 			return new Single<T, M>(_m, item);
 		}
@@ -41,44 +41,43 @@ namespace Stact.Data.Internal
 			return new Deep<T, M>(_m, measure, prefix, middle, suffix);
 		}
 
-		public One<T, M> One(T item)
+		public One<T, M> One(Element<T, M> item)
 		{
 			return new One<T, M>(_m, item);
 		}
 
-		public Two<T, M> Two(T item1, T item2)
+		public Two<T, M> Two(Element<T, M> item1, Element<T, M> item2)
 		{
 			return new Two<T, M>(_m, item1, item2);
 		}
 
-		public Three<T, M> Three(T item1, T item2, T item3)
+		public Three<T, M> Three(Element<T, M> item1, Element<T, M> item2, Element<T, M> item3)
 		{
 			return new Three<T, M>(_m, item1, item2, item3);
 		}
 
-		public Four<T, M> Four(T item1, T item2, T item3, T item4)
+		public Four<T, M> Four(Element<T, M> item1, Element<T, M> item2, Element<T, M> item3, Element<T, M> item4)
 		{
 			return new Four<T, M>(_m, item1, item2, item3, item4);
 		}
 
-		public Node2<T, M> Node2(T v1, T v2)
+		public Node2<T, M> Node2(Element<T, M> v1, Element<T, M> v2)
 		{
 			return new Node2<T, M>(_m, v1, v2);
 		}
 
-		public Node2<T, M> Node2(Node2<T, M> other)
-		{
-			return new Node2<T, M>(_m, other);
-		}
-
-		public Node3<T, M> Node3(T v1, T v2, T v3)
+		public Node3<T, M> Node3(Element<T, M> v1, Element<T, M> v2, Element<T, M> v3)
 		{
 			return new Node3<T, M>(_m, v1, v2, v3);
 		}
+	}
 
-		public Node3<T, M> Node3(Node3<T, M> other)
+
+	public static class ExtensionsToElementBuilders
+	{
+		public static Element<Node<T, M> ,M> ToElement<T,M>(this Node<T,M> node)
 		{
-			return new Node3<T, M>(_m, other);
+			return new Element<Node<T,M>, M>(node.Size, node);
 		}
 	}
 }

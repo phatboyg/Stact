@@ -23,14 +23,14 @@ namespace Stact.Data.Internal
 		{
 		}
 
-		public override FingerTree<T, M> AddLeft(T a)
+		public override FingerTree<T, M> AddLeft(Element<T, M> a)
 		{
 			return new Single<T, M>(Measured, a);
 		}
 
-		public override FingerTree<T, M> AddRight(T a)
+		public override FingerTree<T, M> AddRight(Element<T,M> a)
 		{
-			return AddLeft(a);
+			return new Single<T, M>(Measured, a);
 		}
 
 		public override FingerTree<T, M> Concat(FingerTree<T, M> t)
@@ -86,11 +86,6 @@ namespace Stact.Data.Internal
 		public override U Match<U>(Func<Empty<T, M>, U> empty, Func<Single<T, M>, U> single, Func<Deep<T, M>, U> deep)
 		{
 			return empty(this);
-		}
-
-		public override bool Visit(Func<T, bool> callback)
-		{
-			return true;
 		}
 	}
 }

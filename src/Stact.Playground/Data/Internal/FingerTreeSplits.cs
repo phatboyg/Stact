@@ -11,7 +11,7 @@ namespace FingerTree
 
     public abstract partial class FTreeM<T, M> where T : Measurable<M>
     {
-		public abstract Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc);
+		public abstract Stact.Data.Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc);
 
         public abstract Pair<FTreeM<T, M>, FTreeM<T, M>> SeqSplit(MPredicate<M> predicate);
 
@@ -35,7 +35,7 @@ namespace FingerTree
         {
             // Assumption: predicate is false on the left end
             //             and true on the right end of the container
-            public Split<U, Digit<U, V>, V> Split(MPredicate<V> predicate, V acc)
+			public Stact.Data.Split<U, Digit<U, V>, V> Split(MPredicate<V> predicate, V acc)
             {
                 int cnt = digNodes.Count;
 
@@ -44,7 +44,7 @@ namespace FingerTree
                 //else
                 U headItem = digNodes[0];
                 if(cnt == 1)
-					return new Split<U, Digit<U, V>, V>
+					return new Stact.Data.Split<U, Digit<U, V>, V>
                                   (new Digit<U, V>(theMonoid, new List<U>()),
                                    headItem,
                                    new Digit<U, V>(theMonoid, new List<U>())
@@ -55,13 +55,13 @@ namespace FingerTree
 
                 V acc1 = theMonoid.Operation(acc, headItem.Measure());
                 if (predicate(acc1))
-                    return new Split<U, Digit<U, V>, V>
+					return new Stact.Data.Split<U, Digit<U, V>, V>
                                   (new Digit<U, V>(theMonoid, new List<U>()),
                                    headItem,
                                    digitTail
                                   );
                 //else
-                Split<U, Digit<U,V>,V> tailSplit = digitTail.Split(predicate, acc1);
+				Stact.Data.Split<U, Digit<U, V>, V> tailSplit = digitTail.Split(predicate, acc1);
 
                 tailSplit.Left.digNodes.Insert(0, headItem);
 
@@ -72,7 +72,7 @@ namespace FingerTree
 
     public partial class EmptyFTreeM<T, M> : FTreeM<T, M> where T : Measurable<M>
     {
-		public override Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
+		public override Stact.Data.Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
         {
             throw new Exception("Error: Split attempted on an EmptyFTreeM !");
         }
@@ -88,9 +88,9 @@ namespace FingerTree
 
     public partial class SingleFTreeM<T, M> : FTreeM<T, M> where T : Measurable<M>
     {
-        public override Split<T,FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
+		public override Stact.Data.Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
         {
-            return new Split<T,FTreeM<T,M>,M>
+			return new Stact.Data.Split<T, FTreeM<T, M>, M>
                          (new EmptyFTreeM<T, M>(theMonoid),
                           theSingle,
                           new EmptyFTreeM<T, M>(theMonoid)
@@ -119,16 +119,16 @@ namespace FingerTree
 
     public partial class DeepFTreeM<T, M> : FTreeM<T, M> where T : Measurable<M>
     {
-        public override Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
+		public override Stact.Data.Split<T, FTreeM<T, M>, M> Split(MPredicate<M> predicate, M acc)
         {
             M vPr = theMonoid.Operation(acc, frontDig.Measure());
 
             if(predicate(vPr))
             {
-				Split<T, Digit<T, M>, M> 
+				Stact.Data.Split<T, Digit<T, M>, M> 
                     frontSplit = frontDig.Split(predicate, acc);
 
-				return new Split<T, FTreeM<T, M>, M>
+				return new Stact.Data.Split<T, FTreeM<T, M>, M>
                             (FTreeM<T, M>.FromSequence(frontSplit.Left.digNodes, theMonoid),
                              frontSplit.Item,
                              FTreeM<T, M>.Create(frontSplit.Right.digNodes, innerFT, backDig)
@@ -158,15 +158,15 @@ namespace FingerTree
                 FTreeM<T, M> finalRightTree =
                     FTreeM<T, M>.Create(splitMidLeft.Right.digNodes, midSplit.Right, backDig);
 
-                return new Split<T, FTreeM<T, M>, M>
+				return new Stact.Data.Split<T, FTreeM<T, M>, M>
                              (finalLeftTree, finalsplitItem, finalRightTree);
 
             }
             //else
-            Split<T, Digit<T, M>, M>
+			Stact.Data.Split<T, Digit<T, M>, M>
                 backSplit = backDig.Split(predicate, vM);
 
-            return new Split<T, FTreeM<T, M>, M>
+			return new Stact.Data.Split<T, FTreeM<T, M>, M>
                         (FTreeM<T, M>.CreateR(frontDig,  innerFT, backSplit.Left.digNodes),
                          backSplit.Item,
                          FTreeM<T, M>.FromSequence(backSplit.Right.digNodes, theMonoid)
@@ -181,7 +181,7 @@ namespace FingerTree
                           new EmptyFTreeM<T, M>(theMonoid)
                           );
             //else
-            Split<T, FTreeM<T, M>, M> theSplit = Split(predicate, theMonoid.Zero);
+			Stact.Data.Split<T, FTreeM<T, M>, M> theSplit = Split(predicate, theMonoid.Zero);
 
             return new Pair<FTreeM<T, M>, FTreeM<T, M>>
                     (theSplit.Left, theSplit.Right.PushFront(theSplit.Item)

@@ -89,13 +89,13 @@
 			return treeRep.Merge(rightFT);
 		}
 
-		public override Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint>
+		public override Stact.Data.Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint>
 			Split(MPredicate<uint> predicate, uint acc)
 		{
-			Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint> internSplit
+			Stact.Data.Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint> internSplit
 				= treeRep.Split(predicate, acc);
 
-			internSplit = new Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint>(         new Seq<T>(internSplit.Left), internSplit.Item, new Seq<T>(internSplit.Right));
+			internSplit = new Stact.Data.Split<SizedElement<T>, FTreeM<SizedElement<T>, uint>, uint>(new Seq<T>(internSplit.Left), internSplit.Item, new Seq<T>(internSplit.Right));
 
 			return internSplit;
 		}

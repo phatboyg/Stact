@@ -17,6 +17,7 @@ namespace Stact.Specs.Data
 	using System.Diagnostics;
 	using System.Linq;
 	using Magnum.TestFramework;
+	using NUnit.Framework;
 	using Stact.Data;
 
 
@@ -79,7 +80,7 @@ namespace Stact.Specs.Data
 			InsertAndCompare(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 55, 45, 35, 25, 15, 5, 7, 8, 9, 110, 75);
 		}
 
-		[Then]
+		[Then, Explicit]
 		public void Should_handle_a_large_number_of_random_values()
 		{
 			var random = new Random();
@@ -92,7 +93,7 @@ namespace Stact.Specs.Data
 			Trace.WriteLine("Elapsed Time: " + _timer.ElapsedMilliseconds + "ms");
 		}			
 
-		[Then]
+		[Then, Explicit]
 		public void Should_compare_to_a_hash_set_of_values()
 		{
 			var random = new Random();
