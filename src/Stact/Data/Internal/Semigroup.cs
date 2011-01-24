@@ -24,6 +24,7 @@ namespace Stact.Data.Internal
 		public static Semigroup<decimal> DecimalMax = new Semigroup<decimal>(Ordering.DecimalOrder.Max);
 		public static Semigroup<decimal> DecimalMin = new Semigroup<decimal>(Ordering.DecimalOrder.Min);
 		public static Semigroup<decimal> DecimalMultiply = new Semigroup<decimal>(x => y => x*y);
+		public static Semigroup<int> IntNext = new Semigroup<int>(Ordering.IntOrder.Next);
 		public static Semigroup<int> IntAdd = new Semigroup<int>(x => y => x + y);
 		public static Semigroup<int> IntMax = new Semigroup<int>(Ordering.IntOrder.Max);
 		public static Semigroup<int> IntMin = new Semigroup<int>(Ordering.IntOrder.Min);

@@ -14,6 +14,7 @@ namespace Stact.Data.Internal
 {
 	using System;
 
+
 	public abstract class FingerTree<T, M>
 	{
 		public readonly Measured<T, M> Measured;

@@ -164,6 +164,7 @@
     <Compile Include="Data\Internal\Deep.cs" />
     <Compile Include="Data\Internal\Digit.cs" />
     <Compile Include="Data\Internal\Empty.cs" />
+    <Compile Include="Data\Internal\ExtensionsForFingerTree.cs" />
     <Compile Include="Data\Internal\FingerTree.cs" />
     <Compile Include="Data\Internal\Four.cs" />
     <Compile Include="Data\Internal\LeftView.cs" />

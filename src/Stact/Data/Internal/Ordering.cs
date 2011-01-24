@@ -26,6 +26,11 @@ namespace Stact.Data.Internal
 	public class Ordering<T>
 		where T : IComparable<T>
 	{
+		public T Next(T left, T right)
+		{
+			return (right.CompareTo(default(T)) == 0) ? left : right;
+		}
+
 		public T Max(T left, T right)
 		{
 			return IsGreaterThan(left, right) ? left : right;

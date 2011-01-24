@@ -23,7 +23,8 @@ namespace Stact.Data
 		public static Monoid<bool> BooleanXor = new Monoid<bool>(Semigroup.BooleanXor, false);
 		public static Monoid<decimal> DecimalAdd = new Monoid<decimal>(Semigroup.DecimalAdd, 0.0m);
 		public static Monoid<decimal> DecimalMultiply = new Monoid<decimal>(Semigroup.DecimalMultiply, 1.0m);
-		public static Monoid<int> IntAdd = new Monoid<int>(Semigroup.IntAdd, 0);
+		public static readonly Monoid<int> IntAdd = new Monoid<int>(Semigroup.IntAdd, 0);
+		public static readonly Monoid<int> IntNext = new Monoid<int>(Semigroup.IntNext, 0);
 		public static Monoid<int> IntMultiply = new Monoid<int>(Semigroup.IntMultiply, 1);
 		public static Monoid<long> LongAdd = new Monoid<long>(Semigroup.LongAdd, 0);
 		public static Monoid<long> LongMultiply = new Monoid<long>(Semigroup.LongMultiply, 1);

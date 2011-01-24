@@ -28,11 +28,6 @@ namespace Stact.Data.Internal
 			_mk = new MakeTree<T, M>(m);
 		}
 
-		public M Measure()
-		{
-			return FoldLeft(x => t => _m.Append(x, _m.Measure(t)), _m.Identity);
-		}
-
 		public abstract bool Visit(Func<T, bool> callback);
 		public abstract U FoldRight<U>(Func<T, Func<U, U>> f, U z);
 		public abstract U FoldLeft<U>(Func<U, Func<T, U>> f, U z);
@@ -58,39 +53,39 @@ namespace Stact.Data.Internal
 
 		public Split<T, Digit<T, M>, M> Split(MeasurePredicate<M> predicate, M acc)
 		{
-			return Match(one => new Split<T, Digit<T, M>, M>(null, one.V, null),
-			             two =>
+			return Match(x1 => new Split<T, Digit<T, M>, M>(null, x1.V, null),
+			             x2 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(two.V1));
+			             		M value = _m.Append(acc, _m.Measure(x2.V1));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(null, two.V1, _mk.One(two.V2));
+			             			return new Split<T, Digit<T, M>, M>(null, x2.V1, _mk.One(x2.V2));
 
-			             		return new Split<T, Digit<T, M>, M>(_mk.One(two.V1), two.V2, null);
+			             		return new Split<T, Digit<T, M>, M>(_mk.One(x2.V1), x2.V2, null);
 			             	},
-			             three =>
+			             x3 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(three.V1));
+			             		M value = _m.Append(acc, _m.Measure(x3.V1));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(null, three.V1, _mk.Two(three.V2, three.V3));
-			             		value = _m.Append(value, _m.Measure(three.V2));
+			             			return new Split<T, Digit<T, M>, M>(null, x3.V1, _mk.Two(x3.V2, x3.V3));
+			             		value = _m.Append(value, _m.Measure(x3.V2));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(_mk.One(three.V1), three.V2, _mk.One(three.V3));
+			             			return new Split<T, Digit<T, M>, M>(_mk.One(x3.V1), x3.V2, _mk.One(x3.V3));
 
-			             		throw new InvalidOperationException("Should not have split prefix if not in the middle");
+			             		return new Split<T, Digit<T, M>, M>(_mk.Two(x3.V1, x3.V2), x3.V3, null);
 			             	},
-			             four =>
+			             x4 =>
 			             	{
-			             		M value = _m.Append(acc, _m.Measure(four.V1));
+			             		M value = _m.Append(acc, _m.Measure(x4.V1));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(null, four.V1, _mk.Three(four.V2, four.V3, four.V4));
-			             		value = _m.Append(value, _m.Measure(four.V2));
+			             			return new Split<T, Digit<T, M>, M>(null, x4.V1, _mk.Three(x4.V2, x4.V3, x4.V4));
+			             		value = _m.Append(value, _m.Measure(x4.V2));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(_mk.One(four.V1), four.V2, _mk.Two(four.V3, four.V4));
-			             		value = _m.Append(value, _m.Measure(four.V3));
+			             			return new Split<T, Digit<T, M>, M>(_mk.One(x4.V1), x4.V2, _mk.Two(x4.V3, x4.V4));
+			             		value = _m.Append(value, _m.Measure(x4.V3));
 			             		if (predicate(value))
-			             			return new Split<T, Digit<T, M>, M>(_mk.Two(four.V1, four.V2), four.V3, _mk.One(four.V4));
+			             			return new Split<T, Digit<T, M>, M>(_mk.Two(x4.V1, x4.V2), x4.V3, _mk.One(x4.V4));
 
-			             		throw new InvalidOperationException("Should not have split prefix if not in the middle");
+			             		return new Split<T, Digit<T, M>, M>(_mk.Three(x4.V1, x4.V2, x4.V3), x4.V4, null);
 			             	});
 		}
 

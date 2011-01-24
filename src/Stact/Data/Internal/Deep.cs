@@ -14,6 +14,7 @@ namespace Stact.Data.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 
 	public class Deep<T, M> :
@@ -139,7 +140,7 @@ namespace Stact.Data.Internal
 		public override FingerTree<T, M> AddRight(T a)
 		{
 			Measured<T, M> m = Measured;
-			M measure = m.Append(m.Measure(a), Size);
+			M measure = m.Append(Size, m.Measure(a));
 
 			return _suffix.Match(x1 => new Deep<T, M>(m, measure, _prefix, _middle, _mk.Two(x1.V, a)),
 			                     x2 => new Deep<T, M>(m, measure, _prefix, _middle, _mk.Three(x2.V1, x2.V2, a)),
@@ -169,31 +170,13 @@ namespace Stact.Data.Internal
 
 		public override Split<T, FingerTree<T, M>, M> Split(MeasurePredicate<M> predicate, M acc)
 		{
-			var mk = new MakeTree<Node<T, M>, M>(Measured.Node);
-
 			M prefixSize = Measured.Append(acc, _prefix.Size);
 			if (predicate(prefixSize))
 			{
 				Split<T, Digit<T, M>, M> split = _prefix.Split(predicate, acc);
 
 				FingerTree<T, M> leftTree = split.Left == null ? _mk.Empty() : split.Left.ToTree();
-				FingerTree<T, M> rightTree;
-				if (split.Right != null)
-					rightTree = _mk.Deep(split.Right, _middle, _suffix);
-				else
-				{
-					rightTree = _middle.Match(e => _suffix.ToTree(),
-					                          s => _mk.Deep(s.Item.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
-					                                                                  x3 => _mk.Three(x3.V1, x3.V2, x3.V3)),
-					                                        mk.Empty(), _suffix),
-					                          d =>
-					                          	{
-					                          		var leftView = _middle.Left;
-					                          		return _mk.Deep(leftView.Head.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
-					                          		                                                 x3 => _mk.Three(x3.V1, x3.V2, x3.V3)),
-					                          		                leftView.Tail, _suffix);
-					                          	});
-				}
+				FingerTree<T, M> rightTree = GetRightTree(split.Right, _middle, _suffix);
 
 				return new Split<T, FingerTree<T, M>, M>(leftTree, split.Item, rightTree);
 			}
@@ -207,31 +190,57 @@ namespace Stact.Data.Internal
 					.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2), x3 => _mk.Three(x3.V1, x3.V2, x3.V3))
 					.Split(predicate, Measured.Append(prefixSize, split.Left.Size));
 
-				FingerTree<T, M> leftTree = _mk.Deep(_prefix, split.Left, splitMidLeft.Left);
-				FingerTree<T, M> rightTree = _mk.Deep(splitMidLeft.Right, split.Right, _suffix);
+				FingerTree<T, M> leftTree = GetLeftTree(_prefix, split.Left, splitMidLeft.Left);
+				FingerTree<T, M> rightTree = GetRightTree(splitMidLeft.Right, split.Right, _suffix);
 
 				return new Split<T, FingerTree<T, M>, M>(leftTree, splitMidLeft.Item, rightTree);
 			}
 
 			Split<T, Digit<T, M>, M> splitSuffix = _suffix.Split(predicate, middleSize);
 			FingerTree<T, M> right = splitSuffix.Right == null ? _mk.Empty() : splitSuffix.Right.ToTree();
-			FingerTree<T, M> left;
-			if (splitSuffix.Left != null)
-				left = _mk.Deep(_prefix, _middle, splitSuffix.Left);
-			else
-			{
-				left = _middle.Match(e => _prefix.ToTree(),
-										  s => _mk.Deep(_prefix, mk.Empty(), s.Item.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
-																				  x3 => _mk.Three(x3.V1, x3.V2, x3.V3))),
-										  d =>
-										  {
-											  var rightView = _middle.Right;
-											  return _mk.Deep(_prefix, rightView.Tail, rightView.Head.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
-																							   x3 => _mk.Three(x3.V1, x3.V2, x3.V3)));
-										  });
-			}
+			FingerTree<T, M> left = GetLeftTree(_prefix, _middle, splitSuffix.Left);
 
 			return new Split<T, FingerTree<T, M>, M>(left,splitSuffix.Item,right);
+		}
+
+		FingerTree<T, M> GetLeftTree(Digit<T,M> prefix, FingerTree<Node<T,M>, M> middle, Digit<T, M> suffix)
+		{
+			if (suffix != null)
+				return _mk.Deep(prefix, middle, suffix);
+
+			var mk = new MakeTree<Node<T, M>, M>(Measured.Node);
+
+			return middle.Match(e => prefix.ToTree(),
+			                     s => _mk.Deep(prefix, mk.Empty(),
+			                                   s.Item.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
+			                                                             x3 => _mk.Three(x3.V1, x3.V2, x3.V3))),
+			                     d =>
+			                     	{
+			                     		var rightView = middle.Right;
+			                     		return _mk.Deep(prefix, rightView.Tail,
+			                     		                rightView.Head.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
+			                     		                                                  x3 => _mk.Three(x3.V1, x3.V2, x3.V3)));
+			                     	});
+		}
+
+		FingerTree<T, M> GetRightTree(Digit<T, M> prefix, FingerTree<Node<T, M>, M> middle, Digit<T, M> suffix)
+		{
+			if (prefix != null)
+				return _mk.Deep(prefix, middle, suffix);
+
+			var mk = new MakeTree<Node<T, M>, M>(Measured.Node);
+
+			return middle.Match(e => suffix.ToTree(),
+			                     s => _mk.Deep(s.Item.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
+			                                                             x3 => _mk.Three(x3.V1, x3.V2, x3.V3)),
+			                                   mk.Empty(), suffix),
+			                     d =>
+			                     	{
+			                     		var leftView = middle.Left;
+			                     		return _mk.Deep(leftView.Head.Match<Digit<T, M>>(x2 => _mk.Two(x2.V1, x2.V2),
+			                     		                                                 x3 => _mk.Three(x3.V1, x3.V2, x3.V3)),
+			                     		                leftView.Tail, suffix);
+			                     	});
 		}
 
 		static FingerTree<Node<T, M>, M> AddDigits0<T, M>(Measured<T, M> m, FingerTree<Node<T, M>, M> m1,
@@ -269,8 +278,8 @@ namespace Stact.Data.Internal
 		{
 			return t1.Match(e => t2.AddLeft(n1),
 			                s => t2.AddLeft(n1).AddLeft(s.Item),
-			                d => t2.Match(e2 => t1.AddRight(n1),
-			                              s2 => t1.AddRight(n1).AddRight(s2.Item),
+			                d => t2.Match(e2 => d.AddRight(n1),
+			                              s2 => d.AddRight(n1).AddRight(s2.Item),
 			                              d2 =>
 			                              new Deep<Node<T, M>, M>(m.Node, m.Append(m.Append(d.Size, m.Node.Measure(n1)), d2.Size),
 			                                                      d._prefix,
@@ -285,8 +294,8 @@ namespace Stact.Data.Internal
 		{
 			return t1.Match(e => t2.AddLeft(n2).AddLeft(n1),
 			                s => t2.AddLeft(n2).AddLeft(n1).AddLeft(s.Item),
-			                d => t2.Match(e2 => t2.AddRight(n1).AddRight(n2),
-			                              s2 => t2.AddRight(n1).AddRight(n2).AddRight(s2.Item),
+			                d => t2.Match(e2 => d.AddRight(n1).AddRight(n2),
+			                              s2 => d.AddRight(n1).AddRight(n2).AddRight(s2.Item),
 			                              d2 => new Deep<Node<T, M>, M>(m.Node,
 			                                                            m.Append(
 			                                                                     m.Append(m.Append(d.Size, n1.Measure),
@@ -304,8 +313,8 @@ namespace Stact.Data.Internal
 		{
 			return t1.Match(e => t2.AddLeft(n3).AddLeft(n2).AddLeft(n1),
 			                s => t2.AddLeft(n3).AddLeft(n2).AddLeft(n1).AddLeft(s.Item),
-			                d => t2.Match(e2 => t2.AddRight(n1).AddRight(n2).AddRight(n3),
-			                              s2 => t2.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(s2.Item),
+			                d => t2.Match(e2 => d.AddRight(n1).AddRight(n2).AddRight(n3),
+			                              s2 => d.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(s2.Item),
 			                              d2 => new Deep<Node<T, M>, M>(m.Node,
 			                                                            m.Append(
 			                                                                     m.Append(
@@ -325,8 +334,8 @@ namespace Stact.Data.Internal
 		{
 			return t1.Match(e => t2.AddLeft(n4).AddLeft(n3).AddLeft(n2).AddLeft(n1),
 			                s => t2.AddLeft(n4).AddLeft(n3).AddLeft(n2).AddLeft(n1).AddLeft(s.Item),
-			                d => t2.Match(e2 => t2.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(n4),
-			                              s2 => t2.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(n4).AddRight(s2.Item),
+			                d => t2.Match(e2 => d.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(n4),
+			                              s2 => d.AddRight(n1).AddRight(n2).AddRight(n3).AddRight(n4).AddRight(s2.Item),
 			                              d2 =>
 			                              new Deep<Node<T, M>, M>(m.Node,
 			                                                      m.Append(

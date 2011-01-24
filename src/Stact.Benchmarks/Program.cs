@@ -31,8 +31,10 @@ namespace Stact.Benchmarks
 				//new PingPongBenchmark().Run();
 				//new PingPongBenchmark().Run();
 
-				new SimpleRoutingEngineBenchmark().Run();
+				//new SimpleRoutingEngineBenchmark().Run();
 				//new RoutingEngineBenchmark().Run();
+
+				new SlowAssFingerTreeBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

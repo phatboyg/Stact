@@ -33,7 +33,7 @@ namespace Stact.Data.Internal
 
 		public FingerTree<T, M> Deep(Digit<T, M> prefix, FingerTree<Node<T, M>, M> middle, Digit<T, M> suffix)
 		{
-			return Deep(_m.Append(prefix.Measure(), _m.Append(middle.Size, suffix.Measure())), prefix, middle, suffix);
+			return Deep(_m.Append(prefix.Size, _m.Append(middle.Size, suffix.Size)), prefix, middle, suffix);
 		}
 
 		public FingerTree<T, M> Deep(M measure, Digit<T, M> prefix, FingerTree<Node<T, M>, M> middle, Digit<T, M> suffix)
