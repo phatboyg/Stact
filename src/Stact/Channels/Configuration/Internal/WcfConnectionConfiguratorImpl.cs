@@ -48,6 +48,7 @@ namespace Stact.Configuration.Internal
 			var proxy = new WcfChannelProxy(fiber, _endpointUri, _pipeName);
 
 			builder.AddChannel(proxy);
+			builder.AddDisposable(proxy);
 		}
 	}
 }

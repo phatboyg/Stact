@@ -70,6 +70,30 @@
     <Compile Include="Data\Internal\PriorityQueue.cs" />
     <Compile Include="Data\Internal\RandAccessSequence.cs" />
     <Compile Include="Data\PriorityQueue_Benchmark.cs" />
+    <Compile Include="Functional\Data\Internal\Deep.cs" />
+    <Compile Include="Functional\Data\Internal\Digit.cs" />
+    <Compile Include="Functional\Data\Internal\Empty.cs" />
+    <Compile Include="Functional\Data\Internal\FingerTree.cs" />
+    <Compile Include="Functional\Data\Internal\Four.cs" />
+    <Compile Include="Functional\Data\Internal\LeftView.cs" />
+    <Compile Include="Functional\Data\Internal\MakeTree.cs" />
+    <Compile Include="Functional\Data\Internal\MeasurePredicate.cs" />
+    <Compile Include="Functional\Data\Internal\Node.cs" />
+    <Compile Include="Functional\Data\Internal\Node2.cs" />
+    <Compile Include="Functional\Data\Internal\Node3.cs" />
+    <Compile Include="Functional\Data\Internal\One.cs" />
+    <Compile Include="Functional\Data\Internal\Ordering.cs" />
+    <Compile Include="Functional\Data\Internal\Pair.cs" />
+    <Compile Include="Functional\Data\Internal\RightView.cs" />
+    <Compile Include="Functional\Data\Internal\Semigroup.cs" />
+    <Compile Include="Functional\Data\Internal\Single.cs" />
+    <Compile Include="Functional\Data\Internal\Split.cs" />
+    <Compile Include="Functional\Data\Internal\Three.cs" />
+    <Compile Include="Functional\Data\Internal\Two.cs" />
+    <Compile Include="Functional\Data\Measured.cs" />
+    <Compile Include="Functional\Data\Monoid.cs" />
+    <Compile Include="Functional\Data\OrderedSequence.cs" />
+    <Compile Include="Functional\Data\Sequence.cs" />
     <Compile Include="Functional\Data_Test.cs" />
     <Compile Include="Functional\Either.cs" />
     <Compile Include="Functional\EitherExtensions.cs" />
@@ -107,7 +131,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Functional\Data\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

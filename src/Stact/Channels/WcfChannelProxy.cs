@@ -20,7 +20,8 @@ namespace Stact
 
 
 	public class WcfChannelProxy :
-		UntypedChannel
+		UntypedChannel,
+		IDisposable
 	{
 		readonly EndpointAddress _address;
 		readonly Fiber _fiber;
@@ -56,6 +57,18 @@ namespace Stact
 
 					_proxy.Send(envelope);
 				});
+		}
+
+		public void Dispose()
+		{
+			IDisposable disposable = _proxy as IDisposable;
+			if (disposable == null)
+				return;
+
+			using(disposable)
+			{
+				
+			}
 		}
 	}
 

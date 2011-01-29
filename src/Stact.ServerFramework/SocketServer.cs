@@ -18,12 +18,11 @@ namespace Stact.ServerFramework
 	using System.Net.Sockets;
 	using Magnum;
 	using Magnum.Extensions;
-	using Stact.Internal;
 
 
 	/// <summary>
-	/// SocketServer listens on the specified address and dispatches connections
-	/// as they arrive to separate connection objects with their own fibers
+	///   SocketServer listens on the specified address and dispatches connections
+	///   as they arrive to separate connection objects with their own fibers
 	/// </summary>
 	public class SocketServer :
 		StreamServer<SocketServer>

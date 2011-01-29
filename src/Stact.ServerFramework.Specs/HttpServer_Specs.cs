@@ -22,7 +22,6 @@ namespace Stact.ServerFramework.Specs
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using Stact.Internal;
 
 
 	[Scenario]

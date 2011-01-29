@@ -14,8 +14,7 @@ namespace Stact.Specs.Data
 {
 	using System.Linq;
 	using Magnum.TestFramework;
-	using Stact.Data;
-
+	/*
 
 	[Scenario]
 	public class Creating_an_ordered_sequence_from_unordered_values
@@ -61,5 +60,5 @@ namespace Stact.Specs.Data
 				values[i].ShouldEqual(expected[i]);
 			}
 		}
-	}
+	}*/
 }
