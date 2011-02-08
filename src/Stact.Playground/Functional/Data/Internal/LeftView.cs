@@ -10,22 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Data.Internal
+namespace Stact.Functional.Data.Internal
 {
-	public struct Element<T, M>
+	public class LeftView<T, M>
 	{
-		public readonly T Value;
-		public readonly M Size;
+		public readonly Element<T, M> Head;
+		public readonly FingerTree<T, M> Tail;
 
-		public Element(M size, T value)
+		public LeftView(Element<T, M> head, FingerTree<T, M> tail)
 		{
-			Value = value;
-			Size = size;
+			Head = head;
+			Tail = tail;
 		}
-
-//		public static implicit operator T(Element<T, M> element)
-//		{
-//			return element.Value;
-//		}
 	}
 }

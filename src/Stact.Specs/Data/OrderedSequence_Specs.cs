@@ -18,7 +18,7 @@ namespace Stact.Specs.Data
 	using System.Linq;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using Stact.Data;
+	/*
 
 
 	[Scenario]
@@ -141,4 +141,5 @@ namespace Stact.Specs.Data
 			}
 		}
 	}
+	 */
 }

@@ -10,26 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Data.Internal
+namespace Stact.Functional.Data.Internal
 {
-	public static class Pair
+	public class RightView<T, M>
 	{
-		public static Pair<T1, T2> New<T1, T2>(T1 first, T2 second)
+		public readonly Element<T, M> Head;
+		public readonly FingerTree<T, M> Tail;
+
+		public RightView(Element<T, M> head, FingerTree<T, M> tail)
 		{
-			return new Pair<T1, T2>(first, second);
-		}
-	}
-
-
-	public class Pair<T1, T2>
-	{
-		public readonly T1 First;
-		public readonly T2 Second;
-
-		public Pair(T1 first, T2 second)
-		{
-			First = first;
-			Second = second;
+			Head = head;
+			Tail = tail;
 		}
 	}
 }

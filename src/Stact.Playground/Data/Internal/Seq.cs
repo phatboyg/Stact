@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
+	using Stact;
 	using Stact.Data.Internal;
 
 

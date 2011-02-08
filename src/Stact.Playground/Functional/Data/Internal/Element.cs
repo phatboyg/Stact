@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,17 +10,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Data.Internal
+namespace Stact.Functional.Data.Internal
 {
-	public class RightView<T, M>
+	public struct Element<T, M>
 	{
-		public readonly Element<T, M> Head;
-		public readonly FingerTree<T, M> Tail;
+		public readonly T Value;
+		public readonly M Size;
 
-		public RightView(Element<T, M> head, FingerTree<T, M> tail)
+		public Element(M size, T value)
 		{
-			Head = head;
-			Tail = tail;
+			Value = value;
+			Size = size;
 		}
+
+//		public static implicit operator T(Element<T, M> element)
+//		{
+//			return element.Value;
+//		}
 	}
 }

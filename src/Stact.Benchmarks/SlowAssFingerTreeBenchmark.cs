@@ -16,6 +16,7 @@ namespace Stact.Benchmarks
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
+	/*
 	using Data;
 	using Data.Internal;
 
@@ -80,4 +81,5 @@ namespace Stact.Benchmarks
 				Console.WriteLine("Insert Into Ordered Finger Tree Sequence Elapsed Time (" + count + "): " + _timer.ElapsedMilliseconds + "ms");
 		}
 	}
+	 */
 }

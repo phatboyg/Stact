@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace FingerTree
 {
+	using Stact;
 	using Stact.Data.Internal;
 
     public delegate bool MPredicate<V> (V v); 

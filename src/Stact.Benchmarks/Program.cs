@@ -33,8 +33,6 @@ namespace Stact.Benchmarks
 
 				//new SimpleRoutingEngineBenchmark().Run();
 				//new RoutingEngineBenchmark().Run();
-
-				new SlowAssFingerTreeBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

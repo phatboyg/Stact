@@ -10,18 +10,18 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Data.Internal
+namespace Stact.Functional.Data.Internal
 {
 	using System;
 
 
-	public class Two<T, M> :
-		Digit<T, M>
+	public class Node2<T, M> :
+		Node<T, M>
 	{
 		readonly Element<T, M> _v1;
 		readonly Element<T, M> _v2;
 
-		public Two(Measured<T, M> m, Element<T, M> v1, Element<T, M> v2)
+		public Node2(Measured<T, M> m, Element<T, M> v1, Element<T, M> v2)
 			: base(m, m.Append(v1.Size, v2.Size))
 		{
 			_v1 = v1;
@@ -45,23 +45,17 @@ namespace Stact.Data.Internal
 
 		public override U FoldLeft<U>(Func<U, Func<T, U>> f, U z)
 		{
-			return f(f(z)(_v2.Value))(_v1.Value);
+			return f(f(z)(_v1.Value))(_v2.Value);
 		}
 
-		public override Element<T, M> Left
+		public override Digit<T, M> ToDigit()
 		{
-			get { return _v1; }
+			return new Two<T, M>(Measured, _v1, _v2);
 		}
 
-		public override Element<T, M> Right
+		public override U Match<U>(Func<Node2<T, M>, U> node2, Func<Node3<T, M>, U> node3)
 		{
-			get { return _v2; }
-		}
-
-		public override U Match<U>(Func<One<T, M>, U> one, Func<Two<T, M>, U> two, Func<Three<T, M>, U> three,
-		                           Func<Four<T, M>, U> four)
-		{
-			return two(this);
+			return node2(this);
 		}
 	}
 }

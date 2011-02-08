@@ -10,21 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Data.Internal
+namespace Stact
 {
-	public static class ExtensionsForFingerTree
+	public static class Pair
 	{
-		public static int Count<T, M>(this FingerTree<T, M> tree)
+		public static Pair<T1, T2> New<T1, T2>(T1 first, T2 second)
 		{
-			int count = 0;
-			LeftView<T, M> view = tree.Left;
-			while (view != null)
-			{
-				count++;
-				view = view.Tail.Left;
-			}
+			return new Pair<T1, T2>(first, second);
+		}
+	}
 
-			return count;
+
+	public class Pair<T1, T2>
+	{
+		public readonly T1 First;
+		public readonly T2 Second;
+
+		public Pair(T1 first, T2 second)
+		{
+			First = first;
+			Second = second;
 		}
 	}
 }
