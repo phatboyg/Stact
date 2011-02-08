@@ -14,9 +14,9 @@ namespace Stact
 {
 	using System;
 	using System.ServiceModel;
-	
 	using Internal;
 	using Magnum.Serialization;
+
 
 	/// <summary>
 	/// Receives messages from a named pipe via WCF and forwards them to the specific channel. Messages
@@ -26,11 +26,11 @@ namespace Stact
 	public class WcfChannelHost :
 		IDisposable
 	{
-		private WcfChannelService<WcfMessageEnvelope> _service;
-		private readonly Uri _serviceUri;
+		readonly Uri _serviceUri;
 
-		private bool _disposed;
-		private ServiceHost _serviceHost;
+		bool _disposed;
+		WcfChannelService<WcfMessageEnvelope> _service;
+		ServiceHost _serviceHost;
 
 		public WcfChannelHost(Fiber fiber, UntypedChannel output, Uri serviceUri, string pipeName)
 		{
@@ -40,10 +40,11 @@ namespace Stact
 
 			_service = new WcfChannelService<WcfMessageEnvelope>(channel);
 
-			_serviceHost = new ServiceHost(_service, _serviceUri);
+			_serviceHost = new ConfigurationFreeServiceHost(_service, _serviceUri);
 			_serviceHost.AddServiceEndpoint(typeof(WcfChannel<WcfMessageEnvelope>), new NetNamedPipeBinding(), pipeName);
 			_serviceHost.Open();
 		}
+
 
 		public void Dispose()
 		{
@@ -67,13 +68,12 @@ namespace Stact
 			Dispose(false);
 		}
 
-		private void Dispose(bool disposing)
+		void Dispose(bool disposing)
 		{
-			if (_disposed) return;
+			if (_disposed)
+				return;
 			if (disposing)
-			{
 				Stop();
-			}
 
 			_disposed = true;
 		}
@@ -89,11 +89,11 @@ namespace Stact
 	public class WcfChannelHost<T> :
 		IDisposable
 	{
-		private readonly WcfChannelService<T> _service;
-		private readonly Uri _serviceUri;
+		readonly WcfChannelService<T> _service;
+		readonly Uri _serviceUri;
 
-		private bool _disposed;
-		private ServiceHost _serviceHost;
+		bool _disposed;
+		ServiceHost _serviceHost;
 
 		public WcfChannelHost(Channel<T> output, Uri serviceUri, string pipeName)
 		{
@@ -101,8 +101,8 @@ namespace Stact
 
 			_service = new WcfChannelService<T>(output);
 
-			_serviceHost = new ServiceHost(_service, _serviceUri);
-			_serviceHost.AddServiceEndpoint(typeof (WcfChannel<T>), new NetNamedPipeBinding(), pipeName);
+			_serviceHost = new ConfigurationFreeServiceHost(_service, _serviceUri);
+			_serviceHost.AddServiceEndpoint(typeof(WcfChannel<T>), new NetNamedPipeBinding(), pipeName);
 			_serviceHost.Open();
 		}
 
@@ -126,13 +126,12 @@ namespace Stact
 			Dispose(false);
 		}
 
-		private void Dispose(bool disposing)
+		void Dispose(bool disposing)
 		{
-			if (_disposed) return;
+			if (_disposed)
+				return;
 			if (disposing)
-			{
 				Stop();
-			}
 
 			_disposed = true;
 		}

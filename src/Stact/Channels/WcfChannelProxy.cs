@@ -23,7 +23,6 @@ namespace Stact
 		UntypedChannel,
 		IDisposable
 	{
-		readonly EndpointAddress _address;
 		readonly Fiber _fiber;
 		readonly WcfChannel<WcfMessageEnvelope> _proxy;
 
@@ -34,9 +33,9 @@ namespace Stact
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
-			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<WcfMessageEnvelope>>.CreateChannel(new NetNamedPipeBinding(),
-			                                                                                          _address);
+			var channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<WcfMessageEnvelope>>(serviceUri, pipeName);
+
+			_proxy = channelFactory.CreateChannel();
 		}
 
 		public Serializer Serializer { get; private set; }
@@ -76,7 +75,6 @@ namespace Stact
 	public class WcfChannelProxy<T> :
 		Channel<T>
 	{
-		readonly EndpointAddress _address;
 		readonly Fiber _fiber;
 		readonly WcfChannel<T> _proxy;
 
@@ -86,8 +84,9 @@ namespace Stact
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
-			_address = new EndpointAddress(serviceUri.AppendPath(pipeName));
-			_proxy = System.ServiceModel.ChannelFactory<WcfChannel<T>>.CreateChannel(new NetNamedPipeBinding(), _address);
+			var channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<T>>(serviceUri, pipeName);
+
+			_proxy = channelFactory.CreateChannel();
 		}
 
 		public Uri ServiceUri { get; private set; }

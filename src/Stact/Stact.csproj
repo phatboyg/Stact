@@ -132,6 +132,8 @@
     <Compile Include="Actors\ReceiveLoopExtensions.cs" />
     <Compile Include="Actors\StateMachineActorFactory.cs" />
     <Compile Include="Actors\StateMachineWorkflowBinder.cs" />
+    <Compile Include="Channels\Internal\ConfigurationFreeChannelFactory.cs" />
+    <Compile Include="Channels\Internal\ConfigurationFreeServiceHost.cs" />
     <Compile Include="Channels\Configuration\Builders\ChannelBuilder.cs" />
     <Compile Include="Channels\Configuration\Builders\ConnectionBuilderConfigurator.cs" />
     <Compile Include="Channels\Configuration\Builders\IntervalChannelBuilder.cs" />
