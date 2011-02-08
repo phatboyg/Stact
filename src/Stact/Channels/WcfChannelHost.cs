@@ -116,8 +116,14 @@ namespace Stact
 		{
 			if ((_serviceHost != null) && (_serviceHost.State != CommunicationState.Closed))
 			{
-				_serviceHost.Close();
-				_serviceHost = null;
+				try
+				{
+					_serviceHost.Close();
+				}
+				finally
+				{
+					_serviceHost = null;
+				}
 			}
 		}
 

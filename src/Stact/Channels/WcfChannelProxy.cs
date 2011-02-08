@@ -13,9 +13,7 @@
 namespace Stact
 {
 	using System;
-	using System.ServiceModel;
 	using Internal;
-	using Magnum.Extensions;
 	using Magnum.Serialization;
 
 
@@ -24,7 +22,8 @@ namespace Stact
 		IDisposable
 	{
 		readonly Fiber _fiber;
-		readonly WcfChannel<WcfMessageEnvelope> _proxy;
+		WcfChannel<WcfMessageEnvelope> _proxy;
+		ConfigurationFreeChannelFactory<WcfChannel<WcfMessageEnvelope>> _channelFactory;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
@@ -33,9 +32,18 @@ namespace Stact
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
-			var channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<WcfMessageEnvelope>>(serviceUri, pipeName);
-
-			_proxy = channelFactory.CreateChannel();
+			_channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<WcfMessageEnvelope>>(serviceUri, pipeName);
+			try
+			{
+				_channelFactory.Open();
+				_proxy = _channelFactory.CreateChannel();
+			}
+			catch (Exception ex)
+			{
+				_channelFactory.Abort();
+				_channelFactory = null;
+				throw;
+			}
 		}
 
 		public Serializer Serializer { get; private set; }
@@ -43,6 +51,32 @@ namespace Stact
 		public Uri ServiceUri { get; private set; }
 
 		public string PipeName { get; private set; }
+
+		public void Dispose()
+		{
+			var disposable = _proxy as IDisposable;
+			if (disposable != null)
+			{
+				using (disposable)
+				{
+				}
+			}
+
+			_proxy = null;
+
+			if (_channelFactory != null)
+			{
+				try
+				{
+					_channelFactory.Close();
+				}
+				finally
+				{
+					_channelFactory = null;
+				}
+			}
+
+		}
 
 		public void Send<T>(T message)
 		{
@@ -57,18 +91,6 @@ namespace Stact
 					_proxy.Send(envelope);
 				});
 		}
-
-		public void Dispose()
-		{
-			IDisposable disposable = _proxy as IDisposable;
-			if (disposable == null)
-				return;
-
-			using(disposable)
-			{
-				
-			}
-		}
 	}
 
 
@@ -77,6 +99,7 @@ namespace Stact
 	{
 		readonly Fiber _fiber;
 		readonly WcfChannel<T> _proxy;
+		ConfigurationFreeChannelFactory<WcfChannel<T>> _channelFactory;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
 		{
@@ -84,9 +107,18 @@ namespace Stact
 			ServiceUri = serviceUri;
 			PipeName = pipeName;
 
-			var channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<T>>(serviceUri, pipeName);
-
-			_proxy = channelFactory.CreateChannel();
+			_channelFactory = new ConfigurationFreeChannelFactory<WcfChannel<T>>(serviceUri, pipeName);
+			try
+			{
+				_channelFactory.Open();
+				_proxy = _channelFactory.CreateChannel();
+			}
+			catch (Exception ex)
+			{
+				_channelFactory.Abort();
+				_channelFactory = null;
+				throw;
+			}
 		}
 
 		public Uri ServiceUri { get; private set; }
