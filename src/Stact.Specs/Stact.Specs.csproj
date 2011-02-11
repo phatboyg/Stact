@@ -197,6 +197,7 @@
     <Compile Include="Workflow\Exception_Specs.cs" />
     <Compile Include="Workflow\StateMachineActor_Specs.cs" />
     <Compile Include="Workflow\Transition_Specs.cs" />
+    <Compile Include="Workflow\WorkflowActor_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact\Stact.csproj">

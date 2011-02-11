@@ -15,6 +15,7 @@ namespace Stact
 	public interface ReceiveLoop
 	{
 		ReceiveLoop Receive<T>(SelectiveConsumer<T> consumer);
+
 		void Repeat();
 	}
 }

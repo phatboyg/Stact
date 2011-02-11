@@ -15,6 +15,7 @@ namespace Stact
 	using System.Collections.Generic;
 	using System.Linq;
 	using Internal;
+	using Magnum.Extensions;
 	using Workflow;
 
 
@@ -41,9 +42,12 @@ namespace Stact
 			return visitor.GetBinders().ToDictionary(x => x.Event);
 		}
 
-		public IEnumerable<PendingReceive> Bind(Inbox inbox, TActor instance)
+		public void Bind(Inbox inbox, TActor instance)
 		{
-			return _binders.Select(b => b.Value.Bind(inbox, instance)).ToList();
+			inbox.Loop(loop =>
+				{
+					_binders.Each(b => b.Value.Bind(loop, instance));
+				});
 		}
 	}
 }

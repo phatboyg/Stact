@@ -59,7 +59,7 @@ namespace Stact.Internal
 			get { return _receiveStates; }
 		}
 
-		public PendingReceive Bind(Inbox inbox, TActor instance)
+		public ReceiveLoop Bind(ReceiveLoop loop, TActor instance)
 		{
 			SelectiveConsumer<TBody> consumer = null;
 			consumer = message =>
@@ -77,12 +77,12 @@ namespace Stact.Internal
 							}
 							finally
 							{
-								inbox.Receive(consumer);
+								loop.Repeat();
 							}
 						};
 				};
 
-			return inbox.Receive(consumer);
+			return loop.Receive(consumer);
 		}
 	}
 }

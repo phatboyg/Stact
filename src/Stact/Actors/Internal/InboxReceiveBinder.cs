@@ -15,6 +15,6 @@ namespace Stact.Internal
 	public interface InboxReceiveBinder<in TActor>
 		where TActor : Actor
 	{
-		PendingReceive Bind(Inbox inbox, TActor instance);
+		ReceiveLoop Bind(ReceiveLoop loop, TActor instance);
 	}
 }
