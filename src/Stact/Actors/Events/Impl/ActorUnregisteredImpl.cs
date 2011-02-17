@@ -10,20 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Events.Impl
 {
-	/// <summary>
-	/// Request is a message stereotype that is applied to a message in which
-	/// a response is expected
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	public interface Request<out T> :
-		Message<T>,
-		RequestHeader
+	using System;
+
+
+	class ActorUnregisteredImpl :
+		ActorUnregistered
 	{
-		/// <summary>
-		///   Where responses to the request should be sent
-		/// </summary>
-		UntypedChannel ResponseChannel { get; }
+		public ActorUnregisteredImpl(ActorRegistry registry, ActorInstance actor, Guid key)
+		{
+			Registry = registry;
+			Actor = actor;
+			Key = key;
+		}
+
+		public Guid Key { get; private set; }
+
+		public ActorRegistry Registry { get; private set; }
+
+		public ActorInstance Actor { get; private set; }
 	}
 }

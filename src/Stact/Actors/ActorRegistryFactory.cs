@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,18 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// Request is a message stereotype that is applied to a message in which
-	/// a response is expected
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	public interface Request<out T> :
-		Message<T>,
-		RequestHeader
+	using System;
+	using Actors;
+	using Configuration;
+	using Configuration.Internal;
+	using Configuration.RegistryConfigurators;
+
+
+	public static class ActorRegistryFactory
 	{
-		/// <summary>
-		///   Where responses to the request should be sent
-		/// </summary>
-		UntypedChannel ResponseChannel { get; }
+		public static ActorRegistry New(Action<ActorRegistryConfigurator> configure)
+		{
+			var configurator = new ActorRegistryConfiguratorImpl();
+
+			configure(configurator);
+
+			return configurator.CreateRegistry();
+		}
 	}
 }

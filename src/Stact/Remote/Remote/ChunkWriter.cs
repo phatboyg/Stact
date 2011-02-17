@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Remote
 {
-	/// <summary>
-	/// Request is a message stereotype that is applied to a message in which
-	/// a response is expected
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	public interface Request<out T> :
-		Message<T>,
-		RequestHeader
+	using System;
+
+
+	public interface ChunkWriter
 	{
-		/// <summary>
-		///   Where responses to the request should be sent
-		/// </summary>
-		UntypedChannel ResponseChannel { get; }
+		void Write(ArraySegment<byte> chunk, Action<ArraySegment<byte>> unsentCallback);
 	}
 }

@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
+	using System;
 	using Magnum;
 
 
@@ -33,6 +34,17 @@ namespace Stact.Internal
 
 		public UntypedChannel ResponseChannel { get; private set; }
 
-		public string RequestId { get; private set; }
+		public string RequestId
+		{
+			get { return Headers[HeaderKey.RequestId]; }
+			set { Headers[HeaderKey.RequestId] = value; }
+		}
+
+		public Uri ResponseAddress
+		{
+			get { return Headers.GetUri(HeaderKey.ResponseAddress); }
+			set { Headers.SetUri(HeaderKey.ResponseAddress, value); }
+		}
+
 	}
 }

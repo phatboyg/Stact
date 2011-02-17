@@ -51,6 +51,7 @@ namespace Stact
 
 		public static Uri GetUrn(Type type)
 		{
+			// TODO create a cache by type to avoid rebuilding every time
 			var sb = new StringBuilder("urn:message:");
 
 			return new Uri(GetMessageName(sb, type, true));

@@ -10,12 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors
+namespace Stact
 {
 	using System;
-	using System.Collections.Generic;
-	
 	using Configuration;
+	using Events;
+
 
 	/// <summary>
 	/// An actor registry provide running storage for actors that are active in the system
@@ -78,21 +78,8 @@ namespace Stact.Actors
 
 		ChannelConnection Subscribe(Channel<ActorRegistered> listener);
 		ChannelConnection Subscribe(Channel<ActorUnregistered> listener);
-		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener, Channel<ActorUnregistered> unregisteredListener);
-	}
 
-	public interface ActorRegistryEvent
-	{
-		ActorInstance Actor { get; }
-	}
-    
-	public interface ActorRegistered :
-		ActorRegistryEvent
-	{
-	}
-
-	public interface ActorUnregistered :
-		ActorRegistryEvent
-	{
+		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener,
+		                            Channel<ActorUnregistered> unregisteredListener);
 	}
 }

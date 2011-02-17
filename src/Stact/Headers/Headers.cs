@@ -12,18 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// Request is a message stereotype that is applied to a message in which
-	/// a response is expected
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	public interface Request<out T> :
-		Message<T>,
-		RequestHeader
+	using System.Collections.Generic;
+
+
+	public interface Headers :
+		IEnumerable<KeyValuePair<string, string>>
 	{
-		/// <summary>
-		///   Where responses to the request should be sent
-		/// </summary>
-		UntypedChannel ResponseChannel { get; }
+		string this[string key] { get; set; }
+
+		IDictionary<string, string> GetDictionary();
 	}
 }

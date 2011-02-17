@@ -36,7 +36,7 @@ namespace Stact.Benchmarks
 
 				//new PgmTest().Run();
 
-				new PgmChannelTest().Run();
+				new ReliableMulticastChannelTest().Run();
 
 			}
 			catch (Exception ex)

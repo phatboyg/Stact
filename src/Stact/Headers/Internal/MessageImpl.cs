@@ -18,16 +18,56 @@ namespace Stact.Internal
 	public class MessageImpl<T> :
 		Message<T>
 	{
+		readonly HeadersImpl _headers;
+
 		public MessageImpl(T message)
 		{
 			Body = message;
+			_headers = new HeadersImpl();
+
+			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
 		}
 
 		public T Body { get; private set; }
 
 		public Uri BodyType
 		{
-			get { return typeof(T).ToMessageUrn(); }
+			get { return _headers.GetUri(HeaderKey.BodyType); }
+		}
+
+		public string MessageId
+		{
+			get { return _headers[HeaderKey.MessageId]; }
+			set { _headers[HeaderKey.MessageId] = value; }
+		}
+
+		public string CorrelationId
+		{
+			get { return _headers[HeaderKey.CorrelationId]; }
+			set { _headers[HeaderKey.CorrelationId] = value; }
+		}
+
+		public Uri SenderAddress
+		{
+			get { return _headers.GetUri(HeaderKey.SenderAddress); }
+			set { _headers.SetUri(HeaderKey.SenderAddress, value); }
+		}
+
+		public Uri DestinationAddress
+		{
+			get { return _headers.GetUri(HeaderKey.DestinationAddress); }
+			set { _headers.SetUri(HeaderKey.DestinationAddress, value); }
+		}
+
+		public Uri FaultAddress
+		{
+			get { return _headers.GetUri(HeaderKey.FaultAddress); }
+			set { _headers.SetUri(HeaderKey.FaultAddress, value); }
+		}
+
+		public Headers Headers
+		{
+			get { return _headers; }
 		}
 	}
 }

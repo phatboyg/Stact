@@ -77,10 +77,10 @@
     <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="ConcurrentQueueBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
-    <Compile Include="PgmChannelTest.cs" />
-    <Compile Include="PgmTest.cs" />
+    <Compile Include="ReliableMulticastChannelTest.cs" />
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RemoteActorTest.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />
   </ItemGroup>

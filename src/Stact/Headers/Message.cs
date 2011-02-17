@@ -12,19 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-
 	/// <summary>
 	/// The base message header, non-generic to allow use in any method
 	/// </summary>
-	public interface Message
+	public interface Message :
+		MessageHeader
 	{
-		/// <summary>
-		/// The message body type in URN-format
-		/// eg. urn:message:Stact.Exit
-		/// </summary>
-		Uri BodyType { get; }
 	}
+
 
 	/// <summary>
 	/// The message header, generic matching the type of the message body

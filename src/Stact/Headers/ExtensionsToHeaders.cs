@@ -126,5 +126,25 @@ namespace Stact
 
 			request.ResponseChannel.Send<Response<TRequest, TResponse>>(responseImpl);
 		}
+
+		public static Uri GetUri(this Headers headers, string key)
+		{
+			string value = headers[key];
+			if (string.IsNullOrEmpty(value))
+				return null;
+
+			return new Uri(value);
+		}
+
+		public static void SetUri(this Headers headers, string key, Uri value)
+		{
+			if (value == null)
+			{
+				headers[key] = null;
+				return;
+			}
+
+			headers[key] = value.ToString();
+		}
 	}
 }
