@@ -25,7 +25,7 @@ namespace Stact
 	{
 		public static Uri ToMessageUrn(this Type type)
 		{
-			return new Uri("urn:message:" + type.FullName.Replace(".", ":"));
+			return MessageUrn.GetUrn(type);
 		}
 
 		/// <summary>

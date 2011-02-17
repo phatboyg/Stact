@@ -77,12 +77,18 @@
     <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="ConcurrentQueueBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
+    <Compile Include="PgmChannelTest.cs" />
+    <Compile Include="PgmTest.cs" />
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Stact.ServerFramework\Stact.ServerFramework.csproj">
+      <Project>{16EDA05C-FF95-4FA2-AED8-F14C40C6E96C}</Project>
+      <Name>Stact.ServerFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Stact</Name>
