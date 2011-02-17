@@ -16,6 +16,7 @@ namespace Stact.ServerFramework.Internal
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Net;
+	using System.Net.Sockets;
 	using Magnum.Extensions;
 
 
@@ -71,7 +72,6 @@ namespace Stact.ServerFramework.Internal
 
 			IPEndPoint endpoint = _uri.ResolveHostName().Single();
 			IPEndPoint bindEndpoint = GetBindEndpoint();
-
 
 			Trace.WriteLine("Binding producer to address: " + endpoint);
 			_socket.Bind(bindEndpoint);

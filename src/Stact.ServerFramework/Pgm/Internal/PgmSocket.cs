@@ -29,27 +29,42 @@ namespace Stact.ServerFramework.Internal
 		{
 		}
 
+		public bool EnableHighSpeed()
+		{
+			return EnableHighSpeed(this);
+		}
+
 		public bool SetPgmOption(int option, byte[] value)
+		{
+			return SetPgmOption(this, option, value);
+		}
+
+		public bool SetPgmOption(int option, uint value)
+		{
+			return SetPgmOption(this, option, value);
+		}
+
+		public static bool SetPgmOption(Socket socket, int option, byte[] value)
 		{
 			try
 			{
-				SetSocketOption(PgmLevel, (SocketOptionName)option, value);
+				socket.SetSocketOption(PgmLevel, (SocketOptionName)option, value);
 				return true;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return false;
 			}
 		}
 
-		public bool SetPgmOption(int option, uint value)
+		public static bool SetPgmOption(Socket socket, int option, uint value)
 		{
-			return SetPgmOption(option, BitConverter.GetBytes(value));
+			return SetPgmOption(socket, option, BitConverter.GetBytes(value));
 		}
 
-		public bool EnableHighSpeed()
+		public static bool EnableHighSpeed(Socket socket)
 		{
-			return SetPgmOption(PgmSocketOptions.HighSpeedIntranetOpt, 1);
+			return SetPgmOption(socket, PgmSocketOptions.HighSpeedIntranetOpt, 1);
 		}
 	}
 }
