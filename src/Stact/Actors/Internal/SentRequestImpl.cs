@@ -14,6 +14,7 @@ namespace Stact.Internal
 {
 	using System;
 	using System.Linq;
+	using Configuration;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
 
@@ -52,6 +53,11 @@ namespace Stact.Internal
 		public void Send<T>(T message)
 		{
 			_inbox.Send(message);
+		}
+
+		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
+		{
+			return _inbox.Connect(subscriberActions);
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)

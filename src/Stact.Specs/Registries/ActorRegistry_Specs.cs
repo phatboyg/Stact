@@ -13,15 +13,9 @@
 namespace Stact.Specs.Registries
 {
 	using System;
-	using System.Collections.Generic;
-	using Configuration;
-	using Internal;
 	using Magnum;
 	using Magnum.TestFramework;
 	using Model;
-	using NUnit.Framework;
-	using Stact.Actors;
-	using Stact.Actors.Registries;
 
 
 	[Scenario]
@@ -39,8 +33,13 @@ namespace Stact.Specs.Registries
 
 			ActorInstance auction = _auctionFactory.GetActor();
 
-			ActorRegistry registry = new InMemoryActorRegistry(new PoolFiber());
-			registry.Register(auction, (key, actor) => { });
+			ActorRegistry registry = ActorRegistryFactory.New(x =>
+				{
+					//x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
+				});
+
+			registry.Register(_auctionId, auction);
+
 
 			// need to proxy the channel with headers somehow... 
 
@@ -53,5 +52,4 @@ namespace Stact.Specs.Registries
 			// DestinationAddress = urn:actor:554FC958-4661-4FE9-94F5-21D190417BCC
 		}
 	}
-
 }

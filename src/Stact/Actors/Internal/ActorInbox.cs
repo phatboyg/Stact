@@ -14,6 +14,8 @@ namespace Stact.Actors.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Configuration;
+	using Configuration.Internal;
 	using Magnum.Collections;
 	using Magnum.Extensions;
 	using Routing;
@@ -76,6 +78,15 @@ namespace Stact.Actors.Internal
 		public void Send<T>(T message)
 		{
 			_inbound.Send(message);
+		}
+
+		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
+		{
+			var subscriber = new UntypedConnectionConfigurator(_adapter);
+
+			subscriberActions(subscriber);
+
+			return subscriber.CreateConnection();
 		}
 
 		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
