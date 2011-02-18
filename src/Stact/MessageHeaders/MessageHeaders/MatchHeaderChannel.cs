@@ -10,14 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Remote
+namespace Stact.MessageHeaders
 {
-	using System.Collections.Generic;
-
-
-	public interface MessageChannel :
+	public class MatchHeaderChannel :
 		UntypedChannel
 	{
-		void Send<T>(T message, IDictionary<string, string> headers);
+		readonly MatchHeaderCallback _callback;
+		readonly MatchHeaderImpl _match;
+
+		public MatchHeaderChannel(MatchHeaderCallback callback)
+		{
+			_callback = callback;
+
+			_match = new MatchHeaderImpl();
+		}
+
+		public void Send<T>(T message)
+		{
+			_match.Match(message, _callback);
+		}
 	}
 }

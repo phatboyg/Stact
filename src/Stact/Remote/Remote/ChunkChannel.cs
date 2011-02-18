@@ -63,7 +63,8 @@ namespace Stact.Remote
 					// TODO we are discarding an invalid message type
 				}
 
-				Type messageType = MessageUrn.GetMessageType(typeName);
+				var urn = new MessageUrn(typeName);
+				Type messageType = urn.GetType();
 				if (messageType == null)
 				{
 					// TODO log invalid/unknown message type

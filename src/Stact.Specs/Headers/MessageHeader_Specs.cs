@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Headers
 {
-	using Internal;
 	using Magnum.TestFramework;
+	using MessageHeaders;
 	using NUnit.Framework;
 
 

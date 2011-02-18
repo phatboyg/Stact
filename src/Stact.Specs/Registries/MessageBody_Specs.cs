@@ -13,18 +13,18 @@
 namespace Stact.Specs.Registries
 {
 	using System.Diagnostics;
-	using Internal;
 	using Magnum;
 	using Magnum.Extensions;
 	using Magnum.Serialization;
 	using Magnum.TestFramework;
+	using MessageHeaders;
 	using Remote;
 
 
 	[Scenario]
 	public class When_sending_a_message_through_the_chunk_writer
 	{
-		HeaderChannelAdapter _channel;
+		MatchHeaderChannel _channel;
 		DelegateChunkWriter _chunkWriter;
 		ChunkWriterChannel _rawChannel;
 
@@ -42,7 +42,7 @@ namespace Stact.Specs.Registries
 
 			var chunkHeaderChannel = new ChunkHeaderChannel(_rawChannel);
 
-			_channel = new HeaderChannelAdapter(chunkHeaderChannel);
+			_channel = new MatchHeaderChannel(chunkHeaderChannel);
 		}
 
 		[Then]

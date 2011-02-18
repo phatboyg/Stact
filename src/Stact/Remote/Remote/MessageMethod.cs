@@ -10,13 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.Remote
 {
-	public interface HeaderChannel :
-		UntypedChannel
+	public static class MessageMethod
 	{
-		void SendMessage<T>(Message<T> message);
-		void SendRequest<T>(Request<T> request);
-		void SendResponse<T>(Response<T> response);
+		public static string HeaderKey = "Method";
+
+		public static string Request = "Request";
+		public static string Response = "Response";
+		public static string Send = "Send";
 	}
 }

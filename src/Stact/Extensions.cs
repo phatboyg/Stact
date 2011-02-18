@@ -22,9 +22,9 @@ namespace Stact
 
 	public static class Extensions
 	{
-		public static Uri ToMessageUrn(this Type type)
+		public static MessageUrn ToMessageUrn(this Type type)
 		{
-			return MessageUrn.GetUrn(type);
+			return new MessageUrn(type);
 		}
 
 		/// <summary>

@@ -12,37 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using Internal;
+	using System.Collections.Generic;
+	using MessageHeaders;
 
 
 	public class ChunkHeaderChannel :
-		HeaderChannel
+		MatchHeaderCallback
 	{
-		readonly MessageChannel _output;
+		readonly HeaderChannel _output;
 
-		public ChunkHeaderChannel(MessageChannel output)
+		public ChunkHeaderChannel(HeaderChannel output)
 		{
 			_output = output;
 		}
 
-		public void SendMessage<T>(Message<T> message)
+		public void Body<TBody>(TBody body)
 		{
+			var headers = new Dictionary<string, string>();
+			headers[MessageMethod.HeaderKey] = MessageMethod.Send;
+
+			_output.Send(body, headers);
+		}
+
+		public void Message<TBody>(Message<TBody> message)
+		{
+			message.Headers[MessageMethod.HeaderKey] = MessageMethod.Send;
+
 			_output.Send(message.Body, message.Headers.GetDictionary());
 		}
 
-		public void SendRequest<T>(Request<T> request)
+		public void Request<TRequest>(Request<TRequest> request)
 		{
+			request.Headers[MessageMethod.HeaderKey] = MessageMethod.Request;
+	
 			_output.Send(request.Body, request.Headers.GetDictionary());
 		}
 
-		public void SendResponse<T>(Response<T> response)
+		public void Response<TResponse>(Response<TResponse> response)
 		{
-			_output.Send(response.Body, response.Headers.GetDictionary());
-		}
+			response.Headers[MessageMethod.HeaderKey] = MessageMethod.Response;
 
-		public void Send<T>(T message)
-		{
-			_output.Send(message);
+			_output.Send(response.Body, response.Headers.GetDictionary());
 		}
 	}
 }

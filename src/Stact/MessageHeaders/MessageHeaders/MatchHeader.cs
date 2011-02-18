@@ -10,17 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.MessageHeaders
 {
-	using System;
-
-
-	public class ResponseAdapterFactory :
-		HeaderAdapterFactoryImpl
+	public interface MatchHeader
 	{
-		public ResponseAdapterFactory(Type messageType)
-			: base(messageType, typeof(Response<>), "SendResponse")
-		{
-		}
+		void Match<T>(T message, MatchHeaderCallback callback);
 	}
 }

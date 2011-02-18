@@ -16,6 +16,7 @@ namespace Stact.Benchmarks
 	using System.Threading;
 	using Internal;
 	using Magnum.Serialization;
+	using MessageHeaders;
 	using Remote;
 	using Remote.ReliableMulticast;
 
@@ -49,18 +50,20 @@ namespace Stact.Benchmarks
 			{
 				writer.Start();
 
-				ChunkWriterChannel channel;
+				MatchHeaderChannel channel;
 				using (var buffer = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024))
 				{
 					buffer.Start();
-					channel = new ChunkWriterChannel(buffer, new FastTextSerializer());
 
-					ChunkWriterChannel channel2;
+					channel = new MatchHeaderChannel(new ChunkHeaderChannel(new ChunkWriterChannel(buffer, new FastTextSerializer())));
+
+
+					MatchHeaderChannel channel2;
 					using (var buffer2 = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024)
 						)
 					{
 						buffer2.Start();
-						channel2 = new ChunkWriterChannel(buffer2, new FastTextSerializer());
+						channel2 = new MatchHeaderChannel(new ChunkHeaderChannel(new ChunkWriterChannel(buffer2, new FastTextSerializer())));
 
 						Console.WriteLine("Writer started");
 

@@ -17,6 +17,7 @@ namespace Stact.Remote
 	using Events;
 	using Internal;
 	using Magnum.Serialization;
+	using MessageHeaders;
 	using ReliableMulticast;
 
 
@@ -135,7 +136,7 @@ namespace Stact.Remote
 					var chunkWriterChannel = new ChunkWriterChannel(buffer, _serializer);
 					var chunkHeaderChannel = new ChunkHeaderChannel(chunkWriterChannel);
 
-					var channel = new HeaderChannelAdapter(chunkHeaderChannel);
+					var channel = new MatchHeaderChannel(chunkHeaderChannel);
 
 					// TODO need to decorate this channel to remote the host/port from uri
 					// and convert to a urn:actor:xxxxxxxx-xxxx....

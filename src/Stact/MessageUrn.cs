@@ -13,58 +13,95 @@
 namespace Stact
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Runtime.Serialization;
 	using System.Text;
 
 
-	public static class MessageUrn
+	[Serializable]
+	public class MessageUrn :
+		Uri
 	{
-		public static Type GetMessageType(string urn)
+		[ThreadStatic]
+		static IDictionary<Type, string> _cache;
+
+		public MessageUrn(Type type)
+			: base(GetUrnForType(type))
 		{
-			return GetMessageType(new Uri(urn));
 		}
 
-		public static Type GetMessageType(Uri urn)
+		public MessageUrn(string uriString)
+			: base(uriString)
 		{
-			if (urn.Segments.Length == 0)
+		}
+
+		protected MessageUrn(SerializationInfo serializationInfo, StreamingContext streamingContext)
+			: base(serializationInfo, streamingContext)
+		{
+		}
+
+		public Type GetType(bool throwOnError = true, bool ignoreCase = true)
+		{
+			if (Segments.Length == 0)
 				return null;
 
-			string[] names = urn.Segments[0].Split(':');
+			string[] names = Segments[0].Split(':');
 			if (names[0] != "message")
 				return null;
 
-			if (names.Length < 2)
-				return null;
-
-			string typeName = names[1];
+			string typeName;
 
 			if (names.Length == 2)
 				typeName = names[1];
 			else if (names.Length == 3)
-				typeName = names[2] + "." + names[1] + ", " + names[2];
+				typeName = names[1] + "." + names[2] + ", " + names[1];
 			else if (names.Length >= 4)
-				typeName = names[2] + "." + names[1] + ", " + names[3];
+				typeName = names[1] + "." + names[2] + ", " + names[3];
+			else
+				return null;
 
 			Type messageType = Type.GetType(typeName, true, true);
 
 			return messageType;
 		}
 
-		public static Uri GetUrn(Type type)
+		static string IsInCache(Type type, Func<Type, string> provider)
 		{
-			// TODO create a cache by type to avoid rebuilding every time
-			var sb = new StringBuilder("urn:message:");
+			if (_cache == null)
+				_cache = new Dictionary<Type, string>();
 
-			return new Uri(GetMessageName(sb, type, true));
+			string urn;
+			if (_cache.TryGetValue(type, out urn))
+				return urn;
+
+			urn = provider(type);
+
+			_cache[type] = urn;
+
+			return urn;
 		}
 
-		public static string GetMessageName(Type type)
+		static string GetUrnForType(Type type)
 		{
-			return GetMessageName(new StringBuilder(), type, true);
+			return IsInCache(type, x =>
+				{
+					var sb = new StringBuilder("urn:message:");
+
+					return GetMessageName(sb, type, true);
+				});
 		}
 
 		static string GetMessageName(StringBuilder sb, Type type, bool includeScope)
 		{
-			if(type.IsNested)
+			if (includeScope && type.Namespace != null)
+			{
+				string ns = type.Namespace;
+				sb.Append(ns);
+
+				sb.Append(':');
+			}
+
+			if (type.IsNested)
 			{
 				GetMessageName(sb, type.DeclaringType, false);
 				sb.Append('+');
@@ -89,16 +126,11 @@ namespace Stact
 				sb.Append(']');
 			}
 			else
-			{
 				sb.Append(type.Name);
-			}
 
 			if (includeScope && type.Namespace != null)
 			{
-				sb.Append(':');
-
 				string ns = type.Namespace;
-				sb.Append(ns);
 
 				string assembly = type.Assembly.FullName;
 				if (!string.IsNullOrEmpty(assembly))

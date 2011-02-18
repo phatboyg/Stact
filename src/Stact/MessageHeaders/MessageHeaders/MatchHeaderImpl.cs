@@ -10,43 +10,38 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.MessageHeaders
 {
 	using System;
 	using System.Collections.Generic;
 
 
-	public class HeaderChannelAdapter :
-		UntypedChannel
+	public class MatchHeaderImpl :
+		MatchHeader
 	{
-		readonly IDictionary<Type, Action<object, HeaderChannel>> _adapters;
+		readonly IDictionary<Type, Action<object, MatchHeaderCallback>> _adapters;
 		readonly HashSet<Type> _directTypes;
-		readonly HeaderChannel _output;
 
-		public HeaderChannelAdapter(HeaderChannel output)
+		public MatchHeaderImpl()
 		{
-			_output = output;
-
-			_adapters = new Dictionary<Type, Action<object, HeaderChannel>>();
+			_adapters = new Dictionary<Type, Action<object, MatchHeaderCallback>>();
 			_directTypes = new HashSet<Type>();
 		}
 
-		public void Send<TInput>(TInput input)
+		public void Match<TInput>(TInput input, MatchHeaderCallback callback)
 		{
-			Console.WriteLine("Sending type: " + typeof(TInput).FullName);
-
 			if (_directTypes.Contains(typeof(TInput)))
 			{
-				_output.Send(input);
+				callback.Body(input);
 				return;
 			}
 
-			Action<object, HeaderChannel> adapter;
+			Action<object, MatchHeaderCallback> adapter;
 			if (!_adapters.TryGetValue(typeof(TInput), out adapter))
 			{
-				foreach (HeaderChannelAdapterFactory factory in GetTypeConverters(typeof(TInput)))
+				foreach (MatchHeaderSelectorFactory factory in GetTypeConverters(typeof(TInput)))
 				{
-					if (factory.CanAdapt(input, out adapter))
+					if (factory.CanMatch(input, out adapter))
 						break;
 				}
 
@@ -57,16 +52,16 @@ namespace Stact.Internal
 			}
 
 			if (adapter == null)
-				_output.Send(input);
+				callback.Body(input);
 			else
-				adapter(input, _output);
+				adapter(input, callback);
 		}
 
-		static IEnumerable<HeaderChannelAdapterFactory> GetTypeConverters(Type messageType)
+		static IEnumerable<MatchHeaderSelectorFactory> GetTypeConverters(Type messageType)
 		{
-			yield return new RequestAdapterFactory(messageType);
-			yield return new ResponseAdapterFactory(messageType);
-			yield return new MessageAdapterFactory(messageType);
+			yield return new RequestSelectorFactory(messageType);
+			yield return new ResponseSelectorFactory(messageType);
+			yield return new MessageSelectorFactory(messageType);
 		}
 	}
 }

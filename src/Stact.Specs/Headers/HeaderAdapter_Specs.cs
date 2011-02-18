@@ -14,6 +14,7 @@ namespace Stact.Specs.Headers
 {
 	using Internal;
 	using Magnum.TestFramework;
+	using MessageHeaders;
 	using Model;
 	using NUnit.Framework;
 

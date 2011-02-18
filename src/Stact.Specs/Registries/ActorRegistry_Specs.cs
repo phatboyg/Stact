@@ -15,6 +15,7 @@ namespace Stact.Specs.Registries
 	using System;
 	using Magnum;
 	using Magnum.TestFramework;
+	using MessageHeaders;
 	using Model;
 
 
@@ -40,6 +41,13 @@ namespace Stact.Specs.Registries
 				});
 
 			registry.Register(_auctionId, auction);
+
+
+			var message = new MessageImpl<Bid>(new BidImpl(27.5m));
+
+			message.DestinationAddress = new Uri("urn:uuid:" + _auctionId.ToString("N"));
+
+			registry.Send<Message<Bid>>(message);
 
 
 			// need to proxy the channel with headers somehow... 

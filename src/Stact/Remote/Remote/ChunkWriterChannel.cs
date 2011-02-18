@@ -20,7 +20,7 @@ namespace Stact.Remote
 
 
 	public class ChunkWriterChannel :
-		MessageChannel
+		HeaderChannel
 	{
 		const int PaddingLength = 8;
 		readonly ChunkWriter _chunkWriter;
@@ -47,11 +47,6 @@ namespace Stact.Remote
 
 				_messageBufferCapacity = value;
 			}
-		}
-
-		public void Send<T>(T message)
-		{
-			Send(message, new Dictionary<string, string>());
 		}
 
 		public void Send<T>(T message, IDictionary<string, string> headers)

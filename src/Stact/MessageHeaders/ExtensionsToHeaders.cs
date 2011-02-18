@@ -15,6 +15,7 @@ namespace Stact
 	using System;
 	using Internal;
 	using Magnum.Reflection;
+	using MessageHeaders;
 
 
 	public static class ExtensionsToHeaders

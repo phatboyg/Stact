@@ -17,6 +17,7 @@ namespace Stact.Internal.TypeConverters
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Magnum.Extensions;
+	using MessageHeaders;
 
 
 	public class MessageUpConverterFactory<T> :

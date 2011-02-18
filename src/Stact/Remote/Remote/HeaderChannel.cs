@@ -10,17 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.Remote
 {
-	using System;
+	using System.Collections.Generic;
 
 
-	public class RequestAdapterFactory :
-		HeaderAdapterFactoryImpl
+	public interface HeaderChannel
 	{
-		public RequestAdapterFactory(Type messageType)
-			: base(messageType, typeof(Request<>), "SendRequest")
-		{
-		}
+		void Send<T>(T message, IDictionary<string, string> headers);
 	}
 }
