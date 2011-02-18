@@ -18,12 +18,12 @@ namespace Stact.MessageHeaders
 	public class MessageImpl<T> :
 		Message<T>
 	{
-		readonly HeadersImpl _headers;
+		readonly DictionaryHeaders _headers;
 
 		public MessageImpl(T message)
 		{
 			Body = message;
-			_headers = new HeadersImpl();
+			_headers = new DictionaryHeaders();
 
 			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
 		}

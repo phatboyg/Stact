@@ -175,6 +175,7 @@
     <Compile Include="Functional\Identity_Specs.cs" />
     <Compile Include="Functional\Maybe_Specs.cs" />
     <Compile Include="Headers\HeaderAdapter_Specs.cs" />
+    <Compile Include="Headers\HeaderProxy_Specs.cs" />
     <Compile Include="Headers\MessageHeader_Specs.cs" />
     <Compile Include="Model\Ask.cs" />
     <Compile Include="Model\Auction.cs" />

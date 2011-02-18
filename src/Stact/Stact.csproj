@@ -192,7 +192,7 @@
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderCallback.cs" />
     <Compile Include="MessageHeaders\MessageHeader.cs" />
     <Compile Include="MessageHeaders\HeaderKey.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\HeadersImpl.cs" />
+    <Compile Include="MessageHeaders\MessageHeaders\DictionaryHeaders.cs" />
     <Compile Include="MessageHeaders\Headers.cs" />
     <Compile Include="MessageHeaders\RequestHeader.cs" />
     <Compile Include="MessageHeaders\ResponseHeader.cs" />

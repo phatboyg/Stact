@@ -16,17 +16,17 @@ namespace Stact.MessageHeaders
 	using System.Collections.Generic;
 
 
-	public class HeadersImpl :
+	public class DictionaryHeaders :
 		Headers
 	{
 		readonly IDictionary<string, string> _headers;
 
-		public HeadersImpl(IDictionary<string, string> headers)
+		public DictionaryHeaders(IDictionary<string, string> headers)
 		{
 			_headers = headers;
 		}
 
-		public HeadersImpl()
+		public DictionaryHeaders()
 			: this(new Dictionary<string, string>())
 		{
 		}
