@@ -19,7 +19,7 @@ namespace Stact.Internal
 	using Magnum.Extensions;
 
 
-	public class HeaderChannelAdapterFactoryImpl :
+	public abstract class HeaderAdapterFactoryImpl :
 		HeaderChannelAdapterFactory
 	{
 		readonly Type _bodyType;
@@ -29,7 +29,7 @@ namespace Stact.Internal
 		readonly string _methodName;
 		readonly Action<object, HeaderChannel> _router;
 
-		public HeaderChannelAdapterFactoryImpl(Type messageType, Type headerType, string methodName)
+		protected HeaderAdapterFactoryImpl(Type messageType, Type headerType, string methodName)
 		{
 			_messageType = messageType;
 			_headerType = headerType;

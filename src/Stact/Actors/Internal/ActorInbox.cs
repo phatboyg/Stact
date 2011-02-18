@@ -24,11 +24,11 @@ namespace Stact.Actors.Internal
 
 
 	/// <summary>
-	/// An inbox for an actor. Channel properties on the actor are automatically bound.
-	/// Messages are automatically delivered to the inbox for each message type unless
-	/// a property channel has the same message type. Calling Receive on the inbox will 
+	///   An inbox for an actor. Channel properties on the actor are automatically bound.
+	///   Messages are automatically delivered to the inbox for each message type unless
+	///   a property channel has the same message type. Calling Receive on the inbox will
 	/// </summary>
-	/// <typeparam name="TActor">The actor type for this inbox</typeparam>
+	/// <typeparam name = "TActor">The actor type for this inbox</typeparam>
 	public class ActorInbox<TActor> :
 		ActorInstance,
 		Inbox
@@ -36,13 +36,12 @@ namespace Stact.Actors.Internal
 	{
 		readonly Fiber _fiber;
 		readonly Scheduler _scheduler;
-		DynamicRoutingEngine _engine;
-
-		Cache<Type, object> _joinNodes;
-		HashSet<PendingReceive> _pending;
 		ChannelAdapter _adapter;
 		ChannelConnection _connected;
+		DynamicRoutingEngine _engine;
 		BroadcastChannel _inbound;
+		Cache<Type, object> _joinNodes;
+		HashSet<PendingReceive> _pending;
 
 
 		public ActorInbox(Fiber fiber, Scheduler scheduler)
@@ -52,7 +51,7 @@ namespace Stact.Actors.Internal
 
 			_engine = new DynamicRoutingEngine(fiber);
 			_joinNodes = new Cache<Type, object>();
-	
+
 			_adapter = new ChannelAdapter();
 			_connected = _adapter.Connect(x =>
 				{
@@ -65,7 +64,7 @@ namespace Stact.Actors.Internal
 						.HandleOnCallingThread();
 				});
 
-			_inbound = new BroadcastChannel(new UntypedChannel[] { _engine, _adapter });
+			_inbound = new BroadcastChannel(new UntypedChannel[] {_engine, _adapter});
 
 			_pending = new HashSet<PendingReceive>();
 		}
@@ -77,7 +76,7 @@ namespace Stact.Actors.Internal
 
 		public void Send<T>(T message)
 		{
-			_inbound.Send(message);
+			_fiber.Add(() => _inbound.Send(message));
 		}
 
 		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)

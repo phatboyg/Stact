@@ -39,5 +39,10 @@ namespace Stact.Remote
 		{
 			_output.Send(response.Body, response.Headers.GetDictionary());
 		}
+
+		public void Send<T>(T message)
+		{
+			_output.Send(message);
+		}
 	}
 }

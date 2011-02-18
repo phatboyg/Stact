@@ -48,7 +48,7 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_plain_class()
 		{
-			_rawChannel.Send(new Test
+			_channel.Send(new Test
 				{
 					Name = "Johnson",
 				});
@@ -72,6 +72,20 @@ namespace Stact.Specs.Registries
 						{
 							Name = "Magic"
 						}, inbox);
+				});
+
+			ThreadUtil.Sleep(1.Seconds());
+		}
+
+		[Then]
+		public void Should_properly_serialize_a_response()
+		{
+			AnonymousActor.New(inbox =>
+				{
+					_channel.Respond(new Test
+						{
+							Name = "Magic"
+						}, "21");
 				});
 
 			ThreadUtil.Sleep(1.Seconds());

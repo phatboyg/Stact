@@ -22,7 +22,11 @@ namespace Stact.Internal
 			RequestId = requestId;
 		}
 
-		public string RequestId { get; private set; }
+		public string RequestId
+		{
+			get { return Headers[HeaderKey.RequestId]; }
+			set { Headers[HeaderKey.RequestId] = value; }
+		}
 	}
 
 
@@ -42,6 +46,10 @@ namespace Stact.Internal
 
 		public TRequest Request { get; private set; }
 
-		public string RequestId { get; private set; }
+		public string RequestId
+		{
+			get { return Headers[HeaderKey.RequestId]; }
+			set { Headers[HeaderKey.RequestId] = value; }
+		}
 	}
 }

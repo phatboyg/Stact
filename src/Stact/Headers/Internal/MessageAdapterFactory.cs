@@ -10,22 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
 	using System;
 
 
-	public interface RequestHeader :
-		MessageHeader
+	public class MessageAdapterFactory :
+		HeaderAdapterFactoryImpl
 	{
-		/// <summary>
-		///   The request identifier which should be returned with a response
-		/// </summary>
-		string RequestId { get; }
-
-		/// <summary>
-		///   The address where a response should be sent (use the response channel, however)
-		/// </summary>
-		Uri ResponseAddress { get; }
+		public MessageAdapterFactory(Type messageType)
+			: base(messageType, typeof(Message<>), "SendMessage")
+		{
+		}
 	}
 }

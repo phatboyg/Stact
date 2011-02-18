@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	public interface HeaderChannel
+	public interface HeaderChannel :
+		UntypedChannel
 	{
 		void SendMessage<T>(Message<T> message);
 		void SendRequest<T>(Request<T> request);

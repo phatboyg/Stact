@@ -47,7 +47,6 @@ namespace Stact
 
 
 		interface AllHeaders :
-			MessageHeader,
 			RequestHeader
 		{
 		}

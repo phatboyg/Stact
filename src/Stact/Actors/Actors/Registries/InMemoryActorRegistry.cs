@@ -175,6 +175,8 @@ namespace Stact.Actors.Registries
 
 		public void Send<T>(T message)
 		{
+
+			Console.WriteLine("Unable to route message: " + typeof(T).FullName);
 		}
 	}
 }

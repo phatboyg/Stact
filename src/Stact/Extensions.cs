@@ -15,10 +15,9 @@ namespace Stact
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	
-	using Internal;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
+	using Messages;
 
 
 	public static class Extensions

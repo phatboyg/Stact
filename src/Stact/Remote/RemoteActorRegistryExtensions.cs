@@ -14,7 +14,6 @@ namespace Stact
 {
 	using System;
 	using Configuration;
-	using Configuration.RegistryConfigurators;
 
 
 	public static class RemoteActorRegistryExtensions

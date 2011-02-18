@@ -45,6 +45,5 @@ namespace Stact.Internal
 			get { return Headers.GetUri(HeaderKey.ResponseAddress); }
 			set { Headers.SetUri(HeaderKey.ResponseAddress, value); }
 		}
-
 	}
 }

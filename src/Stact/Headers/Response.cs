@@ -18,12 +18,9 @@ namespace Stact
 	/// </summary>
 	/// <typeparam name="T">The message type</typeparam>
 	public interface Response<out T> :
-		Message<T>
+		Message<T>,
+		ResponseHeader
 	{
-		/// <summary>
-		/// The request identifier to which this response is correlated
-		/// </summary>
-		string RequestId { get; }
 	}
 
 

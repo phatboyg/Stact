@@ -10,28 +10,53 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Configuration.RegistryConfigurators
+namespace Stact.Configuration
 {
 	using System;
+	using Magnum.Serialization;
+	using RegistryConfigurators;
 
 
 	public class RemoteActorRegistryConfiguratorImpl :
 		RemoteActorRegistryConfigurator,
 		RegistryBuilderConfigurator
 	{
+		Uri _listenUri;
+		Func<Serializer> _serializerFactory;
+
+		public RemoteActorRegistryConfiguratorImpl()
+		{
+			_serializerFactory = () => new FastTextSerializer();
+		}
+
 		public RegistryBuilder Configure(RegistryBuilder builder)
 		{
-			throw new NotImplementedException();
+			var remoteBuilder = new RemoteActorRegistryBuilder(builder, _serializerFactory, _listenUri);
+
+			return remoteBuilder;
 		}
 
 		public void ValidateConfiguration()
 		{
-			throw new NotImplementedException();
+			if (_listenUri == null)
+				throw new StactException("A Uri must be specified for the remote actor registry");
+
+			if (_serializerFactory == null)
+				throw new StactException("A serializer must be specified for the remote actor registry");
 		}
 
 		public RemoteActorRegistryConfigurator ListenTo(Uri uri)
 		{
-			throw new NotImplementedException();
+			_listenUri = uri;
+
+			return this;
+		}
+
+		public RemoteActorRegistryConfigurator UseSerializerFactory(Func<Serializer> serializerFactory)
+		{
+			_serializerFactory = serializerFactory;
+
+			return this;
 		}
 	}
 }

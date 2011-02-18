@@ -19,30 +19,31 @@ namespace Stact.Internal
 	public class HeaderChannelAdapter :
 		UntypedChannel
 	{
+		readonly IDictionary<Type, Action<object, HeaderChannel>> _adapters;
+		readonly HashSet<Type> _directTypes;
 		readonly HeaderChannel _output;
-		IDictionary<Type, Action<object, HeaderChannel>> _adapters;
-
-		HashSet<Type> _ignoredTypes;
 
 		public HeaderChannelAdapter(HeaderChannel output)
 		{
 			_output = output;
+
+			_adapters = new Dictionary<Type, Action<object, HeaderChannel>>();
+			_directTypes = new HashSet<Type>();
 		}
 
 		public void Send<TInput>(TInput input)
 		{
-			if (_adapters == null)
-				_adapters = new Dictionary<Type, Action<object, HeaderChannel>>();
+			Console.WriteLine("Sending type: " + typeof(TInput).FullName);
+
+			if (_directTypes.Contains(typeof(TInput)))
+			{
+				_output.Send(input);
+				return;
+			}
 
 			Action<object, HeaderChannel> adapter;
 			if (!_adapters.TryGetValue(typeof(TInput), out adapter))
 			{
-				if (_ignoredTypes == null)
-					_ignoredTypes = new HashSet<Type>();
-
-				if (_ignoredTypes.Contains(typeof(TInput)))
-					return;
-
 				foreach (HeaderChannelAdapterFactory factory in GetTypeConverters(typeof(TInput)))
 				{
 					if (factory.CanAdapt(input, out adapter))
@@ -50,25 +51,22 @@ namespace Stact.Internal
 				}
 
 				if (adapter == null)
-				{
-					_ignoredTypes.Add(typeof(TInput));
-					return;
-				}
-
-				_adapters.Add(typeof(TInput), adapter);
+					_directTypes.Add(typeof(TInput));
+				else
+					_adapters.Add(typeof(TInput), adapter);
 			}
 
 			if (adapter == null)
-				return;
-
-			adapter(input, _output);
+				_output.Send(input);
+			else
+				adapter(input, _output);
 		}
 
 		static IEnumerable<HeaderChannelAdapterFactory> GetTypeConverters(Type messageType)
 		{
-			yield return new RequestRouterFactory(messageType);
-			yield return new ResponseRouterFactory(messageType);
-			yield return new MessageRouterFactory(messageType);
+			yield return new RequestAdapterFactory(messageType);
+			yield return new ResponseAdapterFactory(messageType);
+			yield return new MessageAdapterFactory(messageType);
 		}
 	}
 }

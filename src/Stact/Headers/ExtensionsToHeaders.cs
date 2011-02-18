@@ -127,6 +127,13 @@ namespace Stact
 			request.ResponseChannel.Send<Response<TRequest, TResponse>>(responseImpl);
 		}
 
+		public static void Respond<TResponse>(this UntypedChannel channel, TResponse response, string requestId)
+		{
+			var responseImpl = new ResponseImpl<TResponse>(response, requestId);
+
+			channel.Send<Response<TResponse>>(responseImpl);
+		}
+
 		public static Uri GetUri(this Headers headers, string key)
 		{
 			string value = headers[key];
