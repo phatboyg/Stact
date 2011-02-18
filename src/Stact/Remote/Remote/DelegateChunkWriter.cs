@@ -10,16 +10,24 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Remote
 {
-	public class RemoteActorTest
+	using System;
+
+
+	public class DelegateChunkWriter :
+		ChunkWriter
 	{
-		public void Run()
+		readonly Action<ArraySegment<byte>> _callback;
+
+		public DelegateChunkWriter(Action<ArraySegment<byte>> callback)
 		{
-			ActorRegistry registry = ActorRegistryFactory.New(x =>
-				{
-					x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
-				});
+			_callback = callback;
+		}
+
+		public void Write(ArraySegment<byte> chunk, Action<ArraySegment<byte>> unsentCallback)
+		{
+			_callback(chunk);
 		}
 	}
 }

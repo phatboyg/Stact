@@ -172,5 +172,9 @@ namespace Stact.Actors.Registries
 
 			_events.Send(new ActorUnregisteredImpl(this, actor, key));
 		}
+
+		public void Send<T>(T message)
+		{
+		}
 	}
 }

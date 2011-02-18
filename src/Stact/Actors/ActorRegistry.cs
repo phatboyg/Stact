@@ -20,7 +20,8 @@ namespace Stact
 	/// <summary>
 	/// An actor registry provide running storage for actors that are active in the system
 	/// </summary>
-	public interface ActorRegistry
+	public interface ActorRegistry :
+		ActorInstance
 	{
 		/// <summary>
 		/// Adds an actor instance to the registry

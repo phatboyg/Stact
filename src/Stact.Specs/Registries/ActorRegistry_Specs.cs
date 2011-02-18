@@ -25,6 +25,7 @@ namespace Stact.Specs.Registries
 		Guid _auctionId;
 		ActorRegistry _registry;
 
+		[Then]
 		public void Adding_an_actor_to_a_registry()
 		{
 			_auctionFactory = ActorFactory.Create(inbox => new Auction(inbox));

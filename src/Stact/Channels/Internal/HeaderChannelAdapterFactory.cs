@@ -10,16 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Benchmarks
+namespace Stact.Internal
 {
-	public class RemoteActorTest
+	using System;
+
+
+	public interface HeaderChannelAdapterFactory
 	{
-		public void Run()
-		{
-			ActorRegistry registry = ActorRegistryFactory.New(x =>
-				{
-					x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
-				});
-		}
+		bool CanAdapt<TInput>(TInput input, out Action<object, HeaderChannel> adapter);
 	}
 }
