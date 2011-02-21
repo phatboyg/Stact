@@ -13,6 +13,7 @@
 namespace Stact.MessageHeaders
 {
 	using System;
+	using System.Collections.Generic;
 	using Magnum;
 
 
@@ -30,6 +31,12 @@ namespace Stact.MessageHeaders
 		{
 			ResponseChannel = responseChannel;
 			RequestId = requestId;
+		}
+
+		public RequestImpl(UntypedChannel responseChannel, T message, IDictionary<string,string> headers)
+			: base(message,headers)
+		{
+			ResponseChannel = responseChannel;
 		}
 
 		public UntypedChannel ResponseChannel { get; private set; }

@@ -29,6 +29,7 @@ namespace Stact.Actors.Registries
 		readonly UntypedChannel _events;
 		readonly Fiber _fiber;
 		readonly IDictionary<Guid, ActorInstance> _keyIndex;
+		UntypedChannel _channel;
 
 		public InMemoryActorRegistry(Fiber fiber)
 		{
@@ -38,6 +39,7 @@ namespace Stact.Actors.Registries
 			_keyIndex = new Dictionary<Guid, ActorInstance>();
 
 			_events = new ChannelAdapter();
+			_channel = new ActorRegistryHeaderChannel(this);
 		}
 
 		public void Register(Guid key, ActorInstance actor)
@@ -175,8 +177,7 @@ namespace Stact.Actors.Registries
 
 		public void Send<T>(T message)
 		{
-
-			Console.WriteLine("Unable to route message: " + typeof(T).FullName);
+			_channel.Send(message);
 		}
 	}
 }

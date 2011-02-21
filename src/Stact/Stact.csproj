@@ -107,8 +107,12 @@
     <Compile Include="Actors\ActorConvention.cs" />
     <Compile Include="Actors\ActorInstance.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
+    <Compile Include="Actors\Actors\Registries\ActorRegistryHeaderChannel.cs" />
+    <Compile Include="ActorUrn.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeader.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderChannel.cs" />
+    <Compile Include="Messages\Resume.cs" />
+    <Compile Include="Messages\Suspend.cs" />
     <Compile Include="Remote\Configuration\RemoteActorRegistryBuilder.cs" />
     <Compile Include="Actors\Events\ActorRegistered.cs" />
     <Compile Include="Actors\Events\ActorRegistryEvent.cs" />
@@ -201,7 +205,7 @@
     <Compile Include="Remote\Remote\BufferedChunkWriter.cs" />
     <Compile Include="Remote\Remote\Chunk.cs" />
     <Compile Include="Remote\Remote\ChunkChannel.cs" />
-    <Compile Include="Remote\Remote\ChunkHeaderChannel.cs" />
+    <Compile Include="Remote\Remote\MatchHeaderChannel.cs" />
     <Compile Include="Remote\Remote\ChunkMetrics.cs" />
     <Compile Include="Remote\Remote\ChunkMetricsImpl.cs" />
     <Compile Include="Remote\Remote\ChunkWriter.cs" />
@@ -211,6 +215,7 @@
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderImpl.cs" />
     <Compile Include="Remote\Remote\HeaderChannel.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MessageSelectorFactory.cs" />
+    <Compile Include="Remote\Remote\RemoteNodeConnectionPool.cs" />
     <Compile Include="Remote\Remote\MessageMethod.cs" />
     <Compile Include="Remote\Remote\ReliableMulticastRemoteActorRegistry.cs" />
     <Compile Include="Remote\Remote\ReliableMulticast\ReliableMulticastListener.cs" />
@@ -220,6 +225,9 @@
     <Compile Include="MessageHeaders\MessageHeaders\RequestSelectorFactory.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\ResponseSelectorFactory.cs" />
     <Compile Include="Remote\Remote\RemoteActorRegistry.cs" />
+    <Compile Include="Remote\Remote\RemoteChannel.cs" />
+    <Compile Include="Remote\Remote\RemoteChannelConnectionPool.cs" />
+    <Compile Include="Remote\Remote\RemoteNode.cs" />
     <Compile Include="Remote\Remote\SocketExtensions.cs" />
     <Compile Include="Remote\Remote\SocketWriter.cs" />
     <Compile Include="Remote\Remote\DelegateChunkWriter.cs" />
@@ -229,8 +237,6 @@
     <Compile Include="StactException.cs" />
     <Compile Include="MessageHeaders\Command.cs" />
     <Compile Include="Internal\ThreadSingleton.cs" />
-    <Compile Include="Messages\Messages\ExitImpl.cs" />
-    <Compile Include="Messages\Messages\KillImpl.cs" />
     <Compile Include="Actors\Internal\PendingReceiveImpl.cs" />
     <Compile Include="Actors\WithinSentRequest.cs" />
     <Compile Include="Actors\Internal\WithinSentRequestImpl.cs" />

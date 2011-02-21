@@ -15,7 +15,6 @@ namespace Stact.Benchmarks
 	using System;
 	using Magnum;
 	using Magnum.Extensions;
-	using Messages;
 	using Remote;
 
 
@@ -23,11 +22,13 @@ namespace Stact.Benchmarks
 	{
 		public void Run()
 		{
+			const string remoteAddress = "rm://234.0.0.7:40001/";
+
 			Guid id = CombGuid.Generate();
 
 			var registry = (RemoteActorRegistry)ActorRegistryFactory.New(x =>
 				{
-					x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
+					x.Remote(r => r.ListenTo(remoteAddress));
 				});
 
 			var server = AnonymousActor.New(inbox =>
@@ -41,7 +42,7 @@ namespace Stact.Benchmarks
 
 			registry.Register(id, server);
 
-			ActorInstance actor = registry.Select(new Uri("rm://234.0.0.7:40001/" + id.ToString("N")));
+			ActorInstance actor = registry.Select(new Uri(remoteAddress + id.ToString("N")));
 
 			actor.Send(new Hello
 				{
@@ -50,7 +51,7 @@ namespace Stact.Benchmarks
 
 			ThreadUtil.Sleep(5.Seconds());
 
-			actor.Send(new ExitImpl());
+			actor.Exit();
 
 			registry.Shutdown();
 		}

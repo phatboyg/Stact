@@ -13,16 +13,21 @@
 namespace Stact.Remote
 {
 	using System.Collections.Generic;
+	using Internal;
 	using MessageHeaders;
 
 
-	public class ChunkHeaderChannel :
+	public class MatchHeaderChannel :
+		UntypedChannel,
 		MatchHeaderCallback
 	{
+		readonly ThreadSingleton<MatchHeaderCallback, MatchHeader> _match;
 		readonly HeaderChannel _output;
 
-		public ChunkHeaderChannel(HeaderChannel output)
+		public MatchHeaderChannel(HeaderChannel output)
 		{
+			_match = new ThreadSingleton<MatchHeaderCallback, MatchHeader>(() => new MatchHeaderImpl());
+
 			_output = output;
 		}
 
@@ -44,7 +49,7 @@ namespace Stact.Remote
 		public void Request<TRequest>(Request<TRequest> request)
 		{
 			request.Headers[MessageMethod.HeaderKey] = MessageMethod.Request;
-	
+
 			_output.Send(request.Body, request.Headers.GetDictionary());
 		}
 
@@ -53,6 +58,11 @@ namespace Stact.Remote
 			response.Headers[MessageMethod.HeaderKey] = MessageMethod.Response;
 
 			_output.Send(response.Body, response.Headers.GetDictionary());
+		}
+
+		public void Send<T>(T message)
+		{
+			_match.Value.Match(message, this);
 		}
 	}
 }

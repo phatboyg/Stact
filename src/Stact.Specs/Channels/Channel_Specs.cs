@@ -10,15 +10,14 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Specs.Actors
+namespace Stact.Specs.Channels
 {
 	using System;
 	using System.Threading;
-	
 	using Internal;
-	using Stact;
 	using Magnum.Extensions;
 	using NUnit.Framework;
+
 
 	[TestFixture]
 	public class Publishing_a_message_on_a_channel
@@ -26,7 +25,10 @@ namespace Stact.Specs.Actors
 		[Test]
 		public void Should_filter_out_unwanted_messages()
 		{
-			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
+			var update = new UserUpdate
+				{
+					LastActivity = DateTime.Now - 5.Minutes()
+				};
 
 			Fiber fiber = new SynchronousFiber();
 
@@ -58,7 +60,10 @@ namespace Stact.Specs.Actors
 		[Test]
 		public void Should_schedule_events()
 		{
-			var update = new UserUpdate {LastActivity = DateTime.Now - 5.Minutes()};
+			var update = new UserUpdate
+				{
+					LastActivity = DateTime.Now - 5.Minutes()
+				};
 
 			Fiber fiber = new SynchronousFiber();
 
@@ -77,6 +82,7 @@ namespace Stact.Specs.Actors
 			Assert.IsTrue(future.WaitUntilCompleted(1.Seconds()));
 		}
 	}
+
 
 	public class UserUpdate
 	{

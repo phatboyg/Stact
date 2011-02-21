@@ -17,6 +17,7 @@ namespace Stact.Remote
 	using System.IO;
 	using Magnum.Reflection;
 	using Magnum.Serialization;
+	using MessageHeaders;
 
 
 	public class ChunkChannel :
@@ -73,7 +74,7 @@ namespace Stact.Remote
 
 				using (var bodyStream = new MemoryStream(chunk.Array, bodyOffset, bodyLength, false))
 				using (TextReader bodyReader = new StreamReader(bodyStream))
-					this.FastInvoke(new[] {messageType}, "Deserialize", bodyReader);
+					this.FastInvoke(new[] {messageType}, "Deserialize", bodyReader, headers);
 			}
 			catch (Exception ex)
 			{
@@ -96,11 +97,30 @@ namespace Stact.Remote
 			return headers;
 		}
 
-		void Deserialize<TMessage>(TextReader reader)
+		void Deserialize<TMessage>(TextReader reader, IDictionary<string, string> headers)
 		{
 			var message = _serializer.Deserialize<TMessage>(reader);
 
-			_output.Send(message);
+			SendToOutput(message, headers);
+		}
+
+		void SendToOutput<TBody>(TBody body, IDictionary<string, string> headers)
+		{
+			string method = headers[MessageMethod.HeaderKey];
+			switch (method)
+			{
+				case MessageMethod.Request:
+					_output.Send<Request<TBody>>(new RequestImpl<TBody>(new ShuntChannel(), body, headers));
+					break;
+
+				case MessageMethod.Response:
+					_output.Send<Response<TBody>>(new ResponseImpl<TBody>(body, headers));
+					break;
+
+				default:
+					_output.Send<Message<TBody>>(new MessageImpl<TBody>(body, headers));
+					break;
+			}
 		}
 	}
 }

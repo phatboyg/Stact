@@ -13,6 +13,7 @@
 namespace Stact.MessageHeaders
 {
 	using System;
+	using System.Collections.Generic;
 
 
 	public class MessageImpl<T> :
@@ -24,6 +25,14 @@ namespace Stact.MessageHeaders
 		{
 			Body = message;
 			_headers = new DictionaryHeaders();
+
+			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
+		}
+
+		public MessageImpl(T message, IDictionary<string, string> headers)
+		{
+			Body = message;
+			_headers = new DictionaryHeaders(headers);
 
 			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
 		}

@@ -17,7 +17,6 @@ namespace Stact.Remote
 	using Events;
 	using Internal;
 	using Magnum.Serialization;
-	using MessageHeaders;
 	using ReliableMulticast;
 
 
@@ -30,6 +29,7 @@ namespace Stact.Remote
 		ChunkChannel _reader;
 		ReliableMulticastListener _listener;
 		Scheduler _scheduler;
+		RemoteNodeConnectionPool _connectionPool;
 
 		public ReliableMulticastRemoteActorRegistry(ActorRegistry registry, Serializer serializer, Uri listenUri)
 		{
@@ -40,6 +40,8 @@ namespace Stact.Remote
 
 			_reader = new ChunkChannel(this, serializer);
 			_listener = new ReliableMulticastListener(_listenUri, _reader);
+
+			_connectionPool = new RemoteNodeConnectionPool(_scheduler, _serializer);
 		}
 
 		public void Start()
@@ -75,6 +77,8 @@ namespace Stact.Remote
 		public void Shutdown()
 		{
 			_registry.Shutdown();
+
+			_connectionPool.Shutdown();
 
 			_listener.Dispose();
 		}
@@ -112,46 +116,23 @@ namespace Stact.Remote
 
 		public ActorInstance Select(Uri remoteAddress)
 		{
+			var remoteNode = _connectionPool.GetRemoteChannel(remoteAddress);
+			var remoteChannel = new RemoteActor(remoteNode, remoteAddress);
+
 			var actor = AnonymousActor.New(inbox =>
 				{
-					Console.WriteLine("Starting writer");
-
-					var writer = new ReliableMulticastWriter(remoteAddress);
-					writer.Start();
-
-					var intercepter = new DelegateChunkWriter(chunk =>
-						{
-							Console.WriteLine(chunk.ToMemoryViewString());
-
-							writer.Write(chunk, x =>
-								{
-								});
-						});
-
-					Console.WriteLine("Starting buffer");
-
-					var buffer = new BufferedChunkWriter(new PoolFiber(), _scheduler, intercepter, 64*1024);
-					buffer.Start();
-
-					var chunkWriterChannel = new ChunkWriterChannel(buffer, _serializer);
-					var chunkHeaderChannel = new ChunkHeaderChannel(chunkWriterChannel);
-
-					var channel = new MatchHeaderChannel(chunkHeaderChannel);
-
 					// TODO need to decorate this channel to remote the host/port from uri
 					// and convert to a urn:actor:xxxxxxxx-xxxx....
 
 					ChannelConnection connection = null;
 					connection = inbox.Connect(x =>
 						{
-							x.AddChannel(channel);
+							x.AddChannel(remoteChannel);
 
 							x.AddConsumerOf<Request<Exit>>()
 								.UsingConsumer(exit =>
 									{
 										connection.Dispose();
-										buffer.Dispose();
-										writer.Dispose();
 									});
 						});
 				});

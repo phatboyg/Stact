@@ -80,12 +80,9 @@ namespace Stact
 		{
 			return loop.Receive<Suspend>(pause =>
 				{
-					Trace.WriteLine("Suspending");
-
 					// we are going to only receive a continue until we get it
 					inbox.Receive<Resume>(x =>
 						{
-							Trace.WriteLine("Resuming");
 							// repeat the loop now
 							loop.Repeat();
 						});

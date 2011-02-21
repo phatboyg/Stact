@@ -17,7 +17,6 @@ namespace Stact
 	using System.Reflection;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
-	using Messages;
 
 
 	public static class Extensions
@@ -33,7 +32,7 @@ namespace Stact
 		/// <param name = "instance">The actor instance</param>
 		public static void Exit(this ActorInstance instance)
 		{
-			instance.Send<Exit>(new ExitImpl());
+			instance.Send<Exit>();
 		}
 
 		/// <summary>
@@ -43,7 +42,7 @@ namespace Stact
 		/// <param name = "sender">The exit request sender</param>
 		public static SentRequest<Exit> Exit(this ActorInstance instance, Inbox sender)
 		{
-			return instance.Request<Exit>(new ExitImpl(), sender);
+			return instance.Request<Exit>(sender);
 		}
 
 		/// <summary>
@@ -52,7 +51,7 @@ namespace Stact
 		/// <param name = "instance">The actor instance</param>
 		public static void Kill(this ActorInstance instance)
 		{
-			instance.Send<Kill>(new KillImpl());
+			instance.Send<Kill>();
 		}
 
 		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Channel<TPort>>> portProperty,

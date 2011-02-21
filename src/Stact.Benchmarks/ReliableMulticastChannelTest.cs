@@ -50,20 +50,20 @@ namespace Stact.Benchmarks
 			{
 				writer.Start();
 
-				MatchHeaderChannel channel;
+				MessageHeaders.MatchHeaderChannel channel;
 				using (var buffer = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024))
 				{
 					buffer.Start();
 
-					channel = new MatchHeaderChannel(new ChunkHeaderChannel(new ChunkWriterChannel(buffer, new FastTextSerializer())));
+					channel = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new ChunkWriterChannel(buffer, new FastTextSerializer())));
 
 
-					MatchHeaderChannel channel2;
+					MessageHeaders.MatchHeaderChannel channel2;
 					using (var buffer2 = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024)
 						)
 					{
 						buffer2.Start();
-						channel2 = new MatchHeaderChannel(new ChunkHeaderChannel(new ChunkWriterChannel(buffer2, new FastTextSerializer())));
+						channel2 = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new ChunkWriterChannel(buffer2, new FastTextSerializer())));
 
 						Console.WriteLine("Writer started");
 

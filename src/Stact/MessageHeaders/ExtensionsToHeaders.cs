@@ -13,7 +13,6 @@
 namespace Stact
 {
 	using System;
-	using Internal;
 	using Magnum.Reflection;
 	using MessageHeaders;
 
@@ -27,7 +26,8 @@ namespace Stact
 		/// <param name = "channel">The channel where the message should be sent</param>
 		/// <param name = "request">The request message</param>
 		/// <param name = "responseChannel">The channel where responses should be sent</param>
-		public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, TRequest request, UntypedChannel responseChannel)
+		public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, 
+			TRequest request, UntypedChannel responseChannel)
 		{
 			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
 
@@ -43,7 +43,8 @@ namespace Stact
 		/// <param name = "channel">The channel where the message should be sent</param>
 		/// <param name = "request">The request message</param>
 		/// <param name = "responseChannel">The channel where responses should be sent</param>
-		public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel, TRequest request, UntypedChannel responseChannel)
+		public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel, 
+			TRequest request, UntypedChannel responseChannel)
 		{
 			var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
 
@@ -58,7 +59,8 @@ namespace Stact
 		/// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
 		/// <param name = "channel">The target channel</param>
 		/// <param name = "responseChannel">The channel where responses should be sent</param>
-		public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, UntypedChannel responseChannel)
+		public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, 
+			UntypedChannel responseChannel)
 		{
 			if (!typeof(TRequest).IsInterface)
 				throw new ArgumentException("Default Implementations can only be created for interfaces");
@@ -80,7 +82,8 @@ namespace Stact
 		/// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
 		/// <param name = "channel">The target channel</param>
 		/// <param name = "responseChannel">The channel where responses should be sent</param>
-		public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel, UntypedChannel responseChannel)
+		public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel,
+			UntypedChannel responseChannel)
 		{
 			if (!typeof(TRequest).IsInterface)
 				throw new ArgumentException("Default Implementations can only be created for interfaces");

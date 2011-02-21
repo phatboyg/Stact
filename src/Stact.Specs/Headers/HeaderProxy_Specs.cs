@@ -162,8 +162,6 @@ namespace Stact.Specs.Headers
 
 			channel.Send<Message<MyBody>>(msg =>
 				{
-
-
 				});
 
 		}

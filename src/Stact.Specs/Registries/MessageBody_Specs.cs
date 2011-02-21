@@ -24,7 +24,7 @@ namespace Stact.Specs.Registries
 	[Scenario]
 	public class When_sending_a_message_through_the_chunk_writer
 	{
-		MatchHeaderChannel _channel;
+		MessageHeaders.MatchHeaderChannel _channel;
 		DelegateChunkWriter _chunkWriter;
 		ChunkWriterChannel _rawChannel;
 
@@ -40,9 +40,9 @@ namespace Stact.Specs.Registries
 
 			_rawChannel = new ChunkWriterChannel(_chunkWriter, new FastTextSerializer());
 
-			var chunkHeaderChannel = new ChunkHeaderChannel(_rawChannel);
+			var chunkHeaderChannel = new Remote.MatchHeaderChannel(_rawChannel);
 
-			_channel = new MatchHeaderChannel(chunkHeaderChannel);
+			_channel = new MessageHeaders.MatchHeaderChannel(chunkHeaderChannel);
 		}
 
 		[Then]

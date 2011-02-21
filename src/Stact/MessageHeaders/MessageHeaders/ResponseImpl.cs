@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.MessageHeaders
 {
+	using System.Collections.Generic;
+
+
 	public class ResponseImpl<TResponse> :
 		MessageImpl<TResponse>,
 		Response<TResponse>
@@ -20,6 +23,11 @@ namespace Stact.MessageHeaders
 			: base(message)
 		{
 			RequestId = requestId;
+		}
+
+		public ResponseImpl(TResponse message, IDictionary<string, string> headers)
+			: base(message, headers)
+		{
 		}
 
 		public string RequestId

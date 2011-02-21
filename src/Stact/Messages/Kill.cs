@@ -15,14 +15,4 @@ namespace Stact
 	public interface Kill
 	{
 	}
-
-	public interface Suspend
-	{
-		
-	}
-
-	public interface Resume
-	{
-		
-	}
 }
