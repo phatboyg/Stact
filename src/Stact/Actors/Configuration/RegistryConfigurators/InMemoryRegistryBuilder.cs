@@ -12,23 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.RegistryConfigurators
 {
-	using Actors;
 	using Actors.Registries;
 
 
 	public class InMemoryRegistryBuilder :
 		RegistryBuilder
 	{
-		readonly Fiber _fiber;
-
-		public InMemoryRegistryBuilder(Fiber fiber)
+		public InMemoryRegistryBuilder(Fiber fiber, Scheduler scheduler)
 		{
-			_fiber = fiber;
+			Fiber = fiber;
+			Scheduler = scheduler;
 		}
+
+		public Fiber Fiber { get; private set; }
+		public Scheduler Scheduler { get; private set; }
 
 		public ActorRegistry Build()
 		{
-			return new InMemoryActorRegistry(_fiber);
+			return new InMemoryActorRegistry(Fiber);
 		}
 	}
 }

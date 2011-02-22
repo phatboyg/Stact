@@ -13,17 +13,14 @@
 namespace Stact.Configuration
 {
 	using System;
+	using Internal;
 	using RegistryConfigurators;
 
 
 	public interface ActorRegistryConfigurator :
-		FiberFactoryConfigurator<ActorRegistryConfigurator>,
+		SchedulerFactoryConfigurator<ActorRegistryConfigurator>,
 		Configurator
 	{
-		ActorRegistryConfigurator UseSharedScheduler();
-		ActorRegistryConfigurator UseScheduler(Scheduler scheduler);
-		ActorRegistryConfigurator UseSchedulerFactory(SchedulerFactory schedulerFactory);
-		
 		void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory);
 		
 		void AddConfigurator(RegistryBuilderConfigurator configurator);

@@ -24,9 +24,16 @@ namespace Stact.Configuration.Internal
 		bool _owned;
 		SchedulerFactory _schedulerFactory;
 
+		public bool SchedulerIsOwned
+		{
+			get { return _owned; }
+		}
+
 		public T UseTimerScheduler()
 		{
-			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
+			TimerScheduler scheduler = null;
+
+			_schedulerFactory = () => { return scheduler ?? (scheduler = new TimerScheduler(new PoolFiber())); };
 			_owned = true;
 
 			return this as T;
@@ -54,12 +61,19 @@ namespace Stact.Configuration.Internal
 				throw new SchedulerException("A SchedulerFactory was not configured");
 		}
 
-		public Scheduler GetConfiguredScheduler<TChannel>(ChannelBuilder<TChannel> builder)
+		protected Scheduler GetConfiguredScheduler<TChannel>(ChannelBuilder<TChannel> builder)
 		{
 			Scheduler scheduler = _schedulerFactory();
 
 			if (_owned)
 				builder.AddDisposable(scheduler.ShutdownOnDispose(ShutdownTimeout));
+
+			return scheduler;
+		}
+
+		protected Scheduler GetConfiguredScheduler()
+		{
+			Scheduler scheduler = _schedulerFactory();
 
 			return scheduler;
 		}

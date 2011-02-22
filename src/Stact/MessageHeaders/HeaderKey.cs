@@ -27,6 +27,7 @@ namespace Stact
 		public static readonly string RequestId;
 		public static readonly string ResponseAddress;
 		public static readonly string SenderAddress;
+		public static readonly string Method = "Method";
 
 		static HeaderKey()
 		{

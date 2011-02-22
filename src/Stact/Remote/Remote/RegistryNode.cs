@@ -15,8 +15,9 @@ namespace Stact.Remote
 	using System;
 
 
-	public interface RemoteChannelConnectionPool
+	public interface RegistryNode :
+		IDisposable
 	{
-		HeaderChannel GetRemoteChannel(Uri uri);
+		ActorInstance Select(Uri actorAddress);
 	}
 }

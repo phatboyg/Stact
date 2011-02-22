@@ -14,6 +14,7 @@ namespace Stact.Remote.ReliableMulticast
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Net;
 	using System.Net.Sockets;
@@ -26,29 +27,28 @@ namespace Stact.Remote.ReliableMulticast
 	{
 		readonly IList<byte[]> _addresses;
 		readonly Channel<ArraySegment<byte>> _output;
+		readonly TraceSource _ts;
 		bool _disposed;
-		Uri _multicastAddress;
-		int _receiveMessageSize;
+		readonly Uri _multicastAddress;
 		ReliableMulticastSocket _socket;
+
 
 		public ReliableMulticastListener(Uri multicastAddress, Channel<ArraySegment<byte>> output)
 		{
+			_ts = new TraceSource("Stact.Remote.ReliableMulticast.ReliableMulticastListener", SourceLevels.All);
+
 			_addresses = new List<byte[]>();
 			_socket = new ReliableMulticastSocket();
 			_multicastAddress = multicastAddress;
 			_output = output;
 
 			ReceiveBufferSize = 160*1024;
-			_receiveMessageSize = 32*1024;
+			ReceiveMessageSize = 64*1024;
 		}
 
 		public int ReceiveBufferSize { get; set; }
 
-		public int ReceiveMessageSize
-		{
-			get { return _receiveMessageSize; }
-			set { _receiveMessageSize = value; }
-		}
+		public int ReceiveMessageSize { get; set; }
 
 		public void Dispose()
 		{
@@ -58,23 +58,23 @@ namespace Stact.Remote.ReliableMulticast
 
 		public void Start()
 		{
+			_ts.TraceEvent(TraceEventType.Start, 100, "Starting listener on {0}", _multicastAddress);
+
 			_socket.ReceiveBufferSize = ReceiveBufferSize;
 
 			IPEndPoint multicastEndpoint = _multicastAddress.ResolveHostName().Single();
 			_socket.Bind(multicastEndpoint);
 
-			Console.WriteLine("Bind complete");
+			_ts.TraceEvent(TraceEventType.Verbose, 0, "Bind listener to {0} complete", multicastEndpoint);
 
 			AddAdditionalInterfaces();
 
 			_socket.EnableHighSpeed();
 			_socket.Listen(3);
 
-			Console.WriteLine("Listen complete");
-
 			_socket.BeginAccept(AcceptConnection, null);
 
-			Console.WriteLine("Begin accept");
+			_ts.TraceEvent(TraceEventType.Stop, 100, "Listener started on {0}", _multicastAddress);
 		}
 
 		void AcceptConnection(IAsyncResult asyncResult)
@@ -89,7 +89,7 @@ namespace Stact.Remote.ReliableMulticast
 
 				ReceiveFromConnection(connection);
 			}
-			catch (ObjectDisposedException ex)
+			catch (ObjectDisposedException)
 			{
 			}
 			catch (Exception)
@@ -107,7 +107,7 @@ namespace Stact.Remote.ReliableMulticast
 		{
 			DateTime acceptedAt = SystemUtil.UtcNow;
 
-			var buffer = new byte[_receiveMessageSize];
+			var buffer = new byte[ReceiveMessageSize];
 			SocketError errorCode;
 
 			AsyncCallback receiver = null;
@@ -129,7 +129,7 @@ namespace Stact.Remote.ReliableMulticast
 
 						_output.Send(new ArraySegment<byte>(buffer, 0, length));
 					}
-					catch (ObjectDisposedException ex)
+					catch (ObjectDisposedException)
 					{
 					}
 					catch (Exception ex)

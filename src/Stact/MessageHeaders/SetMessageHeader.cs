@@ -10,33 +10,36 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Remote
+namespace Stact
 {
-	public interface ChunkMetrics
+	using System;
+
+
+	public interface SetMessageHeader
 	{
 		/// <summary>
-		/// The duration (in milliseconds) of the metric capture period
+		/// The identifier for this message
 		/// </summary>
-		long Duration { get; }
+		string MessageId { set; }
 
 		/// <summary>
-		/// The number of messages transferred since the last metric
+		/// The identifier correlating this message to a message exchange/conversation
 		/// </summary>
-		long MessageCount { get; }
+		string CorrelationId { set; }
 
 		/// <summary>
-		/// The number of bytes transferred since the last metric
+		/// The sender address of the message
 		/// </summary>
-		long ByteCount { get; }
+		Uri SenderAddress { set; }
 
 		/// <summary>
-		/// The number of chunks transferred since the last metric
+		/// The final destination of the message
 		/// </summary>
-		long ChunkCount { get; }
+		Uri DestinationAddress { set; }
 
 		/// <summary>
-		/// The average length of a chunk during the metric period
+		/// The address where faults should be sent
 		/// </summary>
-		int AverageChunkLength { get; }
+		Uri FaultAddress { set; }
 	}
 }

@@ -14,36 +14,41 @@ namespace Stact.Remote
 {
 	using System;
 	using System.Collections.Generic;
+	using Magnum.Extensions;
 	using Magnum.Serialization;
-	using ReliableMulticast;
 
 
 	public class RemoteNode :
-		HeaderChannel,
-		IDisposable
+		Node
 	{
+		readonly BufferedChunkWriter _buffer;
 		readonly Fiber _fiber;
-		readonly Uri _remoteAddress;
+		readonly Channel<ArraySegment<byte>> _reader;
 		readonly Scheduler _scheduler;
-		readonly Serializer _serializer;
-		readonly ReliableMulticastWriter _writer;
-
-		BufferedChunkWriter _buffer;
-		HeaderChannel _channel;
+		readonly HeaderChannel _writer;
+		IList<IDisposable> _disposables;
 		bool _disposed;
 
-		public RemoteNode(Fiber fiber, Scheduler scheduler, Serializer serializer, Uri remoteAddress)
+		public RemoteNode(UntypedChannel input, ChunkWriter output, FiberFactory fiberFactory, Scheduler scheduler,
+		                  Serializer serializer)
 		{
-			_fiber = fiber;
+			_disposables = new List<IDisposable>();
+
 			_scheduler = scheduler;
-			_serializer = serializer;
-			_remoteAddress = remoteAddress;
-			_writer = new ReliableMulticastWriter(_remoteAddress);
+
+			_fiber = fiberFactory();
+
+			_buffer = new BufferedChunkWriter(_fiber, _scheduler, output, 64*1024);
+			_buffer.Start();
+
+			_reader = new DeserializeChunkChannel(input, serializer);
+			_writer = new SerializeChunkChannel(_buffer, serializer);
 		}
+
 
 		public void Send<T>(T message, IDictionary<string, string> headers)
 		{
-			_channel.Send(message, headers);
+			_writer.Send(message, headers);
 		}
 
 		public void Dispose()
@@ -52,23 +57,9 @@ namespace Stact.Remote
 			GC.SuppressFinalize(this);
 		}
 
-		public void Start()
+		public void Send(ArraySegment<byte> message)
 		{
-			_writer.Start();
-
-			var intercepter = new DelegateChunkWriter(chunk =>
-				{
-					Console.WriteLine(chunk.ToMemoryViewString());
-
-					_writer.Write(chunk, x =>
-						{
-						});
-				});
-
-			_buffer = new BufferedChunkWriter(_fiber, _scheduler, intercepter, 64*1024);
-			_buffer.Start();
-
-			_channel = new ChunkWriterChannel(_buffer, _serializer);
+			_reader.Send(message);
 		}
 
 		~RemoteNode()
@@ -82,11 +73,18 @@ namespace Stact.Remote
 				return;
 			if (disposing)
 			{
+				_disposables.Each(x => x.Dispose());
+
 				_buffer.Dispose();
-				_writer.Dispose();
+				_fiber.Shutdown(1.Minutes());
 			}
 
 			_disposed = true;
+		}
+
+		public void AddDisposable(IDisposable disposable)
+		{
+			_disposables.Add(disposable);
 		}
 	}
 }

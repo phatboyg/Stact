@@ -19,6 +19,7 @@ namespace Stact.Actors.Registries
 	using Events.Impl;
 	using Magnum;
 	using Magnum.Extensions;
+	using Remote;
 
 
 	public class InMemoryActorRegistry :
@@ -30,6 +31,7 @@ namespace Stact.Actors.Registries
 		readonly Fiber _fiber;
 		readonly IDictionary<Guid, ActorInstance> _keyIndex;
 		UntypedChannel _channel;
+		IList<RegistryNode> _nodes;
 
 		public InMemoryActorRegistry(Fiber fiber)
 		{
@@ -40,75 +42,81 @@ namespace Stact.Actors.Registries
 
 			_events = new ChannelAdapter();
 			_channel = new ActorRegistryHeaderChannel(this);
+			_nodes = new List<RegistryNode>();
 		}
 
 		public void Register(Guid key, ActorInstance actor)
 		{
 			_fiber.Add(() =>
+			{
+				ActorInstance existingActor;
+				if (_keyIndex.TryGetValue(key, out existingActor))
 				{
-					ActorInstance existingActor;
-					if (_keyIndex.TryGetValue(key, out existingActor))
-					{
-						if (ReferenceEquals(existingActor, actor))
-							return;
-
-						Remove(key, existingActor);
-					}
-
-					if (_actors.ContainsKey(actor))
-					{
-						if(existingActor != actor )
-							_events.Send(new ActorUnregisteredImpl(this, actor, _actors[actor]));
-
-						_actors[actor] = key;
-						_keyIndex[key] = actor;
-
-						_events.Send(new ActorRegisteredImpl(this, actor, key));
+					if (ReferenceEquals(existingActor, actor))
 						return;
-					}
 
-					Add(key, actor);
-				});
+					Remove(key, existingActor);
+				}
+
+				if (_actors.ContainsKey(actor))
+				{
+					if (existingActor != actor)
+						_events.Send(new ActorUnregisteredImpl(this, actor, _actors[actor]));
+
+					_actors[actor] = key;
+					_keyIndex[key] = actor;
+
+					_events.Send(new ActorRegisteredImpl(this, actor, key));
+					return;
+				}
+
+				Add(key, actor);
+			});
 		}
 
 		public void Register(ActorInstance actor, Action<Guid, ActorInstance> callback)
 		{
 			_fiber.Add(() =>
-				{
-					Guid key = CombGuid.Generate();
-					Add(key, actor);
+			{
+				Guid key = CombGuid.Generate();
+				Add(key, actor);
 
-					callback(key, actor);
-				});
+				callback(key, actor);
+			});
 		}
 
 		public void Unregister(ActorInstance actor)
 		{
 			_fiber.Add(() =>
-				{
-					Guid key;
-					if (_actors.TryGetValue(actor, out key))
-						Remove(key, actor);
-				});
+			{
+				Guid key;
+				if (_actors.TryGetValue(actor, out key))
+					Remove(key, actor);
+			});
 		}
 
 		public void Unregister(Guid key)
 		{
 			_fiber.Add(() =>
-				{
-					ActorInstance actor;
-					if (_keyIndex.TryGetValue(key, out actor))
-						Remove(key, actor);
-				});
+			{
+				ActorInstance actor;
+				if (_keyIndex.TryGetValue(key, out actor))
+					Remove(key, actor);
+			});
 		}
 
 		public void Shutdown()
 		{
 			_fiber.Add(() =>
+			{
+				foreach (ActorInstance actor in _actors.Keys)
+					actor.Send<Exit>();
+
+				foreach (RegistryNode node in _nodes)
 				{
-					foreach (ActorInstance actor in _actors.Keys)
-						actor.Send<Exit>();
-				});
+					node.Dispose();
+				}
+			});
 
 			_fiber.Shutdown(3.Minutes());
 		}
@@ -116,22 +124,44 @@ namespace Stact.Actors.Registries
 		public void Get(Guid key, Action<ActorInstance> callback, Action notFoundCallback)
 		{
 			_fiber.Add(() =>
+			{
+				ActorInstance actor;
+				if (_keyIndex.TryGetValue(key, out actor))
+					callback(actor);
+				else
+					notFoundCallback();
+			});
+		}
+
+		public void Select(Uri actorAddress, Action<ActorInstance> callback, Action notFoundCallback)
+		{
+			_fiber.Add(() =>
+			{
+				try
 				{
-					ActorInstance actor;
-					if (_keyIndex.TryGetValue(key, out actor))
-						callback(actor);
-					else
-						notFoundCallback();
-				});
+					foreach (RegistryNode node in _nodes)
+					{
+						ActorInstance actor = node.Select(actorAddress);
+						if (actor != null)
+						{
+							callback(actor);
+							return;
+						}
+					}
+				}
+				catch {}
+
+				notFoundCallback();
+			});
 		}
 
 		public void Each(Action<Guid, ActorInstance> callback)
 		{
 			_fiber.Add(() =>
-				{
-					foreach (var pair in _keyIndex)
-						callback(pair.Key, pair.Value);
-				});
+			{
+				foreach (var pair in _keyIndex)
+					callback(pair.Key, pair.Value);
+			});
 		}
 
 		public ChannelConnection Subscribe(Action<ConnectionConfigurator> subscriberActions)
@@ -153,10 +183,20 @@ namespace Stact.Actors.Registries
 		                                   Channel<ActorUnregistered> unregisteredListener)
 		{
 			return _events.Connect(x =>
-				{
-					x.AddChannel(registeredListener);
-					x.AddChannel(unregisteredListener);
-				});
+			{
+				x.AddChannel(registeredListener);
+				x.AddChannel(unregisteredListener);
+			});
+		}
+
+		public void AddNode(RegistryNode registryNode)
+		{
+			_nodes.Add(registryNode);
+		}
+
+		public void Send<T>(T message)
+		{
+			_channel.Send(message);
 		}
 
 		void Add(Guid key, ActorInstance actor)
@@ -173,11 +213,6 @@ namespace Stact.Actors.Registries
 			_actors.Remove(actor);
 
 			_events.Send(new ActorUnregisteredImpl(this, actor, key));
-		}
-
-		public void Send<T>(T message)
-		{
-			_channel.Send(message);
 		}
 	}
 }

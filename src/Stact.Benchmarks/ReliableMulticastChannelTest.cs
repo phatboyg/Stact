@@ -55,7 +55,7 @@ namespace Stact.Benchmarks
 				{
 					buffer.Start();
 
-					channel = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new ChunkWriterChannel(buffer, new FastTextSerializer())));
+					channel = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new SerializeChunkChannel(buffer, new FastTextSerializer())));
 
 
 					MessageHeaders.MatchHeaderChannel channel2;
@@ -63,7 +63,7 @@ namespace Stact.Benchmarks
 						)
 					{
 						buffer2.Start();
-						channel2 = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new ChunkWriterChannel(buffer2, new FastTextSerializer())));
+						channel2 = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new SerializeChunkChannel(buffer2, new FastTextSerializer())));
 
 						Console.WriteLine("Writer started");
 
@@ -81,7 +81,7 @@ namespace Stact.Benchmarks
 						}
 						Console.WriteLine("Sent message");
 
-						var reader = new ChunkChannel(actor, new FastTextSerializer());
+						var reader = new DeserializeChunkChannel(actor, new FastTextSerializer());
 
 						using (var listener = new ReliableMulticastListener(network, reader))
 						{

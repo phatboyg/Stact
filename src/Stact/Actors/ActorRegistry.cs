@@ -15,6 +15,7 @@ namespace Stact
 	using System;
 	using Configuration;
 	using Events;
+	using Remote;
 
 
 	/// <summary>
@@ -63,6 +64,16 @@ namespace Stact
 		/// <param name="notFoundCallback"></param>
 		void Get(Guid key, Action<ActorInstance> callback, Action notFoundCallback);
 
+
+		/// <summary>
+		/// Returns an actor instance for the actor referenced by the URI specified.
+		/// </summary>
+		/// <param name="actorAddress">The URI for the actor, maybe be a local or remote actor address</param>
+		/// <param name="callback">Called when the actor intance is available</param>
+		/// <param name="notFoundCallback">Called if the actor instance was not found and could not be created</param>
+		void Select(Uri actorAddress, Action<ActorInstance> callback, Action notFoundCallback);
+
+
 		/// <summary>
 		/// Calls the callback for each actor in the registry
 		/// </summary>
@@ -82,5 +93,7 @@ namespace Stact
 
 		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener,
 		                            Channel<ActorUnregistered> unregisteredListener);
+
+		void AddNode(RegistryNode registryNode);
 	}
 }

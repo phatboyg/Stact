@@ -112,25 +112,6 @@ namespace Stact.Remote
 			StartMetrics();
 		}
 
-		public ChunkMetrics GetMetrics()
-		{
-			_readInterval.Stop();
-
-			int averageBlockSize = _blockCount > 0 ? (int)(_byteCount/_blockCount) : 0;
-			long duration = _readInterval.ElapsedMilliseconds;
-
-			var metrics = new ChunkMetricsImpl(duration, _messageCount, _blockCount, _byteCount, averageBlockSize);
-
-			_readInterval.Reset();
-			_readInterval.Start();
-
-			_messageCount = 0;
-			_blockCount = 0;
-			_byteCount = 0;
-
-			return metrics;
-		}
-
 		void FlushBuffer()
 		{
 			TimeSpan sleepInterval = TimeSpan.Zero;

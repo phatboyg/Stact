@@ -13,8 +13,10 @@
 namespace Stact.Benchmarks
 {
 	using System;
+	using System.Diagnostics;
 	using Magnum;
 	using Magnum.Extensions;
+	using MessageHeaders;
 	using Remote;
 
 
@@ -22,36 +24,40 @@ namespace Stact.Benchmarks
 	{
 		public void Run()
 		{
+			Trace.Listeners.Add(new ConsoleTraceListener());
+
 			const string remoteAddress = "rm://234.0.0.7:40001/";
 
 			Guid id = CombGuid.Generate();
 
-			var registry = (RemoteActorRegistry)ActorRegistryFactory.New(x =>
+			var registry = ActorRegistryFactory.New(x =>
 				{
 					x.Remote(r => r.ListenTo(remoteAddress));
 				});
 
 			var server = AnonymousActor.New(inbox =>
 				{
-					inbox.Receive<Hello>(message =>
+					inbox.Receive<Response<Hello>>(message =>
 						{
 							Console.WriteLine("Hi!");
+							Console.WriteLine("Request ID: " + message.RequestId);
 						});
 				});
 
 
 			registry.Register(id, server);
 
-			ActorInstance actor = registry.Select(new Uri(remoteAddress + id.ToString("N")));
+			var actorAddress = new ActorUrn(remoteAddress, id);
 
-			actor.Send(new Hello
+			registry.Select(actorAddress, actor =>
+			{
+				actor.Send<Response<Hello>>(new ResponseImpl<Hello>(new Hello
 				{
 					MyNameIs = "Joe",
-				});
+				}, "27"));
+			}, () => { });
 
 			ThreadUtil.Sleep(5.Seconds());
-
-			actor.Exit();
 
 			registry.Shutdown();
 		}

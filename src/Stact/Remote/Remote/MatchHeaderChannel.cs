@@ -21,12 +21,12 @@ namespace Stact.Remote
 		UntypedChannel,
 		MatchHeaderCallback
 	{
-		readonly ThreadSingleton<MatchHeaderCallback, MatchHeader> _match;
+		readonly ThreadSingleton<MatchHeaderChannel, MatchHeader> _match;
 		readonly HeaderChannel _output;
 
 		public MatchHeaderChannel(HeaderChannel output)
 		{
-			_match = new ThreadSingleton<MatchHeaderCallback, MatchHeader>(() => new MatchHeaderImpl());
+			_match = new ThreadSingleton<MatchHeaderChannel, MatchHeader>(() => new MatchHeaderImpl());
 
 			_output = output;
 		}
@@ -34,28 +34,29 @@ namespace Stact.Remote
 		public void Body<TBody>(TBody body)
 		{
 			var headers = new Dictionary<string, string>();
-			headers[MessageMethod.HeaderKey] = MessageMethod.Send;
+
+			headers[HeaderKey.Method] = MessageMethod.Send;
 
 			_output.Send(body, headers);
 		}
 
 		public void Message<TBody>(Message<TBody> message)
 		{
-			message.Headers[MessageMethod.HeaderKey] = MessageMethod.Send;
+			message.Headers[HeaderKey.Method] = MessageMethod.Send;
 
 			_output.Send(message.Body, message.Headers.GetDictionary());
 		}
 
 		public void Request<TRequest>(Request<TRequest> request)
 		{
-			request.Headers[MessageMethod.HeaderKey] = MessageMethod.Request;
+			request.Headers[HeaderKey.Method] = MessageMethod.Request;
 
 			_output.Send(request.Body, request.Headers.GetDictionary());
 		}
 
 		public void Response<TResponse>(Response<TResponse> response)
 		{
-			response.Headers[MessageMethod.HeaderKey] = MessageMethod.Response;
+			response.Headers[HeaderKey.Method] = MessageMethod.Response;
 
 			_output.Send(response.Body, response.Headers.GetDictionary());
 		}

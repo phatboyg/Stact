@@ -12,10 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	public static class MessageMethod
+	using System;
+
+
+	public interface Node :
+		HeaderChannel,
+		Channel<ArraySegment<byte>>,
+		IDisposable
 	{
-		public const string Request = "Request";
-		public const string Response = "Response";
-		public const string Send = "Send";
 	}
 }

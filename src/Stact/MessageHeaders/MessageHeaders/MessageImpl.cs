@@ -17,7 +17,8 @@ namespace Stact.MessageHeaders
 
 
 	public class MessageImpl<T> :
-		Message<T>
+		Message<T>,
+		SetMessageHeader
 	{
 		readonly DictionaryHeaders _headers;
 

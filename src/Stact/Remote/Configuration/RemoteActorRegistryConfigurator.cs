@@ -17,7 +17,7 @@ namespace Stact.Configuration
 
 
 	public interface RemoteActorRegistryConfigurator :
-		Configurator
+		FiberFactoryConfigurator<RemoteActorRegistryConfigurator>
 	{
 		RemoteActorRegistryConfigurator ListenTo(Uri uri);
 		RemoteActorRegistryConfigurator UseSerializerFactory(Func<Serializer> serializerFactory);

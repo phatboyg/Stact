@@ -13,12 +13,37 @@
 namespace Stact
 {
 	using System;
+	using Internal;
+	using Magnum.Extensions;
 	using Magnum.Reflection;
 	using MessageHeaders;
 
 
 	public static class ExtensionsToHeaders
 	{
+		public static Message<T> Send<T>(this UntypedChannel channel,
+			T message, Action<SetMessageHeader> messageCallback)
+		{
+			var messageImpl = new MessageImpl<T>(message);
+			messageCallback(messageImpl);
+
+			channel.Send<Message<T>>(messageImpl);
+
+			return messageImpl;
+		}
+
+		public static Message<T> Send<T>(this UntypedChannel channel,
+			Message<T> message, Action<SetMessageHeader> messageCallback)
+		{
+			var impl = message as MessageImpl<T>;
+			if (impl != null)
+				messageCallback(impl);
+
+			channel.Send(message);
+
+			return message;
+		}
+
 		/// <summary>
 		///   Wraps the message in a request and sends it to the channel
 		/// </summary>

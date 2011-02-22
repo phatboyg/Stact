@@ -14,11 +14,11 @@ namespace Stact.Remote
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Text;
 	using Magnum.Extensions;
 
 
-	public class Chunk
+	public class Chunk :
+		ChunkWriter
 	{
 		readonly byte[] _buffer;
 		readonly IList<Action> _callbacks;
@@ -65,29 +65,7 @@ namespace Stact.Remote
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
-
-			for (int i = 0; i < _length;)
-			{
-				string printable = "  ";
-
-				int j = 0;
-				for (; j < 16 && i < _length; j++, i++)
-				{
-					sb.Append(_buffer[i].ToString("X2"));
-					sb.Append(' ');
-					if (_buffer[i] >= 0x20 && _buffer[i] <= 0x7F)
-						printable = printable + Convert.ToChar(_buffer[i]);
-					else
-						printable = printable + ".";
-				}
-				for (; j < 16; j++)
-					sb.Append("   ");
-
-				sb.AppendLine(printable);
-			}
-
-			return sb.ToString();
+			return Content.ToMemoryViewString();
 		}
 	}
 }

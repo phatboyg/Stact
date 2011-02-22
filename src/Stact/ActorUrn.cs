@@ -21,19 +21,22 @@ namespace Stact
 		Uri
 	{
 		public ActorUrn(string uriString)
-			: base(uriString)
-		{
-		}
+			: base(uriString) {}
 
 		public ActorUrn(Uri baseUri, string relativeUri = "")
-			: base(baseUri, relativeUri)
-		{
-		}
+			: base(baseUri, relativeUri) {}
 
 		protected ActorUrn(SerializationInfo serializationInfo, StreamingContext streamingContext)
-			: base(serializationInfo, streamingContext)
-		{
-		}
+			: base(serializationInfo, streamingContext) {}
+
+		public ActorUrn(string uriString, Guid actorId)
+			: this(new Uri(uriString), "/" + actorId.ToString("N")) {}
+
+		public ActorUrn(Guid actorId)
+			: this("urn:actor:uuid:" + actorId.ToString("N")) {}
+
+		public ActorUrn(Uri uri, Guid actorId)
+			: this(uri, "/" + actorId.ToString("N")) {}
 
 		public Guid GetId()
 		{
@@ -46,13 +49,20 @@ namespace Stact
 
 			if (names.Length == 3)
 			{
-				if(names[1] == "uuid")
-				{
+				if (names[1] == "uuid")
 					return new Guid(names[2]);
-				}
 			}
 
 			return Guid.Empty;
+		}
+
+		public static ActorUrn CreateFromRemoteAddress(Uri remoteAddress)
+		{
+			string idString = remoteAddress.AbsolutePath.Trim('/', '\\');
+
+			var actorId = new Guid(idString);
+
+			return new ActorUrn(actorId);
 		}
 	}
 }

@@ -22,14 +22,27 @@ namespace Stact.Configuration
 		RegistryBuilder
 	{
 		readonly RegistryBuilder _builder;
+		readonly FiberFactory _fiberFactory;
 		readonly Uri _listenUri;
 		readonly Func<Serializer> _serializerFactory;
 
-		public RemoteActorRegistryBuilder(RegistryBuilder builder, Func<Serializer> serializerFactory, Uri listenUri)
+		public RemoteActorRegistryBuilder(RegistryBuilder builder, Uri listenUri, FiberFactory fiberFactory,
+		                                  Func<Serializer> serializerFactory)
 		{
 			_builder = builder;
 			_serializerFactory = serializerFactory;
 			_listenUri = listenUri;
+			_fiberFactory = fiberFactory;
+		}
+
+		public Fiber Fiber
+		{
+			get { return _builder.Fiber; }
+		}
+
+		public Scheduler Scheduler
+		{
+			get { return _builder.Scheduler; }
 		}
 
 		public ActorRegistry Build()
@@ -38,11 +51,13 @@ namespace Stact.Configuration
 
 			Serializer serializer = _serializerFactory();
 
-			var remoteRegistry = new ReliableMulticastRemoteActorRegistry(registry, serializer, _listenUri);
+			Scheduler scheduler = _builder.Scheduler;
 
-			remoteRegistry.Start();
+			var registryNode = new RemoteRegistryNode(registry, _listenUri, _fiberFactory, scheduler, serializer);
 
-			return remoteRegistry;
+			registry.AddNode(registryNode);
+
+			return registry;
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace Stact.Specs.Registries
 	{
 		MessageHeaders.MatchHeaderChannel _channel;
 		DelegateChunkWriter _chunkWriter;
-		ChunkWriterChannel _rawChannel;
+		SerializeChunkChannel _rawChannel;
 
 		[Given]
 		public void A_channel()
@@ -38,7 +38,7 @@ namespace Stact.Specs.Registries
 					Trace.WriteLine(output);
 				});
 
-			_rawChannel = new ChunkWriterChannel(_chunkWriter, new FastTextSerializer());
+			_rawChannel = new SerializeChunkChannel(_chunkWriter, new FastTextSerializer());
 
 			var chunkHeaderChannel = new Remote.MatchHeaderChannel(_rawChannel);
 

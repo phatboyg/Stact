@@ -12,23 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	public class ChunkMetricsImpl :
-		ChunkMetrics
-	{
-		public ChunkMetricsImpl(long duration, long messageCount, long blockCount, long byteCount,
-		                              int averageBlockLength)
-		{
-			Duration = duration;
-			MessageCount = messageCount;
-			ChunkCount = blockCount;
-			AverageChunkLength = averageBlockLength;
-			ByteCount = byteCount;
-		}
+	using System;
 
-		public long Duration { get; private set; }
-		public long MessageCount { get; private set; }
-		public long ByteCount { get; private set; }
-		public long ChunkCount { get; private set; }
-		public int AverageChunkLength { get; private set; }
+
+	public interface ChunkWriterControl :
+		ChunkWriter,
+		IDisposable
+	{
+		void Start();
 	}
 }

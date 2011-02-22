@@ -13,9 +13,7 @@
 namespace Stact
 {
 	using System;
-	using Actors;
 	using Configuration;
-	using Configuration.Internal;
 	using Configuration.RegistryConfigurators;
 
 

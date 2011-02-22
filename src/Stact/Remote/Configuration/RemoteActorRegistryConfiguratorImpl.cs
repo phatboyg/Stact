@@ -18,6 +18,7 @@ namespace Stact.Configuration
 
 
 	public class RemoteActorRegistryConfiguratorImpl :
+		FiberFactoryConfiguratorImpl<RemoteActorRegistryConfigurator>,
 		RemoteActorRegistryConfigurator,
 		RegistryBuilderConfigurator
 	{
@@ -26,18 +27,21 @@ namespace Stact.Configuration
 
 		public RemoteActorRegistryConfiguratorImpl()
 		{
-			_serializerFactory = () => new FastTextSerializer();
+			UseSerializerFactory(() => new FastTextSerializer());
+			HandleOnPoolFiber();
 		}
 
 		public RegistryBuilder Configure(RegistryBuilder builder)
 		{
-			var remoteBuilder = new RemoteActorRegistryBuilder(builder, _serializerFactory, _listenUri);
+			var remoteBuilder = new RemoteActorRegistryBuilder(builder, _listenUri, GetConfiguredFiberFactory(), _serializerFactory);
 
 			return remoteBuilder;
 		}
 
 		public void ValidateConfiguration()
 		{
+			ValidateFiberFactoryConfiguration();
+
 			if (_listenUri == null)
 				throw new StactException("A Uri must be specified for the remote actor registry");
 

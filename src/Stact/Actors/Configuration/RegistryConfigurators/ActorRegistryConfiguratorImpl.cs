@@ -15,20 +15,21 @@ namespace Stact.Configuration.RegistryConfigurators
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Stact.Internal;
+	using Internal;
+	using Magnum.Extensions;
 
 
 	public class ActorRegistryConfiguratorImpl :
-		FiberFactoryConfiguratorImpl<ActorRegistryConfigurator>,
+		SchedulerFactoryConfiguratorImpl<ActorRegistryConfigurator>,
 		ActorRegistryConfigurator
 	{
 		readonly IList<RegistryBuilderConfigurator> _configurators;
 		Func<Fiber, Scheduler, RegistryBuilder> _builderFactory;
-		SchedulerFactory _schedulerFactory;
 
 		public ActorRegistryConfiguratorImpl()
 		{
-			UseSharedScheduler();
+			UseTimerScheduler();
+
 			_builderFactory = DefaultBuilderFactory;
 			_configurators = new List<RegistryBuilderConfigurator>();
 		}
@@ -36,27 +37,8 @@ namespace Stact.Configuration.RegistryConfigurators
 		public void ValidateConfiguration()
 		{
 			ValidateFiberFactoryConfiguration();
-		}
 
-		public ActorRegistryConfigurator UseSharedScheduler()
-		{
-			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
-
-			return this;
-		}
-
-		public ActorRegistryConfigurator UseScheduler(Scheduler scheduler)
-		{
-			_schedulerFactory = () => scheduler;
-
-			return this;
-		}
-
-		public ActorRegistryConfigurator UseSchedulerFactory(SchedulerFactory schedulerFactory)
-		{
-			_schedulerFactory = schedulerFactory;
-
-			return this;
+			_configurators.Each(x => x.ValidateConfiguration());
 		}
 
 		public void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory)
@@ -71,20 +53,22 @@ namespace Stact.Configuration.RegistryConfigurators
 
 		static RegistryBuilder DefaultBuilderFactory(Fiber fiber, Scheduler scheduler)
 		{
-			return new InMemoryRegistryBuilder(fiber);
+			return new InMemoryRegistryBuilder(fiber, scheduler);
 		}
 
 		public ActorRegistry CreateRegistry()
 		{
+			ValidateConfiguration();
+
 			FiberFactory fiberFactory = GetConfiguredFiberFactory();
 			Fiber fiber = fiberFactory();
 
-			Scheduler scheduler = _schedulerFactory();
+			Scheduler scheduler = GetConfiguredScheduler();
 
 			RegistryBuilder builder = _builderFactory(fiber, scheduler);
 
-			return _configurators.
-				Aggregate(builder, (current, configurator) => configurator.Configure(current))
+			return _configurators
+				.Aggregate(builder, (current, configurator) => configurator.Configure(current))
 				.Build();
 		}
 	}

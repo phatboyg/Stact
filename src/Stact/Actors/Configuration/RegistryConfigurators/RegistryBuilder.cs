@@ -12,11 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.RegistryConfigurators
 {
-	using Actors;
-
-
 	public interface RegistryBuilder
 	{
+		Fiber Fiber { get; }
+		Scheduler Scheduler { get; }
 		ActorRegistry Build();
 	}
 }

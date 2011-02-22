@@ -14,20 +14,24 @@ namespace Stact.Remote
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.IO;
 	using Magnum.Reflection;
 	using Magnum.Serialization;
 	using MessageHeaders;
 
 
-	public class ChunkChannel :
+	public class DeserializeChunkChannel :
 		Channel<ArraySegment<byte>>
 	{
 		readonly UntypedChannel _output;
 		readonly Serializer _serializer;
+		readonly TraceSource _ts;
 
-		public ChunkChannel(UntypedChannel output, Serializer serializer)
+		public DeserializeChunkChannel(UntypedChannel output, Serializer serializer)
 		{
+			_ts = new TraceSource("Stact.Remote", SourceLevels.All);
+
 			_output = output;
 			_serializer = serializer;
 		}
@@ -42,7 +46,7 @@ namespace Stact.Remote
 
 				if (offset + headerLength + bodyLength > chunk.Count)
 				{
-					// TODO we exceeded the buffer, this is bad
+					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Invalid header or body length specified");
 					return;
 				}
 
@@ -61,14 +65,15 @@ namespace Stact.Remote
 				string typeName;
 				if (!headers.TryGetValue("BodyType", out typeName))
 				{
-					// TODO we are discarding an invalid message type
+					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not specified");
+					return;
 				}
 
 				var urn = new MessageUrn(typeName);
 				Type messageType = urn.GetType();
 				if (messageType == null)
 				{
-					// TODO log invalid/unknown message type
+					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not recognized, discarded");
 					return;
 				}
 
@@ -76,9 +81,9 @@ namespace Stact.Remote
 				using (TextReader bodyReader = new StreamReader(bodyStream))
 					this.FastInvoke(new[] {messageType}, "Deserialize", bodyReader, headers);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				// TODO bad msg
+				_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Unexpected error deserializing message");
 			}
 		}
 
@@ -97,7 +102,9 @@ namespace Stact.Remote
 			return headers;
 		}
 
+// ReSharper disable UnusedMember.Local
 		void Deserialize<TMessage>(TextReader reader, IDictionary<string, string> headers)
+// ReSharper restore UnusedMember.Local
 		{
 			var message = _serializer.Deserialize<TMessage>(reader);
 
@@ -106,7 +113,7 @@ namespace Stact.Remote
 
 		void SendToOutput<TBody>(TBody body, IDictionary<string, string> headers)
 		{
-			string method = headers[MessageMethod.HeaderKey];
+			string method = headers[HeaderKey.Method];
 			switch (method)
 			{
 				case MessageMethod.Request:

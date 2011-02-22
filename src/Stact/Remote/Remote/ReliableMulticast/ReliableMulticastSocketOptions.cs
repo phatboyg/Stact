@@ -14,21 +14,20 @@ namespace Stact.Remote.ReliableMulticast
 {
 	public static class ReliableMulticastSocketOptions
 	{
-		const int OptionsBase = 1000;
-
-		public static readonly int AddReceiveIf = (OptionsBase + 8);
-		public static readonly int DelReceiveIf = (OptionsBase + 9);
-		public static readonly int FlushCache = (OptionsBase + 3);
-		public static readonly int HighSpeedIntranetOpt = (OptionsBase + 14);
-		public static readonly int LateJoin = (OptionsBase + 6);
-		public static readonly int RateWindowSize = (OptionsBase + 1);
-		public static readonly int ReceiverStatistics = (OptionsBase + 13);
-		public static readonly int SendWindowAdvRate = (OptionsBase + 10);
-		public static readonly int SenderStatistics = (OptionsBase + 5);
-		public static readonly int SenderWindowAdvanceMethod = (OptionsBase + 4);
-		public static readonly int SetMcastTtl = (OptionsBase + 12);
-		public static readonly int SetMessageBoundary = (OptionsBase + 2);
-		public static readonly int SetSendIf = (OptionsBase + 7);
-		public static readonly int UseFec = (OptionsBase + 11);
+		public const int AddReceiveIf = (OptionsBase + 8);
+		public const int DelReceiveIf = (OptionsBase + 9);
+		public const int FlushCache = (OptionsBase + 3);
+		public const int HighSpeedIntranetOpt = (OptionsBase + 14);
+		public const int LateJoin = (OptionsBase + 6);
+		public const int OptionsBase = 1000;
+		public const int RateWindowSize = (OptionsBase + 1);
+		public const int ReceiverStatistics = (OptionsBase + 13);
+		public const int SendWindowAdvRate = (OptionsBase + 10);
+		public const int SenderStatistics = (OptionsBase + 5);
+		public const int SenderWindowAdvanceMethod = (OptionsBase + 4);
+		public const int SetMcastTtl = (OptionsBase + 12);
+		public const int SetMessageBoundary = (OptionsBase + 2);
+		public const int SetSendIf = (OptionsBase + 7);
+		public const int UseFec = (OptionsBase + 11);
 	}
 }

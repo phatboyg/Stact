@@ -12,7 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.RegistryConfigurators
 {
-	public interface RegistryBuilderConfigurator
+	public interface RegistryBuilderConfigurator :
+		Configurator
 	{
 		RegistryBuilder Configure(RegistryBuilder builder);
 	}

@@ -12,10 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	public static class MessageMethod
+	public static class RemoteError
 	{
-		public const string Request = "Request";
-		public const string Response = "Response";
-		public const string Send = "Send";
+		public const int BadRequest = 400;
 	}
 }
