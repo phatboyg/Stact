@@ -45,7 +45,7 @@ namespace Stact.Specs.Workflow
 
 			var response = new Future<Response<RequestSent>>();
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					service.Request(new GetQuote
 						{

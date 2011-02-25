@@ -28,7 +28,7 @@ namespace Stact.Specs.Actors
 		{
 			var response = new FutureChannel<Status>();
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -54,7 +54,7 @@ namespace Stact.Specs.Actors
 
 			var response = new FutureChannel<Ended>();
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -79,7 +79,7 @@ namespace Stact.Specs.Actors
 			var response = new FutureChannel<Purchased>();
 			decimal price = 0.0m;
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(30.Seconds())
@@ -113,7 +113,7 @@ namespace Stact.Specs.Actors
 			var statusResponse = new FutureChannel<Status>();
 			var endedResponse = new FutureChannel<Ended>();
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(Id), inbox)
 						.Within(10.Seconds())
@@ -141,7 +141,7 @@ namespace Stact.Specs.Actors
 		{
 			var response = new FutureChannel<bool>();
 
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Auction.Request(new Ask(new Guid()), inbox)
 						.Within(1.Seconds())

@@ -24,33 +24,21 @@ namespace Stact.Configuration
 	public class ChannelConfigurationException :
 		StactException
 	{
-		public ChannelConfigurationException()
-		{
-		}
+		public ChannelConfigurationException() {}
 
 		public ChannelConfigurationException(string message)
-			: base(message)
-		{
-		}
+			: base(message) {}
 
 		public ChannelConfigurationException(Type channelType, string message)
-			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name))
-		{
-		}
+			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name)) {}
 
 		public ChannelConfigurationException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+			: base(message, innerException) {}
 
 		public ChannelConfigurationException(Type channelType, string message, Exception innerException)
-			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name), innerException)
-		{
-		}
+			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name), innerException) {}
 
 		protected ChannelConfigurationException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
+			: base(info, context) {}
 	}
 }

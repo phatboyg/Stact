@@ -13,7 +13,6 @@
 namespace Stact.Specs.Channels
 {
 	using System;
-	using Internal;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
@@ -62,7 +61,10 @@ namespace Stact.Specs.Channels
 			var future = new Future<TestMessage>();
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
 
-			using (ChannelConnection scope = adapter.Connect(x => { x.AddChannel(consumer); }))
+			using (ChannelConnection scope = adapter.Connect(x =>
+			{
+				x.AddChannel(consumer);
+			}))
 			{
 				new TraceChannelVisitor().Visit(adapter);
 
@@ -127,9 +129,7 @@ namespace Stact.Specs.Channels
 			var future = new Future<TestMessage>();
 
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
-			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(consumer)))
-			{
-			}
+			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(consumer))) {}
 
 			new TraceChannelVisitor().Visit(adapter);
 
@@ -155,19 +155,13 @@ namespace Stact.Specs.Channels
 		TimeSpan _timeout;
 
 		[TestFixtureSetUp]
-		public void SetupAll()
-		{
-		}
+		public void SetupAll() {}
 
 
-		interface ITestMessage
-		{
-		}
+		interface ITestMessage {}
 
 
 		class TestMessage :
-			ITestMessage
-		{
-		}
+			ITestMessage {}
 	}
 }

@@ -48,7 +48,7 @@ namespace Stact.Specs.Actors
 			agent.Send<Resume>();
 
 			_response = new Future<Status>();
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					Action loop = null;
 					loop = () =>

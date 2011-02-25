@@ -23,23 +23,15 @@ namespace Stact.Configuration
 	public class FiberConfigurationException :
 		FiberException
 	{
-		public FiberConfigurationException()
-		{
-		}
+		public FiberConfigurationException() {}
 
 		public FiberConfigurationException(string message)
-			: base(message)
-		{
-		}
+			: base(message) {}
 
 		public FiberConfigurationException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+			: base(message, innerException) {}
 
 		protected FiberConfigurationException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
+			: base(info, context) {}
 	}
 }

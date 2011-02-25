@@ -13,10 +13,7 @@
 namespace Stact.Specs.Channels
 {
 	using System;
-	
-	using Internal;
 	using Magnum;
-	using Stact;
 	using Magnum.TestFramework;
 
 
@@ -36,7 +33,7 @@ namespace Stact.Specs.Channels
 
 			public Guid Id { get; private set; }
 			public decimal HighBid { get; private set; }
-			
+
 			public Fiber Fiber { get; private set; }
 			public Channel<Bid> BidChannel { get; private set; }
 
@@ -62,8 +59,8 @@ namespace Stact.Specs.Channels
 		Given_an_auction
 	{
 		Guid _auctionId;
-		ChannelAdapter _input;
 		ChannelConnection _connection;
+		ChannelAdapter _input;
 
 		[When]
 		public void A_message_is_sent_to_an_instance()
@@ -72,13 +69,12 @@ namespace Stact.Specs.Channels
 
 			_input = new ChannelAdapter();
 			_connection = _input.Connect(x =>
-				{
-					x.AddConsumerOf<Bid>()
-						.UsingInstance().Of<Auction>()
-						.ObtainedBy(m => new Auction(m.AuctionId))
-						.OnChannel(auction => auction.BidChannel);
-				});
-
+			{
+				x.AddConsumerOf<Bid>()
+					.UsingInstance().Of<Auction>()
+					.ObtainedBy(m => new Auction(m.AuctionId))
+					.OnChannel(auction => auction.BidChannel);
+			});
 		}
 
 		[After]

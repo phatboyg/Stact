@@ -20,23 +20,15 @@ namespace Stact
 	public class StactException :
 		Exception
 	{
-		public StactException()
-		{
-		}
+		public StactException() {}
 
 		public StactException(string message)
-			: base(message)
-		{
-		}
+			: base(message) {}
 
 		public StactException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+			: base(message, innerException) {}
 
 		protected StactException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
+			: base(info, context) {}
 	}
 }

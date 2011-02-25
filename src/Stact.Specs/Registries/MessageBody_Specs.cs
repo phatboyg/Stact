@@ -66,7 +66,7 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_request()
 		{
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					_channel.Request(new Test
 						{
@@ -80,7 +80,7 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_response()
 		{
-			AnonymousActor.New(inbox =>
+			var actor = AnonymousActor.New(inbox =>
 				{
 					_channel.Respond(new Test
 						{
