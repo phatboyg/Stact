@@ -76,7 +76,9 @@ namespace Stact.Actors.Internal
 
 		public void Send<T>(T message)
 		{
-			_fiber.Add(() => _inbound.Send(message));
+			_inbound.Send(message);
+			// TODO rollback
+			//_fiber.Add(() => _inbound.Send(message));
 		}
 
 		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
