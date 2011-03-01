@@ -1,7 +1,5 @@
-Stact - A library for the LARGER than average developer
+Stact - An actor library and framework for .NET
 =======
-
-![Stact](Stact/raw/master/docs/logo/Stact_logo.png "Stact - For the LARGER than average developer")
 
 # LICENSE
 Apache 2.0 - see docs/legal (just LEGAL in the zip folder)
@@ -11,26 +9,22 @@ NOTE: If you are looking at the source - please run build.bat before opening the
 
 # INFO
 ## Overview
-Stact is a collection of different tools that help you work smarter.  
-  
-* State Machine  
-* Fast Model Binding  
-* Reflection Tools  
-* Concurrency  
-* Expanding...  
+Developing concurrent applications requires an approach that departs from current software development methods, an approach that emphasizes concurrency and communication between autonomous system components. The actor model defines a system of software components called actors that interact with each other by exchanging messages (instead of calling methods on interfaces in an object-oriented design), producing a system in which data (instead of control) flows through components to meet the functional requirements of the system.
 
-Check out the site at [http://Stact-project.net/](http://Stact-project.net/)  
+Stact is a library for building applications using the actor model in .NET. The main assembly, Stact.dll, is the actor library and includes everything needed to use the actor model in any type of application. There are also additional supporting frameworks, such as Stact.ServerFramework, that can be used to expose actors via sockets or HTTP, allowing services to be built using actors.
+
+Stact has a number of using features, including:
+
+* Actors, both typed and anonymous
+* Fibers, a cooperative threading model
+* Channels, to support message passing between objects
+* Workflow, allowing complex state-driven protocols to be defined and executed
   
 ## Getting started with Stact
 ### Downloads
 You can also download Stact from the build server at [http://teamcity.codebetter.com](http://teamcity.codebetter.com).
   
-### Gems & Nubular (Nu)  
-If you have Ruby 1.8.6+ (and Gems 1.3.7+) installed, you can get the current release of Stact to your machine the fastest!  
-  
-1. Ensure you have nu installed. 'gem install nu'  
-2. At the top level directory (trunk or branch name) type 'nu install Stact' for bringing in Stact to your project.  
-  
+    
 ### Source
 This is the best way to get to the bleeding edge of what we are doing.  
 
@@ -47,4 +41,4 @@ This is the best way to get to the bleeding edge of what we are doing.
 # RELEASE NOTES
   
 # CREDITS
-  
+
