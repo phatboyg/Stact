@@ -165,6 +165,12 @@ namespace Stact.Specs.Workflow
 									});
 							});
 
+						x.DuringAny(c =>
+						{
+							c.When(e => e.Dispose)
+								.Then(() => {});
+						});
+
 						x.Finally(t =>
 							{
 								t.Then(instance => Trace.WriteLine("Completed"));

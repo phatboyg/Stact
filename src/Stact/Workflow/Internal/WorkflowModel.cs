@@ -25,7 +25,6 @@ namespace Stact.Workflow
 		StateAccessor<TInstance> CurrentStateAccessor { get; }
 		IEnumerable<Event> Events { get; }
 		IEnumerable<State<TInstance>> States { get; }
-		State<TInstance> AnyState { get; }
 		State<TInstance> InitialState { get; }
 		State<TInstance> FinalState { get; }
 

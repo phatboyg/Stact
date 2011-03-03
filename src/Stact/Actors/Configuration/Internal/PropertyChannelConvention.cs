@@ -44,7 +44,7 @@ namespace Stact.Configuration.Internal
 						{
 							channel.Send(x);
 
-							loop.Repeat();
+							loop.Continue();
 						});
 				});
 		}

@@ -48,6 +48,9 @@ namespace Stact.Workflow.Configuration
 		{
 			MessageEvent<TBody> eevent = builder.Model.GetEvent(_eventExpression);
 
+			if (builder.State == builder.Model.FinalState)
+				throw new WorkflowDefinitionException("Events can not be specified for the final workflow state");
+
 			var activityBuilder = new MessageActivityBuilder<TWorkflow, TInstance,TBody>(builder, eevent);
 
 			_configurators.Each(x => x.Configure(activityBuilder));

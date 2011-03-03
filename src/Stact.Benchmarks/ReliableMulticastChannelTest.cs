@@ -36,12 +36,12 @@ namespace Stact.Benchmarks
 									{
 										Console.WriteLine("Received: " + message.Name);
 
-										loop.Repeat();
+										loop.Continue();
 									})
 								.Receive<B>(message =>
 									{
 										Console.WriteLine("Received: " + message.Address);
-										loop.Repeat();
+										loop.Continue();
 									});
 						});
 				});

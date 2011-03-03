@@ -22,20 +22,25 @@ namespace Stact.Workflow.Configuration
 		where TWorkflow : class
 		where TInstance : class
 	{
-		Func<WorkflowModel<TWorkflow, TInstance>, StateMachineState<TInstance>> _getTargetState;
+		readonly Func<WorkflowModel<TWorkflow, TInstance>, StateMachineState<TInstance>> _getTargetState;
+		readonly string _stateName;
 
 		public TransitionConfigurator(Expression<Func<TWorkflow, State>> stateExpression)
 		{
 			_getTargetState = m => m.GetState(stateExpression);
+			_stateName = stateExpression.GetStateName();
 		}
 
 		public TransitionConfigurator(string stateName)
 		{
 			_getTargetState = m => m.GetState(stateName);
+			_stateName = stateName;
 		}
 
 		public void ValidateConfigurator()
 		{
+			if (_stateName == StateMachineWorkflow.InitialStateName)
+				throw new WorkflowDefinitionException("A transition to the initial state is not allowed.");
 		}
 
 		public void Configure(ActivityBuilder<TWorkflow, TInstance> builder)

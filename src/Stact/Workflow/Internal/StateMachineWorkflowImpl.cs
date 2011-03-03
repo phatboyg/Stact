@@ -74,7 +74,6 @@ namespace Stact.Workflow.Internal
 			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance);
-			e.RaiseEvent(_model.AnyState, instance);
 		}
 
 		public void RaiseEvent<TBody>(TInstance instance, Event<TBody> eevent, TBody body)
@@ -86,7 +85,6 @@ namespace Stact.Workflow.Internal
 			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance, body);
-			e.RaiseEvent(_model.AnyState, instance, body);
 		}
 
 		public void RaiseEvent(TInstance instance, Expression<Func<TWorkflow, Event>> eventSelector)
@@ -98,7 +96,6 @@ namespace Stact.Workflow.Internal
 			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance);
-			e.RaiseEvent(_model.AnyState, instance);
 		}
 
 		public void RaiseEvent<TBody>(TInstance instance, Expression<Func<TWorkflow, Event<TBody>>> eventSelector, TBody body)
@@ -110,7 +107,6 @@ namespace Stact.Workflow.Internal
 			State<TInstance> state = _model.CurrentStateAccessor.Get(instance);
 
 			e.RaiseEvent(state, instance, body);
-			e.RaiseEvent(_model.AnyState, instance, body);
 		}
 
 		public State GetCurrentState(TInstance instance)

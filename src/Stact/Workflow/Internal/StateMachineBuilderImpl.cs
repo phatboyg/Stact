@@ -25,7 +25,6 @@ namespace Stact.Workflow.Internal
 		where TInstance : class
 	{
 		const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
-		readonly string _anyStateName = StateMachineWorkflow.AnyStateName;
 		readonly string _finalStateName = StateMachineWorkflow.FinalStateName;
 		readonly string _initialStateName = StateMachineWorkflow.InitialStateName;
 		readonly WorkflowModel<TWorkflow, TInstance> _model;
@@ -35,13 +34,12 @@ namespace Stact.Workflow.Internal
 			var states = new Dictionary<string, State<TInstance>>(GetStates().ToDictionary(x => x.Name));
 			var events = new Dictionary<string, Event>(GetEvents(states.Values).ToDictionary(x => x.Name));
 
-			var anyState = states[_anyStateName];
 			var initialState = states[_initialStateName];
 			var finalState = states[_finalStateName];
 
 			var currentState = new CurrentStateAccessor<TInstance>(currentStateExpression, initialState);
 
-			_model = new WorkflowModelImpl<TWorkflow, TInstance>(states, events, currentState, anyState, initialState,finalState);
+			_model = new WorkflowModelImpl<TWorkflow, TInstance>(states, events, currentState, initialState,finalState);
 		}
 
 		public WorkflowModel<TWorkflow, TInstance> Model
@@ -91,12 +89,6 @@ namespace Stact.Workflow.Internal
 				.Where(property => property.PropertyType == typeof(State))
 				.Select(property => new StateMachineState<TInstance>(property.Name))
 				.Cast<State<TInstance>>();
-
-			if (!states.Any(x => x.Name == _anyStateName))
-			{
-				states = states
-					.Concat(Enumerable.Repeat<State<TInstance>>(new StateMachineState<TInstance>(_anyStateName), 1));
-			}
 
 			if (!states.Any(x => x.Name == _initialStateName))
 			{

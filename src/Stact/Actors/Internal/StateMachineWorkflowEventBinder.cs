@@ -77,7 +77,7 @@ namespace Stact.Internal
 							}
 							finally
 							{
-								loop.Repeat();
+								loop.Continue();
 							}
 						};
 				};

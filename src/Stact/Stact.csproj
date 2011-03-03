@@ -443,6 +443,7 @@
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspector.cs" />
     <Compile Include="StateMachine\ChannelConfiguration\StateMachineEventInspectorResult.cs" />
     <Compile Include="StateMachine\StateMachineBinding.cs" />
+    <Compile Include="Workflow\Configuration\AnyStateConfigurator.cs" />
     <Compile Include="Workflow\Configuration\DelegateConfigurator.cs" />
     <Compile Include="Workflow\Configuration\ExceptionBuilder.cs" />
     <Compile Include="Workflow\Configuration\ExceptionBuilderConfigurator.cs" />
@@ -521,6 +522,7 @@
     <Compile Include="Workflow\UnknownEventException.cs" />
     <Compile Include="Workflow\UnknownStateException.cs" />
     <Compile Include="Workflow\WorkflowDefinition.cs" />
+    <Compile Include="Workflow\WorkflowDefinitionException.cs" />
     <Compile Include="Workflow\WorkflowDefinitionSource.cs" />
     <Compile Include="Workflow\WorkflowInstance.cs" />
     <Compile Include="Workflow\WorkflowInstanceExtensions.cs" />

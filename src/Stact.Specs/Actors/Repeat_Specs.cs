@@ -41,7 +41,7 @@ namespace Stact.Specs.Actors
 											CurrentBid = currentBid
 										});
 
-									loop.Repeat();
+									loop.Continue();
 								})
 								.Receive<Request<Ask>>(request =>
 									{
@@ -50,7 +50,7 @@ namespace Stact.Specs.Actors
 												CurrentBid = currentBid
 											});
 
-										loop.Repeat();
+										loop.Continue();
 									});
 						});
 				});

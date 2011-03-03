@@ -73,7 +73,7 @@ namespace Stact
 
 			loopAction(loop);
 
-			loop.Repeat();
+			loop.Continue();
 		}
 
 		public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, Inbox inbox)
@@ -84,7 +84,7 @@ namespace Stact
 					inbox.Receive<Resume>(x =>
 						{
 							// repeat the loop now
-							loop.Repeat();
+							loop.Continue();
 						});
 				});
 		}

@@ -54,7 +54,7 @@ namespace Stact.Internal
 			return this;
 		}
 
-		public void Repeat()
+		public void Continue()
 		{
 			foreach (var receiver in _receivers)
 				_pending.Add(receiver());

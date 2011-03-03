@@ -15,6 +15,7 @@ namespace Stact.Workflow.Configuration
 	using System;
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using Internal;
 
 
@@ -57,13 +58,35 @@ namespace Stact.Workflow.Configuration
 		{
 			if (_currentStateExpression == null)
 			{
-				throw new StateMachineConfigurationException(
-					"No accessor for the current state on the instance was specified");
+				_currentStateExpression = GetCurrentStateByConvention();
+
+				if (_currentStateExpression == null)
+				{
+					throw new StateMachineConfigurationException(
+						"No accessor for the current state on the instance was specified");
+				}
 			}
 
 
 			foreach (var configurator in _configurators)
 				configurator.ValidateConfiguration();
+		}
+
+		static Expression<Func<TInstance, State>> GetCurrentStateByConvention()
+		{
+			PropertyInfo property = typeof(TInstance).GetProperty("CurrentState");
+			if (property == null)
+				return null;
+
+			if (!typeof(State).IsAssignableFrom(property.PropertyType))
+				return null;
+
+			ParameterExpression input = Expression.Parameter(typeof(TInstance), "x");
+			MethodCallExpression call = Expression.Call(input, property.GetGetMethod());
+
+			Expression<Func<TInstance, State>> lambda = Expression.Lambda<Func<TInstance, State>>(call, input);
+
+			return lambda;
 		}
 	}
 }

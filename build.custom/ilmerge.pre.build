@@ -39,6 +39,7 @@
         <include name="Stact.dll" />
 	<include name="Stact.xml" />
 	<include name="Magnum.dll" />
+	<include name="System.Threading.dll" />
 	<include name="Newtonsoft.Json.dll" />
       </fileset>
     </copy>

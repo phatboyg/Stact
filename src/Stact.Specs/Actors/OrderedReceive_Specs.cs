@@ -105,7 +105,7 @@ namespace Stact.Specs.Actors
 								{
 									_values.Add(add.Value);
 
-									loop.Repeat();
+									loop.Continue();
 								})
 							.Receive<Request<Status>>(request =>
 								{
@@ -115,7 +115,7 @@ namespace Stact.Specs.Actors
 											InOrder = !_values.Where((t, i) => t != i).Any(),
 										});
 
-									loop.Repeat();
+									loop.Continue();
 								});
 					});
 			}

@@ -49,7 +49,7 @@ namespace Stact.Specs.Registries
 					{
 						ReceivedA.Complete(message.Body);
 
-						loop.Repeat();
+						loop.Continue();
 					});
 				});
 			});

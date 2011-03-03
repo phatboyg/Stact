@@ -117,22 +117,45 @@ namespace Stact.Workflow
 			where TWorkflow : class
 			where TInstance : class
 		{
-			string finalName = StateMachineWorkflow.FinalStateName;
-
-			var stateConfigurator = new StateConfiguratorImpl<TWorkflow, TInstance>(stateMachineConfigurator, finalName);
-
-			stateMachineConfigurator.AddConfigurator(stateConfigurator);
+			var stateConfigurator = stateMachineConfigurator.DuringAny();
 
 			Expression<Func<State, Event>> selector = x => x.Entry;
-			string finalEvent = finalName + "." + selector.MemberName();
+			string eventName = StateMachineWorkflow.FinalStateName + "." + selector.MemberName();
 
-			var activityConfigurator = new SimpleActivityConfigurator<TWorkflow, TInstance>(stateConfigurator, finalEvent);
+			var activityConfigurator = new SimpleActivityConfigurator<TWorkflow, TInstance>(stateConfigurator, eventName);
 
 			stateConfigurator.AddConfigurator(activityConfigurator);
 
 			configurationAction(activityConfigurator);
 
 			return activityConfigurator;
+		}
+
+		public static StateConfigurator<TWorkflow, TInstance> DuringAny<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator,
+			Action<StateConfigurator<TWorkflow, TInstance>> configurationAction)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateConfigurator = new AnyStateConfigurator<TWorkflow, TInstance>();
+
+			stateMachineConfigurator.AddConfigurator(stateConfigurator);
+
+			configurationAction(stateConfigurator);
+
+			return stateConfigurator;
+		}
+
+		public static StateConfigurator<TWorkflow, TInstance> DuringAny<TWorkflow, TInstance>(
+			this StateMachineConfigurator<TWorkflow, TInstance> stateMachineConfigurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var stateConfigurator = new AnyStateConfigurator<TWorkflow, TInstance>();
+
+			stateMachineConfigurator.AddConfigurator(stateConfigurator);
+
+			return stateConfigurator;
 		}
 
 		/// <summary>

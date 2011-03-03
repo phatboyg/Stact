@@ -51,12 +51,15 @@ namespace Stact.Workflow.Configuration
 		public void ValidateConfiguration()
 		{
 			if (_getEvent == null)
-				throw new StateMachineConfigurationException("Null event expression specified");
+				throw new WorkflowDefinitionException("Null event expression specified");
 		}
 
 		public void Configure(StateBuilder<TWorkflow, TInstance> builder)
 		{
 			SimpleEvent eevent = _getEvent(builder);
+
+			if (builder.State == builder.Model.FinalState)
+				throw new WorkflowDefinitionException("Events can not be specified for the final workflow state");
 
 			var activityBuilder = new SimpleActivityBuilder<TWorkflow, TInstance>(builder, eevent);
 

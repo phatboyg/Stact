@@ -35,7 +35,7 @@ namespace Stact.Configuration.Internal
 					loop.Receive<TChannel>(x =>
 						{
 							_instanceConsumer(instance, x);
-							loop.Repeat();
+							loop.Continue();
 						});
 				});
 		}

@@ -27,10 +27,9 @@ namespace Stact.Workflow.Internal
 		readonly IDictionary<string, State<TInstance>> _states;
 
 		public WorkflowModelImpl(IDictionary<string, State<TInstance>> states, IDictionary<string, Event> events,
-		                         StateAccessor<TInstance> currentStateAccessor, State<TInstance> anyState,
+		                         StateAccessor<TInstance> currentStateAccessor, 
 		                         State<TInstance> initialState, State<TInstance> finalState)
 		{
-			AnyState = anyState;
 			InitialState = initialState;
 			FinalState = finalState;
 			_states = states;
@@ -38,7 +37,6 @@ namespace Stact.Workflow.Internal
 			_currentState = currentStateAccessor;
 		}
 
-		public State<TInstance> AnyState { get; private set; }
 		public State<TInstance> InitialState { get; private set; }
 		public State<TInstance> FinalState { get; private set; }
 

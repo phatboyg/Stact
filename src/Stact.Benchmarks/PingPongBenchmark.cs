@@ -46,7 +46,7 @@ namespace Stact.Benchmarks
 								loop.Receive<Request<Ping>>(request =>
 									{
 										request.Respond(pong);
-										loop.Repeat();
+										loop.Continue();
 									});
 							});
 

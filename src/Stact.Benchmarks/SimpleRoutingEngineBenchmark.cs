@@ -96,7 +96,7 @@ namespace Stact.Benchmarks
 						loop.Receive<TConsumer>(m =>
 							{
 								_latch.CountDown();
-								loop.Repeat();
+								loop.Continue();
 							});
 					});
 			}

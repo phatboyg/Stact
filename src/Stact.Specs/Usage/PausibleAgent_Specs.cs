@@ -16,6 +16,7 @@ namespace Stact.Specs.Usage
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 
+
 	[Scenario]
 	public class When_an_agent_is_paused_after_the_first_message
 	{
@@ -53,6 +54,7 @@ namespace Stact.Specs.Usage
 			_second.IsCompleted.ShouldBeFalse();
 		}
 	}
+
 
 	[Scenario]
 	public class When_an_agent_is_paused_and_later_continued
@@ -113,20 +115,19 @@ namespace Stact.Specs.Usage
 		public Agent(Inbox inbox)
 		{
 			inbox.Loop(loop =>
-				{
-							loop.EnableSuspendResume(inbox)
-						.Receive<Update>(update =>
-							{
-								update.Complete(Stopwatch.GetTimestamp());
+			{
+				loop.EnableSuspendResume(inbox)
+					.Receive<Update>(update =>
+					{
+						update.Complete(Stopwatch.GetTimestamp());
 
-								loop.Repeat();
-							});
-				});
+						loop.Continue();
+					});
+			});
 		}
 	}
 
+
 	class Update :
-		Future<long>
-	{
-	}
+		Future<long> {}
 }

@@ -54,15 +54,15 @@ namespace Stact.Actors.Internal
 
 			_adapter = new ChannelAdapter();
 			_connected = _adapter.Connect(x =>
-				{
-					x.AddConsumerOf<Request<Exit>>()
-						.UsingConsumer(HandleExit)
-						.HandleOnCallingThread();
+			{
+				x.AddConsumerOf<Request<Exit>>()
+					.UsingConsumer(HandleExit)
+					.HandleOnCallingThread();
 
-					x.AddConsumerOf<Kill>()
-						.UsingConsumer(HandleKill)
-						.HandleOnCallingThread();
-				});
+				x.AddConsumerOf<Kill>()
+					.UsingConsumer(HandleKill)
+					.HandleOnCallingThread();
+			});
 
 			_inbound = new BroadcastChannel(new UntypedChannel[] {_engine, _adapter});
 
@@ -77,8 +77,6 @@ namespace Stact.Actors.Internal
 		public void Send<T>(T message)
 		{
 			_inbound.Send(message);
-			// TODO rollback
-			//_fiber.Add(() => _inbound.Send(message));
 		}
 
 		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
@@ -125,12 +123,12 @@ namespace Stact.Actors.Internal
 			var consumerNode = new SelectiveConsumerNode<T>(receiver.Accept);
 
 			var joinNode = (JoinNode<T>)_joinNodes.Retrieve(typeof(T), x =>
-				{
-					JoinNode<T> result = null;
-					var locator = new JoinNodeLocator<T>(jNode => result = jNode);
-					locator.Search(_engine);
-					return result;
-				});
+			{
+				JoinNode<T> result = null;
+				var locator = new JoinNodeLocator<T>(jNode => result = jNode);
+				locator.Search(_engine);
+				return result;
+			});
 
 			joinNode.AddActivation(consumerNode);
 

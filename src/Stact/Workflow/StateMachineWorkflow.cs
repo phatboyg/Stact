@@ -20,7 +20,6 @@ namespace Stact.Workflow
 
 	public static class StateMachineWorkflow
 	{
-		public const string AnyStateName = "Any";
 		public const string FinalStateName = "Final";
 		public const string InitialStateName = "Initial";
 
