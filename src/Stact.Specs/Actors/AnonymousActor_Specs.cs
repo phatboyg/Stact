@@ -16,7 +16,6 @@ namespace Stact.Specs.Actors
 	using Auctions;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
-	using Stact;
 
 
 	[Scenario]
@@ -28,13 +27,13 @@ namespace Stact.Specs.Actors
 		{
 			var response = new FutureChannel<Status>();
 
-			var actor = AnonymousActor.New(inbox =>
-				{
-					Auction.Request(new Ask(Id), inbox)
-						.Within(30.Seconds())
-						.Receive<Response<Status>>(m => status => response.Complete(status.Body))
-						.Receive<Response<Ended>>(m => ended => { });
-				});
+			AnonymousActor.New(inbox =>
+			{
+				Auction.Request(new Ask(Id), inbox)
+					.Within(30.Seconds())
+					.Receive<Response<Status>>(m => status => response.Complete(status.Body))
+					.Receive<Response<Ended>>(m => ended => {});
+			});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
@@ -54,13 +53,13 @@ namespace Stact.Specs.Actors
 
 			var response = new FutureChannel<Ended>();
 
-			var actor = AnonymousActor.New(inbox =>
-				{
-					Auction.Request(new Ask(Id), inbox)
-						.Within(30.Seconds())
-						.Receive<Response<Status>>(m => status => { })
-						.Receive<Response<Ended>>(m => ended => response.Complete(ended.Body));
-				});
+			AnonymousActor.New(inbox =>
+			{
+				Auction.Request(new Ask(Id), inbox)
+					.Within(30.Seconds())
+					.Receive<Response<Status>>(m => status => {})
+					.Receive<Response<Ended>>(m => ended => response.Complete(ended.Body));
+			});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
@@ -79,20 +78,20 @@ namespace Stact.Specs.Actors
 			var response = new FutureChannel<Purchased>();
 			decimal price = 0.0m;
 
-			var actor = AnonymousActor.New(inbox =>
-				{
-					Auction.Request(new Ask(Id), inbox)
-						.Within(30.Seconds())
-						.Receive<Response<Status>>(m => status =>
-							{
-								price = status.Body.CurrentBid;
-								Auction.Request(new Buy(status.Body.Token, 1), inbox)
-									.Within(30.Seconds())
-									.Receive<Response<Purchased>>(pm => pmsg => response.Complete(pmsg.Body))
-									.Otherwise(() => { });
-							})
-						.Receive<Response<Ended>>(m => ended => { });
-				});
+			AnonymousActor.New(inbox =>
+			{
+				Auction.Request(new Ask(Id), inbox)
+					.Within(30.Seconds())
+					.Receive<Response<Status>>(m => status =>
+					{
+						price = status.Body.CurrentBid;
+						Auction.Request(new Buy(status.Body.Token, 1), inbox)
+							.Within(30.Seconds())
+							.Receive<Response<Purchased>>(pm => pmsg => response.Complete(pmsg.Body))
+							.Otherwise(() => {});
+					})
+					.Receive<Response<Ended>>(m => ended => {});
+			});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
@@ -113,18 +112,18 @@ namespace Stact.Specs.Actors
 			var statusResponse = new FutureChannel<Status>();
 			var endedResponse = new FutureChannel<Ended>();
 
-			var actor = AnonymousActor.New(inbox =>
-				{
-					Auction.Request(new Ask(Id), inbox)
-						.Within(10.Seconds())
-						.Receive<Response<Status>>(m => status =>
-							{
-								statusResponse.Complete(status.Body);
-								Auction.Send(new End());
-								Auction.Request(new Ask(Id), inbox);
-							})
-						.Receive<Response<Ended>>(m => ended => endedResponse.Complete(ended.Body));
-				});
+			AnonymousActor.New(inbox =>
+			{
+				Auction.Request(new Ask(Id), inbox)
+					.Within(10.Seconds())
+					.Receive<Response<Status>>(m => status =>
+					{
+						statusResponse.Complete(status.Body);
+						Auction.Send(new End());
+						Auction.Request(new Ask(Id), inbox);
+					})
+					.Receive<Response<Ended>>(m => ended => endedResponse.Complete(ended.Body));
+			});
 
 			statusResponse.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
 			endedResponse.WaitUntilCompleted(2.Seconds()).ShouldBeFalse("The receiver for Ended should not have been called.");
@@ -141,13 +140,13 @@ namespace Stact.Specs.Actors
 		{
 			var response = new FutureChannel<bool>();
 
-			var actor = AnonymousActor.New(inbox =>
-				{
-					Auction.Request(new Ask(new Guid()), inbox)
-						.Within(1.Seconds())
-						.Receive<Response<Status>>(m => status => { })
-						.Otherwise(() => response.Complete(true));
-				});
+			AnonymousActor.New(inbox =>
+			{
+				Auction.Request(new Ask(new Guid()), inbox)
+					.Within(1.Seconds())
+					.Receive<Response<Status>>(m => status => {})
+					.Otherwise(() => response.Complete(true));
+			});
 
 			response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for otherwise to be called");
 		}

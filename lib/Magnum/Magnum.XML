@@ -4,6 +4,35 @@
         <name>Magnum</name>
     </assembly>
     <members>
+        <member name="T:Magnum.Benchmark`1">
+            <summary>
+            A class that can be benchmarked by the console
+            </summary>
+        </member>
+        <member name="M:Magnum.Benchmark`1.WarmUp(`0)">
+            <summary>
+            Any single-run operations that should be performed to prepare for the benchmark
+            </summary>
+            <param name="instance">The instance being tested</param>
+        </member>
+        <member name="M:Magnum.Benchmark`1.Shutdown(`0)">
+            <summary>
+            Any post-run operations that should be performed to clean up
+            </summary>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Magnum.Benchmark`1.Run(`0,System.Int32)">
+            <summary>
+            Run the operation being benchmarked the specified number of iterations
+            </summary>
+            <param name="instance">The instance being tested</param>
+            <param name="iterationCount">The number of iterations to execute</param>
+        </member>
+        <member name="P:Magnum.Benchmark`1.Iterations">
+            <summary>
+            A list of iteration counts to execute with each benchmark
+            </summary>
+        </member>
         <member name="T:Magnum.PerformanceCounters.CounterCategory">
             <summary>
             Marker interface for type scanning

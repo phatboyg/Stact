@@ -169,6 +169,7 @@
     <Compile Include="Diagnostics\TraceOperationMessage.cs" />
     <Compile Include="Diagnostics\TraceOperationMessageImpl.cs" />
     <Compile Include="Diagnostics\TraceOperationStartedImpl.cs" />
+    <Compile Include="Example\Auction.cs" />
     <Compile Include="Functional\Action_Specs.cs" />
     <Compile Include="Functional\Binder.cs" />
     <Compile Include="Functional\Identity_Specs.cs" />
