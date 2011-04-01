@@ -17,7 +17,6 @@ namespace Stact.Benchmarks
 	using Magnum;
 	using Magnum.Extensions;
 	using MessageHeaders;
-	using Remote;
 
 
 	public class RemoteActorTest
@@ -30,19 +29,19 @@ namespace Stact.Benchmarks
 
 			Guid id = CombGuid.Generate();
 
-			var registry = ActorRegistryFactory.New(x =>
-				{
-					x.Remote(r => r.ListenTo(remoteAddress));
-				});
+			ActorRegistry registry = ActorRegistryFactory.New(x =>
+			{
+				x.Remote(r => r.ListenTo(remoteAddress));
+			});
 
-			var server = AnonymousActor.New(inbox =>
+			ActorInstance server = AnonymousActor.New(inbox =>
+			{
+				inbox.Receive<Response<Hello>>(message =>
 				{
-					inbox.Receive<Response<Hello>>(message =>
-						{
-							Console.WriteLine("Hi!");
-							Console.WriteLine("Request ID: " + message.RequestId);
-						});
+					Console.WriteLine("Hi!");
+					Console.WriteLine("Request ID: " + message.RequestId);
 				});
+			});
 
 
 			registry.Register(id, server);
@@ -55,7 +54,7 @@ namespace Stact.Benchmarks
 				{
 					MyNameIs = "Joe",
 				}, "27"));
-			}, () => { });
+			}, () => {});
 
 			ThreadUtil.Sleep(5.Seconds());
 

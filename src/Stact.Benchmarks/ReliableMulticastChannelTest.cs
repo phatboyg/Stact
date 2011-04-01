@@ -16,7 +16,6 @@ namespace Stact.Benchmarks
 	using System.Threading;
 	using Internal;
 	using Magnum.Serialization;
-	using MessageHeaders;
 	using Remote;
 	using Remote.ReliableMulticast;
 
@@ -28,23 +27,23 @@ namespace Stact.Benchmarks
 			var network = new Uri("pgm://224.0.0.7:40001");
 
 			ActorInstance actor = AnonymousActor.New(inbox =>
+			{
+				inbox.Loop(loop =>
 				{
-					inbox.Loop(loop =>
+					loop
+						.Receive<A>(message =>
 						{
-							loop
-								.Receive<A>(message =>
-									{
-										Console.WriteLine("Received: " + message.Name);
+							Console.WriteLine("Received: " + message.Name);
 
-										loop.Continue();
-									})
-								.Receive<B>(message =>
-									{
-										Console.WriteLine("Received: " + message.Address);
-										loop.Continue();
-									});
+							loop.Continue();
+						})
+						.Receive<B>(message =>
+						{
+							Console.WriteLine("Received: " + message.Address);
+							loop.Continue();
 						});
 				});
+			});
 
 			using (var writer = new ReliableMulticastWriter(network))
 			{
@@ -55,7 +54,9 @@ namespace Stact.Benchmarks
 				{
 					buffer.Start();
 
-					channel = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new SerializeChunkChannel(buffer, new FastTextSerializer())));
+					channel =
+						new MessageHeaders.MatchHeaderChannel(
+							new MatchHeaderChannel(new SerializeChunkChannel(buffer, new FastTextSerializer())));
 
 
 					MessageHeaders.MatchHeaderChannel channel2;
@@ -63,21 +64,23 @@ namespace Stact.Benchmarks
 						)
 					{
 						buffer2.Start();
-						channel2 = new MessageHeaders.MatchHeaderChannel(new Remote.MatchHeaderChannel(new SerializeChunkChannel(buffer2, new FastTextSerializer())));
+						channel2 =
+							new MessageHeaders.MatchHeaderChannel(
+								new MatchHeaderChannel(new SerializeChunkChannel(buffer2, new FastTextSerializer())));
 
 						Console.WriteLine("Writer started");
 
 						for (int i = 0; i < 10; i++)
 						{
 							channel.Send(new A
-								{
-									Name = "Joe"
-								});
+							{
+								Name = "Joe"
+							});
 
 							channel2.Send(new B
-								{
-									Address = "American Way",
-								});
+							{
+								Address = "American Way",
+							});
 						}
 						Console.WriteLine("Sent message");
 

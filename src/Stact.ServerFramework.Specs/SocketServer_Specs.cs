@@ -20,11 +20,9 @@ namespace Stact.ServerFramework.Specs
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using Stact.Internal;
 
 
 	[Scenario]
-	[Explicit]
 	public class When_starting_a_socket_server
 	{
 		ChannelConnection _connection;
@@ -42,15 +40,15 @@ namespace Stact.ServerFramework.Specs
 
 			_input = new ChannelAdapter();
 			_connection = _input.Connect(x =>
-				{
-					x.AddConsumerOf<ServerStarting>()
-						.UsingConsumer(_startingEventReceived.Complete)
-						.HandleOnCallingThread();
+			{
+				x.AddConsumerOf<ServerStarting>()
+					.UsingConsumer(_startingEventReceived.Complete)
+					.HandleOnCallingThread();
 
-					x.AddConsumerOf<ServerRunning>()
-						.UsingConsumer(_runningEventReceived.Complete)
-						.HandleOnCallingThread();
-				});
+				x.AddConsumerOf<ServerRunning>()
+					.UsingConsumer(_runningEventReceived.Complete)
+					.HandleOnCallingThread();
+			});
 
 			_uri = new Uri("tcp://0.0.0.0:8008");
 			_server = new SocketServer(_uri, new PoolFiber(), _input);
@@ -132,10 +130,10 @@ namespace Stact.ServerFramework.Specs
 			_server.ConnectionCount.ShouldEqual(expected);
 
 			clients.ForEach(client =>
-				{
-					using (client)
-						client.Close();
-				});
+			{
+				using (client)
+					client.Close();
+			});
 
 			clients.Clear();
 		}

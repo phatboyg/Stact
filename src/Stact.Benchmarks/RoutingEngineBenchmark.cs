@@ -1,25 +1,27 @@
-﻿namespace Stact.Benchmarks
+﻿// Copyright 2010 Chris Patterson
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+namespace Stact.Benchmarks
 {
 	using System;
 	using System.Diagnostics;
 	using System.Threading;
-	using Internal;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;
 	using Routing;
-	using Routing.Visualizers;
 
 
 	public class RoutingEngineBenchmark
 	{
-		class A
-		{
-		}
-
-		class B
-		{
-		}
-
 		public void Run()
 		{
 			Run(() => new A(), () => new B());
@@ -51,10 +53,11 @@
 			Console.WriteLine("Processed {0} messages with {1} consumers in {2}ms", totalMessageCount, consumerCount,
 			                  timer.ElapsedMilliseconds);
 
-			Console.WriteLine("That's {0}K messages per second!", totalMessageCount / timer.ElapsedMilliseconds);
+			Console.WriteLine("That's {0}K messages per second!", totalMessageCount/timer.ElapsedMilliseconds);
 		}
 
-		bool RunTest<T1,T2>(int consumerCount, int messageCount, Future<int> complete, Func<T1> value1Provider, Func<T2> value2Provider, out int totalMessageCount)
+		bool RunTest<T1, T2>(int consumerCount, int messageCount, Future<int> complete, Func<T1> value1Provider,
+		                     Func<T2> value2Provider, out int totalMessageCount)
 		{
 			var engine = new DynamicRoutingEngine(new PoolFiber());
 
@@ -68,20 +71,20 @@
 			for (int i = 0; i < consumerCount; i++)
 			{
 				engine.Receive<A>(m =>
-					{
-						Interlocked.Increment(ref countA);
-						latch.CountDown();
-					});
+				{
+					Interlocked.Increment(ref countA);
+					latch.CountDown();
+				});
 				engine.Receive<B>(m =>
-					{
-						Interlocked.Increment(ref countB);
-						latch.CountDown();
-					});
+				{
+					Interlocked.Increment(ref countB);
+					latch.CountDown();
+				});
 				engine.Receive<A, B>(m =>
-					{
-						Interlocked.Increment(ref countC);
-						latch.CountDown();
-					});
+				{
+					Interlocked.Increment(ref countC);
+					latch.CountDown();
+				});
 			}
 
 			//var visualizer = new RoutingEngineTextVisualizer();
@@ -96,12 +99,18 @@
 
 			bool waitUntilCompleted = complete.WaitUntilCompleted(30.Seconds());
 
-				Console.WriteLine("Consumed A: " + countA);
-				Console.WriteLine("Consumed B: " + countB);
-				Console.WriteLine("Consumed C: " + countC);
+			Console.WriteLine("Consumed A: " + countA);
+			Console.WriteLine("Consumed B: " + countB);
+			Console.WriteLine("Consumed C: " + countC);
 
 
 			return waitUntilCompleted;
 		}
+
+
+		class A {}
+
+
+		class B {}
 	}
 }

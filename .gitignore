@@ -1,5 +1,5 @@
 build_output/*
-code_drop/*
+build_artifacts/*
 
 **/*.suo
 **/**/*.suo

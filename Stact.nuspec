@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<package> 
+  <metadata> 
+    <id>Stact</id> 
+    <version>1.0.0.0</version> 
+    <authors>Chris Patterson</authors>
+    <description>Stact is an actor library and framework</description> 
+    <language>en-US</language>
+    <licenseUrl>https://github.com/phatboyg/Stact/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/phatboyg/Stact</projectUrl>
+  </metadata> 
+  <files>
+    <file src="build_output\**\*" target="lib" />
+  </files>
+</package>
+

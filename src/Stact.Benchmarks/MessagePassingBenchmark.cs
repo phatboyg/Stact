@@ -14,7 +14,6 @@ namespace Stact.Benchmarks
 {
 	using System;
 	using System.Diagnostics;
-	using Internal;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;
 
@@ -66,12 +65,12 @@ namespace Stact.Benchmarks
 			{
 				int channelNumber = i;
 				channels[i] = new ConsumerChannel<T>(fiberFactory(), x =>
-					{
-						if (channelNumber < channels.Length - 1)
-							channels[channelNumber + 1].Send(x);
+				{
+					if (channelNumber < channels.Length - 1)
+						channels[channelNumber + 1].Send(x);
 
-						latch.CountDown();
-					});
+					latch.CountDown();
+				});
 			}
 
 			for (int i = 0; i < seedCount; i++)

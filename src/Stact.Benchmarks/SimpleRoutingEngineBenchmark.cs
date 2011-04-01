@@ -78,9 +78,7 @@ namespace Stact.Benchmarks
 		}
 
 
-		class A
-		{
-		}
+		class A {}
 
 
 		class TestActor<TConsumer> :
@@ -92,13 +90,13 @@ namespace Stact.Benchmarks
 			{
 				_latch = latch;
 				inbox.Loop(loop =>
+				{
+					loop.Receive<TConsumer>(m =>
 					{
-						loop.Receive<TConsumer>(m =>
-							{
-								_latch.CountDown();
-								loop.Continue();
-							});
+						_latch.CountDown();
+						loop.Continue();
 					});
+				});
 			}
 		}
 	}

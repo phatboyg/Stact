@@ -18,7 +18,7 @@ namespace Stact.Workflow.Internal
 
 
 	public class FindMethodCallVisitor :
-		ExpressionVisitor
+		Magnum.Reflection.ExpressionVisitor
 	{
 		MethodInfo _methodInfo;
 

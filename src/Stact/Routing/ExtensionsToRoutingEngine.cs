@@ -54,15 +54,15 @@ namespace Stact.Routing
 //		}
 
 
-		public static void Receive<T1, T2>(this RoutingEngine engine, Consumer<Tuple<T1,T2>> consumer)
+		public static void Receive<T1, T2>(this RoutingEngine engine, Consumer<Stact.Routing.Internal.Tuple<T1, T2>> consumer)
 		{
 			engine.Add(() =>
 				{
-					ConsumerNode<Tuple<T1,T2>> consumerNode = null;
+					ConsumerNode<Stact.Routing.Internal.Tuple<T1, T2>> consumerNode = null;
 
 					var locator = new JoinNodeLocator<T1,T2>(joinNode =>
 						{
-							consumerNode = new ConsumerNode<Tuple<T1,T2>>(new PoolFiber(), m =>
+							consumerNode = new ConsumerNode<Stact.Routing.Internal.Tuple<T1, T2>>(new PoolFiber(), m =>
 								{
 									//joinNode.RemoveActivation(consumerNode);
 									consumer(m);

@@ -25,9 +25,9 @@ namespace Stact.Routing
 			return new DynamicRoutingContext<T1>(engine, item1);
 		}
 
-		public static RoutingContext<Tuple<T1, T2>> Create<T1, T2>(DynamicRoutingEngine engine, T1 item1, T2 item2)
+		public static RoutingContext<Stact.Routing.Internal.Tuple<T1, T2>> Create<T1, T2>(DynamicRoutingEngine engine, T1 item1, T2 item2)
 		{
-			return new DynamicRoutingContext<Tuple<T1, T2>>(engine, new TupleImpl<T1, T2>(item1, item2));
+			return new DynamicRoutingContext<Stact.Routing.Internal.Tuple<T1, T2>>(engine, new Stact.Routing.Internal.TupleImpl<T1, T2>(item1, item2));
 		}
 	}
 
@@ -91,7 +91,7 @@ namespace Stact.Routing
 			get { return _engine; }
 		}
 
-		public RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> other)
+		public RoutingContext<Stact.Routing.Internal.Tuple<T, T2>> Join<T2>(RoutingContext<T2> other)
 		{
 			return DynamicRoutingContext.Create(_engine, Body, other.Body);
 		}
