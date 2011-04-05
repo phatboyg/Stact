@@ -13,3 +13,6 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Stact.ServerFramework")]
+[assembly: InternalsVisibleTo("Topshelf")]
+[assembly: InternalsVisibleTo("Topshelf.Host")]
+

@@ -65,7 +65,7 @@ namespace Stact.Specs.Actors
 				{
 					thread.Schedule(i, fiber,one);
 				}
-				Assert.IsTrue(reset.WaitOne(1200, false));
+				Assert.IsTrue(reset.WaitOne(4000, false));
 			}
 		}
 	}

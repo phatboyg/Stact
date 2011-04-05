@@ -180,8 +180,10 @@ end
 desc "Target used for the CI server. It both builds, tests and packages."
 task :ci => [:default, :package, :moma]
 
+task :package => [:zip_output, :nuget]
+
 desc "ZIPs up the build results and runs the MoMA analyzer."
-zip :package do |zip|
+zip :zip_output do |zip|
 	zip.directories_to_zip = [props[:stage]]
 	zip.output_file = "Stact-#{BUILD_NUMBER_BASE}.zip"
 	zip.output_path = [props[:artifacts]]
@@ -198,7 +200,7 @@ end
 
 desc "Builds the nuget package"
 task :nuget do
-	sh "lib/nuget.exe pack stact.nuspec -o build_artifacts"
+	sh "lib/nuget pack stact.nuspec /OutputDirectory build_artifacts"
 end
 
 def project_outputs(props)
