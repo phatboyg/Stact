@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<package> 
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"> 
   <metadata> 
     <id>Stact</id> 
     <version>1.0.0.0</version> 
