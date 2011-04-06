@@ -12,8 +12,4 @@
 // specific language governing permissions and limitations under the License.
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Stact.ServerFramework")]
-[assembly: InternalsVisibleTo("Topshelf")]
-[assembly: InternalsVisibleTo("Topshelf.Host")]
-[assembly: InternalsVisibleTo("Topshelf.Specs")]
 

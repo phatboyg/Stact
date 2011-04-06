@@ -94,11 +94,14 @@ end
 desc "Cleans, versions, compiles the application and generates build_output/."
 task :compile => [:global_version, :build] do
 	puts 'Copying unmerged dependencies to output folder'
-	copyOutputFiles File.join(props[:src], "Stact.ServerFramework/bin/#{BUILD_CONFIG}"), "Stact.ServerFramework.{dll,pdb,xml}", props[:output]
+
+	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "Stact.{dll,pdb,xml}", props[:output]
+	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "Magnum.{dll,pdb,xml}", props[:output]
+	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "log4net.{dll,pdb,xml}", props[:output]
 
 end
 
-task :ilmerge => [:ilmerge_stact, :ilmerge_server] do
+task :ilmerge => [:ilmerge_server] do
 end
 
 
@@ -111,6 +114,7 @@ ilmerge :ilmerge_server do |ilm|
         ilm.use MSB_USE
 	ilm.log = File.join( props[:src], "Stact.ServerFramework","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
 	ilm.allow_dupes = true
+	ilm.union = false
 	ilm.references = [ 'Stact.ServerFramework.dll', 'Newtonsoft.Json.dll']
 end
 
@@ -123,7 +127,8 @@ ilmerge :ilmerge_stact do |ilm|
 	ilm.target = :library
         ilm.use MSB_USE
 	ilm.log = File.join( props[:src], "Stact","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
-	ilm.allow_dupes = true
+	ilm.allow_dupes = false
+	ilm.union = true
 	ilm.references = [ 'Stact.dll', 'Magnum.dll']
 end
 
