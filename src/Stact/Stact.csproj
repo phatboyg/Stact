@@ -78,7 +78,7 @@
     <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
@@ -116,6 +116,8 @@
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderChannel.cs" />
     <Compile Include="MessageHeaders\SetMessageHeader.cs" />
     <Compile Include="Messages\Resume.cs" />
+    <Compile Include="Messages\Start.cs" />
+    <Compile Include="Messages\Stop.cs" />
     <Compile Include="Messages\Suspend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remote\Configuration\RemoteActorRegistryBuilder.cs" />

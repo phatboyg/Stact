@@ -25,7 +25,7 @@ namespace Stact.ServerFramework
 	///   as they arrive to separate connection objects with their own fibers
 	/// </summary>
 	public class SocketServer :
-		StreamServer<SocketServer>
+		StreamServer
 	{
 		const int ConnectionBacklogLimit = 1000;
 		const int SendReceiveTimeout = 10000;
@@ -34,7 +34,7 @@ namespace Stact.ServerFramework
 		Socket _listener;
 
 		public SocketServer(Uri uri)
-			: this(uri, new PoolFiber(), new ShuntChannel())
+			: this(uri, new PoolFiber())
 		{
 		}
 
@@ -43,6 +43,12 @@ namespace Stact.ServerFramework
 		{
 		}
 
+		public SocketServer(Uri uri, UntypedChannel eventChannel)
+			: this(uri, new PoolFiber(), eventChannel)
+		{
+
+		}
+	
 		public SocketServer(Uri uri, Fiber fiber, UntypedChannel eventChannel)
 			: base(uri, fiber, eventChannel)
 		{
@@ -83,7 +89,7 @@ namespace Stact.ServerFramework
 
 		void QueueAccept()
 		{
-			if (CurrentState == Stopping || CurrentState == Stopped)
+			if (_closing)
 				return;
 
 			_listener.BeginAccept(AcceptConnection, this);
@@ -101,7 +107,7 @@ namespace Stact.ServerFramework
 					ConnectionEstablished(() => HandleConnection(acceptedAt, socket));
 				}
 			}
-			catch (ObjectDisposedException ex)
+			catch (ObjectDisposedException)
 			{
 			}
 			catch

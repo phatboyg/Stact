@@ -26,6 +26,16 @@ namespace Stact
 			return new MessageUrn(type);
 		}
 
+		public static void Start(this ActorInstance instance)
+		{
+			instance.Send<Start>();
+		}
+
+		public static void Stop(this ActorInstance instance)
+		{
+			instance.Send<Stop>();
+		}
+
 		/// <summary>
 		///   Sends an Exit message to an actor instance without waiting for a response
 		/// </summary>

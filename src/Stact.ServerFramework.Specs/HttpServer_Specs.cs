@@ -54,7 +54,7 @@ namespace Stact.ServerFramework.Specs
 				});
 
 			ServerUri = new Uri("http://localhost:8008/Topshelf");
-			_server = new HttpServer(ServerUri, new PoolFiber(), _input, new[]
+			_server = new HttpServer(ServerUri, _input, new[]
 				{
 					new VersionConnectionHandler(),
 				});
@@ -67,12 +67,6 @@ namespace Stact.ServerFramework.Specs
 			_server.Stop();
 
 			_connection.Dispose();
-		}
-
-		[Then]
-		public void Should_be_available_to_accept_connections()
-		{
-			_server.CurrentState.ShouldEqual(HttpServer.Running);
 		}
 
 		[Then]

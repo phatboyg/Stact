@@ -26,7 +26,7 @@ namespace Stact.ServerFramework
 	/// within the application.
 	/// </summary>
 	public class HttpServer :
-		StreamServer<HttpServer>,
+		StreamServer,
 		ServerContext
 	{
 		readonly PatternMatchConnectionHandler[] _connectionHandlers;
@@ -35,6 +35,12 @@ namespace Stact.ServerFramework
 		ChannelAdapter<ConnectionContext> _connectionChannel;
 		ChannelConnection _connectionChannelConnection;
 		HttpListener _httpListener;
+
+		public HttpServer(Uri uri, UntypedChannel eventChannel,
+		                  IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
+			: this(uri, new PoolFiber(), eventChannel, connectionHandlers)
+		{
+		}
 
 		public HttpServer(Uri uri, Fiber fiber, UntypedChannel eventChannel,
 		                  IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
@@ -83,7 +89,7 @@ namespace Stact.ServerFramework
 
 		void QueueAccept()
 		{
-			if (CurrentState == Stopping || CurrentState == Stopped)
+			if (_closing)
 				return;
 
 			_httpListener.BeginGetContext(GetContext, null);

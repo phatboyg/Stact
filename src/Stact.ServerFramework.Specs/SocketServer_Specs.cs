@@ -51,7 +51,8 @@ namespace Stact.ServerFramework.Specs
 			});
 
 			_uri = new Uri("tcp://0.0.0.0:8008");
-			_server = new SocketServer(_uri, new PoolFiber(), _input);
+
+			_server = new SocketServer(_uri, _input);
 			_server.Start();
 		}
 
@@ -61,12 +62,6 @@ namespace Stact.ServerFramework.Specs
 			_server.Stop();
 
 			_connection.Dispose();
-		}
-
-		[Then]
-		public void Should_be_available_to_accept_connections()
-		{
-			_server.CurrentState.ShouldEqual(SocketServer.Running);
 		}
 
 		[Test]

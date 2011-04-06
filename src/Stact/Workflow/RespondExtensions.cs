@@ -77,5 +77,22 @@ namespace Stact.Workflow
 
 			return activityConfigurator;
 		}
+
+		public static ActivityConfigurator<TWorkflow, TInstance, Request<TRequest>> Respond
+			<TWorkflow, TInstance, TRequest>(
+			this ActivityConfigurator<TWorkflow, TInstance, Request<TRequest>> activityConfigurator)
+			where TWorkflow : class
+			where TInstance : class
+		{
+			var configurator =
+				new DelegateInstanceBodyConfigurator<TWorkflow, TInstance, Request<TRequest>>((instance, request) =>
+					{
+						request.Respond();
+					});
+
+			activityConfigurator.AddConfigurator(configurator);
+
+			return activityConfigurator;
+		}
 	}
 }

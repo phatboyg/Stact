@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,47 +15,17 @@ namespace Stact.ServerFramework
 	using System;
 	using System.Threading;
 	using Events;
-	using Magnum.StateMachine;
 
 
-	public abstract class StreamServer<T> :
-		StateMachine<StreamServer<T>>
-		where T : StreamServer<T>
+	public abstract class StreamServer
 	{
 		readonly Uri _uri;
-
+		protected bool _closing;
 		int _connectionCount;
-
-		static StreamServer()
-		{
-			Define(() =>
-				{
-					Initially(
-					          When(Start)
-					          	.Call(instance => instance.StartListener())
-					          	.TransitionTo(Running)
-						);
-
-					During(Running,
-					       When(Stop)
-					       	.TransitionTo(Stopping));
-
-					Anytime(
-					        When(Starting.Enter)
-					        	.Then(instance => instance.Publish<ServerStarting>()),
-					        When(Running.Enter)
-					        	.Call(instance => instance.Publish<ServerRunning>()),
-					        When(Stopping.Enter)
-					        	.Call(instance => instance.Publish<ServerStopping>())
-					        	.Call(instance => instance.StopListener()),
-					        When(Stopped.Enter)
-					        	.Call(instance => instance.Publish<ServerStopped>())
-						);
-				});
-		}
 
 		protected StreamServer(Uri uri, Fiber fiber, UntypedChannel eventChannel)
 		{
+			_closing = false;
 			_uri = uri;
 			Fiber = fiber;
 			EventChannel = eventChannel;
@@ -69,37 +39,35 @@ namespace Stact.ServerFramework
 		protected UntypedChannel EventChannel { get; private set; }
 		protected Fiber Fiber { get; private set; }
 
-
-		public static Event Start { get; set; }
-		public static Event Stop { get; set; }
-
-		public static State Initial { get; set; }
-		public static State Starting { get; set; }
-		public static State Running { get; set; }
-		public static State Stopped { get; set; }
-		public static State Stopping { get; set; }
-		public static State Completed { get; set; }
-
 		public int ConnectionCount
 		{
 			get { return _connectionCount; }
 		}
 
-		void StartListener()
-		{
-			StartListener(_uri);
-		}
-
-		protected virtual void StartListener(Uri uri)
-		{
-			ChangeCurrentState(Starting);
-		}
-
-		protected void Publish<T>()
+		public void Publish<T>()
 			where T : ServerEvent, new()
 		{
 			EventChannel.Send(new T());
 		}
+
+		public void Start()
+		{
+			Publish<ServerStarting>();
+			StartListener(_uri);
+			Publish<ServerRunning>();
+		}
+
+		public void Stop()
+		{
+			Publish<ServerStopping>();
+
+			_closing = true;
+
+			if (_connectionCount == 0)
+				ShutdownListener();
+		}
+
+		protected virtual void StartListener(Uri uri) {}
 
 		protected void ConnectionEstablished(Action handleConnectionAction)
 		{
@@ -112,38 +80,16 @@ namespace Stact.ServerFramework
 		{
 			int count = Interlocked.Decrement(ref _connectionCount);
 
-			if (CurrentState == Stopping)
+			if (_closing)
 			{
 				if (count == 0)
 					ShutdownListener();
 			}
 		}
 
-		void StopListener()
-		{
-			if (_connectionCount == 0)
-				ShutdownListener();
-		}
-
 		protected virtual void ShutdownListener()
 		{
-			ChangeCurrentState(Stopped);
-		}
-	}
-
-
-	public static class ExtensionsToSocketServer
-	{
-		public static void Start<T>(this StreamServer<T> server)
-			where T : StreamServer<T>
-		{
-			server.RaiseEvent(StreamServer<T>.Start);
-		}
-
-		public static void Stop<T>(this StreamServer<T> server)
-			where T : StreamServer<T>
-		{
-			server.RaiseEvent(StreamServer<T>.Stop);
+			Publish<ServerStopped>();
 		}
 	}
 }

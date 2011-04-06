@@ -156,6 +156,18 @@ namespace Stact
 			request.ResponseChannel.Send<Response<TRequest, TResponse>>(responseImpl);
 		}
 
+		public static void Respond<TRequest>(this Request<TRequest> request)
+		{
+			if (!typeof(TRequest).IsInterface)
+				throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+			Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+
+			var responseImpl = new ResponseImpl<TRequest,TRequest>(request, request.Body);
+
+			request.ResponseChannel.Send<Response<TRequest, TRequest>>(responseImpl);
+		}
+
 		public static void Respond<TResponse>(this UntypedChannel channel, TResponse response, string requestId)
 		{
 			var responseImpl = new ResponseImpl<TResponse>(response, requestId);
