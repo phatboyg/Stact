@@ -55,10 +55,24 @@ namespace Stact.Configuration
 		T UseFiberFactory(FiberFactory fiberFactory);
 
 		/// <summary>
+		///   Use the specified fiber factory
+		/// </summary>
+		/// <param name = "fiberFactory">The fiber factory to use</param>
+		/// <returns></returns>
+		T UseFiberFactory(FiberFactoryEx fiberFactory);
+
+		/// <summary>
 		///   Configure the shutdown timeout for the fiber
 		/// </summary>
 		/// <param name = "timeout"></param>
 		/// <returns></returns>
 		T UseShutdownTimeout(TimeSpan timeout);
+
+		/// <summary>
+		/// Specifies the basic operation executor for the fiber, relying on operations
+		/// to catch their own exceptions
+		/// </summary>
+		/// <returns></returns>
+		T UseBasicExecutor();
 	}
 }

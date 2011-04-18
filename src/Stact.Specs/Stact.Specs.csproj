@@ -73,16 +73,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
-   <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
     </Reference>
-   <Reference Include="Magnum.TestFramework" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+    <Reference Include="Magnum.TestFramework" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\lib\Magnum\net-3.5\TestFramework\Magnum.TestFramework.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum.TestFramework" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Magnum.TestFramework" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\TestFramework\Magnum.TestFramework.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -125,6 +125,8 @@
     <Compile Include="Actors\Auctions\Auction.cs" />
     <Compile Include="Actors\Auctions\Given_an_auction_actor_instance.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
+    <Compile Include="Actors\Fault_Specs.cs" />
+    <Compile Include="Actors\Linking_Specs.cs" />
     <Compile Include="Actors\OrderedReceive_Specs.cs" />
     <Compile Include="Actors\Repeat_Specs.cs" />
     <Compile Include="AsyncIO\AsyncIO_Specs.cs" />

@@ -10,13 +10,43 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Specs.Actors
 {
-	using Internal;
+	using Magnum.TestFramework;
 
 
-	public delegate Fiber FiberFactory();
+
+	[Scenario]
+	public class Linking_Specs
+	{
+		ActorInstance _a;
+		ActorInstance _b;
+
+		[When]
+		public void When_two_actors_are_linked()
+		{
+			_a = AnonymousActor.New(inbox =>
+			{
+				inbox.Receive<Die>(x =>
+				{
+					inbox.Exit();
+				});
+			});
+
+			_b = AnonymousActor.New(inbox =>
+			{
+				_a.Link(inbox);
+
+				inbox.Receive<Die>(x =>
+				{
+				});
+			});
+		}
 
 
-	public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+		class Die
+		{
+		}
+
+	}
 }

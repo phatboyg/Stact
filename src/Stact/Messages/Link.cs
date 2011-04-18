@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,11 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Internal;
-
-
-	public delegate Fiber FiberFactory();
-
-
-	public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+	public interface Link
+	{
+	}
 }

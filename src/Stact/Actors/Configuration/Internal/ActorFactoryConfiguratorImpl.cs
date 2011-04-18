@@ -57,14 +57,16 @@ namespace Stact.Configuration.Internal
 		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
 		{
 			_actorFactory =
-				() => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactory(), _schedulerFactory, _conventions, actorFactory);
+				() => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactoryEx(), _schedulerFactory, _conventions, actorFactory);
 
 			return this;
 		}
 
 		public ActorFactoryConfigurator<TActor> UseSharedScheduler()
 		{
-			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
+			_schedulerFactory = () => new TimerScheduler(new PoolFiber(new TryCatchOperationExecutor(ex =>
+			{
+			})));
 
 			return this;
 		}

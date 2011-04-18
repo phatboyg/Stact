@@ -26,12 +26,12 @@ namespace Stact
 			return new MessageUrn(type);
 		}
 
-		public static void Start(this ActorInstance instance)
+		public static void Start(this UntypedChannel instance)
 		{
 			instance.Send<Start>();
 		}
 
-		public static void Stop(this ActorInstance instance)
+		public static void Stop(this UntypedChannel instance)
 		{
 			instance.Send<Stop>();
 		}
@@ -40,7 +40,7 @@ namespace Stact
 		///   Sends an Exit message to an actor instance without waiting for a response
 		/// </summary>
 		/// <param name = "instance">The actor instance</param>
-		public static void Exit(this ActorInstance instance)
+		public static void Exit(this UntypedChannel instance)
 		{
 			instance.Send<Exit>();
 		}
@@ -59,7 +59,7 @@ namespace Stact
 		///   Sends a Kill message to an actor instance
 		/// </summary>
 		/// <param name = "instance">The actor instance</param>
-		public static void Kill(this ActorInstance instance)
+		public static void Kill(this UntypedChannel instance)
 		{
 			instance.Send<Kill>();
 		}

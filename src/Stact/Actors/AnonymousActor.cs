@@ -25,7 +25,7 @@ namespace Stact
 		Actor
 	{
 		static AnonymousActorFactory _factory;
-		static FiberFactory _fiberFactory;
+		static FiberFactoryEx _fiberFactory;
 		static SchedulerFactory _schedulerFactory;
 		readonly Fiber _fiber;
 		readonly Inbox _inbox;
@@ -33,7 +33,7 @@ namespace Stact
 
 		static AnonymousActor()
 		{
-			_fiberFactory = () => new PoolFiber();
+			_fiberFactory = executor => new PoolFiber(executor);
 
 			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
 
@@ -47,7 +47,7 @@ namespace Stact
 			_inbox = inbox;
 		}
 
-		public static void SetAnonymousActorFiberFactory(FiberFactory fiberFactory)
+		public static void SetAnonymousActorFiberFactory(FiberFactoryEx fiberFactory)
 		{
 			Guard.AgainstNull(fiberFactory, "fiberFactory");
 			_fiberFactory = fiberFactory;

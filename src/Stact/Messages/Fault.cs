@@ -12,11 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Internal;
-
-
-	public delegate Fiber FiberFactory();
-
-
-	public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+	public interface Fault
+	{
+		string Message { get; }
+		string StackTrace { get; }
+	}
 }

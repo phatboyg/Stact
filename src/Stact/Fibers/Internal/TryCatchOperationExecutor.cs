@@ -16,27 +16,65 @@ namespace Stact.Internal
 	using System.Collections.Generic;
 
 
-	public class BasicOperationExecutor :
+	public class TryCatchOperationExecutor :
 		OperationExecutor
 	{
+		readonly Action<Exception> _callback;
 		bool _stopping;
+
+		public TryCatchOperationExecutor(Action<Exception> callback)
+		{
+			_callback = callback;
+		}
+
 
 		public void Execute(Action operation)
 		{
-			if (_stopping)
-				return;
+			try
+			{
+				if (_stopping)
+					return;
 
-			operation();
+				operation();
+			}
+			catch (Exception ex)
+			{
+				_callback(ex);
+			}
 		}
 
 		public void Execute(IList<Action> operations)
 		{
-			for (int i = 0; i < operations.Count; i++)
+			try
 			{
-				if (_stopping)
-					break;
+				for (int index = 0; index < operations.Count;)
+				{
+					if (_stopping)
+						break;
 
-				operations[i]();
+					// this is nested to avoid the cost of a try/catch block per operation
+					// but uses two blocks for a single operation -- tradeoffs I guess
+
+					try
+					{
+						for (; index < operations.Count; index++)
+						{
+							if (_stopping)
+								break;
+
+							Execute(operations[index]);
+						}
+					}
+					catch (Exception ex)
+					{
+						_callback(ex);
+						index++;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_callback(ex);
 			}
 		}
 

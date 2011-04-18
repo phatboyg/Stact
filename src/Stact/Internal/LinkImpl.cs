@@ -10,13 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
-	using Internal;
+	using System;
 
 
-	public delegate Fiber FiberFactory();
-
-
-	public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+	public class LinkImpl :
+		Link
+	{
+		public LinkImpl(Guid requestId)
+		{
+			
+		}
+	}
 }

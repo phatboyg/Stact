@@ -15,8 +15,7 @@ namespace Stact.Configuration
 	using System;
 
 
-	public interface ActorFactoryConfigurator<TActor> :
-		FiberFactoryConfigurator<ActorFactoryConfigurator<TActor>>
+	public interface ActorFactoryConfigurator<TActor>
 		where TActor : Actor
 	{
 
@@ -25,6 +24,12 @@ namespace Stact.Configuration
 		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, TActor> actorFactory);
 		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Inbox, TActor> actorFactory);
 		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory);
+
+		ActorFactoryConfigurator<TActor> HandleOnCallingThread();
+		ActorFactoryConfigurator<TActor> HandleOnPoolFiber();
+		ActorFactoryConfigurator<TActor> HandleOnThreadFiber();
+		ActorFactoryConfigurator<TActor> UseFiberFactory(FiberFactoryEx fiberFactory);
+		ActorFactoryConfigurator<TActor> UseShutdownTimeout(TimeSpan timeout);
 
 		ActorFactoryConfigurator<TActor> UseSharedScheduler();
 		ActorFactoryConfigurator<TActor> UseScheduler(Scheduler scheduler);

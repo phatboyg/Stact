@@ -10,13 +10,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Specs.Actors
 {
-	using Internal;
+	using System;
+	using Magnum.Extensions;
+	using Magnum.TestFramework;
 
 
-	public delegate Fiber FiberFactory();
+	[Scenario]
+	public class When_an_actor_throws_an_exception
+	{
+		[Then]
+		public void Should_receive_a_fault_message()
+		{
+			var received = new Future<Fault>();
 
+			ActorInstance actor = AnonymousActor.New(inbox =>
+			{
+				inbox.Receive<Fault>(fault =>
+				{
+					received.Complete(fault);
+				});
 
-	public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+				throw new NotImplementedException("A");
+			});
+
+			received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+			received.Value.Message.ShouldEqual("A");
+		}
+	}
 }

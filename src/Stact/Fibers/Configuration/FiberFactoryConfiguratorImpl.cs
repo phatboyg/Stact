@@ -15,18 +15,22 @@ namespace Stact.Configuration
 	using System;
 	using Builders;
 	using Magnum.Extensions;
+	using Stact.Internal;
 
 
 	public class FiberFactoryConfiguratorImpl<T> :
 		FiberFactoryConfigurator<T>
 		where T : class
 	{
-		FiberFactory _fiberFactory;
+		FiberFactoryEx _fiberFactory;
+		Func<OperationExecutor> _executorFactory;
+
 		TimeSpan _shutdownTimeout = 1.Minutes();
 
 		protected FiberFactoryConfiguratorImpl()
 		{
 			HandleOnPoolFiber();
+			UseBasicExecutor();
 		}
 
 		public TimeSpan ShutdownTimeout
@@ -36,33 +40,40 @@ namespace Stact.Configuration
 
 		public T HandleOnCallingThread()
 		{
-			_fiberFactory = () => new SynchronousFiber();
+			_fiberFactory = executor => new SynchronousFiber(executor);
 
 			return this as T;
 		}
 
 		public T HandleOnPoolFiber()
 		{
-			_fiberFactory = () => new PoolFiber();
+			_fiberFactory = executor => new PoolFiber(executor);
 
 			return this as T;
 		}
 
 		public T HandleOnFiber(Fiber fiber)
 		{
-			_fiberFactory = () => fiber;
+			_fiberFactory = executor => fiber;
 
 			return this as T;
 		}
 
 		public T HandleOnThreadFiber()
 		{
-			_fiberFactory = () => new ThreadFiber();
+			_fiberFactory = executor => new ThreadFiber(executor);
 
 			return this as T;
 		}
 
 		public T UseFiberFactory(FiberFactory fiberFactory)
+		{
+			_fiberFactory = executor => fiberFactory();
+
+			return this as T;
+		}
+
+		public T UseFiberFactory(FiberFactoryEx fiberFactory)
 		{
 			_fiberFactory = fiberFactory;
 
@@ -76,6 +87,13 @@ namespace Stact.Configuration
 			return this as T;
 		}
 
+		public T UseBasicExecutor()
+		{
+			_executorFactory = () => new BasicOperationExecutor();
+
+			return this as T;
+		}
+
 		protected void ValidateFiberFactoryConfiguration()
 		{
 			if (_fiberFactory == null)
@@ -84,12 +102,17 @@ namespace Stact.Configuration
 
 		public FiberFactory GetConfiguredFiberFactory()
 		{
+			return () => _fiberFactory(_executorFactory());
+		}
+
+		public FiberFactoryEx GetConfiguredFiberFactoryEx()
+		{
 			return _fiberFactory;
 		}
 
 		public Fiber GetConfiguredFiber(ConnectionBuilder builder)
 		{
-			Fiber fiber = _fiberFactory();
+			Fiber fiber = GetConfiguredFiberFactory()();
 
 			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
 
@@ -98,7 +121,7 @@ namespace Stact.Configuration
 
 		public Fiber GetConfiguredFiber<TChannel>(ConnectionBuilder<TChannel> builder)
 		{
-			Fiber fiber = _fiberFactory();
+			Fiber fiber = GetConfiguredFiberFactory()();
 
 			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
 
@@ -107,7 +130,7 @@ namespace Stact.Configuration
 
 		public Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
 		{
-			Fiber fiber = _fiberFactory();
+			Fiber fiber = GetConfiguredFiberFactory()();
 
 			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
 

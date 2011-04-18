@@ -25,11 +25,11 @@ namespace Stact.Internal
 		where TActor : class, Actor
 	{
 		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
-		readonly FiberFactory _fiberFactory;
+		readonly FiberFactoryEx _fiberFactory;
 		readonly SchedulerFactory _schedulerFactory;
 		readonly ActorConvention<TActor>[] _conventions;
 
-		public ActorFactoryImpl(FiberFactory fiberFactory, SchedulerFactory schedulerFactory,
+		public ActorFactoryImpl(FiberFactoryEx fiberFactory, SchedulerFactory schedulerFactory,
 			IEnumerable<ActorConvention<TActor>> conventions,
 		                        Func<Fiber, Scheduler, Inbox, TActor> factory)
 		{
@@ -51,10 +51,16 @@ namespace Stact.Internal
 
 		public ActorInstance GetActor(Action<Inbox> initializer)
 		{
-			Fiber fiber = _fiberFactory();
+			ActorInbox<TActor> inbox = null;
+
+			Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex =>
+			{
+				inbox.Send<Fault>(new FaultImpl(ex));
+			}));
+
 			Scheduler scheduler = _schedulerFactory();
 
-			var inbox = new ActorInbox<TActor>(fiber, scheduler);
+			inbox = new ActorInbox<TActor>(fiber, scheduler);
 
 			TActor instance = CreateActorInstance(fiber, scheduler, inbox);
 
