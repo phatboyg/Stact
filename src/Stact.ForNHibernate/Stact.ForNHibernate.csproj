@@ -94,17 +94,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net\log4net.dll</HintPath>
     </Reference>
-   <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
     </Reference>
-   <Reference Include="Magnum.ForNHibernate" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\..\lib\Magnum\net-3.5\ForNHibernate\Magnum.ForNHibernate.dll</HintPath>
+    <Reference Include="Magnum.ForNHibernate" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\..\lib\Magnum\net-3.5\NHibernate\Magnum.ForNHibernate.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum.ForNHibernate" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\..\lib\Magnum\net-4.0\ForNHibernate\Magnum.ForNHibernate.dll</HintPath>
+    <Reference Include="Magnum.ForNHibernate" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\Magnum\net-4.0\NHibernate\Magnum.ForNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

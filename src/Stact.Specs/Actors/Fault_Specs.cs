@@ -13,6 +13,7 @@
 namespace Stact.Specs.Actors
 {
 	using System;
+	using System.Diagnostics;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 
@@ -37,6 +38,8 @@ namespace Stact.Specs.Actors
 
 			received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 			received.Value.Message.ShouldEqual("A");
+
+			Trace.WriteLine(received.Value.StackTrace);
 		}
 	}
 }
