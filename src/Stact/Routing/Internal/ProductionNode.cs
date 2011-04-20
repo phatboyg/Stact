@@ -12,38 +12,43 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
+	using System;
+
+
 	/// <summary>
-	/// Delivers a message to a consumer on the specified fiber.
+	/// The basic functionality of a production node that deals with
+	/// evicting the message from the routing engine and dispatching it
+	/// to the specified delegate
 	/// </summary>
 	/// <typeparam name="TChannel">The message type</typeparam>
-	public class ConsumerNode<TChannel> : 
-		ProductionNode<TChannel>,
-		Activation<TChannel>
+	public class ProductionNode<TChannel>
 	{
-		readonly Consumer<TChannel> _consumer;
+		readonly bool _disableOnActivation;
+		bool _enabled;
 
-		public ConsumerNode(Fiber fiber, Consumer<TChannel> consumer, bool disableOnActivation = true)
-			: this(FiberConsumer(fiber, consumer), disableOnActivation)
+		protected ProductionNode(bool disableOnActivation)
 		{
+			_disableOnActivation = disableOnActivation;
+			_enabled = true;
 		}
 
-		public ConsumerNode(Consumer<TChannel> consumer, bool disableOnActivation = true)
-			: base(disableOnActivation)
+		public bool Enabled
 		{
-			_consumer = consumer;
+			get { return _enabled; }
 		}
 
-		public void Activate(RoutingContext<TChannel> context)
+		protected void Accept(RoutingContext<TChannel> context, Action<TChannel> callback)
 		{
-			Accept(context, body => _consumer(body));
-		}
+			TChannel body = context.Body;
+			context.Evict();
 
-		static Consumer<TChannel> FiberConsumer(Fiber fiber, Consumer<TChannel> consumer)
-		{
-			return message =>
+			context.Add(() =>
 			{
-				fiber.Add(() => consumer(message));
-			};
+				if (_disableOnActivation)
+					_enabled = false;
+
+				callback(body);
+			});
 		}
 	}
 }

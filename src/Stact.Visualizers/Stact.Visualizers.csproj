@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E3B85293-F10D-4782-ADCF-B67D7A58291C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stact.Visualizers</RootNamespace>
+    <AssemblyName>Stact.Visualizers</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.GLEE">
+      <HintPath>..\..\lib\Glee\Microsoft.GLEE.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.GLEE.Drawing">
+      <HintPath>..\..\lib\Glee\Microsoft.GLEE.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.GLEE.GraphViewerGDI">
+      <HintPath>..\..\lib\Glee\Microsoft.GLEE.GraphViewerGDI.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Visual Studio 10\Microsoft.VisualStudio.DebuggerVisualizers.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph">
+      <HintPath>..\..\lib\QuickGraph\QuickGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Glee">
+      <HintPath>..\..\lib\QuickGraph\QuickGraph.Glee.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionVersion.cs">
+      <Link>SolutionVersion.cs</Link>
+    </Compile>
+    <Compile Include="GraphVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphVisualizerForm.designer.cs">
+      <DependentUpon>GraphVisualizerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoutingEngineGraphGenerator.cs" />
+    <Compile Include="RoutingEngineDebugVisualizer.cs" />
+    <Compile Include="RoutingEngineVisualizerObjectSource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stact\Stact.csproj">
+      <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
+      <Name>Stact</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

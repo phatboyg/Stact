@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
+	using System;
 	using Configuration;
 	using Internal;
 
@@ -20,38 +21,30 @@ namespace Stact.Routing
 	{
 		public static void Receive<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
 		{
-			Receive(configurator, new SynchronousFiber(), consumer);
+			var consumerNode = new ConsumerNode<T>(consumer);
+
+			configurator.Add(consumerNode);
 		}
 
 		public static void Receive<T>(this RoutingEngineConfigurator configurator, Fiber fiber, Consumer<T> consumer)
 		{
-			RemoveActivation removeActivation = null;
+			var consumerNode = new ConsumerNode<T>(fiber, consumer);
 
-			var consumerNode = new ConsumerNode<T>(fiber, m =>
-			{
-				removeActivation();
-				consumer(m);
-			});
-
-			removeActivation = configurator.Add(consumerNode);
+			configurator.Add(consumerNode);
 		}
 
-		public static void Receive<T1, T2>(this RoutingEngineConfigurator engine, Consumer<Tuple<T1, T2>> consumer)
+		public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Consumer<Tuple<T1, T2>> consumer)
 		{
-			ConsumerNode<Tuple<T1, T2>> consumerNode = null;
+			var consumerNode = new ConsumerNode<Tuple<T1,T2>>(consumer);
 
-			var locator = new JoinNodeLocator<T1, T2>(joinNode =>
-			{
-				consumerNode = new ConsumerNode<Tuple<T1, T2>>(new PoolFiber(), m =>
-				{
-					//joinNode.RemoveActivation(consumerNode);
-					consumer(m);
-				});
+			configurator.Add(consumerNode);
+		}
 
-				joinNode.AddActivation(consumerNode);
-			});
+		public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Fiber fiber, Consumer<Tuple<T1, T2>> consumer)
+		{
+			var consumerNode = new ConsumerNode<Tuple<T1,T2>>(fiber, consumer);
 
-			locator.Search(engine.Engine);
+			configurator.Add(consumerNode);
 		}
 	}
 }

@@ -12,13 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
+	/// <summary>
+	/// Selectively delivers a message to a consumer on the specified fiber.
+	/// </summary>
+	/// <typeparam name="TChannel"></typeparam>
 	public class SelectiveConsumerNode<TChannel> :
+		ProductionNode<TChannel>,
 		Activation<TChannel>
 	{
 		readonly SelectiveConsumer<TChannel> _selectiveConsumer;
-		bool _alive = true;
 
-		public SelectiveConsumerNode(SelectiveConsumer<TChannel> selectiveConsumer)
+		public SelectiveConsumerNode(Fiber fiber, SelectiveConsumer<TChannel> selectiveConsumer, bool disableOnActivation = true)
+			: this(FiberConsumer(fiber, selectiveConsumer), disableOnActivation)
+		{
+		}
+
+		public SelectiveConsumerNode(SelectiveConsumer<TChannel> selectiveConsumer, bool disableOnActivation = true)
+			: base(disableOnActivation)
 		{
 			_selectiveConsumer = selectiveConsumer;
 		}
@@ -29,17 +39,22 @@ namespace Stact.Routing.Internal
 			if (consumer == null)
 				return;
 
-			TChannel body = context.Body;
-			context.Evict();
-
-			context.Add(() => consumer(body));
-
-			_alive = false;
+			Accept(context, body => consumer(body));
 		}
 
-		public bool IsAlive
+		static SelectiveConsumer<TChannel> FiberConsumer(Fiber fiber, SelectiveConsumer<TChannel> selectiveConsumer)
 		{
-			get { return _alive; }
+			return message =>
+			{
+				Consumer<TChannel> consumer = selectiveConsumer(message);
+				if (consumer == null)
+					return null;
+
+				return msg =>
+				{
+					fiber.Add(() => consumer(message));
+				};
+			};
 		}
 	}
 }

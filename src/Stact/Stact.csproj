@@ -29,6 +29,7 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <BuildConfigKey Condition=" '$(BuildConfigKey)' == '' ">NET35</BuildConfigKey>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -254,8 +255,13 @@
     <Compile Include="Routing\Internal\ContextAdapter.cs" />
     <Compile Include="Routing\Internal\MatchAlphaNode.cs" />
     <Compile Include="Routing\Internal\MatchJoinNode.cs" />
+    <Compile Include="Routing\Internal\ProductionNode.cs" />
     <Compile Include="Routing\RemoveActivation.cs" />
     <Compile Include="Routing\RoutingContextProxy.cs" />
+    <Compile Include="Routing\Visualizers\ExtensionsForVisualizers.cs" />
+    <Compile Include="Routing\Visualizers\GraphRoutingEngineVisitor.cs" />
+    <Compile Include="Routing\Visualizers\RoutingEngineGraphData.cs" />
+    <Compile Include="Routing\Visualizers\StringRoutingEngineVisitor.cs" />
     <Compile Include="Schedulers\Internal\ShutdownSchedulerOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
     <Compile Include="StactException.cs" />
@@ -331,7 +337,7 @@
     <Compile Include="Channels\InstanceChannelProvider.cs" />
     <Compile Include="Channels\SelectiveConsumerChannel.cs" />
     <Compile Include="Channels\Visitors\ChannelGraphData.cs" />
-    <Compile Include="Channels\Visitors\ExtensionsForVisitors.cs" />
+    <Compile Include="Channels\Visitors\ExtensionsForVisualizers.cs" />
     <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\WcfChannelHost.cs" />
     <Compile Include="Channels\WcfChannelProxy.cs" />
@@ -372,8 +378,6 @@
     <Compile Include="Routing\Internal\JoinNode.2.cs" />
     <Compile Include="Routing\Internal\RightActivation.cs" />
     <Compile Include="Routing\Internal\Tuple.cs" />
-    <Compile Include="Routing\Internal\TupleImpl.cs" />
-    <Compile Include="Routing\Internal\JoinNodeLocator.cs" />
     <Compile Include="Routing\ExtensionsToRoutingEngine.cs" />
     <Compile Include="Routing\Internal\Activation.cs" />
     <Compile Include="Routing\DynamicRoutingEngine.cs" />
@@ -390,7 +394,7 @@
     <Compile Include="Routing\RoutingEngine.cs" />
     <Compile Include="Routing\Internal\SelectiveConsumerNode.cs" />
     <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />
-    <Compile Include="Routing\Visualizers\RoutingEngineTextVisualizer.cs" />
+    <Compile Include="Routing\Visualizers\TraceRoutingEngineVisualizer.cs" />
     <Compile Include="Schedulers\ExtensionsToScheduler.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />

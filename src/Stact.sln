@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.ServerFramework", "St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.ServerFramework.Specs", "Stact.ServerFramework.Specs\Stact.ServerFramework.Specs.csproj", "{A770AB4A-F293-45B1-87F7-0AD70774A7EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stact.Visualizers", "Stact.Visualizers\Stact.Visualizers.csproj", "{E3B85293-F10D-4782-ADCF-B67D7A58291C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Build|Any CPU = Build|Any CPU
@@ -161,6 +163,21 @@ Global
 		{A770AB4A-F293-45B1-87F7-0AD70774A7EE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A770AB4A-F293-45B1-87F7-0AD70774A7EE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A770AB4A-F293-45B1-87F7-0AD70774A7EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Build|Any CPU.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Build|Any CPU.Build.0 = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Build|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Build|Mixed Platforms.Build.0 = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Build|x86.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E3B85293-F10D-4782-ADCF-B67D7A58291C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

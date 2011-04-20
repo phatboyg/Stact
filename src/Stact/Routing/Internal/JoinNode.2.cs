@@ -40,6 +40,11 @@ namespace Stact.Routing.Internal
 			get { return _betaMemory.Successors; }
 		}
 
+		public BetaMemory<Tuple<T1,T2>> BetaMemory
+		{
+			get { return _betaMemory; }
+		}
+
 		public void Activate(RoutingContext<T1> context)
 		{
 			_rightActivation.RightActivate(match =>
@@ -52,7 +57,7 @@ namespace Stact.Routing.Internal
 			});
 		}
 
-		public bool IsAlive
+		public bool Enabled
 		{
 			get { return true; }
 		}

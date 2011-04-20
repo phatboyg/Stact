@@ -42,11 +42,11 @@ namespace Stact.Routing.Internal
 			callback(_alpha);
 		}
 
-		protected override bool Visit(RootNode channel)
+		protected override bool Visit(RootNode node)
 		{
-			_root = channel;
+			_root = node;
 
-			return base.Visit(channel);
+			return base.Visit(node);
 		}
 
 		protected override bool Visit<TChannel>(AlphaNode<TChannel> node)

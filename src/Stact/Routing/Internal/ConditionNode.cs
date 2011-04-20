@@ -48,7 +48,7 @@ namespace Stact.Routing.Internal
 			_successors.Retrieve(key).All(activation => activation.Activate(context));
 		}
 
-		public bool IsAlive
+		public bool Enabled
 		{
 			get { return true; }
 		}

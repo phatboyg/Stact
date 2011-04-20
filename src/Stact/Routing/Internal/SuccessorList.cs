@@ -31,7 +31,7 @@ namespace Stact.Routing.Internal
 		{
 			for (int i = 0; i < _activations.Count;)
 			{
-				if (!_activations[i].IsAlive)
+				if (!_activations[i].Enabled)
 				{
 					_activations.RemoveAt(i);
 					continue;

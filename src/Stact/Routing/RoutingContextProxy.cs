@@ -48,7 +48,7 @@ namespace Stact.Routing
 			get { return _body; }
 		}
 
-		public RoutingContext<Stact.Routing.Internal.Tuple<TChannel, T2>> Join<T2>(RoutingContext<T2> other)
+		public RoutingContext<Tuple<TChannel, T2>> Join<T2>(RoutingContext<T2> other)
 		{
 			return DynamicRoutingContext.Create(_context.Engine, Body, other.Body);
 		}

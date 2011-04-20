@@ -15,6 +15,7 @@ namespace Stact.Visitors
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using Channels.Visitors;
 	using Magnum.Extensions;
 	using Magnum.Graphing;
 

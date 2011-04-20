@@ -10,16 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Configuration
+namespace Stact.Routing.Visualizers
 {
-	using System;
-	using Routing.Internal;
+	using System.Diagnostics;
 
 
-	public interface RoutingEngineConfigurator
+	public class TraceRoutingEngineVisualizer
 	{
-		RemoveActivation Add<T>(Activation<T> activation);
-		RemoveActivation Add<T1,T2>(Activation<Tuple<T1,T2>> activation);
-		RoutingEngine Engine { get; }
+		public void Show(RoutingEngine engine)
+		{
+			Trace.WriteLine(new StringRoutingEngineVisitor(engine).ToString());
+		}
 	}
 }

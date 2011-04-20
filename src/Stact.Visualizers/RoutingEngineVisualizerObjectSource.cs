@@ -10,23 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Internal
+namespace Stact.Visualizers
 {
-	public interface Activation
+	using System.IO;
+	using Microsoft.VisualStudio.DebuggerVisualizers;
+	using Routing;
+	using Routing.Visualizers;
+	using Visitors;
+
+
+	public class RoutingEngineVisualizerObjectSource :
+		VisualizerObjectSource
 	{
-		void Activate<T>(RoutingContext<T> context);
-	}
+		public override void GetData(object target, Stream outgoingData)
+		{
+			if (target == null)
+				return;
 
+			if (!typeof(RoutingEngine).IsAssignableFrom(target.GetType()))
+				return;
 
-	/// <summary>
-	/// An Activation moves a message from left to right in the graph, forward-chained
-	/// to the next node.
-	/// </summary>
-	/// <typeparam name="T">The message type</typeparam>
-	public interface Activation<T>
-	{
-		bool Enabled { get; }
+			var engine = (RoutingEngine)target;
 
-		void Activate(RoutingContext<T> context);
+			RoutingEngineGraphData data = engine.GetGraphData();
+
+			base.GetData(data, outgoingData);
+		}
 	}
 }

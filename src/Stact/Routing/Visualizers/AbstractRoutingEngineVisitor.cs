@@ -18,9 +18,9 @@ namespace Stact.Routing.Visualizers
 	using Stact.Internal;
 
 
-	public abstract class AbstractRoutingEngineVisitor<T> :
-		ReflectiveVisitorBase<T>
-		where T : AbstractRoutingEngineVisitor<T>
+	public abstract class AbstractRoutingEngineVisitor<TVisitor> :
+		ReflectiveVisitorBase<TVisitor>
+		where TVisitor : AbstractRoutingEngineVisitor<TVisitor>
 	{
 		protected virtual bool Visit(DynamicRoutingEngine engine)
 		{
@@ -28,49 +28,62 @@ namespace Stact.Routing.Visualizers
 			return true;
 		}
 
-		protected virtual bool Visit(RootNode channel)
+		protected virtual bool Visit(RootNode node)
 		{
-			channel.Activations.Each(typeChannel => Visit(typeChannel));
+			node.Activations.Each(typeChannel => Visit(typeChannel));
 			return true;
 		}
 
-		protected virtual bool Visit<TChannel>(AlphaNode<TChannel> node)
+		protected virtual bool Visit<T>(AlphaNode<T> node)
 		{
 			node.Successors.Each(activation => Visit(activation));
 			return true;
 		}
 
-		protected virtual bool Visit<TChannel>(JoinNode<TChannel> node)
+		protected virtual bool Visit<T>(JoinNode<T> node)
 		{
 			node.Activations.Each(activation => Visit(activation));
-			Visit(node.RightActivation);
+			if(node.RightActivation as ConstantNode<T> != null)
+				Visit(node.RightActivation);
 			return true;
 		}
 
-		protected virtual bool Visit<T1,T2>(JoinNode<T1,T2> node)
+		protected virtual bool Visit<T1, T2>(JoinNode<T1, T2> node)
 		{
 			node.Activations.Each(activation => Visit(activation));
-			Visit(node.RightActivation);
+			//Visit(node.RightActivation);
 			return true;
 		}
 
-		protected virtual bool Visit<TChannel>(ConstantNode<TChannel> node)
+		protected virtual bool Visit<T>(BodyNode<T> node)
+		{
+			node.Activations.Each(activation => Visit(activation));
+
+			return true;
+		}
+
+		protected virtual bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
+		{
+			node.Activations.Each(activation => Visit(activation));
+			return true;
+		}
+
+		protected virtual bool Visit<T>(ConstantNode<T> node)
 		{
 			return true;
 		}
 
-		protected virtual bool Visit<TChannel>(ConsumerNode<TChannel> node)
+		protected virtual bool Visit<T>(ConsumerNode<T> node)
 		{
 			return true;
 		}
 
-		protected virtual bool Visit(ChannelAdapter adapter)
+		protected virtual bool Visit<T>(SelectiveConsumerNode<T> node)
 		{
-			Visit(adapter.Output);
 			return true;
 		}
 
-		protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox) 
+		protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox)
 			where TActor : class, Actor
 		{
 			Visit(inbox.Engine);

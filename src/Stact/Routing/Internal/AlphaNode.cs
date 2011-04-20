@@ -22,7 +22,7 @@ namespace Stact.Routing.Internal
 			message.CanConvertTo<TChannel>(Activate);
 		}
 
-		public bool IsAlive
+		public bool Enabled
 		{
 			get { return true; }
 		}

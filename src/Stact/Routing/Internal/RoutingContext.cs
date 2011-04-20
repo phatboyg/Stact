@@ -31,12 +31,12 @@ namespace Stact.Routing.Internal
 	}
 
 
-	public interface RoutingContext<out T> :
+	public interface RoutingContext<T> :
 		RoutingContext
 	{
 		T Body { get; }
 
-		RoutingContext<Stact.Routing.Internal.Tuple<T, T2>> Join<T2>(RoutingContext<T2> other);
+		RoutingContext<Tuple<T, T2>> Join<T2>(RoutingContext<T2> other);
 
 		void CanConvertTo<TChannel>(Action<RoutingContext<TChannel>> callback);
 	}

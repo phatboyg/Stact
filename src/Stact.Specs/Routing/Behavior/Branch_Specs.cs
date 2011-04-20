@@ -10,9 +10,8 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Specs.Redesign
+namespace Stact.Specs.Behavior
 {
-	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
 	using Routing;
@@ -23,28 +22,24 @@ namespace Stact.Specs.Redesign
 	[Scenario]
 	public class When_adding_a_request_message
 	{
-		PoolFiber _fiber;
 		DynamicRoutingEngine _engine;
+		Fiber _fiber;
 
 		[When]
 		public void Adding_a_request_message()
 		{
-			_fiber = new PoolFiber();
+			_fiber = new SynchronousFiber();
 			_engine = new DynamicRoutingEngine(_fiber);
 
 			_engine.Request(new A(), new ShuntChannel());
-
-			_fiber.Shutdown(5.Seconds());
-
-
-
 		}
 
-		[Then, Explicit]
+		[Then]
+		[Explicit]
 		public void Show_me_the_graph()
 		{
-			var visualizer = new RoutingEngineTextVisualizer();
-			visualizer.Visit(_engine);
+			var visualizer = new TraceRoutingEngineVisualizer();
+			visualizer.Show(_engine);
 		}
 
 		[Then]
@@ -59,13 +54,13 @@ namespace Stact.Specs.Redesign
 			foundRequestA.IsCompleted.ShouldBeTrue("Could not find request alpha node");
 			foundA.IsCompleted.ShouldBeTrue("Could not find body alpha node");
 
-			var visualizer = new RoutingEngineTextVisualizer();
-			visualizer.Visit(_engine);
+			var visualizer = new TraceRoutingEngineVisualizer();
+			visualizer.Show(_engine);
 		}
+
 
 		class A
 		{
-			
 		}
 	}
 }

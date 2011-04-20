@@ -62,7 +62,7 @@ namespace Stact.Routing.Internal
 			_rightActivation.RightActivate(context, match => _betaMemory.Activate(match));
 		}
 
-		public bool IsAlive
+		public bool Enabled
 		{
 			get { return true; }
 		}

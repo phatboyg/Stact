@@ -53,7 +53,7 @@ namespace Stact.Routing.Internal
 
 			_messages.All(context =>
 				{
-					if (!activation.IsAlive)
+					if (!activation.Enabled)
 						return false;
 
 					if(context.IsAlive)

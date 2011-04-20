@@ -31,7 +31,7 @@ namespace Stact.Routing.Internal
 			get { return _channel; }
 		}
 
-		public bool IsAlive
+		public bool Enabled
 		{
 			get { return true; }
 		}

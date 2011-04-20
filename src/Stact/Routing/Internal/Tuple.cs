@@ -10,11 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Internal
+namespace System
 {
-	public interface Tuple<out T1, out T2>
+//#if NET35
+	public class Tuple<T1, T2>
 	{
-		T1 Item1 { get; }
-		T2 Item2 { get; }
+		public Tuple(T1 item1, T2 item2)
+		{
+			Item1 = item1;
+			Item2 = item2;
+		}
+
+		public T1 Item1 { get; private set; }
+
+		public T2 Item2 { get; private set; }
 	}
+//#endif
 }

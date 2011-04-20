@@ -12,38 +12,69 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-	using Magnum.Extensions;
 	using Magnum.TestFramework;
+	using NUnit.Framework;
 	using Routing;
 	using Routing.Visualizers;
+	using Visualizers;
 
 
 	[Scenario]
 	public class When_routing_messages_using_the_routing_engine
 	{
-		[Then]
+		Future<A> _receivedA;
+		Future<B> _receivedB;
+		Future<C> _receivedC;
+		RoutingEngine _engine;
+
+		[When]
 		public void Should_properly_invoke_the_message_receiver()
 		{
-			RoutingEngine engine = new DynamicRoutingEngine(new SynchronousFiber());
+			_engine = new DynamicRoutingEngine(new SynchronousFiber());
 
-			var receivedA = new Future<A>();
-			var receivedB = new Future<B>();
+			_receivedA = new Future<A>();
+			_receivedB = new Future<B>();
+			_receivedC = new Future<C>();
 
-			engine.Configure(x =>
+			_engine.Configure(x =>
 			{
-				x.Receive<A>(receivedA.Complete);
-				x.Receive<B>(receivedB.Complete);
+				x.Receive<A>(_receivedA.Complete);
+				x.Receive<B>(_receivedB.Complete);
+				x.Receive<C>(_receivedC.Complete);
 			});
+		}
 
-			engine.Send(new B());
+		[Then, Explicit]
+		public void Display_graph()
+		{
+			RoutingEngineDebugVisualizer.Show(_engine);
+		}
 
-			engine.Configure(x =>
-			{
-				new RoutingEngineTextVisualizer().Visit(x.Engine);
-			});
+		[Then]
+		public void Should_not_receive_an_a()
+		{
+			_engine.Send(new B());
+			_engine.Send(new C());
 
-			receivedB.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("B not received");
-			receivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("A not received");
+			_receivedA.IsCompleted.ShouldBeFalse();
+		}
+
+		[Then]
+		public void Should_receive_a_b()
+		{
+			_engine.Send(new B());
+			_engine.Send(new C());
+
+			_receivedB.IsCompleted.ShouldBeTrue();
+		}
+
+		[Then]
+		public void Should_receive_a_c()
+		{
+			_engine.Send(new B());
+			_engine.Send(new C());
+
+			_receivedC.IsCompleted.ShouldBeTrue();
 		}
 
 
@@ -58,7 +89,8 @@ namespace Stact.Specs
 		}
 
 
-		class C
+		class C :
+			B
 		{
 		}
 	}
