@@ -14,11 +14,22 @@ namespace Stact.Routing.Internal
 {
 	public class AlphaNode<TChannel> :
 		AlphaMemory<TChannel>,
-		Activation
+		Activation,
+		Activation<TChannel>
 	{
-		void Activation.Activate<T>(RoutingContext<T> message)
+		public void Activate<T>(RoutingContext<T> message)
 		{
-			message.IsAssignableTo<TChannel>(x => base.Activate(x));
+			message.CanConvertTo<TChannel>(Activate);
+		}
+
+		public bool IsAlive
+		{
+			get { return true; }
+		}
+
+		public void Activate(RoutingContext<TChannel> context)
+		{
+			Add(context);
 		}
 	}
 }

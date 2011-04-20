@@ -12,11 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-	using Internal;
-	using Magnum;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using Routing;
+	using Routing.Visualizers;
 
 
 	[Scenario]
@@ -27,33 +26,40 @@ namespace Stact.Specs
 		{
 			RoutingEngine engine = new DynamicRoutingEngine(new SynchronousFiber());
 
-			Future<A> receivedA = new Future<A>();
-			Future<B> receivedB = new Future<B>();
+			var receivedA = new Future<A>();
+			var receivedB = new Future<B>();
 
-			engine.Receive<A>(receivedA.Complete);
-			engine.Receive<B>(receivedB.Complete);
+			engine.Configure(x =>
+			{
+				x.Receive<A>(receivedA.Complete);
+				x.Receive<B>(receivedB.Complete);
+			});
 
 			engine.Send(new B());
 
-			receivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("A not received");
+			engine.Configure(x =>
+			{
+				new RoutingEngineTextVisualizer().Visit(x.Engine);
+			});
+
 			receivedB.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("B not received");
+			receivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("A not received");
 		}
 
 
 		class A
 		{
-			
 		}
 
-		class B : 
+
+		class B :
 			A
 		{
-			
 		}
+
 
 		class C
 		{
-			
 		}
 	}
 }

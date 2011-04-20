@@ -15,7 +15,6 @@ namespace Stact.Specs
 	using Internal;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
-	using Stact.Actors.Internal;
 
 
 	[Scenario]

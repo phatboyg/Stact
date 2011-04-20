@@ -12,67 +12,46 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-	using System;
-	using System.Linq.Expressions;
+	using Configuration;
 	using Internal;
-	using Magnum.Extensions;
-	using Stact.Internal;
 
 
 	public static class ExtensionsToRoutingEngine
 	{
-		public static void Receive<T>(this RoutingEngine engine, Consumer<T> consumer)
+		public static void Receive<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
 		{
-			var result = new Future<PendingReceive>();
-
-			engine.Add(() =>
-				{
-					ConsumerNode<T> consumerNode = null;
-
-					var locator = new JoinNodeLocator<T>(joinNode =>
-						{
-							consumerNode = new ConsumerNode<T>(new PoolFiber(), m =>
-								{
-									//joinNode.RemoveActivation(consumerNode);
-									consumer(m);
-								});
-
-							joinNode.AddActivation(consumerNode);
-						});
-
-					locator.Search(engine);
-
-					result.Complete(null);
-				});
-
-			result.WaitUntilCompleted(30.Seconds());
+			Receive(configurator, new SynchronousFiber(), consumer);
 		}
 
-//		public static WhenCondition<T> When<T>(this RoutingEngine engine, Expression<Func<T, bool>> filterExpression)
-//		{
-//
-//		}
-
-
-		public static void Receive<T1, T2>(this RoutingEngine engine, Consumer<Stact.Routing.Internal.Tuple<T1, T2>> consumer)
+		public static void Receive<T>(this RoutingEngineConfigurator configurator, Fiber fiber, Consumer<T> consumer)
 		{
-			engine.Add(() =>
+			RemoveActivation removeActivation = null;
+
+			var consumerNode = new ConsumerNode<T>(fiber, m =>
+			{
+				removeActivation();
+				consumer(m);
+			});
+
+			removeActivation = configurator.Add(consumerNode);
+		}
+
+		public static void Receive<T1, T2>(this RoutingEngineConfigurator engine, Consumer<Tuple<T1, T2>> consumer)
+		{
+			ConsumerNode<Tuple<T1, T2>> consumerNode = null;
+
+			var locator = new JoinNodeLocator<T1, T2>(joinNode =>
+			{
+				consumerNode = new ConsumerNode<Tuple<T1, T2>>(new PoolFiber(), m =>
 				{
-					ConsumerNode<Stact.Routing.Internal.Tuple<T1, T2>> consumerNode = null;
-
-					var locator = new JoinNodeLocator<T1,T2>(joinNode =>
-						{
-							consumerNode = new ConsumerNode<Stact.Routing.Internal.Tuple<T1, T2>>(new PoolFiber(), m =>
-								{
-									//joinNode.RemoveActivation(consumerNode);
-									consumer(m);
-								});
-
-							joinNode.AddActivation(consumerNode);
-						});
-
-					locator.Search(engine);
+					//joinNode.RemoveActivation(consumerNode);
+					consumer(m);
 				});
+
+				joinNode.AddActivation(consumerNode);
+			});
+
+			locator.Search(engine.Engine);
 		}
 	}
 }

@@ -118,6 +118,13 @@ namespace Stact.Visitors
 			return base.Visitor(channel);
 		}
 
+		protected override UntypedChannel Visitor<TFilter>(UntypedFilterChannel<TFilter> channel)
+		{
+			Trace.WriteLine("UntypedFilterChannel<{0}>:".FormatWith(typeof(TFilter).GetType().ToShortTypeName()));
+
+			return base.Visitor(channel);
+		}
+
 		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
 			Trace.WriteLine("UntypedChannelAdapter");

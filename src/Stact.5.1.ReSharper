@@ -325,4 +325,9 @@ specific language governing permissions and limitations under the License.
       </PredefinedRule>
     </Naming2>
   </CodeStyleSettings>
+  <CodeAnnotations>
+    <Namespace>JetBrains.Annotations</Namespace>
+    <Namespace>Stact.Internal</Namespace>
+    <DefaultNamespace>JetBrains.Annotations</DefaultNamespace>
+  </CodeAnnotations>
 </Configuration>

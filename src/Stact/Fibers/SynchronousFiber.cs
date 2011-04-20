@@ -40,6 +40,8 @@ namespace Stact
 		{
 			if (_shuttingDown)
 				return;
+				// seems to be causing more problems that it solves
+				// throw new FiberException("The fiber is no longer accepting actions");
 
 			_executor.Execute(operation);
 		}

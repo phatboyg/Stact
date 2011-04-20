@@ -53,6 +53,15 @@ namespace Stact.Routing.Internal
 			get { return true; }
 		}
 
+		public void Match<T>(Action<T> callback)
+			where T : class
+		{
+			var match = this as T;
+			if (match != null)
+				callback(match);
+		}
+
+
 		static Expression<Filter<RoutingContext<T>>> GetRoutingContextFilter(Expression<Filter<T>> filterExpression)
 		{
 			ParameterExpression context = Expression.Parameter(typeof(RoutingContext<T>), "value");

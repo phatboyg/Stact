@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
+	using Internal;
+
+
 	/// <summary>
 	///   A conditional consumer is given a message to evaluate, after which it
 	///   can determine if it is interested in the message and return an action
@@ -20,5 +23,6 @@ namespace Stact
 	/// <typeparam name = "T">The message type</typeparam>
 	/// <param name = "message">The message</param>
 	/// <returns>An action to consume the message, or null</returns>
-	public delegate Consumer<T> SelectiveConsumer<in T>(T message);
+	[CanBeNull]
+	public delegate Consumer<T> SelectiveConsumer<in T>([NotNull] T message);
 }

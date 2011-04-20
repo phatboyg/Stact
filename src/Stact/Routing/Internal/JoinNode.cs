@@ -37,9 +37,9 @@ namespace Stact.Routing.Internal
 
 		public JoinNode(RightActivation<T> rightActivation)
 		{
-			_betaMemory = new BetaMemory<T>();
-
 			_rightActivation = rightActivation;
+			
+			_betaMemory = new BetaMemory<T>();
 		}
 
 		public RightActivation<T> RightActivation
@@ -50,6 +50,11 @@ namespace Stact.Routing.Internal
 		public IEnumerable<Activation<T>> Activations
 		{
 			get { return _betaMemory.Successors; }
+		}
+
+		public BetaMemory<T> BetaMemory
+		{
+			get { return _betaMemory; }
 		}
 
 		public void Activate(RoutingContext<T> context)

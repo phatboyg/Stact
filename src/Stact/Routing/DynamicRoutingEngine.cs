@@ -13,7 +13,10 @@
 namespace Stact.Routing
 {
 	using System;
+	using Configuration;
+	using Configuration.Internal;
 	using Internal;
+	using Magnum.Collections;
 	using Stact.Internal;
 
 
@@ -22,32 +25,39 @@ namespace Stact.Routing
 	{
 		readonly Fiber _fiber;
 		readonly OperationList _operationList;
-		readonly Activation _router;
+		readonly Activation _root;
+		readonly Cache<Type, Activation> _types;
 		bool _shutdown;
+		DynamicRoutingEngineConfigurator _configurator;
 
 		public DynamicRoutingEngine(Fiber fiber)
 		{
 			_fiber = fiber;
-			_operationList = new OperationList();
 
-			_router = new TypeRouter();
+			_operationList = new OperationList();
+			_types = new Cache<Type, Activation>();
+			_root = new RootNode();
+
+			_configurator = new DynamicRoutingEngineConfigurator(this);
 		}
 
-		public Activation Router
+		public Activation Root
 		{
-			get { return _router; }
+			get { return _root; }
 		}
 
 		public void Send<T>(T message)
 		{
-			var context = new DynamicRoutingContext<T>(this, message);
-
 			_fiber.Add(() =>
-				{
-					_operationList.Run();
-					_router.Activate(context);
-					_operationList.Run();
-				});
+			{
+				var context = new DynamicRoutingContext<T>(this, message);
+
+				Activation adapter = _types.Retrieve(typeof(T), _ => new ContextAdapter<T>(_root));
+
+				adapter.Activate(context);
+
+				_operationList.Run();
+			});
 		}
 
 		public void Add(Action action)
@@ -62,6 +72,16 @@ namespace Stact.Routing
 		public void Shutdown()
 		{
 			_shutdown = true;
+		}
+
+		public void Configure(Action<RoutingEngineConfigurator> callback)
+		{
+			_fiber.Add(() =>
+			{
+				var configurator = _configurator;
+
+				callback(configurator);
+			});
 		}
 	}
 }

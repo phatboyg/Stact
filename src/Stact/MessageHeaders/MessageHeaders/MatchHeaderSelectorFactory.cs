@@ -18,5 +18,7 @@ namespace Stact.MessageHeaders
 	public interface MatchHeaderSelectorFactory
 	{
 		bool CanMatch<TInput>(TInput input, out Action<object, MatchHeaderCallback> adapter);
+
+		bool CanMatch<TContext,TInput>(TInput input, out Action<TContext, object, MatchHeaderCallback<TContext>> adapter);
 	}
 }

@@ -26,8 +26,8 @@ namespace Stact.Specs
 		{
 			var received = new Future<Message<Simple>>();
 
-			var engine = new DynamicRoutingEngine(new SynchronousFiber());
-			engine.Receive<Message<Simple>>(received.Complete);
+			var engine = new DynamicRoutingEngine(new PoolFiber());
+			engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
 
 			engine.Send(new SimpleImpl());
 

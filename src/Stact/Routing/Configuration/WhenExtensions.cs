@@ -21,7 +21,6 @@ namespace Stact.Routing.Configuration
 		{
 			var whenConfigurator = new WhenConfiguratorImpl<T>();
 
-			configurator.Add(whenConfigurator);
 
 			return whenConfigurator;
 		}

@@ -23,7 +23,7 @@ namespace Stact.Routing.Internal
 	/// to the next node.
 	/// </summary>
 	/// <typeparam name="T">The message type</typeparam>
-	public interface Activation<T>
+	public interface Activation<in T>
 	{
 		bool IsAlive { get; }
 

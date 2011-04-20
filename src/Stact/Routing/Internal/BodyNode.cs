@@ -12,32 +12,29 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
-
-
-	public interface RoutingContext
+	public class BodyNode<T> :
+		Activation<Message<T>>
 	{
-		// TODO keep track of a generation, to denote changes in the alpha/beta node structure
+		readonly BetaMemory<T> _betaMemory;
 
-		bool IsAlive { get; }
+		public BodyNode()
+		{
+			_betaMemory = new BetaMemory<T>();
+		}
 
+		public BetaMemory<T> BetaMemory
+		{
+			get { return _betaMemory; }
+		}
 
-		void Add(Action action);
+		public bool IsAlive
+		{
+			get { return true; }
+		}
 
-		/// <summary>
-		/// Evicts a context from the engine, preventing it from being matched to activations
-		/// </summary>
-		void Evict();
-	}
-
-
-	public interface RoutingContext<out T> :
-		RoutingContext
-	{
-		T Body { get; }
-
-		RoutingContext<Stact.Routing.Internal.Tuple<T, T2>> Join<T2>(RoutingContext<T2> other);
-
-		void CanConvertTo<TChannel>(Action<RoutingContext<TChannel>> callback);
+		public void Activate(RoutingContext<Message<T>> context)
+		{
+			context.CanConvertTo<T>(x => _betaMemory.Activate(x));
+		}
 	}
 }

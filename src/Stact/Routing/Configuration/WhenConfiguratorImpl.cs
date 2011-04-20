@@ -35,17 +35,6 @@ namespace Stact.Routing.Configuration
 
 		public RoutingConfiguration Configure(RoutingEngine engine)
 		{
-			new AlphaNodeSelector<T>().Select(engine, alphaNode =>
-				{
-					ConsumerNode<T> consumerNode = null;
-
-					var locator = new JoinNodeLocator<T>(joinNode =>
-						{
-							var configurator = new NodeChannelConfiguratorConnectionImpl<T>(joinNode);
-						//	_configurator.Configure(configurator);
-						});
-				});
-
 			throw new NotImplementedException();
 		}
 

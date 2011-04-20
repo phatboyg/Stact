@@ -13,39 +13,38 @@
 namespace Stact.Routing.Internal
 {
 	using System;
-	using Stact.Routing.Visualizers;
+	using Visualizers;
 
 
-	public class AlphaNodeSelector<T> :
-		AbstractRoutingEngineVisitor<AlphaNodeSelector<T>>
+	public class MatchAlphaNode<T> :
+		AbstractRoutingEngineVisitor<MatchAlphaNode<T>>
 	{
-		AlphaNode<T> _alphaNode;
-		TypeRouter _typeRouter;
+		AlphaNode<T> _alpha;
+		RootNode _root;
 
-		public void Select(RoutingEngine engine, Action<AlphaNode<T>> callback)
+		public MatchAlphaNode(RoutingEngine engine, Action<AlphaNode<T>> callback)
 		{
-			_typeRouter = null;
-			_alphaNode = null;
-
 			Visit(engine);
 
-			if (_alphaNode == null)
-			{
-				if (_typeRouter == null)
-					throw new InvalidOperationException("No router found");
-
-				_alphaNode = _typeRouter.GetActivation(typeof(T)) as AlphaNode<T>;
-				if (_alphaNode == null)
-					throw new InvalidOperationException("not an alpha node");
-			}
-
-			callback(_alphaNode);
+			Bind(callback);
 		}
 
-
-		protected override bool Visit(TypeRouter channel)
+		void Bind(Action<AlphaNode<T>> callback)
 		{
-			_typeRouter = channel;
+			if (_alpha == null)
+			{
+				if (_root == null)
+					throw new InvalidOperationException("The root node was not found.");
+
+				_alpha = _root.GetAlphaNode<T>();
+			}
+
+			callback(_alpha);
+		}
+
+		protected override bool Visit(RootNode channel)
+		{
+			_root = channel;
 
 			return base.Visit(channel);
 		}
@@ -54,7 +53,10 @@ namespace Stact.Routing.Internal
 		{
 			var match = node as AlphaNode<T>;
 			if (match != null)
-				_alphaNode = match;
+			{
+				_alpha = match;
+				return false;
+			}
 
 			return base.Visit(node);
 		}

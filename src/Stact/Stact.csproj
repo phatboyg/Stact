@@ -113,10 +113,13 @@
     <Compile Include="Actors\ExtensionsForLinking.cs" />
     <Compile Include="Actors\Internal\ActorOperationExecutor.cs" />
     <Compile Include="ActorUrn.cs" />
+    <Compile Include="Channels\UntypedFilterChannel.cs" />
     <Compile Include="Fibers\Internal\TryCatchOperationExecutor.cs" />
     <Compile Include="Internal\FaultImpl.cs" />
     <Compile Include="Internal\LinkImpl.cs" />
+    <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\AdvancedExtensionsForHeaders.cs" />
+    <Compile Include="MessageHeaders\MessageHeaders\BodySelectorFactory.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeader.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderChannel.cs" />
     <Compile Include="MessageHeaders\SetMessageHeader.cs" />
@@ -247,6 +250,11 @@
     <Compile Include="Remote\Remote\SocketExtensions.cs" />
     <Compile Include="Remote\Remote\SocketWriter.cs" />
     <Compile Include="Remote\Remote\DelegateChunkWriter.cs" />
+    <Compile Include="Routing\Internal\BodyNode.cs" />
+    <Compile Include="Routing\Internal\ContextAdapter.cs" />
+    <Compile Include="Routing\Internal\MatchAlphaNode.cs" />
+    <Compile Include="Routing\Internal\MatchJoinNode.cs" />
+    <Compile Include="Routing\RemoveActivation.cs" />
     <Compile Include="Routing\RoutingContextProxy.cs" />
     <Compile Include="Schedulers\Internal\ShutdownSchedulerOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
@@ -348,7 +356,6 @@
     <Compile Include="Actors\Inbox.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
-    <Compile Include="Routing\Internal\AlphaNodeSelector.cs" />
     <Compile Include="Routing\Internal\ChannelNode.cs" />
     <Compile Include="Routing\Configuration\Internal\DynamicRoutingEngineConfigurator.cs" />
     <Compile Include="Routing\Configuration\ReceiveConfigurator.cs" />
@@ -379,7 +386,7 @@
     <Compile Include="Routing\Internal\AlphaNode.cs" />
     <Compile Include="Routing\Internal\ConditionNode.cs" />
     <Compile Include="Routing\Internal\RoutingContext.cs" />
-    <Compile Include="Routing\Internal\TypeRouter.cs" />
+    <Compile Include="Routing\Internal\RootNode.cs" />
     <Compile Include="Routing\RoutingEngine.cs" />
     <Compile Include="Routing\Internal\SelectiveConsumerNode.cs" />
     <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />

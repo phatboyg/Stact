@@ -39,7 +39,7 @@ namespace Stact.Routing.Visualizers
 			return base.Visit(engine);
 		}
 
-		protected override bool Visit(TypeRouter router)
+		protected override bool Visit(RootNode router)
 		{
 			_output(router.GetType().ToShortTypeName());
 

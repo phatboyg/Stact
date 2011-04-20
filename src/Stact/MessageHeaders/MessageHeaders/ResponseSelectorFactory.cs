@@ -18,8 +18,8 @@ namespace Stact.MessageHeaders
 	public class ResponseSelectorFactory :
 		MatchHeaderSelectorFactoryImpl
 	{
-		public ResponseSelectorFactory(Type messageType)
-			: base(messageType, typeof(Response<>), "Response")
+		public ResponseSelectorFactory(Type messageType, bool includeInherited = false)
+			: base(messageType, typeof(Response<>), "Response", includeInherited)
 		{
 		}
 	}

@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	
-
 	/// <summary>
 	///   A channel that selectively accepts a message and enqueues the consumer method via the
 	///   specified Fiber.

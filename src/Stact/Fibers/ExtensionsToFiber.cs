@@ -40,5 +40,15 @@ namespace Stact
 		{
 			return new StopFiberOnDispose(fiber);
 		}
+
+		/// <summary>
+		/// Signals the fiber to shut down, but does not wait for the remaining operations
+		/// to be executed
+		/// </summary>
+		/// <param name="fiber"></param>
+		public static void Shutdown(this Fiber fiber)
+		{
+			fiber.Shutdown(TimeSpan.Zero);
+		}
 	}
 }

@@ -176,6 +176,13 @@ namespace Stact.Visitors
 			return channel;
 		}
 
+		protected virtual UntypedChannel Visitor<TFilter>(UntypedFilterChannel<TFilter> channel)
+		{
+			Visit(channel.Output);
+
+			return channel;
+		}
+
 		protected virtual UntypedChannel Visitor(ShuntChannel channel)
 		{
 			return channel;

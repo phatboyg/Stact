@@ -22,16 +22,27 @@ namespace Stact.Routing.Internal
 	/// <typeparam name="T"></typeparam>
 	public class BetaMemory<T> :
 		AlphaMemory<T>,
+		Activation<T>,
 		RightActivation<T>
 	{
 		public void RightActivate(Func<RoutingContext<T>, bool> callback)
 		{
-			Messages.All(callback);
+			All(callback);
 		}
 
 		public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
 		{
-			Messages.Any(context, callback);
+			Any(context, callback);
+		}
+
+		public bool IsAlive
+		{
+			get { return true; }
+		}
+
+		public void Activate(RoutingContext<T> context)
+		{
+			Add(context);
 		}
 	}
 }

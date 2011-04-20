@@ -68,24 +68,28 @@ namespace Stact.Benchmarks
 			int countA = 0;
 			int countB = 0;
 			int countC = 0;
-			for (int i = 0; i < consumerCount; i++)
+			engine.Configure(x =>
 			{
-				engine.Receive<A>(m =>
+				for (int i = 0; i < consumerCount; i++)
 				{
-					Interlocked.Increment(ref countA);
-					latch.CountDown();
-				});
-				engine.Receive<B>(m =>
-				{
-					Interlocked.Increment(ref countB);
-					latch.CountDown();
-				});
-				engine.Receive<A, B>(m =>
-				{
-					Interlocked.Increment(ref countC);
-					latch.CountDown();
-				});
-			}
+
+					x.Receive<A>(m =>
+					{
+						Interlocked.Increment(ref countA);
+						latch.CountDown();
+					});
+					x.Receive<B>(m =>
+					{
+						Interlocked.Increment(ref countB);
+						latch.CountDown();
+					});
+					x.Receive<A, B>(m =>
+					{
+						Interlocked.Increment(ref countC);
+						latch.CountDown();
+					});
+				}
+			});
 
 			//var visualizer = new RoutingEngineTextVisualizer();
 			//visualizer.Output = s => Console.WriteLine(s);

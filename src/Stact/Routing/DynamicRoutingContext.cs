@@ -71,7 +71,7 @@ namespace Stact.Routing
 			}
 		}
 
-		public void IsAssignableTo<TChannel>(Action<RoutingContext<TChannel>> callback)
+		public void CanConvertTo<TChannel>(Action<RoutingContext<TChannel>> callback)
 		{
 			if (typeof(TChannel) == typeof(T))
 				callback((RoutingContext<TChannel>)this);

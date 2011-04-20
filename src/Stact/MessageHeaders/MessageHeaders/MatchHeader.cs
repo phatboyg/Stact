@@ -16,4 +16,10 @@ namespace Stact.MessageHeaders
 	{
 		void Match<T>(T message, MatchHeaderCallback callback);
 	}
+
+
+	public interface MatchHeader<TContext>
+	{
+		void Match<T>(TContext context, T message, MatchHeaderCallback<TContext> callback);
+	}
 }

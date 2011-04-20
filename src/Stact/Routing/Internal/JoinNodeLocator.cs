@@ -22,7 +22,7 @@ namespace Stact.Routing.Internal
 		readonly Action<JoinNode<T>> _callback;
 		AlphaNode<T> _alphaNode;
 		JoinNode<T> _joinNode;
-		TypeRouter _typeRouter;
+		RootNode _rootNode;
 
 
 		public JoinNodeLocator(Action<JoinNode<T>> callback)
@@ -38,10 +38,10 @@ namespace Stact.Routing.Internal
 			{
 				if (_alphaNode == null)
 				{
-					if (_typeRouter == null)
+					if (_rootNode == null)
 						throw new InvalidOperationException("No router found");
 
-					_alphaNode = _typeRouter.GetActivation(typeof(T)) as AlphaNode<T>;
+					_alphaNode = null;// _rootNode.Activations.GetActivation(typeof(T)) as AlphaNode<T>;
 					if (_alphaNode == null)
 						throw new InvalidOperationException("not an alpha node");
 				}
@@ -50,14 +50,13 @@ namespace Stact.Routing.Internal
 				_alphaNode.AddActivation(_joinNode);
 			}
 
-			if (_joinNode != null)
-				_callback(_joinNode);
+			_callback(_joinNode);
 		}
 
 
-		protected override bool Visit(TypeRouter channel)
+		protected override bool Visit(RootNode channel)
 		{
-			_typeRouter = channel;
+			_rootNode = channel;
 
 			return base.Visit(channel);
 		}

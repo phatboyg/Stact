@@ -18,8 +18,8 @@ namespace Stact.MessageHeaders
 	public class MessageSelectorFactory :
 		MatchHeaderSelectorFactoryImpl
 	{
-		public MessageSelectorFactory(Type messageType)
-			: base(messageType, typeof(Message<>), "Message")
+		public MessageSelectorFactory(Type messageType, bool includeInherited = false)
+			: base(messageType, typeof(Message<>), "Message", includeInherited)
 		{
 		}
 	}

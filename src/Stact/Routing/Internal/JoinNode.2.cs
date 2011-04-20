@@ -43,13 +43,13 @@ namespace Stact.Routing.Internal
 		public void Activate(RoutingContext<T1> context)
 		{
 			_rightActivation.RightActivate(match =>
-				{
-					if (!context.IsAlive)
-						return false;
+			{
+				if (!context.IsAlive)
+					return false;
 
-					_betaMemory.Activate(context.Join(match));
-					return true;
-				});
+				_betaMemory.Activate(context.Join(match));
+				return true;
+			});
 		}
 
 		public bool IsAlive

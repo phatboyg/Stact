@@ -12,12 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Configuration
 {
-	using System.Collections.Generic;
+	using Routing.Internal;
 
 
-	public interface RoutingEngineConfigurator :
-		IEnumerable<RoutingConfigurator>
+	public interface RoutingEngineConfigurator
 	{
-		void Add(RoutingConfigurator configurator);
+		RemoveActivation Add<T>(Activation<T> activation);
+		RoutingEngine Engine { get; }
 	}
 }

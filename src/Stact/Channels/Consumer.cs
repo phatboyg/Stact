@@ -12,11 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
+	using Internal;
+
+
 	/// <summary>
 	/// A consumer delegate, which can be assigned to any method that takes a message as an argument,
 	/// including Actions, void methods, etc.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="message"></param>
-	public delegate void Consumer<in T>(T message);
+	[CanBeNull]
+	public delegate void Consumer<in T>([NotNull] T message);
 }

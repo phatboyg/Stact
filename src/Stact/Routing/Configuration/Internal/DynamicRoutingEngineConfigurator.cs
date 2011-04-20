@@ -13,63 +13,70 @@
 namespace Stact.Routing.Configuration.Internal
 {
 	using System;
-	using System.Collections;
-	using System.Collections.Generic;
+	using Magnum.Collections;
 	using Magnum.Extensions;
+	using Routing.Internal;
 
 
 	public class DynamicRoutingEngineConfigurator :
 		RoutingEngineConfigurator
 	{
-		readonly IList<RoutingConfigurator> _configurators;
 		readonly DynamicRoutingEngine _engine;
+		readonly Cache<Type, object> _joinNodes;
 
 		public DynamicRoutingEngineConfigurator(DynamicRoutingEngine engine)
 		{
 			_engine = engine;
-			_configurators = new List<RoutingConfigurator>();
+			_joinNodes = new Cache<Type, object>();
 		}
 
-		public IEnumerator<RoutingConfigurator> GetEnumerator()
+		public RemoveActivation Add<T>(Activation<T> activation)
 		{
-			return _configurators.GetEnumerator();
+			BetaMemory<T> joinNode = GetJoinNode<T>();
+
+			joinNode.AddActivation(activation);
+
+			return () =>
+			{
+				joinNode.RemoveActivation(activation);
+			};
 		}
 
-		public void Add(RoutingConfigurator configurator)
+		public RoutingEngine Engine
 		{
-			_configurators.Add(configurator);
+			get { return _engine; }
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		BetaMemory<T> GetJoinNode<T>()
 		{
-			return GetEnumerator();
+			return (BetaMemory<T>)_joinNodes.Retrieve(typeof(T), x => FindJoinNode<T>());
 		}
 
-		public RoutingEngineConfiguration Compile()
+		object FindJoinNode<T>()
 		{
-			ValidateConfiguration();
+			if(!typeof(T).IsGenericType || !typeof(T).Implements(typeof(Message<>)))
+			{
+				var messageNode = (BetaMemory<Message<T>>)FindJoinNode<Message<T>>();
+				var bodyNode = new BodyNode<T>();
+				messageNode.AddActivation(bodyNode);
 
-			var context = new DynamicRoutingEngineConfiguratorContext(_engine);
+				return bodyNode.BetaMemory;
+			}
 
-			_configurators.Each(x => x.Configure(_engine));
+			JoinNode<T> result = null;
 
-			throw new NotImplementedException();
-		}
+			new MatchAlphaNode<T>(_engine, alphaNode =>
+			{
+				new MatchJoinNode<T>(alphaNode, joinNode =>
+				{
+					result = joinNode;
+				});
+			});
 
-		void ValidateConfiguration()
-		{
-			_configurators.Each(x => x.ValidateConfiguration());
-		}
-	}
+			if (result == null)
+				throw new InvalidOperationException("Failed to create join node: " + typeof(T).ToShortTypeName());
 
-
-	public class DynamicRoutingEngineConfiguratorContext
-	{
-		readonly DynamicRoutingEngine _engine;
-
-		public DynamicRoutingEngineConfiguratorContext(DynamicRoutingEngine engine)
-		{
-			_engine = engine;
+			return result.BetaMemory;
 		}
 	}
 }

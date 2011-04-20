@@ -30,6 +30,15 @@ namespace Stact.Internal
 
 		public static bool TryConvert<TInput>(TInput input, Action<T> matchCallback)
 		{
+			return TryConvertEx(input, x =>
+			{
+				matchCallback(x);
+				return true;
+			});
+		}
+
+		public static bool TryConvertEx<TInput>(TInput input, Func<T, bool> matchCallback)
+		{
 			if (_converters == null)
 				_converters = new Dictionary<Type, Func<object, T>>();
 
@@ -64,9 +73,8 @@ namespace Stact.Internal
 				return false;
 
 			T output = converter(input);
-			matchCallback(output);
-
-			return true;
+			
+			return matchCallback(output);
 		}
 
 		static HeaderTypeConverterFactory<T>[] CreateTypeConverters()

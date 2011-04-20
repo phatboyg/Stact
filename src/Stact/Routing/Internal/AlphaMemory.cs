@@ -12,11 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
+	using System;
 	using System.Collections.Generic;
 
 
-	public class AlphaMemory<T> :
-		Activation<T>
+	public class AlphaMemory<T>
 	{
 		readonly SuccessorList<T> _successors;
 		readonly ActivatedMessageList<T> _messages;
@@ -32,19 +32,19 @@ namespace Stact.Routing.Internal
 			get { return _successors; }
 		}
 
-		protected ActivatedMessageList<T> Messages
+		protected void Add(RoutingContext<T> message)
 		{
-			get { return _messages; }
+			_messages.Add(message);
 		}
 
-		public bool IsAlive
+		protected void All(Func<RoutingContext<T>, bool> callback)
 		{
-			get { return true; }
+			_messages.All(callback);
 		}
 
-		public void Activate(RoutingContext<T> context)
+		protected void Any(RoutingContext<T> match, Action<RoutingContext<T>> callback)
 		{
-			_messages.Add(context);
+			_messages.Any(match, callback);
 		}
 
 		public void AddActivation(Activation<T> activation)

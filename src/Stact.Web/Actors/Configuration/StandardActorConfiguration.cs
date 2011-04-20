@@ -19,7 +19,6 @@ namespace Stact.Web.Actors.Configuration
 	using System.Reflection;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
-	using Stact.Actors.Internal;
 	using Stact.Internal;
 
 

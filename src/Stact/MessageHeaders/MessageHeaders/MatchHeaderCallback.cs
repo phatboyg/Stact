@@ -19,4 +19,17 @@ namespace Stact.MessageHeaders
 		void Request<TRequest>(Request<TRequest> request);
 		void Response<TResponse>(Response<TResponse> response);
 	}
+
+
+	/// <summary>
+	/// Matches the header type and carries along a context value with the match
+	/// </summary>
+	/// <typeparam name="TContext"></typeparam>
+	public interface MatchHeaderCallback<in TContext>
+	{
+		void Body<TBody>(TContext context, TBody body);
+		void Message<TBody>(TContext context, Message<TBody> message);
+		void Request<TRequest>(TContext context, Request<TRequest> request);
+		void Response<TResponse>(TContext context, Response<TResponse> response);
+	}
 }

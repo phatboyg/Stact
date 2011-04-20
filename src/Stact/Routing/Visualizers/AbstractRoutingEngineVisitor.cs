@@ -12,10 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-	using Actors.Internal;
 	using Internal;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
+	using Stact.Internal;
+
 
 	public abstract class AbstractRoutingEngineVisitor<T> :
 		ReflectiveVisitorBase<T>
@@ -23,11 +24,11 @@ namespace Stact.Routing.Visualizers
 	{
 		protected virtual bool Visit(DynamicRoutingEngine engine)
 		{
-			Visit(engine.Router);
+			Visit(engine.Root);
 			return true;
 		}
 
-		protected virtual bool Visit(TypeRouter channel)
+		protected virtual bool Visit(RootNode channel)
 		{
 			channel.Activations.Each(typeChannel => Visit(typeChannel));
 			return true;

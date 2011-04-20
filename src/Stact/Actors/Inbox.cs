@@ -13,7 +13,6 @@
 namespace Stact
 {
 	using System;
-	using Configuration;
 
 
 	/// <summary>
@@ -23,8 +22,6 @@ namespace Stact
 	public interface Inbox :
 		UntypedChannel
 	{
-		ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions);
-		
 		/// <summary>
 		///   Calls the specified method when a message of the requested type is received. The
 		///   consumer is asked if the message should be parsed, and returns a non-null action

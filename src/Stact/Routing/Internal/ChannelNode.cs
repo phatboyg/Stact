@@ -40,5 +40,13 @@ namespace Stact.Routing.Internal
 		{
 			_channel.Send(context.Body);
 		}
+
+		public void Match<T>(Action<T> callback)
+			where T : class
+		{
+			var match = this as T;
+			if (match != null)
+				callback(match);
+		}
 	}
 }

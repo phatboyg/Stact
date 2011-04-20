@@ -10,12 +10,12 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Internal
+namespace Stact.Internal
 {
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	
+
 
 	/// <summary>
 	///   Provides a channel from an actor, based on the property information which is used

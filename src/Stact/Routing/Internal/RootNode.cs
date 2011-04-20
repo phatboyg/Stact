@@ -15,15 +15,16 @@ namespace Stact.Routing.Internal
 	using System;
 	using System.Collections.Generic;
 	using Magnum.Collections;
-	using Magnum.Reflection;
+	using Magnum.Extensions;
+	using Stact.Internal;
 
 
-	public class TypeRouter :
+	public class RootNode :
 		Activation
 	{
 		readonly Cache<Type, Activation> _types;
 
-		public TypeRouter()
+		public RootNode()
 		{
 			_types = new Cache<Type, Activation>();
 		}
@@ -33,16 +34,22 @@ namespace Stact.Routing.Internal
 			get { return _types; }
 		}
 
-		public void Activate<T>(RoutingContext<T> message)
+		public void Activate<T>(RoutingContext<T> context)
 		{
-			_types.Retrieve(typeof(T), _ => (Activation)new AlphaNode<T>());
+			Activation activation = _types.Retrieve(typeof(T), _ => new AlphaNode<T>());
 
-			_types.Each(activation => activation.Activate(message));
+			activation.Activate(context);
 		}
 
-		public Activation GetActivation(Type type)
+		[NotNull]
+		public AlphaNode<T> GetAlphaNode<T>()
 		{
-			return _types.Retrieve(type, _ => (Activation)FastActivator.Create(typeof(AlphaNode<>).MakeGenericType(type)));
+			Activation activation = _types.Retrieve(typeof(T), _ => new AlphaNode<T>());
+			if (activation.GetType() == typeof(AlphaNode<T>))
+				return (AlphaNode<T>)activation;
+
+			throw new InvalidOperationException(
+				"The activation for {0} is not an Alpha node".FormatWith(typeof(T).ToShortTypeName()));
 		}
 	}
 }

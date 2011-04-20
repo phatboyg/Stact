@@ -50,7 +50,7 @@ namespace Stact.Routing.Internal
 
 		public void Add(Activation<TChannel> activation)
 		{
-			_activations.Add(activation);
+			_activations.Insert(0, activation);
 		}
 
 		public void All(Action<Activation<TChannel>> callback)

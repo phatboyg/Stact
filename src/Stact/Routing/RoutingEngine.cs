@@ -13,6 +13,7 @@
 namespace Stact.Routing
 {
 	using System;
+	using Configuration;
 
 
 	/// <summary>
@@ -25,5 +26,7 @@ namespace Stact.Routing
 	{
 		void Add(Action operation);
 		void Shutdown();
+
+		void Configure(Action<RoutingEngineConfigurator> configurator);
 	}
 }

@@ -20,32 +20,25 @@ namespace Stact.MessageHeaders
 	using Magnum.Extensions;
 
 
-	public abstract class MatchHeaderSelectorFactoryImpl :
+	public class BodySelectorFactory :
 		MatchHeaderSelectorFactory
 	{
-		readonly Type _bodyType;
-		readonly Type _headerType;
 		readonly bool _includeInherited;
-		readonly bool _matches;
 		readonly Type _messageType;
-		readonly string _methodName;
-		readonly Action<object, MatchHeaderCallback> _router;
+		bool _matches;
+		string _methodName;
+		Action<object, MatchHeaderCallback> _router;
 
-		protected MatchHeaderSelectorFactoryImpl(Type messageType, Type headerType, string methodName,
-		                                         bool includeInherited = false)
+		public BodySelectorFactory(Type messageType, bool includeInherited = false)
 		{
 			_messageType = messageType;
-			_headerType = headerType;
-			_methodName = methodName;
 			_includeInherited = includeInherited;
 
-			_matches = _messageType.IsGenericType && _messageType.Implements(_headerType);
-			if (_matches)
-			{
-				_bodyType = _messageType.GetGenericTypeDeclarations(_headerType).Single();
+			_methodName = "Message";
 
-				_router = GenerateRouteMethod(_bodyType);
-			}
+			_matches = !_messageType.IsGenericType || !_messageType.Implements(typeof(Message<>));
+			if (_matches)
+				_router = GenerateRouteMethod(_messageType);
 		}
 
 		public bool CanMatch<TInput>(TInput input, out Action<object, MatchHeaderCallback> adapter)
@@ -59,7 +52,7 @@ namespace Stact.MessageHeaders
 				return false;
 
 			if (_includeInherited)
-				adapter = GenerateAdapterForInheritedTypes();
+				adapter = GenerateAdapterForInheritedTypes(_messageType);
 			else
 				adapter = _router;
 			return true;
@@ -77,15 +70,15 @@ namespace Stact.MessageHeaders
 				return false;
 
 			if (_includeInherited)
-				adapter = GenerateContextAdapterForInheritedTypes<TContext>();
+				adapter = GenerateContextAdapterForInheritedTypes<TContext>(_messageType);
 			else
-				adapter = GenerateContextMethod<TContext>(_bodyType);
+				adapter = GenerateContextMethod<TContext>(_messageType);
 			return true;
 		}
 
 		IEnumerable<Type> GetInheritedTypes(Type type)
 		{
-			foreach (Type interfaceType	 in type.GetInterfaces())
+			foreach (Type interfaceType in type.GetInterfaces())
 				yield return interfaceType;
 
 			Type baseType = type.BaseType;
@@ -96,47 +89,58 @@ namespace Stact.MessageHeaders
 			}
 		}
 
-		Action<object, MatchHeaderCallback> GenerateAdapterForInheritedTypes()
+		Action<object, MatchHeaderCallback> GenerateAdapterForInheritedTypes(Type bodyType)
 		{
 			Action<object, MatchHeaderCallback>[] adapters = Enumerable.Repeat(_router, 1)
-				.Union(GetInheritedTypes(_bodyType).Select(GenerateRouteMethod))
+				.Union(GetInheritedTypes(bodyType).Select(GenerateRouteMethod))
 				.ToArray();
 
-			return (message, callback) =>
-			{
+			return (message, callback) => {
 				for (int i = 0; i < adapters.Length; i++)
 					adapters[i](message, callback);
 			};
 		}
 
-		Action<TContext, object, MatchHeaderCallback<TContext>> GenerateContextAdapterForInheritedTypes<TContext>()
+		Action<TContext, object, MatchHeaderCallback<TContext>> GenerateContextAdapterForInheritedTypes<TContext>(Type bodyType)
 		{
 			Action<TContext, object, MatchHeaderCallback<TContext>>[] adapters =
-				Enumerable.Repeat(GenerateContextMethod<TContext>(_bodyType), 1)
-					.Union(GetInheritedTypes(_bodyType).Select(GenerateContextMethod<TContext>))
+				Enumerable.Repeat(GenerateContextMethod<TContext>(bodyType), 1)
+					.Union(GetInheritedTypes(bodyType).Select(GenerateContextMethod<TContext>))
 					.ToArray();
 
-			return (context, message, callback) =>
-			{
+			return (context, message, callback) => {
 				for (int i = 0; i < adapters.Length; i++)
 					adapters[i](context, message, callback);
 			};
 		}
+
 
 		Action<object, MatchHeaderCallback> GenerateRouteMethod(Type bodyType)
 		{
 			ParameterExpression value = Expression.Parameter(typeof(object), "value");
 			ParameterExpression output = Expression.Parameter(typeof(MatchHeaderCallback), "output");
 
-			Type messageType = _headerType.MakeGenericType(bodyType);
+			Type messageType = typeof(Message<>).MakeGenericType(bodyType);
 
-			UnaryExpression castValue = Expression.TypeAs(value, messageType);
+			UnaryExpression castValue;
+			if (bodyType.IsValueType)
+				castValue = Expression.Convert(value, bodyType);
+			else
+				castValue = Expression.TypeAs(value, bodyType);
+
+			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(bodyType);
+
+			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] {bodyType});
+
+			NewExpression constructor = Expression.New(constructorInfo, castValue);
 
 			MethodInfo method = typeof(MatchHeaderCallback)
 				.GetMethod(_methodName)
 				.MakeGenericMethod(bodyType);
 
-			MethodCallExpression call = Expression.Call(output, method, castValue);
+			UnaryExpression headerCast = Expression.TypeAs(constructor, messageType);
+
+			MethodCallExpression call = Expression.Call(output, method, headerCast);
 
 			Expression<Action<object, MatchHeaderCallback>> expression =
 				Expression.Lambda<Action<object, MatchHeaderCallback>>(call, value, output);
@@ -150,15 +154,30 @@ namespace Stact.MessageHeaders
 			ParameterExpression value = Expression.Parameter(typeof(object), "value");
 			ParameterExpression output = Expression.Parameter(typeof(MatchHeaderCallback<TContext>), "output");
 
-			Type messageType = _headerType.MakeGenericType(bodyType);
+			Type messageType = typeof(Message<>).MakeGenericType(bodyType);
 
-			UnaryExpression castValue = Expression.TypeAs(value, messageType);
+			UnaryExpression castValue;
+			if (bodyType.IsValueType)
+				castValue = Expression.Convert(value, bodyType);
+			else
+				castValue = Expression.TypeAs(value, bodyType);
+
+			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(bodyType);
+
+			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] { bodyType });
+
+			NewExpression constructor = Expression.New(constructorInfo, castValue);
 
 			MethodInfo method = typeof(MatchHeaderCallback<TContext>)
 				.GetMethod(_methodName)
 				.MakeGenericMethod(bodyType);
 
-			MethodCallExpression call = Expression.Call(output, method, context, castValue);
+			// need to downgrade context to mapped type !!!
+
+
+			UnaryExpression headerCast = Expression.TypeAs(constructor, messageType);
+
+			MethodCallExpression call = Expression.Call(output, method, context, headerCast);
 
 			Expression<Action<TContext, object, MatchHeaderCallback<TContext>>> expression =
 				Expression.Lambda<Action<TContext, object, MatchHeaderCallback<TContext>>>(call, context, value, output);

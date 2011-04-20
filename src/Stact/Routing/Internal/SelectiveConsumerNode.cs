@@ -29,7 +29,7 @@ namespace Stact.Routing.Internal
 			if (consumer == null)
 				return;
 
-			var body = context.Body;
+			TChannel body = context.Body;
 			context.Evict();
 
 			context.Add(() => consumer(body));

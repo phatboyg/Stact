@@ -220,6 +220,16 @@ namespace Stact.Visitors
 			return WithVertex(() => base.Visitor(channel));
 		}
 
+		protected override UntypedChannel Visitor<TFilter>(UntypedFilterChannel<TFilter> channel)
+		{
+			_current = GetVertex(channel.GetHashCode(), () => "UntypedFilterChannel", typeof(UntypedFilterChannel<TFilter>), typeof(TFilter));
+
+			if (_stack.Count > 0)
+				_edges.Add(new Edge(_stack.Peek(), _current, _current.TargetType.Name));
+
+			return WithVertex(() => base.Visitor(channel));
+		}
+
 		protected override UntypedChannel Visitor(ChannelAdapter channel)
 		{
 			_current = GetVertex(channel.GetHashCode(), () => "Adapter", typeof(ChannelAdapter), typeof(object));

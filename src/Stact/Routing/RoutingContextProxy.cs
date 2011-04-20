@@ -53,9 +53,9 @@ namespace Stact.Routing
 			return DynamicRoutingContext.Create(_context.Engine, Body, other.Body);
 		}
 
-		public void IsAssignableTo<TChannel1>(Action<RoutingContext<TChannel1>> callback)
+		public void CanConvertTo<TChannel1>(Action<RoutingContext<TChannel1>> callback)
 		{
-			_context.IsAssignableTo<TChannel1>(callback);
+			_context.CanConvertTo<TChannel1>(callback);
 		}
 	}
 }
