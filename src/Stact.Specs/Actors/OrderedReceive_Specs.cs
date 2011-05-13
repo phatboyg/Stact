@@ -72,15 +72,15 @@ namespace Stact.Specs.Actors
 		[Then]
 		public void Should_be_in_order()
 		{
-			_response.IsCompleted.ShouldBeTrue();
-			_response.Value.InOrder.ShouldBeTrue();
+			_response.IsCompleted.ShouldBeTrue("Didn't complete");
+			_response.Value.InOrder.ShouldBeTrue("The messages were out of order");
 		}
 
 		[Then]
 		public void Should_have_all_the_values()
 		{
-			_response.IsCompleted.ShouldBeTrue();
-			_response.Value.Count.ShouldEqual(_count);
+			_response.IsCompleted.ShouldBeTrue("Didn't complete");
+			_response.Value.Count.ShouldEqual(_count, "Didn't get all the messages");
 		}
 
 

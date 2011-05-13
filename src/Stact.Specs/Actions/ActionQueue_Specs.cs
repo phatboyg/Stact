@@ -14,11 +14,10 @@ namespace Stact.Specs.Actions
 {
 	using System.Diagnostics;
 	using System.Threading;
-	
-	using Internal;
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
+
 
 	[TestFixture]
 	public class Disabling_the_action_queue
@@ -39,6 +38,7 @@ namespace Stact.Specs.Actions
 			called.IsCompleted.ShouldBeFalse();
 		}
 	}
+
 
 	[TestFixture]
 	public class Running_all_actions

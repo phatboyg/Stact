@@ -80,13 +80,13 @@ namespace Stact
 
 					WcfChannel<WcfMessageEnvelope> proxy = _channelFactory.CreateChannel();
 					proxy.Send(envelope);
-
+					
 					var channel = proxy as IClientChannel;
 					if (channel != null)
 						channel.Close();
-
+					
 					var disposable = proxy as IDisposable;
-					if (disposable != null)
+					if(disposable != null)
 						disposable.Dispose();
 				}
 				catch
