@@ -39,7 +39,7 @@ namespace Stact
 		public void Add(Action operation)
 		{
 			if (_shuttingDown)
-				throw new FiberException("The fiber is no longer accepting actions");
+				return;
 
 			_executor.Execute(operation);
 		}

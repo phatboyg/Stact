@@ -13,6 +13,7 @@
 namespace Stact
 {
 	using System;
+	using System.ServiceModel;
 	using Internal;
 	using Magnum.Serialization;
 
@@ -22,7 +23,6 @@ namespace Stact
 		IDisposable
 	{
 		readonly Fiber _fiber;
-		WcfChannel<WcfMessageEnvelope> _proxy;
 		ConfigurationFreeChannelFactory<WcfChannel<WcfMessageEnvelope>> _channelFactory;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
@@ -36,7 +36,6 @@ namespace Stact
 			try
 			{
 				_channelFactory.Open();
-				_proxy = _channelFactory.CreateChannel();
 			}
 			catch (Exception ex)
 			{
@@ -54,16 +53,6 @@ namespace Stact
 
 		public void Dispose()
 		{
-			var disposable = _proxy as IDisposable;
-			if (disposable != null)
-			{
-				using (disposable)
-				{
-				}
-			}
-
-			_proxy = null;
-
 			if (_channelFactory != null)
 			{
 				try
@@ -75,21 +64,36 @@ namespace Stact
 					_channelFactory = null;
 				}
 			}
-
 		}
 
 		public void Send<T>(T message)
 		{
 			_fiber.Add(() =>
+			{
+				try
 				{
 					var envelope = new WcfMessageEnvelope
-						{
-							MessageType = typeof(T).AssemblyQualifiedName,
-							Body = Serializer.Serialize(message),
-						};
+					{
+						MessageType = typeof(T).AssemblyQualifiedName,
+						Body = Serializer.Serialize(message),
+					};
 
-					_proxy.Send(envelope);
-				});
+					WcfChannel<WcfMessageEnvelope> proxy = _channelFactory.CreateChannel();
+					proxy.Send(envelope);
+
+					var channel = proxy as IClientChannel;
+					if (channel != null)
+						channel.Close();
+
+					var disposable = proxy as IDisposable;
+					if (disposable != null)
+						disposable.Dispose();
+				}
+				catch
+				{
+					// i hate doing this, but we don't want to take down the entire appdomain
+				}
+			});
 		}
 	}
 
@@ -98,7 +102,6 @@ namespace Stact
 		Channel<T>
 	{
 		readonly Fiber _fiber;
-		readonly WcfChannel<T> _proxy;
 		ConfigurationFreeChannelFactory<WcfChannel<T>> _channelFactory;
 
 		public WcfChannelProxy(Fiber fiber, Uri serviceUri, string pipeName)
@@ -111,7 +114,6 @@ namespace Stact
 			try
 			{
 				_channelFactory.Open();
-				_proxy = _channelFactory.CreateChannel();
 			}
 			catch (Exception ex)
 			{
@@ -127,7 +129,26 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => _proxy.Send(message));
+			_fiber.Add(() =>
+			{
+				try
+				{
+					WcfChannel<T> proxy = _channelFactory.CreateChannel();
+					proxy.Send(message);
+
+					var channel = proxy as IClientChannel;
+					if (channel != null)
+						channel.Close();
+
+					var disposable = proxy as IDisposable;
+					if (disposable != null)
+						disposable.Dispose();
+				}
+				catch
+				{
+					// i hate doing this, but we don't want to take down the entire appdomain
+				}
+			});
 		}
 	}
 }

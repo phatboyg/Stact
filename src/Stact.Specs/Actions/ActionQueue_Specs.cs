@@ -32,7 +32,7 @@ namespace Stact.Specs.Actions
 
 			fiber.Stop();
 
-			Assert.Throws<FiberException>(() => fiber.Add(() => called.Complete(true)));
+			fiber.Add(() => called.Complete(true));
 
 			fiber.Shutdown(10.Seconds());
 
