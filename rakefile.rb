@@ -38,7 +38,7 @@ task :unclean => [:compile, :ilmerge, :tests]
 
 desc "Update the common version information for the build. You can call this task without building."
 assemblyinfo :global_version do |asm|
-  asm_version = BUILD_NUMBER_BASE + ".0"
+  asm_version = BUILD_NUMBER_BASE + ".1"
   commit_data = get_commit_hash_and_date
   commit = commit_data[0]
   commit_date = commit_data[1]
@@ -50,7 +50,7 @@ assemblyinfo :global_version do |asm|
 
   # Assembly file config
   asm.product_name = PRODUCT
-  asm.description = "Git commit hash: #{commit} - #{commit_date} - Stact - An actor library and framework. http://github.com/phatboyg/Stact"
+  asm.description = "Stact - An actor library and framework. http://github.com/phatboyg/Stact"
   asm.version = asm_version
   asm.file_version = build_number
   asm.custom_attributes :AssemblyInformationalVersion => "#{asm_version}",
