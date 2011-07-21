@@ -18,7 +18,7 @@ TARGET_FRAMEWORK_VERSION = (BUILD_CONFIG_KEY == "NET40" ? "v4.0" : "v3.5")
 MSB_USE = (BUILD_CONFIG_KEY == "NET40" ? :net4 : :net35)
 OUTPUT_PATH = (BUILD_CONFIG_KEY == "NET40" ? 'net-4.0' : 'net-3.5')
 
-props = { 
+props = {
   :src => File.expand_path("src"),
   :build_support => File.expand_path("build_support"),
   :stage => File.expand_path("build_output"),
@@ -26,26 +26,6 @@ props = {
   :artifacts => File.expand_path("build_artifacts"),
   :projects => ["Stact", "Stact.ServerFramework"]
 }
-
-puts "Building for .NET Framework #{TARGET_FRAMEWORK_VERSION} in #{BUILD_CONFIG}-mode."
- 
-desc "Displays a list of tasks"
-task :help do
-
-  taskHash = Hash[*(`rake.bat -T`.split(/\n/).collect { |l| l.match(/rake (\S+)\s+\#\s(.+)/).to_a }.collect { |l| [l[1], l[2]] }).flatten] 
- 
-  indent = "                          "
-  
-  puts "rake #{indent}#Runs the 'default' task"
-  
-  taskHash.each_pair do |key, value|
-    if key.nil?  
-      next
-    end
-    puts "rake #{key}#{indent.slice(0, indent.length - key.length)}##{value}"
-  end
-end
-
 
 desc "Cleans, compiles, il-merges, unit tests, prepares examples, packages zip and runs MoMA"
 task :all => [:default, :package, :moma]
@@ -64,8 +44,10 @@ assemblyinfo :global_version do |asm|
   commit_date = commit_data[1]
   build_number = "#{BUILD_NUMBER_BASE}.#{Date.today.strftime('%y%j')}"
   tc_build_number = ENV["BUILD_NUMBER"]
-  puts "##teamcity[buildNumber '#{build_number}-#{tc_build_number}']" unless tc_build_number.nil?
-  
+  build_number = "#{BUILD_NUMBER_BASE}.#{tc_build_number}" unless tc_build_number.nil?
+
+  puts "Setting assembly file version to #{build_number}"
+
   # Assembly file config
   asm.product_name = PRODUCT
   asm.description = "Git commit hash: #{commit} - #{commit_date} - Stact - An actor library and framework. http://github.com/phatboyg/Stact"
@@ -86,7 +68,7 @@ task :clean do
 	# work around latency issue where folder still exists for a short while after it is removed
 	waitfor { !exists?(props[:stage]) }
 	waitfor { !exists?(props[:artifacts]) }
-	
+
 	Dir.mkdir props[:stage]
 	Dir.mkdir props[:artifacts]
 end
@@ -133,25 +115,9 @@ ilmerge :ilmerge_stact do |ilm|
 end
 
 
-#desc "Prepare examples"
-#task :prepare_examples => [:compile] do#
-#	puts "Preparing samples"
-#	targ = File.join(props[:output], 'Services', 'clock' )
-#	copyOutputFiles File.join(props[:src], "Samples/StuffOnAShelf/bin/#{BUILD_CONFIG}"), "clock.*", targ
-#	copyOutputFiles File.join(props[:src], "Samples/StuffOnAShelf/bin/#{BUILD_CONFIG}"), "StuffOnAShelf.{dll}", targ
-#	copyOutputFiles props[:output], "Topshelf.{dll}", targ
-#	copyOutputFiles props[:output], "log4net.{dll,pdb}", targ
-#	copy('doc/Using Shelving.txt', props[:output])
-#	copy('doc/log4net.config.example', props[:output])
-#	commit_data = get_commit_hash_and_date
-#	what_commit = File.new File.join(props[:output], "#{commit_data[0]} - #{commit_data[1]}.txt"), "w"
-#	what_commit.puts "The file name denotes what commit these files were built off of. You can also find that information in the assembly info accessible through code."
-#	what_commit.close
-#end
-
 desc "Only compiles the application."
 msbuild :build do |msb|
-	msb.properties :Configuration => BUILD_CONFIG, 
+	msb.properties :Configuration => BUILD_CONFIG,
 	    :BuildConfigKey => BUILD_CONFIG_KEY,
 	    :TargetFrameworkVersion => TARGET_FRAMEWORK_VERSION,
 	    :Platform => 'Any CPU'
@@ -222,17 +188,17 @@ def get_commit_hash_and_date
 	rescue
 		commit = "git unavailable"
 	end
-	
+
 	[commit, commit_date]
 end
 
 def waitfor(&block)
 	checks = 0
-	
-	until block.call || checks >10 
+
+	until block.call || checks >10
 		sleep 0.5
 		checks += 1
 	end
-	
+
 	raise 'Waitfor timeout expired. Make sure that you aren\'t running something from the build output folders, or that you have browsed to it through Explorer.' if checks > 10
 end

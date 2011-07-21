@@ -1,16 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"> 
-  <metadata> 
-    <id>Stact</id> 
-    <version>1.0.0.0</version> 
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Stact</id>
+    <version>1.0.0.1</version>
     <authors>Chris Patterson</authors>
-    <description>Stact is an actor library and framework</description> 
+    <description>Stact is an actor library and framework</description>
     <language>en-US</language>
     <licenseUrl>https://github.com/phatboyg/Stact/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/phatboyg/Stact</projectUrl>
-  </metadata> 
+    <dependencies>
+      <dependency id="log4net" version="1.2.10" />
+      <dependency id="Magnum" version="2.0.0.0" />
+    </dependencies>
+  </metadata>
   <files>
-    <file src="build_output\**\*" target="lib" />
+    <file src="build_output\net-3.5\Stact.*" target="lib\NET35" />
+    <file src="build_output\net-4.0\Stact.*" target="lib\NET40" />
   </files>
 </package>
 
