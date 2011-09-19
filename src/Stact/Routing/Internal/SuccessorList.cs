@@ -10,58 +10,71 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
+
 namespace Stact.Routing.Internal
 {
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
 
 
-	public class SuccessorList<TChannel> :
-		IEnumerable<Activation<TChannel>>
-	{
-		readonly IList<Activation<TChannel>> _activations;
+    public class SuccessorList<TChannel> :
+        IEnumerable<Activation<TChannel>>
+    {
+        Stack<Activation<TChannel>> _activations;
 
-		public SuccessorList(params Activation<TChannel>[] activations)
-		{
-			_activations = new List<Activation<TChannel>>(activations);
-		}
+        public SuccessorList(params Activation<TChannel>[] activations)
+        {
+            _activations = new Stack<Activation<TChannel>>(activations);
+        }
 
-		public IEnumerator<Activation<TChannel>> GetEnumerator()
-		{
-			for (int i = 0; i < _activations.Count;)
-			{
-				if (!_activations[i].Enabled)
-				{
-					_activations.RemoveAt(i);
-					continue;
-				}
+        public IEnumerator<Activation<TChannel>> GetEnumerator()
+        {
+            bool collectNeeded = false;
+            foreach (var activation in _activations)
+            {
+                if (activation.Enabled == false)
+                {
+                    collectNeeded = true;
+                    continue;
+                }
 
-				yield return _activations[i];
+                yield return activation;
+            }
 
-				i++;
-			}
-		}
+            if (collectNeeded)
+                Collect();
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public void Add(Activation<TChannel> activation)
-		{
-			_activations.Insert(0, activation);
-		}
+        void Collect()
+        {
+            _activations = new Stack<Activation<TChannel>>(_activations.Where(x => x.Enabled));
+        }
 
-		public void All(Action<Activation<TChannel>> callback)
-		{
-			foreach (var activation in this)
-				callback(activation);
-		}
+        public void Add(Activation<TChannel> activation)
+        {
+            _activations.Push(activation);
+        }
 
-		public void Remove(Activation<TChannel> activation)
-		{
-			_activations.Remove(activation);
-		}
-	}
+        public void All(Action<Activation<TChannel>> callback)
+        {
+            foreach (var activation in this)
+                callback(activation);
+        }
+
+        public void Remove(Activation<TChannel> activation)
+        {
+            IEnumerable<Activation<TChannel>> remaining = _activations
+                .Where(x => x.Enabled)
+                .Where(x => x != activation);
+
+            _activations = new Stack<Activation<TChannel>>(remaining);
+        }
+    }
 }

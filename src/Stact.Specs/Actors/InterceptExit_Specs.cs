@@ -46,7 +46,10 @@ namespace Stact.Specs.Actors
 		[Then]
 		public void Should_prevent_the_actor_from_exiting()
 		{
-			_actor.Exit();
+		    AnonymousActor.New(inbox =>
+		    {
+		        _actor.Request<Exit>(inbox);
+		    });
 			_intercepted.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Exit was not intercepted");
 
 			_actor.Send(new A());

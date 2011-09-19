@@ -112,11 +112,9 @@
     <Compile Include="Actors\ActorFactory.cs" />
     <Compile Include="Actors\Actors\Registries\ActorRegistryHeaderChannel.cs" />
     <Compile Include="Actors\ExtensionsForLinking.cs" />
-    <Compile Include="Actors\Internal\ActorOperationExecutor.cs" />
     <Compile Include="ActorUrn.cs" />
     <Compile Include="Channels\UntypedFilterChannel.cs" />
     <Compile Include="Fibers\Internal\TryCatchOperationExecutor.cs" />
-    <Compile Include="Internal\FaultImpl.cs" />
     <Compile Include="Internal\LinkImpl.cs" />
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\AdvancedExtensionsForHeaders.cs" />

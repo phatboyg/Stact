@@ -57,7 +57,7 @@ namespace Stact.Internal
 			get { return _engine; }
 		}
 
-		public void Send<T>(T message)
+	    public void Send<T>(T message)
 		{
 			_inbound.Send(message);
 

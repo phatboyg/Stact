@@ -44,6 +44,21 @@ namespace Stact
 			return message;
 		}
 
+        public static Message<T> Send<T>(this UntypedChannel channel, object values)
+            where T : class
+        {
+            if (!typeof(T).IsInterface)
+                throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+            var message = InterfaceImplementationExtensions.InitializeProxy<T>(values);
+			var messageImpl = new MessageImpl<T>(message);
+
+            channel.Send<Message<T>>(messageImpl);
+
+            return messageImpl;
+        }
+
+
 		/// <summary>
 		///   Wraps the message in a request and sends it to the channel
 		/// </summary>
@@ -100,6 +115,24 @@ namespace Stact
 
 			return requestImpl;
 		}
+
+        public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, object values,
+            UntypedChannel responseChannel) 
+            where TRequest : class
+        {
+            if (!typeof(TRequest).IsInterface)
+                throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+            var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
+
+            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+
+            channel.Send<Request<TRequest>>(requestImpl);
+
+            return requestImpl;
+
+
+        }
 
 		/// <summary>
 		///   Sends an uninitialized interface implementation as a request

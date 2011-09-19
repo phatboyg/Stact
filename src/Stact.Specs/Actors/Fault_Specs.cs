@@ -26,14 +26,14 @@ namespace Stact.Specs.Actors
 		{
 			var received = new Future<Fault>();
 
-			ActorInstance actor = AnonymousActor.New(inbox =>
+			AnonymousActor.New(inbox =>
 			{
-				inbox.Receive<Fault>(fault =>
-				{
-					received.Complete(fault);
-				});
+			    inbox.Receive<Fault>(fault =>
+			    {
+			        received.Complete(fault);
+			    });
 
-				throw new NotImplementedException("A");
+			    throw new NotImplementedException("A");
 			});
 
 			received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();

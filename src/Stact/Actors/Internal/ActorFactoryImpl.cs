@@ -10,78 +10,81 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
+
 namespace Stact.Internal
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Magnum;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Magnum;
 
 
-	public class ActorFactoryImpl<TActor> :
-		ActorFactory<TActor>,
-		AnonymousActorFactory
-		where TActor : class, Actor
-	{
-		readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
-		readonly FiberFactoryEx _fiberFactory;
-		readonly SchedulerFactory _schedulerFactory;
-		readonly ActorConvention<TActor>[] _conventions;
+    public class ActorFactoryImpl<TActor> :
+        ActorFactory<TActor>,
+        AnonymousActorFactory
+        where TActor : class, Actor
+    {
+        readonly ActorConvention<TActor>[] _conventions;
+        readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
+        readonly FiberFactoryEx _fiberFactory;
+        readonly SchedulerFactory _schedulerFactory;
 
-		public ActorFactoryImpl(FiberFactoryEx fiberFactory, SchedulerFactory schedulerFactory,
-			IEnumerable<ActorConvention<TActor>> conventions,
-		                        Func<Fiber, Scheduler, Inbox, TActor> factory)
-		{
-			Guard.AgainstNull(fiberFactory, "fiberFactory");
-			Guard.AgainstNull(schedulerFactory, "schedulerFactory");
-			Guard.AgainstNull(conventions, "conventions");
-			Guard.AgainstNull(factory, "factory");
+        public ActorFactoryImpl(FiberFactoryEx fiberFactory, SchedulerFactory schedulerFactory,
+                                IEnumerable<ActorConvention<TActor>> conventions,
+                                Func<Fiber, Scheduler, Inbox, TActor> factory)
+        {
+            Guard.AgainstNull(fiberFactory, "fiberFactory");
+            Guard.AgainstNull(schedulerFactory, "schedulerFactory");
+            Guard.AgainstNull(conventions, "conventions");
+            Guard.AgainstNull(factory, "factory");
 
-			_fiberFactory = fiberFactory;
-			_schedulerFactory = schedulerFactory;
-			_conventions = conventions.ToArray();
-			_factory = factory;
-		}
+            _fiberFactory = fiberFactory;
+            _schedulerFactory = schedulerFactory;
+            _conventions = conventions.ToArray();
+            _factory = factory;
+        }
 
-		public ActorInstance GetActor()
-		{
-			return GetActor(null);
-		}
+        public ActorInstance GetActor()
+        {
+            return GetActor(null);
+        }
 
-		public ActorInstance GetActor(Action<Inbox> initializer)
-		{
-			ActorInbox<TActor> inbox = null;
+        public ActorInstance GetActor(Action<Inbox> initializer)
+        {
+            ActorInbox<TActor> inbox = null;
 
-			Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex =>
-			{
-				inbox.Send<Fault>(new FaultImpl(ex));
-			}));
+            Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex =>
+            {
+                inbox.Send<Fault>(new
+                {
+                    ex.Message,
+                    ex.StackTrace
+                });
+            }));
 
-			Scheduler scheduler = _schedulerFactory();
+            Scheduler scheduler = _schedulerFactory();
 
-			inbox = new ActorInbox<TActor>(fiber, scheduler);
+            inbox = new ActorInbox<TActor>(fiber, scheduler);
 
-			TActor instance = CreateActorInstance(fiber, scheduler, inbox);
+            TActor instance = CreateActorInstance(fiber, scheduler, inbox);
 
-			ApplyConventions(instance, fiber, scheduler, inbox);
-		
-			if (initializer != null)
-				fiber.Add(() => initializer(inbox));
+            ApplyConventions(instance, fiber, scheduler, inbox);
 
-			return inbox;
-		}
+            if (initializer != null)
+                fiber.Add(() => initializer(inbox));
 
-		void ApplyConventions(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
-		{
-			for (int i = 0; i < _conventions.Length; i++)
-			{
-				_conventions[i].Initialize(instance, fiber, scheduler, inbox);
-			}
-		}
+            return inbox;
+        }
 
-		TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, Inbox inbox)
-		{
-			return _factory(fiber, scheduler, inbox);
-		}
-	}
+        void ApplyConventions(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
+        {
+            for (int i = 0; i < _conventions.Length; i++)
+                _conventions[i].Initialize(instance, fiber, scheduler, inbox);
+        }
+
+        TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, Inbox inbox)
+        {
+            return _factory(fiber, scheduler, inbox);
+        }
+    }
 }

@@ -71,6 +71,200 @@
             A list of iteration counts to execute with each benchmark
             </summary>
     </member>
+    <member name="T:Magnum.Caching.ReadCache`2">
+      <summary>
+            A read-only view of a cache. Methods that are able to modify the cache contents are not
+            available in this reduced interface. Methods on this interface will NOT invoke a missing
+            item provider.
+            </summary>
+      <typeparam name="TKey">
+      </typeparam>
+      <typeparam name="TValue">
+      </typeparam>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.Has(`0)">
+      <summary>
+            Checks if the key exists in the cache
+            </summary>
+      <param name="key">The key to check</param>
+      <returns>True if the key exists, otherwise false</returns>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.HasValue(`1)">
+      <summary>
+            Checks if a value exists in the cache
+            </summary>
+      <param name="value">The value to check</param>
+      <returns>True if the value exists, otherwise false</returns>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.Each(System.Action{`1})">
+      <summary>
+            Calls the specified callback with each value in the cache
+            </summary>
+      <param name="callback">A callback that accepts the value for each item in the cache</param>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.Each(System.Action{`0,`1})">
+      <summary>
+            Calls the specified callback with each item in the cache
+            </summary>
+      <param name="callback">A callback that accepts the key and value for each item in the cache</param>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.Exists(System.Predicate{`1})">
+      <summary>
+            Uses a predicate to scan the cache for a matching value
+            </summary>
+      <param name="predicate">The predicate to run against each value</param>
+      <returns>True if a matching value exists, otherwise false</returns>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.Find(System.Predicate{`1},`1@)">
+      <summary>
+            Uses a predicate to scan the cache for a matching value
+            </summary>
+      <param name="predicate">The predicate to run against each value</param>
+      <param name="result">The matching value</param>
+      <returns>True if a matching value was found, otherwise false</returns>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.GetAllKeys">
+      <summary>
+            Gets all keys that are stored in the cache
+            </summary>
+      <returns>An array of every key in the dictionary</returns>
+    </member>
+    <member name="M:Magnum.Caching.ReadCache`2.GetAll">
+      <summary>
+            Gets all values that are stored in the cache
+            </summary>
+      <returns>An array of every value in the dictionary</returns>
+    </member>
+    <member name="P:Magnum.Caching.ReadCache`2.Count">
+      <summary>
+            The number of items in the cache
+            </summary>
+    </member>
+    <member name="T:Magnum.Caching.Cache`2">
+      <summary>
+            A cache implementation that extends the capability of most dictionary style classes to
+            have a more complete set of methods commonly used in a dictionary scenario.
+            </summary>
+      <typeparam name="TKey">The key type of the cache</typeparam>
+      <typeparam name="TValue">The value type of the cache</typeparam>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Get(`0)">
+      <summary>
+            Get the value for the specified key
+            </summary>
+      <param name="key">The key referencing the value in the cache</param>
+      <returns>The matching value if the key exists in the cache, otherwise an exception is thrown</returns>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Get(`0,Magnum.Caching.MissingValueProvider{`0,`1})">
+      <summary>
+            Get the value for the specified key, overriding the default missing value provider
+            </summary>
+      <param name="key">The key referencing the value in the cache</param>
+      <param name="missingValueProvider">An overloaded missing value provider to create the value if it is not found in the cache</param>
+      <returns>The matching value if the key exists in the cache, otherwise an exception is thrown</returns>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Add(`0,`1)">
+      <summary>
+            Adds a value to the cache using the specified key. If the key already exists in the cache, an exception is thrown.
+            </summary>
+      <param name="key">The key referencing the value</param>
+      <param name="value">The value</param>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.AddValue(`1)">
+      <summary>
+            Adds a value to the cache using the KeySelector to extract the key from the value. If the key already exists
+            in the cache, an exception is thrown.
+            </summary>
+      <param name="value">The value</param>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Remove(`0)">
+      <summary>
+            Remove an existing value from the cache
+            </summary>
+      <param name="key">The key referencing the value</param>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.RemoveValue(`1)">
+      <summary>
+            Remove an existing value from the cache, using the KeySelector to extract the key to find the value
+            </summary>
+      <param name="value">The value to remove</param>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Clear">
+      <summary>
+            Removes all items from the cache
+            </summary>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.Fill(System.Collections.Generic.IEnumerable{`1})">
+      <summary>
+            Fills the cache from a list of values, using the KeySelector to extract the key for each value.
+            </summary>
+      <param name="values">
+      </param>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.WithValue(`0,System.Action{`1})">
+      <summary>
+            Calls the callback with the value matching the specified key
+            </summary>
+      <param name="key">The key referencing the value</param>
+      <param name="callback">The callback to call</param>
+      <returns>True if the value exists and the callback was called</returns>
+    </member>
+    <member name="M:Magnum.Caching.Cache`2.WithValue``1(`0,System.Func{`1,``0},``0)">
+      <summary>
+            Calls the function with the value matching the specified key, returning the result of that function
+            </summary>
+      <typeparam name="TResult">The result type of the function</typeparam>
+      <param name="key">The key references the value</param>
+      <param name="callback">The function to call</param>
+      <param name="defaultValue">The default return value if the item does not exist in the cache</param>
+      <returns>The return value of the function, or the defaultValue specified if the item does not exist in the cache</returns>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.MissingValueProvider">
+      <summary>
+            Sets the missing value provider used by the cache to create requested values that do not exist in the cache
+            </summary>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.ValueAddedCallback">
+      <summary>
+            Sets the callback that is called when a new value is added to the cache
+            </summary>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.ValueRemovedCallback">
+      <summary>
+            Sets the callback that is called when a value is removed or replaced from the cache
+            </summary>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.DuplicateValueAdded">
+      <summary>
+            Sets the callback that is called when a duplicate value is added to the cache
+            </summary>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.KeySelector">
+      <summary>
+            Specifies a selector that returns the key from a value which is used when a value is added to the cache
+            </summary>
+    </member>
+    <member name="P:Magnum.Caching.Cache`2.Item(`0)">
+      <summary>
+            References a value in the cache, returning a newly created or existing value for the specified key, and
+            adding a new or replacing an existing value in the cache
+            </summary>
+      <param name="key">The key references the value</param>
+      <returns>The value from the cache</returns>
+    </member>
+    <member name="M:Magnum.Caching.GenericTypeCache`1.#ctor(System.Type)">
+      <summary>
+            Constructs a cache for the specified generic type
+            </summary>
+      <param name="genericType">The generic type to close</param>
+    </member>
+    <member name="M:Magnum.Caching.GenericTypeCache`1.#ctor(System.Type,Magnum.Caching.MissingValueProvider{System.Type,`0})">
+      <summary>
+            Constructs a cache for the specified generic type.
+            </summary>
+      <param name="genericType">The generic type to close</param>
+      <param name="missingValueProvider">The implementation provider, which must close the generic type with the passed type</param>
+    </member>
     <member name="T:Magnum.PerformanceCounters.CounterCategory">
       <summary>
             Marker interface for type scanning
