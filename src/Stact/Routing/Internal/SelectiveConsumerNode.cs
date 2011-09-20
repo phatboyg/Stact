@@ -12,49 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	/// <summary>
-	/// Selectively delivers a message to a consumer on the specified fiber.
-	/// </summary>
-	/// <typeparam name="TChannel"></typeparam>
-	public class SelectiveConsumerNode<TChannel> :
-		ProductionNode<TChannel>,
-		Activation<TChannel>
-	{
-		readonly SelectiveConsumer<TChannel> _selectiveConsumer;
+    using Contexts;
 
-		public SelectiveConsumerNode(Fiber fiber, SelectiveConsumer<TChannel> selectiveConsumer, bool disableOnActivation = true)
-			: this(FiberConsumer(fiber, selectiveConsumer), disableOnActivation)
-		{
-		}
 
-		public SelectiveConsumerNode(SelectiveConsumer<TChannel> selectiveConsumer, bool disableOnActivation = true)
-			: base(disableOnActivation)
-		{
-			_selectiveConsumer = selectiveConsumer;
-		}
+    /// <summary>
+    /// Selectively delivers a message to a consumer on the specified fiber.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SelectiveConsumerNode<T> :
+        ProductionNode<T>,
+        Activation<T>
+    {
+        readonly SelectiveConsumer<T> _selectiveConsumer;
 
-		public void Activate(RoutingContext<TChannel> context)
-		{
-			Consumer<TChannel> consumer = _selectiveConsumer(context.Body);
-			if (consumer == null)
-				return;
+        public SelectiveConsumerNode(RoutingEngine engine, SelectiveConsumer<T> selectiveConsumer,
+                                     bool disableOnActivation = true)
+            : base(engine, disableOnActivation)
+        {
+            _selectiveConsumer = selectiveConsumer;
+        }
 
-			Accept(context, body => consumer(body));
-		}
+        public void Activate(RoutingContext<T> context)
+        {
+            Consumer<T> consumer = _selectiveConsumer(context.Body);
+            if (consumer == null)
+                return;
 
-		static SelectiveConsumer<TChannel> FiberConsumer(Fiber fiber, SelectiveConsumer<TChannel> selectiveConsumer)
-		{
-			return message =>
-			{
-				Consumer<TChannel> consumer = selectiveConsumer(message);
-				if (consumer == null)
-					return null;
-
-				return msg =>
-				{
-					fiber.Add(() => consumer(message));
-				};
-			};
-		}
-	}
+            Accept(context, body => consumer(body));
+        }
+    }
 }

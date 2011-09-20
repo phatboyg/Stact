@@ -12,49 +12,48 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
-	using System.Linq;
-	using System.Reflection;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
-	using Stact.Internal;
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using Magnum.Extensions;
+    using Magnum.Reflection;
 
 
-	public class PublicMethodsConvention<TActor> :
-		ActorConvention<TActor>
-		where TActor : Actor
-	{
-		readonly ActorConvention<TActor>[] _methods;
+    public class PublicMethodsConvention<TActor> :
+        ActorConvention<TActor>
+        where TActor : Actor
+    {
+        readonly ActorConvention<TActor>[] _methods;
 
-		public PublicMethodsConvention()
-		{
-			_methods = typeof(TActor)
-				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Where(x => x.GetParameters().Count() == 1)
-				.Where(x => x.GetParameters().Single().ParameterType.Implements(typeof(Message<>)))
-				.Select(CreateMethodConvention)
-				.ToArray();
-		}
+        public PublicMethodsConvention()
+        {
+            _methods = typeof(TActor)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(x => x.GetParameters().Count() == 1)
+                .Where(x => x.GetParameters().Single().ParameterType.Implements(typeof(Message<>)))
+                .Select(CreateMethodConvention)
+                .ToArray();
+        }
 
-		public void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
-		{
-			_methods.Each(method => method.Initialize(instance, fiber, scheduler, inbox));
-		}
+        public void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
+        {
+            _methods.Each(method => method.Initialize(instance, fiber, scheduler, inbox));
+        }
 
-		public bool Matches(ActorConvention<TActor> convention)
-		{
-			return typeof(PublicMethodsConvention<TActor>).Equals(convention.GetType());
-		}
+        public bool Matches(ActorConvention<TActor> convention)
+        {
+            return typeof(PublicMethodsConvention<TActor>).Equals(convention.GetType());
+        }
 
-		static ActorConvention<TActor> CreateMethodConvention(MethodInfo method)
-		{
-			Type messageType = method.GetParameters().Single().ParameterType;
+        static ActorConvention<TActor> CreateMethodConvention(MethodInfo method)
+        {
+            Type messageType = method.GetParameters().Single().ParameterType;
 
-			var genericTypes = new[] {typeof(TActor), messageType};
+            var genericTypes = new[] {typeof(TActor), messageType};
 
-			var args = new object[] {method};
+            var args = new object[] {method};
 
-			return (ActorConvention<TActor>)FastActivator.Create(typeof(PublicMethodConvention<,>), genericTypes, args);
-		}
-	}
+            return (ActorConvention<TActor>)FastActivator.Create(typeof(PublicMethodConvention<,>), genericTypes, args);
+        }
+    }
 }

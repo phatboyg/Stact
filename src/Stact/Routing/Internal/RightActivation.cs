@@ -13,9 +13,10 @@
 namespace Stact.Routing.Internal
 {
 	using System;
+	using Contexts;
 
 
-	/// <summary>
+    /// <summary>
 	/// A RightActivation moves a message along the right side of the graph, which is
 	/// referred to as the beta network or join network.
 	/// </summary>

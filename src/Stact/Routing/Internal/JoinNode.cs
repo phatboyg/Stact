@@ -14,9 +14,10 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Contexts;
 
 
-	/// <summary>
+    /// <summary>
 	/// A JoinNode with a single type argument joins the output of the left side network
 	/// to the right-side network. A single type will only join to the same message that 
 	/// was passed through the left side network to the alpha nodes

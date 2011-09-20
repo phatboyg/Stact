@@ -12,76 +12,70 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-	using System;
-	using Configuration;
-	using Configuration.Internal;
-	using Internal;
-	using Magnum.Collections;
-	using Stact.Internal;
+    using System;
+    using Configuration;
+    using Configuration.Internal;
+    using Internal;
+    using Stact.Internal;
 
 
-	public class DynamicRoutingEngine :
-		RoutingEngine
-	{
-		readonly Fiber _fiber;
-		readonly OperationList _operationList;
-		readonly Activation _root;
-		readonly Cache<Type, Activation> _types;
-		bool _shutdown;
-		DynamicRoutingEngineConfigurator _configurator;
+    public class DynamicRoutingEngine :
+        RoutingEngine
+    {
+        static readonly DynamicRoutingContextFactory _contextFactory = new DynamicRoutingContextFactory();
 
-		public DynamicRoutingEngine(Fiber fiber)
-		{
-			_fiber = fiber;
+        readonly DynamicRoutingEngineConfigurator _configurator;
+        readonly Fiber _fiber;
+        readonly OperationList _operationList;
+        readonly Activation _root;
+        bool _shutdown;
 
-			_operationList = new OperationList();
-			_types = new Cache<Type, Activation>();
-			_root = new RootNode();
+        public DynamicRoutingEngine(Fiber fiber)
+        {
+            _fiber = fiber;
 
-			_configurator = new DynamicRoutingEngineConfigurator(this);
-		}
+            _operationList = new OperationList();
+            _root = new RootNode();
 
-		public Activation Root
-		{
-			get { return _root; }
-		}
+            _configurator = new DynamicRoutingEngineConfigurator(this);
+        }
 
-		public void Send<T>(T message)
-		{
-			_fiber.Add(() =>
-			{
-				var context = new DynamicRoutingContext<T>(this, message);
+        public Activation Root
+        {
+            get { return _root; }
+        }
 
-				Activation adapter = _types.Retrieve(typeof(T), _ => new ContextAdapter<T>(_root));
+        public void Send<T>(T message)
+        {
+            _fiber.Add(() =>
+                {
+                    _contextFactory.Create(message, _root);
+                    _operationList.Run();
+                });
+        }
 
-				adapter.Activate(context);
+        public void Add(Action action)
+        {
+            if (_shutdown)
+                return;
 
-				_operationList.Run();
-			});
-		}
+            _operationList.Add(action);
+            _fiber.Add(() => _operationList.Run());
+        }
 
-		public void Add(Action action)
-		{
-			if (_shutdown)
-				return;
+        public void Shutdown()
+        {
+            _shutdown = true;
+        }
 
-			_operationList.Add(action);
-			_fiber.Add(() => _operationList.Run());
-		}
+        public void Configure(Action<RoutingEngineConfigurator> callback)
+        {
+            _fiber.Add(() =>
+                {
+                    DynamicRoutingEngineConfigurator configurator = _configurator;
 
-		public void Shutdown()
-		{
-			_shutdown = true;
-		}
-
-		public void Configure(Action<RoutingEngineConfigurator> callback)
-		{
-			_fiber.Add(() =>
-			{
-				var configurator = _configurator;
-
-				callback(configurator);
-			});
-		}
-	}
+                    callback(configurator);
+                });
+        }
+    }
 }

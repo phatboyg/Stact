@@ -31,11 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-   <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
     </Reference>
-	<Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\lib\nunit\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +49,7 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
+    <Compile Include="Behaviors\Behavior_Specs.cs" />
     <Compile Include="Data\Internal\CompElement.cs" />
     <Compile Include="Data\Internal\Element.cs" />
     <Compile Include="Data\Internal\EmptyFTree.cs" />

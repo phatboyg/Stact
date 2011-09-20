@@ -9,12 +9,9 @@
     <CSharp>
       <FormatSettings>
         <ALIGN_FIRST_ARG_BY_PAREN>True</ALIGN_FIRST_ARG_BY_PAREN>
-        <ALIGN_MULTILINE_ARRAY_AND_OBJECT_INITIALIZER>False</ALIGN_MULTILINE_ARRAY_AND_OBJECT_INITIALIZER>
-        <ANONYMOUS_METHOD_DECLARATION_BRACES>NEXT_LINE</ANONYMOUS_METHOD_DECLARATION_BRACES>
+        <BLANK_LINES_AFTER_START_COMMENT>0</BLANK_LINES_AFTER_START_COMMENT>
         <BLANK_LINES_AROUND_NAMESPACE>2</BLANK_LINES_AROUND_NAMESPACE>
         <BLANK_LINES_AROUND_TYPE>2</BLANK_LINES_AROUND_TYPE>
-        <CASE_BLOCK_BRACES>NEXT_LINE</CASE_BLOCK_BRACES>
-        <EMPTY_BLOCK_STYLE>TOGETHER_SAME_LINE</EMPTY_BLOCK_STYLE>
         <EXPLICIT_INTERNAL_MODIFIER>False</EXPLICIT_INTERNAL_MODIFIER>
         <EXPLICIT_PRIVATE_MODIFIER>False</EXPLICIT_PRIVATE_MODIFIER>
         <FORCE_ATTRIBUTE_STYLE>SEPARATE</FORCE_ATTRIBUTE_STYLE>
@@ -26,7 +23,6 @@
         <FORCE_WHILE_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_WHILE_BRACES_STYLE>
         <INDENT_ANONYMOUS_METHOD_BLOCK>False</INDENT_ANONYMOUS_METHOD_BLOCK>
         <INDENT_EMBRACED_INITIALIZER_BLOCK>False</INDENT_EMBRACED_INITIALIZER_BLOCK>
-        <INITIALIZER_BRACES>NEXT_LINE</INITIALIZER_BRACES>
         <MODIFIERS_ORDER IsNull="False">
           <Item>public</Item>
           <Item>protected</Item>
@@ -45,8 +41,6 @@
         </MODIFIERS_ORDER>
         <PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>False</PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>
         <PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>False</PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE>
-        <PLACE_SIMPLE_ANONYMOUSMETHOD_ON_SINGLE_LINE>False</PLACE_SIMPLE_ANONYMOUSMETHOD_ON_SINGLE_LINE>
-        <PLACE_TYPE_CONSTRAINTS_ON_SAME_LINE>False</PLACE_TYPE_CONSTRAINTS_ON_SAME_LINE>
         <PLACE_WHILE_ON_NEW_LINE>True</PLACE_WHILE_ON_NEW_LINE>
         <SIMPLE_EMBEDDED_STATEMENT_STYLE>LINE_BREAK</SIMPLE_EMBEDDED_STATEMENT_STYLE>
         <SPACE_AFTER_TYPECAST_PARENTHESES>False</SPACE_AFTER_TYPECAST_PARENTHESES>
@@ -79,6 +73,10 @@
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
       </Naming2>
       <CustomMemberReorderingPatterns><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 

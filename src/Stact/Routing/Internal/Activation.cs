@@ -12,7 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	public interface Activation
+    using Contexts;
+
+
+    public interface Activation
 	{
 		void Activate<T>(RoutingContext<T> context);
 	}

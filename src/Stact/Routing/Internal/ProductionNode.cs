@@ -12,43 +12,46 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
+    using System;
+    using Contexts;
 
 
-	/// <summary>
-	/// The basic functionality of a production node that deals with
-	/// evicting the message from the routing engine and dispatching it
-	/// to the specified delegate
-	/// </summary>
-	/// <typeparam name="TChannel">The message type</typeparam>
-	public class ProductionNode<TChannel>
-	{
-		readonly bool _disableOnActivation;
-		bool _enabled;
+    /// <summary>
+    /// The basic functionality of a production node that deals with
+    /// evicting the message from the routing engine and dispatching it
+    /// to the specified delegate
+    /// </summary>
+    /// <typeparam name="T">The message type</typeparam>
+    public class ProductionNode<T>
+    {
+        readonly bool _disableOnActivation;
+        readonly RoutingEngine _engine;
+        bool _enabled;
 
-		protected ProductionNode(bool disableOnActivation)
-		{
-			_disableOnActivation = disableOnActivation;
-			_enabled = true;
-		}
+        protected ProductionNode(RoutingEngine engine, bool disableOnActivation)
+        {
+            _engine = engine;
+            _disableOnActivation = disableOnActivation;
+            _enabled = true;
+        }
 
-		public bool Enabled
-		{
-			get { return _enabled; }
-		}
+        public bool Enabled
+        {
+            get { return _enabled; }
+        }
 
-		protected void Accept(RoutingContext<TChannel> context, Action<TChannel> callback)
-		{
-			TChannel body = context.Body;
-			context.Evict();
+        protected void Accept(RoutingContext<T> context, Action<T> callback)
+        {
+            T body = context.Body;
+            context.Evict();
 
-			context.Add(() =>
-			{
-				if (_disableOnActivation)
-					_enabled = false;
+            _engine.Add(() =>
+                {
+                    if (_disableOnActivation)
+                        _enabled = false;
 
-				callback(body);
-			});
-		}
-	}
+                    callback(body);
+                });
+        }
+    }
 }

@@ -13,9 +13,10 @@
 namespace Stact.Routing.Internal
 {
 	using System;
+	using Contexts;
 
 
-	/// <summary>
+    /// <summary>
 	/// A beta channel supports activation via a typed input and activates
 	/// any successors upon receipt
 	/// </summary>

@@ -17,6 +17,7 @@ namespace Stact.Routing.Internal
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Contexts;
 	using Magnum.Collections;
 	using Magnum.Extensions;
 

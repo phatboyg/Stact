@@ -13,9 +13,10 @@
 namespace Stact.Routing.Internal
 {
 	using System;
+	using Contexts;
 
 
-	/// <summary>
+    /// <summary>
 	/// Always invokes on right activation for joining single alpha nodes
 	/// </summary>
 	/// <typeparam name="T"></typeparam>

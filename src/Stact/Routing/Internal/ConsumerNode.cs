@@ -12,38 +12,28 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	/// <summary>
-	/// Delivers a message to a consumer on the specified fiber.
-	/// </summary>
-	/// <typeparam name="TChannel">The message type</typeparam>
-	public class ConsumerNode<TChannel> : 
-		ProductionNode<TChannel>,
-		Activation<TChannel>
-	{
-		readonly Consumer<TChannel> _consumer;
+    using Contexts;
 
-		public ConsumerNode(Fiber fiber, Consumer<TChannel> consumer, bool disableOnActivation = true)
-			: this(FiberConsumer(fiber, consumer), disableOnActivation)
-		{
-		}
 
-		public ConsumerNode(Consumer<TChannel> consumer, bool disableOnActivation = true)
-			: base(disableOnActivation)
-		{
-			_consumer = consumer;
-		}
+    /// <summary>
+    /// Delivers a message to a consumer on the specified fiber.
+    /// </summary>
+    /// <typeparam name="T">The message type</typeparam>
+    public class ConsumerNode<T> :
+        ProductionNode<T>,
+        Activation<T>
+    {
+        readonly Consumer<T> _consumer;
 
-		public void Activate(RoutingContext<TChannel> context)
-		{
-			Accept(context, body => _consumer(body));
-		}
+        public ConsumerNode(RoutingEngine engine, Consumer<T> consumer, bool disableOnActivation = true)
+            : base(engine, disableOnActivation)
+        {
+            _consumer = consumer;
+        }
 
-		static Consumer<TChannel> FiberConsumer(Fiber fiber, Consumer<TChannel> consumer)
-		{
-			return message =>
-			{
-				fiber.Add(() => consumer(message));
-			};
-		}
-	}
+        public void Activate(RoutingContext<T> context)
+        {
+            Accept(context, body => _consumer(body));
+        }
+    }
 }

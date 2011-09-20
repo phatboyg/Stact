@@ -110,7 +110,11 @@ namespace Stact.Internal
 
 		PendingReceive Receive<T>(PendingReceiveImpl<T> receiver)
 		{
-			var consumerNode = new SelectiveConsumerNode<T>(receiver.Accept);
+		    _engine.Configure(x =>
+		        {
+		            x.SelectiveReceive<T>(receiver.Accept);
+		        });
+			var consumerNode = new SelectiveConsumerNode<T>(_engine, receiver.Accept);
 
 			_engine.Configure(x => x.Add(consumerNode));
 

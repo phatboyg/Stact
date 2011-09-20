@@ -12,65 +12,59 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Redesign
 {
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
-	using MessageHeaders;
-	using Routing;
-	using Routing.Internal;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
+    using MessageHeaders;
+    using Routing;
+    using Routing.Internal;
 
 
-	[Scenario]
-	public class Inspecting_a_routing_engine
-	{
-		[Then]
-		public void Should_navigate_properly()
-		{
-			RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
+    [Scenario]
+    public class Inspecting_a_routing_engine
+    {
+        [Then]
+        public void Should_navigate_properly()
+        {
+            RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
 
-			var foundA = new Future<AlphaNode<Message<A>>>();
-			var foundJoin = new Future<JoinNode<Message<A>>>();
+            var foundA = new Future<AlphaNode<Message<A>>>();
+            var foundJoin = new Future<JoinNode<Message<A>>>();
 
-			engine.Configure(x =>
-			{
-				new MatchAlphaNode<Message<A>>(engine, alphaNode =>
-				{
-					foundA.Complete(alphaNode);
+            engine.Configure(x =>
+                {
+                    new MatchAlphaNode<Message<A>>(engine, alphaNode =>
+                        {
+                            foundA.Complete(alphaNode);
 
-					new MatchJoinNode<Message<A>>(alphaNode, joinNode =>
-					{
-						foundJoin.Complete(joinNode);
-					});
-				});
-			});
+                            new MatchJoinNode<Message<A>>(alphaNode, joinNode => { foundJoin.Complete(joinNode); });
+                        });
+                });
 
-			foundA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message A alpha node not found");
-			foundJoin.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message A constant join node not found");
+            foundA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message A alpha node not found");
+            foundJoin.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message A constant join node not found");
 
-			// new RoutingEngineTextVisualizer().Visit(engine);
-		}
+            // new RoutingEngineTextVisualizer().Visit(engine);
+        }
 
-		[Then]
-		public void Should_match_a_join_node()
-		{
-			RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
+        [Then]
+        public void Should_match_a_join_node()
+        {
+            RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
 
-			var called = new Future<Message<A>>();
+            var called = new Future<Message<A>>();
 
-			engine.Configure(x =>
-			{
-				x.Add(new ConsumerNode<Message<A>>(called.Complete));
-			});
+            engine.Configure(x => { x.Receive<Message<A>>(called.Complete); });
 
-			engine.Send<Message<A>>(new MessageImpl<A>(new A()));
+            engine.Send<Message<A>>(new MessageImpl<A>(new A()));
 
-			called.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message was not delivered");
+            called.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message was not delivered");
 
-			// new RoutingEngineTextVisualizer().Visit(engine);
-		}
+            // new RoutingEngineTextVisualizer().Visit(engine);
+        }
 
 
-		class A
-		{
-		}
-	}
+        class A
+        {
+        }
+    }
 }

@@ -12,83 +12,77 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Actors.Registries
 {
-	using System;
-	using MessageHeaders;
-	using Stact.Internal;
+    using System;
+    using Internal;
+    using MessageHeaders;
 
 
-	public class ActorRegistryHeaderChannel :
-		UntypedChannel,
-		MatchHeaderCallback
-	{
-		readonly ThreadSingleton<MatchHeaderCallback, MatchHeader> _match;
-		readonly ActorRegistry _registry;
+    public class ActorRegistryHeaderChannel :
+        UntypedChannel,
+        MatchHeaderCallback
+    {
+        readonly ThreadSingleton<MatchHeaderCallback, MatchHeader> _match;
+        readonly ActorRegistry _registry;
 
-		public ActorRegistryHeaderChannel(ActorRegistry registry)
-		{
-			_registry = registry;
-			_match = new ThreadSingleton<MatchHeaderCallback, MatchHeader>(() => new MatchHeaderImpl());
-		}
+        public ActorRegistryHeaderChannel(ActorRegistry registry)
+        {
+            _registry = registry;
+            _match = new ThreadSingleton<MatchHeaderCallback, MatchHeader>(() => new MatchHeaderImpl());
+        }
 
-		public void Body<TBody>(TBody body)
-		{
-			Console.WriteLine("Unable to route a raw message, sorry");
-		}
+        public void Body<TBody>(TBody body)
+        {
+            Console.WriteLine("Unable to route a raw message, sorry");
+        }
 
-		public void Message<TBody>(Message<TBody> message)
-		{
-			if (message.DestinationAddress == null)
-			{
-				Console.WriteLine("No destination");
-				return;
-			}
+        public void Message<TBody>(Message<TBody> message)
+        {
+            if (message.DestinationAddress == null)
+            {
+                Console.WriteLine("No destination");
+                return;
+            }
 
-			var urn = new ActorUrn(message.DestinationAddress);
-			Guid key = urn.GetId();
+            var urn = new ActorUrn(message.DestinationAddress);
+            Guid key = urn.GetId();
 
-			_registry.Get(key, actor => actor.Send(message), () =>
-				{
-					Console.WriteLine("Actor not found: " + message.DestinationAddress);
-				});
-		}
+            _registry.Get(key, actor => actor.Send(message),
+                          () => { Console.WriteLine("Actor not found: " + message.DestinationAddress); });
+        }
 
-		public void Request<TRequest>(Request<TRequest> request)
-		{
-			if (request.DestinationAddress == null)
-			{
-				Console.WriteLine("No destination");
-				return;
-			}
+        public void Request<TRequest>(Request<TRequest> request)
+        {
+            if (request.DestinationAddress == null)
+            {
+                Console.WriteLine("No destination");
+                return;
+            }
 
-			var urn = new ActorUrn(request.DestinationAddress);
-			Guid key = urn.GetId();
+            var urn = new ActorUrn(request.DestinationAddress);
+            Guid key = urn.GetId();
 
-			_registry.Get(key, actor => actor.Send(request), () =>
-				{
-					Console.WriteLine("Actor not found: " + request.DestinationAddress);
-				});
-		}
+            _registry.Get(key, actor => actor.Send(request),
+                          () => { Console.WriteLine("Actor not found: " + request.DestinationAddress); });
+        }
 
-		public void Response<TResponse>(Response<TResponse> response)
-		{
-			if (response.DestinationAddress == null)
-			{
-				Console.WriteLine("No destination");
-				return;
-			}
+        public void Response<TResponse>(Response<TResponse> response)
+        {
+            if (response.DestinationAddress == null)
+            {
+                Console.WriteLine("No destination");
+                return;
+            }
 
-			var urn = new ActorUrn(response.DestinationAddress);
-			Guid key = urn.GetId();
+            var urn = new ActorUrn(response.DestinationAddress);
+            Guid key = urn.GetId();
 
-			_registry.Get(key, actor => actor.Send(response), () =>
-				{
-					Console.WriteLine("Actor not found: " + response.DestinationAddress);
-				});
-		}
+            _registry.Get(key, actor => actor.Send(response),
+                          () => { Console.WriteLine("Actor not found: " + response.DestinationAddress); });
+        }
 
-		public void Send<T>(T message)
-		{
-			_match.Value.Match(message, this);
-		}
-	}
+        public void Send<T>(T message)
+        {
+            _match.Value.Match(message, this);
+        }
+    }
 }

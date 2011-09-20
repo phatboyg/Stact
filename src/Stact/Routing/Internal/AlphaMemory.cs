@@ -14,9 +14,10 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Contexts;
 
 
-	public class AlphaMemory<T>
+    public class AlphaMemory<T>
 	{
 		readonly SuccessorList<T> _successors;
 		readonly ActivatedMessageList<T> _messages;

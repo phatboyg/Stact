@@ -12,82 +12,95 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-	using Internal;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
-	using Stact.Internal;
+    using Internal;
+    using Magnum.Extensions;
+    using Magnum.Reflection;
+    using Stact.Internal;
 
 
-	public abstract class AbstractRoutingEngineVisitor<TVisitor> :
-		ReflectiveVisitorBase<TVisitor>
-		where TVisitor : AbstractRoutingEngineVisitor<TVisitor>
-	{
-		protected virtual bool Visit(DynamicRoutingEngine engine)
-		{
-			Visit(engine.Root);
-			return true;
-		}
+    public abstract class AbstractRoutingEngineVisitor<TVisitor> :
+        ReflectiveVisitorBase<TVisitor>
+        where TVisitor : AbstractRoutingEngineVisitor<TVisitor>
+    {
+        protected virtual bool Visit(DynamicRoutingEngine engine)
+        {
+            Visit(engine.Root);
+            return true;
+        }
 
-		protected virtual bool Visit(RootNode node)
-		{
-			node.Activations.Each(typeChannel => Visit(typeChannel));
-			return true;
-		}
+        protected virtual bool Visit(RootNode node)
+        {
+            node.Activations.Each(typeChannel => Visit(typeChannel));
+            return true;
+        }
 
-		protected virtual bool Visit<T>(AlphaNode<T> node)
-		{
-			node.Successors.Each(activation => Visit(activation));
-			return true;
-		}
+        protected virtual bool Visit<T>(AlphaNode<T> node)
+        {
+            IncreaseDepth();
+            node.Successors.Each(activation => Visit(activation));
+            DecreaseDepth();
+            return true;
+        }
 
-		protected virtual bool Visit<T>(JoinNode<T> node)
-		{
-			node.Activations.Each(activation => Visit(activation));
-			if(node.RightActivation as ConstantNode<T> != null)
-				Visit(node.RightActivation);
-			return true;
-		}
+        protected virtual bool Visit<TInput, TOutput>(ConvertNode<TInput, TOutput> node)
+            where TInput : TOutput
+        {
+            IncreaseDepth();
+            Visit(node.Output);
+            DecreaseDepth();
+            return true;
+        }
 
-		protected virtual bool Visit<T1, T2>(JoinNode<T1, T2> node)
-		{
-			node.Activations.Each(activation => Visit(activation));
-			//Visit(node.RightActivation);
-			return true;
-		}
+        protected virtual bool Visit<T>(JoinNode<T> node)
+        {
+            IncreaseDepth();
+            node.Activations.Each(activation => Visit(activation));
+            if(node.RightActivation as ConstantNode<T> != null)
+                Visit(node.RightActivation);
+            DecreaseDepth();
+            return true;
+        }
 
-		protected virtual bool Visit<T>(BodyNode<T> node)
-		{
-			node.Activations.Each(activation => Visit(activation));
+        protected virtual bool Visit<T1, T2>(JoinNode<T1, T2> node)
+        {
+            node.Activations.Each(activation => Visit(activation));
+            //Visit(node.RightActivation);
+            return true;
+        }
 
-			return true;
-		}
+        protected virtual bool Visit<T>(BodyNode<T> node)
+        {
+            node.Activations.Each(activation => Visit(activation));
 
-		protected virtual bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
-		{
-			node.Activations.Each(activation => Visit(activation));
-			return true;
-		}
+            return true;
+        }
 
-		protected virtual bool Visit<T>(ConstantNode<T> node)
-		{
-			return true;
-		}
+        protected virtual bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
+        {
+            node.Activations.Each(activation => Visit(activation));
+            return true;
+        }
 
-		protected virtual bool Visit<T>(ConsumerNode<T> node)
-		{
-			return true;
-		}
+        protected virtual bool Visit<T>(ConstantNode<T> node)
+        {
+            return true;
+        }
 
-		protected virtual bool Visit<T>(SelectiveConsumerNode<T> node)
-		{
-			return true;
-		}
+        protected virtual bool Visit<T>(ConsumerNode<T> node)
+        {
+            return true;
+        }
 
-		protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox)
-			where TActor : class, Actor
-		{
-			Visit(inbox.Engine);
-			return true;
-		}
-	}
+        protected virtual bool Visit<T>(SelectiveConsumerNode<T> node)
+        {
+            return true;
+        }
+
+        protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox)
+            where TActor : class, Actor
+        {
+            Visit(inbox.Engine);
+            return true;
+        }
+    }
 }

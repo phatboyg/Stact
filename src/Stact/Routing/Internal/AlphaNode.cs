@@ -12,24 +12,29 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	public class AlphaNode<TChannel> :
-		AlphaMemory<TChannel>,
-		Activation,
-		Activation<TChannel>
-	{
-		public void Activate<T>(RoutingContext<T> message)
-		{
-			message.CanConvertTo<TChannel>(Activate);
-		}
+    using Contexts;
 
-		public bool Enabled
-		{
-			get { return true; }
-		}
 
-		public void Activate(RoutingContext<TChannel> context)
-		{
-			Add(context);
-		}
-	}
+    public class AlphaNode<TChannel> :
+        AlphaMemory<TChannel>,
+        Activation,
+        Activation<TChannel>
+    {
+        public void Activate<T>(RoutingContext<T> message)
+        {
+            var self = this as Activation<T>;
+            if (self != null)
+                self.Activate(message);
+        }
+
+        public bool Enabled
+        {
+            get { return true; }
+        }
+
+        public void Activate(RoutingContext<TChannel> context)
+        {
+            Add(context);
+        }
+    }
 }

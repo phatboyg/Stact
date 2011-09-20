@@ -14,9 +14,10 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Contexts;
 
 
-	public class ChannelNode<TChannel> :
+    public class ChannelNode<TChannel> :
 		Activation<TChannel>
 	{
 		readonly Channel<TChannel> _channel;

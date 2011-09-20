@@ -12,39 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-	using System;
-	using Configuration;
-	using Internal;
+    using System;
+    using Configuration;
+    using Internal;
 
 
-	public static class ExtensionsToRoutingEngine
-	{
-		public static void Receive<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
-		{
-			var consumerNode = new ConsumerNode<T>(consumer);
+    public static class ExtensionsToRoutingEngine
+    {
+        static readonly ConsumerNodeFactory _consumerFactory = new DynamicConsumerNodeFactory();
 
-			configurator.Add(consumerNode);
-		}
 
-		public static void Receive<T>(this RoutingEngineConfigurator configurator, Fiber fiber, Consumer<T> consumer)
-		{
-			var consumerNode = new ConsumerNode<T>(fiber, consumer);
+        public static RemoveActivation Receive<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
+        {
+            return _consumerFactory.Create(consumer, configurator);
+        }
 
-			configurator.Add(consumerNode);
-		}
+        public static RemoveActivation SelectiveReceive<T>(this RoutingEngineConfigurator configurator,
+                                                           SelectiveConsumer<T> consumer)
+        {
+            return _consumerFactory.Create(consumer, configurator);
+        }
 
-		public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Consumer<Tuple<T1, T2>> consumer)
-		{
-			var consumerNode = new ConsumerNode<Tuple<T1,T2>>(consumer);
 
-			configurator.Add(consumerNode);
-		}
+        public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Consumer<Tuple<T1, T2>> consumer)
+        {
+            var consumerNode = new ConsumerNode<Tuple<T1, T2>>(configurator.Engine, consumer);
 
-		public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Fiber fiber, Consumer<Tuple<T1, T2>> consumer)
-		{
-			var consumerNode = new ConsumerNode<Tuple<T1,T2>>(fiber, consumer);
-
-			configurator.Add(consumerNode);
-		}
-	}
+            configurator.Add(consumerNode);
+        }
+    }
 }

@@ -12,42 +12,48 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-	using Internal;
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
+    using Internal;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
 
 
-	[Scenario]
-	public class Condition_Specs
-	{
-		[Then]
-		public void Should_properly_invoke_the_message_receiver()
-		{
-			var inbox = new ActorInbox<MyActor>(new SynchronousFiber(), new TimerScheduler(new SynchronousFiber()));
+    [Scenario]
+    public class Condition_Specs
+    {
+        [Then]
+        public void Should_properly_invoke_the_message_receiver()
+        {
+            var inbox = new ActorInbox<MyActor>(new SynchronousFiber(), new TimerScheduler(new SynchronousFiber()));
 
-			var received1 = new Future<Request<A>>();
-			var received2 = new Future<Request<A>>();
-			var responseChannel = new ChannelAdapter();
+            var received1 = new Future<Request<A>>();
+            var received2 = new Future<Request<A>>();
+            var responseChannel = new ChannelAdapter();
 
-			Request<A> request1 = inbox.Request(new A(), responseChannel);
-			Request<A> request2 = inbox.Request(new A(), responseChannel);
+            Request<A> request1 = inbox.Request(new A(), responseChannel);
+            Request<A> request2 = inbox.Request(new A(), responseChannel);
 
-			inbox.Receive<Request<A>>(x => x.RequestId != request2.RequestId ? (Consumer<Request<A>>)null : received2.Complete);
-			inbox.Receive<Request<A>>(x => x.RequestId != request1.RequestId ? (Consumer<Request<A>>)null : received1.Complete);
+            inbox.Receive<Request<A>>(x =>
+                                      x.RequestId != request2.RequestId
+                                          ? (Consumer<Request<A>>)null
+                                          : received2.Complete);
+            inbox.Receive<Request<A>>(x =>
+                                      x.RequestId != request1.RequestId
+                                          ? (Consumer<Request<A>>)null
+                                          : received1.Complete);
 
-			received1.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("1 not received");
-			received2.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("2 not received");
-		}
+            received1.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("1 not received");
+            received2.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("2 not received");
+        }
 
 
-		class A
-		{
-		}
+        class A
+        {
+        }
 
 
-		class MyActor :
-			Actor
-		{
-		}
-	}
+        class MyActor :
+            Actor
+        {
+        }
+    }
 }

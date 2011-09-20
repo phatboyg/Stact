@@ -12,17 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface ActorConvention<TActor>
-		where TActor : Actor
-	{
-		void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox);
+    public interface ActorConvention<TActor>
+        where TActor : Actor
+    {
+        void Initialize(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox);
 
-		/// <summary>
-		/// Determines if a convention the same as the target convention, to avoid 
-		/// duplicate conventions from being added
-		/// </summary>
-		/// <param name="convention">The convention to compare</param>
-		/// <returns>True if it matches, otherwise false</returns>
-		bool Matches(ActorConvention<TActor> convention);
-	}
+        /// <summary>
+        /// Determines if a convention the same as the target convention, to avoid 
+        /// duplicate conventions from being added
+        /// </summary>
+        /// <param name="convention">The convention to compare</param>
+        /// <returns>True if it matches, otherwise false</returns>
+        bool Matches(ActorConvention<TActor> convention);
+    }
 }

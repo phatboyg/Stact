@@ -14,9 +14,10 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Contexts;
 
 
-	public class BodyNode<T> :
+    public class BodyNode<T> :
 		Activation<Message<T>>
 	{
 		readonly BetaMemory<T> _betaMemory;
@@ -43,7 +44,7 @@ namespace Stact.Routing.Internal
 
 		public void Activate(RoutingContext<Message<T>> context)
 		{
-			context.CanConvertTo<T>(x => _betaMemory.Activate(x));
+		    throw new NotImplementedException("Use to convert to body");
 		}
 	}
 
@@ -75,7 +76,7 @@ namespace Stact.Routing.Internal
 
 		public void Activate(RoutingContext<Tuple<T1In, T2In>> context)
 		{
-			context.CanConvertTo<Tuple<T1, T2>>(x => _betaMemory.Activate(x));
-		}
+            throw new NotImplementedException("Use to convert to body");
+        }
 	}
 }

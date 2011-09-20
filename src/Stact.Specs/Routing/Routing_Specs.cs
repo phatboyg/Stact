@@ -12,86 +12,100 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-	using Magnum.TestFramework;
-	using NUnit.Framework;
-	using Routing;
-	using Routing.Visualizers;
-	using Visualizers;
+    using Magnum.TestFramework;
+    using NUnit.Framework;
+    using Routing;
+    using Visualizers;
 
 
-	[Scenario]
-	public class When_routing_messages_using_the_routing_engine
-	{
-		Future<A> _receivedA;
-		Future<B> _receivedB;
-		Future<C> _receivedC;
-		RoutingEngine _engine;
+    [Scenario]
+    public class When_routing_messages_using_the_routing_engine
+    {
+        RoutingEngine _engine;
+        Future<A> _receivedA;
+        Future<B> _receivedB;
+        Future<C> _receivedC;
+        Future<Message<B>> _receivedMessageB;
+        Future<Message<C>> _receivedMessageC;
 
-		[When]
-		public void Should_properly_invoke_the_message_receiver()
-		{
-			_engine = new DynamicRoutingEngine(new SynchronousFiber());
+        [When]
+        public void Should_properly_invoke_the_message_receiver()
+        {
+            _engine = new DynamicRoutingEngine(new SynchronousFiber());
 
-			_receivedA = new Future<A>();
-			_receivedB = new Future<B>();
-			_receivedC = new Future<C>();
+            _receivedA = new Future<A>();
+            _receivedB = new Future<B>();
+            _receivedC = new Future<C>();
+            _receivedMessageB = new Future<Message<B>>();
+            _receivedMessageC = new Future<Message<C>>();
 
-			_engine.Configure(x =>
-			{
-				x.Receive<A>(_receivedA.Complete);
-				x.Receive<B>(_receivedB.Complete);
-				x.Receive<C>(_receivedC.Complete);
-			});
-		}
+            _engine.Configure(x =>
+                {
+                    x.Receive<A>(_receivedA.Complete);
+                    x.Receive<B>(_receivedB.Complete);
+                    x.Receive<C>(_receivedC.Complete);
+                    x.Receive<Message<B>>(_receivedMessageB.Complete);
+                    x.Receive<Message<C>>(_receivedMessageC.Complete);
+                });
 
-		[Then, Explicit]
-		public void Display_graph()
-		{
-			RoutingEngineDebugVisualizer.Show(_engine);
-		}
+            _engine.Send(new B());
+            _engine.Send(new C());
+            _engine.Send(new B());
+            _engine.Send(new C());
+        }
 
-		[Then]
-		public void Should_not_receive_an_a()
-		{
-			_engine.Send(new B());
-			_engine.Send(new C());
+        [Then]
+        [Explicit]
+        public void Display_graph()
+        {
+            RoutingEngineDebugVisualizer.Show(_engine);
+        }
 
-			_receivedA.IsCompleted.ShouldBeFalse();
-		}
+        [Then]
+        public void Should_not_receive_an_a()
+        {
+            _receivedA.IsCompleted.ShouldBeFalse();
+        }
 
-		[Then]
-		public void Should_receive_a_b()
-		{
-			_engine.Send(new B());
-			_engine.Send(new C());
+        [Then]
+        public void Should_receive_a_b()
+        {
+            _receivedB.IsCompleted.ShouldBeTrue();
+        }
 
-			_receivedB.IsCompleted.ShouldBeTrue();
-		}
+        [Then]
+        public void Should_receive_a_c()
+        {
+            _receivedC.IsCompleted.ShouldBeTrue();
+        }
 
-		[Then]
-		public void Should_receive_a_c()
-		{
-			_engine.Send(new B());
-			_engine.Send(new C());
+        [Then]
+        public void Should_receive_a_message_b()
+        {
+            _receivedMessageB.IsCompleted.ShouldBeTrue();
+        }
 
-			_receivedC.IsCompleted.ShouldBeTrue();
-		}
-
-
-		class A
-		{
-		}
-
-
-		class B :
-			A
-		{
-		}
+        [Then]
+        public void Should_receive_a_message_c()
+        {
+            _receivedMessageC.IsCompleted.ShouldBeTrue();
+        }
 
 
-		class C :
-			B
-		{
-		}
-	}
+        class A
+        {
+        }
+
+
+        class B :
+            A
+        {
+        }
+
+
+        class C :
+            B
+        {
+        }
+    }
 }

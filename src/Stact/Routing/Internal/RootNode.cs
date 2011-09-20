@@ -12,44 +12,100 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
-	using System.Collections.Generic;
-	using Magnum.Collections;
-	using Magnum.Extensions;
-	using Stact.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Contexts;
+    using Magnum.Caching;
+    using Magnum.Extensions;
+    using Stact.Internal;
 
 
-	public class RootNode :
-		Activation
-	{
-		readonly Cache<Type, Activation> _types;
+    public class RootNode :
+        Activation
+    {
+        readonly Cache<Type, Activation> _types;
 
-		public RootNode()
-		{
-			_types = new Cache<Type, Activation>();
-		}
+        static readonly Cache<Type, AlphaNodeInitializer> _initializers =
+            new GenericTypeCache<AlphaNodeInitializer>(typeof(AlphaNodeInitializerImpl<>));
+ 
+        public RootNode()
+        {
+            _types = new GenericTypeCache<Activation>(typeof(AlphaNode<>));
+        }
 
-		public IEnumerable<Activation> Activations
-		{
-			get { return _types; }
-		}
+        Activation CreateMissingAlphaNode<T>(Type type)
+        {
+            var alphaNode = new AlphaNode<T>();
 
-		public void Activate<T>(RoutingContext<T> context)
-		{
-			Activation activation = _types.Retrieve(typeof(T), _ => new AlphaNode<T>());
+            foreach (var nestedType in GetNestedMessageTypes(typeof(T)))
+            {
+                var initializer = _initializers[nestedType];
+                
+                initializer.AddActivation(this, alphaNode);
+            }
 
-			activation.Activate(context);
-		}
+            return alphaNode;
+        }
 
-		[NotNull]
-		public AlphaNode<T> GetAlphaNode<T>()
-		{
-			Activation activation = _types.Retrieve(typeof(T), _ => new AlphaNode<T>());
-			if (activation.GetType() == typeof(AlphaNode<T>))
-				return (AlphaNode<T>)activation;
+        public IEnumerable<Activation> Activations
+        {
+            get { return _types; }
+        }
 
-			throw new InvalidOperationException(
-				"The activation for {0} is not an Alpha node".FormatWith(typeof(T).ToShortTypeName()));
-		}
-	}
+        public void Activate<T>(RoutingContext<T> context)
+        {
+            _types.Get(typeof(T), CreateMissingAlphaNode<T>).Activate(context);
+        }
+
+        [NotNull]
+        public AlphaNode<T> GetAlphaNode<T>()
+        {
+            var value = _types.Get(typeof(T), CreateMissingAlphaNode<T>) as AlphaNode<T>;
+            if (value != null)
+                return value;
+
+            throw new InvalidOperationException(
+                "The activation for {0} is not an Alpha node".FormatWith(typeof(T).ToShortTypeName()));
+        }
+
+        public static IEnumerable<Type> GetNestedMessageTypes(Type type)
+        {
+            var excludedInterfaces = Enumerable.Empty<Type>();
+            Type baseType = type.BaseType;
+            if ((baseType != null) && IsAllowedMessageType(baseType))
+            {
+                yield return baseType;
+
+                excludedInterfaces = baseType.GetInterfaces();
+            }
+
+            IEnumerable<Type> interfaces = type
+                .GetInterfaces()
+                .Except(excludedInterfaces)
+                .Where(IsAllowedMessageType);
+
+            foreach (Type interfaceType in interfaces)
+            {
+                yield return interfaceType;
+            }
+        }
+
+        public static bool IsAllowedMessageType(Type type)
+        {
+            if (type.Namespace == null)
+                return false;
+
+            if (type.Assembly == typeof(object).Assembly)
+                return false;
+
+            if (type.Namespace == "System")
+                return false;
+
+            if (type.Namespace.StartsWith("System."))
+                return false;
+
+            return true;
+        }
+    }
 }

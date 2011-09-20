@@ -14,9 +14,10 @@ namespace Stact.Routing.Internal
 {
 	using System;
 	using System.Collections.Generic;
+	using Contexts;
 
 
-	public class JoinNode<T1, T2> :
+    public class JoinNode<T1, T2> :
 		Activation<T1>,
 		RightActivation<Tuple<T1, T2>>
 	{
@@ -52,7 +53,8 @@ namespace Stact.Routing.Internal
 				if (!context.IsAlive)
 					return false;
 
-				_betaMemory.Activate(context.Join(match));
+			    throw new NotImplementedException("supposed to join");
+				//_betaMemory.Activate(context.Join(match));
 				return true;
 			});
 		}

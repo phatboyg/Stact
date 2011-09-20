@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,29 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System.Collections.Generic;
-	using System.Linq;
-	using Magnum.Extensions;
+    using System;
 
 
-	public static class ExtensionsToList
-	{
-		public static Continuation<T> GetListContinuation<T>(this IList<T> list)
-		{
-			if (list.Count == 0)
-				return _ => { };
+    public class AlphaNodeInitializerImpl<T> :
+        AlphaNodeInitializer
+    {
+        public void AddActivation<TParent>(RootNode root, AlphaNode<TParent> activation)
+        {
+            AlphaNode<T> nextNode = root.GetAlphaNode<T>();
 
-			T[] messages = list.ToArray();
+            var adapter =
+                (Activation<TParent>)
+                Activator.CreateInstance(typeof(ConvertNode<,>).MakeGenericType(typeof(TParent), typeof(T)), nextNode);
 
-			return x => messages.Each(x);
-		}
-
-		public static Continuation<T> GetMatchesContinuation<T>(this IList<T> list, T match)
-		{
-			if (list.Any(x => x.Equals(match)))
-				return x => x(match);
-
-			return _ => { };
-		}
-	}
+            activation.AddActivation(adapter);
+        }
+    }
 }

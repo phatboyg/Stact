@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// Declares the class is an actor. This is a marker interface.
-	/// </summary>
-	public interface Actor
-	{
-	}
+    /// <summary>
+    /// Declares the class is an actor. This is a marker interface.
+    /// </summary>
+    public interface Actor
+    {
+    }
 }

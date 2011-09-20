@@ -12,94 +12,125 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-	using System.Text;
-	using Internal;
-	using Magnum.Extensions;
+    using System.Text;
+    using Internal;
+    using Magnum.Extensions;
 
 
-	public class StringRoutingEngineVisitor :
-		AbstractRoutingEngineVisitor<StringRoutingEngineVisitor>
-	{
-		StringBuilder _sb = new StringBuilder();
+    public class StringRoutingEngineVisitor :
+        AbstractRoutingEngineVisitor<StringRoutingEngineVisitor>
+    {
+        int _depth;
+        string _padding = "";
+        StringBuilder _sb = new StringBuilder();
 
-		public StringRoutingEngineVisitor(RoutingEngine engine)
-		{
-			Visit(engine);
-		}
+        public StringRoutingEngineVisitor(RoutingEngine engine)
+        {
+            Visit(engine);
+        }
 
-		public override string ToString()
-		{
-			return _sb.ToString();
-		}
 
-		protected override bool Visit(DynamicRoutingEngine engine)
-		{
-			_sb.AppendLine(engine.GetType().ToShortTypeName());
+        protected override void IncreaseDepth()
+        {
+            _depth += 2;
+            _padding = new string(' ', _depth);
 
-			return base.Visit(engine);
-		}
+            base.IncreaseDepth();
+        }
 
-		protected override bool Visit(RootNode router)
-		{
-			_sb.AppendLine(router.GetType().ToShortTypeName());
+        protected override void DecreaseDepth()
+        {
+            _depth -= 2;
+            _padding = new string(' ', _depth);
 
-			return base.Visit(router);
-		}
+            base.DecreaseDepth();
+        }
 
-		protected override bool Visit<T>(AlphaNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        void AppendLine(string line)
+        {
+            _sb.AppendFormat("{0}{1}", _padding, line).AppendLine();
+        }
 
-			return base.Visit(node);
-		}
+        public override string ToString()
+        {
+            return _sb.ToString();
+        }
 
-		protected override bool Visit<T>(JoinNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit(DynamicRoutingEngine engine)
+        {
+            AppendLine(engine.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(engine);
+        }
 
-		protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit(RootNode router)
+        {
+            AppendLine(router.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(router);
+        }
 
-		protected override bool Visit<T>(BodyNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit<T>(AlphaNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(node);
+        }
 
-		protected override bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit<TInput, TOutput>(ConvertNode<TInput, TOutput> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(node);
+        }
 
-		protected override bool Visit<T>(ConstantNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit<T>(JoinNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(node);
+        }
 
-		protected override bool Visit<T>(ConsumerNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
+            return base.Visit(node);
+        }
 
-		protected override bool Visit<T>(SelectiveConsumerNode<T> node)
-		{
-			_sb.AppendLine(node.GetType().ToShortTypeName());
+        protected override bool Visit<T>(BodyNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
 
-			return base.Visit(node);
-		}
-	}
+            return base.Visit(node);
+        }
+
+        protected override bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
+
+            return base.Visit(node);
+        }
+
+        protected override bool Visit<T>(ConstantNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
+
+            return base.Visit(node);
+        }
+
+        protected override bool Visit<T>(ConsumerNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
+
+            return base.Visit(node);
+        }
+
+        protected override bool Visit<T>(SelectiveConsumerNode<T> node)
+        {
+            AppendLine(node.GetType().ToShortTypeName());
+
+            return base.Visit(node);
+        }
+    }
 }
