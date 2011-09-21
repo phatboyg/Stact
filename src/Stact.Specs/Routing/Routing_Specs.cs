@@ -12,6 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
+    using Magnum.Extensions;
     using Magnum.TestFramework;
     using NUnit.Framework;
     using Routing;
@@ -31,7 +32,8 @@ namespace Stact.Specs
         [When]
         public void Should_properly_invoke_the_message_receiver()
         {
-            _engine = new DynamicRoutingEngine(new SynchronousFiber());
+            var fiber = new PoolFiber();
+            _engine = new DynamicRoutingEngine(fiber);
 
             _receivedA = new Future<A>();
             _receivedB = new Future<B>();
@@ -52,6 +54,8 @@ namespace Stact.Specs
             _engine.Send(new C());
             _engine.Send(new B());
             _engine.Send(new C());
+
+            fiber.Shutdown(5.Minutes());
         }
 
         [Then]

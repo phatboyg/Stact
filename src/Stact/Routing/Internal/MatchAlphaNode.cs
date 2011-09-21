@@ -13,6 +13,7 @@
 namespace Stact.Routing.Internal
 {
 	using System;
+	using Nodes;
 	using Visualizers;
 
 

@@ -43,7 +43,7 @@ namespace Stact.Specs
 			engine.Configure(x => x.Receive<A>(received.Complete));
 
 			var block = new Future<int>();
-			engine.Add(() =>
+			engine.Add(0, () =>
 				{
 					visualizer.Show(engine);
 					block.Complete(0);
@@ -58,8 +58,8 @@ namespace Stact.Specs
 			var receivedB = new Future<B>();
 			engine.Configure(x => x.Receive<B>(receivedB.Complete));
 
-			received.WaitUntilCompleted(200.Seconds()).ShouldBeTrue();
-			receivedB.WaitUntilCompleted(200.Seconds()).ShouldBeTrue();
+			received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+			receivedB.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
 
 			//engine.Receive<A, B>(x => { });
 

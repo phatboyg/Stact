@@ -15,6 +15,7 @@ namespace Stact.Routing.Visualizers
     using Internal;
     using Magnum.Extensions;
     using Magnum.Reflection;
+    using Nodes;
     using Stact.Internal;
 
 
@@ -65,19 +66,6 @@ namespace Stact.Routing.Visualizers
         {
             node.Activations.Each(activation => Visit(activation));
             //Visit(node.RightActivation);
-            return true;
-        }
-
-        protected virtual bool Visit<T>(BodyNode<T> node)
-        {
-            node.Activations.Each(activation => Visit(activation));
-
-            return true;
-        }
-
-        protected virtual bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
-        {
-            node.Activations.Each(activation => Visit(activation));
             return true;
         }
 

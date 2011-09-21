@@ -21,10 +21,12 @@ namespace Stact.Routing.Contexts
         where TInput : TOutput
     {
         readonly RoutingContext<TInput> _input;
+        readonly int _priority;
 
         public RequestRoutingContextProxy(RoutingContext<TInput> input)
         {
             _input = input;
+            _priority = input.Priority - 1000;
         }
 
         public bool IsAlive
@@ -40,6 +42,16 @@ namespace Stact.Routing.Contexts
         public Request<TOutput> Body
         {
             get { return (Request<TOutput>)_input.Body; }
+        }
+
+        int RoutingContext<TOutput>.Priority
+        {
+            get { return _priority; }
+        }
+
+        int RoutingContext<Request<TOutput>>.Priority
+        {
+            get { return _priority; }
         }
 
 

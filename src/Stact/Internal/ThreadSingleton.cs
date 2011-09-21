@@ -22,7 +22,7 @@ namespace Stact.Internal
 	/// 
 	/// NOTE that this is NOT a global variable
 	/// </summary>
-	/// <typeparam name="TContainer">The container type, to ensure proper segration from other contained types</typeparam>
+	/// <typeparam name="TContainer">The container type, to ensure proper segregation from other contained types</typeparam>
 	/// <typeparam name="T">The type to contain</typeparam>
 	public class ThreadSingleton<TContainer, T>
 		where T : class

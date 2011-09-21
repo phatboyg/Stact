@@ -24,7 +24,7 @@ namespace Stact.Routing
 	public interface RoutingEngine :
 		UntypedChannel
 	{
-		void Add(Action operation);
+		void Add(int priority, Action operation);
 		void Shutdown();
 
 		void Configure(Action<RoutingEngineConfigurator> configurator);

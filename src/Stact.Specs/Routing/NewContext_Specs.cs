@@ -15,8 +15,11 @@ namespace Stact.Specs
     using System;
     using MessageHeaders;
     using NUnit.Framework;
+    using Routing;
+    using Routing.Configuration;
     using Routing.Contexts;
     using Routing.Internal;
+    using Routing.Nodes;
 
 
     [TestFixture]
@@ -73,7 +76,7 @@ namespace Stact.Specs
                 _bodyType = bodyType;
             }
 
-            public void Activate<T>(RoutingContext<T> message)
+            public void Activate<T>(RoutingContext<T> context)
             {
                 Assert.AreEqual(_bodyType, typeof(T), "The type of body was not as expected");
             }

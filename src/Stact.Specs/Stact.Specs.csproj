@@ -196,7 +196,6 @@
     <Compile Include="Routing\Inheritance_Specs.cs" />
     <Compile Include="Routing\Memory_Specs.cs" />
     <Compile Include="Routing\NewContext_Specs.cs" />
-    <Compile Include="Routing\NewRouting_Specs.cs" />
     <Compile Include="Routing\Behavior\Branch_Specs.cs" />
     <Compile Include="Routing\Behavior\Inspection_Specs.cs" />
     <Compile Include="Routing\Routing_Specs.cs" />

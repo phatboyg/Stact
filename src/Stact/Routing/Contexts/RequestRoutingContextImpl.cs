@@ -27,15 +27,27 @@ namespace Stact.Routing.Contexts
             new ConcurrentCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
 
         readonly Request<T> _request;
+        readonly int _priority;
 
-        public RequestRoutingContextImpl(Request<T> request)
+        public RequestRoutingContextImpl(Request<T> request, int priority = 0)
         {
             _request = request;
+            _priority = priority;
         }
 
         Request<T> RoutingContext<Request<T>>.Body
         {
             get { return _request; }
+        }
+
+        int RoutingContext<T>.Priority
+        {
+            get { return _priority; }
+        }
+
+        int RoutingContext<Request<T>>.Priority
+        {
+            get { return _priority; }
         }
 
         public void Match(Action<RoutingContext<Message<Request<T>>>> messageCallback,

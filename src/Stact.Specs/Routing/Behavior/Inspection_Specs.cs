@@ -17,6 +17,7 @@ namespace Stact.Specs.Redesign
     using MessageHeaders;
     using Routing;
     using Routing.Internal;
+    using Routing.Nodes;
 
 
     [Scenario]

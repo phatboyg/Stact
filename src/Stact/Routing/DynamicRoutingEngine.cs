@@ -15,7 +15,8 @@ namespace Stact.Routing
     using System;
     using Configuration;
     using Configuration.Internal;
-    using Internal;
+    using Contexts;
+    using Nodes;
     using Stact.Internal;
 
 
@@ -26,7 +27,7 @@ namespace Stact.Routing
 
         readonly DynamicRoutingEngineConfigurator _configurator;
         readonly Fiber _fiber;
-        readonly OperationList _operationList;
+        readonly Agenda _agenda;
         readonly Activation _root;
         bool _shutdown;
 
@@ -34,7 +35,7 @@ namespace Stact.Routing
         {
             _fiber = fiber;
 
-            _operationList = new OperationList();
+            _agenda = new Agenda();
             _root = new RootNode();
 
             _configurator = new DynamicRoutingEngineConfigurator(this);
@@ -50,17 +51,17 @@ namespace Stact.Routing
             _fiber.Add(() =>
                 {
                     _contextFactory.Create(message, _root);
-                    _operationList.Run();
+                    _agenda.Run();
                 });
         }
 
-        public void Add(Action action)
+        public void Add(int priority, Action action)
         {
             if (_shutdown)
                 return;
 
-            _operationList.Add(action);
-            _fiber.Add(() => _operationList.Run());
+            _agenda.Add(priority, action);
+         //   _fiber.Add(() => _agenda.Run());
         }
 
         public void Shutdown()
@@ -75,6 +76,8 @@ namespace Stact.Routing
                     DynamicRoutingEngineConfigurator configurator = _configurator;
 
                     callback(configurator);
+
+                    _agenda.Run();
                 });
         }
     }

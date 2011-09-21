@@ -18,9 +18,10 @@ namespace Stact.Internal
 	using Magnum.Extensions;
 	using Routing;
 	using Routing.Internal;
+	using Routing.Nodes;
 
 
-	/// <summary>
+    /// <summary>
 	///   An inbox for an actor. Channel properties on the actor are automatically bound.
 	///   Messages are automatically delivered to the inbox for each message type unless
 	///   a property channel has the same message type. Calling Receive on the inbox will
@@ -31,7 +32,7 @@ namespace Stact.Internal
 		Inbox
 		where TActor : class, Actor
 	{
-		readonly DynamicRoutingEngine _engine;
+		readonly RoutingEngine _engine;
 		readonly TimeSpan _exitTimeout = 60.Seconds();
 		readonly Fiber _fiber;
 		readonly UntypedChannel _inbound;
@@ -52,7 +53,7 @@ namespace Stact.Internal
 			Receive<Request<Exit>>(request => HandleExit);
 		}
 
-		public DynamicRoutingEngine Engine
+		public RoutingEngine Engine
 		{
 			get { return _engine; }
 		}

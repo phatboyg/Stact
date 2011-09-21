@@ -12,14 +12,15 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Configuration
 {
-	using System;
-	using Routing.Internal;
+    using System;
+    using Nodes;
+    using Routing.Internal;
 
 
-	public interface RoutingEngineConfigurator
-	{
-		RemoveActivation Add<T>(Activation<T> activation);
-		RemoveActivation Add<T1,T2>(Activation<Tuple<T1,T2>> activation);
-		RoutingEngine Engine { get; }
-	}
+    public interface RoutingEngineConfigurator
+    {
+        RoutingEngine Engine { get; }
+        RemoveActivation Add<T>(Activation<T> activation);
+        RemoveActivation Add<T1, T2>(Activation<Tuple<T1, T2>> activation);
+    }
 }

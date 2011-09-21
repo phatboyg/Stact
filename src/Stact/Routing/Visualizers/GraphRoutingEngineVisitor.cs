@@ -19,6 +19,7 @@ namespace Stact.Routing.Visualizers
 	using Magnum.Collections;
 	using Magnum.Extensions;
 	using Magnum.Graphing;
+	using Nodes;
 	using Stact.Internal;
 
 
@@ -26,7 +27,7 @@ namespace Stact.Routing.Visualizers
 		AbstractRoutingEngineVisitor<GraphRoutingEngineVisitor>
 	{
 		readonly List<Edge> _edges = new List<Edge>();
-		readonly OperationList _operations = new OperationList();
+		readonly Agenda _operations = new Agenda();
 		readonly Stack<Vertex> _stack = new Stack<Vertex>();
 		readonly Cache<int, Vertex> _vertices = new Cache<int, Vertex>();
 		Vertex _current;
@@ -109,7 +110,7 @@ namespace Stact.Routing.Visualizers
 
 		void LinkRightActivation<T>(RightActivation<T> rightActivation, Vertex current)
 		{
-			_operations.Add(() =>
+			_operations.Add(0, () =>
 			{
 				_vertices.WithValue(rightActivation.GetHashCode(), sink =>
 				{
@@ -127,18 +128,9 @@ namespace Stact.Routing.Visualizers
 			return WithVertex(() => base.Visit(node));
 		}
 
-		protected override bool Visit<T>(BodyNode<T> node)
+		protected override bool Visit<TInput,TOutput>(ConvertNode<TInput,TOutput> node)
 		{
-			_current = GetVertex(node.GetHashCode(), () => "\u03B2", typeof(BodyNode<>), typeof(T));
-
-			LinkFromParent();
-
-			return WithVertex(() => base.Visit(node));
-		}
-
-		protected override bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "\u03B2", typeof(BodyNode<,,,>), typeof(System.Tuple<T1, T2>));
+			_current = GetVertex(node.GetHashCode(), () => "\u21A7", typeof(ConvertNode<,>), typeof(TOutput));
 
 			LinkFromParent();
 

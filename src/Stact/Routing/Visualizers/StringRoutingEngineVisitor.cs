@@ -13,8 +13,8 @@
 namespace Stact.Routing.Visualizers
 {
     using System.Text;
-    using Internal;
     using Magnum.Extensions;
+    using Nodes;
 
 
     public class StringRoutingEngineVisitor :
@@ -86,26 +86,12 @@ namespace Stact.Routing.Visualizers
 
         protected override bool Visit<T>(JoinNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().ToShortTypeName() + ", Count: " + node.Count);
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
-        {
-            AppendLine(node.GetType().ToShortTypeName());
-
-            return base.Visit(node);
-        }
-
-        protected override bool Visit<T>(BodyNode<T> node)
-        {
-            AppendLine(node.GetType().ToShortTypeName());
-
-            return base.Visit(node);
-        }
-
-        protected override bool Visit<T1In, T2In, T1, T2>(BodyNode<T1In, T2In, T1, T2> node)
         {
             AppendLine(node.GetType().ToShortTypeName());
 

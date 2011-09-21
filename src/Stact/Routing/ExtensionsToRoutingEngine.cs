@@ -15,6 +15,7 @@ namespace Stact.Routing
     using System;
     using Configuration;
     using Internal;
+    using Nodes;
 
 
     public static class ExtensionsToRoutingEngine

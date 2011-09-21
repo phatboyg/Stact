@@ -13,6 +13,7 @@
 namespace Stact.Routing.Contexts
 {
     using Internal;
+    using Nodes;
 
 
     public interface RoutingContextFactory

@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Contexts
 {
-    using Internal;
     using MessageHeaders;
 
 

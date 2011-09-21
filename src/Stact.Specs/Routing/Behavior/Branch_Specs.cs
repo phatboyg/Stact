@@ -16,6 +16,7 @@ namespace Stact.Specs.Behavior
 	using NUnit.Framework;
 	using Routing;
 	using Routing.Internal;
+	using Routing.Nodes;
 	using Routing.Visualizers;
 
 
