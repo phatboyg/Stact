@@ -27,7 +27,7 @@ namespace Stact.Routing
         RoutingContext
     {
         T Body { get; }
-
+        
         /// <summary>
         /// as types are abstracted, proxied, etc. the priority value decreases
         /// </summary>

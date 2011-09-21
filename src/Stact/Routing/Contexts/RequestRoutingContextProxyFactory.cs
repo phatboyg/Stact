@@ -12,13 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Contexts
 {
+    public interface RequestRoutingContextProxyFactory<T>
+    {
+        RoutingContext<TOutput> CreateProxy<TOutput>(RoutingContext<T> input, Request<T> request);
+    }
+
+
     public class RequestRoutingContextProxyFactory<TInput, TOutput> :
-        RoutingContextProxyFactory<TInput>
+        RequestRoutingContextProxyFactory<TInput>
         where TInput : TOutput
     {
-        public RoutingContext<TResult> CreateProxy<TResult>(RoutingContext<TInput> input)
+        public RoutingContext<TResult> CreateProxy<TResult>(RoutingContext<TInput> input, Request<TInput> request)
         {
-            var proxy = new RequestRoutingContextProxy<TInput, TOutput>(input);
+            var proxy = new RequestRoutingContextProxy<TInput, TOutput>(input, request);
 
             return proxy as RoutingContext<TResult>;
         }

@@ -22,10 +22,12 @@ namespace Stact.Routing.Contexts
     {
         readonly RoutingContext<TInput> _input;
         readonly int _priority;
+        readonly RequestProxy<TInput, TOutput> _request;
 
-        public RequestRoutingContextProxy(RoutingContext<TInput> input)
+        public RequestRoutingContextProxy(RoutingContext<TInput> input, Request<TInput> request)
         {
             _input = input;
+            _request = new RequestProxy<TInput, TOutput>(request);
             _priority = input.Priority - 1000;
         }
 
@@ -41,12 +43,7 @@ namespace Stact.Routing.Contexts
 
         public Request<TOutput> Body
         {
-            get { return (Request<TOutput>)_input.Body; }
-        }
-
-        int RoutingContext<TOutput>.Priority
-        {
-            get { return _priority; }
+            get { return _request; }
         }
 
         int RoutingContext<Request<TOutput>>.Priority
@@ -67,9 +64,14 @@ namespace Stact.Routing.Contexts
             _input.Convert(callback);
         }
 
+        int RoutingContext<TOutput>.Priority
+        {
+            get { return _priority; }
+        }
+
         TOutput RoutingContext<TOutput>.Body
         {
-            get { return _input.Body; }
+            get { return _request.Body; }
         }
 
         public void Match(Action<RoutingContext<Message<TOutput>>> messageCallback,

@@ -23,11 +23,11 @@ namespace Stact.Routing.Contexts
         RoutingContext<T>
 
     {
-        static readonly Cache<Type, RoutingContextProxyFactory<T>> _proxyFactoryCache =
-            new ConcurrentCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
+        static readonly Cache<Type, RequestRoutingContextProxyFactory<T>> _proxyFactoryCache =
+            new ConcurrentCache<Type, RequestRoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
 
-        readonly Request<T> _request;
         readonly int _priority;
+        readonly Request<T> _request;
 
         public RequestRoutingContextImpl(Request<T> request, int priority = 0)
         {
@@ -38,11 +38,6 @@ namespace Stact.Routing.Contexts
         Request<T> RoutingContext<Request<T>>.Body
         {
             get { return _request; }
-        }
-
-        int RoutingContext<T>.Priority
-        {
-            get { return _priority; }
         }
 
         int RoutingContext<Request<T>>.Priority
@@ -59,8 +54,13 @@ namespace Stact.Routing.Contexts
 
         void RoutingContext<Request<T>>.Convert<TResult>(Action<RoutingContext<TResult>> callback)
         {
-            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this);
+            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this, _request);
             callback(proxy);
+        }
+
+        int RoutingContext<T>.Priority
+        {
+            get { return _priority; }
         }
 
         public void Match(Action<RoutingContext<Message<T>>> messageCallback,
@@ -72,7 +72,7 @@ namespace Stact.Routing.Contexts
 
         void RoutingContext<T>.Convert<TResult>(Action<RoutingContext<TResult>> callback)
         {
-            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this);
+            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this, _request);
             callback(proxy);
         }
 
@@ -82,10 +82,10 @@ namespace Stact.Routing.Contexts
             get { return _request.Body; }
         }
 
-        static RoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
+        static RequestRoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
         {
             return
-                (RoutingContextProxyFactory<T>)
+                (RequestRoutingContextProxyFactory<T>)
                 FastActivator.Create(typeof(RequestRoutingContextProxyFactory<,>), new[] {typeof(T), key});
         }
     }

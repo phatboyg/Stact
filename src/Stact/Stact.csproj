@@ -258,14 +258,15 @@
     <Compile Include="Routing\Configuration\ResponseConsumerNodeFactory.cs" />
     <Compile Include="Routing\Contexts\AbstractRoutingContext.cs" />
     <Compile Include="Routing\Contexts\DynamicRoutingContextFactory.cs" />
-    <Compile Include="Routing\Contexts\MessageRoutingContext.cs" />
+    <Compile Include="Routing\Contexts\MessageProxy.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContextFactory.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContextImpl.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContextProxy.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContextProxyFactory.cs" />
+    <Compile Include="Routing\Contexts\RequestProxy.cs" />
     <Compile Include="Routing\Contexts\RequestRoutingContextProxyFactory.cs" />
+    <Compile Include="Routing\Contexts\ResponseProxy.cs" />
     <Compile Include="Routing\Contexts\ResponseRoutingContextProxyFactory.cs" />
-    <Compile Include="Routing\Contexts\RoutingContextProxyFactory.cs" />
     <Compile Include="Routing\Contexts\ObjectRoutingContextFactory.cs" />
     <Compile Include="Routing\Contexts\RequestRoutingContext.cs" />
     <Compile Include="Routing\Contexts\RequestRoutingContextFactory.cs" />

@@ -22,8 +22,8 @@ namespace Stact.Routing.Contexts
         RoutingContext<Message<T>>,
         RoutingContext<T>
     {
-        static readonly Cache<Type, RoutingContextProxyFactory<T>> _proxyFactoryCache =
-            new ConcurrentCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
+        static readonly Cache<Type, MessageRoutingContextProxyFactory<T>> _proxyFactoryCache =
+            new ConcurrentCache<Type, MessageRoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
 
         readonly Message<T> _message;
         readonly int _priority;
@@ -37,11 +37,6 @@ namespace Stact.Routing.Contexts
         Message<T> RoutingContext<Message<T>>.Body
         {
             get { return _message; }
-        }
-
-        int RoutingContext<T>.Priority
-        {
-            get { return _priority; }
         }
 
         int RoutingContext<Message<T>>.Priority
@@ -58,13 +53,18 @@ namespace Stact.Routing.Contexts
 
         void RoutingContext<Message<T>>.Convert<TResult>(Action<RoutingContext<TResult>> callback)
         {
-            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this);
+            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this, _message);
             callback(proxy);
+        }
+
+        int RoutingContext<T>.Priority
+        {
+            get { return _priority; }
         }
 
         void RoutingContext<T>.Convert<TResult>(Action<RoutingContext<TResult>> callback)
         {
-            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this);
+            RoutingContext<TResult> proxy = _proxyFactoryCache[typeof(TResult)].CreateProxy<TResult>(this, _message);
             callback(proxy);
         }
 
@@ -80,10 +80,10 @@ namespace Stact.Routing.Contexts
             messageCallback(this);
         }
 
-        static RoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
+        static MessageRoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
         {
             return
-                (RoutingContextProxyFactory<T>)
+                (MessageRoutingContextProxyFactory<T>)
                 FastActivator.Create(typeof(MessageRoutingContextProxyFactory<,>), new[] {typeof(T), key});
         }
     }
