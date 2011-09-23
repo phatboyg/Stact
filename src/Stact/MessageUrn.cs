@@ -12,139 +12,146 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Runtime.Serialization;
-	using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
+    using System.Text;
 
 
-	[Serializable]
-	public class MessageUrn :
-		Uri
-	{
-		[ThreadStatic]
-		static IDictionary<Type, string> _cache;
+    public static class MessageUrn<T>
+    {
+        public static MessageUrn Urn = typeof(T).ToMessageUrn();
+        public static string UrnString = typeof(T).ToMessageUrn().ToString();
+    }
 
-		public MessageUrn(Type type)
-			: base(GetUrnForType(type))
-		{
-		}
 
-		public MessageUrn(string uriString)
-			: base(uriString)
-		{
-		}
+    [Serializable]
+    public class MessageUrn :
+        Uri
+    {
+        [ThreadStatic]
+        static IDictionary<Type, string> _cache;
 
-		protected MessageUrn(SerializationInfo serializationInfo, StreamingContext streamingContext)
-			: base(serializationInfo, streamingContext)
-		{
-		}
+        public MessageUrn(Type type)
+            : base(GetUrnForType(type))
+        {
+        }
 
-		public Type GetType(bool throwOnError = true, bool ignoreCase = true)
-		{
-			if (Segments.Length == 0)
-				return null;
+        public MessageUrn(string uriString)
+            : base(uriString)
+        {
+        }
 
-			string[] names = Segments[0].Split(':');
-			if (names[0] != "message")
-				return null;
+        protected MessageUrn(SerializationInfo serializationInfo, StreamingContext streamingContext)
+            : base(serializationInfo, streamingContext)
+        {
+        }
 
-			string typeName;
+        public Type GetType(bool throwOnError = true, bool ignoreCase = true)
+        {
+            if (Segments.Length == 0)
+                return null;
 
-			if (names.Length == 2)
-				typeName = names[1];
-			else if (names.Length == 3)
-				typeName = names[1] + "." + names[2] + ", " + names[1];
-			else if (names.Length >= 4)
-				typeName = names[1] + "." + names[2] + ", " + names[3];
-			else
-				return null;
+            string[] names = Segments[0].Split(':');
+            if (names[0] != "message")
+                return null;
 
-			Type messageType = Type.GetType(typeName, true, true);
+            string typeName;
 
-			return messageType;
-		}
+            if (names.Length == 2)
+                typeName = names[1];
+            else if (names.Length == 3)
+                typeName = names[1] + "." + names[2] + ", " + names[1];
+            else if (names.Length >= 4)
+                typeName = names[1] + "." + names[2] + ", " + names[3];
+            else
+                return null;
 
-		static string IsInCache(Type type, Func<Type, string> provider)
-		{
-			if (_cache == null)
-				_cache = new Dictionary<Type, string>();
+            Type messageType = Type.GetType(typeName, true, true);
 
-			string urn;
-			if (_cache.TryGetValue(type, out urn))
-				return urn;
+            return messageType;
+        }
 
-			urn = provider(type);
+        static string IsInCache(Type type, Func<Type, string> provider)
+        {
+            if (_cache == null)
+                _cache = new Dictionary<Type, string>();
 
-			_cache[type] = urn;
+            string urn;
+            if (_cache.TryGetValue(type, out urn))
+                return urn;
 
-			return urn;
-		}
+            urn = provider(type);
 
-		static string GetUrnForType(Type type)
-		{
-			return IsInCache(type, x =>
-				{
-					var sb = new StringBuilder("urn:message:");
+            _cache[type] = urn;
 
-					return GetMessageName(sb, type, true);
-				});
-		}
+            return urn;
+        }
 
-		static string GetMessageName(StringBuilder sb, Type type, bool includeScope)
-		{
-			if (includeScope && type.Namespace != null)
-			{
-				string ns = type.Namespace;
-				sb.Append(ns);
+        static string GetUrnForType(Type type)
+        {
+            return IsInCache(type, x =>
+                {
+                    var sb = new StringBuilder("urn:message:");
 
-				sb.Append(':');
-			}
+                    return GetMessageName(sb, type, true);
+                });
+        }
 
-			if (type.IsNested)
-			{
-				GetMessageName(sb, type.DeclaringType, false);
-				sb.Append('+');
-			}
+        static string GetMessageName(StringBuilder sb, Type type, bool includeScope)
+        {
+            if (includeScope && type.Namespace != null)
+            {
+                string ns = type.Namespace;
+                sb.Append(ns);
 
-			if (type.IsGenericType)
-			{
-				sb.Append(type.GetGenericTypeDefinition().FullName);
-				sb.Append('[');
+                sb.Append(':');
+            }
 
-				Type[] arguments = type.GetGenericArguments();
-				for (int i = 0; i < arguments.Length; i++)
-				{
-					if (i > 0)
-						sb.Append(',');
+            if (type.IsNested)
+            {
+                GetMessageName(sb, type.DeclaringType, false);
+                sb.Append('+');
+            }
 
-					sb.Append('[');
-					GetMessageName(sb, arguments[i], true);
-					sb.Append(']');
-				}
+            if (type.IsGenericType)
+            {
+                sb.Append(type.GetGenericTypeDefinition().FullName);
+                sb.Append('[');
 
-				sb.Append(']');
-			}
-			else
-				sb.Append(type.Name);
+                Type[] arguments = type.GetGenericArguments();
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(',');
 
-			if (includeScope && type.Namespace != null)
-			{
-				string ns = type.Namespace;
+                    sb.Append('[');
+                    GetMessageName(sb, arguments[i], true);
+                    sb.Append(']');
+                }
 
-				string assembly = type.Assembly.FullName;
-				if (!string.IsNullOrEmpty(assembly))
-				{
-					string assemblyName = assembly.Substring(0, assembly.IndexOf(','));
-					if (assemblyName != ns)
-					{
-						sb.Append(':');
-						sb.Append(assemblyName);
-					}
-				}
-			}
+                sb.Append(']');
+            }
+            else
+                sb.Append(type.Name);
 
-			return sb.ToString();
-		}
-	}
+            if (includeScope && type.Namespace != null)
+            {
+                string ns = type.Namespace;
+
+                string assembly = type.Assembly.FullName;
+                if (!string.IsNullOrEmpty(assembly))
+                {
+                    string assemblyName = assembly.Substring(0, assembly.IndexOf(','));
+                    if (assemblyName != ns)
+                    {
+                        sb.Append(':');
+                        sb.Append(assemblyName);
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+    }
 }

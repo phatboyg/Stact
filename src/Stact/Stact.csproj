@@ -119,7 +119,6 @@
     <Compile Include="Internal\LinkImpl.cs" />
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="LoopExtensions.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\HeaderExtensions.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\BodySelectorFactory.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeader.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderChannel.cs" />

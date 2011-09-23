@@ -12,52 +12,52 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
+    using System;
 
 
     public static class Extensions
-	{
-		public static MessageUrn ToMessageUrn(this Type type)
-		{
-			return new MessageUrn(type);
-		}
+    {
+        public static MessageUrn ToMessageUrn(this Type type)
+        {
+            return new MessageUrn(type);
+        }
 
-		public static void Start(this UntypedChannel instance)
-		{
-			instance.Send<Start>();
-		}
+        public static void Start(this UntypedChannel instance)
+        {
+            instance.Send<Start>();
+        }
 
-		public static void Stop(this UntypedChannel instance)
-		{
-			instance.Send<Stop>();
-		}
+        public static void Stop(this UntypedChannel instance)
+        {
+            instance.Send<Stop>();
+        }
 
-		/// <summary>
-		///   Sends an Exit message to an actor instance without waiting for a response
-		/// </summary>
-		/// <param name = "instance">The actor instance</param>
-		public static void Exit(this UntypedChannel instance)
-		{
-			instance.Send<Exit>();
-		}
+        /// <summary>
+        ///   Sends an Exit message to an actor instance without waiting for a response
+        /// </summary>
+        /// <param name = "instance">The actor instance</param>
+        public static void Exit(this UntypedChannel instance)
+        {
+            instance.Send<Exit>();
+        }
 
-		/// <summary>
-		///   Sends an Exit message to an actor instance
-		/// </summary>
-		/// <param name = "instance">The actor instance</param>
-		/// <param name = "sender">The exit request sender</param>
-		public static SentRequest<Exit> Exit(this ActorInstance instance, Inbox sender)
-		{
-			return instance.Request<Exit>(sender);
-		}
+        /// <summary>
+        ///   Sends an Exit message to an actor instance
+        /// </summary>
+        /// <param name = "instance">The actor instance</param>
+        /// <param name = "sender">The exit request sender</param>
+        public static SentRequest<Exit> Exit(this ActorInstance instance, Inbox sender)
+        {
+            return instance.Request<Exit>(sender);
+        }
 
-		/// <summary>
-		///   Sends a Kill message to an actor instance
-		/// </summary>
-		/// <param name = "instance">The actor instance</param>
-		public static void Kill(this UntypedChannel instance)
-		{
-			instance.Send<Kill>();
-		}
-	}
+        /// <summary>
+        ///   Sends a Kill message to an actor instance
+        /// </summary>
+        /// <param name = "instance">The actor instance</param>
+        public static void Kill(this UntypedChannel instance)
+        {
+            instance.Send<Kill>();
+        }
+    }
 }

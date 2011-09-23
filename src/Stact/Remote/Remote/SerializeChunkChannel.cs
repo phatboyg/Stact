@@ -72,7 +72,7 @@ namespace Stact.Remote
 
 				using (var ts = new StreamWriter(_contentEncoder(ms)))
 				{
-					headers.SetBodyType(typeof(T));
+				    headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
 
 					int headerLength = 0;
 					if (headers.Count > 0)

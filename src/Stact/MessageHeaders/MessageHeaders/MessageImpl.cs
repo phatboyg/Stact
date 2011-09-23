@@ -12,72 +12,72 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.MessageHeaders
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 
-	public class MessageImpl<T> :
-		Message<T>,
-		SetMessageHeader
-	{
-		readonly DictionaryHeaders _headers;
+    public class MessageImpl<T> :
+        Message<T>,
+        SetMessageHeader
+    {
+        readonly DictionaryHeaders _headers;
 
-		public MessageImpl(T message)
-		{
-			Body = message;
-			_headers = new DictionaryHeaders();
+        public MessageImpl(T message)
+        {
+            Body = message;
+            _headers = new DictionaryHeaders();
 
-			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
-		}
+            _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
+        }
 
-		public MessageImpl(T message, IDictionary<string, string> headers)
-		{
-			Body = message;
-			_headers = new DictionaryHeaders(headers);
+        public MessageImpl(T message, IDictionary<string, string> headers)
+        {
+            Body = message;
+            _headers = new DictionaryHeaders(headers);
 
-			_headers[HeaderKey.BodyType] = typeof(T).ToMessageUrn().ToString();
-		}
+            _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
+        }
 
-		public T Body { get; private set; }
+        public T Body { get; private set; }
 
-		public Uri BodyType
-		{
-			get { return _headers.GetUri(HeaderKey.BodyType); }
-		}
+        public Uri BodyType
+        {
+            get { return _headers.GetUri(HeaderKey.BodyType); }
+        }
 
-		public string MessageId
-		{
-			get { return _headers[HeaderKey.MessageId]; }
-			set { _headers[HeaderKey.MessageId] = value; }
-		}
+        public string MessageId
+        {
+            get { return _headers[HeaderKey.MessageId]; }
+            set { _headers[HeaderKey.MessageId] = value; }
+        }
 
-		public string CorrelationId
-		{
-			get { return _headers[HeaderKey.CorrelationId]; }
-			set { _headers[HeaderKey.CorrelationId] = value; }
-		}
+        public string CorrelationId
+        {
+            get { return _headers[HeaderKey.CorrelationId]; }
+            set { _headers[HeaderKey.CorrelationId] = value; }
+        }
 
-		public Uri SenderAddress
-		{
-			get { return _headers.GetUri(HeaderKey.SenderAddress); }
-			set { _headers.SetUri(HeaderKey.SenderAddress, value); }
-		}
+        public Uri SenderAddress
+        {
+            get { return _headers.GetUri(HeaderKey.SenderAddress); }
+            set { _headers.SetUri(HeaderKey.SenderAddress, value); }
+        }
 
-		public Uri DestinationAddress
-		{
-			get { return _headers.GetUri(HeaderKey.DestinationAddress); }
-			set { _headers.SetUri(HeaderKey.DestinationAddress, value); }
-		}
+        public Uri DestinationAddress
+        {
+            get { return _headers.GetUri(HeaderKey.DestinationAddress); }
+            set { _headers.SetUri(HeaderKey.DestinationAddress, value); }
+        }
 
-		public Uri FaultAddress
-		{
-			get { return _headers.GetUri(HeaderKey.FaultAddress); }
-			set { _headers.SetUri(HeaderKey.FaultAddress, value); }
-		}
+        public Uri FaultAddress
+        {
+            get { return _headers.GetUri(HeaderKey.FaultAddress); }
+            set { _headers.SetUri(HeaderKey.FaultAddress, value); }
+        }
 
-		public Headers Headers
-		{
-			get { return _headers; }
-		}
-	}
+        public Headers Headers
+        {
+            get { return _headers; }
+        }
+    }
 }

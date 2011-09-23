@@ -13,7 +13,6 @@
 namespace Stact.Routing.Nodes
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -24,8 +23,7 @@ namespace Stact.Routing.Nodes
     /// context property IsAvailable
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ActiveContextList<T> :
-        IEnumerable<RoutingContext<T>>
+    public class ActiveContextList<T>
     {
         readonly IList<Func<RoutingContext<T>, bool>> _joins;
         readonly IList<RoutingContext<T>> _messages;
@@ -50,19 +48,11 @@ namespace Stact.Routing.Nodes
 
         void CallbackPendingJoins(RoutingContext<T> message)
         {
-            for (int i = _joins.Count - 1; i >= 0 && message.IsAlive; i-- )
+            for (int i = _joins.Count - 1; i >= 0 && message.IsAlive; i--)
             {
                 if (false == _joins[i](message))
                     _joins.RemoveAt(i);
             }
-
-//            for (int i = 0; i < _joins.Count && message.IsAlive;)
-//            {
-//                if (false == _joins[i](message))
-//                    _joins.RemoveAt(i);
-//                else
-//                    i++;
-//            }
         }
 
         public void All(Func<RoutingContext<T>, bool> callback)
@@ -89,15 +79,7 @@ namespace Stact.Routing.Nodes
 
         void Join(Func<RoutingContext<T>, bool> callback)
         {
-            if (this.Any(message => false == callback(message)))
-                return;
-
-            _joins.Add(callback);
-        }
-
-        public IEnumerator<RoutingContext<T>> GetEnumerator()
-        {
-            for (int i = 0; i < _messages.Count; )
+            for (int i = 0; i < _messages.Count;)
             {
                 if (!_messages[i].IsAlive)
                 {
@@ -105,15 +87,14 @@ namespace Stact.Routing.Nodes
                     continue;
                 }
 
-                yield return _messages[i];
-                
+                bool result = callback(_messages[i]);
+                if (result == false)
+                    return;
+
                 i++;
             }
-        }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            _joins.Add(callback);
         }
     }
 }

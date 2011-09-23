@@ -52,18 +52,19 @@ namespace Stact.Internal
             if (_stopped)
                 return;
 
-            if (_operations.Count == 0)
+            var count = _operations.Count;
+            if (count == 0)
                 return;
 
             IList<KeyValuePair<int, Action>> operations = _operations;
             _operations = new List<KeyValuePair<int, Action>>(2);
 
-            foreach (var operation in operations)
+            for (int i = 0; i < count; i++)
             {
                 if (_stopped)
                     break;
 
-                operation.Value();
+                operations[i].Value();
             }
         }
 

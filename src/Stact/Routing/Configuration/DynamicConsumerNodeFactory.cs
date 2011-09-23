@@ -15,7 +15,6 @@ namespace Stact.Routing.Configuration
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Magnum;
     using Magnum.Caching;
 
 
@@ -39,15 +38,11 @@ namespace Stact.Routing.Configuration
 
         public RemoveActivation Create<T>(Consumer<T> consumer, RoutingEngineConfigurator configurator)
         {
-            Guard.AgainstNull(consumer, "consumer");
-
             return _typeFactoryCache[typeof(T)].Create(consumer, configurator);
         }
 
         public RemoveActivation Create<T>(SelectiveConsumer<T> consumer, RoutingEngineConfigurator configurator)
         {
-            Guard.AgainstNull(consumer, "consumer");
-
             return _typeFactoryCache[typeof(T)].Create(consumer, configurator);
         }
 

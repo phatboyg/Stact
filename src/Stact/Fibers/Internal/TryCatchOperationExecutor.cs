@@ -12,75 +12,58 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 
-	public class TryCatchOperationExecutor :
-		OperationExecutor
-	{
-		readonly Action<Exception> _callback;
-		bool _stopping;
+    public class TryCatchOperationExecutor :
+        OperationExecutor
+    {
+        readonly Action<Exception> _callback;
+        bool _stopping;
 
-		public TryCatchOperationExecutor(Action<Exception> callback)
-		{
-			_callback = callback;
-		}
+        public TryCatchOperationExecutor(Action<Exception> callback)
+        {
+            _callback = callback;
+        }
 
 
-		public void Execute(Action operation)
-		{
-			try
-			{
-				if (_stopping)
-					return;
+        public void Execute(Action operation)
+        {
+            try
+            {
+                if (_stopping)
+                    return;
 
-				operation();
-			}
-			catch (Exception ex)
-			{
-				_callback(ex);
-			}
-		}
+                operation();
+            }
+            catch (Exception ex)
+            {
+                _callback(ex);
+            }
+        }
 
-		public void Execute(IList<Action> operations)
-		{
-			try
-			{
-				for (int index = 0; index < operations.Count;)
-				{
-					if (_stopping)
-						break;
+        public void Execute(IList<Action> operations)
+        {
+            try
+            {
+                for (int index = 0; index < operations.Count; index++)
+                {
+                    if (_stopping)
+                        break;
 
-					// this is nested to avoid the cost of a try/catch block per operation
-					// but uses two blocks for a single operation -- tradeoffs I guess
+                    operations[index]();
+                }
+            }
+            catch (Exception ex)
+            {
+                _callback(ex);
+            }
+        }
 
-					try
-					{
-						for (; index < operations.Count; index++)
-						{
-							if (_stopping)
-								break;
-
-							operations[index]();
-						}
-					}
-					catch (Exception ex)
-					{
-						_callback(ex);
-						index++;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				_callback(ex);
-			}
-		}
-
-		public void Stop()
-		{
-			_stopping = true;
-		}
-	}
+        public void Stop()
+        {
+            _stopping = true;
+        }
+    }
 }

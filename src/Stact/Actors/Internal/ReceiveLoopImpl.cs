@@ -12,67 +12,67 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 
-	public class ReceiveLoopImpl :
-		ReceiveLoop
-	{
-		readonly Inbox _inbox;
-		readonly PendingReceiveList _pending;
-		readonly IList<Func<PendingReceive>> _receivers;
+    public class ReceiveLoopImpl :
+        ReceiveLoop
+    {
+        readonly Inbox _inbox;
+        readonly PendingReceiveList _pending;
+        readonly IList<Func<PendingReceive>> _receivers;
 
-		public ReceiveLoopImpl(Inbox inbox)
-		{
-			_inbox = inbox;
+        public ReceiveLoopImpl(Inbox inbox)
+        {
+            _inbox = inbox;
 
-			_pending = new PendingReceiveList();
+            _pending = new PendingReceiveList();
 
-			_receivers = new List<Func<PendingReceive>>
-				{
-					() => _inbox.Receive<Request<Exit>>(HandleExit),
-					() => _inbox.Receive<Kill>(message => CancelPendingReceives()),
-				};
-		}
+            _receivers = new List<Func<PendingReceive>>
+                {
+                    () => _inbox.Receive<Request<Exit>>(HandleExit),
+                    () => _inbox.Receive<Kill>(message => CancelPendingReceives()),
+                };
+        }
 
-		public ReceiveLoop Receive<T>(SelectiveConsumer<T> consumer)
-		{
-			Func<PendingReceive> receiver = () => _inbox.Receive((SelectiveConsumer<T>)(candidate =>
-				{
-					Consumer<T> accepted = consumer(candidate);
-					if (accepted == null)
-						return null;
+        public ReceiveLoop Receive<T>(SelectiveConsumer<T> consumer)
+        {
+            Func<PendingReceive> receiver = () => _inbox.Receive((SelectiveConsumer<T>)(candidate =>
+                {
+                    Consumer<T> accepted = consumer(candidate);
+                    if (accepted == null)
+                        return null;
 
-					CancelPendingReceives();
+                    CancelPendingReceives();
 
-					return accepted;
-				}));
+                    return accepted;
+                }));
 
-			_receivers.Add(receiver);
+            _receivers.Add(receiver);
 
-			return this;
-		}
+            return this;
+        }
 
-		public void Continue()
-		{
-			foreach (var receiver in _receivers)
-				_pending.Add(receiver());
-		}
+        public void Continue()
+        {
+            for (int i = 0; i < _receivers.Count; i++)
+                _pending.Add(_receivers[i]());
+        }
 
-		Consumer<Request<Exit>> HandleExit(Request<Exit> request)
-		{
-			return message =>
-				{
-					CancelPendingReceives();
+        Consumer<Request<Exit>> HandleExit(Request<Exit> request)
+        {
+            return message =>
+                {
+                    CancelPendingReceives();
 
-					request.Respond(message.Body);
-				};
-		}
+                    request.Respond(message.Body);
+                };
+        }
 
-		void CancelPendingReceives()
-		{
-			_pending.CancelAll();
-		}
-	}
+        void CancelPendingReceives()
+        {
+            _pending.CancelAll();
+        }
+    }
 }
