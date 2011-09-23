@@ -14,18 +14,17 @@ namespace Stact.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Magnum.Caching;
 
 
     public class Agenda
     {
-        Cache<int, IList<Action>> _operations;
+        IList<KeyValuePair<int, Action>> _operations;
+
         bool _stopped;
 
         public Agenda()
         {
-            _operations = CreateCache();
+            _operations = new List<KeyValuePair<int, Action>>(2);
         }
 
         public void Add(int priority, Action operation)
@@ -33,7 +32,19 @@ namespace Stact.Internal
             if (_stopped)
                 return;
 
-            _operations[priority].Add(operation);
+            var item = new KeyValuePair<int, Action>(priority, operation);
+
+            var count = _operations.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (priority > _operations[i].Key)
+                {
+                    _operations.Insert(i, item);
+                    return;
+                }
+            }
+
+            _operations.Add(item);
         }
 
         public void Run()
@@ -44,21 +55,16 @@ namespace Stact.Internal
             if (_operations.Count == 0)
                 return;
 
-            Cache<int, IList<Action>> operations = _operations;
-            _operations = CreateCache();
+            IList<KeyValuePair<int, Action>> operations = _operations;
+            _operations = new List<KeyValuePair<int, Action>>(2);
 
-            foreach (Action operation in operations.GetAllKeys().OrderByDescending(x => x).SelectMany(key => operations[key]))
+            foreach (var operation in operations)
             {
                 if (_stopped)
                     break;
 
-                operation();
+                operation.Value();
             }
-        }
-
-        static DictionaryCache<int, IList<Action>> CreateCache()
-        {
-            return new DictionaryCache<int, IList<Action>>(_ => new List<Action>());
         }
 
         public void Stop()

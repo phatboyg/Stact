@@ -30,7 +30,7 @@ namespace Stact.Routing.Configuration
 
         public DynamicConsumerNodeFactory()
         {
-            _typeFactoryCache = new ConcurrentCache<Type, ConsumerNodeFactory>(CreateMissingNodeFactory);
+            _typeFactoryCache = new DictionaryCache<Type, ConsumerNodeFactory>(CreateMissingNodeFactory);
             _messageFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(MessageConsumerNodeFactory<>));
             _requestFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(RequestConsumerNodeFactory<>));
             _responseFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(ResponseConsumerNodeFactory<>));

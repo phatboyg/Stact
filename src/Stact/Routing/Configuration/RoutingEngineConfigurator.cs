@@ -16,5 +16,8 @@ namespace Stact.Routing.Configuration
     {
         RoutingEngine Engine { get; }
         RemoveActivation Add<T>(Activation<T> activation);
+
+        RemoveActivation Receive<T>(Consumer<T> consumer);
+        RemoveActivation SelectiveReceive<T>(SelectiveConsumer<T> consumer);
     }
 }

@@ -125,6 +125,7 @@
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemoteActorTest.cs" />
+    <Compile Include="RingBenchmark.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />
   </ItemGroup>

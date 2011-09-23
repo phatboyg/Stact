@@ -62,7 +62,7 @@ namespace Stact.Internal
 							if (_stopping)
 								break;
 
-							Execute(operations[index]);
+							operations[index]();
 						}
 					}
 					catch (Exception ex)

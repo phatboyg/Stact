@@ -22,13 +22,15 @@ namespace Stact.Routing.Configuration
     public class DynamicRoutingEngineConfigurator :
         RoutingEngineConfigurator
     {
+        readonly ConsumerNodeFactory _consumerFactory = new DynamicConsumerNodeFactory();
+
         readonly DynamicRoutingEngine _engine;
         readonly Cache<Type, object> _joinNodes;
 
         public DynamicRoutingEngineConfigurator(DynamicRoutingEngine engine)
         {
             _engine = engine;
-            _joinNodes = new ConcurrentCache<Type, object>();
+            _joinNodes = new DictionaryCache<Type, object>();
         }
 
         public RemoveActivation Add<T>(Activation<T> activation)
@@ -38,6 +40,16 @@ namespace Stact.Routing.Configuration
             joinNode.AddActivation(activation);
 
             return () => { joinNode.RemoveActivation(activation); };
+        }
+
+        public RemoveActivation Receive<T>(Consumer<T> consumer)
+        {
+            return _consumerFactory.Create(consumer, this);
+        }
+
+        public RemoveActivation SelectiveReceive<T>(SelectiveConsumer<T> consumer)
+        {
+            return _consumerFactory.Create(consumer, this);
         }
 
         public RoutingEngine Engine

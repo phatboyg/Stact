@@ -38,7 +38,9 @@ namespace Stact.Benchmarks
 
 				//new ReliableMulticastChannelTest().Run();
 
-				new RemoteActorTest().Run();
+				//new RemoteActorTest().Run();
+
+			    new RingBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

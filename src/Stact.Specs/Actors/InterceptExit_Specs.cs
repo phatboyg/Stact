@@ -54,7 +54,7 @@ namespace Stact.Specs.Actors
                         .Within(5.Seconds())
                         .Receive<Response<Exit>>(x => { });
                 });
-            _intercepted.WaitUntilCompleted(500.Seconds()).ShouldBeTrue("Exit was not intercepted");
+            _intercepted.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Exit was not intercepted");
 
             _actor.Send(new A());
             _receivedA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("A was not handled, did actor exit?");

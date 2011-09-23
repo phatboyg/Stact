@@ -30,15 +30,5 @@ namespace Stact.Routing
         {
             return _consumerFactory.Create(consumer, configurator);
         }
-
-        /* considering yanking the message join feature as unnecessary and complicated
-        public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator,
-                                           Consumer<Tuple<T1, T2>> consumer)
-        {
-            var consumerNode = new ConsumerNode<Tuple<T1,T2>>(configurator.Engine, consumer);
-
-            configurator.Add(consumerNode);
-        }
-         **/
     }
 }
