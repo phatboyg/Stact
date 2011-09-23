@@ -12,53 +12,57 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Registries
 {
-	using System;
-	using Magnum;
-	using Magnum.TestFramework;
-	using MessageHeaders;
-	using Model;
+    using System;
+    using Magnum;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
+    using Model;
 
 
-	[Scenario]
-	public class When_adding_an_actor_to_a_registry
-	{
-		ActorFactory<Auction> _auctionFactory;
-		Guid _auctionId;
-		ActorRegistry _registry;
+    [Scenario]
+    public class When_adding_an_actor_to_a_registry
+    {
+        ActorFactory<Auction> _auctionFactory;
+        Guid _auctionId;
+        ActorRegistry _registry;
+        Future<Response<Bid>> _response;
 
-		[Then]
-		public void Adding_an_actor_to_a_registry()
-		{
-			_auctionFactory = ActorFactory.Create(inbox => new Auction(inbox));
+        [Then]
+        public void Adding_an_actor_to_a_registry()
+        {
+            _auctionFactory = ActorFactory.Create(inbox => new Auction(inbox));
 
-			_auctionId = CombGuid.Generate();
+            _auctionId = CombGuid.Generate();
 
-			ActorInstance auction = _auctionFactory.GetActor();
+            ActorInstance auction = _auctionFactory.GetActor();
 
-			ActorRegistry registry = ActorRegistryFactory.New(x =>
-				{
-					//x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
-				});
+            ActorRegistry registry = ActorRegistryFactory.New(x =>
+                {
+                    //x.Remote(r => r.ListenTo("rm://234.0.0.7:40001"));
+                });
 
-			registry.Register(_auctionId, auction);
+            registry.Register(_auctionId, auction);
 
+            _response = new Future<Response<Bid>>();
 
-			var message = new MessageImpl<Bid>(new BidImpl(27.5m));
+            AnonymousActor.New(inbox =>
+                {
+                    registry.Request<Bid>(new BidImpl(27.42m),
+                                          header => { header.DestinationAddress = new ActorUrn(_auctionId); }, inbox)
+                        .Receive<Response<Bid>>(x => _response.Complete);
+                });
 
-			message.DestinationAddress = new Uri("urn:uuid:" + _auctionId.ToString("N"));
+            _response.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 
-			registry.Send<Message<Bid>>(message);
+            // need to proxy the channel with headers somehow... 
 
+            // untyped channel => channel mapper -> actor instance
 
-			// need to proxy the channel with headers somehow... 
-
-			// untyped channel => channel mapper -> actor instance
-
-			// DestinationAddress -> set by outbound channel proxy on message<>
-			// SourceAddress -> set by outbound channel proxy when available (not likely)
-			// ResponseAddress -> set by outbound channel for ResponseChannel on Request to map to channel
-			// Id -> system assigned id
-			// DestinationAddress = urn:actor:554FC958-4661-4FE9-94F5-21D190417BCC
-		}
-	}
+            // DestinationAddress -> set by outbound channel proxy on message<>
+            // SourceAddress -> set by outbound channel proxy when available (not likely)
+            // ResponseAddress -> set by outbound channel for ResponseChannel on Request to map to channel
+            // Id -> system assigned id
+            // DestinationAddress = urn:actor:554FC958-4661-4FE9-94F5-21D190417BCC
+        }
+    }
 }

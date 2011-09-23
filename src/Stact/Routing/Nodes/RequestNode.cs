@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
+    using Contexts;
+
+
     public class RequestNode<T> :
         Activation<T>
     {
@@ -22,6 +25,11 @@ namespace Stact.Routing.Nodes
             _output = output;
         }
 
+        public Activation<Request<T>> Output
+        {
+            get { return _output; }
+        }
+
         public bool Enabled
         {
             get { return _output.Enabled; }
@@ -29,7 +37,16 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<T> context)
         {
-            context.Match(message => { }, request => _output.Activate(request), response => { });
+            context.Match(message => UpgradeMessageToRequest(context, message),
+                          request => _output.Activate(request),
+                          response => { });
+        }
+
+        void UpgradeMessageToRequest(RoutingContext<T> context, RoutingContext<Message<T>> message)
+        {
+            var proxy = new RequestMessageProxy<T>(message.Body);
+            var requestProxy = new RequestRoutingContextProxy<T, T>(context, proxy);
+            _output.Activate(requestProxy);
         }
     }
 }

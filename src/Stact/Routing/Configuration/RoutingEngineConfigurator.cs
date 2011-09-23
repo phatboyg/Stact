@@ -13,14 +13,12 @@
 namespace Stact.Routing.Configuration
 {
     using System;
-    using Nodes;
-    using Routing.Internal;
 
 
     public interface RoutingEngineConfigurator
     {
         RoutingEngine Engine { get; }
         RemoveActivation Add<T>(Activation<T> activation);
-        RemoveActivation Add<T1, T2>(Activation<Tuple<T1, T2>> activation);
+        RemoveActivation Add<T1, T2>(Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>> activation);
     }
 }

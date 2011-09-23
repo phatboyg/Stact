@@ -83,11 +83,6 @@ namespace Stact.Benchmarks
 						Interlocked.Increment(ref countB);
 						latch.CountDown();
 					});
-					x.Receive<A, B>(m =>
-					{
-						Interlocked.Increment(ref countC);
-						latch.CountDown();
-					});
 				}
 			});
 

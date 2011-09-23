@@ -18,70 +18,70 @@ namespace Stact.Routing.Nodes
 
 
     public class JoinNode<T1, T2> :
-		Activation<T1>,
-		RightActivation<Tuple<T1, T2>>
-	{
-		readonly BetaMemory<Tuple<T1, T2>> _betaMemory;
-		readonly RightActivation<T2> _rightActivation;
+        Activation<T1>,
+        RightActivation<Tuple<RoutingContext<T1>, RoutingContext<T2>>>
+    {
+        readonly BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> _betaMemory;
+        readonly RightActivation<T2> _rightActivation;
 
-		public JoinNode(RightActivation<T2> rightActivation)
-		{
-			_betaMemory = new BetaMemory<Tuple<T1, T2>>();
+        public JoinNode(RightActivation<T2> rightActivation)
+        {
+            _betaMemory = new BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>>();
 
-			_rightActivation = rightActivation;
-		}
+            _rightActivation = rightActivation;
+        }
 
-		public RightActivation<T2> RightActivation
-		{
-			get { return _rightActivation; }
-		}
+        public RightActivation<T2> RightActivation
+        {
+            get { return _rightActivation; }
+        }
 
-		public IEnumerable<Activation<Tuple<T1, T2>>> Activations
-		{
-			get { return _betaMemory.Successors; }
-		}
+        public IEnumerable<Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>>> Activations
+        {
+            get { return _betaMemory.Successors; }
+        }
 
-		public BetaMemory<Tuple<T1,T2>> BetaMemory
-		{
-			get { return _betaMemory; }
-		}
+        public BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> BetaMemory
+        {
+            get { return _betaMemory; }
+        }
 
-		public void Activate(RoutingContext<T1> context)
-		{
-			_rightActivation.RightActivate(match =>
-			{
-				if (!context.IsAlive)
-					return false;
+        public void Activate(RoutingContext<T1> context)
+        {
+            _rightActivation.RightActivate(match =>
+                {
+                    if (!context.IsAlive)
+                        return false;
 
-			    throw new NotImplementedException("supposed to join");
-				//_betaMemory.Activate(context.Join(match));
-				return true;
-			});
-		}
+                    _betaMemory.Activate(context.Join(match));
+                    return true;
+                });
+        }
 
-		public bool Enabled
-		{
-			get { return true; }
-		}
+        public bool Enabled
+        {
+            get { return true; }
+        }
 
-		public void RightActivate(Func<RoutingContext<Tuple<T1, T2>>, bool> callback)
-		{
-			_betaMemory.RightActivate(callback);
-		}
+        public void RightActivate(Func<RoutingContext<Tuple<RoutingContext<T1>, RoutingContext<T2>>>, bool> callback)
+        {
+            _betaMemory.RightActivate(callback);
+        }
 
-		public void RightActivate(RoutingContext<Tuple<T1, T2>> context, Action<RoutingContext<Tuple<T1, T2>>> callback)
-		{
-			_betaMemory.RightActivate(context, callback);
-		}
+        public void RightActivate(RoutingContext<Tuple<RoutingContext<T1>, RoutingContext<T2>>> context,
+                                  Action<RoutingContext<Tuple<RoutingContext<T1>, RoutingContext<T2>>>> callback)
+        {
+            _betaMemory.RightActivate(context, callback);
+        }
 
-		public void AddActivation(Activation<Tuple<T1, T2>> activation)
-		{
-			_betaMemory.AddActivation(activation);
-		}
+        public void AddActivation(Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>> activation)
+        {
+            _betaMemory.AddActivation(activation);
+        }
 
-		public void RemoveActivation(Activation<Tuple<T1, T2>> activation)
-		{
-			_betaMemory.RemoveActivation(activation);
-		}
-	}
+        public void RemoveActivation(Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>> activation)
+        {
+            _betaMemory.RemoveActivation(activation);
+        }
+    }
 }

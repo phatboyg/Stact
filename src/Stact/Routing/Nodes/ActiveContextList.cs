@@ -50,13 +50,19 @@ namespace Stact.Routing.Nodes
 
         void CallbackPendingJoins(RoutingContext<T> message)
         {
-            for (int i = 0; i < _joins.Count && message.IsAlive;)
+            for (int i = _joins.Count - 1; i >= 0 && message.IsAlive; i-- )
             {
                 if (false == _joins[i](message))
                     _joins.RemoveAt(i);
-                else
-                    i++;
             }
+
+//            for (int i = 0; i < _joins.Count && message.IsAlive;)
+//            {
+//                if (false == _joins[i](message))
+//                    _joins.RemoveAt(i);
+//                else
+//                    i++;
+//            }
         }
 
         public void All(Func<RoutingContext<T>, bool> callback)

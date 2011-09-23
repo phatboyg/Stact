@@ -19,6 +19,7 @@ namespace Stact.Specs.Behavior
 	using Visualizers;
 
 
+    /* drop this features i think
 	[Scenario]
 	public class When_receiving_two_messages_at_once
 	{
@@ -77,4 +78,5 @@ namespace Stact.Specs.Behavior
 		{
 		}
 	}
+     */
 }

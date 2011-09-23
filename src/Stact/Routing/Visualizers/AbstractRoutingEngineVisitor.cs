@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-    using Internal;
     using Magnum.Extensions;
     using Magnum.Reflection;
     using Nodes;
@@ -55,17 +54,19 @@ namespace Stact.Routing.Visualizers
         protected virtual bool Visit<T>(JoinNode<T> node)
         {
             IncreaseDepth();
-            node.Activations.Each(activation => Visit(activation));
-            if(node.RightActivation as ConstantNode<T> != null)
+            if (node.RightActivation as ConstantNode<T> != null)
                 Visit(node.RightActivation);
+            node.Activations.Each(activation => Visit(activation));
             DecreaseDepth();
             return true;
         }
 
         protected virtual bool Visit<T1, T2>(JoinNode<T1, T2> node)
         {
+            IncreaseDepth();
+            Visit(node.RightActivation);
             node.Activations.Each(activation => Visit(activation));
-            //Visit(node.RightActivation);
+            DecreaseDepth();
             return true;
         }
 
@@ -81,6 +82,30 @@ namespace Stact.Routing.Visualizers
 
         protected virtual bool Visit<T>(SelectiveConsumerNode<T> node)
         {
+            return true;
+        }
+
+        protected virtual bool Visit<T>(RequestNode<T> node)
+        {
+            IncreaseDepth();
+            Visit(node.Output);
+            DecreaseDepth();
+            return true;
+        }
+
+        protected virtual bool Visit<T>(ResponseNode<T> node)
+        {
+            IncreaseDepth();
+            Visit(node.Output);
+            DecreaseDepth();
+            return true;
+        }
+
+        protected virtual bool Visit<T>(MessageNode<T> node)
+        {
+            IncreaseDepth();
+            Visit(node.Output);
+            DecreaseDepth();
             return true;
         }
 

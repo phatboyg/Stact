@@ -21,6 +21,7 @@ namespace Stact.Internal
     public class Agenda
     {
         Cache<int, IList<Action>> _operations;
+        bool _stopped;
 
         public Agenda()
         {
@@ -29,11 +30,17 @@ namespace Stact.Internal
 
         public void Add(int priority, Action operation)
         {
+            if (_stopped)
+                return;
+
             _operations[priority].Add(operation);
         }
 
         public void Run()
         {
+            if (_stopped)
+                return;
+
             if (_operations.Count == 0)
                 return;
 
@@ -42,6 +49,9 @@ namespace Stact.Internal
 
             foreach (Action operation in operations.GetAllKeys().OrderByDescending(x => x).SelectMany(key => operations[key]))
             {
+                if (_stopped)
+                    break;
+
                 operation();
             }
         }
@@ -49,6 +59,11 @@ namespace Stact.Internal
         static DictionaryCache<int, IList<Action>> CreateCache()
         {
             return new DictionaryCache<int, IList<Action>>(_ => new List<Action>());
+        }
+
+        public void Stop()
+        {
+            _stopped = true;
         }
     }
 }

@@ -16,10 +16,7 @@ namespace Stact.Specs
     using MessageHeaders;
     using NUnit.Framework;
     using Routing;
-    using Routing.Configuration;
     using Routing.Contexts;
-    using Routing.Internal;
-    using Routing.Nodes;
 
 
     [TestFixture]

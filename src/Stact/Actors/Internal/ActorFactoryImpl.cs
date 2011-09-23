@@ -10,11 +10,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-
 namespace Stact.Internal
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using Magnum;
 
@@ -54,13 +54,13 @@ namespace Stact.Internal
             ActorInbox<TActor> inbox = null;
 
             Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex =>
-            {
-                inbox.Send<Fault>(new
                 {
-                    ex.Message,
-                    ex.StackTrace
-                });
-            }));
+                    inbox.Send<Fault>(new
+                        {
+                            ex.Message,
+                            ex.StackTrace
+                        });
+                }));
 
             Scheduler scheduler = _schedulerFactory();
 

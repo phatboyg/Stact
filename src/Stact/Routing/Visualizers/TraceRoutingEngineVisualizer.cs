@@ -13,13 +13,23 @@
 namespace Stact.Routing.Visualizers
 {
 	using System.Diagnostics;
+	using Stact.Internal;
 
 
-	public class TraceRoutingEngineVisualizer
+    public class TraceRoutingEngineVisualizer
 	{
 		public void Show(RoutingEngine engine)
 		{
 			Trace.WriteLine(new StringRoutingEngineVisitor(engine).ToString());
 		}
+
+        public void Show(ActorInstance actor)
+        {
+            var inbox = actor as ActorInbox;
+            if (inbox == null)
+                return;
+
+            Trace.WriteLine(new StringRoutingEngineVisitor(inbox.Engine).ToString());
+        }
 	}
 }

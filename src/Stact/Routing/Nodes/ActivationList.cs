@@ -16,35 +16,32 @@ namespace Stact.Routing.Nodes
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
 
 
     public class ActivationList<TChannel> :
         IEnumerable<Activation<TChannel>>
     {
-        Stack<Activation<TChannel>> _activations;
+        IList<Activation<TChannel>> _activations;
 
         public ActivationList(params Activation<TChannel>[] activations)
         {
-            _activations = new Stack<Activation<TChannel>>(activations);
+            _activations = new List<Activation<TChannel>>(activations);
         }
 
         public IEnumerator<Activation<TChannel>> GetEnumerator()
         {
-            bool collectNeeded = false;
-            foreach (var activation in _activations)
+            for (int i = 0; i < _activations.Count;)
             {
-                if (activation.Enabled == false)
+                if (!_activations[i].Enabled)
                 {
-                    collectNeeded = true;
+                    _activations.RemoveAt(i);
                     continue;
                 }
 
-                yield return activation;
-            }
+                yield return _activations[i];
 
-            if (collectNeeded)
-                Collect();
+                i++;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -52,14 +49,9 @@ namespace Stact.Routing.Nodes
             return GetEnumerator();
         }
 
-        void Collect()
-        {
-            _activations = new Stack<Activation<TChannel>>(_activations.Where(x => x.Enabled));
-        }
-
         public void Add(Activation<TChannel> activation)
         {
-            _activations.Push(activation);
+            _activations.Add(activation);
         }
 
         public void All(Action<Activation<TChannel>> callback)
@@ -70,11 +62,7 @@ namespace Stact.Routing.Nodes
 
         public void Remove(Activation<TChannel> activation)
         {
-            IEnumerable<Activation<TChannel>> remaining = _activations
-                .Where(x => x.Enabled)
-                .Where(x => x != activation);
-
-            _activations = new Stack<Activation<TChannel>>(remaining);
+            _activations.Remove(activation);
         }
     }
 }

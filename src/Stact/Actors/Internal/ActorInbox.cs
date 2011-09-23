@@ -12,115 +12,120 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Threading;
-	using Magnum.Extensions;
-	using Routing;
-	using Routing.Internal;
-	using Routing.Nodes;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using Magnum.Extensions;
+    using Routing;
+    using Routing.Nodes;
+
+
+    public interface ActorInbox
+    {
+        RoutingEngine Engine { get; }
+    }
 
 
     /// <summary>
-	///   An inbox for an actor. Channel properties on the actor are automatically bound.
-	///   Messages are automatically delivered to the inbox for each message type unless
-	///   a property channel has the same message type. Calling Receive on the inbox will
-	/// </summary>
-	/// <typeparam name = "TActor">The actor type for this inbox</typeparam>
-	public class ActorInbox<TActor> :
-		ActorInstance,
-		Inbox
-		where TActor : class, Actor
-	{
-		readonly RoutingEngine _engine;
-		readonly TimeSpan _exitTimeout = 60.Seconds();
-		readonly Fiber _fiber;
-		readonly UntypedChannel _inbound;
-		readonly HashSet<PendingReceive> _pending;
-		readonly Scheduler _scheduler;
+    ///   An inbox for an actor. Channel properties on the actor are automatically bound.
+    ///   Messages are automatically delivered to the inbox for each message type unless
+    ///   a property channel has the same message type. Calling Receive on the inbox will
+    /// </summary>
+    /// <typeparam name = "TActor">The actor type for this inbox</typeparam>
+    public class ActorInbox<TActor> :
+        ActorInstance,
+        ActorInbox,
+        Inbox
+        where TActor : class, Actor
+    {
+        readonly RoutingEngine _engine;
+        readonly TimeSpan _exitTimeout = 60.Seconds();
+        readonly Fiber _fiber;
+        readonly UntypedChannel _inbound;
+        readonly HashSet<PendingReceive> _pending;
+        readonly Scheduler _scheduler;
 
 
-		public ActorInbox([NotNull] Fiber fiber, [NotNull] Scheduler scheduler)
-		{
-			_fiber = fiber;
-			_scheduler = scheduler;
-			_pending = new HashSet<PendingReceive>();
+        public ActorInbox([NotNull] Fiber fiber, [NotNull] Scheduler scheduler)
+        {
+            _fiber = fiber;
+            _scheduler = scheduler;
+            _pending = new HashSet<PendingReceive>();
 
-			_engine = new DynamicRoutingEngine(fiber);
-			
-			_inbound = new UntypedFilterChannel<Kill>(_engine, message => HandleKill);
+            _engine = new DynamicRoutingEngine(fiber);
 
-			Receive<Request<Exit>>(request => HandleExit);
-		}
+            _inbound = new UntypedFilterChannel<Kill>(_engine, message => HandleKill);
 
-		public RoutingEngine Engine
-		{
-			get { return _engine; }
-		}
+            Receive<Request<Exit>>(request => HandleExit);
+        }
 
-	    public void Send<T>(T message)
-		{
-			_inbound.Send(message);
+        public RoutingEngine Engine
+        {
+            get { return _engine; }
+        }
 
-			// TODO at some point, we need to deal with the fact that not having any receive pending on 
-			// an actor could mean that it is time for it to die
-			// this will also have to check async actions such as pending file io, web requests, etc.
-		}
+        public void Send<T>(T message)
+        {
+            _inbound.Send(message);
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
-		{
-			var pending = new PendingReceiveImpl<T>(this, consumer, x => _pending.Remove(x));
+            // TODO at some point, we need to deal with the fact that not having any receive pending on 
+            // an actor could mean that it is time for it to die
+            // this will also have to check async actions such as pending file io, web requests, etc.
+        }
 
-			return Receive(pending);
-		}
+        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
+        {
+            var pending = new PendingReceiveImpl<T>(this, consumer, x => _pending.Remove(x));
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
-		{
-			var pending = new PendingReceiveImpl<T>(this, consumer, timeoutCallback, x => _pending.Remove(x));
+            return Receive(pending);
+        }
 
-			pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
+        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+        {
+            var pending = new PendingReceiveImpl<T>(this, consumer, timeoutCallback, x => _pending.Remove(x));
 
-			return Receive(pending);
-		}
+            pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
 
-		void HandleExit(Request<Exit> message)
-		{
-			_fiber.Add(() =>
-			{
-				message.Respond(message.Body);
-			});
+            return Receive(pending);
+        }
 
-			_engine.Shutdown();
-			_fiber.Shutdown();
-		}
+        void HandleExit(Request<Exit> message)
+        {
+            _fiber.Add(() => message.Respond(message.Body));
 
-		void HandleKill(Kill message)
-		{
-			ThreadPool.QueueUserWorkItem(x =>
-			{
-				try
-				{
-					_fiber.Stop();
-					_engine.Shutdown();
-				}
-				catch
-				{
-				}
-			});
-		}
+            HandleExit(message.Body);
+        }
 
-		PendingReceive Receive<T>(PendingReceiveImpl<T> receiver)
-		{
-		    _engine.Configure(x =>
-		        {
-		            x.SelectiveReceive<T>(receiver.Accept);
-		        });
-			var consumerNode = new SelectiveConsumerNode<T>(_engine, receiver.Accept);
+        void HandleExit(Exit message)
+        {
+            _engine.Shutdown();
+            _fiber.Shutdown();
+        }
 
-			_engine.Configure(x => x.Add(consumerNode));
+        void HandleKill(Kill message)
+        {
+            ThreadPool.QueueUserWorkItem(x =>
+                {
+                    try
+                    {
+                        _fiber.Stop();
+                        _engine.Shutdown();
+                    }
+                    catch
+                    {
+                    }
+                });
+        }
 
-			_pending.Add(receiver);
-			return receiver;
-		}
-	}
+        PendingReceive Receive<T>(PendingReceiveImpl<T> receiver)
+        {
+            _engine.Configure(x =>
+                {
+                    x.SelectiveReceive<T>(receiver.Accept);
+                });
+
+            _pending.Add(receiver);
+            return receiver;
+        }
+    }
 }

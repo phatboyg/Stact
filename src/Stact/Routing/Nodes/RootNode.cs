@@ -47,9 +47,7 @@ namespace Stact.Routing.Nodes
             var alphaNode = new AlphaNode<T>();
 
             foreach (Type nestedType in GetNestedMessageTypes(typeof(T)))
-            {
                 _initializers[nestedType].AddActivation(this, alphaNode);
-            }
 
             return alphaNode;
         }
@@ -87,6 +85,12 @@ namespace Stact.Routing.Nodes
         public static bool IsAllowedMessageType(Type type)
         {
             if (type.Namespace == null)
+                return false;
+
+            if (type == typeof(Message)
+                || type == typeof(MessageHeader)
+                || type == typeof(RequestHeader)
+                || type == typeof(ResponseHeader))
                 return false;
 
             if (type.Assembly == typeof(object).Assembly)

@@ -55,7 +55,12 @@ namespace Stact.Internal
 			return this;
 		}
 
-		public WithinSentRequest<TRequest> Otherwise(Action timeoutCallback)
+	    public WithinSentRequest<TRequest> Receive<T>(Consumer<T> consumer)
+	    {
+	        return Receive<T>(x => consumer);
+	    }
+
+	    public WithinSentRequest<TRequest> Otherwise(Action timeoutCallback)
 		{
 			_timeoutCallback = timeoutCallback;
 

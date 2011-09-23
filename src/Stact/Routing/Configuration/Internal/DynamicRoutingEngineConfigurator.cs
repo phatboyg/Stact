@@ -45,9 +45,9 @@ namespace Stact.Routing.Configuration.Internal
             get { return _engine; }
         }
 
-        public RemoveActivation Add<T1, T2>(Activation<Tuple<T1, T2>> activation)
+        public RemoveActivation Add<T1, T2>(Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>> activation)
         {
-            BetaMemory<Tuple<T1, T2>> joinNode = GetJoinNode<T1, T2>();
+            BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> joinNode = GetJoinNode<T1, T2>();
 
             joinNode.AddActivation(activation);
 
@@ -59,9 +59,9 @@ namespace Stact.Routing.Configuration.Internal
             return (BetaMemory<T>)_joinNodes.Get(typeof(T), x => FindJoinNode<T>());
         }
 
-        BetaMemory<Tuple<T1, T2>> GetJoinNode<T1, T2>()
+        BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> GetJoinNode<T1, T2>()
         {
-            return (BetaMemory<Tuple<T1, T2>>)_joinNodes.Get(typeof(Tuple<T1, T2>),
+            return (BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>>)_joinNodes.Get(typeof(Tuple<T1, T2>),
                                                                   x => FindJoinNode<T1, T2>());
         }
 
@@ -78,7 +78,7 @@ namespace Stact.Routing.Configuration.Internal
             return result.BetaMemory;
         }
 
-        BetaMemory<Tuple<T1, T2>> FindJoinNode<T1, T2>()
+        BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> FindJoinNode<T1, T2>()
         {
             JoinNode<T1, T2> result = null;
             new MatchJoinNode<T1, T2>(_engine, joinNode => { result = joinNode; });

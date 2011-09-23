@@ -18,6 +18,7 @@ namespace Stact.Routing
     using Contexts;
     using Nodes;
     using Stact.Internal;
+    using Visualizers;
 
 
     public class DynamicRoutingEngine :
@@ -67,6 +68,7 @@ namespace Stact.Routing
         public void Shutdown()
         {
             _shutdown = true;
+            _agenda.Stop();
         }
 
         public void Configure(Action<RoutingEngineConfigurator> callback)
@@ -76,6 +78,8 @@ namespace Stact.Routing
                     DynamicRoutingEngineConfigurator configurator = _configurator;
 
                     callback(configurator);
+
+ //                   new TraceRoutingEngineVisualizer().Show(this);
 
                     _agenda.Run();
                 });

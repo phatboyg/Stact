@@ -12,10 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-    using System;
     using Configuration;
-    using Internal;
-    using Nodes;
 
 
     public static class ExtensionsToRoutingEngine
@@ -34,12 +31,14 @@ namespace Stact.Routing
             return _consumerFactory.Create(consumer, configurator);
         }
 
-
-        public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator, Consumer<Tuple<T1, T2>> consumer)
+        /* considering yanking the message join feature as unnecessary and complicated
+        public static void Receive<T1, T2>(this RoutingEngineConfigurator configurator,
+                                           Consumer<Tuple<T1, T2>> consumer)
         {
-            var consumerNode = new ConsumerNode<Tuple<T1, T2>>(configurator.Engine, consumer);
+            var consumerNode = new ConsumerNode<Tuple<T1,T2>>(configurator.Engine, consumer);
 
             configurator.Add(consumerNode);
         }
+         **/
     }
 }

@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
-    using Contexts;
-
-
     public class ConvertNode<TInput, TOutput> :
         Activation<TInput>
         where TInput : TOutput

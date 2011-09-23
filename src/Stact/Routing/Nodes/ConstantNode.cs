@@ -13,24 +13,23 @@
 namespace Stact.Routing.Nodes
 {
     using System;
-    using Contexts;
 
 
     /// <summary>
-	/// Always invokes on right activation for joining single alpha nodes
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ConstantNode<T> :
-		RightActivation<T>
-	{
-		public void RightActivate(Func<RoutingContext<T>, bool> callback)
-		{
-			// ConstantNodes are not activated, so they would never push joins back to the calling node
-		}
+    /// Always invokes on right activation for joining single alpha nodes
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ConstantNode<T> :
+        RightActivation<T>
+    {
+        public void RightActivate(Func<RoutingContext<T>, bool> callback)
+        {
+            // ConstantNodes are not activated, so they would never push joins back to the calling node
+        }
 
-		public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
-		{
-			callback(context);
-		}
-	}
+        public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
+        {
+            callback(context);
+        }
+    }
 }

@@ -12,159 +12,185 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Internal;
-	using Magnum.Collections;
-	using Magnum.Extensions;
-	using Magnum.Graphing;
-	using Nodes;
-	using Stact.Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Magnum.Collections;
+    using Magnum.Extensions;
+    using Magnum.Graphing;
+    using Nodes;
+    using Stact.Internal;
 
 
-	public class GraphRoutingEngineVisitor :
-		AbstractRoutingEngineVisitor<GraphRoutingEngineVisitor>
-	{
-		readonly List<Edge> _edges = new List<Edge>();
-		readonly Agenda _operations = new Agenda();
-		readonly Stack<Vertex> _stack = new Stack<Vertex>();
-		readonly Cache<int, Vertex> _vertices = new Cache<int, Vertex>();
-		Vertex _current;
+    public class GraphRoutingEngineVisitor :
+        AbstractRoutingEngineVisitor<GraphRoutingEngineVisitor>
+    {
+        readonly List<Edge> _edges = new List<Edge>();
+        readonly Agenda _operations = new Agenda();
+        readonly Stack<Vertex> _stack = new Stack<Vertex>();
+        readonly Cache<int, Vertex> _vertices = new Cache<int, Vertex>();
+        Vertex _current;
 
-		public GraphRoutingEngineVisitor(RoutingEngine engine)
-		{
-			Visit(engine);
+        public GraphRoutingEngineVisitor(RoutingEngine engine)
+        {
+            Visit(engine);
 
-			_operations.Run();
-		}
+            _operations.Run();
+        }
 
-		public RoutingEngineGraphData GetGraphData()
-		{
-			return new RoutingEngineGraphData(_vertices, _edges);
-		}
+        public RoutingEngineGraphData GetGraphData()
+        {
+            return new RoutingEngineGraphData(_vertices, _edges);
+        }
 
-		Vertex GetVertex(int key, Func<string> getTitle, Type nodeType, Type objectType)
-		{
-			return _vertices.Retrieve(key, _ =>
-			{
-				var newSink = new Vertex(nodeType, objectType, getTitle());
+        Vertex GetVertex(int key, Func<string> getTitle, Type nodeType, Type objectType)
+        {
+            return _vertices.Retrieve(key, _ =>
+            {
+                var newSink = new Vertex(nodeType, objectType, getTitle());
 
-				return newSink;
-			});
-		}
+                return newSink;
+            });
+        }
 
-		bool WithVertex(Func<bool> scopedAction)
-		{
-			_stack.Push(_current);
+        bool WithVertex(Func<bool> scopedAction)
+        {
+            _stack.Push(_current);
 
-			bool result = scopedAction();
+            bool result = scopedAction();
 
-			_stack.Pop();
+            _stack.Pop();
 
-			return result;
-		}
+            return result;
+        }
 
-		void AddEdge(Edge edge)
-		{
-			if (_edges.Any(existing => edge.From == existing.From && edge.To == existing.To && edge.Title == existing.Title))
-				return;
+        void AddEdge(Edge edge)
+        {
+            if (_edges.Any(existing => edge.From == existing.From && edge.To == existing.To && edge.Title == existing.Title))
+                return;
 
-			_edges.Add(edge);
-		}
+            _edges.Add(edge);
+        }
 
-		protected override bool Visit(RootNode node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "Root", typeof(RootNode), null);
+        protected override bool Visit(RootNode node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "Root", typeof(RootNode), null);
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<T>(AlphaNode<T> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "\u03B1", typeof(AlphaNode<>), typeof(T));
+        protected override bool Visit<T>(AlphaNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "\u03B1", typeof(AlphaNode<>), typeof(T));
 
-			LinkFromParent();
+            LinkFromParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<T>(JoinNode<T> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "J", typeof(JoinNode<>), typeof(T));
+        protected override bool Visit<T>(JoinNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "J", typeof(JoinNode<>), typeof(T));
 
-			LinkFromParent();
+            LinkFromParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
-		{
-			Vertex self = _current = GetVertex(node.GetHashCode(), () => "J", typeof(JoinNode<,>), typeof(System.Tuple<T1, T2>));
+        protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
+        {
+            Vertex self = _current = GetVertex(node.GetHashCode(), () => "J", typeof(JoinNode<,>), typeof(System.Tuple<T1, T2>));
 
-			LinkFromParent();
-			LinkRightActivation(node.RightActivation, self);
+            LinkFromParent();
+            LinkRightActivation(node.RightActivation, self);
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		void LinkRightActivation<T>(RightActivation<T> rightActivation, Vertex current)
-		{
-			_operations.Add(0, () =>
-			{
-				_vertices.WithValue(rightActivation.GetHashCode(), sink =>
-				{
-					AddEdge(new Edge(sink, current, sink.TargetType.ToShortTypeName()));
-				});
-			});
-		}
+        void LinkRightActivation<T>(RightActivation<T> rightActivation, Vertex current)
+        {
+            _operations.Add(0, () =>
+            {
+                _vertices.WithValue(rightActivation.GetHashCode(), sink =>
+                {
+                    AddEdge(new Edge(sink, current, sink.TargetType.ToShortTypeName()));
+                });
+            });
+        }
 
-		protected override bool Visit<T>(ConstantNode<T> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "C", typeof(ConstantNode<>), typeof(T));
+        protected override bool Visit<T>(ConstantNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "C", typeof(ConstantNode<>), typeof(T));
 
-			LinkToParent();
+            LinkToParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<TInput,TOutput>(ConvertNode<TInput,TOutput> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "\u21A7", typeof(ConvertNode<,>), typeof(TOutput));
+        protected override bool Visit<TInput,TOutput>(ConvertNode<TInput,TOutput> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "\u21A7", typeof(ConvertNode<,>), typeof(TOutput));
 
-			LinkFromParent();
+            LinkFromParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<T>(SelectiveConsumerNode<T> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "P?", typeof(SelectiveConsumerNode<>), typeof(T));
+        protected override bool Visit<T>(SelectiveConsumerNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "P?", typeof(SelectiveConsumerNode<>), typeof(T));
 
-			LinkFromParent();
+            LinkFromParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
 
-		protected override bool Visit<T>(ConsumerNode<T> node)
-		{
-			_current = GetVertex(node.GetHashCode(), () => "P", typeof(ConsumerNode<>), typeof(T));
+        protected override bool Visit<T>(ConsumerNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "P", typeof(ConsumerNode<>), typeof(T));
 
-			LinkFromParent();
+            LinkFromParent();
 
-			return WithVertex(() => base.Visit(node));
-		}
+            return WithVertex(() => base.Visit(node));
+        }
+        
+        protected override bool Visit<T>(MessageNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "P", typeof(MessageNode<>), typeof(T));
 
-		void LinkFromParent()
-		{
-			if (_stack.Count > 0)
-				AddEdge(new Edge(_stack.Peek(), _current, _current.TargetType.ToShortTypeName()));
-		}
+            LinkFromParent();
 
-		void LinkToParent()
-		{
-			if (_stack.Count > 0)
-				AddEdge(new Edge(_current, _stack.Peek(), _stack.Peek().TargetType.ToShortTypeName()));
-		}
-	}
+            return WithVertex(() => base.Visit(node));
+        }
+
+        protected override bool Visit<T>(RequestNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "P", typeof(RequestNode<>), typeof(T));
+
+            LinkFromParent();
+
+            return WithVertex(() => base.Visit(node));
+        }
+
+        protected override bool Visit<T>(ResponseNode<T> node)
+        {
+            _current = GetVertex(node.GetHashCode(), () => "P", typeof(ResponseNode<>), typeof(T));
+
+            LinkFromParent();
+
+            return WithVertex(() => base.Visit(node));
+        }
+
+        void LinkFromParent()
+        {
+            if (_stack.Count > 0)
+                AddEdge(new Edge(_stack.Peek(), _current, _current.TargetType.ToShortTypeName()));
+        }
+
+        void LinkToParent()
+        {
+            if (_stack.Count > 0)
+                AddEdge(new Edge(_current, _stack.Peek(), _stack.Peek().TargetType.ToShortTypeName()));
+        }
+    }
 }

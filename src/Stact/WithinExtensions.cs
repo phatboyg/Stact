@@ -10,10 +10,17 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Contexts
+namespace Stact
 {
-    public interface RequestRoutingContext<T> :
-        RoutingContext<Request<T>>
+    using System;
+    using Internal;
+
+
+    public static class WithinExtensions
     {
+        public static WithinSentRequest<TRequest> Within<TRequest>(this SentRequest<TRequest> request, TimeSpan timeout)
+        {
+            return new WithinSentRequestImpl<TRequest>(request, timeout);
+        }
     }
 }

@@ -10,10 +10,31 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Contexts
+namespace Stact
 {
-    public interface ResponseRoutingContext<T> :
-        RoutingContext<Response<T>>
+    using System;
+
+
+    public static class UriExtensions
     {
+        public static Uri GetUri(this Headers headers, string key)
+        {
+            string value = headers[key];
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            return new Uri(value);
+        }
+
+        public static void SetUri(this Headers headers, string key, Uri value)
+        {
+            if (value == null)
+            {
+                headers[key] = null;
+                return;
+            }
+
+            headers[key] = value.ToString();
+        }
     }
 }

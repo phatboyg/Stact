@@ -19,6 +19,7 @@ namespace Stact
 	public interface WithinSentRequest<TRequest>
 	{
 		WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer);
+		WithinSentRequest<TRequest> Receive<T>(Consumer<T> consumer);
 		WithinSentRequest<TRequest> Otherwise(Action timeoutCallback);
 	}
 }

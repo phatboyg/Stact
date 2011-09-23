@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
+    using System.Diagnostics;
     using Headers;
     using Magnum.Extensions;
     using Magnum.TestFramework;
-    using NUnit.Framework;
     using Routing;
 
 
@@ -37,7 +37,6 @@ namespace Stact.Specs
         }
 
         [Then]
-        [Ignore("We don't upgrade to request since we don't have enough data")]
         public void Should_upconvert_to_a_request_of_t()
         {
             var received = new Future<Request<Simple>>();
@@ -50,5 +49,32 @@ namespace Stact.Specs
             received.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
             received.Value.ShouldNotBeNull();
         }
+
+        [Then]
+        public void Should_handle_a_proxy_of_t()
+        {
+            var faulted = new Future<Fault>();
+            var received = new Future<Request<Simple>>();
+
+            var engine = new DynamicRoutingEngine(new PoolFiber());
+            engine.Configure(x =>
+                {
+                    x.Receive<Fault>(faulted.Complete);
+                    x.Receive<Request<Simple>>(received.Complete);
+                });
+
+            engine.Send<Request<Simple>>();
+
+            var completed = received.WaitUntilCompleted(4.Seconds());
+
+            if(faulted.IsCompleted)
+            {
+                Trace.WriteLine("Fault" + faulted.Value.Message);
+            }
+
+            completed.ShouldBeTrue();
+            received.Value.ShouldNotBeNull();
+        }
+
     }
 }

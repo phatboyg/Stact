@@ -48,22 +48,22 @@ namespace Stact.Specs.Channels
 		}
 
 
-		interface A
+		public interface A
 		{
 		}
 
 
-		interface B
+		public interface B
 		{
 		}
 
 
-		interface C
+		public interface C
 		{
 		}
 
 
-		interface D
+		public interface D
 		{
 		}
 
