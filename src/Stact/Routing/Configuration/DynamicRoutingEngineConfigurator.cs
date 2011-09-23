@@ -10,13 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Configuration.Internal
+namespace Stact.Routing.Configuration
 {
     using System;
+    using Internal;
     using Magnum.Caching;
     using Magnum.Extensions;
     using Nodes;
-    using Routing.Internal;
 
 
     public class DynamicRoutingEngineConfigurator :
@@ -45,24 +45,9 @@ namespace Stact.Routing.Configuration.Internal
             get { return _engine; }
         }
 
-        public RemoveActivation Add<T1, T2>(Activation<Tuple<RoutingContext<T1>, RoutingContext<T2>>> activation)
-        {
-            BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> joinNode = GetJoinNode<T1, T2>();
-
-            joinNode.AddActivation(activation);
-
-            return () => { joinNode.RemoveActivation(activation); };
-        }
-
         BetaMemory<T> GetJoinNode<T>()
         {
             return (BetaMemory<T>)_joinNodes.Get(typeof(T), x => FindJoinNode<T>());
-        }
-
-        BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> GetJoinNode<T1, T2>()
-        {
-            return (BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>>)_joinNodes.Get(typeof(Tuple<T1, T2>),
-                                                                  x => FindJoinNode<T1, T2>());
         }
 
         object FindJoinNode<T>()
@@ -74,18 +59,6 @@ namespace Stact.Routing.Configuration.Internal
 
             if (result == null)
                 throw new InvalidOperationException("Failed to create join node: " + typeof(T).ToShortTypeName());
-
-            return result.BetaMemory;
-        }
-
-        BetaMemory<Tuple<RoutingContext<T1>, RoutingContext<T2>>> FindJoinNode<T1, T2>()
-        {
-            JoinNode<T1, T2> result = null;
-            new MatchJoinNode<T1, T2>(_engine, joinNode => { result = joinNode; });
-
-            if (result == null)
-                throw new InvalidOperationException("Failed to create join node: "
-                                                    + typeof(Tuple<T1, T2>).ToShortTypeName());
 
             return result.BetaMemory;
         }

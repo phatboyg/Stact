@@ -16,7 +16,7 @@ namespace Stact.MessageHeaders
 	using System.Collections.Generic;
 
 
-	public static class AdvancedExtensionsForHeaders
+	public static class HeaderExtensions
 	{
 		public static IDictionary<string, string> SetBodyType(this IDictionary<string, string> headers, Type messageType)
 		{

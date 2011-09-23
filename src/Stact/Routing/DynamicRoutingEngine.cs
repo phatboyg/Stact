@@ -14,21 +14,19 @@ namespace Stact.Routing
 {
     using System;
     using Configuration;
-    using Configuration.Internal;
     using Contexts;
     using Nodes;
     using Stact.Internal;
-    using Visualizers;
 
 
     public class DynamicRoutingEngine :
         RoutingEngine
     {
         static readonly DynamicRoutingContextFactory _contextFactory = new DynamicRoutingContextFactory();
+        readonly Agenda _agenda;
 
         readonly DynamicRoutingEngineConfigurator _configurator;
         readonly Fiber _fiber;
-        readonly Agenda _agenda;
         readonly Activation _root;
         bool _shutdown;
 
@@ -62,7 +60,7 @@ namespace Stact.Routing
                 return;
 
             _agenda.Add(priority, action);
-         //   _fiber.Add(() => _agenda.Run());
+            //   _fiber.Add(() => _agenda.Run());
         }
 
         public void Shutdown()
@@ -79,7 +77,7 @@ namespace Stact.Routing
 
                     callback(configurator);
 
- //                   new TraceRoutingEngineVisualizer().Show(this);
+                    //                   new TraceRoutingEngineVisualizer().Show(this);
 
                     _agenda.Run();
                 });

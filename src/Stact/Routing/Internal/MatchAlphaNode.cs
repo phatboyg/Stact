@@ -12,54 +12,54 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Internal
 {
-	using System;
-	using Nodes;
-	using Visualizers;
+    using System;
+    using Nodes;
+    using Visualizers;
 
 
-	public class MatchAlphaNode<T> :
-		AbstractRoutingEngineVisitor<MatchAlphaNode<T>>
-	{
-		AlphaNode<T> _alpha;
-		RootNode _root;
+    public class MatchAlphaNode<T> :
+        AbstractRoutingEngineVisitor<MatchAlphaNode<T>>
+    {
+        AlphaNode<T> _alpha;
+        RootNode _root;
 
-		public MatchAlphaNode(RoutingEngine engine, Action<AlphaNode<T>> callback)
-		{
-			Visit(engine);
+        public MatchAlphaNode(RoutingEngine engine, Action<AlphaNode<T>> callback)
+        {
+            Visit(engine);
 
-			Bind(callback);
-		}
+            Bind(callback);
+        }
 
-		void Bind(Action<AlphaNode<T>> callback)
-		{
-			if (_alpha == null)
-			{
-				if (_root == null)
-					throw new InvalidOperationException("The root node was not found.");
+        void Bind(Action<AlphaNode<T>> callback)
+        {
+            if (_alpha == null)
+            {
+                if (_root == null)
+                    throw new InvalidOperationException("The root node was not found.");
 
-				_alpha = _root.GetAlphaNode<T>();
-			}
+                _alpha = _root.GetAlphaNode<T>();
+            }
 
-			callback(_alpha);
-		}
+            callback(_alpha);
+        }
 
-		protected override bool Visit(RootNode node)
-		{
-			_root = node;
+        protected override bool Visit(RootNode node)
+        {
+            _root = node;
 
-			return base.Visit(node);
-		}
+            return base.Visit(node);
+        }
 
-		protected override bool Visit<TChannel>(AlphaNode<TChannel> node)
-		{
-			var match = node as AlphaNode<T>;
-			if (match != null)
-			{
-				_alpha = match;
-				return false;
-			}
+        protected override bool Visit<TChannel>(AlphaNode<TChannel> node)
+        {
+            var match = node as AlphaNode<T>;
+            if (match != null)
+            {
+                _alpha = match;
+                return false;
+            }
 
-			return base.Visit(node);
-		}
-	}
+            return base.Visit(node);
+        }
+    }
 }

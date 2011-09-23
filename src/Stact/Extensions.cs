@@ -13,13 +13,9 @@
 namespace Stact
 {
 	using System;
-	using System.Linq.Expressions;
-	using System.Reflection;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
 
 
-	public static class Extensions
+    public static class Extensions
 	{
 		public static MessageUrn ToMessageUrn(this Type type)
 		{
@@ -62,18 +58,6 @@ namespace Stact
 		public static void Kill(this UntypedChannel instance)
 		{
 			instance.Send<Kill>();
-		}
-
-		public static void Connect<TActor, TPort>(this TActor actor, Expression<Func<TActor, Channel<TPort>>> portProperty,
-		                                          Fiber fiber, Consumer<TPort> consumer)
-			where TActor : Actor
-		{
-			PropertyInfo propertyInfo = portProperty.GetMemberPropertyInfo();
-			var property = new FastProperty<TActor, Channel<TPort>>(propertyInfo, BindingFlags.NonPublic);
-
-			var channel = new ConsumerChannel<TPort>(fiber, consumer);
-
-			property.Set(actor, channel);
 		}
 	}
 }

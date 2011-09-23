@@ -61,15 +61,6 @@ namespace Stact.Routing.Visualizers
             return true;
         }
 
-        protected virtual bool Visit<T1, T2>(JoinNode<T1, T2> node)
-        {
-            IncreaseDepth();
-            Visit(node.RightActivation);
-            node.Activations.Each(activation => Visit(activation));
-            DecreaseDepth();
-            return true;
-        }
-
         protected virtual bool Visit<T>(ConstantNode<T> node)
         {
             return true;

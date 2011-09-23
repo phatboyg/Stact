@@ -121,7 +121,6 @@
     <Compile Include="Rules\Internal\AlphaMemoryElementReference.cs" />
     <Compile Include="Rules\Internal\AlphaMemoryImpl.cs" />
     <Compile Include="Rules\Internal\BetaMemory.cs" />
-    <Compile Include="Rules\Internal\BetaMemoryImpl.cs" />
     <Compile Include="Rules\Internal\Element.cs" />
     <Compile Include="Rules\Internal\ElementImpl.cs" />
     <Compile Include="Rules\Internal\ElementReference.cs" />

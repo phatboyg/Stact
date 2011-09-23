@@ -97,27 +97,6 @@ namespace Stact.Routing.Visualizers
             return WithVertex(() => base.Visit(node));
         }
 
-        protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
-        {
-            Vertex self = _current = GetVertex(node.GetHashCode(), () => "J", typeof(JoinNode<,>), typeof(System.Tuple<T1, T2>));
-
-            LinkFromParent();
-            LinkRightActivation(node.RightActivation, self);
-
-            return WithVertex(() => base.Visit(node));
-        }
-
-        void LinkRightActivation<T>(RightActivation<T> rightActivation, Vertex current)
-        {
-            _operations.Add(0, () =>
-            {
-                _vertices.WithValue(rightActivation.GetHashCode(), sink =>
-                {
-                    AddEdge(new Edge(sink, current, sink.TargetType.ToShortTypeName()));
-                });
-            });
-        }
-
         protected override bool Visit<T>(ConstantNode<T> node)
         {
             _current = GetVertex(node.GetHashCode(), () => "C", typeof(ConstantNode<>), typeof(T));

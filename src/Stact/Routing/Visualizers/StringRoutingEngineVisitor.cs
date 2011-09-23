@@ -91,13 +91,6 @@ namespace Stact.Routing.Visualizers
             return base.Visit(node);
         }
 
-        protected override bool Visit<T1, T2>(JoinNode<T1, T2> node)
-        {
-            AppendLine(node.GetType().ToShortTypeName());
-
-            return base.Visit(node);
-        }
-
         protected override bool Visit<T>(ConstantNode<T> node)
         {
             AppendLine(node.GetType().ToShortTypeName());

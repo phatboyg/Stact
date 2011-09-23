@@ -22,7 +22,6 @@ namespace Stact.Visualizers
 	using Microsoft.Glee.GraphViewerGdi;
 	using QuickGraph;
 	using QuickGraph.Glee;
-	using Routing.Internal;
 	using Routing.Nodes;
 	using Routing.Visualizers;
 
@@ -41,7 +40,6 @@ namespace Stact.Visualizers
 				{typeof(ConstantNode<>), Microsoft.Glee.Drawing.Color.Magenta},
 				{typeof(ConvertNode<,>), Microsoft.Glee.Drawing.Color.Brown},
 				{typeof(JoinNode<>), Microsoft.Glee.Drawing.Color.Green},
-				{typeof(JoinNode<,>), Microsoft.Glee.Drawing.Color.Green},
 				{typeof(ConsumerNode<>), Microsoft.Glee.Drawing.Color.Black},
 				{typeof(SelectiveConsumerNode<>), Microsoft.Glee.Drawing.Color.Black},
 			};
