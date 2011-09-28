@@ -53,14 +53,17 @@ namespace Stact.Specs.Channels
 				{
 					x.AddConsumerOf<TestMessage>()
 						.UsingInstance().Of<TestConsumer>()
+                        .HandleOnCallingThread()
 						.ObtainedBy(() => new TestConsumer())
 						.OnChannel(y => y.InputChannel);
 
 					x.AddConsumerOf<TestMessage>()
-						.UsingConsumer(futureB.Complete);
+						.UsingConsumer(futureB.Complete)
+                        .HandleOnCallingThread();
 
 					x.AddConsumerOf<TestMessage>()
-						.UsingSelectiveConsumer(message => futureC.Complete);
+						.UsingSelectiveConsumer(message => futureC.Complete)
+                        .HandleOnCallingThread();
 				}))
 			{
 				Trace.WriteLine("Complete network:");
