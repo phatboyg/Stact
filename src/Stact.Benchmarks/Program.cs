@@ -47,6 +47,9 @@ namespace Stact.Benchmarks
 				Console.WriteLine("ABEND!");
 				Console.WriteLine(ex);
 			}
+
+			Console.ReadKey(true)
+				;
 		}
 	}
 }
