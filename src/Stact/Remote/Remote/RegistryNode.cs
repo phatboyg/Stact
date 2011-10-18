@@ -18,6 +18,6 @@ namespace Stact.Remote
 	public interface RegistryNode :
 		IDisposable
 	{
-		ActorInstance Select(Uri actorAddress);
+		ActorRef Select(Uri actorAddress);
 	}
 }

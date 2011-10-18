@@ -24,7 +24,7 @@ namespace Stact.Internal
 		where TActor : class, Actor
 	{
 		[ThreadStatic]
-		static ActorInstance _instance;
+		static ActorRef _instance;
 
 		public ThreadStaticActorFactory(ActorFactory<TActor> factory)
 		{
@@ -33,7 +33,7 @@ namespace Stact.Internal
 
 		public ActorFactory<TActor> Factory { get; private set; }
 
-		public ActorInstance GetActor()
+		public ActorRef GetActor()
 		{
 			return _instance ?? (_instance = Factory.GetActor());
 		}

@@ -32,7 +32,7 @@ namespace Stact.Specs.Channels
 					x.ConnectPropertyChannels();
 				});
 
-			ActorInstance actor = factory.GetActor();
+			ActorRef actor = factory.GetActor();
 
 			subject.ShouldNotBeNull();
 

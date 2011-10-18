@@ -12,7 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface Start
+    using Messages;
+
+
+    public interface Start :
+        InboxMessage
 	{
 		
 	}

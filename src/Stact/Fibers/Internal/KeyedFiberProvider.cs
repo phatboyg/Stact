@@ -1,4 +1,4 @@
-﻿// // Copyright 2010 Chris Patterson
+﻿// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,34 +12,34 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using Magnum.Collections;
+    using System;
+    using Magnum.Caching;
 
 
-	/// <summary>
-	/// Keeps track of a keyed fiber collection
-	/// </summary>
-	/// <typeparam name="TKey"></typeparam>
-	public class KeyedFiberProvider<TKey> :
-		FiberProvider<TKey>
-	{
-		readonly Cache<TKey, Fiber> _cache;
-		readonly TimeSpan _timeout;
+    /// <summary>
+    /// Keeps track of a keyed fiber collection
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    public class KeyedFiberProvider<TKey> :
+        FiberProvider<TKey>
+    {
+        readonly Cache<TKey, Fiber> _cache;
+        readonly TimeSpan _timeout;
 
-		public KeyedFiberProvider(FiberFactory missingFiberFactory, TimeSpan timeout)
-		{
-			_timeout = timeout;
-			_cache = new Cache<TKey, Fiber>(k => missingFiberFactory());
-		}
+        public KeyedFiberProvider(FiberFactory missingFiberFactory, TimeSpan timeout)
+        {
+            _timeout = timeout;
+            _cache = new ConcurrentCache<TKey, Fiber>(k => missingFiberFactory());
+        }
 
-		public Fiber GetFiber(TKey key)
-		{
-			return _cache[key];
-		}
+        public Fiber GetFiber(TKey key)
+        {
+            return _cache[key];
+        }
 
-		public void Dispose()
-		{
-			_cache.Each(x => x.Shutdown(_timeout));
-		}
-	}
+        public void Dispose()
+        {
+            _cache.Each(x => x.Shutdown(_timeout));
+        }
+    }
 }

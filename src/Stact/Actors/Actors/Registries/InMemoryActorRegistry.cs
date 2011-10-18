@@ -25,11 +25,11 @@ namespace Stact.Actors.Registries
 	public class InMemoryActorRegistry :
 		ActorRegistry
 	{
-		readonly IDictionary<ActorInstance, Guid> _actors;
+		readonly IDictionary<ActorRef, Guid> _actors;
 
 		readonly UntypedChannel _events;
 		readonly Fiber _fiber;
-		readonly IDictionary<Guid, ActorInstance> _keyIndex;
+		readonly IDictionary<Guid, ActorRef> _keyIndex;
 		UntypedChannel _channel;
 		IList<RegistryNode> _nodes;
 
@@ -37,19 +37,19 @@ namespace Stact.Actors.Registries
 		{
 			_fiber = fiber;
 
-			_actors = new Dictionary<ActorInstance, Guid>();
-			_keyIndex = new Dictionary<Guid, ActorInstance>();
+			_actors = new Dictionary<ActorRef, Guid>();
+			_keyIndex = new Dictionary<Guid, ActorRef>();
 
 			_events = new ChannelAdapter();
 			_channel = new ActorRegistryHeaderChannel(this);
 			_nodes = new List<RegistryNode>();
 		}
 
-		public void Register(Guid key, ActorInstance actor)
+		public void Register(Guid key, ActorRef actor)
 		{
 			_fiber.Add(() =>
 			{
-				ActorInstance existingActor;
+				ActorRef existingActor;
 				if (_keyIndex.TryGetValue(key, out existingActor))
 				{
 					if (ReferenceEquals(existingActor, actor))
@@ -74,7 +74,7 @@ namespace Stact.Actors.Registries
 			});
 		}
 
-		public void Register(ActorInstance actor, Action<Guid, ActorInstance> callback)
+		public void Register(ActorRef actor, Action<Guid, ActorRef> callback)
 		{
 			_fiber.Add(() =>
 			{
@@ -85,7 +85,7 @@ namespace Stact.Actors.Registries
 			});
 		}
 
-		public void Unregister(ActorInstance actor)
+		public void Unregister(ActorRef actor)
 		{
 			_fiber.Add(() =>
 			{
@@ -99,7 +99,7 @@ namespace Stact.Actors.Registries
 		{
 			_fiber.Add(() =>
 			{
-				ActorInstance actor;
+				ActorRef actor;
 				if (_keyIndex.TryGetValue(key, out actor))
 					Remove(key, actor);
 			});
@@ -109,7 +109,7 @@ namespace Stact.Actors.Registries
 		{
 			_fiber.Add(() =>
 			{
-				foreach (ActorInstance actor in _actors.Keys)
+				foreach (ActorRef actor in _actors.Keys)
 					actor.Send<Exit>();
 
 				foreach (RegistryNode node in _nodes)
@@ -121,11 +121,11 @@ namespace Stact.Actors.Registries
 			_fiber.Shutdown(3.Minutes());
 		}
 
-		public void Get(Guid key, Action<ActorInstance> callback, Action notFoundCallback)
+		public void Get(Guid key, Action<ActorRef> callback, Action notFoundCallback)
 		{
 			_fiber.Add(() =>
 			{
-				ActorInstance actor;
+				ActorRef actor;
 				if (_keyIndex.TryGetValue(key, out actor))
 					callback(actor);
 				else
@@ -133,7 +133,7 @@ namespace Stact.Actors.Registries
 			});
 		}
 
-		public void Select(Uri actorAddress, Action<ActorInstance> callback, Action notFoundCallback)
+		public void Select(Uri actorAddress, Action<ActorRef> callback, Action notFoundCallback)
 		{
 			_fiber.Add(() =>
 			{
@@ -141,7 +141,7 @@ namespace Stact.Actors.Registries
 				{
 					foreach (RegistryNode node in _nodes)
 					{
-						ActorInstance actor = node.Select(actorAddress);
+						ActorRef actor = node.Select(actorAddress);
 						if (actor != null)
 						{
 							callback(actor);
@@ -155,7 +155,7 @@ namespace Stact.Actors.Registries
 			});
 		}
 
-		public void Each(Action<Guid, ActorInstance> callback)
+		public void Each(Action<Guid, ActorRef> callback)
 		{
 			_fiber.Add(() =>
 			{
@@ -199,7 +199,7 @@ namespace Stact.Actors.Registries
 			_channel.Send(message);
 		}
 
-		void Add(Guid key, ActorInstance actor)
+		void Add(Guid key, ActorRef actor)
 		{
 			_keyIndex.Add(key, actor);
 			_actors.Add(actor, key);
@@ -207,7 +207,7 @@ namespace Stact.Actors.Registries
 			_events.Send(new ActorRegisteredImpl(this, actor, key));
 		}
 
-		void Remove(Guid key, ActorInstance actor)
+		void Remove(Guid key, ActorRef actor)
 		{
 			_keyIndex.Remove(key);
 			_actors.Remove(actor);

@@ -30,7 +30,7 @@ namespace Stact.Specs.Actors
         {
             ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
 
-            ActorInstance agent = agentFactory.GetActor();
+            ActorRef agent = agentFactory.GetActor();
 
             for (int i = 0; i < _count; i++)
             {

@@ -13,8 +13,8 @@
 namespace Stact.Actors.Registries
 {
     using System;
-    using Internal;
     using MessageHeaders;
+    using Stact.Internal;
 
 
     public class ActorRegistryHeaderChannel :

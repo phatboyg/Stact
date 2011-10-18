@@ -21,7 +21,7 @@ namespace Stact
 		/// </summary>
 		/// <param name="actor">The actor to link</param>
 		/// <param name="inbox">The inbox of the actor requesting the link</param>
-		public static SentRequest<Link> Link(this ActorInstance actor, Inbox inbox)
+		public static SentRequest<Link> Link(this ActorRef actor, Inbox inbox)
 		{
 			return actor.Request<Link>(inbox);
 		}

@@ -21,7 +21,7 @@ namespace Stact.Specs.Diagnostics
 	{
 		IDisposable _dispose;
 		ActorFactory<TraceActor> _factory;
-		ActorInstance _inbox;
+		ActorRef _inbox;
 
 		public TraceChannelImpl()
 		{

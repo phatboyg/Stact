@@ -19,8 +19,8 @@ namespace Stact.Specs.Actors
 	[Scenario]
 	public class Linking_Specs
 	{
-		ActorInstance _a;
-		ActorInstance _b;
+		ActorRef _a;
+		ActorRef _b;
 
 		[When]
 		public void When_two_actors_are_linked()

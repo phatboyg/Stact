@@ -13,6 +13,7 @@
 namespace Stact.Configuration.Internal
 {
 	using System;
+	using Executors;
 	using Stact.Internal;
 
 
@@ -64,9 +65,7 @@ namespace Stact.Configuration.Internal
 
 		public ActorFactoryConfigurator<TActor> UseSharedScheduler()
 		{
-			_schedulerFactory = () => new TimerScheduler(new PoolFiber(new TryCatchOperationExecutor(ex =>
-			{
-			})));
+			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
 
 			return this;
 		}

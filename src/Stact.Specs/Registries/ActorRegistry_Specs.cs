@@ -34,7 +34,7 @@ namespace Stact.Specs.Registries
 
             _auctionId = CombGuid.Generate();
 
-            ActorInstance auction = _auctionFactory.GetActor();
+            ActorRef auction = _auctionFactory.GetActor();
 
             ActorRegistry registry = ActorRegistryFactory.New(x =>
                 {

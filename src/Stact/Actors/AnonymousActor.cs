@@ -79,7 +79,7 @@ namespace Stact
 			return new AnonymousActor(fiber, scheduler, inbox);
 		}
 
-		public static ActorInstance New(Action<Inbox> initializer)
+		public static ActorRef New(Action<Inbox> initializer)
 		{
 			return _factory.GetActor(initializer);
 		}

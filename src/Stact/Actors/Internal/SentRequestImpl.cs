@@ -13,7 +13,9 @@
 namespace Stact.Internal
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
+	using Actors.Actors;
 	using Configuration;
 	using Magnum.Extensions;
 	using Magnum.Reflection;
@@ -70,7 +72,17 @@ namespace Stact.Internal
 			return _inbox.Receive(CreateFilteredConsumer(consumer), timeout, timeoutCallback);
 		}
 
-		SelectiveConsumer<T> CreateFilteredConsumer<T>(SelectiveConsumer<T> consumer)
+	    public void SetExceptionHandler(ActorExceptionHandler handler)
+	    {
+	        _inbox.SetExceptionHandler(handler);
+	    }
+
+	    public IEnumerable<ActorRef> LinkedActors
+	    {
+	        get { return _inbox.LinkedActors; }
+	    }
+
+	    SelectiveConsumer<T> CreateFilteredConsumer<T>(SelectiveConsumer<T> consumer)
 		{
 			if (!typeof(T).Implements(typeof(Response<>)))
 				return consumer;

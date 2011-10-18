@@ -14,6 +14,7 @@ namespace Stact.Configuration
 {
 	using System;
 	using Builders;
+	using Executors;
 	using Magnum.Extensions;
 	using Stact.Internal;
 
@@ -23,14 +24,14 @@ namespace Stact.Configuration
 		where T : class
 	{
 		FiberFactoryEx _fiberFactory;
-		Func<OperationExecutor> _executorFactory;
+	    readonly Func<OperationExecutor> _executorFactory;
 
 		TimeSpan _shutdownTimeout = 1.Minutes();
 
 		protected FiberFactoryConfiguratorImpl()
 		{
 			HandleOnPoolFiber();
-			UseBasicExecutor();
+		    _executorFactory = () => new TryCatchOperationExecutor();
 		}
 
 		public TimeSpan ShutdownTimeout
@@ -87,13 +88,6 @@ namespace Stact.Configuration
 			return this as T;
 		}
 
-		public T UseBasicExecutor()
-		{
-			_executorFactory = () => new BasicOperationExecutor();
-
-			return this as T;
-		}
-
 		protected void ValidateFiberFactoryConfiguration()
 		{
 			if (_fiberFactory == null)
@@ -105,12 +99,12 @@ namespace Stact.Configuration
 			return () => _fiberFactory(_executorFactory());
 		}
 
-		public FiberFactoryEx GetConfiguredFiberFactoryEx()
+	    protected FiberFactoryEx GetConfiguredFiberFactoryEx()
 		{
 			return _fiberFactory;
 		}
 
-		public Fiber GetConfiguredFiber(ConnectionBuilder builder)
+	    protected Fiber GetConfiguredFiber(ConnectionBuilder builder)
 		{
 			Fiber fiber = GetConfiguredFiberFactory()();
 
@@ -128,7 +122,7 @@ namespace Stact.Configuration
 			return fiber;
 		}
 
-		public Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
+	    protected Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
 		{
 			Fiber fiber = GetConfiguredFiberFactory()();
 

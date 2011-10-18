@@ -21,7 +21,7 @@ namespace Stact.Specs.Actors
     [Scenario]
     public class When_an_exit_is_sent_to_an_actor_that_intercepts_exit
     {
-        ActorInstance _actor;
+        ActorRef _actor;
         Future<Exit> _intercepted;
         Future<A> _receivedA;
 
@@ -68,7 +68,7 @@ namespace Stact.Specs.Actors
     [Scenario]
     public class When_an_exit_is_sent_to_an_actor
     {
-        ActorInstance _actor;
+        ActorRef _actor;
         Future<A> _receivedA;
 
         [When]

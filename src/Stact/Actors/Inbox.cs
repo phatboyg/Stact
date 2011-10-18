@@ -12,34 +12,44 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
+    using System;
+    using System.Collections.Generic;
+    using Actors.Actors;
 
 
-	/// <summary>
-	///   Mailbox is a higher level construct than a channel, providing channel aggregation,
-	///   directed receives, and dispatching to channels within a context, such as an actor
-	/// </summary>
-	public interface Inbox :
-		UntypedChannel
-	{
-		/// <summary>
-		///   Calls the specified method when a message of the requested type is received. The
-		///   consumer is asked if the message should be parsed, and returns a non-null action
-		///   if the message should be passed to the consumer. At that point, the message is removed
-		///   from the mailbox and delivered to the consumer
-		/// </summary>
-		/// <typeparam name = "T">The requested message type</typeparam>
-		/// <param name = "consumer">The consumer</param>
-		PendingReceive Receive<T>(SelectiveConsumer<T> consumer);
+    /// <summary>
+    ///   Mailbox is a higher level construct than a channel, providing channel aggregation,
+    ///   directed receives, and dispatching to channels within a context, such as an actor
+    /// </summary>
+    public interface Inbox :
+        ActorRef
+    {
+        /// <summary>
+        ///   Calls the specified method when a message of the requested type is received. The
+        ///   consumer is asked if the message should be parsed, and returns a non-null action
+        ///   if the message should be passed to the consumer. At that point, the message is removed
+        ///   from the mailbox and delivered to the consumer
+        /// </summary>
+        /// <typeparam name = "T">The requested message type</typeparam>
+        /// <param name = "consumer">The consumer</param>
+        PendingReceive Receive<T>(SelectiveConsumer<T> consumer);
 
-		/// <summary>
-		///   Specifies a method to call when a message is recieved. If a message is not received within
-		///   the specified timeout, a timeout callback is called instead and the receiver is removed from 
-		///   the waiting list of receivers.
-		/// </summary>
-		/// <param name = "consumer">The consumer to call with the message</param>
-		/// <param name = "timeout">The time period to wait for a message</param>
-		/// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-		PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
-	}
+        /// <summary>
+        ///   Specifies a method to call when a message is recieved. If a message is not received within
+        ///   the specified timeout, a timeout callback is called instead and the receiver is removed from 
+        ///   the waiting list of receivers.
+        /// </summary>
+        /// <param name = "consumer">The consumer to call with the message</param>
+        /// <param name = "timeout">The time period to wait for a message</param>
+        /// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
+        PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
+
+        /// <summary>
+        /// Sets the exception handler for the inbox
+        /// </summary>
+        /// <param name="handler">The exception handler</param>
+        void SetExceptionHandler(ActorExceptionHandler handler);
+
+        IEnumerable<ActorRef>  LinkedActors { get; }
+    }
 }

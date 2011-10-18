@@ -21,7 +21,7 @@ namespace Stact.Remote
 	/// Forwards messages to the remote actor using the header channel specified in the constructor.
 	/// </summary>
 	public class RemoteActor :
-		ActorInstance
+		ActorRef
 	{
 		readonly string _destinationAddress;
 		readonly MatchHeaderChannel _output;

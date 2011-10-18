@@ -22,28 +22,28 @@ namespace Stact
 	/// An actor registry provide running storage for actors that are active in the system
 	/// </summary>
 	public interface ActorRegistry :
-		ActorInstance
+		ActorRef
 	{
 		/// <summary>
 		/// Adds an actor instance to the registry
 		/// </summary>
 		/// <param name="key">The unique identifier for the actor instance</param>
 		/// <param name="actor">The actor instance</param>
-		void Register(Guid key, ActorInstance actor);
+		void Register(Guid key, ActorRef actor);
 
 		/// <summary>
 		/// Adds an actor to the registry
 		/// </summary>
 		/// <param name="actor">The actor to add</param>
 		/// <param name="callback"></param>
-		void Register(ActorInstance actor, Action<Guid, ActorInstance> callback);
+		void Register(ActorRef actor, Action<Guid, ActorRef> callback);
 
 		/// <summary>
 		/// Removes an actor from the registry
 		/// </summary>
 		/// <typeparam name="T">The type of the actor</typeparam>
 		/// <param name="actor">The actor to remove</param>
-		void Unregister(ActorInstance actor);
+		void Unregister(ActorRef actor);
 
 		/// <summary>
 		/// Removes an actor from the registry
@@ -62,7 +62,7 @@ namespace Stact
 		/// <param name="key">The id of the actor</param>
 		/// <param name="callback"></param>
 		/// <param name="notFoundCallback"></param>
-		void Get(Guid key, Action<ActorInstance> callback, Action notFoundCallback);
+		void Get(Guid key, Action<ActorRef> callback, Action notFoundCallback);
 
 
 		/// <summary>
@@ -71,14 +71,14 @@ namespace Stact
 		/// <param name="actorAddress">The URI for the actor, maybe be a local or remote actor address</param>
 		/// <param name="callback">Called when the actor intance is available</param>
 		/// <param name="notFoundCallback">Called if the actor instance was not found and could not be created</param>
-		void Select(Uri actorAddress, Action<ActorInstance> callback, Action notFoundCallback);
+		void Select(Uri actorAddress, Action<ActorRef> callback, Action notFoundCallback);
 
 
 		/// <summary>
 		/// Calls the callback for each actor in the registry
 		/// </summary>
 		/// <param name="callback">A method to call with each actor</param>
-		void Each(Action<Guid, ActorInstance> callback);
+		void Each(Action<Guid, ActorRef> callback);
 
 		/// <summary>
 		/// Allow subscription to events that are produced by the actor registry as actors

@@ -27,7 +27,7 @@ namespace Stact.Benchmarks
 			const int actorCount = 20;
 			const int pingCount = 4000;
 
-			var actors = new ActorInstance[actorCount + 1];
+			var actors = new ActorRef[actorCount + 1];
 
 			var complete = new Future<int>();
 

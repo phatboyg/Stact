@@ -19,7 +19,7 @@ namespace Stact
 
 	public static class ExtensionsToActorInstance
 	{
-		public static IDisposable ExitOnDispose(this ActorInstance actor)
+		public static IDisposable ExitOnDispose(this ActorRef actor)
 		{
 			return new DisposeCallback(() =>
 			{
@@ -27,7 +27,7 @@ namespace Stact
 			});
 		}
 
-		public static IDisposable ExitOnDispose(this ActorInstance actor, TimeSpan timeout)
+		public static IDisposable ExitOnDispose(this ActorRef actor, TimeSpan timeout)
 		{
 			return new DisposeCallback(() =>
 				{

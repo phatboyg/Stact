@@ -37,7 +37,7 @@ namespace Stact.Remote
 			GC.SuppressFinalize(this);
 		}
 
-		public ActorInstance Select(Uri actorAddress)
+		public ActorRef Select(Uri actorAddress)
 		{
 			string key = actorAddress.GetComponents(UriComponents.HttpRequestUrl, UriFormat.Unescaped);
 

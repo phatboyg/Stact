@@ -67,12 +67,5 @@ namespace Stact.Configuration
 		/// <param name = "timeout"></param>
 		/// <returns></returns>
 		T UseShutdownTimeout(TimeSpan timeout);
-
-		/// <summary>
-		/// Specifies the basic operation executor for the fiber, relying on operations
-		/// to catch their own exceptions
-		/// </summary>
-		/// <returns></returns>
-		T UseBasicExecutor();
 	}
 }

@@ -15,6 +15,6 @@ namespace Stact.Events
 	public interface ActorRegistryEvent
 	{
 		ActorRegistry Registry { get; }
-		ActorInstance Instance { get; }
+		ActorRef Instance { get; }
 	}
 }

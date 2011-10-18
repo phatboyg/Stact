@@ -10,106 +10,118 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Internal
+namespace Stact.Actors.Internal
 {
-	using System;
-	using Configuration;
+    using System;
+    using System.Collections.Generic;
+    using Actors;
+    using Configuration;
 
 
-	public class PendingReceiveImpl<TMessage> :
-		PendingReceive
-	{
-		readonly Action<PendingReceiveImpl<TMessage>> _onComplete;
-		readonly SelectiveConsumer<TMessage> _selectiveConsumer;
-		readonly Action _timeoutCallback;
-		bool _cancel;
-		Inbox _inbox;
-		ScheduledOperation _scheduledAction;
+    public class PendingReceiveImpl<TMessage> :
+        PendingReceive
+    {
+        readonly Action<PendingReceiveImpl<TMessage>> _onComplete;
+        readonly SelectiveConsumer<TMessage> _selectiveConsumer;
+        readonly Action _timeoutCallback;
+        bool _cancel;
+        Inbox _inbox;
+        ScheduledOperation _scheduledAction;
 
-		public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer, Action timeoutCallback,
-		                          Action<PendingReceiveImpl<TMessage>> onComplete)
-		{
-			_selectiveConsumer = selectiveConsumer;
-			_inbox = inbox;
-			_timeoutCallback = timeoutCallback;
-			_onComplete = onComplete;
-		}
+        public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer, Action timeoutCallback,
+                                  Action<PendingReceiveImpl<TMessage>> onComplete)
+        {
+            _selectiveConsumer = selectiveConsumer;
+            _inbox = inbox;
+            _timeoutCallback = timeoutCallback;
+            _onComplete = onComplete;
+        }
 
-		public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer,
-		                          Action<PendingReceiveImpl<TMessage>> onComplete)
-			: this(inbox, selectiveConsumer, NoTimeoutCallback, onComplete)
-		{
-		}
+        public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer,
+                                  Action<PendingReceiveImpl<TMessage>> onComplete)
+            : this(inbox, selectiveConsumer, NoTimeoutCallback, onComplete)
+        {
+        }
 
-		public void Cancel()
-		{
-			_cancel = true;
+        public void Cancel()
+        {
+            _cancel = true;
 
-			_onComplete(this);
-		}
+            _onComplete(this);
+        }
 
-		public void Send<T>(T message)
-		{
-			_inbox.Send(message);
-		}
+        public void Send<T>(T message)
+        {
+            _inbox.Send(message);
+        }
 
-		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			return _inbox.Connect(subscriberActions);
-		}
+        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
+        {
+            return _inbox.Receive(consumer);
+        }
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
-		{
-			return _inbox.Receive(consumer);
-		}
+        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
+        {
+            return _inbox.Receive(consumer, timeout, timeoutCallback);
+        }
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
-		{
-			return _inbox.Receive(consumer, timeout, timeoutCallback);
-		}
+        public void SetExceptionHandler(ActorExceptionHandler handler)
+        {
+            _inbox.SetExceptionHandler(handler);
+        }
 
-		public void ScheduleTimeout(Func<PendingReceiveImpl<TMessage>, ScheduledOperation> scheduleAction)
-		{
-			_scheduledAction = scheduleAction(this);
-		}
+        public IEnumerable<ActorRef> LinkedActors
+        {
+            get { return _inbox.LinkedActors; }
+        }
 
-		static void NoTimeoutCallback()
-		{
-		}
+        public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
+        {
+            return _inbox.Connect(subscriberActions);
+        }
 
-		public Consumer<TMessage> Accept(TMessage message)
-		{
-			if (_cancel)
-				return null;
+        public void ScheduleTimeout(Func<PendingReceiveImpl<TMessage>, ScheduledOperation> scheduleAction)
+        {
+            _scheduledAction = scheduleAction(this);
+        }
 
-			Consumer<TMessage> consumer = _selectiveConsumer(message);
-			if (consumer == null)
-				return null;
+        static void NoTimeoutCallback()
+        {
+        }
 
-			return m =>
-				{
-					CancelTimeout();
+        public Consumer<TMessage> Accept(TMessage message)
+        {
+            if (_cancel)
+                return null;
 
-					consumer(m);
+            Consumer<TMessage> consumer = _selectiveConsumer(message);
+            if (consumer == null)
+                return null;
 
-					_onComplete(this);
-				};
-		}
+            return m =>
+                {
+                    CancelTimeout();
 
-		public void Timeout()
-		{
-			if (_cancel)
-				return;
+                    consumer(m);
 
-			_timeoutCallback();
+                    _onComplete(this);
+                };
+        }
 
-			_onComplete(this);
-		}
+        public void Timeout()
+        {
+            if (_cancel)
+                return;
 
-		void CancelTimeout()
-		{
-			if (_scheduledAction != null)
-				_scheduledAction.Cancel();
-		}
-	}
+            _timeoutCallback();
+
+            _onComplete(this);
+        }
+
+        void CancelTimeout()
+        {
+            if (_scheduledAction != null)
+                _scheduledAction.Cancel();
+        }
+    }
 }

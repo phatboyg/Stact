@@ -20,7 +20,7 @@ namespace Stact.Specs.Actors.Auctions
 	[Scenario]
 	public class Given_an_auction_actor_instance
 	{
-		public ActorInstance Auction { get; private set; }
+		public ActorRef Auction { get; private set; }
 		public Guid Id { get; private set; }
 
 		[Given]

@@ -52,7 +52,7 @@ namespace Stact.Specs.Workflow
 								.TransitionTo(s => s.Running);
 						});
 
-			ActorInstance service = factory.GetActor();
+			ActorRef service = factory.GetActor();
 
 			service.Send(new Pause());
 			service.Send(new Start());

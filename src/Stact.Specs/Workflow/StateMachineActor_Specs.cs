@@ -40,7 +40,7 @@ namespace Stact.Specs.Workflow
 							.Finalize();
 					});
 
-			ActorInstance service = factory.GetActor();
+			ActorRef service = factory.GetActor();
 
 
 			var response = new Future<Response<RequestSent>>();

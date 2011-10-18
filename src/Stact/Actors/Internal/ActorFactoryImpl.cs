@@ -16,6 +16,7 @@ namespace Stact.Internal
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using Executors;
     using Magnum;
 
 
@@ -44,12 +45,12 @@ namespace Stact.Internal
             _factory = factory;
         }
 
-        public ActorInstance GetActor()
+        public ActorRef GetActor()
         {
             return GetActor(null);
         }
 
-        public ActorInstance GetActor(Action<Inbox> initializer)
+        public ActorRef GetActor(Action<Inbox> initializer)
         {
             ActorInbox<TActor> inbox = null;
 

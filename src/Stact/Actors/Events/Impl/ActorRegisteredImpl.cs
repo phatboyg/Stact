@@ -18,7 +18,7 @@ namespace Stact.Events.Impl
 	class ActorRegisteredImpl :
 		ActorRegistered
 	{
-		public ActorRegisteredImpl(ActorRegistry registry, ActorInstance actor, Guid key)
+		public ActorRegisteredImpl(ActorRegistry registry, ActorRef actor, Guid key)
 		{
 			Registry = registry;
 			Instance = actor;
@@ -29,6 +29,6 @@ namespace Stact.Events.Impl
 
 		public ActorRegistry Registry { get; private set; }
 
-		public ActorInstance Instance { get; private set; }
+		public ActorRef Instance { get; private set; }
 	}
 }

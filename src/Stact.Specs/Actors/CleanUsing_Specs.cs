@@ -24,7 +24,7 @@ namespace Stact.Specs.Actors
         {
             var responded = new Future<MyResponse>();
 
-            ActorInstance server = AnonymousActor.New(inbox =>
+            ActorRef server = AnonymousActor.New(inbox =>
                 {
                     inbox.Receive<Request<MyRequest>>(request =>
                         {
@@ -33,7 +33,7 @@ namespace Stact.Specs.Actors
                         });
                 });
 
-            ActorInstance client = AnonymousActor.New(inbox =>
+            ActorRef client = AnonymousActor.New(inbox =>
                 {
                     server.Request(new MyRequest(), inbox)
                         .Receive<Response<MyResponse>>(response => responded.Complete(response.Body));

@@ -34,7 +34,7 @@ namespace Stact.Benchmarks
 				x.Remote(r => r.ListenTo(remoteAddress));
 			});
 
-			ActorInstance server = AnonymousActor.New(inbox =>
+			ActorRef server = AnonymousActor.New(inbox =>
 			{
 				inbox.Receive<Response<Hello>>(message =>
 				{

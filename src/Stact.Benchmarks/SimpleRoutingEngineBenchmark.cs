@@ -65,7 +65,7 @@ namespace Stact.Benchmarks
 			var latch = new CountdownLatch(messageCount, complete.Complete);
 
 			ActorFactory<TestActor<TConsumer>> factory = ActorFactory.Create(inbox => new TestActor<TConsumer>(inbox, latch));
-			ActorInstance actor = factory.GetActor();
+			ActorRef actor = factory.GetActor();
 
 			for (int i = 0; i < messageCount; i++)
 				actor.Send(messageProvider());

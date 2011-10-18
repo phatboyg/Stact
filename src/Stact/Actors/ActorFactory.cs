@@ -1,4 +1,3 @@
-
 // Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -13,77 +12,65 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using Configuration;
-	using Configuration.Internal;
-	using Internal;
+    using System;
+    using Configuration;
+    using Configuration.Internal;
+    using Internal;
 
 
-	public static class ActorFactory
-	{
-		public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator)
-			where TActor : class, Actor
-		{
-			var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TActor>();
+    public static class ActorFactory
+    {
+        public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator)
+            where TActor : class, Actor
+        {
+            var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TActor>();
 
-			configurator(factoryConfiguratorImpl);
+            configurator(factoryConfiguratorImpl);
 
-			return factoryConfiguratorImpl.CreateActorFactory();
-		}
+            return factoryConfiguratorImpl.CreateActorFactory();
+        }
 
-		public static ActorFactory<TActor> Create<TActor>(Func<TActor> actorFactory)
-			where TActor : class, Actor
-		{
-			return Create<TActor>(x => x.ConstructedBy(actorFactory));
-		}
+        public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)
+            where TActor : class, Actor
+        {
+            return Create<TActor>(x => x.ConstructedBy(actorFactory));
+        }
 
-		public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)
-			where TActor : class, Actor
-		{
-			return Create<TActor>(x => x.ConstructedBy(actorFactory));
-		}
+        public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Inbox, TActor> actorFactory)
+            where TActor : class, Actor
+        {
+            return Create<TActor>(x => x.ConstructedBy(actorFactory));
+        }
 
-		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, TActor> actorFactory)
-			where TActor : class, Actor
-		{
-			return Create<TActor>(x => x.ConstructedBy(actorFactory));
-		}
+        public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
+            where TActor : class, Actor
+        {
+            return Create<TActor>(x => x.ConstructedBy(actorFactory));
+        }
 
-		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Inbox, TActor> actorFactory)
-			where TActor : class, Actor
-		{
-			return Create<TActor>(x => x.ConstructedBy(actorFactory));
-		}
+        public static AnonymousActorFactory CreateAnonymousActorFactory(
+            Action<ActorFactoryConfigurator<AnonymousActor>> configurator)
+        {
+            var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<AnonymousActor>();
 
-		public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
-			where TActor : class, Actor
-		{
-			return Create<TActor>(x => x.ConstructedBy(actorFactory));
-		}
+            configurator(factoryConfiguratorImpl);
 
-		public static AnonymousActorFactory CreateAnonymousActorFactory(Action<ActorFactoryConfigurator<AnonymousActor>> configurator)
-		{
-			var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<AnonymousActor>();
-
-			configurator(factoryConfiguratorImpl);
-
-			return factoryConfiguratorImpl.CreateActorFactory() as AnonymousActorFactory;
-		}
-
-	}
+            return factoryConfiguratorImpl.CreateActorFactory() as AnonymousActorFactory;
+        }
+    }
 
 
-	/// <summary>
-	/// A builder abstraction for creating actor instances when needed
-	/// </summary>
-	/// <typeparam name="TActor">The actor type</typeparam>
-	public interface ActorFactory<TActor>
-		where TActor : class, Actor
-	{
-		/// <summary>
-		/// Returns an instance of an actor
-		/// </summary>
-		/// <returns></returns>
-		ActorInstance GetActor();
-	}
+    /// <summary>
+    /// A builder abstraction for creating actor instances when needed
+    /// </summary>
+    /// <typeparam name="TActor">The actor type</typeparam>
+    public interface ActorFactory<TActor>
+        where TActor : class, Actor
+    {
+        /// <summary>
+        /// Returns an instance of an actor
+        /// </summary>
+        /// <returns></returns>
+        ActorRef GetActor();
+    }
 }

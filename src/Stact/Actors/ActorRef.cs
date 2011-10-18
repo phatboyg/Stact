@@ -16,7 +16,7 @@ namespace Stact
 	/// An ActorInstance is used to send messages to an actor instance. This abstraction
 	/// helps avoid tight coupling with the actor class definition.
 	/// </summary>
-	public interface ActorInstance :
+	public interface ActorRef :
 		UntypedChannel
 	{
 	}

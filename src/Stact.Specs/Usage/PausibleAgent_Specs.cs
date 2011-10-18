@@ -28,7 +28,7 @@ namespace Stact.Specs.Usage
 		{
 			ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
 
-			ActorInstance agent = agentFactory.GetActor();
+			ActorRef agent = agentFactory.GetActor();
 
 			_first = new Update();
 			_second = new Update();
@@ -68,7 +68,7 @@ namespace Stact.Specs.Usage
 		{
 			ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
 
-			ActorInstance agent = agentFactory.GetActor();
+			ActorRef agent = agentFactory.GetActor();
 
 			_first = new Update();
 			_second = new Update();

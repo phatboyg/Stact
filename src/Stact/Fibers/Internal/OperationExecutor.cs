@@ -19,7 +19,7 @@ namespace Stact.Internal
 	public interface OperationExecutor
 	{
 		void Execute(Action operation);
-		void Execute(IList<Action> operations);
+		void Execute(IList<Action> operations, Action<IEnumerable<Action>> remaining);
 		void Stop();
 	}
 }

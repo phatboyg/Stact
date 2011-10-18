@@ -25,7 +25,7 @@ namespace Stact.Specs.Actors
 		{
 			var completed = new Future<Status>();
 
-			ActorInstance auction = AnonymousActor.New(inbox =>
+			ActorRef auction = AnonymousActor.New(inbox =>
 				{
 					decimal currentBid = 0.0m;
 
@@ -55,7 +55,7 @@ namespace Stact.Specs.Actors
 						});
 				});
 
-			ActorInstance bidder = AnonymousActor.New(inbox =>
+			ActorRef bidder = AnonymousActor.New(inbox =>
 				{
 					auction.Request(new BidImpl(13.5m), inbox)
 						.Receive<Response<Status>>(bidResponse =>

@@ -12,7 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface Exit
-	{
-	}
+    using Messages;
+
+
+    public interface Exit :
+        InboxMessage
+    {
+    }
 }

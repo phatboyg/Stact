@@ -46,7 +46,7 @@ namespace Stact
         /// </summary>
         /// <param name = "instance">The actor instance</param>
         /// <param name = "sender">The exit request sender</param>
-        public static SentRequest<Exit> Exit(this ActorInstance instance, Inbox sender)
+        public static SentRequest<Exit> Exit(this ActorRef instance, Inbox sender)
         {
             return instance.Request<Exit>(sender);
         }

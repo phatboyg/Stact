@@ -31,7 +31,7 @@ namespace Stact.Benchmarks
     {
         static Future<bool> _complete;
         static ActorFactory<RingNode> _ringNodeFactory;
-        ActorInstance _first;
+        ActorRef _first;
 
         public void Run()
         {
@@ -112,7 +112,7 @@ namespace Stact.Benchmarks
                         }
                         else
                         {
-                            ActorInstance next = _ringNodeFactory.GetActor();
+                            ActorRef next = _ringNodeFactory.GetActor();
                             next.Request(new Init
                                 {
                                     NodeCount = init.Body.NodeCount - 1,

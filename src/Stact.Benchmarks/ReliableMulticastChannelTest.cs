@@ -26,7 +26,7 @@ namespace Stact.Benchmarks
 		{
 			var network = new Uri("pgm://224.0.0.7:40001");
 
-			ActorInstance actor = AnonymousActor.New(inbox =>
+			ActorRef actor = AnonymousActor.New(inbox =>
 			{
 				inbox.Loop(loop =>
 				{

@@ -20,7 +20,7 @@ namespace Stact.Specs.Registries
 	[Scenario]
 	public class Given_a_loopback_registry
 	{
-		protected ActorInstance Actor { get; private set; }
+		protected ActorRef Actor { get; private set; }
 		protected Guid ActorId { get; private set; }
 		protected Uri Address { get; private set; }
 		protected Future<A> ReceivedA { get; private set; }

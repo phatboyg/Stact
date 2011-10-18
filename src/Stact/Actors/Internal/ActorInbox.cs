@@ -14,10 +14,12 @@ namespace Stact.Internal
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
+    using Actors.Actors;
+    using Actors.Internal;
     using Magnum.Extensions;
     using Routing;
-    using Routing.Nodes;
 
 
     public interface ActorInbox
@@ -33,7 +35,6 @@ namespace Stact.Internal
     /// </summary>
     /// <typeparam name = "TActor">The actor type for this inbox</typeparam>
     public class ActorInbox<TActor> :
-        ActorInstance,
         ActorInbox,
         Inbox
         where TActor : class, Actor
@@ -44,6 +45,7 @@ namespace Stact.Internal
         readonly UntypedChannel _inbound;
         readonly HashSet<PendingReceive> _pending;
         readonly Scheduler _scheduler;
+        ActorExceptionHandler _exceptionHandler;
 
 
         public ActorInbox([NotNull] Fiber fiber, [NotNull] Scheduler scheduler)
@@ -87,6 +89,16 @@ namespace Stact.Internal
             pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
 
             return Receive(pending);
+        }
+
+        public void SetExceptionHandler(ActorExceptionHandler handler)
+        {
+            _exceptionHandler = handler;
+        }
+
+        public IEnumerable<ActorRef> LinkedActors
+        {
+            get { return Enumerable.Empty<ActorRef>(); }
         }
 
         void HandleExit(Request<Exit> message)
