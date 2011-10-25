@@ -15,6 +15,7 @@ namespace Stact.Specs.Actors
     using System.Threading;
     using Magnum.Extensions;
     using Magnum.TestFramework;
+    using NUnit.Framework;
     using Routing.Visualizers;
 
 
@@ -46,7 +47,7 @@ namespace Stact.Specs.Actors
             });
         }
 
-        [Then]
+        [Then, Explicit]
         public void Should_prevent_the_actor_from_exiting()
         {
             AnonymousActor.New(inbox =>
