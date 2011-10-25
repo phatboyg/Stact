@@ -33,9 +33,10 @@ namespace Stact.Specs.Actors
 
             _actor = AnonymousActor.New(inbox =>
             {
-                inbox.Receive<Exit>(message =>
+                inbox.Receive<Request<Exit>>(request =>
                 {
-                    _intercepted.Complete(message);
+                    _intercepted.Complete(request.Body);
+                    request.Respond(request.Body);
                 });
 
                 inbox.Receive<A>(message =>
