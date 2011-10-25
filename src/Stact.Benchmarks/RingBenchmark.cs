@@ -16,7 +16,17 @@ namespace Stact.Benchmarks
     using System.Diagnostics;
     using Magnum.Extensions;
 
-
+    /// <summary>
+    /// <para>Write a ring benchmark. Create N processes in a ring. Send a message round the ring M times. So that a total of N * M messages get sent. Time how long this takes for different values of N and M.</para>
+    /// <para>
+    /// More info:
+    /// <list type="bullet">
+    /// <value>http://erl.nfshost.com/2007/07/28/a-ring-benchmark-in-erlang/</value>
+    /// <value>http://www.rodenas.org/blog/2007/08/27/erlang-ring-problem/</value>
+    /// <value>http://muharem.wordpress.com/2007/07/31/erlang-vs-stackless-python-a-first-benchmark/</value>
+    /// </list>
+    /// </para>
+    /// </summary>
     public class RingBenchmark
     {
         static Future<bool> _complete;
@@ -55,7 +65,7 @@ namespace Stact.Benchmarks
                     RoundCount = roundCount,
                 }, _first);
 
-            _complete.WaitUntilCompleted(120.Seconds());
+            _complete.WaitUntilCompleted(300.Seconds());
         }
 
 
