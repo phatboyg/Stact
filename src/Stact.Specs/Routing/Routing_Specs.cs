@@ -43,11 +43,11 @@ namespace Stact.Specs
 
             _engine.Configure(x =>
                 {
-                    x.Receive<A>(_receivedA.Complete);
-                    x.Receive<B>(_receivedB.Complete);
-                    x.Receive<C>(_receivedC.Complete);
-                    x.Receive<Message<B>>(_receivedMessageB.Complete);
-                    x.Receive<Message<C>>(_receivedMessageC.Complete);
+                    x.Receive<A>(message => _receivedA.Complete(message.Body));
+                    x.Receive<B>(message => _receivedB.Complete(message.Body));
+                    x.Receive<C>(message => _receivedC.Complete(message.Body));
+                    x.Receive<B>(_receivedMessageB.Complete);
+                    x.Receive<C>(_receivedMessageC.Complete);
                 });
 
             _engine.Send(new B());
@@ -55,7 +55,7 @@ namespace Stact.Specs
             _engine.Send(new B());
             _engine.Send(new C());
 
-            fiber.Shutdown(5.Minutes());
+            fiber.Stop(5.Minutes());
         }
 
         [Then]

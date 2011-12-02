@@ -12,121 +12,112 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Actors.Actors;
-	using Configuration;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
+    using System;
 
 
-	/// <summary>
-	///   A decorator for sent requests that enables method chaining
-	/// </summary>
-	/// <typeparam name = "TRequest"></typeparam>
-	public class SentRequestImpl<TRequest> :
-		SentRequest<TRequest>
-	{
-		readonly Inbox _inbox;
-		readonly Request<TRequest> _request;
+    /// <summary>
+    ///   A decorator for sent requests that enables method chaining
+    /// </summary>
+    /// <typeparam name = "TRequest"></typeparam>
+    public class SentRequestImpl<TRequest> :
+        SentRequest<TRequest>
+    {
+        readonly ActorInbox _inbox;
+        readonly Message<TRequest> _request;
 
-		public SentRequestImpl(Request<TRequest> request, Inbox inbox)
-		{
-			_request = request;
-			_inbox = inbox;
-		}
+        public SentRequestImpl(Message<TRequest> request, ActorInbox inbox)
+        {
+            _request = request;
+            _inbox = inbox;
+        }
 
-		public SentRequestImpl(Inbox inbox)
-		{
-			_inbox = inbox;
-		}
+        public Uri BodyType
+        {
+            get { return _request.BodyType; }
+        }
 
-		public TRequest Body
-		{
-			get { return _request.Body; }
-		}
+        public string MessageId
+        {
+            get { return _request.MessageId; }
+        }
 
-		public string RequestId
-		{
-			get { return _request.RequestId; }
-		}
+        public string CorrelationId
+        {
+            get { return _request.CorrelationId; }
+        }
 
-		public void Send<T>(T message)
-		{
-			_inbox.Send(message);
-		}
+        public string RequestId
+        {
+            get { return _request.RequestId; }
+        }
 
-		public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
-		{
-			return _inbox.Connect(subscriberActions);
-		}
+        public Uri SourceAddress
+        {
+            get { return _request.SourceAddress; }
+        }
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
-		{
-			return _inbox.Receive(CreateFilteredConsumer(consumer));
-		}
+        public Uri DestinationAddress
+        {
+            get { return _request.DestinationAddress; }
+        }
 
-		public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
-		{
-			return _inbox.Receive(CreateFilteredConsumer(consumer), timeout, timeoutCallback);
-		}
+        public Uri ResponseAddress
+        {
+            get { return _request.ResponseAddress; }
+        }
 
-	    public void SetExceptionHandler(ActorExceptionHandler handler)
-	    {
-	        _inbox.SetExceptionHandler(handler);
-	    }
+        public Uri FaultAddress
+        {
+            get { return _request.FaultAddress; }
+        }
 
-	    public IEnumerable<ActorRef> LinkedActors
-	    {
-	        get { return _inbox.LinkedActors; }
-	    }
+        public Headers Headers
+        {
+            get { return _request.Headers; }
+        }
 
-	    SelectiveConsumer<T> CreateFilteredConsumer<T>(SelectiveConsumer<T> consumer)
-		{
-			if (!typeof(T).Implements(typeof(Response<>)))
-				return consumer;
+        public ActorRef Sender
+        {
+            get { return _request.Sender; }
+        }
 
-			var types = new[]{typeof(TRequest), typeof(T), typeof(T).GetDeclaredGenericArguments().Single()};
-			var args = new object[] {RequestId};
-			var responseFilter = (ResponseFilter<T>)FastActivator.Create(typeof(RequestIdFilter<,>), types, args);
+        public TRequest Body
+        {
+            get { return _request.Body; }
+        }
 
-			SelectiveConsumer<T> result =  candidate =>
-				{
-					if (!responseFilter.Accept(candidate))
-						return null;
+        public ActorInbox Inbox
+        {
+            get { return _inbox; }
+        }
 
-					return consumer(candidate);
-				};
+        public PendingReceive ReceiveResponse<T>(SelectiveConsumer<Message<T>> consumer)
+        {
+            return _inbox.Receive(CreateFilteredConsumer(consumer));
+        }
 
-			return result;
-		}
+        public PendingReceive ReceiveResponse<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
+                                                 Action timeoutCallback)
+        {
+            return _inbox.Receive(CreateFilteredConsumer(consumer), timeout, timeoutCallback);
+        }
 
+        public void Send<T>(Message<T> message)
+        {
+            _inbox.Send(message);
+        }
 
-		class RequestIdFilter<T, TBody> :
-			ResponseFilter<T>
-			where T : Response<TBody>
-		{
-			readonly string _requestId;
+        SelectiveConsumer<Message<T>> CreateFilteredConsumer<T>(SelectiveConsumer<Message<T>> consumer)
+        {
+            SelectiveConsumer<Message<T>> result = candidate =>
+                {
+                    if (candidate.RequestId != _request.RequestId)
+                        return null;
 
-			public RequestIdFilter(string requestId)
-			{
-				_requestId = requestId;
-			}
+                    return consumer(candidate);
+                };
 
-			public bool Accept(T message)
-			{
-				if (_requestId == null)
-					return message.RequestId == null;
-
-				return _requestId.Equals(message.RequestId);
-			}
-		}
-
-
-		interface ResponseFilter<T>
-		{
-			bool Accept(T message);
-		}
-	}
+            return result;
+        }
+    }
 }

@@ -23,34 +23,26 @@ namespace Stact.Routing.Contexts
     {
         readonly Cache<Type, RoutingContextFactory> _messageFactoryCache;
         readonly Cache<Type, RoutingContextFactory> _objectFactoryCache;
-        readonly Cache<Type, RoutingContextFactory> _requestFactoryCache;
-        readonly Cache<Type, RoutingContextFactory> _responseFactoryCache;
         readonly Cache<Type, RoutingContextFactory> _typeFactoryCache;
 
         public DynamicRoutingContextFactory()
         {
             _typeFactoryCache = new ConcurrentCache<Type, RoutingContextFactory>(CreateMissingContextFactory);
             _messageFactoryCache = new GenericTypeCache<RoutingContextFactory>(typeof(MessageRoutingContextFactory<>));
-            _requestFactoryCache = new GenericTypeCache<RoutingContextFactory>(typeof(RequestRoutingContextFactory<>));
-            _responseFactoryCache = new GenericTypeCache<RoutingContextFactory>(typeof(ResponseRoutingContextFactory<>));
             _objectFactoryCache = new GenericTypeCache<RoutingContextFactory>(typeof(ObjectRoutingContextFactory<>));
         }
 
         public void Create(object message, Activation activation)
         {
             if (message == null)
-                return;
+                throw new ArgumentNullException("message", "A null message was specified.");
 
             _typeFactoryCache[message.GetType()].Create(message, activation);
         }
 
         RoutingContextFactory CreateMissingContextFactory(Type type)
         {
-            return IsRequest(type)
-                .Concat(IsResponse(type))
-                .Concat(IsMessage(type))
-                .Concat(IsRequestClass(type))
-                .Concat(IsResponseClass(type))
+            return IsMessage(type)
                 .Concat(IsMessageClass(type))
                 .Concat(IsObject(type))
                 .First();
@@ -76,45 +68,6 @@ namespace Stact.Routing.Contexts
                 yield return _messageFactoryCache[type.GetGenericArguments()[0]];
         }
 
-        IEnumerable<RoutingContextFactory> IsRequestClass(Type type)
-        {
-            Type bodyType = type.GetInterfaces()
-                .Where(x => x.IsGenericType)
-                .Where(x => x.GetGenericTypeDefinition() == typeof(Request<>))
-                .Select(x => x.GetGenericArguments()[0])
-                .FirstOrDefault();
-            if (bodyType != null)
-                yield return _requestFactoryCache[bodyType];
-        }
-
-        IEnumerable<RoutingContextFactory> IsRequest(Type type)
-        {
-            bool matches = type.IsInterface && type.IsGenericType
-                           && type.GetGenericTypeDefinition() == typeof(Request<>);
-
-            if (matches)
-                yield return _requestFactoryCache[type.GetGenericArguments()[0]];
-        }
-
-        IEnumerable<RoutingContextFactory> IsResponseClass(Type type)
-        {
-            Type bodyType = type.GetInterfaces()
-                .Where(x => x.IsGenericType)
-                .Where(x => x.GetGenericTypeDefinition() == typeof(Response<>))
-                .Select(x => x.GetGenericArguments()[0])
-                .FirstOrDefault();
-            if (bodyType != null)
-                yield return _responseFactoryCache[bodyType];
-        }
-
-        IEnumerable<RoutingContextFactory> IsResponse(Type type)
-        {
-            bool matches = type.IsInterface && type.IsGenericType
-                           && type.GetGenericTypeDefinition() == typeof(Response<>);
-
-            if (matches)
-                yield return _responseFactoryCache[type.GetGenericArguments()[0]];
-        }
 
         IEnumerable<RoutingContextFactory> IsObject(Type type)
         {

@@ -18,9 +18,9 @@ namespace Stact
 	public interface Fiber
 	{
 		/// <summary>
-		/// Enqueue a single action to the queue
+		/// Adds an operation at the tail of the list of operations for the fiber
 		/// </summary>
-		/// <param name="operation"></param>
+		/// <param name="operation">The operation to add</param>
 		void Add(Action operation);
 
 		/// <summary>
@@ -28,11 +28,12 @@ namespace Stact
 		/// timeout expires. If the timeout expires, an exception is thrown.
 		/// </summary>
 		/// <param name="timeout">The time to wait for all pending actions to be executed before throwing an exception</param>
-		void Shutdown(TimeSpan timeout);
+		void Stop(TimeSpan timeout);
 
 		/// <summary>
-		/// Stops the fiber, discards any remaining actions, and prevents new actions from being added
+		/// Kills the fiber, discards any remaining actions, and prevents new actions from being added
+		/// May also abort the thread currently executing, forcing it to terminate any in-progress operations
 		/// </summary>
-		void Stop();
+		void Kill();
 	}
 }

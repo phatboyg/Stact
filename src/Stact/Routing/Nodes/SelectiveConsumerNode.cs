@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
-    using Contexts;
-
-
     /// <summary>
     /// Selectively delivers a message to a consumer on the specified fiber.
     /// </summary>
@@ -23,9 +20,9 @@ namespace Stact.Routing.Nodes
         ProductionNode<T>,
         Activation<T>
     {
-        readonly SelectiveConsumer<T> _selectiveConsumer;
+        readonly SelectiveConsumer<Message<T>> _selectiveConsumer;
 
-        public SelectiveConsumerNode(RoutingEngine engine, SelectiveConsumer<T> selectiveConsumer,
+        public SelectiveConsumerNode(RoutingEngine engine, SelectiveConsumer<Message<T>> selectiveConsumer,
                                      bool disableOnActivation = true)
             : base(engine, disableOnActivation)
         {
@@ -34,11 +31,11 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<T> context)
         {
-            Consumer<T> consumer = _selectiveConsumer(context.Body);
+            Consumer<Message<T>> consumer = _selectiveConsumer(context.Message);
             if (consumer == null)
                 return;
 
-            Accept(context, body => consumer(body));
+            Accept(context, message => consumer(message));
         }
     }
 }

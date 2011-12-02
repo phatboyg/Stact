@@ -13,15 +13,13 @@
 namespace Stact
 {
     using System;
-    using System.Collections.Generic;
-    using Actors.Actors;
 
 
     /// <summary>
     ///   Mailbox is a higher level construct than a channel, providing channel aggregation,
     ///   directed receives, and dispatching to channels within a context, such as an actor
     /// </summary>
-    public interface Inbox :
+    public interface InboxXXX :
         ActorRef
     {
         /// <summary>
@@ -43,13 +41,5 @@ namespace Stact
         /// <param name = "timeout">The time period to wait for a message</param>
         /// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
         PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback);
-
-        /// <summary>
-        /// Sets the exception handler for the inbox
-        /// </summary>
-        /// <param name="handler">The exception handler</param>
-        void SetExceptionHandler(ActorExceptionHandler handler);
-
-        IEnumerable<ActorRef>  LinkedActors { get; }
     }
 }

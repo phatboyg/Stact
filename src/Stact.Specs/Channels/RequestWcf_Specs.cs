@@ -13,7 +13,7 @@
 	{
 		const string _pipeName = "test";
 		ChannelConnection _clientConnection;
-		Future<Response<TestMessage>> _response;
+        Future<Message<TestMessage>> _response;
 		ChannelAdapter _client;
 		ChannelAdapter _server;
 		ChannelConnection _serverConnection;
@@ -25,7 +25,7 @@
 		{
 			_pipeUri = new Uri("net.pipe://localhost/pipe");
 
-			_response = new Future<Response<TestMessage>>();
+            _response = new Future<Message<TestMessage>>();
 
 			_client = new ChannelAdapter();
 			_clientConnection = _client.Connect(x =>
@@ -33,14 +33,14 @@
 					x.SendToWcfChannel(_pipeUri, _pipeName)
 						.HandleOnCallingThread();
 
-					x.AddConsumerOf<Response<TestMessage>>()
+                    x.AddConsumerOf<Message<TestMessage>>()
 						.UsingConsumer(_response.Complete);
 				});
 
 			_server = new ChannelAdapter();
 			_serverConnection = _server.Connect(x =>
 				{
-					x.AddConsumerOf<Request<TestMessage>>()
+                    x.AddConsumerOf<Message<TestMessage>>()
 						.UsingConsumer(request => request.Respond(request.Body));
 				});
 
@@ -54,8 +54,8 @@
 				{
 					typeof(ChannelAdapter),
 					typeof(BroadcastChannel),
-					typeof(TypedChannelAdapter<Response<TestMessage>>),
-					typeof(ConsumerChannel<Response<TestMessage>>),
+					typeof(TypedChannelAdapter<Message<TestMessage>>),
+					typeof(ConsumerChannel<Message<TestMessage>>),
 					typeof(WcfChannelProxy),
 				});
 		}
@@ -67,20 +67,11 @@
 				{
 					typeof(ChannelAdapter),
 					typeof(BroadcastChannel),
-					typeof(TypedChannelAdapter<Request<TestMessage>>),
-					typeof(ConsumerChannel<Request<TestMessage>>)
+					typeof(TypedChannelAdapter<Message<TestMessage>>),
+					typeof(ConsumerChannel<Message<TestMessage>>)
 				});
 		}
 
-		[Then, Explicit]
-		public void Should_get_the_message()
-		{
-
-			// doesn't work yet sadly
-			_client.Request(new TestMessage(), _client);
-
-			_response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue();
-		}
 
 		[After]
 		public void After()

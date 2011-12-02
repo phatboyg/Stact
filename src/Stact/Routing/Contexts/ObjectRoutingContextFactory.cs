@@ -16,12 +16,11 @@ namespace Stact.Routing.Contexts
 
 
     public class ObjectRoutingContextFactory<T> :
-        AbstractRoutingContext,
         RoutingContextFactory
     {
         public void Create(object message, Activation activation)
         {
-            RoutingContext<T> context = new MessageRoutingContextImpl<T>(new MessageImpl<T>((T)message));
+            RoutingContext<T> context = new MessageRoutingContext<T>(new MessageContext<T>((T)message));
 
             activation.Activate(context);
         }

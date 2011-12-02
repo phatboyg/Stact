@@ -56,7 +56,7 @@ namespace Stact.Configuration
 
 			FiberFactory fiberFactory = GetConfiguredFiberFactory();
 
-			return _configuredProvider(fiberFactory, ShutdownTimeout);
+			return _configuredProvider(fiberFactory, StopTimeout);
 		}
 	}
 }

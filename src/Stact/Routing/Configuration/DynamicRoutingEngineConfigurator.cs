@@ -42,12 +42,12 @@ namespace Stact.Routing.Configuration
             return () => { joinNode.RemoveActivation(activation); };
         }
 
-        public RemoveActivation Receive<T>(Consumer<T> consumer)
+        public RemoveActivation Receive<T>(Consumer<Message<T>> consumer)
         {
             return _consumerFactory.Create(consumer, this);
         }
 
-        public RemoveActivation SelectiveReceive<T>(SelectiveConsumer<T> consumer)
+        public RemoveActivation SelectiveReceive<T>(SelectiveConsumer<Message<T>> consumer)
         {
             return _consumerFactory.Create(consumer, this);
         }

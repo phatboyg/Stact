@@ -17,7 +17,7 @@ namespace Stact.Routing.Contexts
     {
         public void Create(object message, Activation activation)
         {
-            RoutingContext<T> context = new MessageRoutingContextImpl<T>((Message<T>)message);
+            RoutingContext<T> context = new MessageRoutingContext<T>((Message<T>)message);
 
             activation.Activate(context);
         }

@@ -101,7 +101,7 @@ namespace Stact.Specs.Actions
 		public void Should_not_stall_the_scheduler()
 		{
 			Fiber stopped = new PoolFiber();
-			stopped.Stop();
+			stopped.Kill();
 
 			Fiber running = new PoolFiber();
 			Scheduler scheduler = new TimerScheduler(new PoolFiber());

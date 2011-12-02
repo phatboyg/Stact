@@ -14,7 +14,6 @@ namespace Stact
 {
     using System;
     using Magnum.Reflection;
-    using MessageHeaders;
 
 
     public static class RespondExtensions
@@ -26,30 +25,59 @@ namespace Stact
         /// <typeparam name = "TResponse">The type of the response message</typeparam>
         /// <param name = "request">The request context</param>
         /// <param name = "response">The response message</param>
-        public static void Respond<TRequest, TResponse>(this Request<TRequest> request, TResponse response)
+        public static void Respond<TResponse>(this Message request, TResponse response)
         {
-            var responseImpl = new ResponseImpl<TRequest, TResponse>(request, response);
-
-            request.ResponseChannel.Send<Response<TRequest, TResponse>>(responseImpl);
+            request.Sender.Send(response, header => header.SetRequestId(request.RequestId));
         }
 
-        public static void Respond<TRequest>(this Request<TRequest> request)
+        public static void Respond<TResponse>(this Message request, TResponse response,
+                                              Action<SetMessageHeader> headerCallback)
         {
-            if (!typeof(TRequest).IsInterface)
+            request.Sender.Send(response, header =>
+                {
+                    header.SetRequestId(request.RequestId);
+                    headerCallback(header);
+                });
+        }
+
+        public static void Respond<TResponse>(this Message request)
+            where TResponse : class
+        {
+            if (!typeof(TResponse).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+            Type responseImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TResponse));
 
-            var responseImpl = new ResponseImpl<TRequest, TRequest>(request, request.Body);
+            var response = (TResponse)FastActivator.Create(responseImplType);
 
-            request.ResponseChannel.Send<Response<TRequest, TRequest>>(responseImpl);
+            request.Sender.Send(response, x => x.SetRequestId(request.RequestId));
         }
 
-        public static void Respond<TResponse>(this UntypedChannel channel, TResponse response, string requestId)
+        public static void Respond<TResponse>(this Message request, object values)
+            where TResponse : class
         {
-            var responseImpl = new ResponseImpl<TResponse>(response, requestId);
+            if (!typeof(TResponse).IsInterface)
+                throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            channel.Send<Response<TResponse>>(responseImpl);
+            var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
+
+            request.Sender.Send(response, x => x.SetRequestId(request.RequestId));
+        }
+
+        public static void Respond<TResponse>(this Message request, object values,
+                                              Action<SetMessageHeader> headerCallback)
+            where TResponse : class
+        {
+            if (!typeof(TResponse).IsInterface)
+                throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+            var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
+
+            request.Sender.Send(response, header =>
+                {
+                    header.SetRequestId(request.RequestId);
+                    headerCallback(header);
+                });
         }
     }
 }

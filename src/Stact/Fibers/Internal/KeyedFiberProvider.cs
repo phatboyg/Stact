@@ -39,7 +39,7 @@ namespace Stact.Internal
 
         public void Dispose()
         {
-            _cache.Each(x => x.Shutdown(_timeout));
+            _cache.Each(x => x.Stop(_timeout));
         }
     }
 }

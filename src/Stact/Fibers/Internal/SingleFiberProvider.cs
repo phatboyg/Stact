@@ -34,7 +34,7 @@ namespace Stact.Internal
 
 		public void Dispose()
 		{
-			_fiber.Shutdown(_timeout);
+			_fiber.Stop(_timeout);
 		}
 	}
 }

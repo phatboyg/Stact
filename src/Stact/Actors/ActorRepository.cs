@@ -15,7 +15,6 @@ namespace Stact.Actors
 	using System;
 
 	public interface ActorRepository<TActor, TKey>
-		where TActor : Actor
 	{
 		TActor Get(TKey key);
 		TActor Get(TKey key, Func<TKey, TActor> onMissing);

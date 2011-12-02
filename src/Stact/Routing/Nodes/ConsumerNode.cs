@@ -20,9 +20,9 @@ namespace Stact.Routing.Nodes
         ProductionNode<T>,
         Activation<T>
     {
-        readonly Consumer<T> _consumer;
+        readonly Consumer<Message<T>> _consumer;
 
-        public ConsumerNode(RoutingEngine engine, Consumer<T> consumer, bool disableOnActivation = true)
+        public ConsumerNode(RoutingEngine engine, Consumer<Message<T>> consumer, bool disableOnActivation = true)
             : base(engine, disableOnActivation)
         {
             _consumer = consumer;
@@ -30,7 +30,7 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<T> context)
         {
-            Accept(context, body => _consumer(body));
+            Accept(context, message => _consumer(message));
         }
     }
 }

@@ -12,30 +12,41 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Runtime.Serialization;
+    using System;
+    using System.Runtime.Serialization;
 
-	[Serializable]
-	public class FiberException :
-		StactException
-	{
-		public FiberException()
-		{
-		}
 
-		public FiberException(string message)
-			: base(message)
-		{
-		}
+    [Serializable]
+    public class FiberException :
+        StactException
+    {
+        public FiberException()
+        {
+        }
 
-		public FiberException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+        public FiberException(string message)
+            : base(message)
+        {
+        }
 
-		protected FiberException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+        public FiberException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        protected FiberException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        public static FiberException New(string format, params object[] args)
+        {
+            return new FiberException(string.Format(format, args));
+        }
+
+        public static FiberException New(Exception innerException, string format, params object[] args)
+        {
+            return new FiberException(string.Format(format, args), innerException);
+        }
+    }
 }

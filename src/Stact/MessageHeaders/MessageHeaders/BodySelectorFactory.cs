@@ -128,7 +128,7 @@ namespace Stact.MessageHeaders
 			else
 				castValue = Expression.TypeAs(value, bodyType);
 
-			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(bodyType);
+			Type messageImplType = typeof(MessageContext<>).MakeGenericType(bodyType);
 
 			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] {bodyType});
 
@@ -162,7 +162,7 @@ namespace Stact.MessageHeaders
 			else
 				castValue = Expression.TypeAs(value, bodyType);
 
-			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(bodyType);
+			Type messageImplType = typeof(MessageContext<>).MakeGenericType(bodyType);
 
 			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] { bodyType });
 

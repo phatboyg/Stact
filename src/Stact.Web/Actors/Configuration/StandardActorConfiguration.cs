@@ -24,7 +24,7 @@ namespace Stact.Web.Actors.Configuration
 
 	public class StandardActorConfiguration<TActor> :
 		ActorConfiguration<TActor>
-		where TActor : class, Actor
+		where TActor : class
 	{
 		readonly FiberFactory _fiberFactory;
 		ActorFactory<TActor> _actorFactory;

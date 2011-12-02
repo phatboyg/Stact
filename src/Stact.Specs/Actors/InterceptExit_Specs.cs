@@ -15,6 +15,7 @@ namespace Stact.Specs.Actors
     using System.Threading;
     using Magnum.Extensions;
     using Magnum.TestFramework;
+    using MessageHeaders;
     using NUnit.Framework;
     using Routing.Visualizers;
 
@@ -32,9 +33,9 @@ namespace Stact.Specs.Actors
             _intercepted = new Future<Exit>();
             _receivedA = new Future<A>();
 
-            _actor = AnonymousActor.New(inbox =>
+            _actor = StatelessActor.New(inbox =>
             {
-                inbox.Receive<Request<Exit>>(request =>
+                inbox.Receive<Message<Exit>>(request =>
                 {
                     _intercepted.Complete(request.Body);
                     request.Respond(request.Body);
@@ -50,15 +51,15 @@ namespace Stact.Specs.Actors
         [Then, Explicit]
         public void Should_prevent_the_actor_from_exiting()
         {
-            AnonymousActor.New(inbox =>
+            StatelessActor.New(inbox =>
                 {
                     _actor.Request<Exit>(inbox)
                         .Within(5.Seconds())
-                        .Receive<Response<Exit>>(x => { });
+                        .Receive<Message<Exit>>(x => { });
                 });
             _intercepted.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Exit was not intercepted");
 
-            _actor.Send(new A());
+            _actor.Send(new A().ToMessage());
             _receivedA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("A was not handled, did actor exit?");
         }
 
@@ -78,7 +79,7 @@ namespace Stact.Specs.Actors
         {
             _receivedA = new Future<A>();
 
-            _actor = AnonymousActor.New(inbox =>
+            _actor = StatelessActor.New(inbox =>
             {
                 inbox.Receive<A>(message =>
                 {
@@ -91,7 +92,7 @@ namespace Stact.Specs.Actors
         public void Should_prevent_subsequent_messages_from_activating()
         {
             _actor.Exit();
-            _actor.Send(new A());
+            _actor.Send(new A().ToMessage());
 
             var completed = _receivedA.WaitUntilCompleted(5.Seconds());
 

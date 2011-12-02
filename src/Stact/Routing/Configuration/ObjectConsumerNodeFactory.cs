@@ -18,17 +18,19 @@ namespace Stact.Routing.Configuration
     public class ObjectConsumerNodeFactory<T> :
         ConsumerNodeFactory
     {
-        public RemoveActivation Create<TMessage>(Consumer<TMessage> consumer, RoutingEngineConfigurator configurator)
+        public RemoveActivation Create<TMessage>(Consumer<Message<TMessage>> consumer,
+                                                 RoutingEngineConfigurator configurator)
         {
-            var requestConsumer = consumer as Consumer<T>;
+            var requestConsumer = consumer as Consumer<Message<T>>;
             var consumerNode = new ConsumerNode<T>(configurator.Engine, requestConsumer);
 
             return configurator.Add(consumerNode);
         }
 
-        public RemoveActivation Create<T1>(SelectiveConsumer<T1> consumer, RoutingEngineConfigurator configurator)
+        public RemoveActivation Create<TMessage>(SelectiveConsumer<Message<TMessage>> consumer,
+                                                 RoutingEngineConfigurator configurator)
         {
-            var requestConsumer = consumer as SelectiveConsumer<T>;
+            var requestConsumer = consumer as SelectiveConsumer<Message<T>>;
             var consumerNode = new SelectiveConsumerNode<T>(configurator.Engine, requestConsumer);
 
             return configurator.Add(consumerNode);

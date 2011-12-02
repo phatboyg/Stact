@@ -12,44 +12,50 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
+    using System;
 
 
-	public interface MessageHeader
-	{
-		/// <summary>
-		/// The message body type in URN-format
-		/// </summary>
-		Uri BodyType { get; }
+    public interface MessageHeader
+    {
+        /// <summary>
+        /// The message body type in URN-format
+        /// </summary>
+        Uri BodyType { get; }
 
-		/// <summary>
-		/// The identifier for this message
-		/// </summary>
-		string MessageId { get; }
+        /// <summary>
+        /// The identifier for this message
+        /// </summary>
+        string MessageId { get; }
 
-		/// <summary>
-		/// The identifier correlating this message to a message exchange/conversation
-		/// </summary>
-		string CorrelationId { get; }
+        /// <summary>
+        /// The identifier correlating this message to a message exchange/conversation
+        /// </summary>
+        string CorrelationId { get; }
 
-		/// <summary>
-		/// The sender address of the message
-		/// </summary>
-		Uri SenderAddress { get; }
 
-		/// <summary>
-		/// The final destination of the message
-		/// </summary>
-		Uri DestinationAddress { get; }
+        string RequestId { get; }
 
-		/// <summary>
-		/// The address where faults should be sent
-		/// </summary>
-		Uri FaultAddress { get; }
+        /// <summary>
+        /// The sender address of the message
+        /// </summary>
+        Uri SourceAddress { get; }
 
-		/// <summary>
-		/// A general headers collection
-		/// </summary>
-		Headers Headers { get; }
-	}
+        /// <summary>
+        /// The final destination of the message
+        /// </summary>
+        Uri DestinationAddress { get; }
+
+
+        Uri ResponseAddress { get; }
+
+        /// <summary>
+        /// The address where faults should be sent
+        /// </summary>
+        Uri FaultAddress { get; }
+
+        /// <summary>
+        /// A general headers collection
+        /// </summary>
+        Headers Headers { get; }
+    }
 }

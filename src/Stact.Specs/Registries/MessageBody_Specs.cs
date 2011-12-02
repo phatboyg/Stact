@@ -57,7 +57,7 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_message()
 		{
-			_channel.Send<Message<Test>>(new MessageImpl<Test>(new Test
+			_channel.Send<Message<Test>>(new MessageContext<Test>(new Test
 				{
 					Name = "Johnson"
 				}));
@@ -66,12 +66,12 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_request()
 		{
-			var actor = AnonymousActor.New(inbox =>
+			var actor = StatelessActor.New(inbox =>
 				{
-					_channel.Request(new Test
-						{
-							Name = "Magic"
-						}, inbox);
+//					_channel.Request(new Test
+//						{
+//							Name = "Magic"
+//						}, inbox);
 				});
 
 			ThreadUtil.Sleep(1.Seconds());
@@ -80,12 +80,12 @@ namespace Stact.Specs.Registries
 		[Then]
 		public void Should_properly_serialize_a_response()
 		{
-			var actor = AnonymousActor.New(inbox =>
+			var actor = StatelessActor.New(inbox =>
 				{
-					_channel.Respond(new Test
-						{
-							Name = "Magic"
-						}, "21");
+//					_channel.Respond(new Test
+//						{
+//							Name = "Magic"
+//						}, "21");
 				});
 
 			ThreadUtil.Sleep(1.Seconds());

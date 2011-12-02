@@ -12,9 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	public interface InboxReceiveBinder<in TActor>
-		where TActor : Actor
+	public interface InboxReceiveBinder<TState>
 	{
-		ReceiveLoop Bind(ReceiveLoop loop, TActor instance);
+		ReceiveLoop Bind(ReceiveLoop loop, Actor<TState> instance);
 	}
 }

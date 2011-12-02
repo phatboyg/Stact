@@ -26,6 +26,21 @@ namespace Stact.Routing.Contexts
             _message = message;
         }
 
+        public Uri ResponseAddress
+        {
+            get { return _message.ResponseAddress; }
+        }
+
+        public string RequestId
+        {
+            get { return _message.RequestId; }
+        }
+
+        public ActorRef Sender
+        {
+            get { return _message.Sender; }
+        }
+
         public Uri BodyType
         {
             get { return _message.BodyType; }
@@ -41,9 +56,9 @@ namespace Stact.Routing.Contexts
             get { return _message.CorrelationId; }
         }
 
-        public Uri SenderAddress
+        public Uri SourceAddress
         {
-            get { return _message.SenderAddress; }
+            get { return _message.SourceAddress; }
         }
 
         public Uri DestinationAddress

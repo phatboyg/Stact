@@ -12,47 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors.Auctions
 {
-	using Stact;
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
+    using Stact;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
 
 
-	[Scenario]
-	public class When_a_bid_is_sent_to_the_actor_instance :
-		Given_an_auction_actor_instance
-	{
-		[Then]
-		public void Sending_a_bid_request_should_get_a_response()
-		{
-			var response = new FutureChannel<Response<Status>>();
+    [Scenario]
+    public class When_a_bid_is_sent_to_the_actor_instance :
+        Given_an_auction_actor_instance
+    {
+        [Then]
+        public void Sending_a_bid_request_should_get_a_response()
+        {
+            var response = new FutureChannel<Message<Status>>();
 
-			UntypedChannel responseChannel = new ChannelAdapter();
-			responseChannel.Connect(x => x.AddChannel(response));
+            UntypedChannel responseChannel = new ChannelAdapter();
+            responseChannel.Connect(x => x.AddChannel(response));
 
-			Auction.Request(new Ask(Id), responseChannel);
+            // Auction.Request(new Ask(Id).ToMessage(), responseChannel);
 
-			response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
+            response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
 
-			response.Value.Body.AuctionId.ShouldEqual(Id);
+            response.Value.Body.AuctionId.ShouldEqual(Id);
 
 
-			// ThreadUtil.Sleep(2.Seconds());
-			// go ahead and buy something
+            // ThreadUtil.Sleep(2.Seconds());
+            // go ahead and buy something
 
-			var purchased = new FutureChannel<Response<Purchased>>();
+            var purchased = new FutureChannel<Message<Purchased>>();
 
-			responseChannel.Connect(x => x.AddChannel(purchased));
+            responseChannel.Connect(x => x.AddChannel(purchased));
 
-			Auction.Request(new Buy
-				{
-					Quantity = 15,
-					Token = response.Value.Body.Token
-				}, responseChannel);
+//            Auction.Request(new Buy
+//                {
+//                    Quantity = 15,
+//                    Token = response.Value.Body.Token
+//                }.ToMessage(), responseChannel);
 
-			purchased.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for purchase");
+            purchased.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for purchase");
 
-			purchased.Value.Body.Quantity.ShouldEqual(15);
-			purchased.Value.Body.Price.ShouldEqual(response.Value.Body.CurrentBid);
-		}
-	}
+            purchased.Value.Body.Quantity.ShouldEqual(15);
+            purchased.Value.Body.Price.ShouldEqual(response.Value.Body.CurrentBid);
+        }
+    }
 }

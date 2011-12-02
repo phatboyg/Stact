@@ -31,6 +31,6 @@ namespace Stact.Web.Actors.Configuration
 		/// </summary>
 		/// <typeparam name="TActor"></typeparam>
 		ActorConfigurator<TActor> Add<TActor>()
-			where TActor : class, Actor;
+			where TActor : class;
 	}
 }

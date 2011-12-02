@@ -26,7 +26,7 @@ namespace Stact.Specs.Actors
 		{
 			var received = new Future<Fault>();
 
-			AnonymousActor.New(inbox =>
+			StatelessActor.New(inbox =>
 			{
 			    inbox.Receive<Fault>(fault =>
 			    {

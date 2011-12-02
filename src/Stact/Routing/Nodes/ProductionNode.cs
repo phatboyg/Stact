@@ -39,21 +39,21 @@ namespace Stact.Routing.Nodes
             get { return _enabled; }
         }
 
-        protected void Accept(RoutingContext<T> context, Action<T> callback)
+        protected void Accept(RoutingContext<T> context, Action<Message<T>> callback)
         {
             _engine.Add(context.Priority, () =>
                 {
                     if (!context.IsAlive)
                         return;
 
-                    T body = context.Body;
+                    Message<T> message = context.Message;
 
                     context.Evict();
 
                     if (_disableOnActivation)
                         _enabled = false;
 
-                    callback(body);
+                    callback(message);
                 });
         }
     }

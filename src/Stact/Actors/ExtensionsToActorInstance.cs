@@ -12,27 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using Internal;
-	using Magnum.Extensions;
+    using System;
+    using Internal;
+    using Magnum.Extensions;
 
 
-	public static class ExtensionsToActorInstance
-	{
-		public static IDisposable ExitOnDispose(this ActorRef actor)
-		{
-			return new DisposeCallback(() =>
-			{
-				actor.SendRequestWaitForResponse<Exit>(1.Days());
-			});
-		}
+    public static class ExtensionsToActorInstance
+    {
+        public static IDisposable ExitOnDispose(this ActorRef actor)
+        {
+            return new DisposeCallback(() => actor.BlockingRequest<Exit>(60.Seconds()));
+        }
 
-		public static IDisposable ExitOnDispose(this ActorRef actor, TimeSpan timeout)
-		{
-			return new DisposeCallback(() =>
-				{
-					actor.SendRequestWaitForResponse<Exit>(timeout);
-				});
-		}
-	}
+        public static IDisposable ExitOnDispose(this ActorRef actor, TimeSpan timeout)
+        {
+            return new DisposeCallback(() => actor.BlockingRequest<Exit>(timeout));
+        }
+
+        public static bool BlockingRequest<TRequest>(this ActorRef actor, TRequest request, TimeSpan timeout)
+        {
+            var future = new Future<Message<TRequest>>();
+
+            ActorRef responseActor =
+                StatelessActor.New(x =>
+                                   x.Receive<TRequest>(message => future.Complete(message), timeout, future.Cancel));
+
+            actor.Request(request, responseActor);
+
+            return future.WaitUntilCompleted(timeout);
+        }
+
+        public static bool BlockingRequest<TRequest>(this ActorRef actor, TimeSpan timeout)
+        {
+            var future = new Future<Message<TRequest>>();
+
+            ActorRef responseActor =
+                StatelessActor.New(x =>
+                                   x.Receive<TRequest>(message => future.Complete(message), timeout, future.Cancel));
+
+            actor.Request<TRequest>(responseActor);
+
+            return future.WaitUntilCompleted(timeout);
+        }
+    }
 }

@@ -26,7 +26,7 @@ namespace Stact.Specs
         public void Should_identify_a_wrapped_message()
         {
             var message = new MyMessage();
-            Message<MyMessage> wrapped = new MessageImpl<MyMessage>(message);
+            Message<MyMessage> wrapped = new MessageContext<MyMessage>(message);
 
             var collector = new TestCollector(typeof(MyMessage));
 
@@ -37,7 +37,7 @@ namespace Stact.Specs
         public void Should_identify_a_wrapped_message_behind_the_interface()
         {
             var message = new MyMessage();
-            var wrapped = new MessageImpl<MyMessage>(message);
+            var wrapped = new MessageContext<MyMessage>(message);
 
             var collector = new TestCollector(typeof(MyMessage));
 

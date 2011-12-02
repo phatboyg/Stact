@@ -30,11 +30,11 @@ namespace Stact.Remote
 		readonly Serializer _serializer;
 		RemoteNode _localNode;
 
-		public RemoteNodeCollection(Uri inputAddress, UntypedChannel input, FiberFactory fiberFactory, Scheduler scheduler,
+		public RemoteNodeCollection(Uri inputAddress, ActorRef input, FiberFactory fiberFactory, Scheduler scheduler,
 		                            Serializer serializer)
 			: this(fiberFactory, scheduler, serializer)
 		{
-			CreateLocalNode(inputAddress, input);
+			//CreateLocalNode(inputAddress, input);
 		}
 
 		public RemoteNodeCollection(FiberFactory fiberFactory, Scheduler scheduler, Serializer serializer)

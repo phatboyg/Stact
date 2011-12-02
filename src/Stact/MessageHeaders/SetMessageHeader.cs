@@ -12,34 +12,18 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
+    using System;
 
 
-	public interface SetMessageHeader
-	{
-		/// <summary>
-		/// The identifier for this message
-		/// </summary>
-		string MessageId { set; }
+    public interface SetMessageHeader
+    {
+        SetMessageHeader SetMessageId(string messageId);
+        SetMessageHeader SetRequestId(string requestId);
+        SetMessageHeader SetCorrelationId(string correlationId);
 
-		/// <summary>
-		/// The identifier correlating this message to a message exchange/conversation
-		/// </summary>
-		string CorrelationId { set; }
-
-		/// <summary>
-		/// The sender address of the message
-		/// </summary>
-		Uri SenderAddress { set; }
-
-		/// <summary>
-		/// The final destination of the message
-		/// </summary>
-		Uri DestinationAddress { set; }
-
-		/// <summary>
-		/// The address where faults should be sent
-		/// </summary>
-		Uri FaultAddress { set; }
-	}
+        SetMessageHeader SetSourceAddress(Uri sourceAddress);
+        SetMessageHeader SetDestinationAddress(Uri destinationAddress);
+        SetMessageHeader SetResponseAddress(Uri responseAddress);
+        SetMessageHeader SetFaultAddress(Uri faultAddress);
+    }
 }

@@ -12,14 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	
+    using System;
 
 
-	public interface WithinSentRequest<TRequest>
-	{
-		WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer);
-		WithinSentRequest<TRequest> Receive<T>(Consumer<T> consumer);
-		WithinSentRequest<TRequest> Otherwise(Action timeoutCallback);
-	}
+    public interface WithinSentRequest<TRequest>
+    {
+        WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<Message<T>> consumer);
+        WithinSentRequest<TRequest> Receive<T>(Consumer<Message<T>> consumer);
+        WithinSentRequest<TRequest> Otherwise(Action timeoutCallback);
+    }
 }

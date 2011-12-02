@@ -12,22 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
+    using System;
 
 
-	public class StopFiberOnDispose :
-		IDisposable
-	{
-		readonly Fiber _fiber;
+    public class StopFiberOnDispose :
+        IDisposable
+    {
+        readonly Fiber _fiber;
+        readonly TimeSpan _timeout;
 
-		public StopFiberOnDispose(Fiber fiber)
-		{
-			_fiber = fiber;
-		}
+        public StopFiberOnDispose(Fiber fiber, TimeSpan timeout)
+        {
+            _fiber = fiber;
+            _timeout = timeout;
+        }
 
-		public void Dispose()
-		{
-			_fiber.Stop();
-		}
-	}
+        public void Dispose()
+        {
+            _fiber.Stop(_timeout);
+        }
+    }
 }

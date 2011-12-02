@@ -25,7 +25,7 @@ namespace Stact
 		Fiber
 	{
 		readonly OperationExecutor _executor;
-		bool _shuttingDown;
+		bool _stopping;
 
 		public SynchronousFiber()
 			: this(new BasicOperationExecutor())
@@ -39,7 +39,7 @@ namespace Stact
 
 		public void Add(Action operation)
 		{
-			if (_shuttingDown)
+			if (_stopping)
 				return;
 				// seems to be causing more problems that it solves
 				// throw new FiberException("The fiber is no longer accepting actions");
@@ -47,14 +47,14 @@ namespace Stact
 			_executor.Execute(operation);
 		}
 
-		public void Stop()
+		public void Kill()
 		{
 			_executor.Stop();
 		}
 
-		public void Shutdown(TimeSpan timeout)
+		public void Stop(TimeSpan timeout)
 		{
-			_shuttingDown = true;
+			_stopping = true;
 		}
 	}
 }

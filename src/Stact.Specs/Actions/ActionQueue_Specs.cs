@@ -29,11 +29,11 @@ namespace Stact.Specs.Actions
 
 			var called = new Future<bool>();
 
-			fiber.Stop();
+			fiber.Kill();
 
 			fiber.Add(() => called.Complete(true));
 
-			fiber.Shutdown(10.Seconds());
+			fiber.Stop(10.Seconds());
 
 			called.IsCompleted.ShouldBeFalse();
 		}
@@ -55,7 +55,7 @@ namespace Stact.Specs.Actions
 
 			Stopwatch timer = Stopwatch.StartNew();
 
-			fiber.Shutdown(8.Seconds());
+			fiber.Stop(8.Seconds());
 
 			timer.Stop();
 
@@ -81,7 +81,7 @@ namespace Stact.Specs.Actions
 
 			fiber.Add(() => called.Complete(true));
 
-			fiber.Shutdown(112.Seconds());
+			fiber.Stop(112.Seconds());
 
 			called.IsCompleted.ShouldBeTrue();
 		}

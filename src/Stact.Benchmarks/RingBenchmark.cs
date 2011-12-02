@@ -35,7 +35,6 @@ namespace Stact.Benchmarks
 
         public void Run()
         {
-            _ringNodeFactory = ActorFactory.Create(inbox => new RingNode(inbox));
 
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -58,7 +57,7 @@ namespace Stact.Benchmarks
         public void Run(int nodeCount, int roundCount)
         {
             _complete = new Future<bool>();
-            _first = _ringNodeFactory.GetActor();
+            _first = _ringNodeFactory.New(new RingNode(null)).Self;
             _first.Request(new Init
                 {
                     NodeCount = nodeCount - 1,
@@ -76,12 +75,11 @@ namespace Stact.Benchmarks
         }
 
 
-        class RingNode :
-            Actor
+        class RingNode 
         {
-            public RingNode(Inbox inbox)
+            public RingNode(Actor<RingNode> inbox)
             {
-                inbox.Receive<Request<Init>>(init =>
+                inbox.Receive<Init>(init =>
                     {
                         if (init.Body.NodeCount == 0)
                         {
@@ -94,7 +92,7 @@ namespace Stact.Benchmarks
                                 {
                                     loop.Receive<Token>(token =>
                                         {
-                                            int remaining = token.RemainingRounds - 1;
+                                            int remaining = token.Body.RemainingRounds - 1;
 
                                             if (remaining == 0)
                                                 _complete.Complete(true);
@@ -112,12 +110,12 @@ namespace Stact.Benchmarks
                         }
                         else
                         {
-                            ActorRef next = _ringNodeFactory.GetActor();
+                            ActorRef next = _ringNodeFactory.New(new RingNode(null)).Self;
                             next.Request(new Init
                                 {
                                     NodeCount = init.Body.NodeCount - 1,
                                     RoundCount = init.Body.RoundCount,
-                                }, init.ResponseChannel);
+                                }, init.Sender);
 
                             inbox.Loop(loop =>
                                 {

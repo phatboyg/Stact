@@ -12,122 +12,116 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Usage
 {
-	using System.Diagnostics;
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
 
 
-	[Scenario]
-	public class When_an_agent_is_paused_after_the_first_message
-	{
-		Update _first;
-		Update _second;
+    [Scenario]
+    public class When_an_agent_is_paused_after_the_first_message
+    {
+        Update _first;
+        Update _second;
 
-		[When]
-		public void An_agent_is_paused()
-		{
-			ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
+        [When]
+        public void An_agent_is_paused()
+        {
+            var agent = Actor.New(new Agent());
 
-			ActorRef agent = agentFactory.GetActor();
+            _first = new Update();
+            _second = new Update();
 
-			_first = new Update();
-			_second = new Update();
+            agent.Send(_first.ToMessage());
+            agent.Send<Suspend>();
+            agent.Send(_second.ToMessage());
 
-			agent.Send(_first);
-			agent.Send<Suspend>();
-			agent.Send(_second);
-
-			_first.WaitUntilCompleted(2.Seconds());
-			_second.WaitUntilCompleted(2.Seconds());
-		}
+            _first.WaitUntilCompleted(2.Seconds());
+            _second.WaitUntilCompleted(2.Seconds());
+        }
 
 
-		[Then]
-		public void Should_process_the_first_message()
-		{
-			_first.IsCompleted.ShouldBeTrue();
-		}
+        [Then]
+        public void Should_process_the_first_message()
+        {
+            _first.IsCompleted.ShouldBeTrue();
+        }
 
-		[Then]
-		public void Should_not_process_the_second_message()
-		{
-			_second.IsCompleted.ShouldBeFalse();
-		}
-	}
-
-
-	[Scenario]
-	public class When_an_agent_is_paused_and_later_continued
-	{
-		Update _first;
-		Update _second;
-		Update _third;
-
-		[When]
-		public void An_agent_is_paused()
-		{
-			ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
-
-			ActorRef agent = agentFactory.GetActor();
-
-			_first = new Update();
-			_second = new Update();
-			_third = new Update();
-
-			agent.Send(_first);
-			agent.Send<Suspend>();
-			agent.Send(_second);
-
-			_first.WaitUntilCompleted(2.Seconds());
-			_second.WaitUntilCompleted(1.Seconds()).ShouldBeFalse();
-
-			agent.Send<Resume>();
-			_second.WaitUntilCompleted(2.Seconds());
-
-			agent.Send(_third);
-			_third.WaitUntilCompleted(2.Seconds());
-		}
+        [Then]
+        public void Should_not_process_the_second_message()
+        {
+            _second.IsCompleted.ShouldBeFalse();
+        }
+    }
 
 
-		[Then]
-		public void Should_process_the_first_message()
-		{
-			_first.IsCompleted.ShouldBeTrue();
-		}
+    [Scenario]
+    public class When_an_agent_is_paused_and_later_continued
+    {
+        Update _first;
+        Update _second;
+        Update _third;
 
-		[Then]
-		public void Should_process_the_second_message()
-		{
-			_second.IsCompleted.ShouldBeTrue();
-		}
+        [When]
+        public void An_agent_is_paused()
+        {
+            var agent = Actor.New(new Agent());
 
-		[Then]
-		public void Should_process_the_third_message()
-		{
-			_second.IsCompleted.ShouldBeTrue();
-		}
-	}
+            _first = new Update();
+            _second = new Update();
+            _third = new Update();
 
+            agent.Send(_first.ToMessage());
+            agent.Send<Suspend>();
+            agent.Send(_second.ToMessage());
 
-	class Agent :
-		Actor
-	{
-		public Agent(Inbox inbox)
-		{
-			inbox.Loop(loop =>
-			{
-				loop.EnableSuspendResume(inbox)
-					.Receive<Update>(update =>
-					{
-						update.Complete(Stopwatch.GetTimestamp());
+            _first.WaitUntilCompleted(2.Seconds());
+            _second.WaitUntilCompleted(1.Seconds()).ShouldBeFalse();
 
-						loop.Continue();
-					});
-			});
-		}
-	}
+            agent.Send<Resume>();
+            _second.WaitUntilCompleted(2.Seconds());
+
+            agent.Send(_third.ToMessage());
+            _third.WaitUntilCompleted(2.Seconds());
+        }
 
 
-	class Update :
-		Future<long> {}
+        [Then]
+        public void Should_process_the_first_message()
+        {
+            _first.IsCompleted.ShouldBeTrue();
+        }
+
+        [Then]
+        public void Should_process_the_second_message()
+        {
+            _second.IsCompleted.ShouldBeTrue();
+        }
+
+        [Then]
+        public void Should_process_the_third_message()
+        {
+            _second.IsCompleted.ShouldBeTrue();
+        }
+    }
+
+
+    class Agent
+    {
+        public Agent()
+        {
+//			inbox.Loop(loop =>
+//			{
+//				loop.EnableSuspendResume(inbox)
+//					.Receive<Update>(update =>
+//					{
+//						update.Complete(Stopwatch.GetTimestamp());
+//
+//						loop.Continue();
+//					});
+//			});
+        }
+    }
+
+
+    class Update :
+        Future<long> {}
 }

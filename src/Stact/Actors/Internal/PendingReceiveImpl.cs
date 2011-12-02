@@ -10,36 +10,32 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Internal
+namespace Stact.Internal
 {
     using System;
-    using System.Collections.Generic;
-    using Actors;
-    using Configuration;
 
 
-    public class PendingReceiveImpl<TMessage> :
+    public class PendingReceiveImpl<TState, TMessage> :
         PendingReceive
     {
-        readonly Action<PendingReceiveImpl<TMessage>> _onComplete;
-        readonly SelectiveConsumer<TMessage> _selectiveConsumer;
+        readonly Action<PendingReceiveImpl<TState, TMessage>> _onComplete;
+        readonly SelectiveConsumer<Message<TMessage>> _selectiveConsumer;
         readonly Action _timeoutCallback;
         bool _cancel;
-        Inbox _inbox;
         ScheduledOperation _scheduledAction;
 
-        public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer, Action timeoutCallback,
-                                  Action<PendingReceiveImpl<TMessage>> onComplete)
+        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
+                                  Action timeoutCallback,
+                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
         {
             _selectiveConsumer = selectiveConsumer;
-            _inbox = inbox;
             _timeoutCallback = timeoutCallback;
             _onComplete = onComplete;
         }
 
-        public PendingReceiveImpl(Inbox inbox, SelectiveConsumer<TMessage> selectiveConsumer,
-                                  Action<PendingReceiveImpl<TMessage>> onComplete)
-            : this(inbox, selectiveConsumer, NoTimeoutCallback, onComplete)
+        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
+                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
+            : this(selectiveConsumer, NoTimeoutCallback, onComplete)
         {
         }
 
@@ -50,37 +46,8 @@ namespace Stact.Actors.Internal
             _onComplete(this);
         }
 
-        public void Send<T>(T message)
-        {
-            _inbox.Send(message);
-        }
 
-        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer)
-        {
-            return _inbox.Receive(consumer);
-        }
-
-        public PendingReceive Receive<T>(SelectiveConsumer<T> consumer, TimeSpan timeout, Action timeoutCallback)
-        {
-            return _inbox.Receive(consumer, timeout, timeoutCallback);
-        }
-
-        public void SetExceptionHandler(ActorExceptionHandler handler)
-        {
-            _inbox.SetExceptionHandler(handler);
-        }
-
-        public IEnumerable<ActorRef> LinkedActors
-        {
-            get { return _inbox.LinkedActors; }
-        }
-
-        public ChannelConnection Connect(Action<ConnectionConfigurator> subscriberActions)
-        {
-            return _inbox.Connect(subscriberActions);
-        }
-
-        public void ScheduleTimeout(Func<PendingReceiveImpl<TMessage>, ScheduledOperation> scheduleAction)
+        public void ScheduleTimeout(Func<PendingReceiveImpl<TState, TMessage>, ScheduledOperation> scheduleAction)
         {
             _scheduledAction = scheduleAction(this);
         }
@@ -89,12 +56,12 @@ namespace Stact.Actors.Internal
         {
         }
 
-        public Consumer<TMessage> Accept(TMessage message)
+        public Consumer<Message<TMessage>> Accept(Message<TMessage> message)
         {
             if (_cancel)
                 return null;
 
-            Consumer<TMessage> consumer = _selectiveConsumer(message);
+            Consumer<Message<TMessage>> consumer = _selectiveConsumer(message);
             if (consumer == null)
                 return null;
 

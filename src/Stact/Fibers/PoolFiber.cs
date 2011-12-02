@@ -30,7 +30,7 @@ namespace Stact
     {
         readonly OperationExecutor _executor;
         readonly object _lock = new object();
-        IList<Action> _empty = new List<Action>();
+        readonly IList<Action> _empty = new List<Action>();
 
         bool _executorQueued;
         IList<Action> _operations = new List<Action>();
@@ -59,7 +59,7 @@ namespace Stact
             }
         }
 
-        public void Shutdown(TimeSpan timeout)
+        public void Stop(TimeSpan timeout)
         {
             if (timeout == TimeSpan.Zero)
             {
@@ -90,7 +90,7 @@ namespace Stact
             }
         }
 
-        public void Stop()
+        public void Kill()
         {
             _shuttingDown = true;
 

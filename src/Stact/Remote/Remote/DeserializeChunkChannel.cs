@@ -12,122 +12,108 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.IO;
-	using Magnum.Reflection;
-	using Magnum.Serialization;
-	using MessageHeaders;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using Magnum.Reflection;
+    using Magnum.Serialization;
+    using MessageHeaders;
 
 
-	public class DeserializeChunkChannel :
-		Channel<ArraySegment<byte>>
-	{
-		readonly UntypedChannel _output;
-		readonly Serializer _serializer;
-		readonly TraceSource _ts;
+    public class DeserializeChunkChannel :
+        Channel<ArraySegment<byte>>
+    {
+        readonly UntypedChannel _output;
+        readonly Serializer _serializer;
+        readonly TraceSource _ts;
 
-		public DeserializeChunkChannel(UntypedChannel output, Serializer serializer)
-		{
-			_ts = new TraceSource("Stact.Remote", SourceLevels.All);
+        public DeserializeChunkChannel(UntypedChannel output, Serializer serializer)
+        {
+            _ts = new TraceSource("Stact.Remote", SourceLevels.All);
 
-			_output = output;
-			_serializer = serializer;
-		}
+            _output = output;
+            _serializer = serializer;
+        }
 
-		public void Send(ArraySegment<byte> chunk)
-		{
-			int offset = 0;
-			while (offset < chunk.Count)
-			{
-				int headerLength = BitConverter.ToInt32(chunk.Array, offset);
-				int bodyLength = BitConverter.ToInt32(chunk.Array, offset + 4);
+        public void Send(ArraySegment<byte> chunk)
+        {
+            int offset = 0;
+            while (offset < chunk.Count)
+            {
+                int headerLength = BitConverter.ToInt32(chunk.Array, offset);
+                int bodyLength = BitConverter.ToInt32(chunk.Array, offset + 4);
 
-				if (offset + headerLength + bodyLength > chunk.Count)
-				{
-					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Invalid header or body length specified");
-					return;
-				}
+                if (offset + headerLength + bodyLength > chunk.Count)
+                {
+                    _ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Invalid header or body length specified");
+                    return;
+                }
 
-				IDictionary<string, string> headers = DeserializeHeaders(chunk, offset, headerLength);
+                IDictionary<string, string> headers = DeserializeHeaders(chunk, offset, headerLength);
 
-				DeserializeBody(chunk, offset + headerLength + 8, bodyLength, headers);
+                DeserializeBody(chunk, offset + headerLength + 8, bodyLength, headers);
 
-				offset = offset + 8 + headerLength + bodyLength;
-			}
-		}
+                offset = offset + 8 + headerLength + bodyLength;
+            }
+        }
 
-		void DeserializeBody(ArraySegment<byte> chunk, int bodyOffset, int bodyLength, IDictionary<string, string> headers)
-		{
-			try
-			{
-				string typeName;
-				if (!headers.TryGetValue("BodyType", out typeName))
-				{
-					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not specified");
-					return;
-				}
+        void DeserializeBody(ArraySegment<byte> chunk, int bodyOffset, int bodyLength, IDictionary<string, string> headers)
+        {
+            try
+            {
+                string typeName;
+                if (!headers.TryGetValue("BodyType", out typeName))
+                {
+                    _ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not specified");
+                    return;
+                }
 
-				var urn = new MessageUrn(typeName);
-				Type messageType = urn.GetType();
-				if (messageType == null)
-				{
-					_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not recognized, discarded");
-					return;
-				}
+                var urn = new MessageUrn(typeName);
+                Type messageType = urn.GetType();
+                if (messageType == null)
+                {
+                    _ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "BodyType not recognized, discarded");
+                    return;
+                }
 
-				using (var bodyStream = new MemoryStream(chunk.Array, bodyOffset, bodyLength, false))
-				using (TextReader bodyReader = new StreamReader(bodyStream))
-					this.FastInvoke(new[] {messageType}, "Deserialize", bodyReader, headers);
-			}
-			catch (Exception)
-			{
-				_ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Unexpected error deserializing message");
-			}
-		}
+                using (var bodyStream = new MemoryStream(chunk.Array, bodyOffset, bodyLength, false))
+                using (TextReader bodyReader = new StreamReader(bodyStream))
+                    this.FastInvoke(new[] {messageType}, "Deserialize", bodyReader, headers);
+            }
+            catch (Exception)
+            {
+                _ts.TraceEvent(TraceEventType.Error, RemoteError.BadRequest, "Unexpected error deserializing message");
+            }
+        }
 
-		IDictionary<string, string> DeserializeHeaders(ArraySegment<byte> chunk, int offset, int length)
-		{
-			IDictionary<string, string> headers;
-			if (length > 0)
-			{
-				using (var headerStream = new MemoryStream(chunk.Array, offset + 8, length, false))
-				using (var headerReader = new StreamReader(headerStream))
-					headers = _serializer.Deserialize<IDictionary<string, string>>(headerReader);
-			}
-			else
-				headers = new Dictionary<string, string>();
+        IDictionary<string, string> DeserializeHeaders(ArraySegment<byte> chunk, int offset, int length)
+        {
+            IDictionary<string, string> headers;
+            if (length > 0)
+            {
+                using (var headerStream = new MemoryStream(chunk.Array, offset + 8, length, false))
+                using (var headerReader = new StreamReader(headerStream))
+                    headers = _serializer.Deserialize<IDictionary<string, string>>(headerReader);
+            }
+            else
+                headers = new Dictionary<string, string>();
 
-			return headers;
-		}
+            return headers;
+        }
 
 // ReSharper disable UnusedMember.Local
-		void Deserialize<TMessage>(TextReader reader, IDictionary<string, string> headers)
+        void Deserialize<TMessage>(TextReader reader, IDictionary<string, string> headers)
 // ReSharper restore UnusedMember.Local
-		{
-			var message = _serializer.Deserialize<TMessage>(reader);
+        {
+            var message = _serializer.Deserialize<TMessage>(reader);
 
-			SendToOutput(message, headers);
-		}
+            SendToOutput(message, headers);
+        }
 
-		void SendToOutput<TBody>(TBody body, IDictionary<string, string> headers)
-		{
-			string method = headers[HeaderKey.Method];
-			switch (method)
-			{
-				case MessageMethod.Request:
-					_output.Send<Request<TBody>>(new RequestImpl<TBody>(new ShuntChannel(), body, headers));
-					break;
-
-				case MessageMethod.Response:
-					_output.Send<Response<TBody>>(new ResponseImpl<TBody>(body, headers));
-					break;
-
-				default:
-					_output.Send<Message<TBody>>(new MessageImpl<TBody>(body, headers));
-					break;
-			}
-		}
-	}
+        void SendToOutput<TBody>(TBody body, IDictionary<string, string> headers)
+        {
+            _output.Send<Message<TBody>>(new MessageContext<TBody>(body, headers));
+        }
+    }
 }

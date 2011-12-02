@@ -26,20 +26,20 @@ namespace Stact.Benchmarks
 		{
 			var network = new Uri("pgm://224.0.0.7:40001");
 
-			ActorRef actor = AnonymousActor.New(inbox =>
+			ActorRef actor = StatelessActor.New(inbox =>
 			{
 				inbox.Loop(loop =>
 				{
 					loop
 						.Receive<A>(message =>
 						{
-							Console.WriteLine("Received: " + message.Name);
+							Console.WriteLine("Received: " + message.Body.Name);
 
 							loop.Continue();
 						})
 						.Receive<B>(message =>
 						{
-							Console.WriteLine("Received: " + message.Address);
+                            Console.WriteLine("Received: " + message.Body.Address);
 							loop.Continue();
 						});
 				});
@@ -84,21 +84,23 @@ namespace Stact.Benchmarks
 						}
 						Console.WriteLine("Sent message");
 
-						var reader = new DeserializeChunkChannel(actor, new FastTextSerializer());
+					    throw new NotImplementedException();
 
-						using (var listener = new ReliableMulticastListener(network, reader))
-						{
-							Console.WriteLine("Listener created");
-							listener.Start();
-
-							Console.WriteLine("Listener started");
-
-							Thread.Sleep(2000);
-
-							Console.WriteLine("Leaving Listener");
-						}
-
-						Console.WriteLine("Listener stopped");
+//						var reader = new DeserializeChunkChannel(actor, new FastTextSerializer());
+//
+//						using (var listener = new ReliableMulticastListener(network, reader))
+//						{
+//							Console.WriteLine("Listener created");
+//							listener.Start();
+//
+//							Console.WriteLine("Listener started");
+//
+//							Thread.Sleep(2000);
+//
+//							Console.WriteLine("Leaving Listener");
+//						}
+//
+//						Console.WriteLine("Listener stopped");
 					}
 				}
 			}

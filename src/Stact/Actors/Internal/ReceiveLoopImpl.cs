@@ -16,31 +16,31 @@ namespace Stact.Internal
     using System.Collections.Generic;
 
 
-    public class ReceiveLoopImpl :
+    public class ReceiveLoopImpl<TState> :
         ReceiveLoop
     {
-        readonly Inbox _inbox;
+        readonly Actor<TState> _actor;
         readonly PendingReceiveList _pending;
         readonly IList<Func<PendingReceive>> _receivers;
 
-        public ReceiveLoopImpl(Inbox inbox)
+        public ReceiveLoopImpl(Actor<TState> actor)
         {
-            _inbox = inbox;
+            _actor = actor;
 
             _pending = new PendingReceiveList();
 
             _receivers = new List<Func<PendingReceive>>
                 {
-                    () => _inbox.Receive<Request<Exit>>(HandleExit),
-                    () => _inbox.Receive<Kill>(message => CancelPendingReceives()),
+                    () => _actor.Receive<Exit>(HandleExit),
+                    () => _actor.Receive<Kill>(message => CancelPendingReceives()),
                 };
         }
 
-        public ReceiveLoop Receive<T>(SelectiveConsumer<T> consumer)
+        public ReceiveLoop Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            Func<PendingReceive> receiver = () => _inbox.Receive((SelectiveConsumer<T>)(candidate =>
+            Func<PendingReceive> receiver = () => _actor.Receive((SelectiveConsumer<Message<T>>)(candidate =>
                 {
-                    Consumer<T> accepted = consumer(candidate);
+                    Consumer<Message<T>> accepted = consumer(candidate);
                     if (accepted == null)
                         return null;
 
@@ -60,7 +60,7 @@ namespace Stact.Internal
                 _pending.Add(_receivers[i]());
         }
 
-        Consumer<Request<Exit>> HandleExit(Request<Exit> request)
+        Consumer<Message<Exit>> HandleExit(Message<Exit> request)
         {
             return message =>
                 {

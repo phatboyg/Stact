@@ -12,11 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public static class ReceiveLoopExtensions
-	{
-		public static ReceiveLoop Receive<T>(this ReceiveLoop loop, Consumer<T> consumer)
-		{
-			return loop.Receive<T>(x => consumer);
-		}
-	}
+    public static class ReceiveLoopExtensions
+    {
+        public static ReceiveLoop Receive<T>(this ReceiveLoop loop, Consumer<Message<T>> consumer)
+        {
+            return loop.Receive<T>(x => consumer);
+        }
+    }
 }

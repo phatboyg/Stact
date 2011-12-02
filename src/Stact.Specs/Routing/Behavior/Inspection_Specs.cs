@@ -56,7 +56,7 @@ namespace Stact.Specs.Redesign
 
             engine.Configure(x => { x.Receive<Message<A>>(called.Complete); });
 
-            engine.Send<Message<A>>(new MessageImpl<A>(new A()));
+            engine.Send<Message<A>>(new MessageContext<A>(new A()));
 
             called.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message was not delivered");
 

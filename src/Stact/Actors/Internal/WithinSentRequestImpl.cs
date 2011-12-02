@@ -12,75 +12,75 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
+    using System;
 
 
-	public class WithinSentRequestImpl<TRequest> :
-		WithinSentRequest<TRequest>
-	{
-		readonly Inbox _inbox;
-		readonly PendingReceiveList _receives;
-		readonly TimeSpan _timeout;
-		bool _handled;
-		Action _timeoutCallback = DoNothing;
+    public class WithinSentRequestImpl<TRequest> :
+        WithinSentRequest<TRequest>
+    {
+        readonly PendingReceiveList _receives;
+        readonly SentRequest<TRequest> _request;
+        readonly TimeSpan _timeout;
+        bool _handled;
+        Action _timeoutCallback = DoNothing;
 
-		public WithinSentRequestImpl(Inbox inbox, TimeSpan timeout)
-		{
-			_inbox = inbox;
-			_timeout = timeout;
+        public WithinSentRequestImpl(SentRequest<TRequest> request, TimeSpan timeout)
+        {
+            _request = request;
+            _timeout = timeout;
 
-			_receives = new PendingReceiveList();
-		}
+            _receives = new PendingReceiveList();
+        }
 
-		public WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<T> consumer)
-		{
-			PendingReceive receive = _inbox.Receive<T>(candidate =>
-				{
-					Consumer<T> accepted = consumer(candidate);
-					if (accepted == null)
-						return null;
+        public WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<Message<T>> consumer)
+        {
+            PendingReceive receive = _request.Inbox.Receive<T>(candidate =>
+                {
+                    Consumer<Message<T>> accepted = consumer(candidate);
+                    if (accepted == null)
+                        return null;
 
-					return message =>
-						{
-							accepted(message);
+                    return message =>
+                        {
+                            accepted(message);
 
-							_receives.CancelAll();
+                            _receives.CancelAll();
 
-							_handled = true;
-						};
-				}, _timeout, HandleTimeout);
+                            _handled = true;
+                        };
+                }, _timeout, HandleTimeout);
 
-			_receives.Add(receive);
+            _receives.Add(receive);
 
-			return this;
-		}
+            return this;
+        }
 
-	    public WithinSentRequest<TRequest> Receive<T>(Consumer<T> consumer)
-	    {
-	        return Receive<T>(x => consumer);
-	    }
+        public WithinSentRequest<TRequest> Receive<T>(Consumer<Message<T>> consumer)
+        {
+            return Receive<T>(x => consumer);
+        }
 
-	    public WithinSentRequest<TRequest> Otherwise(Action timeoutCallback)
-		{
-			_timeoutCallback = timeoutCallback;
+        public WithinSentRequest<TRequest> Otherwise(Action timeoutCallback)
+        {
+            _timeoutCallback = timeoutCallback;
 
-			return this;
-		}
+            return this;
+        }
 
-		void HandleTimeout()
-		{
-			if (_handled)
-				return;
+        void HandleTimeout()
+        {
+            if (_handled)
+                return;
 
-			_timeoutCallback();
+            _timeoutCallback();
 
-			_receives.CancelAll();
+            _receives.CancelAll();
 
-			_handled = true;
-		}
+            _handled = true;
+        }
 
-		static void DoNothing()
-		{
-		}
-	}
+        static void DoNothing()
+        {
+        }
+    }
 }

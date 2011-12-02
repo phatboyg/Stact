@@ -16,37 +16,36 @@ namespace Stact.Actors.Actors
     using System.Collections.Generic;
 
 
-    public class SupervisorActor :
-        Actor
+    public class SupervisorActor
     {
-        readonly Inbox _inbox;
+        readonly ActorInbox _inbox;
 
-        public SupervisorActor(Inbox inbox, ActorExceptionHandler handler,
+        public SupervisorActor(ActorInbox inbox, ActorExceptionHandler handler,
                                Action<ActorRef, ActorRestartLimitReached> restartLimitReachedHandler)
         {
             _inbox = inbox;
-            inbox.SetExceptionHandler(handler);
+            //inbox.SetExceptionHandler(handler);
 
-            inbox.Receive<ActorRestartLimitReached>(msg => restartLimitReachedHandler(inbox, msg));
+            //inbox.Receive<ActorRestartLimitReached>(msg => restartLimitReachedHandler(inbox, msg));
         }
 
-        public void HandleStop(Request<Stop> request)
+        public void HandleStop(Message<Stop> request)
         {
-            IEnumerator<ActorRef> next = _inbox.LinkedActors.GetEnumerator();
-            if (next.MoveNext())
-            {
-                AnonymousActor.New(x => x.Loop(loop =>
-                    {
-                        next.Current.Request<Stop>(x)
-                            .Receive<Response<Stop>>(response =>
-                                {
-                                    if (next.MoveNext())
-                                        loop.Continue();
-                                    else
-                                        request.Respond();
-                                });
-                    }));
-            }
+//            IEnumerator<ActorRef> next = _inbox.LinkedActors.GetEnumerator();
+//            if (next.MoveNext())
+//            {
+//                StatelessActor.New(x => x.Loop(loop =>
+//                    {
+//                        next.Current.Request<Stop>(x)
+//                            .Receive<Message<Stop>>(response =>
+//                                {
+//                                    if (next.MoveNext())
+//                                        loop.Continue();
+//                                    else
+//                                        request.Respond<Stop>();
+//                                });
+//                    }));
+//            }
         }
     }
 }

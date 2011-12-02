@@ -16,8 +16,6 @@ namespace Stact.MessageHeaders
 	{
 		void Body<TBody>(TBody body);
 		void Message<TBody>(Message<TBody> message);
-		void Request<TRequest>(Request<TRequest> request);
-		void Response<TResponse>(Response<TResponse> response);
 	}
 
 
@@ -29,7 +27,5 @@ namespace Stact.MessageHeaders
 	{
 		void Body<TBody>(TContext context, TBody body);
 		void Message<TBody>(TContext context, Message<TBody> message);
-		void Request<TRequest>(TContext context, Request<TRequest> request);
-		void Response<TResponse>(TContext context, Response<TResponse> response);
 	}
 }

@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
+    using System;
     using System.Diagnostics;
-    using Stact.Internal;
 
 
     public class TraceRoutingEngineVisualizer
@@ -23,13 +23,13 @@ namespace Stact.Routing.Visualizers
             Trace.WriteLine(new StringRoutingEngineVisitor(engine).ToString());
         }
 
-        public void Show(ActorRef actor)
+        public void Show<TState>(Actor<TState> actor)
         {
-            var inbox = actor as ActorInbox;
-            if (inbox == null)
-                return;
+            var stactActor = actor as StactActor<TState>;
+            if (stactActor == null)
+                throw new ArgumentException("Actor is not a StactActor");
 
-            Trace.WriteLine(new StringRoutingEngineVisitor(inbox.Engine).ToString());
+            Trace.WriteLine(new StringRoutingEngineVisitor(stactActor.Engine).ToString());
         }
     }
 }

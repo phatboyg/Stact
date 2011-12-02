@@ -48,9 +48,9 @@ namespace Stact
 			return scheduler.Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, operation);
 		}
 
-		public static IDisposable ShutdownOnDispose(this Scheduler scheduler, TimeSpan timeout)
+		public static IDisposable StopOnDispose(this Scheduler scheduler, TimeSpan timeout)
 		{
-			return new ShutdownSchedulerOnDispose(scheduler, timeout);
+			return new StopSchedulerOnDispose(scheduler, timeout);
 		}
 
 	}

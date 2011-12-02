@@ -66,6 +66,6 @@ namespace Stact.Configuration
 		/// </summary>
 		/// <param name = "timeout"></param>
 		/// <returns></returns>
-		T UseShutdownTimeout(TimeSpan timeout);
+		T SetStopTimeout(TimeSpan timeout);
 	}
 }

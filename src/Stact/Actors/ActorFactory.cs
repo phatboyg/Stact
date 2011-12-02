@@ -12,65 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    using System;
-    using Configuration;
-    using Configuration.Internal;
-    using Internal;
-
-
-    public static class ActorFactory
+    public interface ActorFactory
     {
-        public static ActorFactory<TActor> Create<TActor>(Action<ActorFactoryConfigurator<TActor>> configurator)
-            where TActor : class, Actor
-        {
-            var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TActor>();
-
-            configurator(factoryConfiguratorImpl);
-
-            return factoryConfiguratorImpl.CreateActorFactory();
-        }
-
-        public static ActorFactory<TActor> Create<TActor>(Func<Inbox, TActor> actorFactory)
-            where TActor : class, Actor
-        {
-            return Create<TActor>(x => x.ConstructedBy(actorFactory));
-        }
-
-        public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Inbox, TActor> actorFactory)
-            where TActor : class, Actor
-        {
-            return Create<TActor>(x => x.ConstructedBy(actorFactory));
-        }
-
-        public static ActorFactory<TActor> Create<TActor>(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
-            where TActor : class, Actor
-        {
-            return Create<TActor>(x => x.ConstructedBy(actorFactory));
-        }
-
-        public static AnonymousActorFactory CreateAnonymousActorFactory(
-            Action<ActorFactoryConfigurator<AnonymousActor>> configurator)
-        {
-            var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<AnonymousActor>();
-
-            configurator(factoryConfiguratorImpl);
-
-            return factoryConfiguratorImpl.CreateActorFactory() as AnonymousActorFactory;
-        }
+        ActorRef New<TState>(TState state);
     }
 
 
     /// <summary>
     /// A builder abstraction for creating actor instances when needed
     /// </summary>
-    /// <typeparam name="TActor">The actor type</typeparam>
-    public interface ActorFactory<TActor>
-        where TActor : class, Actor
+    /// <typeparam name="TState">The actor type</typeparam>
+    public interface ActorFactory<TState> :
+        ActorFactory
     {
         /// <summary>
         /// Returns an instance of an actor
         /// </summary>
         /// <returns></returns>
-        ActorRef GetActor();
+        Actor<TState> New(TState state);
     }
 }

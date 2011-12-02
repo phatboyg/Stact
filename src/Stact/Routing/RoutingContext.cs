@@ -23,25 +23,14 @@ namespace Stact.Routing
     }
 
 
-    public interface RoutingContext<T> :
+    public interface RoutingContext<out T> :
         RoutingContext
     {
-        T Body { get; }
-        
-        /// <summary>
-        /// as types are abstracted, proxied, etc. the priority value decreases
-        /// </summary>
-        int Priority { get; }
+        Message<T> Message { get; }
 
-        /// <summary>
-        /// Matches the message header type an invokes the proper callback
-        /// </summary>
-        /// <param name="messageCallback"></param>
-        /// <param name="requestCallback"></param>
-        /// <param name="responseCallback"></param>
-        void Match(Action<RoutingContext<Message<T>>> messageCallback,
-                   Action<RoutingContext<Request<T>>> requestCallback,
-                   Action<RoutingContext<Response<T>>> responseCallback);
+        T Body { get; }
+
+        int Priority { get; }
 
         void Convert<TResult>(Action<RoutingContext<TResult>> callback);
     }

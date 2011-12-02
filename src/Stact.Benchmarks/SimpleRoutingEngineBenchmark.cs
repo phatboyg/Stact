@@ -64,11 +64,11 @@ namespace Stact.Benchmarks
 		{
 			var latch = new CountdownLatch(messageCount, complete.Complete);
 
-			ActorFactory<TestActor<TConsumer>> factory = ActorFactory.Create(inbox => new TestActor<TConsumer>(inbox, latch));
-			ActorRef actor = factory.GetActor();
+			//ActorFactory<TestActor<TConsumer>> factory = ActorFactory<>.Create(inbox => new TestActor<TConsumer>(inbox, latch));
+		    ActorRef actor = null;// factory.New();
 
 			for (int i = 0; i < messageCount; i++)
-				actor.Send(messageProvider());
+				actor.Send(messageProvider().ToMessage());
 
 			bool completed = complete.WaitUntilCompleted(30.Seconds());
 
@@ -81,12 +81,11 @@ namespace Stact.Benchmarks
 		class A {}
 
 
-		class TestActor<TConsumer> :
-			Actor
+		class TestActor<TConsumer>
 		{
 			readonly CountdownLatch _latch;
 
-			public TestActor(Inbox inbox, CountdownLatch latch)
+			public TestActor(Actor<TestActor<TConsumer>>  inbox, CountdownLatch latch)
 			{
 				_latch = latch;
 				inbox.Loop(loop =>

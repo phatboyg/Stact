@@ -118,7 +118,7 @@ namespace Stact.Actors.Registries
 				}
 			});
 
-			_fiber.Shutdown(3.Minutes());
+			_fiber.Stop(3.Minutes());
 		}
 
 		public void Get(Guid key, Action<ActorRef> callback, Action notFoundCallback)
@@ -194,11 +194,6 @@ namespace Stact.Actors.Registries
 			_nodes.Add(registryNode);
 		}
 
-		public void Send<T>(T message)
-		{
-			_channel.Send(message);
-		}
-
 		void Add(Guid key, ActorRef actor)
 		{
 			_keyIndex.Add(key, actor);
@@ -214,5 +209,10 @@ namespace Stact.Actors.Registries
 
 			_events.Send(new ActorUnregisteredImpl(this, actor, key));
 		}
+
+	    public void Send<T>(Message<T> message)
+	    {
+            _channel.Send(message);
+        }
 	}
 }

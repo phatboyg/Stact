@@ -12,30 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
+    using System;
 
 
-	/// <summary>
-	///   Maintains only one instance of an actor per thread
-	/// </summary>
-	/// <typeparam name = "TActor">The actor type</typeparam>
-	public class ThreadStaticActorFactory<TActor> :
-		ActorFactory<TActor>
-		where TActor : class, Actor
-	{
-		[ThreadStatic]
-		static ActorRef _instance;
+    /// <summary>
+    ///   Maintains only one instance of an actor per thread
+    /// </summary>
+    /// <typeparam name = "T">The actor type</typeparam>
+    public class ThreadStaticActorFactory<T> :
+        ActorFactory<T>
+    {
+        [ThreadStatic]
+        static Actor<T> _instance;
 
-		public ThreadStaticActorFactory(ActorFactory<TActor> factory)
-		{
-			Factory = factory;
-		}
+        readonly ActorFactory<T> _factory;
 
-		public ActorFactory<TActor> Factory { get; private set; }
+        public ThreadStaticActorFactory(ActorFactory<T> factory)
+        {
+            _factory = factory;
+        }
 
-		public ActorRef GetActor()
-		{
-			return _instance ?? (_instance = Factory.GetActor());
-		}
-	}
+        public ActorRef New<TState>(TState state)
+        {
+            var factory = this as ThreadStaticActorFactory<TState>;
+            if (factory == null)
+                throw new ArgumentException("The generic type is not valid for this factory");
+
+            return factory.New(state).Self;
+        }
+
+        public Actor<T> New(T state)
+        {
+            return _instance ?? (_instance = _factory.New(state));
+        }
+    }
 }

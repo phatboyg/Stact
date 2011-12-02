@@ -25,7 +25,7 @@ namespace Stact.Configuration
 			FiberFactory fiberFactory = configurator.GetConfiguredFiberFactory();
 			Fiber fiber = fiberFactory();
 
-			builder.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
+			builder.AddDisposable(fiber.StopOnDispose(configurator.StopTimeout));
 
 			return fiber;
 		}
@@ -37,7 +37,7 @@ namespace Stact.Configuration
 			FiberFactory fiberFactory = configurator.GetConfiguredFiberFactory();
 			Fiber fiber = fiberFactory();
 
-			builder.AddDisposable(fiber.ShutdownOnDispose(configurator.ShutdownTimeout));
+			builder.AddDisposable(fiber.StopOnDispose(configurator.StopTimeout));
 
 			return fiber;
 		}

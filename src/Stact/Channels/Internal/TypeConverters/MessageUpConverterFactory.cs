@@ -62,7 +62,7 @@ namespace Stact.Internal.TypeConverters
 			else
 				castValue = Expression.TypeAs(value, messageType);
 
-			Type messageImplType = typeof(MessageImpl<>).MakeGenericType(messageType);
+			Type messageImplType = typeof(MessageContext<>).MakeGenericType(messageType);
 
 			ConstructorInfo constructorInfo = messageImplType.GetConstructor(new[] {messageType});
 

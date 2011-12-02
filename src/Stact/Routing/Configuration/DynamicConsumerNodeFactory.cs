@@ -23,36 +23,28 @@ namespace Stact.Routing.Configuration
     {
         readonly Cache<Type, ConsumerNodeFactory> _messageFactoryCache;
         readonly Cache<Type, ConsumerNodeFactory> _objectFactoryCache;
-        readonly Cache<Type, ConsumerNodeFactory> _requestFactoryCache;
-        readonly Cache<Type, ConsumerNodeFactory> _responseFactoryCache;
         readonly Cache<Type, ConsumerNodeFactory> _typeFactoryCache;
 
         public DynamicConsumerNodeFactory()
         {
             _typeFactoryCache = new DictionaryCache<Type, ConsumerNodeFactory>(CreateMissingNodeFactory);
             _messageFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(MessageConsumerNodeFactory<>));
-            _requestFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(RequestConsumerNodeFactory<>));
-            _responseFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(ResponseConsumerNodeFactory<>));
             _objectFactoryCache = new GenericTypeCache<ConsumerNodeFactory>(typeof(ObjectConsumerNodeFactory<>));
         }
 
-        public RemoveActivation Create<T>(Consumer<T> consumer, RoutingEngineConfigurator configurator)
+        public RemoveActivation Create<T>(Consumer<Message<T>> consumer, RoutingEngineConfigurator configurator)
         {
             return _typeFactoryCache[typeof(T)].Create(consumer, configurator);
         }
 
-        public RemoveActivation Create<T>(SelectiveConsumer<T> consumer, RoutingEngineConfigurator configurator)
+        public RemoveActivation Create<T>(SelectiveConsumer<Message<T>> consumer, RoutingEngineConfigurator configurator)
         {
             return _typeFactoryCache[typeof(T)].Create(consumer, configurator);
         }
 
         ConsumerNodeFactory CreateMissingNodeFactory(Type type)
         {
-            return IsRequest(type)
-                .Concat(IsRequestClass(type))
-                .Concat(IsResponse(type))
-                .Concat(IsResponseClass(type))
-                .Concat(IsMessage(type))
+            return IsMessage(type)
                 .Concat(IsMessageClass(type))
                 .Concat(IsObject(type))
                 .First();
@@ -76,46 +68,6 @@ namespace Stact.Routing.Configuration
 
             if (matches)
                 yield return _messageFactoryCache[type.GetGenericArguments()[0]];
-        }
-
-        IEnumerable<ConsumerNodeFactory> IsRequestClass(Type type)
-        {
-            Type bodyType = type.GetInterfaces()
-                .Where(x => x.IsGenericType)
-                .Where(x => x.GetGenericTypeDefinition() == typeof(Request<>))
-                .Select(x => x.GetGenericArguments()[0])
-                .FirstOrDefault();
-            if (bodyType != null)
-                yield return _requestFactoryCache[bodyType];
-        }
-
-        IEnumerable<ConsumerNodeFactory> IsRequest(Type type)
-        {
-            bool matches = type.IsInterface && type.IsGenericType
-                           && type.GetGenericTypeDefinition() == typeof(Request<>);
-
-            if (matches)
-                yield return _requestFactoryCache[type.GetGenericArguments()[0]];
-        }
-
-        IEnumerable<ConsumerNodeFactory> IsResponseClass(Type type)
-        {
-            Type bodyType = type.GetInterfaces()
-                .Where(x => x.IsGenericType)
-                .Where(x => x.GetGenericTypeDefinition() == typeof(Response<>))
-                .Select(x => x.GetGenericArguments()[0])
-                .FirstOrDefault();
-            if (bodyType != null)
-                yield return _responseFactoryCache[bodyType];
-        }
-
-        IEnumerable<ConsumerNodeFactory> IsResponse(Type type)
-        {
-            bool matches = type.IsInterface && type.IsGenericType
-                           && type.GetGenericTypeDefinition() == typeof(Response<>);
-
-            if (matches)
-                yield return _responseFactoryCache[type.GetGenericArguments()[0]];
         }
 
         IEnumerable<ConsumerNodeFactory> IsObject(Type type)

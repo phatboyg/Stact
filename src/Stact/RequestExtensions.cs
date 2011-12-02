@@ -14,6 +14,7 @@ namespace Stact
 {
     using System;
     using Internal;
+    using Magnum;
     using Magnum.Reflection;
     using MessageHeaders;
 
@@ -24,69 +25,41 @@ namespace Stact
         ///   Wraps the message in a request and sends it to the channel
         /// </summary>
         /// <typeparam name = "TRequest">The type of the request message</typeparam>
-        /// <param name = "channel">The channel where the message should be sent</param>
+        /// <param name = "actor">The channel where the message should be sent</param>
         /// <param name = "request">The request message</param>
-        /// <param name = "responseChannel">The channel where responses should be sent</param>
-        public static Request<TRequest> Request<TRequest>(this UntypedChannel channel,
-                                                          TRequest request, UntypedChannel responseChannel)
+        /// <param name = "sender">The channel where responses should be sent</param>
+        public static Message<TRequest> Request<TRequest>(this ActorRef actor, TRequest request, ActorRef sender)
         {
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
+            var context = new MessageContext<TRequest>(request, sender);
 
-            channel.Send<Request<TRequest>>(requestImpl);
-
-            return requestImpl;
-        }
-
-        /// <summary>
-        ///   Wraps the message in a request and sends it to the channel
-        /// </summary>
-        /// <typeparam name = "TRequest">The type of the request message</typeparam>
-        /// <param name = "channel">The channel where the message should be sent</param>
-        /// <param name = "request">The request message</param>
-        /// <param name = "responseChannel">The channel where responses should be sent</param>
-        public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel,
-                                                          TRequest request, UntypedChannel responseChannel)
-        {
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
-
-            channel.Send(requestImpl);
-
-            return requestImpl;
+            return Send(actor, context);
         }
 
         /// <summary>
         ///   Sends an uninitialized interface implementation as a request
         /// </summary>
         /// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
-        /// <param name = "channel">The target channel</param>
-        /// <param name = "responseChannel">The channel where responses should be sent</param>
-        public static Request<TRequest> Request<TRequest>(this UntypedChannel channel,
-                                                          UntypedChannel responseChannel)
+        /// <param name = "actor">The target channel</param>
+        /// <param name="sender"></param>
+        public static Message<TRequest> Request<TRequest>(this ActorRef actor, ActorRef sender)
         {
             if (!typeof(TRequest).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+            Type requestType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
+            var request = (TRequest)FastActivator.Create(requestType);
 
-            var request = (TRequest)FastActivator.Create(requestImplType);
-
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
-
-            channel.Send<Request<TRequest>>(requestImpl);
-
-            return requestImpl;
+            return Send(actor, new MessageContext<TRequest>(request, sender));
         }
 
-        public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, object values,
-                                                          UntypedChannel responseChannel)
+        public static Message<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorRef sender)
             where TRequest : class
         {
-            return Request<TRequest>(channel, values, x => { }, responseChannel);
+            return Request<TRequest>(actor, values, sender, x => { });
         }
 
-        public static Request<TRequest> Request<TRequest>(this UntypedChannel channel, object values,
-                                                          Action<SetMessageHeader> messageCallback,
-                                                          UntypedChannel responseChannel)
+        public static Message<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorRef sender,
+                                                          Action<SetMessageHeader> messageCallback)
             where TRequest : class
         {
             if (!typeof(TRequest).IsInterface)
@@ -94,97 +67,56 @@ namespace Stact
 
             var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
 
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
-            messageCallback(requestImpl);
+            var context = new MessageContext<TRequest>(request, sender);
+            messageCallback(context);
 
-            channel.Send<Request<TRequest>>(requestImpl);
-
-            return requestImpl;
+            return Send(actor, context, context.RequestId ?? CombGuid.Generate().ToString("N"));
         }
 
-        /// <summary>
-        ///   Sends an uninitialized interface implementation as a request
-        /// </summary>
-        /// <typeparam name = "TRequest">The request message type, which must be an interface</typeparam>
-        /// <param name = "channel">The target channel</param>
-        /// <param name = "responseChannel">The channel where responses should be sent</param>
-        public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel,
-                                                          UntypedChannel responseChannel)
+        static Message<T> Send<T>(ActorRef actor, MessageContext<T> context)
         {
-            if (!typeof(TRequest).IsInterface)
-                throw new ArgumentException("Default Implementations can only be created for interfaces");
-
-            Type requestImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
-
-            var request = (TRequest)FastActivator.Create(requestImplType);
-
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
-
-            channel.Send(requestImpl);
-
-            return requestImpl;
+            return Send(actor, context, CombGuid.Generate().ToString("N"));
         }
 
-        public static Request<TRequest> Request<TRequest>(this Channel<Request<TRequest>> channel, object values,
-                                                          UntypedChannel responseChannel)
+        static Message<T> Send<T>(ActorRef actor, MessageContext<T> context, string requestId)
+        {
+            context.SetRequestId(requestId);
+
+            actor.Send(context);
+
+            return context;
+        }
+
+
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, TRequest request, ActorInbox sender)
+        {
+            Message<TRequest> message = actor.Request(request, sender.Self);
+
+            return new SentRequestImpl<TRequest>(message, sender);
+        }
+
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, ActorInbox sender)
+        {
+            Message<TRequest> message = actor.Request<TRequest>(sender.Self);
+
+            return new SentRequestImpl<TRequest>(message, sender);
+        }
+
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorInbox sender)
             where TRequest : class
         {
-            if (!typeof(TRequest).IsInterface)
-                throw new ArgumentException("Default Implementations can only be created for interfaces");
+            Message<TRequest> message = actor.Request<TRequest>(values, sender.Self);
 
-            var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
-
-            var requestImpl = new RequestImpl<TRequest>(responseChannel, request);
-
-            channel.Send(requestImpl);
-
-            return requestImpl;
+            return new SentRequestImpl<TRequest>(message, sender);
         }
 
-        /// <summary>
-        ///   Wraps the message in a request and sends it to the channel
-        /// </summary>
-        /// <typeparam name = "TRequest">The type of the request message</typeparam>
-        /// <param name = "channel">The channel where the message should be sent</param>
-        /// <param name = "request">The request message</param>
-        /// <param name = "inbox">The response inbox</param>
-        public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, TRequest request, Inbox inbox)
-        {
-            UntypedChannel responseChannel = inbox;
-
-            Request<TRequest> sent = channel.Request(request, responseChannel);
-
-            return new SentRequestImpl<TRequest>(sent, inbox);
-        }
-
-        public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, object values, Inbox inbox)
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorInbox sender,
+                                                              Action<SetMessageHeader> messageCallback)
             where TRequest : class
         {
-            UntypedChannel responseChannel = inbox;
+            Message<TRequest> message = actor.Request<TRequest>(values, sender.Self, messageCallback);
 
-            Request<TRequest> sent = channel.Request<TRequest>(values, responseChannel);
-
-            return new SentRequestImpl<TRequest>(sent, inbox);
-        }
-
-        public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, object values,
-                                                              Action<SetMessageHeader> messageCallback, Inbox inbox)
-            where TRequest : class
-        {
-            UntypedChannel responseChannel = inbox;
-
-            Request<TRequest> sent = channel.Request<TRequest>(values, messageCallback, responseChannel);
-
-            return new SentRequestImpl<TRequest>(sent, inbox);
-        }
-
-        public static SentRequest<TRequest> Request<TRequest>(this UntypedChannel channel, Inbox inbox)
-        {
-            UntypedChannel responseChannel = inbox;
-
-            Request<TRequest> sent = channel.Request<TRequest>(responseChannel);
-
-            return new SentRequestImpl<TRequest>(sent, inbox);
+            return new SentRequestImpl<TRequest>(message, sender);
         }
     }
 }

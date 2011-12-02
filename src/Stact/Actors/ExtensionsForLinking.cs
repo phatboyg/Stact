@@ -12,7 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public static class ExtensionsForLinking
+    using System;
+
+
+    public static class ExtensionsForLinking
 	{
 		/// <summary>
 		/// Initiates a link to another actor instance. Once linked, if either actor
@@ -21,9 +24,10 @@ namespace Stact
 		/// </summary>
 		/// <param name="actor">The actor to link</param>
 		/// <param name="inbox">The inbox of the actor requesting the link</param>
-		public static SentRequest<Link> Link(this ActorRef actor, Inbox inbox)
+		public static SentRequest<Link> Link(this ActorRef actor, ActorRef target)
 		{
-			return actor.Request<Link>(inbox);
+		    throw new  NotImplementedException();
+		    //return target.Request<Link>(actor);
 		}
 	}
 }

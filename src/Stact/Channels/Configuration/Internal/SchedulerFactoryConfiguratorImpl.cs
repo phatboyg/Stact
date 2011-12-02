@@ -66,7 +66,7 @@ namespace Stact.Configuration.Internal
 			Scheduler scheduler = _schedulerFactory();
 
 			if (_owned)
-				builder.AddDisposable(scheduler.ShutdownOnDispose(ShutdownTimeout));
+				builder.AddDisposable(scheduler.StopOnDispose(StopTimeout));
 
 			return scheduler;
 		}

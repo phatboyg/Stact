@@ -22,42 +22,51 @@ namespace Stact
             return new MessageUrn(type);
         }
 
-        public static void Start(this UntypedChannel instance)
+        public static void Start(this ActorRef actor)
         {
-            instance.Send<Start>();
+            actor.Send<Start>();
         }
 
-        public static void Stop(this UntypedChannel instance)
+        public static void Stop(this ActorRef actor)
         {
-            instance.Send<Stop>();
+            actor.Send<Stop>();
         }
 
         /// <summary>
         ///   Sends an Exit message to an actor instance without waiting for a response
         /// </summary>
-        /// <param name = "instance">The actor instance</param>
-        public static void Exit(this UntypedChannel instance)
+        /// <param name = "actor">The actor instance</param>
+        public static void Exit(this ActorRef actor)
         {
-            instance.Send<Exit>();
+            actor.Send<Exit>();
+        }
+
+        /// <summary>
+        ///   Sends an Exit message to an actor instance without waiting for a response
+        /// </summary>
+        /// <param name = "actor">The actor instance</param>
+        public static void Exit(this ActorInbox actor)
+        {
+            actor.Self.Send<Exit>();
         }
 
         /// <summary>
         ///   Sends an Exit message to an actor instance
         /// </summary>
-        /// <param name = "instance">The actor instance</param>
+        /// <param name = "actor">The actor instance</param>
         /// <param name = "sender">The exit request sender</param>
-        public static SentRequest<Exit> Exit(this ActorRef instance, Inbox sender)
+        public static SentRequest<Exit> Exit(this ActorRef actor, ActorInbox sender)
         {
-            return instance.Request<Exit>(sender);
+            return actor.Request<Exit>(sender);
         }
 
         /// <summary>
         ///   Sends a Kill message to an actor instance
         /// </summary>
-        /// <param name = "instance">The actor instance</param>
-        public static void Kill(this UntypedChannel instance)
+        /// <param name = "actor">The actor instance</param>
+        public static void Kill(this ActorRef actor)
         {
-            instance.Send<Kill>();
+            actor.Send<Kill>();
         }
     }
 }

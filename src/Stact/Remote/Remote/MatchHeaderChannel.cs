@@ -35,30 +35,12 @@ namespace Stact.Remote
 		{
 			var headers = new Dictionary<string, string>();
 
-			headers[HeaderKey.Method] = MessageMethod.Send;
-
 			_output.Send(body, headers);
 		}
 
 		public void Message<TBody>(Message<TBody> message)
 		{
-			message.Headers[HeaderKey.Method] = MessageMethod.Send;
-
 			_output.Send(message.Body, message.Headers.GetDictionary());
-		}
-
-		public void Request<TRequest>(Request<TRequest> request)
-		{
-			request.Headers[HeaderKey.Method] = MessageMethod.Request;
-
-			_output.Send(request.Body, request.Headers.GetDictionary());
-		}
-
-		public void Response<TResponse>(Response<TResponse> response)
-		{
-			response.Headers[HeaderKey.Method] = MessageMethod.Response;
-
-			_output.Send(response.Body, response.Headers.GetDictionary());
 		}
 
 		public void Send<T>(T message)

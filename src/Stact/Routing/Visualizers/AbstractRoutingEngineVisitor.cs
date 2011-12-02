@@ -15,7 +15,6 @@ namespace Stact.Routing.Visualizers
     using Magnum.Extensions;
     using Magnum.Reflection;
     using Nodes;
-    using Stact.Internal;
 
 
     public abstract class AbstractRoutingEngineVisitor<TVisitor> :
@@ -76,22 +75,6 @@ namespace Stact.Routing.Visualizers
             return true;
         }
 
-        protected virtual bool Visit<T>(RequestNode<T> node)
-        {
-            IncreaseDepth();
-            Visit(node.Output);
-            DecreaseDepth();
-            return true;
-        }
-
-        protected virtual bool Visit<T>(ResponseNode<T> node)
-        {
-            IncreaseDepth();
-            Visit(node.Output);
-            DecreaseDepth();
-            return true;
-        }
-
         protected virtual bool Visit<T>(MessageNode<T> node)
         {
             IncreaseDepth();
@@ -100,10 +83,10 @@ namespace Stact.Routing.Visualizers
             return true;
         }
 
-        protected virtual bool Visit<TActor>(ActorInbox<TActor> inbox)
-            where TActor : class, Actor
+        protected virtual bool Visit<TActor>(StactActor<TActor> actor)
+            where TActor : class
         {
-            Visit(inbox.Engine);
+            Visit(actor.Engine);
             return true;
         }
     }

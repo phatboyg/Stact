@@ -12,44 +12,37 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Linq.Expressions;
-	using Magnum.Extensions;
+    using System;
+    using System.Linq.Expressions;
+    using Magnum.Extensions;
 
 
-	public static class HeaderKey
-	{
-		public static readonly string BodyType;
-		public static readonly string CorrelationId;
-		public static readonly string DestinationAddress;
-		public static readonly string FaultAddress;
-		public static readonly string MessageId;
-		public static readonly string RequestId;
-		public static readonly string ResponseAddress;
-		public static readonly string SenderAddress;
-		public static readonly string Method = "Method";
+    public static class HeaderKey
+    {
+        public static readonly string BodyType;
+        public static readonly string CorrelationId;
+        public static readonly string DestinationAddress;
+        public static readonly string FaultAddress;
+        public static readonly string MessageId;
+        public static readonly string RequestId;
+        public static readonly string ResponseAddress;
+        public static readonly string SourceAddress;
 
-		static HeaderKey()
-		{
-			BodyType = NameOf(x => x.BodyType);
-			MessageId = NameOf(x => x.MessageId);
-			CorrelationId = NameOf(x => x.CorrelationId);
-			RequestId = NameOf(x => x.RequestId);
-			SenderAddress = NameOf(x => x.SenderAddress);
-			DestinationAddress = NameOf(x => x.DestinationAddress);
-			FaultAddress = NameOf(x => x.FaultAddress);
-			ResponseAddress = NameOf(x => x.ResponseAddress);
-		}
+        static HeaderKey()
+        {
+            BodyType = NameOf(x => x.BodyType);
+            CorrelationId = NameOf(x => x.CorrelationId);
+            DestinationAddress = NameOf(x => x.DestinationAddress);
+            FaultAddress = NameOf(x => x.FaultAddress);
+            MessageId = NameOf(x => x.MessageId);
+            RequestId = NameOf(x => x.RequestId);
+            ResponseAddress = NameOf(x => x.ResponseAddress);
+            SourceAddress = NameOf(x => x.SourceAddress);
+        }
 
-		static string NameOf(Expression<Func<AllHeaders, object>> expression)
-		{
-			return expression.MemberName();
-		}
-
-
-		interface AllHeaders :
-			RequestHeader
-		{
-		}
-	}
+        static string NameOf<T>(Expression<Func<MessageHeader, T>> expression)
+        {
+            return expression.MemberName();
+        }
+    }
 }

@@ -140,28 +140,10 @@
     <Compile Include="Auditing\Complete\AuditKey.cs" />
     <Compile Include="Auditing\Complete\AuditKeyMap.cs" />
     <Compile Include="Auditing\Complete\Audit_Specs.cs" />
-    <Compile Include="Auditing\Configuration_Specs.cs" />
-    <Compile Include="Auditing\NHibernateEvent_Specs.cs" />
-    <Compile Include="Auditing\PreInsert_Specs.cs" />
     <Compile Include="Auditing\Complete\TestInstanceAudit.cs" />
     <Compile Include="Auditing\Complete\TestInstanceAuditBinding.cs" />
     <Compile Include="Auditing\Complete\TestInstanceAuditMap.cs" />
-    <Compile Include="Auditing\Visitor_Specs.cs" />
-    <Compile Include="Channels\InMemoryStateMachine_Specs.cs" />
-    <Compile Include="Channels\Load_Specs.cs" />
-    <Compile Include="Channels\NHibernateInstanceChannel_Specs.cs" />
-    <Compile Include="Channels\NHibernateStateMachine_Specs.cs" />
-    <Compile Include="Channels\NHibernateSubscription_Specs.cs" />
-    <Compile Include="Channels\NHibernate_Specs.cs" />
-    <Compile Include="Channels\PreviousValue.cs" />
-    <Compile Include="Channels\PreviousValueMap.cs" />
-    <Compile Include="Channels\TestInstance.cs" />
-    <Compile Include="Channels\TestInstanceMap.cs" />
-    <Compile Include="Channels\TestStateMachineInstanceMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Channels\TestStateMachineInstance.cs" />
-    <Compile Include="Channels\TestStateMachineInstanceBinding.cs" />
-    <Compile Include="Usage\NHibernateInstance_Usage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact.Specs\Stact.Specs.csproj">
@@ -198,7 +180,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="StateMachine\" />
+    <Folder Include="Usage\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

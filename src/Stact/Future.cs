@@ -12,95 +12,129 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Threading;
-	using Magnum;
-	using Magnum.Extensions;
+    using System;
+    using System.Threading;
+    using Magnum;
+    using Magnum.Extensions;
 
 
-	/// <summary>
-	/// A future object that supports both callbacks and asynchronous waits once a future value becomes available.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class Future<T> :
-		IAsyncResult
-	{
-		readonly AsyncCallback _callback;
-		readonly ManualResetEvent _event;
-		readonly object _state;
-		volatile bool _completed;
+    /// <summary>
+    /// A future object that supports both callbacks and asynchronous waits once a future value becomes available.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Future<T> :
+        IAsyncResult
+    {
+        readonly AsyncCallback _callback;
+        readonly ManualResetEvent _event;
+        readonly object _state;
+        volatile bool _completed;
 
-		public Future()
-			: this(NullCallback, 0)
-		{
-		}
+        public Future()
+            : this(NullCallback, 0)
+        {
+        }
 
-		public Future(AsyncCallback callback, object state)
-		{
-			Guard.AgainstNull(callback, "callback");
+        public Future(AsyncCallback callback, object state)
+        {
+            Guard.AgainstNull(callback, "callback");
 
-			_callback = callback;
-			_state = state;
+            _callback = callback;
+            _state = state;
 
-			_event = new ManualResetEvent(false);
-		}
+            _event = new ManualResetEvent(false);
+        }
 
-		public T Value { get; private set; }
+        public T Value { get; private set; }
 
-		public bool IsCompleted
-		{
-			get { return _completed; }
-		}
+        public bool IsCompleted
+        {
+            get { return _completed; }
+        }
 
-		public WaitHandle AsyncWaitHandle
-		{
-			get { return _event; }
-		}
+        public WaitHandle AsyncWaitHandle
+        {
+            get { return _event; }
+        }
 
-		public object AsyncState
-		{
-			get { return _state; }
-		}
+        public object AsyncState
+        {
+            get { return _state; }
+        }
 
-		public bool CompletedSynchronously
-		{
-			get { return false; }
-		}
+        public bool CompletedSynchronously
+        {
+            get { return false; }
+        }
 
-		public void Complete(T message)
-		{
-			if (_completed)
-			{
-				throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
-				                                    	.FormatWith(Value, message));
-			}
+        public void Complete(Message<T> message)
+        {
+            Complete(message.Body);
+        }
 
-			Value = message;
+        public void Complete(T message)
+        {
+            if (_completed)
+            {
+                throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
+                                                        .FormatWith(Value, message));
+            }
 
-			_completed = true;
+            Value = message;
 
-			_event.Set();
+            _completed = true;
 
-			_callback(this);
-		}
+            _event.Set();
 
-		public bool WaitUntilCompleted(TimeSpan timeout)
-		{
-			return _event.WaitOne(timeout);
-		}
+            _callback(this);
+        }
 
-		public bool WaitUntilCompleted(int timeout)
-		{
-			return _event.WaitOne(timeout);
-		}
+        public bool WaitUntilCompleted(TimeSpan timeout)
+        {
+            if (_completed)
+                return true;
 
-		~Future()
-		{
-			_event.Close();
-		}
+            bool waitUntilCompleted = _event.WaitOne(timeout);
+            if (waitUntilCompleted)
+            {
+                using (_event)
+                    _event.Close();
+            }
 
-		static void NullCallback(object state)
-		{
-		}
-	}
+            return _completed;
+        }
+
+        public bool WaitUntilCompleted(int timeout)
+        {
+            if (_completed)
+                return true;
+
+            bool waitUntilCompleted = _event.WaitOne(timeout);
+            if (waitUntilCompleted)
+            {
+                using (_event)
+                    _event.Close();
+            }
+
+            return _completed;
+        }
+
+        ~Future()
+        {
+            if (_completed)
+                return;
+
+            using (_event)
+                _event.Close();
+        }
+
+        static void NullCallback(object state)
+        {
+        }
+
+        public void Cancel()
+        {
+            _event.Set();
+        }
+    }
 }

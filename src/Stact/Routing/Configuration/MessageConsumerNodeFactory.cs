@@ -18,25 +18,26 @@ namespace Stact.Routing.Configuration
     public class MessageConsumerNodeFactory<T> :
         ConsumerNodeFactory
     {
-        public RemoveActivation Create<TMessage>(Consumer<TMessage> consumer, RoutingEngineConfigurator configurator)
+        public RemoveActivation Create<TMessage>(Consumer<Message<TMessage>> consumer,
+                                                 RoutingEngineConfigurator configurator)
         {
             var messageConsumer = consumer as Consumer<Message<T>>;
-            var consumerNode = new ConsumerNode<Message<T>>(configurator.Engine, messageConsumer);
+            var consumerNode = new ConsumerNode<T>(configurator.Engine, messageConsumer);
 
             return AddActivation(configurator, consumerNode);
         }
 
-        public RemoveActivation Create<TMessage>(SelectiveConsumer<TMessage> consumer,
+        public RemoveActivation Create<TMessage>(SelectiveConsumer<Message<TMessage>> consumer,
                                                  RoutingEngineConfigurator configurator)
         {
             var messageConsumer = consumer as SelectiveConsumer<Message<T>>;
-            var consumerNode = new SelectiveConsumerNode<Message<T>>(configurator.Engine, messageConsumer);
+            var consumerNode = new SelectiveConsumerNode<T>(configurator.Engine, messageConsumer);
 
             return AddActivation(configurator, consumerNode);
         }
 
         static RemoveActivation AddActivation(RoutingEngineConfigurator configurator,
-                                              Activation<Message<T>> consumerNode)
+                                              Activation<T> consumerNode)
         {
             var messageActivation = new MessageNode<T>(consumerNode);
             return configurator.Add(messageActivation);

@@ -12,34 +12,21 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
-	using System;
+    using System;
 
 
-	public interface ActorFactoryConfigurator<TActor>
-		where TActor : Actor
-	{
+    public interface ActorFactoryConfigurator<TState>
+    {
+        ActorFactoryConfigurator<TState> HandleOnCallingThread();
+        ActorFactoryConfigurator<TState> HandleOnPoolFiber();
+        ActorFactoryConfigurator<TState> HandleOnThreadFiber();
+        
+        ActorFactoryConfigurator<TState> UseFiberFactory(FiberFactoryEx fiberFactory);
 
-		ActorFactoryConfigurator<TActor> ConstructedBy(Func<TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Inbox, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Inbox, TActor> actorFactory);
-		ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory);
+        ActorFactoryConfigurator<TState> SetExitTimeout(TimeSpan timeout);
 
-		ActorFactoryConfigurator<TActor> HandleOnCallingThread();
-		ActorFactoryConfigurator<TActor> HandleOnPoolFiber();
-		ActorFactoryConfigurator<TActor> HandleOnThreadFiber();
-		ActorFactoryConfigurator<TActor> UseFiberFactory(FiberFactoryEx fiberFactory);
-		ActorFactoryConfigurator<TActor> UseShutdownTimeout(TimeSpan timeout);
-
-		ActorFactoryConfigurator<TActor> UseSharedScheduler();
-		ActorFactoryConfigurator<TActor> UseScheduler(Scheduler scheduler);
-		ActorFactoryConfigurator<TActor> UseSchedulerFactory(SchedulerFactory schedulerFactory);
-
-		/// <summary>
-		/// Add conventions to apply to actor instances as they are created
-		/// </summary>
-		/// <param name="convention">The convention to apply to the actor instance</param>
-		/// <returns>The configurator</returns>
-		ActorFactoryConfigurator<TActor> AddConvention(ActorConvention<TActor> convention);
-	}
+        ActorFactoryConfigurator<TState> UseSharedScheduler();
+        ActorFactoryConfigurator<TState> UseScheduler(Scheduler scheduler);
+        ActorFactoryConfigurator<TState> UseSchedulerFactory(SchedulerFactory schedulerFactory);
+    }
 }

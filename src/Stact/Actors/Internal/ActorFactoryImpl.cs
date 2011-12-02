@@ -13,79 +13,54 @@
 namespace Stact.Internal
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
+    using Behaviors;
     using Executors;
     using Magnum;
+    using Magnum.Extensions;
 
 
-    public class ActorFactoryImpl<TActor> :
-        ActorFactory<TActor>,
-        AnonymousActorFactory
-        where TActor : class, Actor
+    public class ActorFactoryImpl<TState> :
+        ActorFactory<TState>
     {
-        readonly ActorConvention<TActor>[] _conventions;
-        readonly Func<Fiber, Scheduler, Inbox, TActor> _factory;
+        readonly ActorBehaviorFactory<TState> _actorBehaviorFactory;
         readonly FiberFactoryEx _fiberFactory;
         readonly SchedulerFactory _schedulerFactory;
 
         public ActorFactoryImpl(FiberFactoryEx fiberFactory, SchedulerFactory schedulerFactory,
-                                IEnumerable<ActorConvention<TActor>> conventions,
-                                Func<Fiber, Scheduler, Inbox, TActor> factory)
+                                ActorBehaviorFactory<TState> actorBehaviorFactory)
         {
             Guard.AgainstNull(fiberFactory, "fiberFactory");
             Guard.AgainstNull(schedulerFactory, "schedulerFactory");
-            Guard.AgainstNull(conventions, "conventions");
-            Guard.AgainstNull(factory, "factory");
+            Guard.AgainstNull(actorBehaviorFactory, "actorBehaviorFactory");
 
             _fiberFactory = fiberFactory;
             _schedulerFactory = schedulerFactory;
-            _conventions = conventions.ToArray();
-            _factory = factory;
+            _actorBehaviorFactory = actorBehaviorFactory;
         }
 
-        public ActorRef GetActor()
+        public Actor<TState> New(TState state)
         {
-            return GetActor(null);
-        }
+            Actor<TState> actor = null;
 
-        public ActorRef GetActor(Action<Inbox> initializer)
-        {
-            ActorInbox<TActor> inbox = null;
-
-            Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex =>
-                {
-                    inbox.Send<Fault>(new
-                        {
-                            ex.Message,
-                            ex.StackTrace
-                        });
-                }));
+            Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex => { actor.OnError(ex); }));
 
             Scheduler scheduler = _schedulerFactory();
 
-            inbox = new ActorInbox<TActor>(fiber, scheduler);
+            actor = new StactActor<TState>(fiber, scheduler, _actorBehaviorFactory, state);
 
-            TActor instance = CreateActorInstance(fiber, scheduler, inbox);
-
-            ApplyConventions(instance, fiber, scheduler, inbox);
-
-            if (initializer != null)
-                fiber.Add(() => initializer(inbox));
-
-            return inbox;
+            return actor;
         }
 
-        void ApplyConventions(TActor instance, Fiber fiber, Scheduler scheduler, Inbox inbox)
+        public ActorRef New<T>(T state)
         {
-            for (int i = 0; i < _conventions.Length; i++)
-                _conventions[i].Initialize(instance, fiber, scheduler, inbox);
-        }
+            var factory = this as ActorFactory<T>;
+            if (factory == null)
+            {
+                throw new ArgumentException("Factory of type " + typeof(TState).ToShortTypeName()
+                                            + " cannot create actors for " + typeof(T).ToShortTypeName());
+            }
 
-        TActor CreateActorInstance(Fiber fiber, Scheduler scheduler, Inbox inbox)
-        {
-            return _factory(fiber, scheduler, inbox);
+            return factory.New(state).Self;
         }
     }
 }

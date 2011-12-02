@@ -12,123 +12,123 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration
 {
-	using System;
-	using Builders;
-	using Executors;
-	using Magnum.Extensions;
-	using Stact.Internal;
+    using System;
+    using Builders;
+    using Executors;
 
 
-	public class FiberFactoryConfiguratorImpl<T> :
-		FiberFactoryConfigurator<T>
-		where T : class
-	{
-		FiberFactoryEx _fiberFactory;
-	    readonly Func<OperationExecutor> _executorFactory;
+    public abstract class FiberFactoryConfiguratorImpl<T> :
+        FiberFactoryConfigurator<T>
+        where T : class
+    {
+        readonly Func<OperationExecutor> _executorFactory;
+        FiberFactoryEx _fiberFactory;
+        Lazy<IDisposable> _disposableFiber;
+        TimeSpan _stopTimeout = TimeSpan.FromMinutes(1);
 
-		TimeSpan _shutdownTimeout = 1.Minutes();
+        protected FiberFactoryConfiguratorImpl()
+        {
+            HandleOnPoolFiber();
+            _executorFactory = () => new TryCatchOperationExecutor();
 
-		protected FiberFactoryConfiguratorImpl()
-		{
-			HandleOnPoolFiber();
-		    _executorFactory = () => new TryCatchOperationExecutor();
-		}
+            _disposableFiber = new Lazy<IDisposable>();
+        }
 
-		public TimeSpan ShutdownTimeout
-		{
-			get { return _shutdownTimeout; }
-		}
+        public TimeSpan StopTimeout
+        {
+            get { return _stopTimeout; }
+        }
 
-		public T HandleOnCallingThread()
-		{
-			_fiberFactory = executor => new SynchronousFiber(executor);
+        public T HandleOnCallingThread()
+        {
+            _fiberFactory = executor => new SynchronousFiber(executor);
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T HandleOnPoolFiber()
-		{
-			_fiberFactory = executor => new PoolFiber(executor);
+        public T HandleOnPoolFiber()
+        {
+            _fiberFactory = executor => new PoolFiber(executor);
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T HandleOnFiber(Fiber fiber)
-		{
-			_fiberFactory = executor => fiber;
+        public T HandleOnFiber(Fiber fiber)
+        {
+            _fiberFactory = executor => fiber;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T HandleOnThreadFiber()
-		{
-			_fiberFactory = executor => new ThreadFiber(executor);
+        public T HandleOnThreadFiber()
+        {
+            _fiberFactory = executor => new ThreadFiber(executor);
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T UseFiberFactory(FiberFactory fiberFactory)
-		{
-			_fiberFactory = executor => fiberFactory();
+        public T UseFiberFactory(FiberFactory fiberFactory)
+        {
+            _fiberFactory = executor => fiberFactory();
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T UseFiberFactory(FiberFactoryEx fiberFactory)
-		{
-			_fiberFactory = fiberFactory;
+        public T UseFiberFactory(FiberFactoryEx fiberFactory)
+        {
+            _fiberFactory = fiberFactory;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T UseShutdownTimeout(TimeSpan timeout)
-		{
-			_shutdownTimeout = timeout;
+        public T SetStopTimeout(TimeSpan timeout)
+        {
+            _stopTimeout = timeout;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		protected void ValidateFiberFactoryConfiguration()
-		{
-			if (_fiberFactory == null)
-				throw new FiberException("No fiber configuration was specified");
-		}
+        protected void ValidateFiberFactoryConfiguration()
+        {
+            if (_fiberFactory == null)
+                throw new FiberException("No fiber configuration was specified");
+        }
 
-		public FiberFactory GetConfiguredFiberFactory()
-		{
-			return () => _fiberFactory(_executorFactory());
-		}
+        public FiberFactory GetConfiguredFiberFactory()
+        {
+            return () => _fiberFactory(_executorFactory());
+        }
 
-	    protected FiberFactoryEx GetConfiguredFiberFactoryEx()
-		{
-			return _fiberFactory;
-		}
+        protected FiberFactoryEx GetConfiguredFiberFactoryEx()
+        {
+            return _fiberFactory;
+        }
 
-	    protected Fiber GetConfiguredFiber(ConnectionBuilder builder)
-		{
-			Fiber fiber = GetConfiguredFiberFactory()();
+        protected Fiber GetConfiguredFiber(ConnectionBuilder builder)
+        {
+            Fiber fiber = GetConfiguredFiberFactory()();
 
-			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+            builder.AddDisposable(fiber.StopOnDispose(_stopTimeout));
 
-			return fiber;
-		}
+            return fiber;
+        }
 
-		public Fiber GetConfiguredFiber<TChannel>(ConnectionBuilder<TChannel> builder)
-		{
-			Fiber fiber = GetConfiguredFiberFactory()();
+        public Fiber GetConfiguredFiber<TChannel>(ConnectionBuilder<TChannel> builder)
+        {
+            Fiber fiber = GetConfiguredFiberFactory()();
 
-			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+            builder.AddDisposable(fiber.StopOnDispose(_stopTimeout));
 
-			return fiber;
-		}
+            return fiber;
+        }
 
-	    protected Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
-		{
-			Fiber fiber = GetConfiguredFiberFactory()();
+        protected Fiber GetConfiguredFiber<TChannel>(ChannelBuilder<TChannel> builder)
+        {
+            Fiber fiber = GetConfiguredFiberFactory()();
 
-			builder.AddDisposable(fiber.ShutdownOnDispose(_shutdownTimeout));
+            builder.AddDisposable(fiber.StopOnDispose(_stopTimeout));
 
-			return fiber;
-		}
-	}
+            return fiber;
+        }
+    }
 }

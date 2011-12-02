@@ -61,8 +61,6 @@ namespace Stact.MessageHeaders
 
 		IEnumerable<MatchHeaderSelectorFactory> GetTypeConverters(Type messageType)
 		{
-			yield return new RequestSelectorFactory(messageType, _includeInherited);
-			yield return new ResponseSelectorFactory(messageType, _includeInherited);
 			yield return new MessageSelectorFactory(messageType, _includeInherited);
 			yield return new BodySelectorFactory(messageType, _includeInherited);
 		}
@@ -115,8 +113,6 @@ namespace Stact.MessageHeaders
 
 		IEnumerable<MatchHeaderSelectorFactory> GetTypeConverters(Type messageType)
 		{
-			yield return new RequestSelectorFactory(messageType, _includeInherited);
-			yield return new ResponseSelectorFactory(messageType, _includeInherited);
 			yield return new MessageSelectorFactory(messageType, _includeInherited);
 			yield return new BodySelectorFactory(messageType, _includeInherited);
 		}

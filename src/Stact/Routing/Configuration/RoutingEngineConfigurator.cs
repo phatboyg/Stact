@@ -17,7 +17,36 @@ namespace Stact.Routing.Configuration
         RoutingEngine Engine { get; }
         RemoveActivation Add<T>(Activation<T> activation);
 
-        RemoveActivation Receive<T>(Consumer<T> consumer);
-        RemoveActivation SelectiveReceive<T>(SelectiveConsumer<T> consumer);
+        RemoveActivation Receive<T>(Consumer<Message<T>> consumer);
+
+        RemoveActivation SelectiveReceive<T>(SelectiveConsumer<Message<T>> consumer);
+    }
+
+
+    public static class oiuweoiurowieurwe
+    {
+        public static RemoveActivation Receive<T>(this RoutingEngineConfigurator configurator,
+                                                  SenderConsumer<T> consumer)
+        {
+            return configurator.Receive((Message<T> message) => consumer(message.Sender, message.Body));
+        }
+
+        public static RemoveActivation ReceiveBody<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
+        {
+            return configurator.Receive((Message<T> message) => consumer(message.Body));
+        }
+
+        public static RemoveActivation ReceiveBody<T>(this RoutingEngineConfigurator configurator,
+                                                  SelectiveConsumer<T> consumer)
+        {
+            return configurator.SelectiveReceive((Message<T> message) =>
+                {
+                    Consumer<T> accepted = consumer(message.Body);
+                    if (accepted == null)
+                        return null;
+
+                    return x => accepted(x.Body);
+                });
+        }
     }
 }

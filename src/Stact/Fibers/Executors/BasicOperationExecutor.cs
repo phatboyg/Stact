@@ -14,7 +14,6 @@ namespace Stact.Executors
 {
     using System;
     using System.Collections.Generic;
-    using Internal;
 
 
     public class BasicOperationExecutor :

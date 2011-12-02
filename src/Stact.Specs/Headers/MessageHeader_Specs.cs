@@ -12,114 +12,114 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Headers
 {
-	using Magnum.TestFramework;
-	using MessageHeaders;
-	using NUnit.Framework;
+    using Magnum.TestFramework;
+    using MessageHeaders;
+    using NUnit.Framework;
 
 
-	[Scenario]
-	public class When_sending_a_message_to_a_channel
-	{
-		UntypedChannel _channel;
-		Future<Simple> _received;
+    [Scenario]
+    public class When_sending_a_message_to_a_channel
+    {
+        UntypedChannel _channel;
+        Future<Simple> _received;
 
-		[SetUp]
-		public void Sending_a_message_to_a_channel()
-		{
-			_received = new Future<Simple>();
+        [SetUp]
+        public void Sending_a_message_to_a_channel()
+        {
+            _received = new Future<Simple>();
 
-			_channel = new ChannelAdapter();
-			_channel.Connect(x =>
-				{
-					x.AddConsumerOf<Simple>()
-						.UsingConsumer(_received.Complete)
-						.HandleOnCallingThread();
-				});
-		}
+            _channel = new ChannelAdapter();
+            _channel.Connect(x =>
+                {
+                    x.AddConsumerOf<Simple>()
+                        .UsingConsumer(_received.Complete)
+                        .HandleOnCallingThread();
+                });
+        }
 
-		[Then]
-		public void Should_receive_the_derived_message_type()
-		{
-			_channel.Send(new SimpleImpl());
+        [Then]
+        public void Should_receive_the_derived_message_type()
+        {
+            _channel.Send(new SimpleImpl());
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_raw_message_type()
-		{
-			_channel.Send<Simple>(new SimpleImpl());
+        [Then]
+        public void Should_receive_the_raw_message_type()
+        {
+            _channel.Send<Simple>(new SimpleImpl());
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_raw_interface_type()
-		{
-			_channel.Send<Simple>();
+        [Then]
+        public void Should_receive_the_raw_interface_type()
+        {
+            _channel.Send<Simple>(new SimpleImpl());
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_message_type()
-		{
-			_channel.Send(new MessageImpl<Simple>(new SimpleImpl()));
+        [Then]
+        public void Should_receive_the_message_type()
+        {
+            _channel.Send(new SimpleImpl().ToMessage());
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_request_message_type()
-		{
-			var responseChannel = new ChannelAdapter();
+        [Then]
+        public void Should_receive_the_request_message_type()
+        {
+            var responseChannel = new ChannelAdapter();
 
-			_channel.Request<Simple>(responseChannel);
+            //_channel.Request<Simple>(responseChannel);
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_response_message_type()
-		{
-			var requestChannel = new ChannelAdapter();
-			requestChannel.Connect(x =>
-				{
-					x.AddConsumerOf<Request<Simple>>()
-						.UsingConsumer(request => request.Respond(new SimpleImpl()))
-						.HandleOnCallingThread();
-				});
-		
-			requestChannel.Request<Simple>(_channel);
+        [Then]
+        public void Should_receive_the_response_message_type()
+        {
+            var requestChannel = new ChannelAdapter();
+            requestChannel.Connect(x =>
+                {
+                    x.AddConsumerOf<Message<Simple>>()
+                        .UsingConsumer((Message<Simple> message, Simple body) => message.Respond(new SimpleImpl()))
+                        .HandleOnCallingThread();
+                });
+        
+            //requestChannel.Request<Simple>(_channel);
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
 
-		[Then]
-		public void Should_receive_the_response_message_type_of_declared_type()
-		{
-			var requestChannel = new ChannelAdapter();
-			requestChannel.Connect(x =>
-				{
-					x.AddConsumerOf<Request<Simple>>()
-						.UsingConsumer(request => request.Respond<Simple, Simple>(new SimpleImpl()))
-						.HandleOnCallingThread();
-				});
-		
-			requestChannel.Request<Simple>(_channel);
+        [Then]
+        public void Should_receive_the_response_message_type_of_declared_type()
+        {
+            var requestChannel = new ChannelAdapter();
+            requestChannel.Connect(x =>
+                {
+                    x.AddConsumerOf<Message<Simple>>()
+                        .UsingConsumer(request => request.Respond<Simple>(new SimpleImpl()))
+                        .HandleOnCallingThread();
+                });
+        
+            //requestChannel.Request<Simple>(_channel);
 
-			_received.IsCompleted.ShouldBeTrue("Message was not received");
-		}
-	}
-
-
-	public interface Simple
-	{
-	}
+            _received.IsCompleted.ShouldBeTrue("Message was not received");
+        }
+    }
 
 
-	public class SimpleImpl :
-		Simple
-	{
-	}
+    public interface Simple
+    {
+    }
+
+
+    public class SimpleImpl :
+        Simple
+    {
+    }
 }

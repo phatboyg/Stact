@@ -16,7 +16,6 @@ namespace Stact.Routing.Contexts
 
 
     public class MessageRoutingContextProxy<TInput, TOutput> :
-        RoutingContext<Message<TOutput>>,
         RoutingContext<TOutput>
         where TInput : TOutput
     {
@@ -41,43 +40,25 @@ namespace Stact.Routing.Contexts
             _input.Evict();
         }
 
-        public Message<TOutput> Body
-        {
-            get { return _message; }
-        }
-
-        int RoutingContext<Message<TOutput>>.Priority
-        {
-            get { return _priority; }
-        }
-
-        public void Match(Action<RoutingContext<Message<Message<TOutput>>>> messageCallback,
-                          Action<RoutingContext<Request<Message<TOutput>>>> requestCallback,
-                          Action<RoutingContext<Response<Message<TOutput>>>> responseCallback)
-        {
-            throw new StactException("Nesting of header interfaces is not supported.");
-        }
 
         public void Convert<TResult>(Action<RoutingContext<TResult>> callback)
         {
             _input.Convert(callback);
         }
 
-        int RoutingContext<TOutput>.Priority
+        public int Priority
         {
             get { return _priority; }
         }
 
-        TOutput RoutingContext<TOutput>.Body
+        public Message<TOutput> Message
         {
-            get { return _message.Body; }
+            get { return _message; }
         }
 
-        public void Match(Action<RoutingContext<Message<TOutput>>> messageCallback,
-                          Action<RoutingContext<Request<TOutput>>> requestCallback,
-                          Action<RoutingContext<Response<TOutput>>> responseCallback)
+        public TOutput Body
         {
-            messageCallback(this);
+            get { return _message.Body; }
         }
     }
 }

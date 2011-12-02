@@ -12,88 +12,69 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
-	using Executors;
-	using Stact.Internal;
+    using System;
+    using Behaviors;
+    using Conventions;
+    using Stact.Internal;
 
 
-	public class ActorFactoryConfiguratorImpl<TActor> :
-		FiberFactoryConfiguratorImpl<ActorFactoryConfigurator<TActor>>,
-		ActorFactoryConfigurator<TActor>
-		where TActor : class, Actor
-	{
-		readonly ActorConventionSet<TActor> _conventions;
-		Func<ActorFactory<TActor>> _actorFactory;
-		SchedulerFactory _schedulerFactory;
+    public class ActorFactoryConfiguratorImpl<TState> :
+        FiberFactoryConfiguratorImpl<ActorFactoryConfigurator<TState>>,
+        ActorFactoryConfigurator<TState>,
+        Configurator
+    {
+        SchedulerFactory _schedulerFactory;
+        BehaviorConvention[] _conventions;
 
-		public ActorFactoryConfiguratorImpl()
-		{
-			_conventions = new ActorConventionSet<TActor>(
-				new PropertyChannelsConvention<TActor>(),
-				new PublicMethodsConvention<TActor>());
+        public ActorFactoryConfiguratorImpl()
+        {
+            UseSharedScheduler();
 
-			UseSharedScheduler();
-		}
+            _conventions = new BehaviorConvention[]
+                {
+                    new MessageOnlyMethodBehaviorConvention(), 
+                    new ExceptionHandlerMethodBehaviorConvention(), 
+                };
+        }
 
-		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<TActor> actorFactory)
-		{
-			return ConstructedBy((f, s, i) => actorFactory());
-		}
+        public ActorFactoryConfigurator<TState> SetExitTimeout(TimeSpan timeout)
+        {
+            SetStopTimeout(timeout);
 
-		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Inbox, TActor> actorFactory)
-		{
-			return ConstructedBy((f, s, i) => actorFactory(i));
-		}
+            return this;
+        }
 
-		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, TActor> actorFactory)
-		{
-			return ConstructedBy((f, s, i) => actorFactory(f));
-		}
+        public ActorFactoryConfigurator<TState> UseSharedScheduler()
+        {
+            _schedulerFactory = () => new TimerScheduler(new PoolFiber());
 
-		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Inbox, TActor> actorFactory)
-		{
-			return ConstructedBy((f, s, i) => actorFactory(f, i));
-		}
+            return this;
+        }
 
-		public ActorFactoryConfigurator<TActor> ConstructedBy(Func<Fiber, Scheduler, Inbox, TActor> actorFactory)
-		{
-			_actorFactory =
-				() => new ActorFactoryImpl<TActor>(GetConfiguredFiberFactoryEx(), _schedulerFactory, _conventions, actorFactory);
+        public ActorFactoryConfigurator<TState> UseScheduler(Scheduler scheduler)
+        {
+            _schedulerFactory = () => scheduler;
 
-			return this;
-		}
+            return this;
+        }
 
-		public ActorFactoryConfigurator<TActor> UseSharedScheduler()
-		{
-			_schedulerFactory = () => new TimerScheduler(new PoolFiber());
+        public ActorFactoryConfigurator<TState> UseSchedulerFactory(SchedulerFactory schedulerFactory)
+        {
+            _schedulerFactory = schedulerFactory;
 
-			return this;
-		}
+            return this;
+        }
 
-		public ActorFactoryConfigurator<TActor> UseScheduler(Scheduler scheduler)
-		{
-			_schedulerFactory = () => scheduler;
+        public void ValidateConfiguration()
+        {
+        }
 
-			return this;
-		}
+        public ActorFactory<TState> Configure()
+        {
+            ActorBehaviorFactory<TState> factory =
+                new ActorBehaviorFactoryImpl<TState>(_conventions);
 
-		public ActorFactoryConfigurator<TActor> UseSchedulerFactory(SchedulerFactory schedulerFactory)
-		{
-			_schedulerFactory = schedulerFactory;
-
-			return this;
-		}
-
-		public ActorFactoryConfigurator<TActor> AddConvention(ActorConvention<TActor> convention)
-		{
-			_conventions.Add(convention);
-
-			return this;
-		}
-
-		public ActorFactory<TActor> CreateActorFactory()
-		{
-			return _actorFactory();
-		}
-	}
+            return new ActorFactoryImpl<TState>(GetConfiguredFiberFactoryEx(), _schedulerFactory, factory);
+        }
+    }
 }

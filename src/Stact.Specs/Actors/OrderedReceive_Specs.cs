@@ -28,16 +28,16 @@ namespace Stact.Specs.Actors
         [When]
         public void A_stream_of_messages_is_received()
         {
-            ActorFactory<Agent> agentFactory = ActorFactory.Create(inbox => new Agent(inbox));
+          //  ActorFactory<Agent> agentFactory = ActorFactory<>.Create(inbox => new Agent(inbox));
 
-            ActorRef agent = agentFactory.GetActor();
+            ActorRef agent = null;// = agentFactory.New();
 
             for (int i = 0; i < _count; i++)
             {
                 agent.Send(new Add
                     {
                         Value = i
-                    });
+                    }.ToMessage());
 
                 if (i == 100)
                     agent.Send<Suspend>();
@@ -47,13 +47,13 @@ namespace Stact.Specs.Actors
             }
 
             _response = new Future<Status>();
-            var actor = AnonymousActor.New(inbox =>
+            var actor = StatelessActor.New(inbox =>
                 {
                     Action loop = null;
                     loop = () =>
                     {
                         agent.Request(new Status(), inbox)
-                            .Receive<Response<Status>>(response =>
+                            .ReceiveResponse<Status>(response =>
                             {
                                 if (response.Body.Count == _count)
                                     _response.Complete(response.Body);
@@ -89,35 +89,34 @@ namespace Stact.Specs.Actors
         }
 
 
-        class Agent :
-            Actor
+        class Agent 
         {
             IList<int> _values = new List<int>();
 
-            public Agent(Inbox inbox)
-            {
-                inbox.Loop(loop =>
-                    {
-                        loop
-                            .EnableSuspendResume(inbox)
-                            .Receive<Add>(add =>
-                                {
-                                    _values.Add(add.Value);
-
-                                    loop.Continue();
-                                })
-                            .Receive<Request<Status>>(request =>
-                                {
-                                    request.Respond(new Status
-                                        {
-                                            Count = _values.Count,
-                                            InOrder = !_values.Where((t, i) => t != i).Any(),
-                                        });
-
-                                    loop.Continue();
-                                });
-                    });
-            }
+//            public Agent(Inbox inbox)
+//            {
+//                inbox.Loop(loop =>
+//                    {
+//                        loop
+//                            .EnableSuspendResume(inbox)
+//                            .Receive<Add>(add =>
+//                                {
+//                                    _values.Add(add.Value);
+//
+//                                    loop.Continue();
+//                                })
+//                            .Receive<Message<Status>>(request =>
+//                                {
+//                                    request.Respond(new Status
+//                                        {
+//                                            Count = _values.Count,
+//                                            InOrder = !_values.Where((t, i) => t != i).Any(),
+//                                        });
+//
+//                                    loop.Continue();
+//                                });
+//                    });
+//            }
         }
 
 

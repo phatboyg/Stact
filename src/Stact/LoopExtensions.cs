@@ -18,16 +18,16 @@ namespace Stact
 
     public static class LoopExtensions
     {
-        public static void Loop(this Inbox inbox, Action<ReceiveLoop> loopAction)
+        public static void Loop<TState>(this Actor<TState> actor, Action<ReceiveLoop> loopAction)
         {
-            var loop = new ReceiveLoopImpl(inbox);
+            var loop = new ReceiveLoopImpl<TState>(actor);
 
             loopAction(loop);
 
             loop.Continue();
         }
 
-        public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, Inbox inbox)
+        public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, ActorInbox inbox)
         {
             return loop.Receive<Suspend>(pause =>
                 {

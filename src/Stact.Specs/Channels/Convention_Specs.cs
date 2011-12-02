@@ -24,21 +24,17 @@ namespace Stact.Specs.Channels
 		{
 			var subject = new Subject();
 
-			ActorFactory<Subject> factory = ActorFactory.Create<Subject>(x =>
+			ActorFactory<Subject> factory = Actor.Configure<Subject>(x =>
 				{
-					x.ConstructedBy(() => subject);
-
-					x.ConnectPublicMethods();
-					x.ConnectPropertyChannels();
 				});
 
-			ActorRef actor = factory.GetActor();
+		    ActorRef actor = factory.New<Subject>(subject);
 
 			subject.ShouldNotBeNull();
 
 			actor.Send<Message<A>>();
-			actor.Send<Request<B>>();
-			actor.Send<Response<C>>();
+            actor.Send<Message<B>>();
+            actor.Send<Message<C>>();
 			actor.Send<Message<D>>();
 
 			subject.FutureA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
@@ -68,8 +64,7 @@ namespace Stact.Specs.Channels
 		}
 
 
-		class Subject :
-			Actor
+		class Subject 
 		{
 			public readonly Future<Message<A>> FutureA;
 			public readonly Future<Message<B>> FutureB;
@@ -94,12 +89,12 @@ namespace Stact.Specs.Channels
 				FutureA.Complete(message);
 			}
 
-			public void Handle(Request<B> message)
+            public void Handle(Message<B> message)
 			{
 				FutureB.Complete(message);
 			}
 
-			public void Handle(Response<C> message)
+            public void Handle(Message<C> message)
 			{
 				FutureC.Complete(message);
 			}

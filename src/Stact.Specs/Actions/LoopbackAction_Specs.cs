@@ -84,7 +84,7 @@ namespace Stact.Specs.Actions
 			}
 			finally
 			{
-				reader.Stop();
+				reader.Kill();
 			}
 		}
 	}

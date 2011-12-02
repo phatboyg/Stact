@@ -76,7 +76,7 @@ namespace Stact.Remote
 				_disposables.Each(x => x.Dispose());
 
 				_buffer.Dispose();
-				_fiber.Shutdown(1.Minutes());
+				_fiber.Stop(1.Minutes());
 			}
 
 			_disposed = true;

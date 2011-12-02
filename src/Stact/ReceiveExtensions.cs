@@ -13,7 +13,6 @@
 namespace Stact
 {
     using System;
-    using Magnum.Extensions;
 
 
     public static class ReceiveExtensions
@@ -25,11 +24,11 @@ namespace Stact
         ///   from the mailbox and delivered to the consumer
         /// </summary>
         /// <typeparam name = "T">The requested message type</typeparam>
-        /// <param name="inbox">The inbox to receive the message from</param>
+        /// <param name="actor"></param>
         /// <param name = "consumer">The consumer</param>
-        public static PendingReceive Receive<T>(this Inbox inbox, Consumer<T> consumer)
+        public static PendingReceive Receive<T>(this ActorInbox actor, Consumer<Message<T>> consumer)
         {
-            return inbox.Receive<T>(x => consumer);
+            return actor.Receive<T>(x => consumer);
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace Stact
         /// <param name = "consumer">The consumer</param>
         /// <param name = "timeout">The time period to wait for a message</param>
         /// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-        public static PendingReceive Receive<T>(this Inbox inbox, Consumer<T> consumer, TimeSpan timeout,
+        public static PendingReceive Receive<T>(this ActorInbox inbox, Consumer<Message<T>> consumer, TimeSpan timeout,
                                                 Action timeoutCallback)
         {
             return inbox.Receive<T>(x => consumer, timeout, timeoutCallback);
@@ -60,10 +59,10 @@ namespace Stact
         /// <param name = "consumer">The consumer</param>
         /// <param name = "timeout">The time period to wait for a message</param>
         /// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-        public static PendingReceive Receive<T>(this Inbox inbox, Consumer<T> consumer, int timeout,
+        public static PendingReceive Receive<T>(this ActorInbox inbox, Consumer<Message<T>> consumer, int timeout,
                                                 Action timeoutCallback)
         {
-            return inbox.Receive<T>(x => consumer, timeout.Milliseconds(), timeoutCallback);
+            return inbox.Receive<T>(x => consumer, TimeSpan.FromMilliseconds(timeout), timeoutCallback);
         }
 
         /// <summary>
@@ -77,10 +76,10 @@ namespace Stact
         /// <param name = "consumer">The consumer</param>
         /// <param name = "timeout">The time period to wait for a message</param>
         /// <param name = "timeoutCallback">The method to call if a message is not received within the timeout period</param>
-        public static PendingReceive Receive<T>(this Inbox inbox, SelectiveConsumer<T> consumer, int timeout,
-                                                Action timeoutCallback)
+        public static PendingReceive Receive<T>(this ActorInbox inbox, SelectiveConsumer<Message<T>> consumer,
+                                                int timeout, Action timeoutCallback)
         {
-            return inbox.Receive(consumer, timeout.Milliseconds(), timeoutCallback);
+            return inbox.Receive(consumer, TimeSpan.FromMilliseconds(timeout), timeoutCallback);
         }
     }
 }

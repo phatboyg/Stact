@@ -30,8 +30,8 @@ namespace Stact
 
         bool _isActive;
         IList<Action> _operations = new List<Action>();
-        bool _shuttingDown;
-        bool _stopping;
+        bool _stopped;
+        bool _killed;
 
         public ThreadFiber()
             : this(new BasicOperationExecutor())
@@ -47,7 +47,7 @@ namespace Stact
 
         public void Add(Action operation)
         {
-            if (_shuttingDown)
+            if (_stopped)
                 return;
                 // seems to be causing more problems that it solves
                 // throw new FiberException("The fiber is no longer accepting actions");
@@ -60,13 +60,13 @@ namespace Stact
             }
         }
 
-        public void Shutdown(TimeSpan timeout)
+        public void Stop(TimeSpan timeout)
         {
             if (timeout == TimeSpan.Zero)
             {
                 lock (_lock)
                 {
-                    _shuttingDown = true;
+                    _stopped = true;
                     Monitor.PulseAll(_lock);
                 }
 
@@ -77,7 +77,7 @@ namespace Stact
 
             lock (_lock)
             {
-                _shuttingDown = true;
+                _stopped = true;
 
                 Monitor.PulseAll(_lock);
 
@@ -94,15 +94,17 @@ namespace Stact
             _thread.Join(timeout);
         }
 
-        public void Stop()
+        public void Kill()
         {
             lock (_lock)
             {
-                _shuttingDown = true;
-                _stopping = true;
-                _executor.Stop();
+                _stopped = true;
+                _killed = true;
 
+                _executor.Stop();
                 Monitor.PulseAll(_lock);
+
+                // TODO trigger thread abort if necessary
             }
         }
 
@@ -175,13 +177,13 @@ namespace Stact
         {
             lock (_lock)
             {
-                while (_operations.Count == 0 && !_stopping && !_shuttingDown)
+                while (_operations.Count == 0 && !_killed && !_stopped)
                     Monitor.Wait(_lock);
 
-                if (_stopping)
+                if (_killed)
                     return false;
 
-                if (_shuttingDown)
+                if (_stopped)
                     return _operations.Count > 0;
             }
 

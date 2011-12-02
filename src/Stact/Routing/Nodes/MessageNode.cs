@@ -15,14 +15,14 @@ namespace Stact.Routing.Nodes
     public class MessageNode<T> :
         Activation<T>
     {
-        readonly Activation<Message<T>> _output;
+        readonly Activation<T> _output;
 
-        public MessageNode(Activation<Message<T>> output)
+        public MessageNode(Activation<T> output)
         {
             _output = output;
         }
 
-        public Activation<Message<T>> Output
+        public Activation<T> Output
         {
             get { return _output; }
         }
@@ -34,7 +34,7 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<T> context)
         {
-            context.Match(message => _output.Activate(message), request => { }, response => { });
+            _output.Activate(context);
         }
     }
 }

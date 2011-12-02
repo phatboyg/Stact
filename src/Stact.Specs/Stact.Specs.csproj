@@ -123,11 +123,14 @@
     <Compile Include="Actors\Auctions\Ask_Specs.cs" />
     <Compile Include="Actors\Auctions\Auction.cs" />
     <Compile Include="Actors\Auctions\Given_an_auction_actor_instance.cs" />
+    <Compile Include="Actors\Behaviors\MessageOnly_Specs.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
     <Compile Include="Actors\Fault_Specs.cs" />
     <Compile Include="Actors\InterceptExit_Specs.cs" />
     <Compile Include="Actors\Linking_Specs.cs" />
     <Compile Include="Actors\OrderedReceive_Specs.cs" />
+    <Compile Include="Actors\Redesign\BehaviorOnly_Specs.cs" />
+    <Compile Include="Actors\Redesign\Redesign_Specs.cs" />
     <Compile Include="Actors\Repeat_Specs.cs" />
     <Compile Include="AsyncIO\AsyncIO_Specs.cs" />
     <Compile Include="Channels\Channel_Specs.cs" />
@@ -163,9 +166,7 @@
     <Compile Include="Channels\WcfSubscription_Specs.cs" />
     <Compile Include="Data\OrderedSequence_Specs.cs" />
     <Compile Include="Diagnostics\ShuntTraceChannel.cs" />
-    <Compile Include="Diagnostics\TraceActor.cs" />
     <Compile Include="Diagnostics\TraceChannelExtensions.cs" />
-    <Compile Include="Diagnostics\TraceChannelImpl.cs" />
     <Compile Include="Diagnostics\TraceOperationComplete.cs" />
     <Compile Include="Diagnostics\TraceOperationCompleteImpl.cs" />
     <Compile Include="Diagnostics\TraceOperationStarted.cs" />
@@ -177,7 +178,6 @@
     <Compile Include="Diagnostics\TraceOperationMessage.cs" />
     <Compile Include="Diagnostics\TraceOperationMessageImpl.cs" />
     <Compile Include="Diagnostics\TraceOperationStartedImpl.cs" />
-    <Compile Include="Example\Auction.cs" />
     <Compile Include="Functional\Action_Specs.cs" />
     <Compile Include="Functional\Binder.cs" />
     <Compile Include="Functional\Identity_Specs.cs" />
@@ -186,10 +186,8 @@
     <Compile Include="Headers\HeaderProxy_Specs.cs" />
     <Compile Include="Headers\MessageHeader_Specs.cs" />
     <Compile Include="Model\Ask.cs" />
-    <Compile Include="Model\Auction.cs" />
     <Compile Include="Model\Bid.cs" />
     <Compile Include="Model\Status.cs" />
-    <Compile Include="Registries\ActorRegistry_Specs.cs" />
     <Compile Include="Registries\LoopbackRegistry_Specs.cs" />
     <Compile Include="Registries\MessageBody_Specs.cs" />
     <Compile Include="Routing\Behavior\TupleJoin_Specs.cs" />
@@ -202,17 +200,9 @@
     <Compile Include="Routing\Override_Specs.cs" />
     <Compile Include="Routing\Routing_Specs.cs" />
     <Compile Include="Routing\Visualizer_Specs.cs" />
-    <Compile Include="StateMachine\ChannelConfigurator_Specs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usage\Aggregation_Specs.cs" />
     <Compile Include="Usage\PausibleAgent_Specs.cs" />
-    <Compile Include="Workflow\Action_Specs.cs" />
-    <Compile Include="Workflow\Creating_Specs.cs" />
-    <Compile Include="Workflow\EventVisitor_Specs.cs" />
-    <Compile Include="Workflow\Exception_Specs.cs" />
-    <Compile Include="Workflow\StateMachineActor_Specs.cs" />
-    <Compile Include="Workflow\Transition_Specs.cs" />
-    <Compile Include="Workflow\WorkflowActor_Specs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact.Visualizers\Stact.Visualizers.csproj">
@@ -241,7 +231,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Example\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

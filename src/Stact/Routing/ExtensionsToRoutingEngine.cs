@@ -17,18 +17,7 @@ namespace Stact.Routing
 
     public static class ExtensionsToRoutingEngine
     {
-        static readonly ConsumerNodeFactory _consumerFactory = new DynamicConsumerNodeFactory();
 
 
-        public static RemoveActivation Receive<T>(this RoutingEngineConfigurator configurator, Consumer<T> consumer)
-        {
-            return _consumerFactory.Create(consumer, configurator);
-        }
-
-        public static RemoveActivation SelectiveReceive<T>(this RoutingEngineConfigurator configurator,
-                                                           SelectiveConsumer<T> consumer)
-        {
-            return _consumerFactory.Create(consumer, configurator);
-        }
     }
 }

@@ -12,68 +12,77 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
-    using System.Diagnostics;
-    using System.Threading;
     using Magnum.Extensions;
     using Magnum.TestFramework;
     using NUnit.Framework;
 
 
-    public class Actor_Specs
+    [TestFixture]
+    public class A_simple_actor
     {
         [Test]
-        public void Something()
+        public void Should_handle_the_request()
         {
-            ActorRef actor = AnonymousActor.New(inbox =>
+            _futureRequest.WaitUntilCompleted(8.Seconds()).ShouldBeTrue("No request received");
+        }
+
+        [Test]
+        public void Should_handle_the_response()
+        {
+            _futureResponse.WaitUntilCompleted(8.Seconds()).ShouldBeTrue("No response received");
+            _futureResponse.Value.Body.Result.ShouldEqual(79);
+        }
+
+        Future<Message<Add>> _futureRequest;
+        Future<Message<AddResult>> _futureResponse;
+
+        [TestFixtureSetUp]
+        public void Should_respond_to_a_simple_message()
+        {
+            _futureRequest = new Future<Message<Add>>();
+            _futureResponse = new Future<Message<AddResult>>();
+
+            ActorRef server = StatelessActor.New(actor =>
                 {
-                    inbox.Loop(loop =>
+                    actor.Receive<Add>(message =>
                         {
-                            loop.Receive<Request<Add>>(message =>
+                            int result = message.Body.Left + message.Body.Right;
+
+                            _futureRequest.Complete(message);
+
+                            message.Respond(new AddResult
                                 {
-                                    int result = message.Body.Left + message.Body.Right;
-
-                                    Trace.WriteLine("Responding with " + result + " on thread "
-                                                    + Thread.CurrentThread.ManagedThreadId);
-
-                                    message.Respond(new AddResult
-                                        {
-                                            Result = result
-                                        });
-
-                                    loop.Continue();
-                                });
-
-
-                            loop.Receive<Exit>(msg =>
-                                {
-                                    inbox.Exit();
-                                    loop.Continue();
+                                    Result = result
                                 });
                         });
                 });
 
-            var future = new Future<AddResult>();
 
-            AnonymousActor.New(inbox =>
-                               actor.Request(new Add
-                                   {
-                                       Left = 56,
-                                       Right = 23
-                                   }, inbox)
-                                   .Receive<AddResult>(response => future.Complete(response)));
+            StatelessActor.New(actor =>
+                {
+                    var add = new Add
+                        {
+                            Left = 56,
+                            Right = 23
+                        };
 
-            future.WaitUntilCompleted(8.Seconds()).ShouldBeTrue("Didn't responsd");
+                    server.Request(add, actor)
+                        .ReceiveResponse<AddResult>(response =>
+                            {
+                                _futureResponse.Complete(response);
+                            });
+                });
         }
 
 
-        class Add
+        public class Add
         {
             public int Left { get; set; }
             public int Right { get; set; }
         }
 
 
-        class AddResult
+        public class AddResult
         {
             public int Result { get; set; }
         }

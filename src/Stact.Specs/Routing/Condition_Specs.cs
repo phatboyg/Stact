@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-    using Internal;
     using Magnum.Extensions;
     using Magnum.TestFramework;
 
@@ -23,23 +22,25 @@ namespace Stact.Specs
         [Then]
         public void Should_properly_invoke_the_message_receiver()
         {
-            var inbox = new ActorInbox<MyActor>(new SynchronousFiber(), new TimerScheduler(new SynchronousFiber()));
+            var received1 = new Future<Message<A>>();
+            var received2 = new Future<Message<A>>();
 
-            var received1 = new Future<Request<A>>();
-            var received2 = new Future<Request<A>>();
-            var responseChannel = new ChannelAdapter();
+            Message<A> request1;
+            Message<A> request2;
 
-            Request<A> request1 = inbox.Request(new A(), responseChannel);
-            Request<A> request2 = inbox.Request(new A(), responseChannel);
+            Actor.New(this, actor =>
+                {
+                    request1 = actor.Self.Request(new A(), actor);
+                    request2 = actor.Self.Request(new A(), actor);
 
-            inbox.Receive<Request<A>>(x =>
-                                      x.RequestId != request2.RequestId
-                                          ? (Consumer<Request<A>>)null
-                                          : received2.Complete);
-            inbox.Receive<Request<A>>(x =>
-                                      x.RequestId != request1.RequestId
-                                          ? (Consumer<Request<A>>)null
-                                          : received1.Complete);
+                    actor.Receive<A>(x => x.RequestId != request2.RequestId
+                                             ? (Consumer<Message<A>>)null
+                                             : received2.Complete);
+                    actor.Receive<A>(x => x.RequestId != request1.RequestId
+                                             ? (Consumer<Message<A>>)null
+                                             : received1.Complete);
+                });
+
 
             received1.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("1 not received");
             received2.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("2 not received");
@@ -51,8 +52,7 @@ namespace Stact.Specs
         }
 
 
-        class MyActor :
-            Actor
+        class MyActor
         {
         }
     }

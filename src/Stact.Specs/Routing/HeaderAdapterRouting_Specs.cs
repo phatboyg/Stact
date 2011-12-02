@@ -39,10 +39,10 @@ namespace Stact.Specs
         [Then]
         public void Should_upconvert_to_a_request_of_t()
         {
-            var received = new Future<Request<Simple>>();
+            var received = new Future<Message<Simple>>();
 
             var engine = new DynamicRoutingEngine(new PoolFiber());
-            engine.Configure(x => x.Receive<Request<Simple>>(received.Complete));
+            engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
 
             engine.Send(new SimpleImpl());
 
@@ -54,16 +54,16 @@ namespace Stact.Specs
         public void Should_handle_a_proxy_of_t()
         {
             var faulted = new Future<Fault>();
-            var received = new Future<Request<Simple>>();
+            var received = new Future<Message<Simple>>();
 
             var engine = new DynamicRoutingEngine(new PoolFiber());
             engine.Configure(x =>
                 {
                     x.Receive<Fault>(faulted.Complete);
-                    x.Receive<Request<Simple>>(received.Complete);
+                    x.Receive<Message<Simple>>(received.Complete);
                 });
 
-            engine.Send<Request<Simple>>();
+            engine.Send<Simple>(new SimpleImpl());
 
             var completed = received.WaitUntilCompleted(4.Seconds());
 

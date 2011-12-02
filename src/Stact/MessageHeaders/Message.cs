@@ -12,22 +12,23 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// The base message header, non-generic to allow use in any method
-	/// </summary>
-	public interface Message :
-		MessageHeader
-	{
-	}
+    /// <summary>
+    /// The base message header, non-generic to allow use in any method
+    /// </summary>
+    public interface Message :
+        MessageHeader
+    {
+        ActorRef Sender { get; }
+    }
 
 
-	/// <summary>
-	/// The message header, generic matching the type of the message body
-	/// </summary>
-	/// <typeparam name="T">The message body type</typeparam>
-	public interface Message<out T> :
-		Message
-	{
-		T Body { get; }
-	}
+    /// <summary>
+    /// The message header, generic matching the type of the message body
+    /// </summary>
+    /// <typeparam name="T">The message body type</typeparam>
+    public interface Message<out T> :
+        Message
+    {
+        T Body { get; }
+    }
 }

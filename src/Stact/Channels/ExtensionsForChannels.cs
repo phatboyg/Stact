@@ -12,86 +12,48 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Threading;
-	using Configuration;
-	using Configuration.Internal;
-	using Magnum;
-	using Visitors;
+    using System;
+    using System.Collections.Generic;
+    using Configuration;
+    using Configuration.Internal;
+    using Magnum;
+    using Visitors;
 
 
-	public static class ExtensionsForChannels
-	{
-		public static ChannelConnection Connect<T>(this Channel<T> channel,
-		                                           Action<ConnectionConfigurator<T>> subscriberActions)
-		{
-			Guard.AgainstNull(channel, "channel");
+    public static class ExtensionsForChannels
+    {
+        public static ChannelConnection Connect<T>(this Channel<T> channel,
+                                                   Action<ConnectionConfigurator<T>> subscriberActions)
+        {
+            Guard.AgainstNull(channel, "channel");
 
-			var subscriber = new TypedConnectionConfigurator<T>(channel);
+            var subscriber = new TypedConnectionConfigurator<T>(channel);
 
-			subscriberActions(subscriber);
+            subscriberActions(subscriber);
 
-			return subscriber.Complete();
-		}
+            return subscriber.Complete();
+        }
 
-		public static ChannelConnection Connect(this UntypedChannel channel, Action<ConnectionConfigurator> subscriberActions)
-		{
-			Guard.AgainstNull(channel, "channel");
+        public static ChannelConnection Connect(this UntypedChannel channel,
+                                                Action<ConnectionConfigurator> subscriberActions)
+        {
+            Guard.AgainstNull(channel, "channel");
 
-			var subscriber = new UntypedConnectionConfigurator(channel);
+            var subscriber = new UntypedConnectionConfigurator(channel);
 
-			subscriberActions(subscriber);
+            subscriberActions(subscriber);
 
-			return subscriber.CreateConnection();
-		}
+            return subscriber.CreateConnection();
+        }
 
-		public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
-		{
-			return new FlattenChannelVisitor().Flatten(channel);
-		}
+        public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
+        {
+            return new FlattenChannelVisitor().Flatten(channel);
+        }
 
-		public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
-		{
-			return new FlattenChannelVisitor().Flatten(channel);
-		}
-
-		public static bool SendRequestWaitForResponse<TRequest>(this UntypedChannel channel, TRequest request, TimeSpan timeout)
-		{
-			using (var reset = new ManualResetEvent(false))
-			{
-				var responseChannel = new ChannelAdapter();
-				using (responseChannel.Connect(x =>
-				{
-					x.AddConsumerOf<Response<TRequest>>()
-						.UsingConsumer(m => reset.Set())
-						.HandleOnCallingThread();
-				}))
-				{
-					channel.Request(request, responseChannel);
-
-					return reset.WaitOne(timeout, true);
-				}
-			}
-		}
-
-		public static bool SendRequestWaitForResponse<TRequest>(this UntypedChannel channel, TimeSpan timeout)
-		{
-			using (var reset = new ManualResetEvent(false))
-			{
-				var responseChannel = new ChannelAdapter();
-				using (responseChannel.Connect(x =>
-				{
-					x.AddConsumerOf<Response<TRequest>>()
-						.UsingConsumer(m => reset.Set())
-						.HandleOnCallingThread();
-				}))
-				{
-					channel.Request<TRequest>(responseChannel);
-
-					return reset.WaitOne(timeout, true);
-				}
-			}
-		}
-	}
+        public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
+        {
+            return new FlattenChannelVisitor().Flatten(channel);
+        }
+    }
 }

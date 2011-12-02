@@ -12,23 +12,41 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Runtime.Serialization;
+    using System;
+    using System.Runtime.Serialization;
 
 
-	[Serializable]
-	public class StactException :
-		Exception
-	{
-		public StactException() {}
+    [Serializable]
+    public class StactException :
+        Exception
+    {
+        public StactException()
+        {
+        }
 
-		public StactException(string message)
-			: base(message) {}
+        public StactException(string message)
+            : base(message)
+        {
+        }
 
-		public StactException(string message, Exception innerException)
-			: base(message, innerException) {}
+        public StactException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
 
-		protected StactException(SerializationInfo info, StreamingContext context)
-			: base(info, context) {}
-	}
+        protected StactException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        public static StactException New(string format, params object[] args)
+        {
+            return new StactException(string.Format(format, args));
+        }
+
+        public static StactException New(Exception innerException, string format, params object[] args)
+        {
+            return new StactException(string.Format(format, args), innerException);
+        }
+    }
 }

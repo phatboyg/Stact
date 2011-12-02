@@ -12,46 +12,46 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-	using System;
-	using System.Linq.Expressions;
-	using System.Reflection;
+    using System;
+    using System.Linq.Expressions;
+    using System.Reflection;
 
 
-	/// <summary>
-	///   Provides a channel from an actor, based on the property information which is used
-	///   to create a dynamic method that returns the actual channel
-	/// </summary>
-	/// <typeparam name = "TActor">The actor type</typeparam>
-	/// <typeparam name = "TChannel">The channel type</typeparam>
-	public class ActorChannelProvider<TActor, TChannel> :
-		ChannelProvider<TChannel>
-		where TActor : class, Actor
-	{
-		private readonly ActorFactory<TActor> _actorFactory;
-		private readonly ChannelAccessor<TActor, TChannel> _channelAccessor;
+    /// <summary>
+    ///   Provides a channel from an actor, based on the property information which is used
+    ///   to create a dynamic method that returns the actual channel
+    /// </summary>
+    /// <typeparam name = "TActor">The actor type</typeparam>
+    /// <typeparam name = "TChannel">The channel type</typeparam>
+    public class ActorChannelProvider<TActor, TChannel> :
+        ChannelProvider<TChannel>
+        where TActor : class
+    {
+        private readonly ActorFactory<TActor> _actorFactory;
+        private readonly ChannelAccessor<TActor, TChannel> _channelAccessor;
 
-		public ActorChannelProvider(ActorFactory<TActor> actorFactory, PropertyInfo property)
-		{
-			Magnum.Guard.AgainstNull(actorFactory, "actorInstanceProvider");
-			Magnum.Guard.AgainstNull(property, "property");
+        public ActorChannelProvider(ActorFactory<TActor> actorFactory, PropertyInfo property)
+        {
+            Magnum.Guard.AgainstNull(actorFactory, "actorInstanceProvider");
+            Magnum.Guard.AgainstNull(property, "property");
 
-			_actorFactory = actorFactory;
+            _actorFactory = actorFactory;
 
-			_channelAccessor = CreateChannelAccessor(property);
-		}
+            _channelAccessor = CreateChannelAccessor(property);
+        }
 
-		public Channel<TChannel> GetChannel(TChannel message)
-		{
-			throw new NotImplementedException("This is changing to inbox usage");
-		}
+        public Channel<TChannel> GetChannel(TChannel message)
+        {
+            throw new NotImplementedException("This is changing to inbox usage");
+        }
 
-		private static ChannelAccessor<TActor, TChannel> CreateChannelAccessor(PropertyInfo property)
-		{
-			ParameterExpression actor = Expression.Parameter(typeof (TActor), "actor");
-			MethodCallExpression getter = Expression.Call(actor, property.GetGetMethod(true));
+        private static ChannelAccessor<TActor, TChannel> CreateChannelAccessor(PropertyInfo property)
+        {
+            ParameterExpression actor = Expression.Parameter(typeof (TActor), "actor");
+            MethodCallExpression getter = Expression.Call(actor, property.GetGetMethod(true));
 
-			return Expression.Lambda<ChannelAccessor<TActor, TChannel>>(getter, new[] {actor})
-				.Compile();
-		}
-	}
+            return Expression.Lambda<ChannelAccessor<TActor, TChannel>>(getter, new[] {actor})
+                .Compile();
+        }
+    }
 }

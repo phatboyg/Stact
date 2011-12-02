@@ -28,9 +28,7 @@ namespace Stact.Specs.Actors.Auctions
 		{
 			Id = CombGuid.Generate();
 
-			ActorFactory<Auction> factory = ActorFactory.Create((f, i) => new Auction(f, i, Id));
-
-			Auction = factory.GetActor();
+			Auction = Actor.New(Id);
 		}
 
 		[Finally]

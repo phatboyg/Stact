@@ -12,82 +12,82 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Magnum;
-
-	/// <summary>
-	/// A BroadcastChannel sends a message to zero or more listeners
-	/// </summary>
-	public class BroadcastChannel :
-		UntypedChannel
-	{
-		readonly UntypedChannel[] _listeners;
-
-		public BroadcastChannel(IEnumerable<UntypedChannel> listeners)
-		{
-			Guard.AgainstNull(listeners, "listeners");
-
-			_listeners = listeners.ToArray();
-		}
-
-		public BroadcastChannel(UntypedChannel[] listeners)
-		{
-			Guard.AgainstNull(listeners, "listeners");
-
-			_listeners = listeners;
-		}
-
-		public IEnumerable<UntypedChannel> Listeners
-		{
-			get { return _listeners; }
-		}
-
-		public void Send<T>(T message)
-		{
-			foreach (UntypedChannel subscriber in _listeners)
-			{
-				subscriber.Send(message);
-			}
-		}
-	}
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
 
-	/// <summary>
-	/// A BroadcastChannel sends a message to zero or more listeners
-	/// </summary>
-	/// <typeparam name = "T">Channel type</typeparam>
-	public class BroadcastChannel<T> :
-		Channel<T>
-	{
-		readonly Channel<T>[] _listeners;
+    /// <summary>
+    /// A BroadcastChannel sends a message to zero or more listeners
+    /// </summary>
+    public class BroadcastChannel :
+        UntypedChannel
+    {
+        readonly UntypedChannel[] _listeners;
 
-		public BroadcastChannel(IEnumerable<Channel<T>> listeners)
-		{
-			Guard.AgainstNull(listeners, "listeners");
+        public BroadcastChannel(IEnumerable<UntypedChannel> listeners)
+        {
+            if (listeners == null)
+                throw new ArgumentNullException("listeners");
 
-			_listeners = listeners.ToArray();
-		}
+            _listeners = listeners.ToArray();
+        }
 
-		public BroadcastChannel(params Channel<T>[] listeners)
-		{
-			Guard.AgainstNull(listeners, "listeners");
+        public BroadcastChannel(UntypedChannel[] listeners)
+        {
+            if (listeners == null)
+                throw new ArgumentNullException("listeners");
 
-			_listeners = listeners;
-		}
+            _listeners = listeners;
+        }
 
-		public IEnumerable<Channel<T>> Listeners
-		{
-			get { return _listeners; }
-		}
+        public IEnumerable<UntypedChannel> Listeners
+        {
+            get { return _listeners; }
+        }
 
-		public void Send(T message)
-		{
-			foreach (var channel in _listeners)
-			{
-				channel.Send(message);
-			}
-		}
-	}
+        public void Send<T>(T message)
+        {
+            for (int i = 0; i < _listeners.Length; i++)
+                _listeners[i].Send(message);
+        }
+    }
+
+
+    /// <summary>
+    /// A BroadcastChannel sends a message to zero or more listeners
+    /// </summary>
+    /// <typeparam name = "T">Channel type</typeparam>
+    public class BroadcastChannel<T> :
+        Channel<T>
+    {
+        readonly Channel<T>[] _listeners;
+
+        public BroadcastChannel(IEnumerable<Channel<T>> listeners)
+        {
+            if (listeners == null)
+                throw new ArgumentNullException("listeners");
+
+            _listeners = listeners.ToArray();
+        }
+
+        public BroadcastChannel(params Channel<T>[] listeners)
+        {
+            if (listeners == null)
+                throw new ArgumentNullException("listeners");
+
+            _listeners = listeners;
+        }
+
+        public IEnumerable<Channel<T>> Listeners
+        {
+            get { return _listeners; }
+        }
+
+        public void Send(T message)
+        {
+            for (int i = 0; i < _listeners.Length; i++)
+                _listeners[i].Send(message);
+        }
+    }
 }

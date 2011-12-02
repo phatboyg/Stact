@@ -12,10 +12,198 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    /// <summary>
-    /// Declares the class is an actor. This is a marker interface.
-    /// </summary>
-    public interface Actor
+    using System;
+    using Configuration;
+    using Configuration.Internal;
+    using Magnum.Caching;
+    using Magnum.Extensions;
+
+
+    public static class Actor
     {
+        static Cache<Type, ActorFactory> _factoryCache;
+
+        static Cache<Type, ActorFactory> FactoryCache
+        {
+            get { return _factoryCache ?? (_factoryCache = CreateFactoryCache()); }
+        }
+
+        static GenericTypeCache<ActorFactory> CreateFactoryCache()
+        {
+            return new GenericTypeCache<ActorFactory>(typeof(ActorFactory<>));
+        }
+
+        public static ActorRef New<TState>(TState state)
+        {
+            ActorFactory factory = FactoryCache.Get(typeof(TState), _ => CreateFactory<TState>());
+
+            ActorRef actor = factory.New(state);
+
+            return actor;
+        }
+
+        public static ActorRef New<TState>(TState state, Action<Actor<TState>> initialCallback)
+        {
+            ActorFactory factory = FactoryCache.Get(typeof(TState), _ => CreateFactory<TState>());
+
+            var actorFactory = factory as ActorFactory<TState>;
+            if (actorFactory == null)
+            {
+                throw new ArgumentException("Factory should be convertible to " + typeof(TState).ToShortTypeName()
+                                            + " but was not");
+            }
+
+            Actor<TState> actor = actorFactory.New(state);
+
+            actor.Internals.Fiber.Add(() => initialCallback(actor));
+
+            return actor.Self;
+        }
+
+        public static ActorRef New<TState>(Action<Actor<TState>> initialCallback)
+            where TState : new()
+        {
+            var state = new TState();
+
+            return New(state, initialCallback);
+        }
+
+        public static ActorFactory<TState> Get<TState>()
+        {
+            if (FactoryCache.Has(typeof(TState)))
+            {
+                var actorFactory = FactoryCache[typeof(TState)] as ActorFactory<TState>;
+                if (actorFactory == null)
+                {
+                    throw new ArgumentException("Factory should be convertible to " + typeof(TState).ToShortTypeName()
+                                                + " but was not");
+                }
+                return actorFactory;
+            }
+
+            throw new StactException("An actor factory for the requested type was not configured.");
+        }
+
+        public static ActorFactory Get(Type stateType)
+        {
+            if (FactoryCache.Has(stateType))
+                return FactoryCache[stateType];
+
+            throw new StactException("An actor factory for the requested type was not configured.");
+        }
+
+
+        /// <summary>
+        /// Configures an actor factory for the specified state type, throwing an error if an actor factory has
+        /// already been configured for the same state type.
+        /// </summary>
+        /// <typeparam name="TState">The type of state for the actor</typeparam>
+        /// <param name="configureCallback">The configuration callback</param>
+        /// <returns>The configured actor factory</returns>
+        public static ActorFactory<TState> Configure<TState>(Action<ActorFactoryConfigurator<TState>> configureCallback)
+        {
+            ActorFactory<TState> actorFactory = CreateFactory(configureCallback);
+
+            FactoryCache.Add(typeof(TState), actorFactory);
+
+            return actorFactory;
+        }
+
+        /// <summary>
+        /// Initialize an actor factory for the specified state type, replacing a previous configuration if one
+        /// exists.
+        /// </summary>
+        /// <typeparam name="TState">The type of state for the actor</typeparam>
+        /// <param name="configureCallback">The configuration callback for the actor factory</param>
+        /// <returns>The configured actor factory</returns>
+        public static ActorFactory<TState> Initialize<TState>(Action<ActorFactoryConfigurator<TState>> configureCallback)
+        {
+            ActorFactory<TState> actorFactory = CreateFactory(configureCallback);
+
+            FactoryCache[typeof(TState)] = actorFactory;
+
+            return actorFactory;
+        }
+
+        static ActorFactory<TState> CreateFactory<TState>()
+        {
+            return new ActorFactoryConfiguratorImpl<TState>()
+                .Configure();
+        }
+
+        static ActorFactory<TState> CreateFactory<TState>(Action<ActorFactoryConfigurator<TState>> configurator)
+        {
+            var factoryConfiguratorImpl = new ActorFactoryConfiguratorImpl<TState>();
+
+            configurator(factoryConfiguratorImpl);
+
+            ActorFactory<TState> actorFactory = factoryConfiguratorImpl.Configure();
+            return actorFactory;
+        }
+    }
+
+
+    public interface ActorInternals
+    {
+        Fiber Fiber { get; }
+
+        Scheduler Scheduler { get; }
+    }
+
+
+    public interface ActorInbox
+    {
+        PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer);
+
+        PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout, Action timeoutCallback);
+
+        /// <summary>
+        /// The local reference to the actor, which can be passed to other actors, used to send messages, etc.
+        /// </summary>
+        ActorRef Self { get; }
+
+        void Send<T>(Message<T> message);
+    }
+
+
+    /// <summary>
+    /// An Actor encapsulates the behavior and state of an actor in memory. This interface is not
+    /// meant to be implemented by the library user.
+    /// </summary>
+    /// <typeparam name="TState">The type of state maintained for the actor</typeparam>
+    public interface Actor<TState> :
+        ActorInbox 
+    {
+
+        TState State { get; }
+
+
+        /// <summary>
+        /// The internals are meant to be used for specific purposes and should not generally be used.
+        /// </summary>
+        ActorInternals Internals { get; }
+
+        /// <summary>
+        /// Apply changes the behavior of an actor to the specified behavior, disposing of the previously
+        /// active behavior.
+        /// </summary>
+        /// <typeparam name="TBehavior">The type of behavior to apply to the actor</typeparam>
+        void Apply<TBehavior>()
+            where TBehavior : class, Behavior<TState>;
+
+        /// <summary>
+        /// Reapplies the current behavior after the current message is processed
+        /// </summary>
+        void ReapplyBehavior();
+
+        /// <summary>
+        /// Sets a timeout, after which time the specified callback will be invoked.
+        /// </summary>
+        /// <param name="timeout">The timeout period</param>
+        /// <param name="callback">The callback to invoke if the timeout expires</param>
+        /// <returns>A TimeoutHandle, which can be used to cancel the timeout callback</returns>
+        TimeoutHandle SetTimeout(TimeSpan timeout, Action callback);
+
+        void OnError(Exception exception);
     }
 }

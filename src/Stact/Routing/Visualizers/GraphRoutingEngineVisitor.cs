@@ -142,24 +142,6 @@ namespace Stact.Routing.Visualizers
             return WithVertex(() => base.Visit(node));
         }
 
-        protected override bool Visit<T>(RequestNode<T> node)
-        {
-            _current = GetVertex(node.GetHashCode(), () => "P", typeof(RequestNode<>), typeof(T));
-
-            LinkFromParent();
-
-            return WithVertex(() => base.Visit(node));
-        }
-
-        protected override bool Visit<T>(ResponseNode<T> node)
-        {
-            _current = GetVertex(node.GetHashCode(), () => "P", typeof(ResponseNode<>), typeof(T));
-
-            LinkFromParent();
-
-            return WithVertex(() => base.Visit(node));
-        }
-
         void LinkFromParent()
         {
             if (_stack.Count > 0)

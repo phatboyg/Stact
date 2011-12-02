@@ -41,7 +41,7 @@ namespace Stact.Specs.Registries
 			});
 
 			ActorId = Guid.NewGuid();
-			Actor = AnonymousActor.New(inbox =>
+			Actor = StatelessActor.New(inbox =>
 			{
 				inbox.Loop(loop =>
 				{
@@ -83,7 +83,7 @@ namespace Stact.Specs.Registries
 				Name = "bob"
 			}, msg =>
 			{
-				msg.DestinationAddress = new ActorUrn(ActorId);
+				msg.SetDestinationAddress(new ActorUrn(ActorId));
 			});
 
 			ReceivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
@@ -103,7 +103,7 @@ namespace Stact.Specs.Registries
 				actor.Send(new A
 				{
 					Name = "bob"
-				});
+				}.ToMessage());
 			}, () => {});
 
 			ReceivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();

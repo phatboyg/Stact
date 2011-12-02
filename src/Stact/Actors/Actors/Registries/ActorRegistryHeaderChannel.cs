@@ -50,7 +50,7 @@ namespace Stact.Actors.Registries
                           () => { Console.WriteLine("Actor not found: " + message.DestinationAddress); });
         }
 
-        public void Request<TRequest>(Request<TRequest> request)
+        public void Request<TRequest>(Message<TRequest> request)
         {
             if (request.DestinationAddress == null)
             {
@@ -65,7 +65,7 @@ namespace Stact.Actors.Registries
                           () => { Console.WriteLine("Actor not found: " + request.DestinationAddress); });
         }
 
-        public void Response<TResponse>(Response<TResponse> response)
+        public void Response<TResponse>(Message<TResponse> response)
         {
             if (response.DestinationAddress == null)
             {

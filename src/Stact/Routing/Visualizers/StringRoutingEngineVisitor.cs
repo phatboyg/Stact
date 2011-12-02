@@ -117,17 +117,5 @@ namespace Stact.Routing.Visualizers
             AppendLine(node.GetType().ToShortTypeName());
             return base.Visit<T>(node);
         }
-
-        protected override bool Visit<T>(RequestNode<T> node)
-        {
-            AppendLine(node.GetType().ToShortTypeName());
-            return base.Visit<T>(node);
-        }
-
-        protected override bool Visit<T>(ResponseNode<T> node)
-        {
-            AppendLine(node.GetType().ToShortTypeName());
-            return base.Visit<T>(node);
-        }
     }
 }

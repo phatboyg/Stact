@@ -12,53 +12,55 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System;
-	using System.Collections.Generic;
-
-	/// <summary>
-	/// A reference to a remote actor
-	/// 
-	/// Forwards messages to the remote actor using the header channel specified in the constructor.
-	/// </summary>
-	public class RemoteActor :
-		ActorRef
-	{
-		readonly string _destinationAddress;
-		readonly MatchHeaderChannel _output;
-
-		public RemoteActor(HeaderChannel output, Uri remoteAddress)
-		{
-			_destinationAddress = ActorUrn.CreateFromRemoteAddress(remoteAddress).ToString();
-
-			HeaderChannel headerChannel = new DestinationHeaderChannel(output, _destinationAddress);
-
-			_output = new MatchHeaderChannel(headerChannel);
-		}
-
-		public void Send<T>(T message)
-		{
-			_output.Send(message);
-		}
+    using System;
+    using System.Collections.Generic;
 
 
-		class DestinationHeaderChannel :
-			HeaderChannel
-		{
-			readonly string _destinationAddress;
-			readonly HeaderChannel _output;
+    /// <summary>
+    /// A reference to a remote actor
+    /// 
+    /// Forwards messages to the remote actor using the header channel specified in the constructor.
+    /// </summary>
+    public class RemoteActor :
+        ActorRef
+    {
+        readonly string _destinationAddress;
+        readonly MatchHeaderChannel _output;
 
-			public DestinationHeaderChannel(HeaderChannel output, string destinationAddress)
-			{
-				_output = output;
-				_destinationAddress = destinationAddress;
-			}
+        public RemoteActor(HeaderChannel output, Uri remoteAddress)
+        {
+            _destinationAddress = ActorUrn.CreateFromRemoteAddress(remoteAddress).ToString();
 
-			public void Send<T>(T message, IDictionary<string, string> headers)
-			{
-				headers[HeaderKey.DestinationAddress] = _destinationAddress;
+            HeaderChannel headerChannel = new DestinationHeaderChannel(output, _destinationAddress);
 
-				_output.Send(message, headers);
-			}
-		}
-	}
+            _output = new MatchHeaderChannel(headerChannel);
+        }
+
+
+        public void Send<T>(Message<T> message)
+        {
+            _output.Send(message);
+        }
+
+
+        class DestinationHeaderChannel :
+            HeaderChannel
+        {
+            readonly string _destinationAddress;
+            readonly HeaderChannel _output;
+
+            public DestinationHeaderChannel(HeaderChannel output, string destinationAddress)
+            {
+                _output = output;
+                _destinationAddress = destinationAddress;
+            }
+
+            public void Send<T>(T message, IDictionary<string, string> headers)
+            {
+                headers[HeaderKey.DestinationAddress] = _destinationAddress;
+
+                _output.Send(message, headers);
+            }
+        }
+    }
 }

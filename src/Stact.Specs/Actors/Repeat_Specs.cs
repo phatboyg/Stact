@@ -12,63 +12,63 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
-	using Model;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
+    using Model;
 
 
-	[Scenario]
-	public class When_looping_within_an_actor_via_the_inbox
-	{
-		[Then]
-		public void Should_support_the_repeat_syntax()
-		{
-			var completed = new Future<Status>();
+    [Scenario]
+    public class When_looping_within_an_actor_via_the_inbox
+    {
+        [Then]
+        public void Should_support_the_repeat_syntax()
+        {
+            var completed = new Future<Status>();
 
-			ActorRef auction = AnonymousActor.New(inbox =>
-				{
-					decimal currentBid = 0.0m;
+            ActorRef auction = StatelessActor.New(inbox =>
+                {
+                    decimal currentBid = 0.0m;
 
-					inbox.Loop(loop =>
-						{
-							loop.Receive<Request<Bid>>(request =>
-								{
-									if (request.Body.MaximumBid > currentBid)
-										currentBid = request.Body.MaximumBid;
+                    inbox.Loop(loop =>
+                        {
+                            loop.Receive<Bid>(request =>
+                                {
+                                    if (request.Body.MaximumBid > currentBid)
+                                        currentBid = request.Body.MaximumBid;
 
-									request.Respond(new StatusImpl
-										{
-											CurrentBid = currentBid
-										});
+                                    request.Respond(new StatusImpl
+                                        {
+                                            CurrentBid = currentBid
+                                        });
 
-									loop.Continue();
-								})
-								.Receive<Request<Ask>>(request =>
-									{
-										request.Respond(new StatusImpl
-											{
-												CurrentBid = currentBid
-											});
+                                    loop.Continue();
+                                })
+                                .Receive<Ask>(request =>
+                                    {
+                                        request.Respond(new StatusImpl
+                                            {
+                                                CurrentBid = currentBid
+                                            });
 
-										loop.Continue();
-									});
-						});
-				});
+                                        loop.Continue();
+                                    });
+                        });
+                });
 
-			ActorRef bidder = AnonymousActor.New(inbox =>
-				{
-					auction.Request(new BidImpl(13.5m), inbox)
-						.Receive<Response<Status>>(bidResponse =>
-							{
-								auction.Request<Ask>(inbox)
-									.Receive<Response<Status>>(askResponse => completed.Complete(askResponse.Body));
-							});
-				});
+            ActorRef bidder = StatelessActor.New(inbox =>
+                {
+                    auction.Request(new BidImpl(13.5m), inbox)
+                        .ReceiveResponse<Status>(bidResponse =>
+                            {
+                                auction.Request<Ask>(inbox)
+                                    .ReceiveResponse((Message<Status> askResponse) => completed.Complete(askResponse.Body));
+                            });
+                });
 
-			completed.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+            completed.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 
-			bidder.Exit();
-			auction.Exit();
-		}
-	}
+            bidder.Exit();
+            auction.Exit();
+        }
+    }
 }

@@ -14,7 +14,7 @@ namespace Stact.Routing.Configuration
 {
     public interface ConsumerNodeFactory
     {
-        RemoveActivation Create<T>(Consumer<T> consumer, RoutingEngineConfigurator configurator);
-        RemoveActivation Create<T>(SelectiveConsumer<T> consumer, RoutingEngineConfigurator configurator);
+        RemoveActivation Create<T>(Consumer<Message<T>> consumer, RoutingEngineConfigurator configurator);
+        RemoveActivation Create<T>(SelectiveConsumer<Message<T>> consumer, RoutingEngineConfigurator configurator);
     }
 }

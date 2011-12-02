@@ -60,7 +60,7 @@ namespace Stact.Remote.Loopback
 			if (_disposed)
 				return;
 			if (disposing)
-				_fiber.Shutdown(1.Minutes());
+				_fiber.Stop(1.Minutes());
 
 			_disposed = true;
 		}

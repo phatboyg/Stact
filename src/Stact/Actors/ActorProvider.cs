@@ -12,6 +12,5 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public delegate TActor ActorProvider<TActor, TKey>(TKey key)
-		where TActor : Actor;
+    public delegate TActor ActorProvider<TActor, TKey>(TKey key);
 }

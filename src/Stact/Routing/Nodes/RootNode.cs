@@ -88,9 +88,7 @@ namespace Stact.Routing.Nodes
                 return false;
 
             if (type == typeof(Message)
-                || type == typeof(MessageHeader)
-                || type == typeof(RequestHeader)
-                || type == typeof(ResponseHeader))
+                || type == typeof(MessageHeader))
                 return false;
 
             if (type.Assembly == typeof(object).Assembly)

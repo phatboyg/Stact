@@ -12,12 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	/// <summary>
-	/// An ActorInstance is used to send messages to an actor instance. This abstraction
-	/// helps avoid tight coupling with the actor class definition.
-	/// </summary>
-	public interface ActorRef :
-		UntypedChannel
-	{
-	}
+    /// <summary>
+    /// An ActorInstance is used to send messages to an actor instance. This abstraction
+    /// helps avoid tight coupling with the actor class definition.
+    /// </summary>
+    public interface ActorRef
+    {
+        void Send<T>(Message<T> message);
+    }
 }

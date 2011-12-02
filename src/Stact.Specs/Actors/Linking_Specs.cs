@@ -25,7 +25,7 @@ namespace Stact.Specs.Actors
 		[When]
 		public void When_two_actors_are_linked()
 		{
-			_a = AnonymousActor.New(inbox =>
+			_a = StatelessActor.New(inbox =>
 			{
 				inbox.Receive<Die>(x =>
 				{
@@ -33,9 +33,8 @@ namespace Stact.Specs.Actors
 				});
 			});
 
-			_b = AnonymousActor.New(inbox =>
+			_b = StatelessActor.New(inbox =>
 			{
-				_a.Link(inbox);
 
 				inbox.Receive<Die>(x =>
 				{
