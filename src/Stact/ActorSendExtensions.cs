@@ -27,6 +27,13 @@ namespace Stact
             return context;
         }
 
+        public static Message<T> ToMessage<T>(this T body, ActorRef sender)
+        {
+            var context = new MessageContext<T>(body, sender);
+
+            return context;
+        }
+
         public static Message<T> Send<T>(this ActorRef actor, T message,
                                          Action<SetMessageHeader> messageCallback)
         {

@@ -10,44 +10,46 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Specs.Actors.Redesign
+namespace Stact.Specs.Actors.Behaviors
 {
+    using System;
     using Magnum.Extensions;
     using Magnum.TestFramework;
     using NUnit.Framework;
 
 
     [TestFixture]
-    public class When_an_actor_has_behavior
+    public class When_a_behavior_has_an_exception_handler
     {
         [Test]
         public void Should_receive_the_response()
         {
-            _receivedB.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+            _state.Received.WaitUntilCompleted(800.Seconds()).ShouldBeTrue();
+
+            Assert.IsInstanceOf<InvalidOperationException>(_state.Received.Value);
         }
 
-        Future<B> _receivedB;
+        MyState _state;
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            _receivedB = new Future<B>();
+            _state = new MyState();
 
-            var state = new MyState();
+            ActorRef agent = Actor.New(_state, x => x.Apply<DefaultBehavior>());
 
-            ActorRef agent = Actor.New(state, x => x.Apply<DefaultBehavior>());
-
-            StatelessActor.New(actor =>
-                {
-                    agent.Request(new A(), actor)
-                        .ReceiveResponse<B>(response => _receivedB.Complete(response));
-                });
+            StatelessActor.New(actor => agent.Send(new A().ToMessage(actor.Self)));
         }
 
 
         class MyState
         {
-            public int RequestCount { get; set; }
+            public MyState()
+            {
+                Received = new Future<Exception>();
+            }
+
+            public Future<Exception> Received { get; set; }
         }
 
 
@@ -61,20 +63,21 @@ namespace Stact.Specs.Actors.Redesign
                 _actor = actor;
             }
 
-            public void Handle(Message<A> message)
+            public void Handle(A message)
             {
-                _actor.State.RequestCount++;
-                message.Respond(new B());
+                throw new InvalidOperationException("This is expected, but should be handled.");
+            }
+
+            public void HandleException(Exception exception, NextExceptionHandler next)
+            {
+                _actor.State.Received.Complete(exception);
+
+                next(exception);
             }
         }
 
 
         class A
-        {
-        }
-
-
-        class B
         {
         }
     }

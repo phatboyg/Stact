@@ -16,7 +16,9 @@ namespace Stact.Configuration.Internal
         where TBehavior : Behavior<TState>
     {
         void Receive<TMessage>(Consumer<Message<TMessage>> consumer);
-        
+
+        void SetExceptionHandler(ExceptionHandler handler);
+
         TBehavior Behavior { get; }
     }
 }

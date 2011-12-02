@@ -18,74 +18,21 @@ namespace Stact.Specs.Actors.Behaviors
 
 
     [TestFixture]
-    public class When_a_behavior_accepts_a_raw_message
+    public class When_a_behavior_accepts_a_message_with_the_sender
     {
         [Test]
         public void Should_receive_the_response()
         {
-            _state.Received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+            _responseReceived.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
         }
 
-        MyState _state;
+
+        Future<B> _responseReceived;
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            _state = new MyState();
-
-            ActorRef agent = Actor.New(_state, x => x.Apply<DefaultBehavior>());
-
-            StatelessActor.New(actor => agent.Send(new A().ToMessage(actor.Self)));
-        }
-
-
-        class MyState
-        {
-            public MyState()
-            {
-                Received = new Future<A>();
-            }
-
-            public Future<A> Received { get; set; }
-        }
-
-        class DefaultBehavior :
-            Behavior<MyState>
-        {
-            readonly Actor<MyState> _actor;
-
-            public DefaultBehavior(Actor<MyState> actor)
-            {
-                _actor = actor;
-            }
-
-            public void Handle(A message)
-            {
-                _actor.State.Received.Complete(message);
-            }
-        }
-
-
-        class A
-        {
-        }
-    }
-
-    [TestFixture]
-    public class When_a_behavior_accepts_a_message_header
-    {
-        [Test]
-        public void Should_receive_the_response()
-        {
-            _receivedB.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
-        }
-
-        Future<B> _receivedB;
-
-        [TestFixtureSetUp]
-        public void Setup()
-        {
-            _receivedB = new Future<B>();
+            _responseReceived = new Future<B>();
 
             var state = new MyState();
 
@@ -93,15 +40,18 @@ namespace Stact.Specs.Actors.Behaviors
 
             StatelessActor.New(actor =>
                 {
-                    agent.Request(new A(), actor)
-                        .ReceiveResponse<B>(response => _receivedB.Complete(response));
+                    agent.Send(new A
+                        {
+                            Value = "Hello"
+                        }.ToMessage(actor.Self));
+
+                    actor.Receive<B>(response => _responseReceived.Complete(response));
                 });
         }
 
 
         class MyState
         {
-            public int RequestCount { get; set; }
         }
 
 
@@ -115,21 +65,95 @@ namespace Stact.Specs.Actors.Behaviors
                 _actor = actor;
             }
 
-            public void Handle(Message<A> message)
+            public void Handle(ActorRef sender, A message)
             {
-                _actor.State.RequestCount++;
-                message.Respond(new B());
+                sender.Send(new B
+                    {
+                        Value = message.Value
+                    }.ToMessage(_actor.Self));
             }
         }
 
 
         class A
         {
+            public string Value { get; set; }
         }
 
 
         class B
         {
+            public string Value { get; set; }
+        }
+    }
+
+    [TestFixture]
+    public class When_a_behavior_accepts_a_message_header_with_the_sender
+    {
+        [Test]
+        public void Should_receive_the_response()
+        {
+            _responseReceived.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+        }
+
+
+        Future<B> _responseReceived;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            _responseReceived = new Future<B>();
+
+            var state = new MyState();
+
+            ActorRef agent = Actor.New(state, x => x.Apply<DefaultBehavior>());
+
+            StatelessActor.New(actor =>
+                {
+                    agent.Send(new A
+                        {
+                            Value = "Hello"
+                        }.ToMessage(actor.Self));
+
+                    actor.Receive<B>(response => _responseReceived.Complete(response));
+                });
+        }
+
+
+        class MyState
+        {
+        }
+
+
+        class DefaultBehavior :
+            Behavior<MyState>
+        {
+            readonly Actor<MyState> _actor;
+
+            public DefaultBehavior(Actor<MyState> actor)
+            {
+                _actor = actor;
+            }
+
+            public void Handle(ActorRef sender, Message<A> message)
+            {
+                sender.Send(new B
+                    {
+                        Value = message.Body.Value
+                    }.ToMessage(_actor.Self));
+            }
+        }
+
+
+        class A
+        {
+            public string Value { get; set; }
+        }
+
+
+        class B
+        {
+            public string Value { get; set; }
         }
     }
 }

@@ -110,6 +110,8 @@
     <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\ActorRefExtensions.cs" />
     <Compile Include="Actors\Behavior.cs" />
+    <Compile Include="Actors\Configuration\Conventions\MessageWithSenderMethodBehaviorConvention.cs" />
+    <Compile Include="Actors\Configuration\Internal\MessageWithSenderMethodApplicator.cs" />
     <Compile Include="Actors\StactActor.cs" />
     <Compile Include="Actors\ActorRef.cs" />
     <Compile Include="Actors\ActorFactory.cs" />
@@ -122,7 +124,7 @@
     <Compile Include="Actors\Behaviors\ActorBehaviorFactory.cs" />
     <Compile Include="Actors\Behaviors\ActorBehaviorFactoryImpl.cs" />
     <Compile Include="Actors\Behaviors\ActorBehavior.cs" />
-    <Compile Include="Actors\Behaviors\ActorBehaviorImpl.cs" />
+    <Compile Include="Actors\Behaviors\BehaviorImpl.cs" />
     <Compile Include="Actors\Behaviors\BehaviorFactory.cs" />
     <Compile Include="Actors\Behaviors\BehaviorFactoryImpl.cs" />
     <Compile Include="Actors\Behaviors\BehaviorHandle.cs" />

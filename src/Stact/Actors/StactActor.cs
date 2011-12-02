@@ -14,9 +14,12 @@ namespace Stact
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
     using System.Threading;
     using Behaviors;
     using Internal;
+    using Magnum.Extensions;
     using Routing;
 
 
@@ -33,6 +36,7 @@ namespace Stact
         readonly ActorRef _self;
         readonly TState _state;
         BehaviorHandle _currentBehavior;
+        Stack<ExceptionHandler> _exceptionHandlers;
 
         public StactActor(Fiber fiber, Scheduler scheduler, ActorBehaviorFactory<TState> applicatorFactory,
                           TState state)
@@ -44,6 +48,8 @@ namespace Stact
 
             _pending = new HashSet<PendingReceive>();
 
+            _exceptionHandlers = new Stack<ExceptionHandler>();
+            _exceptionHandlers.Push(DefaultExceptionHandler);
 
             _engine = new DynamicRoutingEngine(_fiber);
 
@@ -94,11 +100,16 @@ namespace Stact
             throw new NotImplementedException();
         }
 
-        public TimeoutHandle SetTimeout(TimeSpan timeout, Action callback)
+        public TimeoutHandle SetTimeout(TimeSpan timeout, Action timeoutCallback)
         {
-            ScheduledOperation handle = _scheduler.Schedule(timeout, _fiber, callback);
+            ScheduledOperation handle = _scheduler.Schedule(timeout, _fiber, timeoutCallback);
 
             return new TimeoutHandleImpl(handle);
+        }
+
+        public void SetExceptionHandler(ExceptionHandler exceptionHandler)
+        {
+            _exceptionHandlers.Push(exceptionHandler);
         }
 
         public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer)
@@ -120,7 +131,24 @@ namespace Stact
 
         public void OnError(Exception exception)
         {
-            throw new NotImplementedException("OnError not yet implemented", exception);
+            using(var enumerator = _exceptionHandlers.GetEnumerator())
+            {
+                // need to capture this or it totally blows up due to closure
+                var handlerEnumerator = enumerator;
+
+                NextExceptionHandler toNextHandler = null;
+                toNextHandler = ex =>
+                {
+                    if (handlerEnumerator.MoveNext())
+                    {
+                        ExceptionHandler nextHandler = handlerEnumerator.Current;
+                        if (nextHandler != null)
+                            nextHandler(ex, toNextHandler);
+                    }
+                };
+
+                toNextHandler(exception);
+            }
         }
 
         public Fiber Fiber
@@ -131,6 +159,13 @@ namespace Stact
         public Scheduler Scheduler
         {
             get { return _scheduler; }
+        }
+
+        void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
+        {
+            Debug.WriteLine("Exception {0} occurred, exiting...", exception.GetType().ToShortTypeName());
+
+            _self.Send<Exit>();
         }
 
         PendingReceive Receive<T>(PendingReceiveImpl<TState, T> receiver)

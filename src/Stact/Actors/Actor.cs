@@ -200,9 +200,14 @@ namespace Stact
         /// Sets a timeout, after which time the specified callback will be invoked.
         /// </summary>
         /// <param name="timeout">The timeout period</param>
-        /// <param name="callback">The callback to invoke if the timeout expires</param>
+        /// <param name="timeoutCallback">The callback to invoke if the timeout expires</param>
         /// <returns>A TimeoutHandle, which can be used to cancel the timeout callback</returns>
-        TimeoutHandle SetTimeout(TimeSpan timeout, Action callback);
+        TimeoutHandle SetTimeout(TimeSpan timeout, Action timeoutCallback);
+
+
+        void SetExceptionHandler(ExceptionHandler exceptionHandler);
+
+
 
         void OnError(Exception exception);
     }

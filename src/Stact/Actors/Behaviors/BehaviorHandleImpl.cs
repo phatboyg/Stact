@@ -34,6 +34,11 @@ namespace Stact.Behaviors
             PendingReceive pendingReceive = _actor.Receive(consumer);
         }
 
+        public void SetExceptionHandler(ExceptionHandler handler)
+        {
+            _actor.SetExceptionHandler(handler);
+        }
+
         public TBehavior Behavior
         {
             get { return _behavior; }

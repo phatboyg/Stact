@@ -31,8 +31,7 @@ namespace Stact.Configuration.Internal
 
         public void Apply(BehaviorContext<TState, TBehavior> context)
         {
-            // context.Receive<Message<TMessage>>(message => _consumer(context.Behavior, message.Body));
-            // TODO implement application to context
+            context.SetExceptionHandler((exception, next) => _handler(context.Behavior, exception, next));
         }
 
         static Action<TBehavior, Exception, NextExceptionHandler> GenerateHandler(MethodInfo method)

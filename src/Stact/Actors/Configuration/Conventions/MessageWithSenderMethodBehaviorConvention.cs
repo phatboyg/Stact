@@ -23,7 +23,7 @@ namespace Stact.Configuration.Conventions
     using Magnum.Reflection;
 
 
-    public class MessageOnlyMethodBehaviorConvention :
+    public class MessageWithSenderMethodBehaviorConvention :
         BehaviorConvention
     {
         public IEnumerable<ActorBehaviorApplicator<TState, TBehavior>> GetApplicators<TState, TBehavior>()
@@ -31,28 +31,31 @@ namespace Stact.Configuration.Conventions
         {
             return typeof(TBehavior)
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                .Where(x => x.GetParameters().Count() == 1)
-                .Where(x => x.DeclaringType != typeof(object))
+                .Where(x => x.GetParameters().Count() == 2)
+                .Where(x => x.GetParameters()[0].ParameterType.Implements(typeof(ActorRef)))
                 .Select(CreateMethodConvention<TState, TBehavior>);
         }
 
         static ActorBehaviorApplicator<TState, TBehavior> CreateMethodConvention<TState, TBehavior>(MethodInfo method)
             where TBehavior : Behavior<TState>
         {
-            Type messageType = method.GetParameters()[0].ParameterType;
+            ParameterInfo[] parameters = method.GetParameters();
+
+            Type messageType = parameters[1].ParameterType;
 
             if (messageType.IsGenericType && messageType.GetGenericTypeDefinition() == typeof(Message<>))
                 messageType = messageType.GetGenericArguments()[0];
 
-            Debug.WriteLine("Creating applicator for {0}, method: {1}({2})", typeof(TBehavior).ToShortTypeName(),
-                            method.Name, messageType.ToShortTypeName());
+            Debug.WriteLine("Creating applicator for {0}, method: {1}({2},{3})", typeof(TBehavior).ToShortTypeName(),
+                            method.Name, typeof(ActorRef).ToShortTypeName(),
+                            parameters[1].ParameterType.ToShortTypeName());
 
             var genericTypes = new[] {typeof(TState), typeof(TBehavior), messageType};
 
             var args = new object[] {method};
 
             return (ActorBehaviorApplicator<TState, TBehavior>)
-                   FastActivator.Create(typeof(MessageOnlyMethodApplicator<,,>), genericTypes, args);
+                   FastActivator.Create(typeof(MessageWithSenderMethodApplicator<,,>), genericTypes, args);
         }
     }
 }

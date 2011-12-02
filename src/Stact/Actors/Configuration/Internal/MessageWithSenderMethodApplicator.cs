@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -19,13 +19,13 @@ namespace Stact.Configuration.Internal
     using Magnum.Extensions;
 
 
-    public class MessageOnlyMethodApplicator<TState, TBehavior, TMessage> :
+    public class MessageWithSenderMethodApplicator<TState, TBehavior, TMessage> :
         ActorBehaviorApplicator<TState, TBehavior>
         where TBehavior : Behavior<TState>
     {
         Action<TBehavior, Message<TMessage>> _consumer;
 
-        public MessageOnlyMethodApplicator(MethodInfo method)
+        public MessageWithSenderMethodApplicator(MethodInfo method)
         {
             _consumer = GenerateConsumer(method);
         }
@@ -40,25 +40,28 @@ namespace Stact.Configuration.Internal
             ParameterExpression behavior = Expression.Parameter(typeof(TBehavior), "behavior");
             ParameterExpression message = Expression.Parameter(typeof(Message<TMessage>), "message");
 
-            Type messageParameterType = method.GetParameters()[0].ParameterType;
+            const BindingFlags bindingFlags = BindingFlags.Instance |BindingFlags.Public;
+
+            PropertyInfo senderProperty = typeof(Message).GetProperty("Sender", bindingFlags);
+            MethodCallExpression sender = Expression.Call(message, senderProperty.GetGetMethod(true));
+
+            Type messageParameterType = method.GetParameters()[1].ParameterType;
 
             var args = new[] {behavior, message};
 
             if (messageParameterType == typeof(Message<TMessage>))
             {
-                MethodCallExpression call = Expression.Call(behavior, method, message);
+                MethodCallExpression call = Expression.Call(behavior, method, sender, message);
 
                 return Expression.Lambda<Action<TBehavior, Message<TMessage>>>(call, args).Compile();
             }
 
             if (messageParameterType == typeof(TMessage))
             {
-                const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public;
-
                 PropertyInfo bodyProperty = typeof(Message<TMessage>).GetProperty("Body", bindingFlags);
                 MethodCallExpression body = Expression.Call(message, bodyProperty.GetGetMethod(true));
 
-                MethodCallExpression call = Expression.Call(behavior, method, body);
+                MethodCallExpression call = Expression.Call(behavior, method, sender, body);
 
                 return Expression.Lambda<Action<TBehavior, Message<TMessage>>>(call, args).Compile();
             }

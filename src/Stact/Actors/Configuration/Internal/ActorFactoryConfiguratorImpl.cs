@@ -34,6 +34,7 @@ namespace Stact.Configuration.Internal
                 {
                     new MessageOnlyMethodBehaviorConvention(), 
                     new ExceptionHandlerMethodBehaviorConvention(), 
+                    new MessageWithSenderMethodBehaviorConvention(), 
                 };
         }
 

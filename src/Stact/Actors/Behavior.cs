@@ -12,7 +12,24 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    public interface Behavior<TState>
+    /// <summary>
+    /// An actor behavior that is not dependent upon the actor state can be defined
+    /// using this interface. An example of a behavior not using the state is something
+    /// like an exception handling behavior or a supervisor behavior. A default constructor
+    /// or a constructor that accepts an ActorInbox is expected.
+    /// </summary>
+    public interface Behavior
+    {
+    }
+
+
+    /// <summary>
+    /// A behavior that accesses the state of the actor for whatever purpose. A constructor
+    /// that accepts the Actor<typeparamref name="TState"/> should be found on the behavior
+    /// </summary>
+    /// <typeparam name="TState"></typeparam>
+    public interface Behavior<TState> :
+        Behavior
     {
     }
 }
