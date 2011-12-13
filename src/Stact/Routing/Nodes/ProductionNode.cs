@@ -13,6 +13,7 @@
 namespace Stact.Routing.Nodes
 {
     using System;
+    using Stact.Internal;
 
 
     /// <summary>
@@ -23,13 +24,13 @@ namespace Stact.Routing.Nodes
     /// <typeparam name="T">The message type</typeparam>
     public class ProductionNode<T>
     {
+        readonly RoutingEngineAgenda _agenda;
         readonly bool _disableOnActivation;
-        readonly RoutingEngine _engine;
         bool _enabled;
 
-        protected ProductionNode(RoutingEngine engine, bool disableOnActivation)
+        protected ProductionNode(RoutingEngineAgenda agenda, bool disableOnActivation)
         {
-            _engine = engine;
+            _agenda = agenda;
             _disableOnActivation = disableOnActivation;
             _enabled = true;
         }
@@ -41,7 +42,7 @@ namespace Stact.Routing.Nodes
 
         protected void Accept(RoutingContext<T> context, Action<Message<T>> callback)
         {
-            _engine.Add(context.Priority, () =>
+            _agenda.Add(context.Priority, () =>
                 {
                     if (!context.IsAlive)
                         return;

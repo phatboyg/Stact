@@ -88,21 +88,21 @@ namespace Stact
         }
 
 
-        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, TRequest request, ActorInbox sender)
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, TRequest request, UntypedActor sender)
         {
             Message<TRequest> message = actor.Request(request, sender.Self);
 
             return new SentRequestImpl<TRequest>(message, sender);
         }
 
-        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, ActorInbox sender)
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, UntypedActor sender)
         {
             Message<TRequest> message = actor.Request<TRequest>(sender.Self);
 
             return new SentRequestImpl<TRequest>(message, sender);
         }
 
-        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorInbox sender)
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, UntypedActor sender)
             where TRequest : class
         {
             Message<TRequest> message = actor.Request<TRequest>(values, sender.Self);
@@ -110,7 +110,7 @@ namespace Stact
             return new SentRequestImpl<TRequest>(message, sender);
         }
 
-        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorInbox sender,
+        public static SentRequest<TRequest> Request<TRequest>(this ActorRef actor, object values, UntypedActor sender,
                                                               Action<SetMessageHeader> messageCallback)
             where TRequest : class
         {

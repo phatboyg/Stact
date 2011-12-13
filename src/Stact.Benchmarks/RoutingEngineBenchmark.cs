@@ -17,6 +17,7 @@ namespace Stact.Benchmarks
 	using System.Threading;
 	using Magnum.Concurrency;
 	using Magnum.Extensions;
+	using MessageHeaders;
 	using Routing;
 
 
@@ -24,11 +25,12 @@ namespace Stact.Benchmarks
 	{
 		public void Run()
 		{
-			Run(() => new A(), () => new B());
-			Run(() => new A(), () => new B());
-		}
+			Run(() => new MessageContext<A>(new A()), () =>new MessageContext<B>(new B()));
+            Run(() => new MessageContext<A>(new A()), () => new MessageContext<B>(new B()));
+        }
 
-		void Run<T1, T2>(Func<T1> value1Provider, Func<T2> value2Provider)
+        void Run<T1, T2>(Func<Message<T1>> value1Provider,
+                             Func<Message<T2>> value2Provider)
 		{
 			Stopwatch timer = Stopwatch.StartNew();
 
@@ -56,10 +58,10 @@ namespace Stact.Benchmarks
 			Console.WriteLine("That's {0}K messages per second!", totalMessageCount/timer.ElapsedMilliseconds);
 		}
 
-		bool RunTest<T1, T2>(int consumerCount, int messageCount, Future<int> complete, Func<T1> value1Provider,
-		                     Func<T2> value2Provider, out int totalMessageCount)
+		bool RunTest<T1, T2>(int consumerCount, int messageCount, Future<int> complete, Func<Message<T1>> value1Provider,
+		                     Func<Message<T2>> value2Provider, out int totalMessageCount)
 		{
-			var engine = new DynamicRoutingEngine(new PoolFiber());
+			var engine = new MessageRoutingEngine();
 
 			int joinCount = (messageCount/2)*(messageCount/2)*consumerCount;
 			totalMessageCount = consumerCount*messageCount + joinCount;

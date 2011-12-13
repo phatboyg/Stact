@@ -22,18 +22,18 @@ namespace Stact.Routing.Configuration
                                                  RoutingEngineConfigurator configurator)
         {
             var requestConsumer = consumer as Consumer<Message<T>>;
-            var consumerNode = new ConsumerNode<T>(configurator.Engine, requestConsumer);
+            var consumerNode = new ConsumerNode<T>(configurator.Agenda, requestConsumer);
 
-            return configurator.Add(consumerNode);
+            return configurator.AddActivation(consumerNode);
         }
 
         public RemoveActivation Create<TMessage>(SelectiveConsumer<Message<TMessage>> consumer,
                                                  RoutingEngineConfigurator configurator)
         {
             var requestConsumer = consumer as SelectiveConsumer<Message<T>>;
-            var consumerNode = new SelectiveConsumerNode<T>(configurator.Engine, requestConsumer);
+            var consumerNode = new SelectiveConsumerNode<T>(configurator.Agenda, requestConsumer);
 
-            return configurator.Add(consumerNode);
+            return configurator.AddActivation(consumerNode);
         }
     }
 }

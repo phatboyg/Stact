@@ -34,8 +34,7 @@ namespace Stact
             var future = new Future<Message<TRequest>>();
 
             ActorRef responseActor =
-                StatelessActor.New(x =>
-                                   x.Receive<TRequest>(message => future.Complete(message), timeout, future.Cancel));
+                StatelessActor.New(x => x.Receive<TRequest>(message => future.Complete(message)));
 
             actor.Request(request, responseActor);
 
@@ -47,8 +46,7 @@ namespace Stact
             var future = new Future<Message<TRequest>>();
 
             ActorRef responseActor =
-                StatelessActor.New(x =>
-                                   x.Receive<TRequest>(message => future.Complete(message), timeout, future.Cancel));
+                StatelessActor.New(x => x.Receive<TRequest>(message => future.Complete(message)));
 
             actor.Request<TRequest>(responseActor);
 

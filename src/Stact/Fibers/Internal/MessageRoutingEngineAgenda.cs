@@ -14,15 +14,17 @@ namespace Stact.Internal
 {
     using System;
     using System.Collections.Generic;
+    using Routing;
 
 
-    public class Agenda
+    public class MessageRoutingEngineAgenda :
+        RoutingEngineAgenda
     {
         IList<KeyValuePair<int, Action>> _operations;
 
         bool _stopped;
 
-        public Agenda()
+        public MessageRoutingEngineAgenda()
         {
             _operations = new List<KeyValuePair<int, Action>>(2);
         }
@@ -34,7 +36,7 @@ namespace Stact.Internal
 
             var item = new KeyValuePair<int, Action>(priority, operation);
 
-            var count = _operations.Count;
+            int count = _operations.Count;
             for (int i = 0; i < count; i++)
             {
                 if (priority > _operations[i].Key)
@@ -52,7 +54,7 @@ namespace Stact.Internal
             if (_stopped)
                 return;
 
-            var count = _operations.Count;
+            int count = _operations.Count;
             if (count == 0)
                 return;
 

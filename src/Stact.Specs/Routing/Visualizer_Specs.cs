@@ -1,77 +1,81 @@
 namespace Stact.Specs
 {
-	using System.Diagnostics;
-	using Internal;
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
-	using Routing;
-	using Routing.Visualizers;
+    using System.Diagnostics;
+    using Headers;
+    using Internal;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
+    using MessageHeaders;
+    using Routing;
+    using Routing.Visualizers;
 
 
-	[Scenario]
-	public class Show_me_visualization
-	{
-		[Then]
-		public void Should_display_the_empty_network()
-		{
-			var received = new Future<A>();
+    [Scenario]
+    public class Show_me_visualization
+    {
+        [Then]
+        public void Should_display_the_empty_network()
+        {
+            var received = new Future<A>();
 
-			var engine = new DynamicRoutingEngine(new PoolFiber());
+            var engine = new MessageRoutingEngine();
 
-			engine.Send(new A());
+            engine.Send(new MessageContext<A>(new A()));
 
-			Trace.WriteLine("Before Receive");
-			var visualizer = new TraceRoutingEngineVisualizer();
-			visualizer.Show(engine);
+            Trace.WriteLine("Before Receive");
+            var visualizer = new TraceRoutingEngineVisualizer();
+            visualizer.Show(engine);
 
-			engine.Configure(x => x.Receive<A>(received.Complete));
+            engine.Configure(x => x.Receive<A>(received.Complete));
 
-			Trace.WriteLine("After Receive");
-			visualizer.Show(engine);
+            Trace.WriteLine("After Receive");
+            visualizer.Show(engine);
 
-			received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
-		}
+            received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
+        }
 
 
-		[Then]
-		public void Should_have_the_bits_without_the_message_first()
-		{
-			var engine = new DynamicRoutingEngine(new PoolFiber());
-			var visualizer = new TraceRoutingEngineVisualizer();
+        [Then]
+        public void Should_have_the_bits_without_the_message_first()
+        {
+            var engine = new MessageRoutingEngine();
+            var visualizer = new TraceRoutingEngineVisualizer();
 
-			var received = new Future<A>();
-			engine.Configure(x => x.Receive<A>(received.Complete));
+            var received = new Future<A>();
+            engine.Configure(x => x.Receive<A>(received.Complete));
 
-			var block = new Future<int>();
-			engine.Add(0, () =>
-				{
-					visualizer.Show(engine);
-					block.Complete(0);
-				});
-			block.WaitUntilCompleted(2.Seconds());
+            var block = new Future<int>();
+            engine.Add(0, () =>
+                {
+                    visualizer.Show(engine);
+                    block.Complete(0);
+                });
+            block.WaitUntilCompleted(2.Seconds());
 
-			engine.Send(new A());
-			received.WaitUntilCompleted(2.Seconds());
+            engine.Send(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
-			engine.Send(new B());
+            engine.Send(new MessageContext<A>(new A()));
+            received.WaitUntilCompleted(2.Seconds());
 
-			var receivedB = new Future<B>();
-			engine.Configure(x => x.Receive<B>(receivedB.Complete));
+            engine.Send(new MessageContext<B>(new B()));
 
-			received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
-			receivedB.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+            var receivedB = new Future<B>();
+            engine.Configure(x => x.Receive<B>(receivedB.Complete));
 
-			//engine.Receive<A, B>(x => { });
+            received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
+            receivedB.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
 
-			visualizer.Show(engine);
-		}
+            //engine.Receive<A, B>(x => { });
 
-		class A
-		{
-		}
+            visualizer.Show(engine);
+        }
 
-		class B
-		{
-		}
-	}
+        class A
+        {
+        }
+
+        class B
+        {
+        }
+    }
 }

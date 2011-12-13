@@ -15,7 +15,6 @@ namespace Stact
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using Behaviors;
     using Internal;
@@ -30,13 +29,12 @@ namespace Stact
         readonly ActorBehaviorFactory<TState> _applicatorFactory;
         readonly RoutingEngine _engine;
         readonly Fiber _fiber;
-        readonly UntypedChannel _inbound;
-        readonly HashSet<PendingReceive> _pending;
+        readonly HashSet<ReceiveHandle> _pending;
         readonly Scheduler _scheduler;
         readonly ActorRef _self;
         readonly TState _state;
         BehaviorHandle _currentBehavior;
-        Stack<ExceptionHandler> _exceptionHandlers;
+        Stack<ActorExceptionHandler> _exceptionHandlers;
 
         public StactActor(Fiber fiber, Scheduler scheduler, ActorBehaviorFactory<TState> applicatorFactory,
                           TState state)
@@ -46,14 +44,12 @@ namespace Stact
             _applicatorFactory = applicatorFactory;
             _state = state;
 
-            _pending = new HashSet<PendingReceive>();
+            _pending = new HashSet<ReceiveHandle>();
 
-            _exceptionHandlers = new Stack<ExceptionHandler>();
+            _exceptionHandlers = new Stack<ActorExceptionHandler>();
             _exceptionHandlers.Push(DefaultExceptionHandler);
 
-            _engine = new DynamicRoutingEngine(_fiber);
-
-            _inbound = new UntypedFilterChannel<Kill>(_engine, message => HandleKill);
+            _engine = new MessageRoutingEngine();
 
             _self = new LocalActorReference<TState>(this);
 
@@ -77,7 +73,14 @@ namespace Stact
 
         public void Send<T>(Message<T> message)
         {
-            _inbound.Send(message);
+            var kill = message as Message<Kill>;
+            if(kill != null)
+            {
+                HandleKill(kill);
+                return;
+            }
+
+            _fiber.Add(() => _engine.Send(message));
         }
 
         public ActorInternals Internals
@@ -107,27 +110,27 @@ namespace Stact
             return new TimeoutHandleImpl(handle);
         }
 
-        public void SetExceptionHandler(ExceptionHandler exceptionHandler)
+        public void SetExceptionHandler(ActorExceptionHandler exceptionHandler)
         {
             _exceptionHandlers.Push(exceptionHandler);
         }
 
-        public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer)
+        public ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            var pending = new PendingReceiveImpl<TState, T>(consumer, x => _pending.Remove(x));
+            var pending = new PendingReceiveHandle<TState, T>(consumer, x => _pending.Remove(x));
 
             return Receive(pending);
         }
 
-        public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
-                                         Action timeoutCallback)
-        {
-            var pending = new PendingReceiveImpl<TState, T>(consumer, timeoutCallback, x => _pending.Remove(x));
-
-            pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
-
-            return Receive(pending);
-        }
+//        public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
+//                                         Action timeoutCallback)
+//        {
+//            var pending = new PendingReceiveImpl<TState, T>(consumer, timeoutCallback, x => _pending.Remove(x));
+//
+//            pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
+//
+//            return Receive(pending);
+//        }
 
         public void OnError(Exception exception)
         {
@@ -141,7 +144,7 @@ namespace Stact
                 {
                     if (handlerEnumerator.MoveNext())
                     {
-                        ExceptionHandler nextHandler = handlerEnumerator.Current;
+                        ActorExceptionHandler nextHandler = handlerEnumerator.Current;
                         if (nextHandler != null)
                             nextHandler(ex, toNextHandler);
                     }
@@ -168,7 +171,7 @@ namespace Stact
             _self.Send<Exit>();
         }
 
-        PendingReceive Receive<T>(PendingReceiveImpl<TState, T> receiver)
+        ReceiveHandle Receive<T>(PendingReceiveHandle<TState, T> receiver)
         {
             _engine.Configure(x => { x.SelectiveReceive<T>(receiver.Accept); });
 
@@ -188,7 +191,7 @@ namespace Stact
             _engine.Shutdown();
         }
 
-        void HandleKill(Kill message)
+        void HandleKill(Message<Kill> message)
         {
             ThreadPool.QueueUserWorkItem(x =>
                 {
@@ -204,7 +207,8 @@ namespace Stact
         }
 
 
-        public class TimeoutHandleImpl : TimeoutHandle
+        class TimeoutHandleImpl : 
+            TimeoutHandle
         {
             readonly ScheduledOperation _scheduledOperation;
 

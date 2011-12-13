@@ -17,7 +17,7 @@ namespace Stact.Configuration.Internal
     {
         void Receive<TMessage>(Consumer<Message<TMessage>> consumer);
 
-        void SetExceptionHandler(ExceptionHandler handler);
+        void SetExceptionHandler(ActorExceptionHandler handler);
 
         TBehavior Behavior { get; }
     }

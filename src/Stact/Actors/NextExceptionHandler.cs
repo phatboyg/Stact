@@ -15,7 +15,7 @@ namespace Stact
     using System;
 
 
-    public delegate void ExceptionHandler(Exception exception, NextExceptionHandler next);
+    public delegate void ActorExceptionHandler(Exception exception, NextExceptionHandler next);
 
 
     public delegate void NextExceptionHandler(Exception exception);

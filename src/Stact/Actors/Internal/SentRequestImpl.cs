@@ -22,10 +22,10 @@ namespace Stact.Internal
     public class SentRequestImpl<TRequest> :
         SentRequest<TRequest>
     {
-        readonly ActorInbox _inbox;
+        readonly UntypedActor _inbox;
         readonly Message<TRequest> _request;
 
-        public SentRequestImpl(Message<TRequest> request, ActorInbox inbox)
+        public SentRequestImpl(Message<TRequest> request, UntypedActor inbox)
         {
             _request = request;
             _inbox = inbox;
@@ -86,25 +86,14 @@ namespace Stact.Internal
             get { return _request.Body; }
         }
 
-        public ActorInbox Inbox
+        public UntypedActor Inbox
         {
             get { return _inbox; }
         }
 
-        public PendingReceive ReceiveResponse<T>(SelectiveConsumer<Message<T>> consumer)
+        public ReceiveHandle ReceiveResponse<T>(SelectiveConsumer<Message<T>> consumer)
         {
             return _inbox.Receive(CreateFilteredConsumer(consumer));
-        }
-
-        public PendingReceive ReceiveResponse<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
-                                                 Action timeoutCallback)
-        {
-            return _inbox.Receive(CreateFilteredConsumer(consumer), timeout, timeoutCallback);
-        }
-
-        public void Send<T>(Message<T> message)
-        {
-            _inbox.Send(message);
         }
 
         SelectiveConsumer<Message<T>> CreateFilteredConsumer<T>(SelectiveConsumer<Message<T>> consumer)

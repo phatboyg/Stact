@@ -15,28 +15,30 @@ namespace Stact.Internal
     using System;
 
 
-    public class PendingReceiveImpl<TState, TMessage> :
-        PendingReceive
+    public class PendingReceiveHandle<TState, TMessage> :
+        ReceiveHandle
     {
-        readonly Action<PendingReceiveImpl<TState, TMessage>> _onComplete;
+        readonly Action<PendingReceiveHandle<TState, TMessage>> _onComplete;
         readonly SelectiveConsumer<Message<TMessage>> _selectiveConsumer;
         readonly Action _timeoutCallback;
         bool _cancel;
         ScheduledOperation _scheduledAction;
 
-        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
-                                  Action timeoutCallback,
-                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
+//        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
+//                                  Action timeoutCallback,
+//                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
+//        {
+//            _selectiveConsumer = selectiveConsumer;
+//            _timeoutCallback = timeoutCallback;
+//            _onComplete = onComplete;
+//        }
+
+        public PendingReceiveHandle(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
+                                  Action<PendingReceiveHandle<TState, TMessage>> onComplete)
         {
             _selectiveConsumer = selectiveConsumer;
-            _timeoutCallback = timeoutCallback;
+            _timeoutCallback = NoTimeoutCallback;
             _onComplete = onComplete;
-        }
-
-        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
-                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
-            : this(selectiveConsumer, NoTimeoutCallback, onComplete)
-        {
         }
 
         public void Cancel()
@@ -47,7 +49,7 @@ namespace Stact.Internal
         }
 
 
-        public void ScheduleTimeout(Func<PendingReceiveImpl<TState, TMessage>, ScheduledOperation> scheduleAction)
+        public void ScheduleTimeout(Func<PendingReceiveHandle<TState, TMessage>, ScheduledOperation> scheduleAction)
         {
             _scheduledAction = scheduleAction(this);
         }

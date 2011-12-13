@@ -26,7 +26,7 @@ namespace Stact.Specs.Redesign
         [Then]
         public void Should_navigate_properly()
         {
-            RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
+            RoutingEngine engine = new MessageRoutingEngine();
 
             var foundA = new Future<AlphaNode<Message<A>>>();
             var foundJoin = new Future<JoinNode<Message<A>>>();
@@ -50,13 +50,13 @@ namespace Stact.Specs.Redesign
         [Then]
         public void Should_match_a_join_node()
         {
-            RoutingEngine engine = new DynamicRoutingEngine(new PoolFiber());
+            RoutingEngine engine = new MessageRoutingEngine();
 
             var called = new Future<Message<A>>();
 
             engine.Configure(x => { x.Receive<Message<A>>(called.Complete); });
 
-            engine.Send<Message<A>>(new MessageContext<A>(new A()));
+            engine.Send(new MessageContext<A>(new A()));
 
             called.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Message was not delivered");
 

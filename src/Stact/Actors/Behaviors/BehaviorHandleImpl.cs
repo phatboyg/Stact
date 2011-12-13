@@ -31,10 +31,10 @@ namespace Stact.Behaviors
 
         public void Receive<TMessage>(Consumer<Message<TMessage>> consumer)
         {
-            PendingReceive pendingReceive = _actor.Receive(consumer);
+            ReceiveHandle pendingReceive = _actor.Receive(consumer);
         }
 
-        public void SetExceptionHandler(ExceptionHandler handler)
+        public void SetExceptionHandler(ActorExceptionHandler handler)
         {
             _actor.SetExceptionHandler(handler);
         }

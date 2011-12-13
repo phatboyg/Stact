@@ -12,8 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
+    using Headers;
     using Magnum.Extensions;
     using Magnum.TestFramework;
+    using MessageHeaders;
     using NUnit.Framework;
     using Routing;
     using Routing.Visualizers;
@@ -22,7 +24,7 @@ namespace Stact.Specs
     [Scenario]
     public class When_two_receives_are_posted_for_a_message
     {
-        DynamicRoutingEngine _engine;
+        MessageRoutingEngine _engine;
         Future<IBottom> _first;
         Future<IBottom> _second;
 
@@ -32,14 +34,14 @@ namespace Stact.Specs
             _first = new Future<IBottom>();
             _second = new Future<IBottom>();
 
-            _engine = new DynamicRoutingEngine(new SynchronousFiber());
+            _engine = new MessageRoutingEngine();
             _engine.Configure(x =>
                 {
                     x.Receive<IBottom>(_first.Complete);
                     x.Receive<IBottom>(_second.Complete);
                 });
 
-            _engine.Send(new OverTheTop());
+            _engine.Send(new MessageContext<OverTheTop>(new OverTheTop()));
         }
 
         [Then]

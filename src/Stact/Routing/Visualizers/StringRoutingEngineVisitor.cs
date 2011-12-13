@@ -56,7 +56,7 @@ namespace Stact.Routing.Visualizers
             return _sb.ToString();
         }
 
-        protected override bool Visit(DynamicRoutingEngine engine)
+        protected override bool Visit(MessageRoutingEngine engine)
         {
             AppendLine(engine.GetType().ToShortTypeName());
 

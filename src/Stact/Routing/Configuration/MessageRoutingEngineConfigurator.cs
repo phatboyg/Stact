@@ -19,21 +19,28 @@ namespace Stact.Routing.Configuration
     using Nodes;
 
 
-    public class DynamicRoutingEngineConfigurator :
+    public class MessageRoutingEngineConfigurator :
         RoutingEngineConfigurator
     {
+        readonly RoutingEngineAgenda _agenda;
         readonly ConsumerNodeFactory _consumerFactory = new DynamicConsumerNodeFactory();
 
-        readonly DynamicRoutingEngine _engine;
+        readonly MessageRoutingEngine _engine;
         readonly Cache<Type, object> _joinNodes;
 
-        public DynamicRoutingEngineConfigurator(DynamicRoutingEngine engine)
+        public MessageRoutingEngineConfigurator(MessageRoutingEngine engine, RoutingEngineAgenda agenda)
         {
             _engine = engine;
+            _agenda = agenda;
             _joinNodes = new DictionaryCache<Type, object>();
         }
 
-        public RemoveActivation Add<T>(Activation<T> activation)
+        public RoutingEngineAgenda Agenda
+        {
+            get { return _agenda; }
+        }
+
+        public RemoveActivation AddActivation<T>(Activation<T> activation)
         {
             BetaMemory<T> joinNode = GetJoinNode<T>();
 
@@ -50,11 +57,6 @@ namespace Stact.Routing.Configuration
         public RemoveActivation SelectiveReceive<T>(SelectiveConsumer<Message<T>> consumer)
         {
             return _consumerFactory.Create(consumer, this);
-        }
-
-        public RoutingEngine Engine
-        {
-            get { return _engine; }
         }
 
         BetaMemory<T> GetJoinNode<T>()

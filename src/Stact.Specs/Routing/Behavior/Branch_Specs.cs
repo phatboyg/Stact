@@ -23,14 +23,12 @@ namespace Stact.Specs.Behavior
     [Scenario]
     public class When_adding_a_request_message
     {
-        DynamicRoutingEngine _engine;
-        Fiber _fiber;
+        MessageRoutingEngine _engine;
 
         [When]
         public void Adding_a_request_message()
         {
-            _fiber = new SynchronousFiber();
-            _engine = new DynamicRoutingEngine(_fiber);
+            _engine = new MessageRoutingEngine();
 
             //_engine.Request(new A(), new ShuntChannel());
         }

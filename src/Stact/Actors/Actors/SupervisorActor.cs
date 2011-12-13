@@ -18,9 +18,9 @@ namespace Stact.Actors.Actors
 
     public class SupervisorActor
     {
-        readonly ActorInbox _inbox;
+        readonly UntypedActor _inbox;
 
-        public SupervisorActor(ActorInbox inbox, ActorExceptionHandler handler,
+        public SupervisorActor(UntypedActor inbox, ActorExceptionHandler handler,
                                Action<ActorRef, ActorRestartLimitReached> restartLimitReachedHandler)
         {
             _inbox = inbox;

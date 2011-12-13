@@ -14,6 +14,7 @@ namespace Stact.Specs
 {
     using Magnum.Extensions;
     using Magnum.TestFramework;
+    using MessageHeaders;
     using NUnit.Framework;
     using Routing;
     using Visualizers;
@@ -32,8 +33,7 @@ namespace Stact.Specs
         [When]
         public void Should_properly_invoke_the_message_receiver()
         {
-            var fiber = new PoolFiber();
-            _engine = new DynamicRoutingEngine(fiber);
+            _engine = new MessageRoutingEngine();
 
             _receivedA = new Future<A>();
             _receivedB = new Future<B>();
@@ -50,12 +50,10 @@ namespace Stact.Specs
                     x.Receive<C>(_receivedMessageC.Complete);
                 });
 
-            _engine.Send(new B());
-            _engine.Send(new C());
-            _engine.Send(new B());
-            _engine.Send(new C());
-
-            fiber.Stop(5.Minutes());
+            _engine.Send(new MessageContext<B>(new B()));
+            _engine.Send(new MessageContext<C>(new C()));
+            _engine.Send(new MessageContext<B>(new B()));
+            _engine.Send(new MessageContext<C>(new C()));
         }
 
         [Then]

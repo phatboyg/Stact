@@ -22,11 +22,11 @@ namespace Stact.Specs.Actors.Auctions
     public class Auction 
     {
         readonly Fiber _fiber;
-        readonly ActorInbox _inbox;
+        readonly UntypedActor _inbox;
         decimal _currentBid = 1.00m;
         bool _ended;
 
-        public Auction(Fiber fiber, ActorInbox inbox, Guid id)
+        public Auction(Fiber fiber, UntypedActor inbox, Guid id)
         {
             Id = id;
             _inbox = inbox;
@@ -82,11 +82,7 @@ namespace Stact.Specs.Actors.Auctions
                                         });
                                 };
 
-                        }, 1.Seconds(),
-                        () =>
-                            {
-                                // nothing to do on timeout
-                            });
+                        });
                 };
         }
     }

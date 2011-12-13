@@ -21,10 +21,12 @@ namespace Stact.Routing
 	/// a rules engine style to allow for highly complex routing rules without
 	/// custom application coding
 	/// </summary>
-	public interface RoutingEngine :
-		UntypedChannel
+	public interface RoutingEngine
 	{
+	    void Send<T>(Message<T> message);
+
 		void Add(int priority, Action operation);
+
 		void Shutdown();
 
 		void Configure(Action<RoutingEngineConfigurator> configurator);

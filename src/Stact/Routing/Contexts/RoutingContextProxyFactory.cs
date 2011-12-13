@@ -12,14 +12,14 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Contexts
 {
-    public interface MessageRoutingContextProxyFactory<in T>
+    public interface RoutingContextProxyFactory<in T>
     {
         RoutingContext<TOutput> CreateProxy<TOutput>(RoutingContext<T> input, Message<T> message);
     }
 
 
     public class MessageRoutingContextProxyFactory<TInput, TOutput> :
-        MessageRoutingContextProxyFactory<TInput>
+        RoutingContextProxyFactory<TInput>
         where TInput : TOutput
     {
         public RoutingContext<TResult> CreateProxy<TResult>(RoutingContext<TInput> input, Message<TInput> message)

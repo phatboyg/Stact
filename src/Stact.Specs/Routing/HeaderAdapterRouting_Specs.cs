@@ -16,6 +16,7 @@ namespace Stact.Specs
     using Headers;
     using Magnum.Extensions;
     using Magnum.TestFramework;
+    using MessageHeaders;
     using Routing;
 
 
@@ -27,10 +28,10 @@ namespace Stact.Specs
         {
             var received = new Future<Message<Simple>>();
 
-            var engine = new DynamicRoutingEngine(new PoolFiber());
+            var engine = new MessageRoutingEngine();
             engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
 
-            engine.Send(new SimpleImpl());
+            engine.Send(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
             received.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
             received.Value.ShouldNotBeNull();
@@ -41,10 +42,10 @@ namespace Stact.Specs
         {
             var received = new Future<Message<Simple>>();
 
-            var engine = new DynamicRoutingEngine(new PoolFiber());
+            var engine = new MessageRoutingEngine();
             engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
 
-            engine.Send(new SimpleImpl());
+            engine.Send(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
             received.WaitUntilCompleted(6.Seconds()).ShouldBeTrue();
             received.Value.ShouldNotBeNull();
@@ -56,14 +57,14 @@ namespace Stact.Specs
             var faulted = new Future<Fault>();
             var received = new Future<Message<Simple>>();
 
-            var engine = new DynamicRoutingEngine(new PoolFiber());
+            var engine = new MessageRoutingEngine();
             engine.Configure(x =>
                 {
                     x.Receive<Fault>(faulted.Complete);
                     x.Receive<Message<Simple>>(received.Complete);
                 });
 
-            engine.Send<Simple>(new SimpleImpl());
+            engine.Send<Simple>(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
             var completed = received.WaitUntilCompleted(4.Seconds());
 

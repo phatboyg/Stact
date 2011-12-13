@@ -19,25 +19,21 @@ namespace Stact.Routing
     using Stact.Internal;
 
 
-    public class DynamicRoutingEngine :
+    public class MessageRoutingEngine :
         RoutingEngine
     {
-        static readonly DynamicRoutingContextFactory _contextFactory = new DynamicRoutingContextFactory();
-        readonly Agenda _agenda;
+        readonly MessageRoutingEngineAgenda _agenda;
 
-        readonly DynamicRoutingEngineConfigurator _configurator;
-        readonly Fiber _fiber;
+        readonly MessageRoutingEngineConfigurator _configurator;
         readonly Activation _root;
         bool _shutdown;
 
-        public DynamicRoutingEngine(Fiber fiber)
+        public MessageRoutingEngine()
         {
-            _fiber = fiber;
-
-            _agenda = new Agenda();
+            _agenda = new MessageRoutingEngineAgenda();
             _root = new RootNode();
 
-            _configurator = new DynamicRoutingEngineConfigurator(this);
+            _configurator = new MessageRoutingEngineConfigurator(this, _agenda);
         }
 
         public Activation Root
@@ -45,13 +41,12 @@ namespace Stact.Routing
             get { return _root; }
         }
 
-        public void Send<T>(T message)
+        public void Send<T>(Message<T> message)
         {
-            _fiber.Add(() =>
-                {
-                    _contextFactory.Create(message, _root);
-                    _agenda.Run();
-                });
+            RoutingContext<T> context = new MessageRoutingContext<T>(message);
+            _root.Activate(context);
+
+            _agenda.Run();
         }
 
         public void Add(int priority, Action action)
@@ -60,7 +55,6 @@ namespace Stact.Routing
                 return;
 
             _agenda.Add(priority, action);
-            //   _fiber.Add(() => _agenda.Run());
         }
 
         public void Shutdown()
@@ -71,16 +65,13 @@ namespace Stact.Routing
 
         public void Configure(Action<RoutingEngineConfigurator> callback)
         {
-            _fiber.Add(() =>
-                {
-                    DynamicRoutingEngineConfigurator configurator = _configurator;
+                    MessageRoutingEngineConfigurator configurator = _configurator;
 
                     callback(configurator);
 
                     //                   new TraceRoutingEngineVisualizer().Show(this);
 
                     _agenda.Run();
-                });
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Stact
             loop.Continue();
         }
 
-        public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, ActorInbox inbox)
+        public static ReceiveLoop EnableSuspendResume(this ReceiveLoop loop, UntypedActor inbox)
         {
             return loop.Receive<Suspend>(pause =>
                 {

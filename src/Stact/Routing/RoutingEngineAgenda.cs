@@ -10,19 +10,13 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Contexts
+namespace Stact.Routing
 {
-    using MessageHeaders;
+    using System;
 
 
-    public class ObjectRoutingContextFactory<T> :
-        RoutingContextFactory
+    public interface RoutingEngineAgenda
     {
-        public void Create(object message, Activation activation)
-        {
-            RoutingContext<T> context = new MessageRoutingContext<T>(new MessageContext<T>((T)message));
-
-            activation.Activate(context);
-        }
+        void Add(int priority, Action operation);
     }
 }

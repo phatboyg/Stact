@@ -26,7 +26,7 @@ namespace Stact.Routing.Visualizers
         AbstractRoutingEngineVisitor<GraphRoutingEngineVisitor>
     {
         readonly List<Edge> _edges = new List<Edge>();
-        readonly Agenda _operations = new Agenda();
+        readonly MessageRoutingEngineAgenda _operations = new MessageRoutingEngineAgenda();
         readonly Stack<Vertex> _stack = new Stack<Vertex>();
         readonly Cache<int, Vertex> _vertices = new Cache<int, Vertex>();
         Vertex _current;

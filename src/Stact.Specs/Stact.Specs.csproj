@@ -195,7 +195,6 @@
     <Compile Include="Routing\Condition_Specs.cs" />
     <Compile Include="Routing\HeaderAdapterRouting_Specs.cs" />
     <Compile Include="Routing\Inheritance_Specs.cs" />
-    <Compile Include="Routing\NewContext_Specs.cs" />
     <Compile Include="Routing\Behavior\Branch_Specs.cs" />
     <Compile Include="Routing\Behavior\Inspection_Specs.cs" />
     <Compile Include="Routing\Override_Specs.cs" />

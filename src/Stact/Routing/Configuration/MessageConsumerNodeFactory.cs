@@ -22,7 +22,7 @@ namespace Stact.Routing.Configuration
                                                  RoutingEngineConfigurator configurator)
         {
             var messageConsumer = consumer as Consumer<Message<T>>;
-            var consumerNode = new ConsumerNode<T>(configurator.Engine, messageConsumer);
+            var consumerNode = new ConsumerNode<T>(configurator.Agenda, messageConsumer);
 
             return AddActivation(configurator, consumerNode);
         }
@@ -31,7 +31,7 @@ namespace Stact.Routing.Configuration
                                                  RoutingEngineConfigurator configurator)
         {
             var messageConsumer = consumer as SelectiveConsumer<Message<T>>;
-            var consumerNode = new SelectiveConsumerNode<T>(configurator.Engine, messageConsumer);
+            var consumerNode = new SelectiveConsumerNode<T>(configurator.Agenda, messageConsumer);
 
             return AddActivation(configurator, consumerNode);
         }
@@ -40,7 +40,7 @@ namespace Stact.Routing.Configuration
                                               Activation<T> consumerNode)
         {
             var messageActivation = new MessageNode<T>(consumerNode);
-            return configurator.Add(messageActivation);
+            return configurator.AddActivation(messageActivation);
         }
     }
 }

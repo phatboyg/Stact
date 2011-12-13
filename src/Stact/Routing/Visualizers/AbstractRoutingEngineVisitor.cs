@@ -21,7 +21,7 @@ namespace Stact.Routing.Visualizers
         ReflectiveVisitorBase<TVisitor>
         where TVisitor : AbstractRoutingEngineVisitor<TVisitor>
     {
-        protected virtual bool Visit(DynamicRoutingEngine engine)
+        protected virtual bool Visit(MessageRoutingEngine engine)
         {
             Visit(engine.Root);
             return true;

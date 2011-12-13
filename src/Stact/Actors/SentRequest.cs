@@ -12,15 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    using System;
-
-
     public interface SentRequest
     {
-        PendingReceive ReceiveResponse<TMessage>(SelectiveConsumer<Message<TMessage>> consumer);
-
-        PendingReceive ReceiveResponse<TMessage>(SelectiveConsumer<Message<TMessage>> consumer, TimeSpan timeout,
-                                                 Action timeoutCallback);
+        ReceiveHandle ReceiveResponse<TMessage>(SelectiveConsumer<Message<TMessage>> consumer);
     }
 
 
@@ -28,6 +22,6 @@ namespace Stact
         SentRequest,
         Message<T>
     {
-        ActorInbox Inbox { get; }
+        UntypedActor Inbox { get; }
     }
 }

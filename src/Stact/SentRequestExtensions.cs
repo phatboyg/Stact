@@ -14,7 +14,7 @@ namespace Stact
 {
     public static class SentRequestExtensions
     {
-        public static PendingReceive ReceiveResponse<T>(this SentRequest request, Consumer<Message<T>> consumer)
+        public static ReceiveHandle ReceiveResponse<T>(this SentRequest request, Consumer<Message<T>> consumer)
         {
             return request.ReceiveResponse<T>(x => consumer);
         }

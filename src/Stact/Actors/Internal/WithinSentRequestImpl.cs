@@ -23,18 +23,21 @@ namespace Stact.Internal
         readonly TimeSpan _timeout;
         bool _handled;
         Action _timeoutCallback = DoNothing;
+        TimeoutHandle _timeoutHandle;
 
         public WithinSentRequestImpl(SentRequest<TRequest> request, TimeSpan timeout)
         {
             _request = request;
             _timeout = timeout;
 
+            _timeoutHandle = _request.Inbox.SetTimeout(timeout, HandleTimeout);
+
             _receives = new PendingReceiveList();
         }
 
         public WithinSentRequest<TRequest> Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            PendingReceive receive = _request.Inbox.Receive<T>(candidate =>
+            ReceiveHandle receive = _request.Inbox.Receive<T>(candidate =>
                 {
                     Consumer<Message<T>> accepted = consumer(candidate);
                     if (accepted == null)
@@ -46,9 +49,11 @@ namespace Stact.Internal
 
                             _receives.CancelAll();
 
+                            _timeoutHandle.Cancel();
+
                             _handled = true;
                         };
-                }, _timeout, HandleTimeout);
+                });
 
             _receives.Add(receive);
 

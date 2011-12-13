@@ -21,7 +21,7 @@ namespace Stact.Internal
     {
         readonly Actor<TState> _actor;
         readonly PendingReceiveList _pending;
-        readonly IList<Func<PendingReceive>> _receivers;
+        readonly IList<Func<ReceiveHandle>> _receivers;
 
         public ReceiveLoopImpl(Actor<TState> actor)
         {
@@ -29,7 +29,7 @@ namespace Stact.Internal
 
             _pending = new PendingReceiveList();
 
-            _receivers = new List<Func<PendingReceive>>
+            _receivers = new List<Func<ReceiveHandle>>
                 {
                     () => _actor.Receive<Exit>(HandleExit),
                     () => _actor.Receive<Kill>(message => CancelPendingReceives()),
@@ -38,7 +38,7 @@ namespace Stact.Internal
 
         public ReceiveLoop Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            Func<PendingReceive> receiver = () => _actor.Receive((SelectiveConsumer<Message<T>>)(candidate =>
+            Func<ReceiveHandle> receiver = () => _actor.Receive((SelectiveConsumer<Message<T>>)(candidate =>
                 {
                     Consumer<Message<T>> accepted = consumer(candidate);
                     if (accepted == null)

@@ -151,32 +151,15 @@ namespace Stact
     }
 
 
-    public interface ActorInbox
-    {
-        PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer);
-
-        PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout, Action timeoutCallback);
-
-        /// <summary>
-        /// The local reference to the actor, which can be passed to other actors, used to send messages, etc.
-        /// </summary>
-        ActorRef Self { get; }
-
-        void Send<T>(Message<T> message);
-    }
-
-
     /// <summary>
     /// An Actor encapsulates the behavior and state of an actor in memory. This interface is not
     /// meant to be implemented by the library user.
     /// </summary>
     /// <typeparam name="TState">The type of state maintained for the actor</typeparam>
     public interface Actor<TState> :
-        ActorInbox 
+        UntypedActor
     {
-
         TState State { get; }
-
 
         /// <summary>
         /// The internals are meant to be used for specific purposes and should not generally be used.
@@ -195,17 +178,6 @@ namespace Stact
         /// Reapplies the current behavior after the current message is processed
         /// </summary>
         void ReapplyBehavior();
-
-        /// <summary>
-        /// Sets a timeout, after which time the specified callback will be invoked.
-        /// </summary>
-        /// <param name="timeout">The timeout period</param>
-        /// <param name="timeoutCallback">The callback to invoke if the timeout expires</param>
-        /// <returns>A TimeoutHandle, which can be used to cancel the timeout callback</returns>
-        TimeoutHandle SetTimeout(TimeSpan timeout, Action timeoutCallback);
-
-
-        void SetExceptionHandler(ExceptionHandler exceptionHandler);
 
 
 

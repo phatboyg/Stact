@@ -18,16 +18,16 @@ namespace Stact.Internal
 
 
 	public class PendingReceiveList :
-		IEnumerable<PendingReceive>
+		IEnumerable<ReceiveHandle>
 	{
-		readonly IList<PendingReceive> _receives;
+		readonly IList<ReceiveHandle> _receives;
 
 		public PendingReceiveList()
 		{
-			_receives = new List<PendingReceive>();
+			_receives = new List<ReceiveHandle>();
 		}
 
-		public IEnumerator<PendingReceive> GetEnumerator()
+		public IEnumerator<ReceiveHandle> GetEnumerator()
 		{
 			return _receives.GetEnumerator();
 		}
@@ -37,7 +37,7 @@ namespace Stact.Internal
 			return GetEnumerator();
 		}
 
-		public void Add(PendingReceive pendingReceive)
+		public void Add(ReceiveHandle pendingReceive)
 		{
 			_receives.Add(pendingReceive);
 		}

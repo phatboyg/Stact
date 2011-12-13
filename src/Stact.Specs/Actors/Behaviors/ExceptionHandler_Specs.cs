@@ -24,7 +24,7 @@ namespace Stact.Specs.Actors.Behaviors
         [Test]
         public void Should_receive_the_response()
         {
-            _state.Received.WaitUntilCompleted(800.Seconds()).ShouldBeTrue();
+            _state.Received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
 
             Assert.IsInstanceOf<InvalidOperationException>(_state.Received.Value);
         }

@@ -16,5 +16,5 @@ using Stact.Routing;
 using Stact.Visualizers;
 
 [assembly: DebuggerVisualizer(typeof(RoutingEngineDebugVisualizer), typeof(RoutingEngineVisualizerObjectSource),
-	Target = typeof(DynamicRoutingEngine),
+	Target = typeof(MessageRoutingEngine),
 	Description = "Stact Routing Engine Visualizer")]

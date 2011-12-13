@@ -12,7 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
+    using Headers;
     using Magnum.TestFramework;
+    using MessageHeaders;
     using NUnit.Framework;
     using Routing;
     using Routing.Visualizers;
@@ -21,14 +23,14 @@ namespace Stact.Specs
     [Scenario]
     public class When_an_inheritance_chain_is_part_of_a_message
     {
-        DynamicRoutingEngine _engine;
+        MessageRoutingEngine _engine;
 
         [When]
         public void An_inheritance_chain_is_part_of_a_message()
         {
-            _engine = new DynamicRoutingEngine(new SynchronousFiber());
+            _engine = new MessageRoutingEngine();
 
-            _engine.Send(new OverTheTop());
+            _engine.Send(new MessageContext<OverTheTop>(new OverTheTop()));
         }
 
         [Then]
