@@ -23,7 +23,6 @@ namespace Stact.Routing.Configuration
         RoutingEngineConfigurator
     {
         readonly RoutingEngineAgenda _agenda;
-        readonly ConsumerNodeFactory _consumerFactory = new DynamicConsumerNodeFactory();
 
         readonly MessageRoutingEngine _engine;
         readonly Cache<Type, object> _joinNodes;
@@ -51,12 +50,16 @@ namespace Stact.Routing.Configuration
 
         public RemoveActivation Receive<T>(Consumer<Message<T>> consumer)
         {
-            return _consumerFactory.Create(consumer, this);
+            var consumerNode = new ConsumerNode<T>(_agenda, consumer);
+
+            return AddActivation(consumerNode);
         }
 
         public RemoveActivation SelectiveReceive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            return _consumerFactory.Create(consumer, this);
+            var consumerNode = new SelectiveConsumerNode<T>(_agenda, consumer);
+
+            return AddActivation(consumerNode);
         }
 
         BetaMemory<T> GetJoinNode<T>()

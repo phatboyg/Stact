@@ -13,7 +13,6 @@
 namespace Stact.Routing.Nodes
 {
     using System;
-    using Stact.Internal;
 
 
     /// <summary>

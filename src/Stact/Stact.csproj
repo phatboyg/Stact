@@ -272,11 +272,7 @@
     <Compile Include="RequestExtensions.cs" />
     <Compile Include="RespondExtensions.cs" />
     <Compile Include="Routing\Activation.cs" />
-    <Compile Include="Routing\Configuration\ConsumerNodeFactory.cs" />
-    <Compile Include="Routing\Configuration\DynamicConsumerNodeFactory.cs" />
     <Compile Include="Routing\Configuration\MessageRoutingEngineConfigurator.cs" />
-    <Compile Include="Routing\Configuration\MessageConsumerNodeFactory.cs" />
-    <Compile Include="Routing\Configuration\ObjectConsumerNodeFactory.cs" />
     <Compile Include="Routing\RoutingEngineAgenda.cs" />
     <Compile Include="Routing\RoutingEngineConfiguratorExtensions.cs" />
     <Compile Include="Routing\Contexts\MessageProxy.cs" />

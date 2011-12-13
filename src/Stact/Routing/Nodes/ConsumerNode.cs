@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
-    using Stact.Internal;
-
-
     /// <summary>
     /// Delivers a message to a consumer on the specified fiber.
     /// </summary>
