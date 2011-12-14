@@ -108,6 +108,7 @@
       <Link>SolutionVersion.cs</Link>
     </Compile>
     <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\ActorChannel.cs" />
     <Compile Include="Actors\ActorRefExtensions.cs" />
     <Compile Include="Actors\Behavior.cs" />
     <Compile Include="Actors\Configuration\Conventions\MessageWithSenderMethodBehaviorConvention.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="Actors\ActorFactory.cs" />
     <Compile Include="Actors\ActorState.cs" />
     <Compile Include="Actors\Actors\ActorExceptionHandler.cs" />
-    <Compile Include="Actors\Actors\Registries\ActorRegistryHeaderChannel.cs" />
+    <Compile Include="Actors\Actors\Registries\ActorRegistryChannel.cs" />
     <Compile Include="Actors\Actors\SelfOnlyActorRestartExceptionHandler.cs" />
     <Compile Include="Actors\Actors\SupervisorActor.cs" />
     <Compile Include="Actors\Behaviors\ActorBehaviorApplicator.cs" />
@@ -151,9 +152,6 @@
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="LoopExtensions.cs" />
     <Compile Include="MessageHeaders\MessageHeaderExtensions.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\BodySelectorFactory.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeader.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderChannel.cs" />
     <Compile Include="MessageHeaders\SetMessageHeader.cs" />
     <Compile Include="Messages\ActorRestartLimitReached.cs" />
     <Compile Include="Messages\Death.cs" />
@@ -212,7 +210,6 @@
     <Compile Include="Channels\Internal\ChannelConnectionBase.cs" />
     <Compile Include="Channels\Internal\CreateChannelConnection.cs" />
     <Compile Include="Channels\Internal\DisconnectChannelVisitor.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderSelectorFactory.cs" />
     <Compile Include="Channels\Internal\TypedChannelConnection.cs" />
     <Compile Include="Channels\Configuration\Internal\UntypedChannelBuilder.cs" />
     <Compile Include="Channels\Configuration\Builders\FilterChannelBuilder.cs" />
@@ -233,7 +230,6 @@
     <Compile Include="Fibers\OperationExecutor.cs" />
     <Compile Include="Fibers\Internal\MessageRoutingEngineAgenda.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderCallback.cs" />
     <Compile Include="MessageHeaders\MessageHeader.cs" />
     <Compile Include="MessageHeaders\HeaderKey.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\DictionaryHeaders.cs" />
@@ -245,17 +241,13 @@
     <Compile Include="Remote\Remote\DeserializeChunkChannel.cs" />
     <Compile Include="Remote\Remote\ChunkWriterControl.cs" />
     <Compile Include="Remote\Remote\Loopback\LoopbackReaderWriter.cs" />
-    <Compile Include="Remote\Remote\MatchHeaderChannel.cs" />
     <Compile Include="Remote\Remote\ChunkWriter.cs" />
     <Compile Include="Remote\Remote\Node.cs" />
     <Compile Include="Remote\Remote\RemoteRegistryNode.cs" />
     <Compile Include="Remote\Remote\RemoteNode.cs" />
     <Compile Include="Remote\Remote\SerializeChunkChannel.cs" />
     <Compile Include="Actors\ActorRegistryFactory.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderSelectorFactoryImpl.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MatchHeaderImpl.cs" />
     <Compile Include="Remote\Remote\HeaderChannel.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\MessageSelectorFactory.cs" />
     <Compile Include="Remote\Remote\RemoteError.cs" />
     <Compile Include="Remote\Remote\RemoteNodeCollection.cs" />
     <Compile Include="Remote\Remote\MessageMethod.cs" />
@@ -401,7 +393,7 @@
     <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
     <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
-    <Compile Include="Routing\Configuration\RoutingEngineConfigurator.cs" />
+    <Compile Include="Routing\RoutingEngineConfigurator.cs" />
     <Compile Include="Routing\MessageRoutingEngine.cs" />
     <Compile Include="Routing\RoutingEngine.cs" />
     <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />

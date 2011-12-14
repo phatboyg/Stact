@@ -12,11 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System.Collections.Generic;
+    using System.Collections.Generic;
 
 
-	public interface HeaderChannel
-	{
-		void Send<T>(T message, IDictionary<string, string> headers);
-	}
+    public interface HeaderChannel
+    {
+        void Send<T>(Message<T> message, IDictionary<string, string> headers);
+        void Send<T>(Message<T> message);
+    }
 }

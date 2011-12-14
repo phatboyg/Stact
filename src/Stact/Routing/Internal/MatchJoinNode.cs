@@ -50,13 +50,13 @@ namespace Stact.Routing.Internal
 
         protected override bool Visit<TChannel>(JoinNode<TChannel> node)
         {
-            var match = node as JoinNode<T>;
-            if (match != null)
+            var self = this as MatchJoinNode<TChannel>;
+            if (self != null)
             {
-                var constant = match.RightActivation as ConstantNode<T>;
+                var constant = node.RightActivation as ConstantNode<TChannel>;
                 if (constant != null)
                 {
-                    _join = match;
+                    self._join = node;
                     return false;
                 }
             }

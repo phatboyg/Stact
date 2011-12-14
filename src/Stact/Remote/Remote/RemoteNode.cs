@@ -12,79 +12,83 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System;
-	using System.Collections.Generic;
-	using Magnum.Extensions;
-	using Magnum.Serialization;
+    using System;
+    using System.Collections.Generic;
+    using Magnum.Extensions;
+    using Magnum.Serialization;
 
 
-	public class RemoteNode :
-		Node
-	{
-		readonly BufferedChunkWriter _buffer;
-		readonly Fiber _fiber;
-		readonly Channel<ArraySegment<byte>> _reader;
-		readonly Scheduler _scheduler;
-		readonly HeaderChannel _writer;
-		IList<IDisposable> _disposables;
-		bool _disposed;
+    public class RemoteNode :
+        Node
+    {
+        readonly BufferedChunkWriter _buffer;
+        readonly Fiber _fiber;
+        readonly Channel<ArraySegment<byte>> _reader;
+        readonly Scheduler _scheduler;
+        readonly HeaderChannel _writer;
+        IList<IDisposable> _disposables;
+        bool _disposed;
 
-		public RemoteNode(UntypedChannel input, ChunkWriter output, FiberFactory fiberFactory, Scheduler scheduler,
-		                  Serializer serializer)
-		{
-			_disposables = new List<IDisposable>();
+        public RemoteNode(UntypedChannel input, ChunkWriter output, FiberFactory fiberFactory, Scheduler scheduler,
+                          Serializer serializer)
+        {
+            _disposables = new List<IDisposable>();
 
-			_scheduler = scheduler;
+            _scheduler = scheduler;
 
-			_fiber = fiberFactory();
+            _fiber = fiberFactory();
 
-			_buffer = new BufferedChunkWriter(_fiber, _scheduler, output, 64*1024);
-			_buffer.Start();
+            _buffer = new BufferedChunkWriter(_fiber, _scheduler, output, 64*1024);
+            _buffer.Start();
 
-			_reader = new DeserializeChunkChannel(input, serializer);
-			_writer = new SerializeChunkChannel(_buffer, serializer);
-		}
+            _reader = new DeserializeChunkChannel(input, serializer);
+            _writer = new SerializeChunkChannel(_buffer, serializer);
+        }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-		public void Send<T>(T message, IDictionary<string, string> headers)
-		{
-			_writer.Send(message, headers);
-		}
+        public void Send(ArraySegment<byte> message)
+        {
+            _reader.Send(message);
+        }
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        public void Send<T>(Message<T> message, IDictionary<string, string> headers)
+        {
+            _writer.Send(message, headers);
+        }
 
-		public void Send(ArraySegment<byte> message)
-		{
-			_reader.Send(message);
-		}
+        public void Send<T>(Message<T> message)
+        {
+            _writer.Send(message);
+        }
 
-		~RemoteNode()
-		{
-			Dispose(false);
-		}
+        ~RemoteNode()
+        {
+            Dispose(false);
+        }
 
-		void Dispose(bool disposing)
-		{
-			if (_disposed)
-				return;
-			if (disposing)
-			{
-				_disposables.Each(x => x.Dispose());
+        void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+            if (disposing)
+            {
+                _disposables.Each(x => x.Dispose());
 
-				_buffer.Dispose();
-				_fiber.Stop(1.Minutes());
-			}
+                _buffer.Dispose();
+                _fiber.Stop(1.Minutes());
+            }
 
-			_disposed = true;
-		}
+            _disposed = true;
+        }
 
-		public void AddDisposable(IDisposable disposable)
-		{
-			_disposables.Add(disposable);
-		}
-	}
+        public void AddDisposable(IDisposable disposable)
+        {
+            _disposables.Add(disposable);
+        }
+    }
 }

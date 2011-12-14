@@ -24,7 +24,6 @@ namespace Stact.Specs.Registries
 	[Scenario]
 	public class When_sending_a_message_through_the_chunk_writer
 	{
-		MessageHeaders.MatchHeaderChannel _channel;
 		DelegateChunkWriter _chunkWriter;
 		SerializeChunkChannel _rawChannel;
 
@@ -39,28 +38,24 @@ namespace Stact.Specs.Registries
 				});
 
 			_rawChannel = new SerializeChunkChannel(_chunkWriter, new FastTextSerializer());
-
-			var chunkHeaderChannel = new Remote.MatchHeaderChannel(_rawChannel);
-
-			_channel = new MessageHeaders.MatchHeaderChannel(chunkHeaderChannel);
 		}
 
 		[Then]
 		public void Should_properly_serialize_a_plain_class()
 		{
-			_channel.Send(new Test
+            _rawChannel.Send(new Test
 				{
 					Name = "Johnson",
-				});
+				}.ToMessage());
 		}
 
 		[Then]
 		public void Should_properly_serialize_a_message()
 		{
-			_channel.Send<Message<Test>>(new MessageContext<Test>(new Test
+            _rawChannel.Send(new Test
 				{
 					Name = "Johnson"
-				}));
+				}.ToMessage());
 		}
 
 		[Then]

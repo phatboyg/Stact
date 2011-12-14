@@ -52,10 +52,10 @@ namespace Stact.Routing.Internal
 
         protected override bool Visit<TChannel>(AlphaNode<TChannel> node)
         {
-            var match = node as AlphaNode<T>;
-            if (match != null)
+            var self = this as MatchAlphaNode<TChannel>;
+            if(self != null)
             {
-                _alpha = match;
+                self._alpha = node;
                 return false;
             }
 

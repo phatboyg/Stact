@@ -12,104 +12,109 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System;
-	using System.Collections.Generic;
-	using System.IO;
-	using Magnum;
-	using Magnum.Serialization;
-	using MessageHeaders;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using Magnum;
+    using Magnum.Serialization;
 
 
-	public class SerializeChunkChannel :
-		HeaderChannel
-	{
-		const int PaddingLength = 8;
-		readonly ChunkWriter _chunkWriter;
-		readonly byte[] _padding;
-		readonly Serializer _serializer;
-		int _bufferCapacity;
-		Func<Stream, Stream> _contentEncoder;
-		Action<ArraySegment<byte>> _unsentCallback;
+    public class SerializeChunkChannel :
+        HeaderChannel
+    {
+        const int PaddingLength = 8;
+        static readonly IDictionary<string, string> _noHeaders = new Dictionary<string, string>();
+        readonly ChunkWriter _chunkWriter;
+        readonly byte[] _padding;
+        readonly Serializer _serializer;
+        int _bufferCapacity;
+        Func<Stream, Stream> _contentEncoder;
+        Action<ArraySegment<byte>> _unsentCallback;
 
-		public SerializeChunkChannel(ChunkWriter chunkWriter, Serializer serializer)
-		{
-			_padding = new byte[PaddingLength];
-			_bufferCapacity = 4096;
-			_chunkWriter = chunkWriter;
-			_serializer = serializer;
-			_unsentCallback = DefaultUnsentCallback;
-			_contentEncoder = DefaultContentEncoder;
-		}
+        public SerializeChunkChannel(ChunkWriter chunkWriter, Serializer serializer)
+        {
+            _padding = new byte[PaddingLength];
+            _bufferCapacity = 4096;
+            _chunkWriter = chunkWriter;
+            _serializer = serializer;
+            _unsentCallback = DefaultUnsentCallback;
+            _contentEncoder = DefaultContentEncoder;
+        }
 
-		public int BufferCapacity
-		{
-			get { return _bufferCapacity; }
-			set
-			{
-				Guard.GreaterThan(0, value);
+        public int BufferCapacity
+        {
+            get { return _bufferCapacity; }
+            set
+            {
+                Guard.GreaterThan(0, value);
 
-				_bufferCapacity = value;
-			}
-		}
+                _bufferCapacity = value;
+            }
+        }
 
-		public Func<Stream, Stream> ContentEncoder
-		{
-			get { return _contentEncoder; }
-			set { _contentEncoder = value ?? DefaultContentEncoder; }
-		}
+        public Func<Stream, Stream> ContentEncoder
+        {
+            get { return _contentEncoder; }
+            set { _contentEncoder = value ?? DefaultContentEncoder; }
+        }
 
-		public Action<ArraySegment<byte>> UnsentCallback
-		{
-			get { return _unsentCallback; }
-			set { _unsentCallback = value ?? DefaultUnsentCallback; }
-		}
+        public Action<ArraySegment<byte>> UnsentCallback
+        {
+            get { return _unsentCallback; }
+            set { _unsentCallback = value ?? DefaultUnsentCallback; }
+        }
 
-		public void Send<T>(T message, IDictionary<string, string> headers)
-		{
-			using (var ms = new MemoryStream(_bufferCapacity))
-			{
-				ms.Write(_padding, 0, PaddingLength);
+        public void Send<T>(Message<T> message, IDictionary<string, string> headers)
+        {
+            using (var ms = new MemoryStream(_bufferCapacity))
+            {
+                ms.Write(_padding, 0, PaddingLength);
 
-				using (var ts = new StreamWriter(_contentEncoder(ms)))
-				{
-				    headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
+                using (var ts = new StreamWriter(_contentEncoder(ms)))
+                {
+                    headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
 
-					int headerLength = 0;
-					if (headers.Count > 0)
-					{
-						_serializer.Serialize(headers, ts);
-						ts.Flush();
+                    int headerLength = 0;
+                    if (headers.Count > 0)
+                    {
+                        _serializer.Serialize(headers, ts);
+                        ts.Flush();
 
-						headerLength = (int)ms.Length - PaddingLength;
-					}
+                        headerLength = (int)ms.Length - PaddingLength;
+                    }
 
-					_serializer.Serialize(message, ts);
-					ts.Flush();
+                    _serializer.Serialize(message, ts);
+                    ts.Flush();
 
-					int bodyLength = (int)ms.Length - headerLength - PaddingLength;
+                    int bodyLength = (int)ms.Length - headerLength - PaddingLength;
 
-					byte[] buffer = ms.GetBuffer();
+                    byte[] buffer = ms.GetBuffer();
 
-					byte[] bytes = BitConverter.GetBytes(headerLength);
-					Array.Copy(bytes, 0, buffer, 0, 4);
+                    byte[] bytes = BitConverter.GetBytes(headerLength);
+                    Array.Copy(bytes, 0, buffer, 0, 4);
 
-					bytes = BitConverter.GetBytes(bodyLength);
-					Array.Copy(bytes, 0, buffer, 4, 4);
+                    bytes = BitConverter.GetBytes(bodyLength);
+                    Array.Copy(bytes, 0, buffer, 4, 4);
 
-					var arraySegment = new ArraySegment<byte>(buffer, 0, (int)ms.Length);
+                    var arraySegment = new ArraySegment<byte>(buffer, 0, (int)ms.Length);
 
-					_chunkWriter.Write(arraySegment, _unsentCallback);
-				}
-			}
-		}
+                    _chunkWriter.Write(arraySegment, _unsentCallback);
+                }
+            }
+        }
 
-		static Stream DefaultContentEncoder(Stream stream)
-		{
-			return stream;
-		}
+        public void Send<T>(Message<T> message)
+        {
+            Send(message, _noHeaders);
+        }
 
-		static void DefaultUnsentCallback(ArraySegment<byte> obj)
-		{
-		}
-	}
+        static Stream DefaultContentEncoder(Stream stream)
+        {
+            return stream;
+        }
+
+        static void DefaultUnsentCallback(ArraySegment<byte> obj)
+        {
+        }
+    }
 }

@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-    using Configuration;
-
-
     public static class RoutingEngineConfiguratorExtensions
     {
         public static RemoveActivation Receive<T>(this RoutingEngineConfigurator configurator,

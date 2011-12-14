@@ -13,10 +13,9 @@
 namespace Stact.Routing
 {
 	using System;
-	using Configuration;
 
 
-	/// <summary>
+    /// <summary>
 	/// A routing engine managed the distribution of messages to consumers using
 	/// a rules engine style to allow for highly complex routing rules without
 	/// custom application coding

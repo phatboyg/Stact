@@ -25,15 +25,13 @@ namespace Stact.Remote
         ActorRef
     {
         readonly string _destinationAddress;
-        readonly MatchHeaderChannel _output;
+        readonly HeaderChannel _output;
 
         public RemoteActor(HeaderChannel output, Uri remoteAddress)
         {
             _destinationAddress = ActorUrn.CreateFromRemoteAddress(remoteAddress).ToString();
 
-            HeaderChannel headerChannel = new DestinationHeaderChannel(output, _destinationAddress);
-
-            _output = new MatchHeaderChannel(headerChannel);
+            _output = new DestinationHeaderChannel(output, _destinationAddress);
         }
 
 
@@ -55,11 +53,16 @@ namespace Stact.Remote
                 _destinationAddress = destinationAddress;
             }
 
-            public void Send<T>(T message, IDictionary<string, string> headers)
+            public void Send<T>(Message<T> message, IDictionary<string, string> headers)
             {
                 headers[HeaderKey.DestinationAddress] = _destinationAddress;
 
                 _output.Send(message, headers);
+            }
+
+            public void Send<T>(Message<T> message)
+            {
+                Send(message, new Dictionary<string, string>());
             }
         }
     }

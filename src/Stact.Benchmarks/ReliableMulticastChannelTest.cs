@@ -12,79 +12,72 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Benchmarks
 {
-	using System;
-	using System.Threading;
-	using Internal;
-	using Magnum.Serialization;
-	using Remote;
-	using Remote.ReliableMulticast;
+    using System;
+    using Magnum.Serialization;
+    using Remote;
+    using Remote.ReliableMulticast;
 
 
-	public class ReliableMulticastChannelTest
-	{
-		public void Run()
-		{
-			var network = new Uri("pgm://224.0.0.7:40001");
+    public class ReliableMulticastChannelTest
+    {
+        public void Run()
+        {
+            var network = new Uri("pgm://224.0.0.7:40001");
 
-			ActorRef actor = StatelessActor.New(inbox =>
-			{
-				inbox.Loop(loop =>
-				{
-					loop
-						.Receive<A>(message =>
-						{
-							Console.WriteLine("Received: " + message.Body.Name);
+            ActorRef actor = StatelessActor.New(inbox =>
+            {
+                inbox.Loop(loop =>
+                {
+                    loop
+                        .Receive<A>(message =>
+                        {
+                            Console.WriteLine("Received: " + message.Body.Name);
 
-							loop.Continue();
-						})
-						.Receive<B>(message =>
-						{
+                            loop.Continue();
+                        })
+                        .Receive<B>(message =>
+                        {
                             Console.WriteLine("Received: " + message.Body.Address);
-							loop.Continue();
-						});
-				});
-			});
+                            loop.Continue();
+                        });
+                });
+            });
 
-			using (var writer = new ReliableMulticastWriter(network))
-			{
-				writer.Start();
+            using (var writer = new ReliableMulticastWriter(network))
+            {
+                writer.Start();
 
-				MessageHeaders.MatchHeaderChannel channel;
-				using (var buffer = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024))
-				{
-					buffer.Start();
+                HeaderChannel channel;
+                using (var buffer = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024))
+                {
+                    buffer.Start();
 
-					channel =
-						new MessageHeaders.MatchHeaderChannel(
-							new MatchHeaderChannel(new SerializeChunkChannel(buffer, new FastTextSerializer())));
+                    channel =new SerializeChunkChannel(buffer, new FastTextSerializer());
 
+                    HeaderChannel channel2;
+                    using (var buffer2 = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024)
+                        )
+                    {
+                        buffer2.Start();
+                        channel2 = new SerializeChunkChannel(buffer2, new FastTextSerializer());
 
-					MessageHeaders.MatchHeaderChannel channel2;
-					using (var buffer2 = new BufferedChunkWriter(new PoolFiber(), new TimerScheduler(new PoolFiber()), writer, 64*1024)
-						)
-					{
-						buffer2.Start();
-						channel2 =
-							new MessageHeaders.MatchHeaderChannel(
-								new MatchHeaderChannel(new SerializeChunkChannel(buffer2, new FastTextSerializer())));
+                        Console.WriteLine("Writer started");
 
-						Console.WriteLine("Writer started");
+                        for (int i = 0; i < 10; i++)
+                        {
+                            channel.Send(new A
+                            {
+                                Name = "Joe"
+                            }.ToMessage());
 
-						for (int i = 0; i < 10; i++)
-						{
-							channel.Send(new A
-							{
-								Name = "Joe"
-							});
+                            channel2.Send(new B
+                            {
+                                Address = "American Way",
+                            }.ToMessage());
+                        }
+                        Console.WriteLine("Sent message");
 
-							channel2.Send(new B
-							{
-								Address = "American Way",
-							});
-						}
-						Console.WriteLine("Sent message");
-
-					    throw new NotImplementedException();
+                        throw new NotImplementedException();
 
 //						var reader = new DeserializeChunkChannel(actor, new FastTextSerializer());
 //
@@ -101,23 +94,23 @@ namespace Stact.Benchmarks
 //						}
 //
 //						Console.WriteLine("Listener stopped");
-					}
-				}
-			}
+                    }
+                }
+            }
 
-			Console.WriteLine("Sender Stopped");
-		}
-
-
-		public class A
-		{
-			public string Name { get; set; }
-		}
+            Console.WriteLine("Sender Stopped");
+        }
 
 
-		public class B
-		{
-			public string Address { get; set; }
-		}
-	}
+        public class A
+        {
+            public string Name { get; set; }
+        }
+
+
+        public class B
+        {
+            public string Address { get; set; }
+        }
+    }
 }
