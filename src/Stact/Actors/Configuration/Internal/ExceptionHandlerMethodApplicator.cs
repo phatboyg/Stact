@@ -15,7 +15,7 @@ namespace Stact.Configuration.Internal
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Behaviors;
+    using Actors.Behaviors;
 
 
     public class ExceptionHandlerMethodApplicator<TState, TBehavior> :

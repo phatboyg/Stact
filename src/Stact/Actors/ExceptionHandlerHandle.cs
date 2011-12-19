@@ -12,8 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	public interface Command<out T> :
-		Message<T>
-	{
-	}
+    public interface ExceptionHandlerHandle :
+        PendingHandle
+    {
+    }
 }

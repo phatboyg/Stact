@@ -13,26 +13,14 @@
 namespace Stact
 {
     using System;
+    using Actors;
 
 
-    public interface UntypedActor
+    public interface UntypedActor :
+        ActorChannel,
+        ActorInbox
     {
         ActorRef Self { get; }
-
-        /// <summary>
-        /// Sends a message to the actor inbox
-        /// </summary>
-        /// <typeparam name="T">The type of message sent</typeparam>
-        /// <param name="message">The message to send</param>
-        void Send<T>(Message<T> message);
-
-        /// <summary>
-        /// Add a receive to the inbox for the specified message type
-        /// </summary>
-        /// <typeparam name="T">The message type</typeparam>
-        /// <param name="consumer">The message consumer</param>
-        /// <returns>A handle to the pending receive call</returns>
-        ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer);
 
         /// <summary>
         /// Sets a timeout, after which time the specified callback will be invoked.
@@ -47,6 +35,6 @@ namespace Stact
         /// handlers onto a stack.
         /// </summary>
         /// <param name="exceptionHandler">The next exception handler</param>
-        void SetExceptionHandler(ActorExceptionHandler exceptionHandler);
+        ExceptionHandlerHandle SetExceptionHandler(ActorExceptionHandler exceptionHandler);
     }
 }

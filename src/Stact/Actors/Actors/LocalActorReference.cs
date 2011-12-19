@@ -12,12 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Actors
 {
-    using System;
-
-
-    public interface ActorExceptionHandler
+    public class LocalActorReference<TState> :
+        ActorRef
     {
-        void Handle<T>(T exception)
-            where T : Exception;
+        readonly Actor<TState> _actor;
+
+        public LocalActorReference(Actor<TState> actor)
+        {
+            _actor = actor;
+        }
+
+        public void Send<T>(Message<T> message)
+        {
+            _actor.Send(message);
+        }
     }
 }

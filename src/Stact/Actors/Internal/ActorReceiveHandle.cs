@@ -15,10 +15,10 @@ namespace Stact.Internal
     using System;
 
 
-    public class PendingReceiveHandle<TState, TMessage> :
+    public class ActorReceiveHandle<TState, TMessage> :
         ReceiveHandle
     {
-        readonly Action<PendingReceiveHandle<TState, TMessage>> _onComplete;
+        readonly Action<ActorReceiveHandle<TState, TMessage>> _onComplete;
         readonly SelectiveConsumer<Message<TMessage>> _selectiveConsumer;
         readonly Action _timeoutCallback;
         bool _cancel;
@@ -33,8 +33,8 @@ namespace Stact.Internal
 //            _onComplete = onComplete;
 //        }
 
-        public PendingReceiveHandle(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
-                                  Action<PendingReceiveHandle<TState, TMessage>> onComplete)
+        public ActorReceiveHandle(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
+                                  Action<ActorReceiveHandle<TState, TMessage>> onComplete)
         {
             _selectiveConsumer = selectiveConsumer;
             _timeoutCallback = NoTimeoutCallback;
@@ -49,7 +49,7 @@ namespace Stact.Internal
         }
 
 
-        public void ScheduleTimeout(Func<PendingReceiveHandle<TState, TMessage>, ScheduledOperation> scheduleAction)
+        public void ScheduleTimeout(Func<ActorReceiveHandle<TState, TMessage>, ScheduledOperation> scheduleAction)
         {
             _scheduledAction = scheduleAction(this);
         }

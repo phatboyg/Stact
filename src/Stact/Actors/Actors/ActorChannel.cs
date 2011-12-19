@@ -10,17 +10,19 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Behaviors
+namespace Stact.Actors
 {
     /// <summary>
-    /// An abstract reference to a behavior that has been applied to an actor.
+    /// An actor channel is used to send messages (wrapped in the Message header interface)
+    /// to an actor.
     /// </summary>
-    public interface BehaviorHandle
+    public interface ActorChannel
     {
         /// <summary>
-        /// Removes the behavior from the actor, which includes canceling any
-        /// pending receive calls from the inbox.
+        /// Sends a message to an actor
         /// </summary>
-        void Remove();
+        /// <typeparam name="T">The message body type</typeparam>
+        /// <param name="message">The message body wrapped in a Message header</param>
+        void Send<T>(Message<T> message);
     }
 }

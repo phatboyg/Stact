@@ -10,26 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Actors.Actors
+namespace Stact
 {
-    using System;
-
-
-    public class SelfOnlyActorRestartExceptionHandler :
-        ActorExceptionHandler
+    public interface ActorInbox
     {
-        readonly TimeSpan _restartInterval;
-        readonly int _restartLimit;
-
-        public SelfOnlyActorRestartExceptionHandler(int restartLimit, TimeSpan restartInterval)
-        {
-            _restartLimit = restartLimit;
-            _restartInterval = restartInterval;
-        }
-
-        public void Handle<T>(T exception)
-            where T : Exception
-        {
-        }
+        /// <summary>
+        /// Add a receive to the inbox for the specified message type
+        /// </summary>
+        /// <typeparam name="T">The message type</typeparam>
+        /// <param name="consumer">The message consumer</param>
+        /// <returns>A handle to the pending receive call</returns>
+        ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer);
     }
 }

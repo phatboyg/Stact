@@ -13,7 +13,7 @@
 namespace Stact.Internal
 {
     using System;
-    using Behaviors;
+    using Actors.Behaviors;
     using Executors;
     using Magnum;
     using Magnum.Extensions;
@@ -40,7 +40,7 @@ namespace Stact.Internal
 
         public Actor<TState> New(TState state)
         {
-            Actor<TState> actor = null;
+            StactActor<TState> actor = null;
 
             Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex => { actor.OnError(ex); }));
 

@@ -16,7 +16,7 @@ namespace Stact
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Threading;
-    using Internal;
+    using Schedulers;
 
 
     [DebuggerDisplay("{DebugString}")]

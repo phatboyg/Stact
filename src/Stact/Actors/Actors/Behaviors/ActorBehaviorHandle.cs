@@ -10,33 +10,39 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Behaviors
+namespace Stact.Actors.Behaviors
 {
+    using System.Collections.Generic;
     using Configuration.Internal;
 
 
-    public class BehaviorHandleImpl<TState, TBehavior> :
+    public class ActorBehaviorHandle<TState, TBehavior> :
         BehaviorHandle,
         BehaviorContext<TState, TBehavior>
         where TBehavior : Behavior<TState>
     {
         readonly Actor<TState> _actor;
         readonly TBehavior _behavior;
+        readonly IList<ReceiveHandle> _receives;
+        ExceptionHandlerHandle _exceptionHandler;
 
-        public BehaviorHandleImpl(Actor<TState> actor, TBehavior behavior)
+        public ActorBehaviorHandle(Actor<TState> actor, TBehavior behavior)
         {
             _actor = actor;
             _behavior = behavior;
+            _receives = new List<ReceiveHandle>();
         }
 
         public void Receive<TMessage>(Consumer<Message<TMessage>> consumer)
         {
-            ReceiveHandle pendingReceive = _actor.Receive(consumer);
+            ReceiveHandle receive = _actor.Receive(consumer);
+
+            _receives.Add(receive);
         }
 
         public void SetExceptionHandler(ActorExceptionHandler handler)
         {
-            _actor.SetExceptionHandler(handler);
+            _exceptionHandler = _actor.SetExceptionHandler(handler);
         }
 
         public TBehavior Behavior
@@ -46,6 +52,15 @@ namespace Stact.Behaviors
 
         public void Remove()
         {
+            for (int i = 0; i < _receives.Count; i++)
+                _receives[i].Cancel();
+            _receives.Clear();
+
+            if (_exceptionHandler != null)
+            {
+                _exceptionHandler.Cancel();
+                _exceptionHandler = null;
+            }
         }
     }
 }

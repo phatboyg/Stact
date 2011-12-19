@@ -16,7 +16,8 @@ namespace Stact
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Threading;
-    using Behaviors;
+    using Actors;
+    using Actors.Behaviors;
     using Internal;
     using Magnum.Extensions;
     using Routing;
@@ -98,11 +99,6 @@ namespace Stact
             _currentBehavior = applicator.ApplyTo(this);
         }
 
-        public void ReapplyBehavior()
-        {
-            throw new NotImplementedException();
-        }
-
         public TimeoutHandle SetTimeout(TimeSpan timeout, Action timeoutCallback)
         {
             ScheduledOperation handle = _scheduler.Schedule(timeout, _fiber, timeoutCallback);
@@ -110,16 +106,28 @@ namespace Stact
             return new TimeoutHandleImpl(handle);
         }
 
-        public void SetExceptionHandler(ActorExceptionHandler exceptionHandler)
+        public ExceptionHandlerHandle SetExceptionHandler(ActorExceptionHandler exceptionHandler)
         {
             _exceptionHandlers.Push(exceptionHandler);
+
+            ExceptionHandlerHandle handler = new ActorExceptionHandlerHandle<TState>(this, exceptionHandler);
+            return handler;
+        }
+
+        public void RemoveExceptionHandler(ActorExceptionHandler exceptionHandler)
+        {
+            if(_exceptionHandlers.Contains(exceptionHandler))
+            {
+                while (_exceptionHandlers.Pop() != exceptionHandler)
+                    ;
+            }
         }
 
         public ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            var pending = new PendingReceiveHandle<TState, T>(consumer, x => _pending.Remove(x));
+            var receive = new ActorReceiveHandle<TState, T>(consumer, x => _pending.Remove(x));
 
-            return Receive(pending);
+            return Receive(receive);
         }
 
 //        public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
@@ -171,7 +179,7 @@ namespace Stact
             _self.Send<Exit>();
         }
 
-        ReceiveHandle Receive<T>(PendingReceiveHandle<TState, T> receiver)
+        ReceiveHandle Receive<T>(ActorReceiveHandle<TState, T> receiver)
         {
             _engine.Configure(x => { x.SelectiveReceive<T>(receiver.Accept); });
 

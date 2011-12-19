@@ -12,46 +12,46 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using Internal;
-	using Magnum.Extensions;
+    using System;
+    using Magnum.Extensions;
+    using Schedulers;
 
 
-	public static class ExtensionsToScheduler
-	{
-		/// <summary>
-		/// Schedules an operation to be executed after the special interval has elapsed
-		/// </summary>
-		/// <param name="scheduler">The scheduler to reference</param>
-		/// <param name="interval">The duration of the interval</param>
-		/// <param name="fiber">The fiber where the operation should be added</param>
-		/// <param name="operation">The operation to execute</param>
-		/// <returns>A ScheduledOperation reference</returns>
-		public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, Fiber fiber, Action operation)
-		{
-			return scheduler.Schedule(interval.Milliseconds(), fiber, operation);
-		}
+    public static class ExtensionsToScheduler
+    {
+        /// <summary>
+        /// Schedules an operation to be executed after the special interval has elapsed
+        /// </summary>
+        /// <param name="scheduler">The scheduler to reference</param>
+        /// <param name="interval">The duration of the interval</param>
+        /// <param name="fiber">The fiber where the operation should be added</param>
+        /// <param name="operation">The operation to execute</param>
+        /// <returns>A ScheduledOperation reference</returns>
+        public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, Fiber fiber, Action operation)
+        {
+            return scheduler.Schedule(interval.Milliseconds(), fiber, operation);
+        }
 
-		/// <summary>
-		/// Schedules an operation to be executed after the special interval has elapsed and
-		/// every periodic interval after the initial execution
-		/// </summary>
-		/// <param name="scheduler">The scheduler to reference</param>
-		/// <param name="interval">The duration of the interval</param>
-		/// <param name="periodicInterval">The periodic interval between subsequent executions</param>
-		/// <param name="fiber">The fiber where the operation should be added</param>
-		/// <param name="operation">The operation to execute</param>
-		/// <returns>A ScheduledOperation reference</returns>
-		public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, int periodicInterval, Fiber fiber,
-		                                          Action operation)
-		{
-			return scheduler.Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, operation);
-		}
+        /// <summary>
+        /// Schedules an operation to be executed after the special interval has elapsed and
+        /// every periodic interval after the initial execution
+        /// </summary>
+        /// <param name="scheduler">The scheduler to reference</param>
+        /// <param name="interval">The duration of the interval</param>
+        /// <param name="periodicInterval">The periodic interval between subsequent executions</param>
+        /// <param name="fiber">The fiber where the operation should be added</param>
+        /// <param name="operation">The operation to execute</param>
+        /// <returns>A ScheduledOperation reference</returns>
+        public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, int periodicInterval, Fiber fiber,
+                                                  Action operation)
+        {
+            return scheduler.Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, operation);
+        }
 
-		public static IDisposable StopOnDispose(this Scheduler scheduler, TimeSpan timeout)
-		{
-			return new StopSchedulerOnDispose(scheduler, timeout);
-		}
+        public static IDisposable StopOnDispose(this Scheduler scheduler, TimeSpan timeout)
+        {
+            return new StopSchedulerOnDispose(scheduler, timeout);
+        }
 
-	}
+    }
 }

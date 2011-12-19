@@ -10,14 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Behaviors
+namespace Stact.Schedulers
 {
-    using Configuration.Internal;
+    using System;
 
 
-    public interface ActorBehaviorApplicator<TState, TBehavior>
-        where TBehavior : Behavior<TState>
-    {
-        void Apply(BehaviorContext<TState, TBehavior> context);
-    }
+    public class StopSchedulerOnDispose :
+		IDisposable
+	{
+		readonly Scheduler _scheduler;
+		TimeSpan _timeout;
+
+		public StopSchedulerOnDispose(Scheduler scheduler, TimeSpan timeout)
+		{
+			_scheduler = scheduler;
+			_timeout = timeout;
+		}
+
+		public void Dispose()
+		{
+			_scheduler.Stop(_timeout);
+		}
+	}
 }

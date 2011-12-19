@@ -29,8 +29,7 @@ namespace Stact.Specs.Actors.Redesign
 
         // you know there will be a state storage class at some point to allow
         // persistent state actors (sorta like sagas)
-        class TestState :
-            ActorState
+        class TestState
         {
             public string SomeValue;
         }

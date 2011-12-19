@@ -10,10 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Behaviors
+namespace Stact
 {
-    public interface ActorBehavior<TState>
-    {
-        BehaviorHandle ApplyTo(Actor<TState> actor);
-    }
+    using System;
+
+
+    public delegate void ActorExceptionHandler(Exception exception, NextExceptionHandler next);
 }

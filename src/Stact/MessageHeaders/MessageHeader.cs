@@ -32,7 +32,9 @@ namespace Stact
         /// </summary>
         string CorrelationId { get; }
 
-
+        /// <summary>
+        /// Identifies the request that is associated with this message
+        /// </summary>
         string RequestId { get; }
 
         /// <summary>
@@ -45,7 +47,9 @@ namespace Stact
         /// </summary>
         Uri DestinationAddress { get; }
 
-
+        /// <summary>
+        /// The address to which responses should be sent
+        /// </summary>
         Uri ResponseAddress { get; }
 
         /// <summary>

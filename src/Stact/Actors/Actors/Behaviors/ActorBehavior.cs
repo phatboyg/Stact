@@ -10,14 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Behaviors
+namespace Stact.Actors.Behaviors
 {
-    using System;
-
-
-    public interface BehaviorFactory<TState, TBehavior>
-        where TBehavior : Behavior<TState>
+    public interface ActorBehavior<TState>
     {
-        TResult CreateBehavior<TResult>(Actor<TState> state, Func<TBehavior, TResult> callback);
+        BehaviorHandle ApplyTo(Actor<TState> actor);
     }
 }

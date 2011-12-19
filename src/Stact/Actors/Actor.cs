@@ -143,14 +143,6 @@ namespace Stact
     }
 
 
-    public interface ActorInternals
-    {
-        Fiber Fiber { get; }
-
-        Scheduler Scheduler { get; }
-    }
-
-
     /// <summary>
     /// An Actor encapsulates the behavior and state of an actor in memory. This interface is not
     /// meant to be implemented by the library user.
@@ -173,14 +165,5 @@ namespace Stact
         /// <typeparam name="TBehavior">The type of behavior to apply to the actor</typeparam>
         void Apply<TBehavior>()
             where TBehavior : class, Behavior<TState>;
-
-        /// <summary>
-        /// Reapplies the current behavior after the current message is processed
-        /// </summary>
-        void ReapplyBehavior();
-
-
-
-        void OnError(Exception exception);
     }
 }

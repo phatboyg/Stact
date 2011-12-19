@@ -13,7 +13,7 @@
 namespace Stact.Configuration
 {
     using System.Collections.Generic;
-    using Behaviors;
+    using Actors.Behaviors;
 
 
     public interface BehaviorConvention

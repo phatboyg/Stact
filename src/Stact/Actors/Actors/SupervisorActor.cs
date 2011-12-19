@@ -15,12 +15,18 @@ namespace Stact.Actors.Actors
     using System;
     using System.Collections.Generic;
 
-
+    /// <summary>
+    /// This can be better.
+    /// 
+    /// If we have a supervisor, it would create a shim actor for each supervisored actor to manage access
+    /// to the actor. If it observes a death message from a supervised actor, it would restart that actor
+    /// somehow...??
+    /// </summary>
     public class SupervisorActor
     {
         readonly UntypedActor _inbox;
 
-        public SupervisorActor(UntypedActor inbox, ActorExceptionHandler handler,
+        public SupervisorActor(UntypedActor inbox, 
                                Action<ActorRef, ActorRestartLimitReached> restartLimitReachedHandler)
         {
             _inbox = inbox;

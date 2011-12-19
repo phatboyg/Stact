@@ -13,7 +13,7 @@
 namespace Stact.Configuration.Internal
 {
     using System;
-    using Behaviors;
+    using Actors.Behaviors;
     using Conventions;
     using Stact.Internal;
 
