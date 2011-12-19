@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Stact</id>
-    <version>1.0.0.2</version>
+    <version>1.0.0.3</version>
     <authors>Chris Patterson</authors>
     <description>Stact is an actor library and framework</description>
     <language>en-US</language>
