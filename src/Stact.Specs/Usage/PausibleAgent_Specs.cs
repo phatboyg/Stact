@@ -30,9 +30,9 @@ namespace Stact.Specs.Usage
             _first = new Update();
             _second = new Update();
 
-            agent.Send(_first.ToMessage());
+            agent.Send(_first);
             agent.Send<Suspend>();
-            agent.Send(_second.ToMessage());
+            agent.Send(_second);
 
             _first.WaitUntilCompleted(2.Seconds());
             _second.WaitUntilCompleted(2.Seconds());
@@ -69,9 +69,9 @@ namespace Stact.Specs.Usage
             _second = new Update();
             _third = new Update();
 
-            agent.Send(_first.ToMessage());
+            agent.Send(_first);
             agent.Send<Suspend>();
-            agent.Send(_second.ToMessage());
+            agent.Send(_second);
 
             _first.WaitUntilCompleted(2.Seconds());
             _second.WaitUntilCompleted(1.Seconds()).ShouldBeFalse();
@@ -79,7 +79,7 @@ namespace Stact.Specs.Usage
             agent.Send<Resume>();
             _second.WaitUntilCompleted(2.Seconds());
 
-            agent.Send(_third.ToMessage());
+            agent.Send(_third);
             _third.WaitUntilCompleted(2.Seconds());
         }
 

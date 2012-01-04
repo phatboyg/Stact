@@ -35,7 +35,7 @@ namespace Stact.Specs.Actors.Behaviors
 
             ActorRef agent = Actor.New(_state, x => x.Apply<DefaultBehavior>());
 
-            StatelessActor.New(actor => agent.Send(new A().ToMessage(actor.Self)));
+            StatelessActor.New(actor => agent.Send(new A(), actor.Self));
         }
 
 

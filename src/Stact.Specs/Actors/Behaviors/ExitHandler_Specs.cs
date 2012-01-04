@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -19,14 +19,12 @@ namespace Stact.Specs.Actors.Behaviors
 
 
     [TestFixture]
-    public class When_a_behavior_has_an_exception_handler
+    public class When_a_behavior_has_an_exit_handler
     {
         [Test]
-        public void Should_handle_the_exception()
+        public void Should_handle_the_exit()
         {
-            _state.Received.WaitUntilCompleted(8.Seconds()).ShouldBeTrue();
-
-            Assert.IsInstanceOf<InvalidOperationException>(_state.Received.Value);
+            _state.Received.WaitUntilCompleted(800.Seconds()).ShouldBeTrue();
         }
 
         MyState _state;
@@ -38,7 +36,7 @@ namespace Stact.Specs.Actors.Behaviors
 
             ActorRef agent = Actor.New(_state, x => x.Apply<DefaultBehavior>());
 
-            StatelessActor.New(actor => agent.Send(new A(), actor.Self));
+            StatelessActor.New(actor => agent.Exit(actor.Self));
         }
 
 
@@ -46,10 +44,10 @@ namespace Stact.Specs.Actors.Behaviors
         {
             public MyState()
             {
-                Received = new Future<Exception>();
+                Received = new Future<Message<Exit>>();
             }
 
-            public Future<Exception> Received { get; set; }
+            public Future<Message<Exit>> Received { get; set; }
         }
 
 
@@ -63,22 +61,14 @@ namespace Stact.Specs.Actors.Behaviors
                 _actor = actor;
             }
 
-            public void Handle(A message)
+            public void HandleExit(Message<Exit> message, NextExitHandler next)
             {
-                throw new InvalidOperationException("This is expected, but should be handled.");
+                Console.WriteLine("Intercepted exit!");
+
+                _actor.State.Received.Complete(message);
+
+                next(message);
             }
-
-            public void HandleException(Exception exception, NextExceptionHandler next)
-            {
-                _actor.State.Received.Complete(exception);
-
-                next(exception);
-            }
-        }
-
-
-        class A
-        {
         }
     }
 }

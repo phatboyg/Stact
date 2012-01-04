@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Conventions
 {
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -22,7 +21,7 @@ namespace Stact.Configuration.Conventions
     using Magnum.Reflection;
 
 
-    public class MessageOnlyMethodBehaviorConvention :
+    public class ExitHandlerMethodBehaviorConvention :
         BehaviorConvention
     {
         public IEnumerable<ActorBehaviorApplicator<TState, TBehavior>> GetApplicators<TState, TBehavior>()
@@ -30,28 +29,26 @@ namespace Stact.Configuration.Conventions
         {
             return typeof(TBehavior)
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                .Where(x => x.GetParameters().Count() == 1)
-                .Where(x => x.DeclaringType != typeof(object))
+                .Where(x => x.GetParameters().Count() == 2)
+                .Where(x => x.GetParameters()[0].ParameterType == typeof(Message<Exit>))
+                .Where(x => x.GetParameters()[1].ParameterType == typeof(NextExitHandler))
                 .Select(CreateMethodConvention<TState, TBehavior>);
         }
 
         static ActorBehaviorApplicator<TState, TBehavior> CreateMethodConvention<TState, TBehavior>(MethodInfo method)
             where TBehavior : Behavior<TState>
         {
-            Type messageType = method.GetParameters()[0].ParameterType;
+            Debug.WriteLine("Creating applicator for {0}, exit handler: {1}({2},{3})",
+                            typeof(TBehavior).ToShortTypeName(),
+                            method.Name, typeof(Message<Exit>).ToShortTypeName(),
+                            typeof(NextExitHandler).ToShortTypeName());
 
-            if (messageType.IsGenericType && messageType.GetGenericTypeDefinition() == typeof(Message<>))
-                messageType = messageType.GetGenericArguments()[0];
-
-            Debug.WriteLine("Creating applicator for {0}, method: {1}({2})", typeof(TBehavior).ToShortTypeName(),
-                            method.Name, messageType.ToShortTypeName());
-
-            var genericTypes = new[] {typeof(TState), typeof(TBehavior), messageType};
+            var genericTypes = new[] {typeof(TState), typeof(TBehavior)};
 
             var args = new object[] {method};
 
             return (ActorBehaviorApplicator<TState, TBehavior>)
-                   FastActivator.Create(typeof(MessageOnlyMethodApplicator<,,>), genericTypes, args);
+                   FastActivator.Create(typeof(ExitHandlerMethodApplicator<,>), genericTypes, args);
         }
     }
 }

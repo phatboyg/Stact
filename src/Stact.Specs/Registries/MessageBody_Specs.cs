@@ -46,7 +46,7 @@ namespace Stact.Specs.Registries
             _rawChannel.Send(new Test
 				{
 					Name = "Johnson",
-				}.ToMessage());
+				});
 		}
 
 		[Then]
@@ -55,7 +55,7 @@ namespace Stact.Specs.Registries
             _rawChannel.Send(new Test
 				{
 					Name = "Johnson"
-				}.ToMessage());
+				});
 		}
 
 		[Then]

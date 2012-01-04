@@ -12,5 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    public delegate void NextExitHandler(Message<Exit> message);
+    using MessageHeaders;
+    using Remote;
+
+
+    public static class HeaderChannelSendExtensions
+    {
+        public static Message<T> Send<T>(this HeaderChannel channel, T message)
+        {
+            var context = new MessageContext<T>(message);
+
+            channel.Send(context);
+
+            return context;
+        }
+    }
 }

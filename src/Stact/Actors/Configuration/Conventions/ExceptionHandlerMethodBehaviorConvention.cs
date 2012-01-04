@@ -18,7 +18,6 @@ namespace Stact.Configuration.Conventions
     using System.Linq;
     using System.Reflection;
     using Actors.Behaviors;
-    using Internal;
     using Magnum.Extensions;
     using Magnum.Reflection;
 

@@ -52,7 +52,7 @@ namespace Stact.Benchmarks
                 actor.Send(new Hello
                 {
                     MyNameIs = "Joe",
-                }.ToMessage(), x => x.SetRequestId("27"));
+                }, x => x.SetRequestId("27"));
             }, () => {});
 
             ThreadUtil.Sleep(5.Seconds());

@@ -43,7 +43,7 @@ namespace Stact.Specs.Actors.Behaviors
                     agent.Send(new A
                         {
                             Value = "Hello"
-                        }.ToMessage(actor.Self));
+                        }, actor.Self);
 
                     actor.Receive<B>(response => _responseReceived.Complete(response));
                 });
@@ -70,7 +70,7 @@ namespace Stact.Specs.Actors.Behaviors
                 sender.Send(new B
                     {
                         Value = message.Value
-                    }.ToMessage(_actor.Self));
+                    }, _actor.Self);
             }
         }
 
@@ -113,7 +113,7 @@ namespace Stact.Specs.Actors.Behaviors
                     agent.Send(new A
                         {
                             Value = "Hello"
-                        }.ToMessage(actor.Self));
+                        },actor.Self);
 
                     actor.Receive<B>(response => _responseReceived.Complete(response));
                 });
@@ -140,7 +140,7 @@ namespace Stact.Specs.Actors.Behaviors
                 sender.Send(new B
                     {
                         Value = message.Body.Value
-                    }.ToMessage(_actor.Self));
+                    },_actor.Self);
             }
         }
 

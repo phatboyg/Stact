@@ -20,16 +20,16 @@ namespace Stact
 
     public static class ActorSendExtensions
     {
-        public static Message<T> ToMessage<T>(this T body)
+        static Message<T> ToMessage<T>(this T body)
         {
             var context = new MessageContext<T>(body);
 
             return context;
         }
 
-        public static Message<T> ToMessage<T>(this T body, ActorRef sender)
+        static Message<T> ToMessage<T>(this T body, ActorRef sender)
         {
-            var context = new MessageContext<T>(body, sender);
+            var context = new MessageContext<T>(body, () => sender);
 
             return context;
         }
@@ -40,7 +40,27 @@ namespace Stact
             var context = new MessageContext<T>(message);
             messageCallback(context);
 
-            return Send(actor, context);
+            actor.Send(context);
+
+            return context;
+        }
+
+        public static Message<T> Send<T>(this ActorRef actor, T message)
+        {
+            var context = new MessageContext<T>(message);
+
+            actor.Send(context);
+
+            return context;
+        }
+
+        public static Message<T> Send<T>(this ActorRef actor, T message, ActorRef sender)
+        {
+            var context = new MessageContext<T>(message, () => sender);
+
+            actor.Send(context);
+
+            return context;
         }
 
         public static Message<T> Send<T>(this ActorRef actor, Message<T> message,
@@ -52,7 +72,9 @@ namespace Stact
 
             messageCallback(context);
 
-            return Send(actor, context);
+            actor.Send(context);
+
+            return context;
         }
 
 //        public static Message<T> Send<T>(this ActorRef actor, object values)
@@ -91,7 +113,24 @@ namespace Stact
 
             var context = new MessageContext<T>(message);
 
-            return Send(actor, context);
+            actor.Send(context);
+
+            return context;
+        }
+
+        public static Message<T> Send<T>(this ActorRef actor, ActorRef sender)
+        {
+            if (!typeof(T).IsInterface)
+                throw new ArgumentException("Default Implementations can only be created for interfaces");
+
+            Type messageType = InterfaceImplementationBuilder.GetProxyFor(typeof(T));
+            var message = (T)FastActivator.Create(messageType);
+
+            var context = new MessageContext<T>(message, () => sender);
+
+            actor.Send(context);
+
+            return context;
         }
 
         public static Message<T> Send<T>(this ActorRef actor, Action<SetMessageHeader> messageCallback)
@@ -105,14 +144,9 @@ namespace Stact
             var context = new MessageContext<T>(message);
             messageCallback(context);
 
-            return Send(actor, context);
-        }
+            actor.Send(context);
 
-        static Message<T> Send<T>(ActorRef actor, Message<T> message)
-        {
-            actor.Send(message);
-
-            return message;
+            return context;
         }
     }
 }

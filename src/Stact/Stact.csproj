@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\ActorExceptionHandler.cs" />
+    <Compile Include="Actors\ActorExitHandler.cs" />
     <Compile Include="Actors\ActorInbox.cs" />
     <Compile Include="Actors\ActorInternals.cs" />
     <Compile Include="Actors\ActorRefExtensions.cs" />
@@ -122,13 +123,19 @@
     <Compile Include="Actors\Actors\Behaviors\BehaviorHandle.cs" />
     <Compile Include="Actors\Actors\Behaviors\ActorBehaviorHandle.cs" />
     <Compile Include="Actors\Actors\Behaviors\ActorBehaviorImpl.cs" />
+    <Compile Include="Actors\Actors\Behaviors\ExitHandlerMethodApplicator.cs" />
     <Compile Include="Actors\Actors\LocalActorReference.cs" />
+    <Compile Include="Actors\Actors\NullActorReference.cs" />
     <Compile Include="Actors\Behavior.cs" />
     <Compile Include="Actors\Behaviors\RestartOnExceptionBehavior.cs" />
+    <Compile Include="Actors\Configuration\Conventions\ExitHandlerMethodBehaviorConvention.cs" />
     <Compile Include="Actors\Configuration\Conventions\MessageWithSenderMethodBehaviorConvention.cs" />
-    <Compile Include="Actors\Configuration\Internal\MessageWithSenderMethodApplicator.cs" />
+    <Compile Include="Actors\Actors\Behaviors\MessageWithSenderMethodApplicator.cs" />
     <Compile Include="Actors\ExceptionHandlerHandle.cs" />
+    <Compile Include="Actors\ExitHandlerHandle.cs" />
+    <Compile Include="Actors\HandlerStack.cs" />
     <Compile Include="Actors\Internal\ActorExceptionHandlerHandle.cs" />
+    <Compile Include="Actors\Internal\ActorExitHandlerHandle.cs" />
     <Compile Include="Actors\PendingHandle.cs" />
     <Compile Include="Actors\StactActor.cs" />
     <Compile Include="Actors\ActorRef.cs" />
@@ -138,8 +145,8 @@
     <Compile Include="Actors\Configuration\BehaviorConvention.cs" />
     <Compile Include="Actors\Configuration\Conventions\ExceptionHandlerMethodBehaviorConvention.cs" />
     <Compile Include="Actors\Configuration\Conventions\MessageOnlyMethodBehaviorConvention.cs" />
-    <Compile Include="Actors\Configuration\Internal\BehaviorContext.cs" />
-    <Compile Include="Actors\Configuration\Internal\ExceptionHandlerMethodApplicator.cs" />
+    <Compile Include="Actors\Actors\Behaviors\BehaviorContext.cs" />
+    <Compile Include="Actors\Actors\Behaviors\ExceptionHandlerMethodApplicator.cs" />
     <Compile Include="Actors\ExtensionsForLinking.cs" />
     <Compile Include="Actors\Internal\ActorSourceChannelProxy.cs" />
     <Compile Include="Actors\Internal\UntypedChannelActorRef.cs" />
@@ -151,6 +158,7 @@
     <Compile Include="Channels\UntypedFilterChannel.cs" />
     <Compile Include="Fibers\Executors\BasicOperationExecutor.cs" />
     <Compile Include="Fibers\Executors\TryCatchOperationExecutor.cs" />
+    <Compile Include="HeaderChannelSendExtensions.cs" />
     <Compile Include="Internal\LinkImpl.cs" />
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="LoopExtensions.cs" />
@@ -184,7 +192,7 @@
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\ActorRepository.cs" />
     <Compile Include="Actors\Configuration\RegistryConfigurators\InMemoryRegistryBuilder.cs" />
-    <Compile Include="Actors\Configuration\Internal\MessageOnlyMethodApplicator.cs" />
+    <Compile Include="Actors\Actors\Behaviors\MessageOnlyMethodApplicator.cs" />
     <Compile Include="Actors\Configuration\RegistryConfigurators\RegistryBuilder.cs" />
     <Compile Include="Actors\Configuration\RegistryConfigurators\RegistryBuilderConfigurator.cs" />
     <Compile Include="Remote\Configuration\RemoteActorRegistryConfigurator.cs" />

@@ -68,12 +68,12 @@ namespace Stact.Benchmarks
                             channel.Send(new A
                             {
                                 Name = "Joe"
-                            }.ToMessage());
+                            });
 
                             channel2.Send(new B
                             {
                                 Address = "American Way",
-                            }.ToMessage());
+                            });
                         }
                         Console.WriteLine("Sent message");
 

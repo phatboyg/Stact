@@ -23,8 +23,8 @@ namespace Stact.Configuration.Internal
         ActorFactoryConfigurator<TState>,
         Configurator
     {
-        SchedulerFactory _schedulerFactory;
         BehaviorConvention[] _conventions;
+        SchedulerFactory _schedulerFactory;
 
         public ActorFactoryConfiguratorImpl()
         {
@@ -32,9 +32,10 @@ namespace Stact.Configuration.Internal
 
             _conventions = new BehaviorConvention[]
                 {
-                    new MessageOnlyMethodBehaviorConvention(), 
-                    new ExceptionHandlerMethodBehaviorConvention(), 
-                    new MessageWithSenderMethodBehaviorConvention(), 
+                    new MessageWithSenderMethodBehaviorConvention(),
+                    new MessageOnlyMethodBehaviorConvention(),
+                    new ExceptionHandlerMethodBehaviorConvention(),
+                    new ExitHandlerMethodBehaviorConvention(),
                 };
         }
 

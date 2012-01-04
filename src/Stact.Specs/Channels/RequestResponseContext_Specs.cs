@@ -37,7 +37,7 @@ namespace Stact.Specs.Channels
             _client.Connect(x => x.AddChannel(response));
 
             _server.Send<Message<MyRequest>>(new MessageContext<MyRequest>(new MyRequest(),
-                                                                           new UntypedChannelActorRef(_client)));
+                                                                           () => new UntypedChannelActorRef(_client)));
 
             response.WaitUntilCompleted(2.Seconds()).ShouldBeTrue("Timeout waiting for response");
 

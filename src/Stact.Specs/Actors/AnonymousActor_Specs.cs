@@ -49,7 +49,7 @@ namespace Stact.Specs.Actors
         [Then]
         public void Should_receive_the_alternate_ending_if_it_is_such()
         {
-            Auction.Send(new End().ToMessage());
+            Auction.Send(new End());
 
             var response = new FutureChannel<Ended>();
 
@@ -119,7 +119,7 @@ namespace Stact.Specs.Actors
                     .Receive<Status>(m => status =>
                     {
                         statusResponse.Complete(status.Body);
-                        Auction.Send(new End().ToMessage());
+                        Auction.Send(new End());
                         Auction.Request(new Ask(Id), inbox);
                     })
                     .Receive<Ended>(m => ended => endedResponse.Complete(ended.Body));

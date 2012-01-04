@@ -24,15 +24,6 @@ namespace Stact.Internal
         bool _cancel;
         ScheduledOperation _scheduledAction;
 
-//        public PendingReceiveImpl(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
-//                                  Action timeoutCallback,
-//                                  Action<PendingReceiveImpl<TState, TMessage>> onComplete)
-//        {
-//            _selectiveConsumer = selectiveConsumer;
-//            _timeoutCallback = timeoutCallback;
-//            _onComplete = onComplete;
-//        }
-
         public ActorReceiveHandle(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
                                   Action<ActorReceiveHandle<TState, TMessage>> onComplete)
         {

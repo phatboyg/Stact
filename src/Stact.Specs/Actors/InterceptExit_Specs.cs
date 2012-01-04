@@ -59,7 +59,7 @@ namespace Stact.Specs.Actors
                 });
             _intercepted.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Exit was not intercepted");
 
-            _actor.Send(new A().ToMessage());
+            _actor.Send(new A());
             _receivedA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("A was not handled, did actor exit?");
         }
 
@@ -92,7 +92,7 @@ namespace Stact.Specs.Actors
         public void Should_prevent_subsequent_messages_from_activating()
         {
             _actor.Exit();
-            _actor.Send(new A().ToMessage());
+            _actor.Send(new A());
 
             var completed = _receivedA.WaitUntilCompleted(5.Seconds());
 

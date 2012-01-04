@@ -14,6 +14,8 @@ namespace Stact.MessageHeaders
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
+    using Actors;
 
 
     public class MessageContext<T> :
@@ -28,20 +30,22 @@ namespace Stact.MessageHeaders
         {
             Body = message;
             _headers = new DictionaryHeaders();
+            _sender = new Lazy<ActorRef>(() => new NullActorReference(), LazyThreadSafetyMode.PublicationOnly);
 
             _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
         }
 
-        public MessageContext(T message, ActorRef sender)
+        public MessageContext(T message, Func<ActorRef> sender)
             : this(message)
         {
-            _sender = new Lazy<ActorRef>(() => sender, true);
+            _sender = new Lazy<ActorRef>(sender, true);
         }
 
         public MessageContext(T message, IDictionary<string, string> headers)
         {
             Body = message;
             _headers = new DictionaryHeaders(headers);
+            _sender = new Lazy<ActorRef>(() => new NullActorReference(), LazyThreadSafetyMode.PublicationOnly);
 
             _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
         }
@@ -50,7 +54,7 @@ namespace Stact.MessageHeaders
 
         public ActorRef Sender
         {
-            get { return _sender.Value; }
+            get { return _sender != null ? _sender.Value : null; }
         }
 
         public Uri BodyType

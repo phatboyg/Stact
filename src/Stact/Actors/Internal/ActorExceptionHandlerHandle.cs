@@ -12,25 +12,22 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Internal
 {
-    using Magnum;
-
-
-    public class ActorExceptionHandlerHandle<TState> :
+    public class ActorExceptionHandlerHandle :
         ExceptionHandlerHandle
     {
-        readonly WeakReference<StactActor<TState>> _actor;
         readonly ActorExceptionHandler _exceptionHandler;
+        readonly HandlerStack<ActorExceptionHandler> _stack;
 
-        public ActorExceptionHandlerHandle(StactActor<TState> actor, ActorExceptionHandler exceptionHandler)
+        public ActorExceptionHandlerHandle(HandlerStack<ActorExceptionHandler> stack,
+                                           ActorExceptionHandler exceptionHandler)
         {
-            _actor = new WeakReference<StactActor<TState>>(actor);
+            _stack = stack;
             _exceptionHandler = exceptionHandler;
         }
 
         public void Cancel()
         {
-            if (_actor.IsAlive)
-                _actor.Target.RemoveExceptionHandler(_exceptionHandler);
+            _stack.Pop(_exceptionHandler);
         }
     }
 }

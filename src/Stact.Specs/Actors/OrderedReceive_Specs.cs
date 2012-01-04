@@ -37,7 +37,7 @@ namespace Stact.Specs.Actors
                 agent.Send(new Add
                     {
                         Value = i
-                    }.ToMessage());
+                    });
 
                 if (i == 100)
                     agent.Send<Suspend>();

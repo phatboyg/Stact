@@ -103,7 +103,7 @@ namespace Stact.Specs.Registries
 				actor.Send(new A
 				{
 					Name = "bob"
-				}.ToMessage());
+				});
 			}, () => {});
 
 			ReceivedA.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();

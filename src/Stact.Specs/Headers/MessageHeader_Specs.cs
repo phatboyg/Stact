@@ -64,7 +64,7 @@ namespace Stact.Specs.Headers
         [Then]
         public void Should_receive_the_message_type()
         {
-            _channel.Send(new SimpleImpl().ToMessage());
+            _channel.Send(new SimpleImpl());
 
             _received.IsCompleted.ShouldBeTrue("Message was not received");
         }

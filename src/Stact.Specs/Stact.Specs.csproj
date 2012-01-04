@@ -124,7 +124,9 @@
     <Compile Include="Actors\Auctions\Auction.cs" />
     <Compile Include="Actors\Auctions\Given_an_auction_actor_instance.cs" />
     <Compile Include="Actors\Behaviors\ExceptionHandler_Specs.cs" />
+    <Compile Include="Actors\Behaviors\ExitHandler_Specs.cs" />
     <Compile Include="Actors\Behaviors\MessageWithSender_Specs.cs" />
+    <Compile Include="Example\TokenRing_Example.cs" />
     <Compile Include="Actors\CleanUsing_Specs.cs" />
     <Compile Include="Actors\Fault_Specs.cs" />
     <Compile Include="Actors\InterceptExit_Specs.cs" />
@@ -230,9 +232,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Example\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

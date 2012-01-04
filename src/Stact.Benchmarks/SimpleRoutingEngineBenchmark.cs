@@ -68,7 +68,7 @@ namespace Stact.Benchmarks
 		    ActorRef actor = null;// factory.New();
 
 			for (int i = 0; i < messageCount; i++)
-				actor.Send(messageProvider().ToMessage());
+				actor.Send(messageProvider());
 
 			bool completed = complete.WaitUntilCompleted(30.Seconds());
 

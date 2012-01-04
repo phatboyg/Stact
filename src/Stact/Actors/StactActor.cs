@@ -35,7 +35,8 @@ namespace Stact
         readonly ActorRef _self;
         readonly TState _state;
         BehaviorHandle _currentBehavior;
-        Stack<ActorExceptionHandler> _exceptionHandlers;
+        HandlerStack<ActorExceptionHandler> _exceptionHandlers;
+        HandlerStack<ActorExitHandler> _exitHandlers;
 
         public StactActor(Fiber fiber, Scheduler scheduler, ActorBehaviorFactory<TState> applicatorFactory,
                           TState state)
@@ -47,8 +48,8 @@ namespace Stact
 
             _pending = new HashSet<ReceiveHandle>();
 
-            _exceptionHandlers = new Stack<ActorExceptionHandler>();
-            _exceptionHandlers.Push(DefaultExceptionHandler);
+            _exceptionHandlers = new HandlerStack<ActorExceptionHandler>(DefaultExceptionHandler);
+            _exitHandlers = new HandlerStack<ActorExitHandler>(DefaultExitHandler);
 
             _engine = new MessageRoutingEngine();
 
@@ -75,7 +76,7 @@ namespace Stact
         public void Send<T>(Message<T> message)
         {
             var kill = message as Message<Kill>;
-            if(kill != null)
+            if (kill != null)
             {
                 HandleKill(kill);
                 return;
@@ -110,17 +111,17 @@ namespace Stact
         {
             _exceptionHandlers.Push(exceptionHandler);
 
-            ExceptionHandlerHandle handler = new ActorExceptionHandlerHandle<TState>(this, exceptionHandler);
+            ExceptionHandlerHandle handler = new ActorExceptionHandlerHandle(_exceptionHandlers,
+                                                                                     exceptionHandler);
             return handler;
         }
 
-        public void RemoveExceptionHandler(ActorExceptionHandler exceptionHandler)
+        public ExitHandlerHandle SetExitHandler(ActorExitHandler exitHandler)
         {
-            if(_exceptionHandlers.Contains(exceptionHandler))
-            {
-                while (_exceptionHandlers.Pop() != exceptionHandler)
-                    ;
-            }
+            _exitHandlers.Push(exitHandler);
+
+            ExitHandlerHandle handler = new ActorExitHandlerHandle(_exitHandlers, exitHandler);
+            return handler;
         }
 
         public ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer)
@@ -128,38 +129,6 @@ namespace Stact
             var receive = new ActorReceiveHandle<TState, T>(consumer, x => _pending.Remove(x));
 
             return Receive(receive);
-        }
-
-//        public PendingReceive Receive<T>(SelectiveConsumer<Message<T>> consumer, TimeSpan timeout,
-//                                         Action timeoutCallback)
-//        {
-//            var pending = new PendingReceiveImpl<TState, T>(consumer, timeoutCallback, x => _pending.Remove(x));
-//
-//            pending.ScheduleTimeout(x => _scheduler.Schedule(timeout, _fiber, x.Timeout));
-//
-//            return Receive(pending);
-//        }
-
-        public void OnError(Exception exception)
-        {
-            using(var enumerator = _exceptionHandlers.GetEnumerator())
-            {
-                // need to capture this or it totally blows up due to closure
-                var handlerEnumerator = enumerator;
-
-                NextExceptionHandler toNextHandler = null;
-                toNextHandler = ex =>
-                {
-                    if (handlerEnumerator.MoveNext())
-                    {
-                        ActorExceptionHandler nextHandler = handlerEnumerator.Current;
-                        if (nextHandler != null)
-                            nextHandler(ex, toNextHandler);
-                    }
-                };
-
-                toNextHandler(exception);
-            }
         }
 
         public Fiber Fiber
@@ -172,11 +141,42 @@ namespace Stact
             get { return _scheduler; }
         }
 
+        public void OnError(Exception exception)
+        {
+            _exceptionHandlers.Enumerate(handlerEnumerator =>
+                {
+                    NextExceptionHandler toNextHandler = null;
+                    toNextHandler = ex =>
+                        {
+                            if (handlerEnumerator.MoveNext())
+                            {
+                                ActorExceptionHandler nextHandler = handlerEnumerator.Current;
+                                if (nextHandler != null)
+                                    nextHandler(ex, toNextHandler);
+                            }
+                        };
+
+                    toNextHandler(exception);
+                });
+        }
+
         void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
         {
-            Debug.WriteLine("Exception {0} occurred, exiting...", exception.GetType().ToShortTypeName());
+            Debug.WriteLine(
+                            string.Format("Exception {0} occurred, exiting...\n{1}",
+                                          exception.GetType().ToShortTypeName(), exception));
 
             _self.Send<Exit>();
+        }
+
+        void DefaultExitHandler(Message<Exit> message, NextExitHandler next)
+        {
+            Debug.WriteLine("Exit requested, exiting...\n");
+
+            if (message.Sender != null)
+                _fiber.Add(() => message.Respond(message.Body));
+
+            _engine.Shutdown();
         }
 
         ReceiveHandle Receive<T>(ActorReceiveHandle<TState, T> receiver)
@@ -189,14 +189,21 @@ namespace Stact
 
         void HandleExit(Message<Exit> message)
         {
-            _fiber.Add(() => message.Respond(message.Body));
+            _exitHandlers.Enumerate(handlerEnumerator =>
+                {
+                    NextExitHandler toNextHandler = null;
+                    toNextHandler = ex =>
+                        {
+                            if (handlerEnumerator.MoveNext())
+                            {
+                                ActorExitHandler nextHandler = handlerEnumerator.Current;
+                                if (nextHandler != null)
+                                    nextHandler(ex, toNextHandler);
+                            }
+                        };
 
-            HandleExit(message.Body);
-        }
-
-        void HandleExit(Exit message)
-        {
-            _engine.Shutdown();
+                    toNextHandler(message);
+                });
         }
 
         void HandleKill(Message<Kill> message)
@@ -215,7 +222,7 @@ namespace Stact
         }
 
 
-        class TimeoutHandleImpl : 
+        class TimeoutHandleImpl :
             TimeoutHandle
         {
             readonly ScheduledOperation _scheduledOperation;

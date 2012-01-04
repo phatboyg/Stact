@@ -45,6 +45,16 @@ namespace Stact
         ///   Sends an Exit message to an actor instance without waiting for a response
         /// </summary>
         /// <param name = "actor">The actor instance</param>
+        /// <param name="sender">The sender of the exit </param>
+        public static void Exit(this ActorRef actor, ActorRef sender)
+        {
+            actor.Send<Exit>(sender);
+        }
+
+        /// <summary>
+        ///   Sends an Exit message to an actor instance without waiting for a response
+        /// </summary>
+        /// <param name = "actor">The actor instance</param>
         public static void Exit(this UntypedActor actor)
         {
             actor.Self.Send<Exit>();

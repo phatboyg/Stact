@@ -48,7 +48,7 @@ namespace Stact.Specs.Actors.Redesign
             }
 
             // just declaring this will intercept the exit method
-            public virtual void HandleExit(ActorRef sender, NextExitHandler next)
+            public virtual void HandleExit(Message<Exit> message, NextExitHandler next)
             {
                 // not calling the next handler means we never exit
             }
@@ -107,9 +107,9 @@ namespace Stact.Specs.Actors.Redesign
             }
 
             // of course i can do it in a behavior as well
-            public override void HandleExit(ActorRef sender, NextExitHandler next)
+            public override void HandleExit(Message<Exit> message, NextExitHandler next)
             {
-                next(sender);
+                next(message);
             }
         }
     }

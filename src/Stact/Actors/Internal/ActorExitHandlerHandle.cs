@@ -10,7 +10,23 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact
+namespace Stact.Internal
 {
-    public delegate void NextExitHandler(Message<Exit> message);
+    public class ActorExitHandlerHandle :
+        ExitHandlerHandle
+    {
+        readonly ActorExitHandler _exitHandler;
+        readonly HandlerStack<ActorExitHandler> _stack;
+
+        public ActorExitHandlerHandle(HandlerStack<ActorExitHandler> stack, ActorExitHandler exitHandler)
+        {
+            _stack = stack;
+            _exitHandler = exitHandler;
+        }
+
+        public void Cancel()
+        {
+            _stack.Pop(_exitHandler);
+        }
+    }
 }

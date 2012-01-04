@@ -12,5 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    public delegate void NextExitHandler(Message<Exit> message);
+    /// <summary>
+    /// The syntax for an exit handler. When defined in a behavior, this will intercept
+    /// an exit message sent to an actor, allowing the behavior to customize the exit
+    /// handling
+    /// </summary>
+    /// <param name="message">The exit message</param>
+    /// <param name="next"></param>
+    public delegate void ActorExitHandler(Message<Exit> message, NextExitHandler next);
 }

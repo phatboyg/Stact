@@ -13,7 +13,6 @@
 namespace Stact.Actors.Behaviors
 {
     using System.Collections.Generic;
-    using Configuration.Internal;
 
 
     public class ActorBehaviorHandle<TState, TBehavior> :
@@ -23,26 +22,44 @@ namespace Stact.Actors.Behaviors
     {
         readonly Actor<TState> _actor;
         readonly TBehavior _behavior;
-        readonly IList<ReceiveHandle> _receives;
+        readonly HashSet<ReceiveHandle> _receives;
         ExceptionHandlerHandle _exceptionHandler;
+        ExitHandlerHandle _exitHandler;
 
         public ActorBehaviorHandle(Actor<TState> actor, TBehavior behavior)
         {
             _actor = actor;
             _behavior = behavior;
-            _receives = new List<ReceiveHandle>();
+            _receives = new HashSet<ReceiveHandle>();
         }
 
         public void Receive<TMessage>(Consumer<Message<TMessage>> consumer)
         {
-            ReceiveHandle receive = _actor.Receive(consumer);
+            ReceiveHandle receive = null;
+            Consumer<Message<TMessage>> nestedConsumer = null;
+            nestedConsumer = msg =>
+                {
+                    if (receive != null)
+                        _receives.Remove(receive);
 
+                    receive = _actor.Receive(nestedConsumer);
+                    _receives.Add(receive);
+
+                    consumer(msg);
+                };
+
+            receive = _actor.Receive(nestedConsumer);
             _receives.Add(receive);
         }
 
         public void SetExceptionHandler(ActorExceptionHandler handler)
         {
             _exceptionHandler = _actor.SetExceptionHandler(handler);
+        }
+
+        public void SetExitHandler(ActorExitHandler handler)
+        {
+            _exitHandler = _actor.SetExitHandler(handler);
         }
 
         public TBehavior Behavior
@@ -52,14 +69,20 @@ namespace Stact.Actors.Behaviors
 
         public void Remove()
         {
-            for (int i = 0; i < _receives.Count; i++)
-                _receives[i].Cancel();
+            foreach (ReceiveHandle receive in _receives)
+                receive.Cancel();
             _receives.Clear();
 
             if (_exceptionHandler != null)
             {
                 _exceptionHandler.Cancel();
                 _exceptionHandler = null;
+            }
+
+            if (_exitHandler != null)
+            {
+                _exitHandler.Cancel();
+                _exitHandler = null;
             }
         }
     }

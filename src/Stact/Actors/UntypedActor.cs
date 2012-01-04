@@ -36,5 +36,12 @@ namespace Stact
         /// </summary>
         /// <param name="exceptionHandler">The next exception handler</param>
         ExceptionHandlerHandle SetExceptionHandler(ActorExceptionHandler exceptionHandler);
+
+        /// <summary>
+        /// Sets the current exit handler for the actor
+        /// </summary>
+        /// <param name="exitHandler"></param>
+        /// <returns>A handle to the exit handler, used to remove the handler when it is no longer valid</returns>
+        ExitHandlerHandle SetExitHandler(ActorExitHandler exitHandler);
     }
 }
