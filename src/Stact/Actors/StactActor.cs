@@ -162,8 +162,7 @@ namespace Stact
 
         void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
         {
-            Debug.WriteLine(
-                            string.Format("Exception {0} occurred, exiting...\n{1}",
+            Debug.WriteLine(string.Format("Exception {0} occurred, exiting...\n{1}",
                                           exception.GetType().ToShortTypeName(), exception));
 
             _self.Send<Exit>();
@@ -171,8 +170,6 @@ namespace Stact
 
         void DefaultExitHandler(Message<Exit> message, NextExitHandler next)
         {
-            Debug.WriteLine("Exit requested, exiting...\n");
-
             if (message.Sender != null)
                 _fiber.Add(() => message.Respond(message.Body));
 

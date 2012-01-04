@@ -12,6 +12,9 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Example
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
     using Magnum.Extensions;
     using Magnum.TestFramework;
     using NUnit.Framework;
@@ -20,13 +23,17 @@ namespace Stact.Specs.Example
     [TestFixture]
     public class Creating_a_ring_of_nodes_and_passing_token_around_them
     {
+        static readonly int TokenCount = Environment.ProcessorCount +1;
+
         [Test]
         public void Should_complete()
         {
             int nodeCount = 100;
-            int roundCount = 100;
+            int roundCount = 1000;
 
-            _complete = new Future<bool>();
+            _timer = Stopwatch.StartNew();
+
+            _complete = new Future<int>();
             ActorRef first = Actor.New<NodeState>(x => x.Apply<InitialNodeBehavior>());
             first.Request(new Init
                 {
@@ -35,10 +42,20 @@ namespace Stact.Specs.Example
                 }, first);
 
             _complete.WaitUntilCompleted(30.Seconds()).ShouldBeTrue();
+            _complete.Value.ShouldEqual(nodeCount*roundCount);
+
+            _timer.Stop();
+
+            Console.WriteLine("Using {0} processors", Environment.ProcessorCount);
+            Console.WriteLine("Elapsed Time: {0}ms", _timer.ElapsedMilliseconds);
+            Console.WriteLine("Create Time: {0}ms", _created);
+            Console.WriteLine("Messages per second: {0,-4}",
+                              (TokenCount*nodeCount*roundCount + nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
         }
 
-        static Future<bool> _complete;
-
+        static Future<int> _complete;
+        static Stopwatch _timer;
+        static long _created;
 
         class Init
         {
@@ -50,12 +67,21 @@ namespace Stact.Specs.Example
         class Token
         {
             public int RemainingRounds { get; set; }
+            public int Counter { get; set; }
+            public int TokenId { get; set; }
         }
 
 
         class NodeState
         {
+            public NodeState()
+            {
+                RemainingRounds = new int[TokenCount];
+            }
+
             public ActorRef Next;
+            public int[] RemainingRounds;
+            public int Counter;
         }
 
 
@@ -86,10 +112,18 @@ namespace Stact.Specs.Example
                 }
                 else
                 {
-                    message.Sender.Send(new Token
+                    _actor.State.Next = message.Sender;
+
+                    _created = _timer.ElapsedMilliseconds;
+                    for (int i = 0; i < TokenCount; i++)
+                    {
+                        message.Sender.Send(new Token
                         {
+                            TokenId = i,
+                            Counter = 0,
                             RemainingRounds = message.Body.RoundCount
-                        }, message.Sender);
+                        }, _actor.State.Next);
+                    }
 
                     _actor.Apply<LastNodeBehavior>();
                 }
@@ -109,13 +143,19 @@ namespace Stact.Specs.Example
 
             public void Handle(Message<Token> message)
             {
-                _actor.State.Next.Send(message);
+                _actor.State.Next.Send(new Token
+                    {
+                        TokenId = message.Body.TokenId,
+                        Counter = message.Body.Counter + 1,
+                        RemainingRounds = message.Body.RemainingRounds,
+                    }, message.Sender);
             }
 
-            public void Handle(Message<Shutdown> message)
+            public void Handle(Message<Exit> message, NextExitHandler next)
             {
-                _actor.State.Next.Send(message);
-                _actor.Exit();
+                _actor.State.Next.Exit(_actor.Self);
+
+                next(message);
             }
         }
 
@@ -132,28 +172,31 @@ namespace Stact.Specs.Example
 
             public void Handle(Message<Token> message)
             {
-                int remaining = message.Body.RemainingRounds - 1;
+                _actor.State.RemainingRounds[message.Body.TokenId] = message.Body.RemainingRounds - 1;
+                _actor.State.Counter = message.Body.Counter + 1;
 
-                if (remaining == 0)
-                    message.Sender.Send(new Shutdown(), message.Sender);
+                if (_actor.State.RemainingRounds[message.Body.TokenId] == 0)
+                {
+                    if(_actor.State.RemainingRounds.Sum() == 0)
+                        _actor.State.Next.Exit();
+                }
                 else
                 {
                     message.Sender.Send(new Token
                         {
-                            RemainingRounds = remaining,
-                        }, message.Sender);
+                            TokenId = message.Body.TokenId,
+                            Counter = message.Body.Counter + 1,
+                            RemainingRounds = _actor.State.RemainingRounds[message.Body.TokenId],
+                        }, _actor.State.Next);
                 }
             }
 
-            public void Handle(Message<Shutdown> message)
+            public void Handle(Message<Exit> message, NextExitHandler next)
             {
-                _complete.Complete(true);
+                _complete.Complete(_actor.State.Counter);
+
+                next(message);
             }
-        }
-
-
-        class Shutdown
-        {
         }
     }
 }
