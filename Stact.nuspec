@@ -2,15 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Stact</id>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
     <authors>Chris Patterson</authors>
     <description>Stact is an actor library and framework</description>
     <language>en-US</language>
     <licenseUrl>https://github.com/phatboyg/Stact/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/phatboyg/Stact</projectUrl>
     <dependencies>
-      <dependency id="log4net" version="1.2.10" />
-      <dependency id="Magnum" version="2.0.0.3" />
+      <dependency id="log4net" version="[1.2.10]" />
+      <dependency id="Magnum" version="2.0.0.4" />
     </dependencies>
   </metadata>
   <files>
