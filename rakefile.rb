@@ -7,7 +7,7 @@ require 'albacore'
 require File.dirname(__FILE__) + "/build_support/ilmergeconfig.rb"
 require File.dirname(__FILE__) + "/build_support/ilmerge.rb"
 
-BUILD_NUMBER_BASE = '1.0.0'
+BUILD_NUMBER_BASE = '2.0.0'
 PRODUCT = 'Stact'
 CLR_TOOLS_VERSION = 'v4.0.30319'
 
@@ -38,11 +38,11 @@ task :unclean => [:compile, :ilmerge, :tests]
 
 desc "Update the common version information for the build. You can call this task without building."
 assemblyinfo :global_version do |asm|
-  asm_version = BUILD_NUMBER_BASE + ".3"
+  asm_version = BUILD_NUMBER_BASE + ".0"
   commit_data = get_commit_hash_and_date
   commit = commit_data[0]
   commit_date = commit_data[1]
-  build_number = "#{BUILD_NUMBER_BASE}.3"
+  build_number = "#{BUILD_NUMBER_BASE}.0"
   tc_build_number = ENV["BUILD_NUMBER"]
   build_number = "#{BUILD_NUMBER_BASE}.#{tc_build_number}" unless tc_build_number.nil?
 
