@@ -18,7 +18,7 @@ namespace Stact.Specs.Actors
 	using Magnum.TestFramework;
 
 
-	[Scenario]
+    [Scenario, NotYetImplemented]
 	public class When_an_actor_throws_an_exception
 	{
 		[Then]

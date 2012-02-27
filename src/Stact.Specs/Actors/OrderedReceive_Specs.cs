@@ -19,7 +19,7 @@ namespace Stact.Specs.Actors
     using Magnum.TestFramework;
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class When_a_stream_of_messages_is_received
     {
         int _count = 1000;

@@ -26,10 +26,10 @@ namespace Stact.Specs
         [Then]
         public void Should_upconvert_to_a_message_of_t()
         {
-            var received = new Future<Message<Simple>>();
+            var received = new Future<Simple>();
 
             var engine = new MessageRoutingEngine();
-            engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
+            engine.Configure(x => x.Receive<Simple>(received.Complete));
 
             engine.Send(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
@@ -40,10 +40,10 @@ namespace Stact.Specs
         [Then]
         public void Should_upconvert_to_a_request_of_t()
         {
-            var received = new Future<Message<Simple>>();
+            var received = new Future<Simple>();
 
             var engine = new MessageRoutingEngine();
-            engine.Configure(x => x.Receive<Message<Simple>>(received.Complete));
+            engine.Configure(x => x.Receive<Simple>(received.Complete));
 
             engine.Send(new MessageContext<SimpleImpl>(new SimpleImpl()));
 
@@ -55,13 +55,13 @@ namespace Stact.Specs
         public void Should_handle_a_proxy_of_t()
         {
             var faulted = new Future<Fault>();
-            var received = new Future<Message<Simple>>();
+            var received = new Future<Simple>();
 
             var engine = new MessageRoutingEngine();
             engine.Configure(x =>
                 {
                     x.Receive<Fault>(faulted.Complete);
-                    x.Receive<Message<Simple>>(received.Complete);
+                    x.Receive<Simple>(received.Complete);
                 });
 
             engine.Send<Simple>(new MessageContext<SimpleImpl>(new SimpleImpl()));

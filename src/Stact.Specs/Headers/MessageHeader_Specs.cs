@@ -69,7 +69,7 @@ namespace Stact.Specs.Headers
             _received.IsCompleted.ShouldBeTrue("Message was not received");
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_receive_the_request_message_type()
         {
             var responseChannel = new ChannelAdapter();
@@ -79,7 +79,7 @@ namespace Stact.Specs.Headers
             _received.IsCompleted.ShouldBeTrue("Message was not received");
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_receive_the_response_message_type()
         {
             var requestChannel = new ChannelAdapter();
@@ -95,7 +95,7 @@ namespace Stact.Specs.Headers
             _received.IsCompleted.ShouldBeTrue("Message was not received");
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_receive_the_response_message_type_of_declared_type()
         {
             var requestChannel = new ChannelAdapter();

@@ -52,9 +52,9 @@ namespace Stact.Specs.Redesign
         {
             RoutingEngine engine = new MessageRoutingEngine();
 
-            var called = new Future<Message<A>>();
+            var called = new Future<A>();
 
-            engine.Configure(x => { x.Receive<Message<A>>(called.Complete); });
+            engine.Configure(x => { x.Receive<A>(called.Complete); });
 
             engine.Send(new MessageContext<A>(new A()));
 

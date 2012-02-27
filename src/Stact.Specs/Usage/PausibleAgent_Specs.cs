@@ -39,13 +39,13 @@ namespace Stact.Specs.Usage
         }
 
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_process_the_first_message()
         {
             _first.IsCompleted.ShouldBeTrue();
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_not_process_the_second_message()
         {
             _second.IsCompleted.ShouldBeFalse();
@@ -84,19 +84,19 @@ namespace Stact.Specs.Usage
         }
 
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_process_the_first_message()
         {
             _first.IsCompleted.ShouldBeTrue();
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_process_the_second_message()
         {
             _second.IsCompleted.ShouldBeTrue();
         }
 
-        [Then]
+        [Then, NotYetImplemented]
         public void Should_process_the_third_message()
         {
             _second.IsCompleted.ShouldBeTrue();

@@ -40,7 +40,7 @@ namespace Stact.Specs.Registries
 			_rawChannel = new SerializeChunkChannel(_chunkWriter, new FastTextSerializer());
 		}
 
-		[Then]
+        [Then, NotYetImplemented]
 		public void Should_properly_serialize_a_plain_class()
 		{
             _rawChannel.Send(new Test
@@ -49,7 +49,7 @@ namespace Stact.Specs.Registries
 				});
 		}
 
-		[Then]
+        [Then, NotYetImplemented]
 		public void Should_properly_serialize_a_message()
 		{
             _rawChannel.Send(new Test
@@ -58,7 +58,7 @@ namespace Stact.Specs.Registries
 				});
 		}
 
-		[Then]
+        [Then, NotYetImplemented]
 		public void Should_properly_serialize_a_request()
 		{
 			var actor = StatelessActor.New(inbox =>
@@ -72,7 +72,7 @@ namespace Stact.Specs.Registries
 			ThreadUtil.Sleep(1.Seconds());
 		}
 
-		[Then]
+        [Then, NotYetImplemented]
 		public void Should_properly_serialize_a_response()
 		{
 			var actor = StatelessActor.New(inbox =>

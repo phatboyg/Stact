@@ -45,7 +45,7 @@ namespace Stact.Specs.Registries
 			{
 				inbox.Loop(loop =>
 				{
-					loop.Receive<Message<A>>(message =>
+					loop.Receive<A>(message =>
 					{
 						ReceivedA.Complete(message.Body);
 
@@ -71,7 +71,7 @@ namespace Stact.Specs.Registries
 	}
 
 
-	[Scenario]
+    [Scenario]
 	public class When_a_message_is_sent_to_the_registry_directly :
 		Given_a_loopback_registry
 	{
@@ -91,7 +91,7 @@ namespace Stact.Specs.Registries
 	}
 
 
-	[Scenario]
+    [Scenario, NotYetImplemented]
 	public class When_a_remote_actor_is_referenced :
 		Given_a_loopback_registry
 	{

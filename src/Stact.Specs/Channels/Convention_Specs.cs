@@ -16,7 +16,7 @@ namespace Stact.Specs.Channels
 	using Magnum.TestFramework;
 
 
-	[Scenario]
+    [Scenario, NotYetImplemented]
 	public class When_connecting_an_inbox_at_startup
 	{
 		[Then]
@@ -32,10 +32,10 @@ namespace Stact.Specs.Channels
 
 			subject.ShouldNotBeNull();
 
-			actor.Send<Message<A>>();
-            actor.Send<Message<B>>();
-            actor.Send<Message<C>>();
-			actor.Send<Message<D>>();
+			actor.Send<A>();
+            actor.Send<B>();
+            actor.Send<C>();
+			actor.Send<D>();
 
 			subject.FutureA.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
 			subject.FutureB.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
@@ -66,35 +66,35 @@ namespace Stact.Specs.Channels
 
 		class Subject 
 		{
-			public readonly Future<Message<A>> FutureA;
-			public readonly Future<Message<B>> FutureB;
-			public readonly Future<Message<C>> FutureC;
-			public readonly FutureChannel<Message<D>> FutureD;
+			public readonly Future<A> FutureA;
+			public readonly Future<B> FutureB;
+			public readonly Future<C> FutureC;
+			public readonly FutureChannel<D> FutureD;
 
 			public Subject()
 			{
-				FutureA = new Future<Message<A>>();
-				FutureB = new Future<Message<B>>();
-				FutureC = new Future<Message<C>>();
-				FutureD = new FutureChannel<Message<D>>();
+				FutureA = new Future<A>();
+				FutureB = new Future<B>();
+				FutureC = new Future<C>();
+				FutureD = new FutureChannel<D>();
 			}
 
-			public Channel<Message<D>> DChannel
+			public Channel<D> DChannel
 			{
 				get { return FutureD; }
 			}
 
-			public void Handle(Message<A> message)
+			public void Handle(A message)
 			{
 				FutureA.Complete(message);
 			}
 
-            public void Handle(Message<B> message)
+            public void Handle(B message)
 			{
 				FutureB.Complete(message);
 			}
 
-            public void Handle(Message<C> message)
+            public void Handle(C message)
 			{
 				FutureC.Complete(message);
 			}

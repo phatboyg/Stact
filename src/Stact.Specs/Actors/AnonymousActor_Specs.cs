@@ -18,7 +18,7 @@ namespace Stact.Specs.Actors
     using Magnum.TestFramework;
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class Sending_a_request_from_an_anonymous_actor :
         Given_an_auction_actor_instance
     {
@@ -31,8 +31,8 @@ namespace Stact.Specs.Actors
             {
                 Auction.Request(new Ask(Id), inbox)
                     .Within(30.Seconds())
-                    .Receive<Message<Status>>(m => status => response.Complete(status.Body))
-                    .Receive<Message<Ended>>(m => ended => { });
+                    .Receive<Status>(m => status => response.Complete(status.Body))
+                    .Receive<Ended>(m => ended => { });
             });
 
             response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -42,7 +42,7 @@ namespace Stact.Specs.Actors
     }
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class Sending_a_request_from_an_anonymous_actor_to_an_ended_auction :
         Given_an_auction_actor_instance
     {
@@ -57,8 +57,8 @@ namespace Stact.Specs.Actors
             {
                 Auction.Request(new Ask(Id), inbox)
                     .Within(30.Seconds())
-                    .Receive<Message<Status>>(m => status => { })
-                    .Receive<Message<Ended>>(m => ended => response.Complete(ended.Body));
+                    .Receive<Status>(m => status => { })
+                    .Receive<Ended>(m => ended => response.Complete(ended.Body));
             });
 
             response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -68,7 +68,7 @@ namespace Stact.Specs.Actors
     }
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class Sending_another_request_inside_a_receive :
         Given_an_auction_actor_instance
     {
@@ -87,10 +87,10 @@ namespace Stact.Specs.Actors
                         price = status.Body.CurrentBid;
                         Auction.Request(new Buy(status.Body.Token, 1), inbox)
                             .Within(30.Seconds())
-                            .Receive<Message<Purchased>>(pm => pmsg => response.Complete(pmsg.Body))
+                            .Receive<Purchased>(pm => pmsg => response.Complete(pmsg.Body))
                             .Otherwise(() => {});
                     })
-                    .Receive<Message<Ended>>(m => ended => { });
+                    .Receive<Ended>(m => ended => { });
             });
 
             response.WaitUntilCompleted(4.Seconds()).ShouldBeTrue("Timeout waiting for response");
@@ -102,7 +102,7 @@ namespace Stact.Specs.Actors
     }
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class When_one_receive_handler_has_been_called :
         Given_an_auction_actor_instance
     {
@@ -131,7 +131,7 @@ namespace Stact.Specs.Actors
     }
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class Sending_a_request_from_an_anonymous_actor_to_an_auction :
         Given_an_auction_actor_instance
     {
@@ -144,7 +144,7 @@ namespace Stact.Specs.Actors
             {
                 Auction.Request(new Ask(new Guid()), inbox)
                     .Within(1.Seconds())
-                    .Receive<Message<Status>>(m => status => { })
+                    .Receive<Status>(m => status => { })
                     .Otherwise(() => response.Complete(true));
             });
 

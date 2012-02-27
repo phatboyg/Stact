@@ -17,7 +17,7 @@ namespace Stact.Specs.Actors.Auctions
     using Magnum.TestFramework;
 
 
-    [Scenario]
+    [Scenario, NotYetImplemented]
     public class When_a_bid_is_sent_to_the_actor_instance :
         Given_an_auction_actor_instance
     {
