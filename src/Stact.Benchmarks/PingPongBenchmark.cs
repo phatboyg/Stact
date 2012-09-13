@@ -35,11 +35,12 @@ namespace Stact.Benchmarks
 
 			for (int i = actorCount; i >= 0; i--)
 			{
-				actors[i] = AnonymousActor.New(inbox =>
+				var i1 = i; // Fix for access to modified closure.
+				actors[i1] = AnonymousActor.New(inbox =>
 					{
 						var pong = new Pong();
 
-						var server = actors[(i + 1)];
+						var server = actors[0]; //The first actor will be the server
 
 						inbox.Loop(loop =>
 							{
@@ -51,7 +52,7 @@ namespace Stact.Benchmarks
 							});
 
 
-						if (i < actorCount)
+						if (i1 > 0) //if we aren't the server
 						{
 							var ping = new Ping();
 							int count = 0;
