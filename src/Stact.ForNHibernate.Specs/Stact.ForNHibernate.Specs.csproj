@@ -172,10 +172,6 @@
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Stact</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Stact.ForNHibernate\Stact.ForNHibernate.csproj">
-      <Project>{A3CA2BD8-BA6C-457F-9C56-0809C2739710}</Project>
-      <Name>Stact.ForNHibernate</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

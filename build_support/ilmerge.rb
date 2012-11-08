@@ -6,14 +6,13 @@ class ILMerge
   include Albacore::RunCommand
   include Configuration::ILMerge
   
-  attr_accessor :assembly, :output, :debug, :target, :allow_dupes, :log, :internalize, :no_docs, :union
+  attr_accessor :assembly, :output, :debug, :target, :allow_dupes, :log, :internalize, :no_docs, :keyfile
   attr_array :references
 
   def initialize
 	@debug = true
 	@allow_dupes = true
 	@no_docs = false
-	@union = false
 	
 	self.use :net4
 #	@platform_version = "v4"
@@ -29,11 +28,11 @@ class ILMerge
 	params << "/log:#{@log}" unless @log.nil?
 	params << "/internalize:#{@internalize}" unless @internalize.nil?
     params << "/target:#{@target}" unless @target.nil?
-    params << "/allowDup" if @allow_dupes
+    params << "/allowDup" unless @allow_dupes.nil?
     params << "/xmldocs" unless @no_docs
-    params << "/union" if @union
     params << "/ndebug" unless @debug
 	params << "/targetplatform:#{@platform_version},#{@platform_directory}" unless @platform_version.nil?
+	params << "/keyfile:#{@keyfile}" unless @keyfile.nil?
 	#params << @platform_version unless @platform_version.nil?
 	params << "#{@assembly}"
     params << @references.map{|r| format_reference(r)} unless @references.nil?

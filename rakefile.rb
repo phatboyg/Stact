@@ -7,7 +7,7 @@ require 'albacore'
 require File.dirname(__FILE__) + "/build_support/ilmergeconfig.rb"
 require File.dirname(__FILE__) + "/build_support/ilmerge.rb"
 
-BUILD_NUMBER_BASE = '1.0.0'
+BUILD_NUMBER_BASE = '1.1.0'
 PRODUCT = 'Stact'
 CLR_TOOLS_VERSION = 'v4.0.30319'
 
@@ -24,7 +24,10 @@ props = {
   :stage => File.expand_path("build_output"),
   :output => File.join( File.expand_path("build_output"), OUTPUT_PATH ),
   :artifacts => File.expand_path("build_artifacts"),
-  :projects => ["Stact", "Stact.ServerFramework"]
+  :projects => ["Stact", "Stact.ServerFramework"],
+  :keyfile => File.expand_path("Stact.snk"),
+  :nuspecfile => File.expand_path("Stact.nuspec"),
+  :zipfile => "Stact-#{BUILD_NUMBER_BASE}.zip"
 }
 
 desc "Cleans, compiles, il-merges, unit tests, prepares examples, packages zip and runs MoMA"
@@ -38,11 +41,11 @@ task :unclean => [:compile, :ilmerge, :tests]
 
 desc "Update the common version information for the build. You can call this task without building."
 assemblyinfo :global_version do |asm|
-  asm_version = BUILD_NUMBER_BASE + ".4"
+  asm_version = BUILD_NUMBER_BASE + ".0"
   commit_data = get_commit_hash_and_date
   commit = commit_data[0]
   commit_date = commit_data[1]
-  build_number = "#{BUILD_NUMBER_BASE}.4"
+  build_number = "#{BUILD_NUMBER_BASE}.0"
   tc_build_number = ENV["BUILD_NUMBER"]
   build_number = "#{BUILD_NUMBER_BASE}.#{tc_build_number}" unless tc_build_number.nil?
 
@@ -93,11 +96,11 @@ ilmerge :ilmerge_server do |ilm|
 	ilm.internalize = File.join(props[:build_support], 'internalize.txt')
 	ilm.working_directory = File.join(props[:src], "Stact.ServerFramework/bin/#{BUILD_CONFIG}")
 	ilm.target = :library
-        ilm.use MSB_USE
+    ilm.use MSB_USE
 	ilm.log = File.join( props[:src], "Stact.ServerFramework","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
 	ilm.allow_dupes = true
-	ilm.union = false
 	ilm.references = [ 'Stact.ServerFramework.dll', 'Newtonsoft.Json.dll']
+    ilm.keyfile = props[:keyfile]
 end
 
 
@@ -107,11 +110,11 @@ ilmerge :ilmerge_stact do |ilm|
 	ilm.internalize = File.join(props[:build_support], 'internalize.txt')
 	ilm.working_directory = File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}")
 	ilm.target = :library
-        ilm.use MSB_USE
+    ilm.use MSB_USE
 	ilm.log = File.join( props[:src], "Stact","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
 	ilm.allow_dupes = false
-	ilm.union = true
 	ilm.references = [ 'Stact.dll', 'Magnum.dll']
+    ilm.keyfile = props[:keyfile]
 end
 
 
@@ -123,6 +126,8 @@ msbuild :build do |msb|
 	    :Platform => 'Any CPU'
 	msb.properties[:TargetFrameworkVersion] = TARGET_FRAMEWORK_VERSION unless BUILD_CONFIG_KEY == 'NET35'
 	msb.use :net4 #MSB_USE
+    msb.properties[:SignAssembly] = 'true'
+    msb.properties[:AssemblyOriginatorKeyFile] = props[:keyfile]
 	msb.targets :Clean, :Build
 	msb.solution = 'src/Stact.sln'
 end

@@ -3,7 +3,7 @@ build_artifacts/*
 
 **/*.suo
 **/**/*.suo
-**/*.user
+*.user
 bin
 obj
 _ReSharper*
