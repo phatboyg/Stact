@@ -17,10 +17,8 @@ namespace Stact.Routing.Nodes
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Contexts;
-    using Internal;
-    using Magnum.Collections;
-    using Magnum.Extensions;
+    using Internals.Caching;
+    using Internals.Extensions;
 
 
     public class ConditionNode<T, TProperty> :
@@ -34,7 +32,7 @@ namespace Stact.Routing.Nodes
 		{
 			_keyAccessor = keyAccessor;
 			_getKey = _keyAccessor.Compile();
-			_successors = new Cache<TProperty, ActivationList<T>>(x => new ActivationList<T>());
+			_successors = new ConcurrentCache<TProperty, ActivationList<T>>(x => new ActivationList<T>());
 		}
 
 		public IEnumerable<Activation<T>> Successors
@@ -42,12 +40,15 @@ namespace Stact.Routing.Nodes
 			get { return _successors.SelectMany(x => x); }
 		}
 
-
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.ConditionNode; }
+        }
 		public void Activate(RoutingContext<T> context)
 		{
 			TProperty key = _getKey(context.Body);
 
-			_successors.Retrieve(key).All(activation => activation.Activate(context));
+			_successors.Get(key).All(activation => activation.Activate(context));
 		}
 
 		public bool Enabled
@@ -68,8 +69,7 @@ namespace Stact.Routing.Nodes
 		{
 			ParameterExpression context = Expression.Parameter(typeof(RoutingContext<T>), "value");
 
-			PropertyInfo bodyProperty =
-				ExtensionsToExpression.GetMemberPropertyInfo<RoutingContext<T>, T>(x => x.Body);
+			PropertyInfo bodyProperty = ExpressionExtensions.GetPropertyInfo<RoutingContext<T>, T>(x => x.Body);
 
 			MethodCallExpression body = Expression.Call(context, bodyProperty.GetGetMethod(true));
 

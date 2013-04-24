@@ -58,63 +58,63 @@ namespace Stact.Routing.Visualizers
 
         protected override bool Visit(MessageRoutingEngine engine)
         {
-            AppendLine(engine.GetType().ToShortTypeName());
+            AppendLine(engine.GetType().GetTypeName());
 
             return base.Visit(engine);
         }
 
         protected override bool Visit(RootNode router)
         {
-            AppendLine(router.GetType().ToShortTypeName());
+            AppendLine(router.GetType().GetTypeName());
 
             return base.Visit(router);
         }
 
         protected override bool Visit<T>(AlphaNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
 
             return base.Visit(node);
         }
 
         protected override bool Visit<TInput, TOutput>(ConvertNode<TInput, TOutput> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T>(JoinNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName() + ", Count: " + node.Count);
+            AppendLine(node.GetType().GetTypeName() + ", Count: " + node.Count);
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T>(ConstantNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T>(ConsumerNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T>(SelectiveConsumerNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
 
             return base.Visit(node);
         }
 
         protected override bool Visit<T>(MessageNode<T> node)
         {
-            AppendLine(node.GetType().ToShortTypeName());
+            AppendLine(node.GetType().GetTypeName());
             return base.Visit<T>(node);
         }
     }

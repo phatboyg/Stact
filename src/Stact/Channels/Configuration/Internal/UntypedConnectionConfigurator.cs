@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,51 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using Builders;
 
 
-	public class UntypedConnectionConfigurator :
-		ConnectionConfigurator
-	{
-		readonly UntypedChannel _channel;
-		readonly IList<ConnectionBuilderConfigurator> _configurators;
+    public class UntypedConnectionConfigurator :
+        ConnectionConfigurator
+    {
+        readonly UntypedChannel _channel;
+        readonly IList<ConnectionBuilderConfigurator> _configurators;
 
-		public UntypedConnectionConfigurator(UntypedChannel channel)
-		{
-			_channel = channel;
-			_configurators = new List<ConnectionBuilderConfigurator>();
-		}
+        public UntypedConnectionConfigurator(UntypedChannel channel)
+        {
+            _channel = channel;
+            _configurators = new List<ConnectionBuilderConfigurator>();
+        }
 
-//		public void AddChannel<TChannel>(Channel<TChannel> channel)
-//		{
-//			var configurator = new TypedChannelConfigurator<TChannel>(channel);
-//
-//			_configurators.Add(configurator);
-//		}
-//
-//		public void AddUntypedChannel(UntypedChannel channel)
-//		{
-//			var configurator = new UntypedChannelConfigurator(channel);
-//
-//			_configurators.Add(configurator);
-//		}
+        public void AddConfigurator(ConnectionBuilderConfigurator configurator)
+        {
+            _configurators.Add(configurator);
+        }
 
-		public void AddConfigurator(ConnectionBuilderConfigurator configurator)
-		{
-			_configurators.Add(configurator);
-		}
+        public ChannelConnection CreateConnection()
+        {
+            foreach (ConnectionBuilderConfigurator configurator in _configurators)
+                configurator.ValidateConfiguration();
 
-		public ChannelConnection CreateConnection()
-		{
-			_configurators.Each(x => x.ValidateConfiguration());
+            var connection = new UntypedChannelConnectionBuilder(_channel);
 
-			var connection = new UntypedChannelConnectionBuilder(_channel);
+            foreach (ConnectionBuilderConfigurator configurator in _configurators)
+                configurator.Configure(connection);
 
-			_configurators.Each(configurator => configurator.Configure(connection));
-
-			return connection.ChannelConnection;
-		}
-	}
+            return connection.ChannelConnection;
+        }
+    }
 }

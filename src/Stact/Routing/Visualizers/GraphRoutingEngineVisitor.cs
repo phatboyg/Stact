@@ -145,13 +145,13 @@ namespace Stact.Routing.Visualizers
         void LinkFromParent()
         {
             if (_stack.Count > 0)
-                AddEdge(new Edge(_stack.Peek(), _current, _current.TargetType.ToShortTypeName()));
+                AddEdge(new Edge(_stack.Peek(), _current, _current.TargetType.GetTypeName()));
         }
 
         void LinkToParent()
         {
             if (_stack.Count > 0)
-                AddEdge(new Edge(_current, _stack.Peek(), _stack.Peek().TargetType.ToShortTypeName()));
+                AddEdge(new Edge(_current, _stack.Peek(), _stack.Peek().TargetType.GetTypeName()));
         }
     }
 }

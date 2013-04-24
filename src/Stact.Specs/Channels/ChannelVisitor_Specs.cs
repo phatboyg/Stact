@@ -2,9 +2,7 @@ namespace Stact.Specs.Channels
 {
 	using System.Collections.Generic;
 	
-	using Internal;
 	using Stact;
-	using Stact.Visitors;
 	using Magnum.Extensions;
 	using NUnit.Framework;
 
@@ -17,7 +15,7 @@ namespace Stact.Specs.Channels
 			var channel = new ConsumerChannel<int>(new SynchronousFiber(), x => { });
 			var filter = new FilterChannel<int>(new SynchronousFiber(), channel, x => true);
 
-			new ChannelVisitor().Visit(filter);
+		//	new ChannelVisitor().Visit(filter);
 		}
 
 		[Test]
@@ -27,7 +25,7 @@ namespace Stact.Specs.Channels
 			var scheduler = new TimerScheduler(new SynchronousFiber());
 			var interval = new IntervalChannel<int>(new SynchronousFiber(), scheduler, 5.Minutes(), channel);
 
-			new ChannelVisitor().Visit(interval);
+			//new ChannelVisitor().Visit(interval);
 		}
 
 		[Test]
@@ -36,7 +34,7 @@ namespace Stact.Specs.Channels
 			var provider = new DelegateChannelProvider<int>(x => new ConsumerChannel<int>(new SynchronousFiber(), y => { }));
 			var channel = new InstanceChannel<int>(new SynchronousFiber(), provider);
 
-			new ChannelVisitor().Visit(channel);
+			//new ChannelVisitor().Visit(channel);
 		}
 
 		[Test]
@@ -46,7 +44,7 @@ namespace Stact.Specs.Channels
 			var threadProvider = new ThreadStaticChannelProvider<int>(provider);
 			var channel = new InstanceChannel<int>(new SynchronousFiber(), threadProvider);
 
-			new ChannelVisitor().Visit(channel);
+			//new ChannelVisitor().Visit(channel);
 		}
 
 		[Test]
@@ -54,11 +52,11 @@ namespace Stact.Specs.Channels
 		{
 			var channel = new AsyncResultChannel<int>(new ConsumerChannel<int>(new SynchronousFiber(), y => { }), x => { }, 0);
 
-			new ChannelVisitor().Visit(channel);
+			//new ChannelVisitor().Visit(channel);
 
 			channel.Send(0);
 
-			new ChannelVisitor().Visit(channel);
+		//	new ChannelVisitor().Visit(channel);
 		}
 
 		[Test]
@@ -67,7 +65,7 @@ namespace Stact.Specs.Channels
 			var channel = new ConsumerChannel<string>(new SynchronousFiber(), x => { });
 			var transform = new ConvertChannel<int, string>(channel, x => x.ToString());
 
-			new ChannelVisitor().Visit(transform);
+			//new ChannelVisitor().Visit(transform);
 		}
 	}
 }

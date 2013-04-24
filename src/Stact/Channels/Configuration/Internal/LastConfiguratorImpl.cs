@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,40 +12,38 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using Builders;
 
 
-	public class LastConfiguratorImpl<TChannel> :
-		LastConfigurator<TChannel>,
-		ChannelBuilderConfigurator<ICollection<TChannel>>
-	{
-		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
+    public class LastConfiguratorImpl<TChannel> :
+        LastConfigurator<TChannel>,
+        ChannelBuilderConfigurator<ICollection<TChannel>>
+    {
+        readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
 
-		public LastConfiguratorImpl()
-		{
-			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
-		}
+        public LastConfiguratorImpl()
+        {
+            _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
+        }
 
-		public void Configure(ChannelBuilder<ICollection<TChannel>> builder)
-		{
-			var channelBuilder = new LastChannelBuilder<TChannel>(builder);
+        public void Configure(ChannelBuilder<ICollection<TChannel>> builder)
+        {
+            var channelBuilder = new LastChannelBuilder<TChannel>(builder);
 
-			_configurators.Each(configurator => configurator.Configure(channelBuilder));
-		}
+            foreach (var configurator in _configurators)
+                configurator.Configure(channelBuilder);
+        }
 
-		public void ValidateConfiguration()
-		{
-			if (_configurators.Count == 0)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+        public void ValidateConfiguration()
+        {
+            if (_configurators.Count == 0)
+                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+        }
 
-			_configurators.Each(x => x.ValidateConfiguration());
-		}
-
-		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
-		{
-			_configurators.Add(configurator);
-		}
-	}
+        public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+        {
+            _configurators.Add(configurator);
+        }
+    }
 }

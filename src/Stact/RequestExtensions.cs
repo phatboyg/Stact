@@ -14,8 +14,6 @@ namespace Stact
 {
     using System;
     using Internal;
-    using Magnum;
-    using Magnum.Reflection;
     using MessageHeaders;
 
 
@@ -46,8 +44,7 @@ namespace Stact
             if (!typeof(TRequest).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type requestType = InterfaceImplementationBuilder.GetProxyFor(typeof(TRequest));
-            var request = (TRequest)FastActivator.Create(requestType);
+            var request = DynamicProxyFactory.Get<TRequest>();
 
             return Send(actor, new MessageContext<TRequest>(request, () => sender));
         }
@@ -65,17 +62,19 @@ namespace Stact
             if (!typeof(TRequest).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
+            var request = DynamicProxyFactory.Get<TRequest>();
+
+            //var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
 
             var context = new MessageContext<TRequest>(request, () => sender);
             messageCallback(context);
 
-            return Send(actor, context, context.RequestId ?? CombGuid.Generate().ToString("N"));
+            return Send(actor, context, context.RequestId ?? Guid.NewGuid().ToString("N"));
         }
 
         static Message<T> Send<T>(ActorRef actor, MessageContext<T> context)
         {
-            return Send(actor, context, CombGuid.Generate().ToString("N"));
+            return Send(actor, context, Guid.NewGuid().ToString("N"));
         }
 
         static Message<T> Send<T>(ActorRef actor, MessageContext<T> context, string requestId)

@@ -13,8 +13,7 @@
 namespace Stact.Routing.Contexts
 {
     using System;
-    using Magnum.Caching;
-    using Magnum.Reflection;
+    using Internals.Caching;
 
 
     public class MessageRoutingContext<T> :
@@ -67,7 +66,7 @@ namespace Stact.Routing.Contexts
         static RoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
         {
             return (RoutingContextProxyFactory<T>)
-                   FastActivator.Create(typeof(MessageRoutingContextProxyFactory<,>), new[] {typeof(T), key});
+                   Activator.CreateInstance(typeof(MessageRoutingContextProxyFactory<,>).MakeGenericType(typeof(T), key));
         }
     }
 }

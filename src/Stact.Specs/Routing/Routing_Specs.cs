@@ -17,7 +17,6 @@ namespace Stact.Specs
     using MessageHeaders;
     using NUnit.Framework;
     using Routing;
-    using Visualizers;
 
 
     [Scenario]
@@ -60,7 +59,7 @@ namespace Stact.Specs
         [Explicit]
         public void Display_graph()
         {
-            RoutingEngineDebugVisualizer.Show(_engine);
+//            RoutingEngineDebugVisualizer.Show(_engine);
         }
 
         [Then]

@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,46 +12,47 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using Builders;
 
 
-	public class FilterConfiguratorImpl<TChannel> :
-		FilterConfigurator<TChannel>,
-		ChannelBuilderConfigurator<TChannel>
-	{
-		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
-		readonly Filter<TChannel> _filter;
+    public class FilterConfiguratorImpl<TChannel> :
+        FilterConfigurator<TChannel>,
+        ChannelBuilderConfigurator<TChannel>
+    {
+        readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
+        readonly Filter<TChannel> _filter;
 
-		public FilterConfiguratorImpl(Filter<TChannel> filter)
-		{
-			_filter = filter;
-			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
-		}
+        public FilterConfiguratorImpl(Filter<TChannel> filter)
+        {
+            _filter = filter;
+            _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
+        }
 
-		public void ValidateConfiguration()
-		{
-			if (_filter == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "Filter delegate was null");
+        public void ValidateConfiguration()
+        {
+            if (_filter == null)
+                throw new ChannelConfigurationException(typeof(TChannel), "Filter delegate was null");
 
-			if (_configurators.Count == 0)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+            if (_configurators.Count == 0)
+                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
 
-			_configurators.Each(x => x.ValidateConfiguration());
-		}
+            foreach (var configurator in _configurators)
+                configurator.ValidateConfiguration();
+        }
 
-		public void Configure(ChannelBuilder<TChannel> builder)
-		{
-			var filterBuilder = new FilterChannelBuilder<TChannel>(builder, _filter);
+        public void Configure(ChannelBuilder<TChannel> builder)
+        {
+            var filterBuilder = new FilterChannelBuilder<TChannel>(builder, _filter);
 
-			_configurators.Each(configurator => configurator.Configure(filterBuilder));
-		}
+            foreach (var configurator in _configurators)
+                configurator.Configure(filterBuilder);
+        }
 
 
-		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
-		{
-			_configurators.Add(configurator);
-		}
-	}
+        public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+        {
+            _configurators.Add(configurator);
+        }
+    }
 }

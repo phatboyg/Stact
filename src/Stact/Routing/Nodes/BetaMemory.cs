@@ -22,5 +22,9 @@ namespace Stact.Routing.Nodes
         Activation<T>,
         RightActivation<T>
     {
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.BetaMemory; }
+        }
     }
 }

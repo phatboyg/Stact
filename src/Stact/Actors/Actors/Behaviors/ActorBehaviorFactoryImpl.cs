@@ -16,8 +16,8 @@ namespace Stact.Actors.Behaviors
     using System.Collections.Generic;
     using System.Linq;
     using Configuration;
-    using Magnum.Caching;
-    using Magnum.Extensions;
+    using Internals.Caching;
+    using Internals.Extensions;
 
 
     public class ActorBehaviorFactoryImpl<TState> :
@@ -53,7 +53,7 @@ namespace Stact.Actors.Behaviors
             catch (Exception ex)
             {
                 throw StactException.New(ex, "An exception occurred creating the applicator for {0} with actor type {1}",
-                                         typeof(TBehavior).ToShortTypeName(), typeof(TState).ToShortTypeName());
+                    typeof(TBehavior).GetTypeName(), typeof(TState).GetTypeName());
             }
         }
     }

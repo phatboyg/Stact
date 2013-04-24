@@ -15,8 +15,8 @@ namespace Stact
     using System;
     using Configuration;
     using Configuration.Internal;
-    using Magnum.Caching;
-    using Magnum.Extensions;
+    using Internals.Caching;
+    using Internals.Extensions;
 
 
     public static class Actor
@@ -49,7 +49,7 @@ namespace Stact
             var actorFactory = factory as ActorFactory<TState>;
             if (actorFactory == null)
             {
-                throw new ArgumentException("Factory should be convertible to " + typeof(TState).ToShortTypeName()
+                throw new ArgumentException("Factory should be convertible to " + typeof(TState).GetTypeName()
                                             + " but was not");
             }
 
@@ -75,7 +75,7 @@ namespace Stact
                 var actorFactory = FactoryCache[typeof(TState)] as ActorFactory<TState>;
                 if (actorFactory == null)
                 {
-                    throw new ArgumentException("Factory should be convertible to " + typeof(TState).ToShortTypeName()
+                    throw new ArgumentException("Factory should be convertible to " + typeof(TState).GetTypeName()
                                                 + " but was not");
                 }
                 return actorFactory;

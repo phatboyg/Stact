@@ -14,126 +14,125 @@ namespace Stact.Benchmarks
 {
     using System;
     using System.Diagnostics;
-    using Magnum.Extensions;
 
-    /// <summary>
-    /// <para>Write a ring benchmark. Create N processes in a ring. Send a message round the ring M times. So that a total of N * M messages get sent. Time how long this takes for different values of N and M.</para>
-    /// <para>
-    /// More info:
-    /// <list type="bullet">
-    /// <value>http://erl.nfshost.com/2007/07/28/a-ring-benchmark-in-erlang/</value>
-    /// <value>http://www.rodenas.org/blog/2007/08/27/erlang-ring-problem/</value>
-    /// <value>http://muharem.wordpress.com/2007/07/31/erlang-vs-stackless-python-a-first-benchmark/</value>
-    /// </list>
-    /// </para>
-    /// </summary>
-    public class RingBenchmark
-    {
-        static Future<bool> _complete;
-        static ActorFactory<RingNode> _ringNodeFactory;
-        ActorRef _first;
-
-        public void Run()
-        {
-
-            Stopwatch timer = Stopwatch.StartNew();
-
-            int nodeCount = 100;
-            int roundCount = 1000;
-
-            Run(nodeCount, roundCount);
-
-            timer.Stop();
-
-            Console.WriteLine("Ring Benchmark");
-
-            Console.WriteLine("Processed {0} rings with {1} nodes in {2}ms", roundCount, nodeCount,
-                              timer.ElapsedMilliseconds);
-
-            Console.WriteLine("That's {0} messages per second!",
-                              ((long)nodeCount*roundCount*1000)/timer.ElapsedMilliseconds);
-        }
-
-        public void Run(int nodeCount, int roundCount)
-        {
-            _complete = new Future<bool>();
-            _first = _ringNodeFactory.New(new RingNode(null)).Self;
-            _first.Request(new Init
-                {
-                    NodeCount = nodeCount - 1,
-                    RoundCount = roundCount,
-                }, _first);
-
-            _complete.WaitUntilCompleted(300.Seconds());
-        }
-
-
-        class Init
-        {
-            public int NodeCount { get; set; }
-            public int RoundCount { get; set; }
-        }
-
-
-        class RingNode 
-        {
-            public RingNode(Actor<RingNode> inbox)
-            {
-                inbox.Receive<Init>(init =>
-                    {
-                        if (init.Body.NodeCount == 0)
-                        {
-                            init.Respond(new Token
-                                {
-                                    RemainingRounds = init.Body.RoundCount
-                                });
-
-                            inbox.Loop(loop =>
-                                {
-                                    loop.Receive<Token>(token =>
-                                        {
-                                            int remaining = token.Body.RemainingRounds - 1;
-
-                                            if (remaining == 0)
-                                                _complete.Complete(true);
-                                            else
-                                            {
-                                                init.Respond(new Token
-                                                    {
-                                                        RemainingRounds = remaining,
-                                                    });
-
-                                                loop.Continue();
-                                            }
-                                        });
-                                });
-                        }
-                        else
-                        {
-                            ActorRef next = _ringNodeFactory.New(new RingNode(null)).Self;
-                            next.Request(new Init
-                                {
-                                    NodeCount = init.Body.NodeCount - 1,
-                                    RoundCount = init.Body.RoundCount,
-                                }, init.Sender);
-
-                            inbox.Loop(loop =>
-                                {
-                                    loop.Receive<Token>(token =>
-                                        {
-                                            next.Send(token);
-                                            loop.Continue();
-                                        });
-                                });
-                        }
-                    });
-            }
-        }
-
-
-        class Token
-        {
-            public int RemainingRounds { get; set; }
-        }
-    }
+//    /// <summary>
+//    /// <para>Write a ring benchmark. Create N processes in a ring. Send a message round the ring M times. So that a total of N * M messages get sent. Time how long this takes for different values of N and M.</para>
+//    /// <para>
+//    /// More info:
+//    /// <list type="bullet">
+//    /// <value>http://erl.nfshost.com/2007/07/28/a-ring-benchmark-in-erlang/</value>
+//    /// <value>http://www.rodenas.org/blog/2007/08/27/erlang-ring-problem/</value>
+//    /// <value>http://muharem.wordpress.com/2007/07/31/erlang-vs-stackless-python-a-first-benchmark/</value>
+//    /// </list>
+//    /// </para>
+//    /// </summary>
+//    public class RingBenchmark
+//    {
+//        static Future<bool> _complete;
+//        static ActorFactory<RingNode> _ringNodeFactory;
+//        ActorRef _first;
+//
+//        public void Run()
+//        {
+//
+//            Stopwatch timer = Stopwatch.StartNew();
+//
+//            int nodeCount = 100;
+//            int roundCount = 1000;
+//
+//            Run(nodeCount, roundCount);
+//
+//            timer.Stop();
+//
+//            Console.WriteLine("Ring Benchmark");
+//
+//            Console.WriteLine("Processed {0} rings with {1} nodes in {2}ms", roundCount, nodeCount,
+//                              timer.ElapsedMilliseconds);
+//
+//            Console.WriteLine("That's {0} messages per second!",
+//                              ((long)nodeCount*roundCount*1000)/timer.ElapsedMilliseconds);
+//        }
+//
+//        public void Run(int nodeCount, int roundCount)
+//        {
+//            _complete = new Future<bool>();
+//            _first = _ringNodeFactory.New(new RingNode(null)).Self;
+//            _first.Request(new Init
+//                {
+//                    NodeCount = nodeCount - 1,
+//                    RoundCount = roundCount,
+//                }, _first);
+//
+//            _complete.WaitUntilCompleted(300.Seconds());
+//        }
+//
+//
+//        class Init
+//        {
+//            public int NodeCount { get; set; }
+//            public int RoundCount { get; set; }
+//        }
+//
+//
+//        class RingNode 
+//        {
+//            public RingNode(Actor<RingNode> inbox)
+//            {
+//                inbox.Receive<Init>(init =>
+//                    {
+//                        if (init.Body.NodeCount == 0)
+//                        {
+//                            init.Respond(new Token
+//                                {
+//                                    RemainingRounds = init.Body.RoundCount
+//                                });
+//
+//                            inbox.Loop(loop =>
+//                                {
+//                                    loop.Receive<Token>(token =>
+//                                        {
+//                                            int remaining = token.Body.RemainingRounds - 1;
+//
+//                                            if (remaining == 0)
+//                                                _complete.Complete(true);
+//                                            else
+//                                            {
+//                                                init.Respond(new Token
+//                                                    {
+//                                                        RemainingRounds = remaining,
+//                                                    });
+//
+//                                                loop.Continue();
+//                                            }
+//                                        });
+//                                });
+//                        }
+//                        else
+//                        {
+//                            ActorRef next = _ringNodeFactory.New(new RingNode(null)).Self;
+//                            next.Request(new Init
+//                                {
+//                                    NodeCount = init.Body.NodeCount - 1,
+//                                    RoundCount = init.Body.RoundCount,
+//                                }, init.Sender);
+//
+//                            inbox.Loop(loop =>
+//                                {
+//                                    loop.Receive<Token>(token =>
+//                                        {
+//                                            next.Send(token);
+//                                            loop.Continue();
+//                                        });
+//                                });
+//                        }
+//                    });
+//            }
+//        }
+//
+//
+//        class Token
+//        {
+//            public int RemainingRounds { get; set; }
+//        }
+//    }
 }

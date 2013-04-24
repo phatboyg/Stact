@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,45 +12,46 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using Magnum.Extensions;
+    using System;
 
 
-	/// <summary>
-	/// Gets an instance of a class from the InstanceProvider and returns the channel
-	/// from that class
-	/// </summary>
-	/// <typeparam name="TInstance">The instance type</typeparam>
-	/// <typeparam name="TChannel">The channel type</typeparam>
-	public class InstanceChannelProvider<TInstance, TChannel> :
-		ChannelProvider<TChannel>
-		where TInstance : class
-	{
-		readonly ChannelAccessor<TInstance, TChannel> _accessor;
-		readonly InstanceProvider<TInstance, TChannel> _instanceProvider;
+    /// <summary>
+    /// Gets an instance of a class from the InstanceProvider and returns the channel
+    /// from that class
+    /// </summary>
+    /// <typeparam name="TInstance">The instance type</typeparam>
+    /// <typeparam name="TChannel">The channel type</typeparam>
+    public class InstanceChannelProvider<TInstance, TChannel> :
+        ChannelProvider<TChannel>
+        where TInstance : class
+    {
+        readonly ChannelAccessor<TInstance, TChannel> _accessor;
+        readonly InstanceProvider<TInstance, TChannel> _instanceProvider;
 
-		public InstanceChannelProvider(InstanceProvider<TInstance, TChannel> instanceProvider,
-		                               ChannelAccessor<TInstance, TChannel> accessor)
-		{
-			Magnum.Guard.AgainstNull(instanceProvider);
-			Magnum.Guard.AgainstNull(accessor);
+        public InstanceChannelProvider(InstanceProvider<TInstance, TChannel> instanceProvider,
+            ChannelAccessor<TInstance, TChannel> accessor)
+        {
+            if (instanceProvider == null)
+                throw new ArgumentNullException("instanceProvider");
+            if (accessor == null)
+                throw new ArgumentNullException("accessor");
 
-			_instanceProvider = instanceProvider;
-			_accessor = accessor;
-		}
+            _instanceProvider = instanceProvider;
+            _accessor = accessor;
+        }
 
-		public Channel<TChannel> GetChannel(TChannel message)
-		{
-			TInstance instance = _instanceProvider.GetInstance(message);
+        public Channel<TChannel> GetChannel(TChannel message)
+        {
+            TInstance instance = _instanceProvider.GetInstance(message);
 
-			Channel<TChannel> channel = _accessor(instance);
-			if (channel == null)
-			{
-				throw new InvalidOperationException("The channel on the consumer {0} is null: {1}"
-				                                    	.FormatWith(typeof(TInstance).Name, typeof(TChannel).Name));
-			}
+            Channel<TChannel> channel = _accessor(instance);
+            if (channel == null)
+            {
+                throw new InvalidOperationException(string.Format("The channel on the consumer {0} is null: {1}",
+                    typeof(TInstance).Name, typeof(TChannel).Name));
+            }
 
-			return channel;
-		}
-	}
+            return channel;
+        }
+    }
 }

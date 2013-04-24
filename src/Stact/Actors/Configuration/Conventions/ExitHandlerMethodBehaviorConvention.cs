@@ -12,13 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Conventions
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using Actors.Behaviors;
-    using Magnum.Extensions;
-    using Magnum.Reflection;
+    using Internals.Extensions;
 
 
     public class ExitHandlerMethodBehaviorConvention :
@@ -39,16 +39,16 @@ namespace Stact.Configuration.Conventions
             where TBehavior : Behavior<TState>
         {
             Debug.WriteLine("Creating applicator for {0}, exit handler: {1}({2},{3})",
-                            typeof(TBehavior).ToShortTypeName(),
-                            method.Name, typeof(Message<Exit>).ToShortTypeName(),
-                            typeof(NextExitHandler).ToShortTypeName());
+                            typeof(TBehavior).GetTypeName(),
+                            method.Name, typeof(Message<Exit>).GetTypeName(),
+                            typeof(NextExitHandler).GetTypeName());
 
             var genericTypes = new[] {typeof(TState), typeof(TBehavior)};
 
             var args = new object[] {method};
 
             return (ActorBehaviorApplicator<TState, TBehavior>)
-                   FastActivator.Create(typeof(ExitHandlerMethodApplicator<,>), genericTypes, args);
+                   Activator.CreateInstance(typeof(ExitHandlerMethodApplicator<,>).MakeGenericType(genericTypes), args);
         }
     }
 }

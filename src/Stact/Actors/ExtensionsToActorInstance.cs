@@ -14,14 +14,13 @@ namespace Stact
 {
     using System;
     using Internal;
-    using Magnum.Extensions;
 
 
     public static class ExtensionsToActorInstance
     {
         public static IDisposable ExitOnDispose(this ActorRef actor)
         {
-            return new DisposeCallback(() => actor.BlockingRequest<Exit>(60.Seconds()));
+            return new DisposeCallback(() => actor.BlockingRequest<Exit>(TimeSpan.FromSeconds(60)));
         }
 
         public static IDisposable ExitOnDispose(this ActorRef actor, TimeSpan timeout)

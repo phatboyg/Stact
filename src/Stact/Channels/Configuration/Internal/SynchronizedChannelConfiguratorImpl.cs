@@ -12,56 +12,57 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using System.Threading;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using System.Threading;
+    using Builders;
 
 
-	public class SynchronizedChannelConfiguratorImpl<TChannel> :
-		SynchronizedChannelConfigurator<TChannel>,
-		ChannelBuilderConfigurator<TChannel>
-	{
-		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
-		readonly SynchronizationContext _synchronizationContext;
-		object _state;
+    public class SynchronizedChannelConfiguratorImpl<TChannel> :
+        SynchronizedChannelConfigurator<TChannel>,
+        ChannelBuilderConfigurator<TChannel>
+    {
+        readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
+        readonly SynchronizationContext _synchronizationContext;
+        object _state;
 
-		public SynchronizedChannelConfiguratorImpl()
-			: this(SynchronizationContext.Current)
-		{
-		}
+        public SynchronizedChannelConfiguratorImpl()
+            : this(SynchronizationContext.Current)
+        {
+        }
 
-		public SynchronizedChannelConfiguratorImpl(SynchronizationContext synchronizationContext)
-		{
-			_synchronizationContext = synchronizationContext;
+        public SynchronizedChannelConfiguratorImpl(SynchronizationContext synchronizationContext)
+        {
+            _synchronizationContext = synchronizationContext;
 
-			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
-		}
+            _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
+        }
 
-		public void ValidateConfiguration()
-		{
-			_configurators.Each(x => x.ValidateConfiguration());
-		}
+        public void ValidateConfiguration()
+        {
+            foreach (var configurator in _configurators)
+                configurator.ValidateConfiguration();
+        }
 
-		public void Configure(ChannelBuilder<TChannel> builder)
-		{
-			ChannelBuilder<TChannel> syncBuilder = builder;
-			if (_synchronizationContext != null)
-				syncBuilder = new SynchronizedChannelBuilder<TChannel>(builder, _synchronizationContext, _state);
+        public void Configure(ChannelBuilder<TChannel> builder)
+        {
+            ChannelBuilder<TChannel> syncBuilder = builder;
+            if (_synchronizationContext != null)
+                syncBuilder = new SynchronizedChannelBuilder<TChannel>(builder, _synchronizationContext, _state);
 
-			_configurators.Each(x => x.Configure(syncBuilder));
-		}
+            foreach (var configurator in _configurators)
+                configurator.Configure(builder);
+        }
 
-		public SynchronizedChannelConfigurator<TChannel> WithState(object state)
-		{
-			_state = state;
+        public SynchronizedChannelConfigurator<TChannel> WithState(object state)
+        {
+            _state = state;
 
-			return this;
-		}
+            return this;
+        }
 
-		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
-		{
-			_configurators.Add(configurator);
-		}
-	}
+        public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+        {
+            _configurators.Add(configurator);
+        }
+    }
 }

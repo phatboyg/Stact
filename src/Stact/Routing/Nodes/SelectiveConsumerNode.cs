@@ -31,7 +31,10 @@ namespace Stact.Routing.Nodes
         {
             _selectiveConsumer = selectiveConsumer;
         }
-
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.SelectiveConsumerNode; }
+        }
         public void Activate(RoutingContext<T> context)
         {
             Consumer<Message<T>> consumer = _selectiveConsumer(context.Message);

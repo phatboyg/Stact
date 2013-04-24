@@ -14,7 +14,6 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using Builders;
-	using Magnum;
 
 
 	/// <summary>

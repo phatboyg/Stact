@@ -12,7 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Channels.Visitors
 {
-	using Magnum.Reflection;
 	using Stact.Visitors;
 
 
@@ -22,7 +21,7 @@ namespace Stact.Channels.Visitors
 		{
 			var visitor = new GraphChannelVisitor();
 
-			visitor.FastInvoke("Visit", channel);
+		    visitor.Visit(channel);
 
 			return visitor.GetGraphData();
 		}

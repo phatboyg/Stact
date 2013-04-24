@@ -17,7 +17,7 @@ namespace Stact.Actors.Behaviors
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Magnum.Extensions;
+    using Internals.Extensions;
 
 
     public class BehaviorFactoryImpl<TState, TBehavior> :
@@ -35,14 +35,14 @@ namespace Stact.Actors.Behaviors
         {
             TBehavior behavior = _factory(state);
             if (behavior == null)
-                throw new StactException("The behavior factory returned null: " + typeof(TBehavior).ToShortTypeName());
+                throw new StactException("The behavior factory returned null: " + typeof(TBehavior).GetTypeName());
 
             return callback(behavior);
         }
 
         Func<Actor<TState>, TBehavior> GenerateBehaviorFactory()
         {
-            Debug.WriteLine("Locating constructor for {0}", (object)typeof(TBehavior).ToShortTypeName());
+            Debug.WriteLine("Locating constructor for {0}", (object)typeof(TBehavior).GetTypeName());
 
             ConstructorInfo constructorInfo = typeof(TBehavior)
                 .GetConstructors(BindingFlags.Instance | BindingFlags.Public)

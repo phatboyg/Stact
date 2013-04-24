@@ -25,7 +25,8 @@ namespace Stact
 
 		public DelegateChannelProvider(Func<T, Channel<T>> provider)
 		{
-			Magnum.Guard.AgainstNull(provider, "provider");
+		    if (provider == null)
+		        throw new ArgumentNullException("provider");
 
 			_provider = provider;
 		}

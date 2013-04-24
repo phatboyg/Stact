@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,8 +15,7 @@ namespace Stact.Internal
     using System;
     using Actors.Behaviors;
     using Executors;
-    using Magnum;
-    using Magnum.Extensions;
+    using Internals.Extensions;
 
 
     public class ActorFactoryImpl<TState> :
@@ -27,11 +26,14 @@ namespace Stact.Internal
         readonly SchedulerFactory _schedulerFactory;
 
         public ActorFactoryImpl(FiberFactoryEx fiberFactory, SchedulerFactory schedulerFactory,
-                                ActorBehaviorFactory<TState> actorBehaviorFactory)
+            ActorBehaviorFactory<TState> actorBehaviorFactory)
         {
-            Guard.AgainstNull(fiberFactory, "fiberFactory");
-            Guard.AgainstNull(schedulerFactory, "schedulerFactory");
-            Guard.AgainstNull(actorBehaviorFactory, "actorBehaviorFactory");
+            if (fiberFactory == null)
+                throw new ArgumentNullException("fiberFactory");
+            if (schedulerFactory == null)
+                throw new ArgumentNullException("schedulerFactory");
+            if (actorBehaviorFactory == null)
+                throw new ArgumentNullException("actorBehaviorFactory");
 
             _fiberFactory = fiberFactory;
             _schedulerFactory = schedulerFactory;
@@ -56,8 +58,8 @@ namespace Stact.Internal
             var factory = this as ActorFactory<T>;
             if (factory == null)
             {
-                throw new ArgumentException("Factory of type " + typeof(TState).ToShortTypeName()
-                                            + " cannot create actors for " + typeof(T).ToShortTypeName());
+                throw new ArgumentException("Factory of type " + typeof(TState).GetTypeName()
+                                            + " cannot create actors for " + typeof(T).GetTypeName());
             }
 
             return factory.New(state).Self;

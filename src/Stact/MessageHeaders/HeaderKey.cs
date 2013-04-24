@@ -14,7 +14,7 @@ namespace Stact
 {
     using System;
     using System.Linq.Expressions;
-    using Magnum.Extensions;
+    using Internals.Extensions;
 
 
     public static class HeaderKey
@@ -42,7 +42,7 @@ namespace Stact
 
         static string NameOf<T>(Expression<Func<MessageHeader, T>> expression)
         {
-            return expression.MemberName();
+            return expression.GetMemberName();
         }
     }
 }

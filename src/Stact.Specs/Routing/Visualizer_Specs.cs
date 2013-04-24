@@ -23,13 +23,13 @@ namespace Stact.Specs
             engine.Send(new MessageContext<A>(new A()));
 
             Trace.WriteLine("Before Receive");
-            var visualizer = new TraceRoutingEngineVisualizer();
-            visualizer.Show(engine);
+//            var visualizer = new TraceRoutingEngineVisualizer();
+//            visualizer.Show(engine);
 
             engine.Configure(x => x.Receive<A>(received.Complete));
 
             Trace.WriteLine("After Receive");
-            visualizer.Show(engine);
+//            visualizer.Show(engine);
 
             received.WaitUntilCompleted(2.Seconds()).ShouldBeTrue();
         }
@@ -39,7 +39,7 @@ namespace Stact.Specs
         public void Should_have_the_bits_without_the_message_first()
         {
             var engine = new MessageRoutingEngine();
-            var visualizer = new TraceRoutingEngineVisualizer();
+//            var visualizer = new TraceRoutingEngineVisualizer();
 
             var received = new Future<A>();
             engine.Configure(x => x.Receive<A>(received.Complete));
@@ -47,7 +47,7 @@ namespace Stact.Specs
             var block = new Future<int>();
             engine.Add(0, () =>
                 {
-                    visualizer.Show(engine);
+  //                  visualizer.Show(engine);
                     block.Complete(0);
                 });
             block.WaitUntilCompleted(2.Seconds());
@@ -67,7 +67,7 @@ namespace Stact.Specs
 
             //engine.Receive<A, B>(x => { });
 
-            visualizer.Show(engine);
+    //        visualizer.Show(engine);
         }
 
         class A

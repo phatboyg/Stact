@@ -17,8 +17,7 @@ namespace Stact.Configuration.Internal
 	using System.Linq;
 	using System.Reflection;
 	using Builders;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
+	using Internals.Extensions;
 
 
 	public class PropertyChannelsConfiguratorImpl<T> :
@@ -32,14 +31,17 @@ namespace Stact.Configuration.Internal
 		public void ValidateConfiguration()
 		{
 			if (_instance == null)
-				throw new ChannelConfigurationException("No instance was provided for " + typeof(T).ToShortTypeName());
+				throw new ChannelConfigurationException("No instance was provided for " + typeof(T).GetTypeName());
 
 			GetChannelBinders();
 		}
 
 		public void Configure(ConnectionBuilder builder)
 		{
-			_propertyBinders.Each(x => x.Configure(builder, _instance));
+		    foreach (var binder in _propertyBinders)
+		    {
+		        binder.Configure(builder, _instance);
+		    }
 		}
 
 		public PropertyChannelsConfigurator<T> UsingInstance(T instance)
@@ -52,14 +54,14 @@ namespace Stact.Configuration.Internal
 		void GetChannelBinders()
 		{
 			_propertyBinders = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-				.Where(x => x.PropertyType.Implements<Channel>())
+				.Where(x => x.PropertyType.HasInterface<Channel>())
 				.Select(property =>
 					{
-						Type inputType = property.PropertyType.GetGenericTypeDeclarations(typeof(Channel<>)).Single();
+						Type inputType = property.PropertyType.GetClosingArguments(typeof(Channel<>)).Single();
 
 						Type configuratorType = typeof(PropertyChannelConfiguratorImpl<,>).MakeGenericType(typeof(T), inputType);
 
-						return (PropertyChannelConfigurator<T>)FastActivator.Create(configuratorType, new object[] {property});
+						return (PropertyChannelConfigurator<T>)Activator.CreateInstance(configuratorType, new object[] {property});
 					})
 				.ToList();
 		}

@@ -14,14 +14,14 @@ namespace Stact.Routing.Visualizers
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum.Graphing;
+	using Internals.Algorithms.Implementations;
 
 
 	[Serializable]
 	public class RoutingEngineGraphData :
 		GraphData
 	{
-		public RoutingEngineGraphData(IEnumerable<Vertex> vertices, IEnumerable<Edge> edges)
+		public RoutingEngineGraphData(IEnumerable<Vertex> vertices, IEnumerable<Edge<Ver,>> edges)
 			: base(vertices, edges)
 		{
 		}

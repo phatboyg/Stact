@@ -13,7 +13,7 @@
 namespace Stact
 {
     using System;
-    using Magnum.Reflection;
+    using Internal;
 
 
     public static class RespondExtensions
@@ -46,9 +46,7 @@ namespace Stact
             if (!typeof(TResponse).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type responseImplType = InterfaceImplementationBuilder.GetProxyFor(typeof(TResponse));
-
-            var response = (TResponse)FastActivator.Create(responseImplType);
+            var response = DynamicProxyFactory.Get<TResponse>();
 
             request.Sender.Send(response, x => x.SetRequestId(request.RequestId));
         }
@@ -59,7 +57,8 @@ namespace Stact
             if (!typeof(TResponse).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
+            var response = DynamicProxyFactory.Get<TResponse>();
+  //          var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
 
             request.Sender.Send(response, x => x.SetRequestId(request.RequestId));
         }
@@ -71,7 +70,8 @@ namespace Stact
             if (!typeof(TResponse).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
+            var response = DynamicProxyFactory.Get<TResponse>();
+//            var response = InterfaceImplementationExtensions.InitializeProxy<TResponse>(values);
 
             request.Sender.Send(response, header =>
                 {

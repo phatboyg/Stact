@@ -15,9 +15,6 @@ namespace Stact.Internal
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
-	using Visitors;
 
 
 	public class DisconnectChannelVisitor :
@@ -35,7 +32,7 @@ namespace Stact.Internal
 			Visit(channel);
 
 			if (_channels.Count > 0)
-				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
+				throw new InvalidOperationException(string.Format("There were {0} channels that were not removed.",_channels.Count));
 		}
 
 		public void DisconnectFrom(UntypedChannel channel)
@@ -43,17 +40,10 @@ namespace Stact.Internal
 			Visit(channel);
 
 			if (_channels.Count > 0)
-				throw new InvalidOperationException("There were {0} channels that were not removed.".FormatWith(_channels.Count));
+				throw new InvalidOperationException(string.Format("There were {0} channels that were not removed.",_channels.Count));
 		}
 
-		public override Channel<T> Visit<T>(Channel<T> channel)
-		{
-			Channel<T> result = this.FastInvoke<DisconnectChannelVisitor, Channel<T>>("Visitor", channel);
-
-			return result;
-		}
-
-		protected override Channel<T> Visitor<T>(Channel<T> channel)
+		protected override Channel<T> Visit<T>(Channel<T> channel)
 		{
 			if (_channels.Contains(channel))
 			{
@@ -61,10 +51,10 @@ namespace Stact.Internal
 				return null;
 			}
 
-			return channel;
+			return base.Visit(channel);
 		}
 
-		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
+		protected override Channel<T> Visit<T>(ChannelAdapter<T> channel)
 		{
 			channel.ChangeOutputChannel(output =>
 				{
@@ -87,7 +77,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override Channel<TInput> Visitor<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
+		protected override Channel<TInput> Visit<TInput, TOutput>(ConvertChannel<TInput, TOutput> channel)
 		{
 			if (_channels.Contains(channel.Output))
 			{
@@ -105,7 +95,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor<T>(TypedChannelAdapter<T> channel)
+		protected override UntypedChannel Visit<T>(TypedChannelAdapter<T> channel)
 		{
 			Channel<T> original = channel.Output;
 
@@ -117,10 +107,13 @@ namespace Stact.Internal
 				return null;
 			}
 
+		    if (replacement == null)
+		        return null;
+
 			return original != replacement ? new TypedChannelAdapter<T>(replacement) : channel;
 		}
 
-		protected override UntypedChannel Visitor(BroadcastChannel channel)
+		protected override UntypedChannel Visit(BroadcastChannel channel)
 		{
 			var results = new List<UntypedChannel>();
 			bool changed = false;
@@ -154,7 +147,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor(ChannelAdapter channel)
+		protected override UntypedChannel Visit(ChannelAdapter channel)
 		{
 			channel.ChangeOutputChannel(output =>
 				{
@@ -173,7 +166,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
+		protected override Channel<T> Visit<T>(BroadcastChannel<T> channel)
 		{
 			bool changed;
 			Channel<T>[] subscribers = VisitSubscribers(channel.Listeners, out changed).ToArray();

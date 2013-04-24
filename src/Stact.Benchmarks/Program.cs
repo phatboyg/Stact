@@ -40,7 +40,7 @@ namespace Stact.Benchmarks
 
 				//new RemoteActorTest().Run();
 
-			    new RingBenchmark().Run();
+			   // new RingBenchmark().Run();
 			}
 			catch (Exception ex)
 			{

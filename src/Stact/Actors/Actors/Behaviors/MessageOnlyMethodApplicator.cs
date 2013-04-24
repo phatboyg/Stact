@@ -15,7 +15,7 @@ namespace Stact.Actors.Behaviors
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
-    using Magnum.Extensions;
+    using Internals.Extensions;
 
 
     public class MessageOnlyMethodApplicator<TState, TBehavior, TMessage> :
@@ -63,7 +63,7 @@ namespace Stact.Actors.Behaviors
             }
 
             throw new ArgumentException("The argument for the method is not assignable from the message type: " +
-                                        typeof(TMessage).ToShortTypeName());
+                                        typeof(TMessage).GetTypeName());
         }
     }
 }

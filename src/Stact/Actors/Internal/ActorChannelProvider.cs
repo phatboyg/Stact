@@ -28,14 +28,16 @@ namespace Stact.Internal
         where TActor : class
     {
         private readonly ActorFactory<TActor> _actorFactory;
+        readonly PropertyInfo _property;
         private readonly ChannelAccessor<TActor, TChannel> _channelAccessor;
 
         public ActorChannelProvider(ActorFactory<TActor> actorFactory, PropertyInfo property)
         {
-            Magnum.Guard.AgainstNull(actorFactory, "actorInstanceProvider");
-            Magnum.Guard.AgainstNull(property, "property");
+            if (actorFactory == null)
+                throw new ArgumentNullException("actorFactory");
 
             _actorFactory = actorFactory;
+            _property = property;
 
             _channelAccessor = CreateChannelAccessor(property);
         }

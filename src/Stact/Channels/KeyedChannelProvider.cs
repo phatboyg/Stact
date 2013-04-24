@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,30 +12,30 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Magnum.Collections;
+    using Internals.Caching;
 
 
-	public class KeyedChannelProvider<TChannel, TKey> :
-		ChannelProvider<TChannel>
-	{
-		readonly Cache<TKey, Channel<TChannel>> _dictionary;
-		readonly KeyAccessor<TChannel, TKey> _keyAccessor;
+    public class KeyedChannelProvider<TChannel, TKey> :
+        ChannelProvider<TChannel>
+    {
+        readonly Cache<TKey, Channel<TChannel>> _dictionary;
+        readonly KeyAccessor<TChannel, TKey> _keyAccessor;
 
-		public KeyedChannelProvider(ChannelProvider<TChannel> channelProvider, KeyAccessor<TChannel, TKey> keyAccessor)
-		{
-			ChannelProvider = channelProvider;
-			_keyAccessor = keyAccessor;
+        public KeyedChannelProvider(ChannelProvider<TChannel> channelProvider, KeyAccessor<TChannel, TKey> keyAccessor)
+        {
+            ChannelProvider = channelProvider;
+            _keyAccessor = keyAccessor;
 
-			_dictionary = new Cache<TKey, Channel<TChannel>>();
-		}
+            _dictionary = new ConcurrentCache<TKey, Channel<TChannel>>();
+        }
 
-		public ChannelProvider<TChannel> ChannelProvider { get; private set; }
+        public ChannelProvider<TChannel> ChannelProvider { get; private set; }
 
-		public Channel<TChannel> GetChannel(TChannel message)
-		{
-			TKey key = _keyAccessor(message);
+        public Channel<TChannel> GetChannel(TChannel message)
+        {
+            TKey key = _keyAccessor(message);
 
-			return _dictionary.Retrieve(key, x => ChannelProvider.GetChannel(message));
-		}
-	}
+            return _dictionary.Get(key, x => ChannelProvider.GetChannel(message));
+        }
+    }
 }

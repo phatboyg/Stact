@@ -18,8 +18,7 @@ namespace Stact.Configuration.Conventions
     using System.Linq;
     using System.Reflection;
     using Actors.Behaviors;
-    using Magnum.Extensions;
-    using Magnum.Reflection;
+    using Internals.Extensions;
 
 
     public class MessageOnlyMethodBehaviorConvention :
@@ -43,15 +42,15 @@ namespace Stact.Configuration.Conventions
             if (messageType.IsGenericType && messageType.GetGenericTypeDefinition() == typeof(Message<>))
                 messageType = messageType.GetGenericArguments()[0];
 
-            Debug.WriteLine("Creating applicator for {0}, method: {1}({2})", typeof(TBehavior).ToShortTypeName(),
-                            method.Name, messageType.ToShortTypeName());
+            Debug.WriteLine("Creating applicator for {0}, method: {1}({2})", typeof(TBehavior).GetTypeName(),
+                            method.Name, messageType.GetTypeName());
 
             var genericTypes = new[] {typeof(TState), typeof(TBehavior), messageType};
 
             var args = new object[] {method};
 
             return (ActorBehaviorApplicator<TState, TBehavior>)
-                   FastActivator.Create(typeof(MessageOnlyMethodApplicator<,,>), genericTypes, args);
+                   Activator.CreateInstance(typeof(MessageOnlyMethodApplicator<,,>).MakeGenericType(genericTypes), args);
         }
     }
 }

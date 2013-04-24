@@ -23,7 +23,7 @@ namespace Stact.Specs.Actors.Redesign
         [Test]
         public void This_is_the_first_one()
         {
-            ActorRef actor = Actor.New(new TestState(), x => x.Apply<DefaultBehavior>());
+            ActorRef actor = Actor.New(new TestState(), x => x.ChangeTo<DefaultBehavior>());
         }
 
 
@@ -73,7 +73,7 @@ namespace Stact.Specs.Actors.Redesign
             {
                 _actor.State.SomeValue = message.AValue;
 
-                _actor.Apply<LimitedBehavior>();
+                _actor.ChangeTo<LimitedBehavior>();
             }
 
             public void Handle(ActorRef sender, B message)
@@ -103,7 +103,7 @@ namespace Stact.Specs.Actors.Redesign
 
             public void HandleTimeout()
             {
-                _actor.Apply<DefaultBehavior>();
+                _actor.ChangeTo<DefaultBehavior>();
             }
 
             // of course i can do it in a behavior as well

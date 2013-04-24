@@ -13,7 +13,6 @@
 namespace Stact.Remote.Loopback
 {
 	using System;
-	using Magnum.Extensions;
 
 
 	public class LoopbackReaderWriter :
@@ -59,8 +58,8 @@ namespace Stact.Remote.Loopback
 		{
 			if (_disposed)
 				return;
-			if (disposing)
-				_fiber.Stop(1.Minutes());
+		    if (disposing)
+		        _fiber.Stop(TimeSpan.FromMinutes(1));
 
 			_disposed = true;
 		}

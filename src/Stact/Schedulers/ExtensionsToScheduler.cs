@@ -13,7 +13,6 @@
 namespace Stact
 {
     using System;
-    using Magnum.Extensions;
     using Schedulers;
 
 
@@ -29,7 +28,7 @@ namespace Stact
         /// <returns>A ScheduledOperation reference</returns>
         public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, Fiber fiber, Action operation)
         {
-            return scheduler.Schedule(interval.Milliseconds(), fiber, operation);
+            return scheduler.Schedule(TimeSpan.FromMilliseconds(interval), fiber, operation);
         }
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace Stact
         public static ScheduledOperation Schedule(this Scheduler scheduler, int interval, int periodicInterval, Fiber fiber,
                                                   Action operation)
         {
-            return scheduler.Schedule(interval.Milliseconds(), periodicInterval.Milliseconds(), fiber, operation);
+            return scheduler.Schedule(TimeSpan.FromMilliseconds(interval), TimeSpan.FromMilliseconds(periodicInterval), fiber, operation);
         }
 
         public static IDisposable StopOnDispose(this Scheduler scheduler, TimeSpan timeout)

@@ -14,7 +14,6 @@ namespace Stact.Configuration
 {
 	using System;
 	using System.Runtime.Serialization;
-	using Magnum.Extensions;
 
 
 	/// <summary>
@@ -30,13 +29,13 @@ namespace Stact.Configuration
 			: base(message) {}
 
 		public ChannelConfigurationException(Type channelType, string message)
-			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name)) {}
+			: this(string.Format("{0}, Channel Type: {1}", message, channelType.Name)) {}
 
 		public ChannelConfigurationException(string message, Exception innerException)
 			: base(message, innerException) {}
 
 		public ChannelConfigurationException(Type channelType, string message, Exception innerException)
-			: this("{0}, Channel Type: {1}".FormatWith(message, channelType.Name), innerException) {}
+			: this(string.Format("{0}, Channel Type: {1}", message, channelType.Name), innerException) {}
 
 		protected ChannelConfigurationException(SerializationInfo info, StreamingContext context)
 			: base(info, context) {}

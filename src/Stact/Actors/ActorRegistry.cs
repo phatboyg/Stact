@@ -15,7 +15,6 @@ namespace Stact
 	using System;
 	using Configuration;
 	using Events;
-	using Remote;
 
 
 	/// <summary>
@@ -94,6 +93,6 @@ namespace Stact
 		ChannelConnection Subscribe(Channel<ActorRegistered> registeredListener,
 		                            Channel<ActorUnregistered> unregisteredListener);
 
-		void AddNode(RegistryNode registryNode);
+//		void AddNode(RegistryNode registryNode);
 	}
 }

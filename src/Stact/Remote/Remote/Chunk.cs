@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,60 +12,60 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Remote
 {
-	using System;
-	using System.Collections.Generic;
-	using Magnum.Extensions;
+    using System;
+    using System.Collections.Generic;
 
 
-	public class Chunk :
-		ChunkWriter
-	{
-		readonly byte[] _buffer;
-		readonly IList<Action> _callbacks;
-		int _length;
+    public class Chunk :
+        ChunkWriter
+    {
+        readonly byte[] _buffer;
+        readonly IList<Action> _callbacks;
+        int _length;
 
-		public Chunk(int size)
-		{
-			_callbacks = new List<Action>();
-			_buffer = new byte[size];
-		}
+        public Chunk(int size)
+        {
+            _callbacks = new List<Action>();
+            _buffer = new byte[size];
+        }
 
-		public int Length
-		{
-			get { return _length; }
-		}
+        public int Length
+        {
+            get { return _length; }
+        }
 
-		public int Capacity
-		{
-			get { return _buffer.Length; }
-		}
+        public int Capacity
+        {
+            get { return _buffer.Length; }
+        }
 
-		public ArraySegment<byte> Content
-		{
-			get { return new ArraySegment<byte>(_buffer, 0, _length); }
-		}
+        public ArraySegment<byte> Content
+        {
+            get { return new ArraySegment<byte>(_buffer, 0, _length); }
+        }
 
-		public void Write(ArraySegment<byte> block, Action<ArraySegment<byte>> unsentCallback)
-		{
-			Array.Copy(block.Array, block.Offset, _buffer, _length, block.Count);
-			_length += block.Count;
-			_callbacks.Add(() => unsentCallback(block));
-		}
+        public void Write(ArraySegment<byte> block, Action<ArraySegment<byte>> unsentCallback)
+        {
+            Array.Copy(block.Array, block.Offset, _buffer, _length, block.Count);
+            _length += block.Count;
+            _callbacks.Add(() => unsentCallback(block));
+        }
 
-		public void Reset()
-		{
-			_length = 0;
-			_callbacks.Clear();
-		}
+        public void Reset()
+        {
+            _length = 0;
+            _callbacks.Clear();
+        }
 
-		public void NotifyUnsent(ArraySegment<byte> obj)
-		{
-			_callbacks.Each(x => x());
-		}
+        public void NotifyUnsent(ArraySegment<byte> obj)
+        {
+            foreach (Action callback in _callbacks)
+                callback();
+        }
 
-		public override string ToString()
-		{
-			return Content.ToMemoryViewString();
-		}
-	}
+        public override string ToString()
+        {
+            return Content.ToMemoryViewString();
+        }
+    }
 }

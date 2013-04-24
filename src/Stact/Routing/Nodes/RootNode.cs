@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,8 +15,8 @@ namespace Stact.Routing.Nodes
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Magnum.Caching;
-    using Magnum.Extensions;
+    using Internals.Caching;
+    using Internals.Extensions;
 
 
     public class RootNode :
@@ -35,6 +35,11 @@ namespace Stact.Routing.Nodes
         public IEnumerable<Activation> Activations
         {
             get { return _types; }
+        }
+
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.RootNode; }
         }
 
         public void Activate<T>(RoutingContext<T> context)
@@ -59,7 +64,7 @@ namespace Stact.Routing.Nodes
                 return value;
 
             throw new InvalidOperationException(
-                "The activation for {0} is not an Alpha node".FormatWith(typeof(T).ToShortTypeName()));
+                string.Format("The activation for {0} is not an Alpha node", typeof(T).GetTypeName()));
         }
 
         public static IEnumerable<Type> GetNestedMessageTypes(Type type)

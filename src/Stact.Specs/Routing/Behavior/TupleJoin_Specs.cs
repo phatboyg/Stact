@@ -16,7 +16,6 @@ namespace Stact.Specs.Behavior
 	using Magnum.TestFramework;
 	using NUnit.Framework;
 	using Routing;
-	using Visualizers;
 
 
     /* drop this features i think

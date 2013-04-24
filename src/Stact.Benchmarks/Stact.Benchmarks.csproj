@@ -95,9 +95,6 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
-    </Reference>
     <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
     </Reference>
@@ -112,10 +109,8 @@
     </Compile>
     <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
-    <Compile Include="ReliableMulticastChannelTest.cs" />
     <Compile Include="PingPongBenchmark.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RemoteActorTest.cs" />
     <Compile Include="RingBenchmark.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />

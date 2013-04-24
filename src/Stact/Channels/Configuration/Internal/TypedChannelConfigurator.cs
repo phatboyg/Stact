@@ -12,12 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Builders;
-	using Magnum;
-	using Magnum.Extensions;
+    using System;
+    using Builders;
+    using Internals.Extensions;
 
 
-	public class TypedChannelConfigurator<TChannel> :
+    public class TypedChannelConfigurator<TChannel> :
 		ConnectionBuilderConfigurator,
 		ConnectionBuilderConfigurator<TChannel>
 	{
@@ -25,7 +25,8 @@ namespace Stact.Configuration.Internal
 
 		public TypedChannelConfigurator(Channel<TChannel> channel)
 		{
-			Guard.AgainstNull(channel);
+		    if (channel == null)
+		        throw new ArgumentNullException("channel");
 
 			_channel = channel;
 		}
@@ -55,10 +56,13 @@ namespace Stact.Configuration.Internal
 
 		public TypedChannelConfigurator(Channel<TChannel> channel)
 		{
-			_channel = channel;
+		    if (channel == null)
+		        throw new ArgumentNullException("channel");
+
+		    _channel = channel;
 		}
 
-		public void Configure(ConnectionBuilder<T> builder)
+	    public void Configure(ConnectionBuilder<T> builder)
 		{
 			builder.AddChannel<T>(new ConvertChannel<T, TChannel>(_channel));
 		}
@@ -69,10 +73,10 @@ namespace Stact.Configuration.Internal
 				throw new ChannelConfigurationException("A null channel was specified");
 
 			// probably need to use the header conversion thing for this to verify HeaderTypeAdapter.IsSupported() or something
-			if (!typeof(T).Implements<TChannel>())
+			if (!typeof(T).IsConcreteAndAssignableTo<TChannel>())
 			{
-				throw new ChannelConfigurationException(typeof(TChannel), "The type {0} is not implemented by the channel type"
-				                                                          	.FormatWith(typeof(T).ToShortTypeName()));
+				throw new ChannelConfigurationException(typeof(TChannel), string.Format("The type {0} is not implemented by the channel type"
+				                                                          	,typeof(T).GetTypeName()));
 			}
 		}
 	}

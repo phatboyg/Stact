@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,62 +12,65 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System.Threading;
-	using Magnum;
+    using System;
+    using System.Threading;
 
 
-	/// <summary>
-	/// Keeps a fixed number of channels available, which presumably are doing some form of synchronous processing
-	/// of messages, to avoid too many consumers running at the same time
-	/// </summary>
-	/// <typeparam name="T">The channel type</typeparam>
-	public class ThreadPoolChannel<T> :
-		Channel<T>
-	{
-		readonly int _channelLimit;
-		readonly object _lock = new object();
-		int _channelCount;
+    /// <summary>
+    /// Keeps a fixed number of channels available, which presumably are doing some form of synchronous processing
+    /// of messages, to avoid too many consumers running at the same time
+    /// </summary>
+    /// <typeparam name="T">The channel type</typeparam>
+    public class ThreadPoolChannel<T> :
+        Channel<T>
+    {
+        readonly int _channelLimit;
+        readonly object _lock = new object();
+        int _channelCount;
 
-		public ThreadPoolChannel(ChannelProvider<T> instanceProvider, int channelLimit)
-		{
-			Guard.GreaterThan(0, channelLimit, "channelLimit");
+        public ThreadPoolChannel(ChannelProvider<T> instanceProvider, int channelLimit)
+        {
+            if (instanceProvider == null)
+                throw new ArgumentNullException("instanceProvider");
+            if (channelLimit <= 0)
+                throw new ArgumentOutOfRangeException("channelLimit");
 
-			_channelLimit = channelLimit;
-			_channelCount = 0;
-			InstanceProvider = instanceProvider;
-		}
+            _channelLimit = channelLimit;
+            _channelCount = 0;
+            InstanceProvider = instanceProvider;
+        }
 
-		public ChannelProvider<T> InstanceProvider { get; private set; }
+        public ChannelProvider<T> InstanceProvider { get; private set; }
 
-		public void Send(T message)
-		{
-			lock (_lock)
-			{
-				while (_channelCount >= _channelLimit)
-					Monitor.Wait(_lock);
+        public void Send(T message)
+        {
+            lock (_lock)
+            {
+                while (_channelCount >= _channelLimit)
+                    Monitor.Wait(_lock);
 
-				_channelCount++;
+                _channelCount++;
 
-				ThreadPool.QueueUserWorkItem(x => SendMessageToChannel(message));
-			}
-		}
+                ThreadPool.QueueUserWorkItem(x => SendMessageToChannel(message));
+            }
+        }
 
-		void SendMessageToChannel(T message)
-		{
-			try
-			{
-				Channel<T> channel = InstanceProvider.GetChannel(message);
+        void SendMessageToChannel(T message)
+        {
+            try
+            {
+                Channel<T> channel = InstanceProvider.GetChannel(message);
 
-				channel.Send(message);
-			}
-			finally
-			{
-				lock (_lock)
-				{
-					_channelCount--;
-					Monitor.Pulse(_lock);
-				}
-			}
-		}
-	}
+                channel.Send(message);
+            }
+            finally
+            {
+                lock (_lock)
+                {
+                    _channelCount--;
+                    Monitor.Pulse(_lock);
+                }
+            }
+        }
+    }
 }

@@ -18,9 +18,7 @@ namespace Stact.Configuration.Conventions
     using System.Linq;
     using System.Reflection;
     using Actors.Behaviors;
-    using Internal;
-    using Magnum.Extensions;
-    using Magnum.Reflection;
+    using Internals.Extensions;
 
 
     public class MessageWithSenderMethodBehaviorConvention :
@@ -32,7 +30,7 @@ namespace Stact.Configuration.Conventions
             return typeof(TBehavior)
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public)
                 .Where(x => x.GetParameters().Count() == 2)
-                .Where(x => x.GetParameters()[0].ParameterType.Implements(typeof(ActorRef)))
+                .Where(x => x.GetParameters()[0].ParameterType.HasInterface<ActorRef>())
                 .Select(CreateMethodConvention<TState, TBehavior>);
         }
 
@@ -46,16 +44,16 @@ namespace Stact.Configuration.Conventions
             if (messageType.IsGenericType && messageType.GetGenericTypeDefinition() == typeof(Message<>))
                 messageType = messageType.GetGenericArguments()[0];
 
-            Debug.WriteLine("Creating applicator for {0}, method: {1}({2},{3})", typeof(TBehavior).ToShortTypeName(),
-                            method.Name, typeof(ActorRef).ToShortTypeName(),
-                            parameters[1].ParameterType.ToShortTypeName());
+            Debug.WriteLine("Creating applicator for {0}, method: {1}({2},{3})", typeof(TBehavior).GetTypeName(),
+                            method.Name, typeof(ActorRef).GetTypeName(),
+                            parameters[1].ParameterType.GetTypeName());
 
             var genericTypes = new[] {typeof(TState), typeof(TBehavior), messageType};
 
             var args = new object[] {method};
 
             return (ActorBehaviorApplicator<TState, TBehavior>)
-                   FastActivator.Create(typeof(MessageWithSenderMethodApplicator<,,>), genericTypes, args);
+                   Activator.CreateInstance(typeof(MessageWithSenderMethodApplicator<,,>).MakeGenericType(genericTypes), args);
         }
     }
 }

@@ -13,7 +13,6 @@
 namespace Stact.Configuration
 {
 	using System;
-	using Magnum.Serialization;
 	using RegistryConfigurators;
 	using Remote;
 

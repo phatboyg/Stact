@@ -16,7 +16,6 @@ namespace Stact.Configuration.RegistryConfigurators
 	using System.Collections.Generic;
 	using System.Linq;
 	using Internal;
-	using Magnum.Extensions;
 
 
 	public class ActorRegistryConfiguratorImpl :
@@ -38,7 +37,10 @@ namespace Stact.Configuration.RegistryConfigurators
 		{
 			ValidateFiberFactoryConfiguration();
 
-			_configurators.Each(x => x.ValidateConfiguration());
+		    foreach (var configurator in _configurators)
+		    {
+		        configurator.ValidateConfiguration();
+		    }
 		}
 
 		public void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory)

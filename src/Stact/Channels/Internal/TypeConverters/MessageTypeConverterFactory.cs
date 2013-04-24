@@ -17,10 +17,10 @@ namespace Stact.Internal.TypeConverters
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Magnum.Extensions;
+	using Internals.Extensions;
 
 
-	public class MessageTypeConverterFactory<T> :
+    public class MessageTypeConverterFactory<T> :
 		HeaderTypeConverterFactory<T>
 	{
 		readonly Func<object, T> _convert;
@@ -37,9 +37,9 @@ namespace Stact.Internal.TypeConverters
 		{
 			converter = null;
 
-			if (typeof(TInput).Implements(typeof(Message<>)))
+			if (typeof(TInput).HasInterface(typeof(Message<>)))
 			{
-				Type messageType = typeof(TInput).GetGenericTypeDeclarations(typeof(Message<>)).Single();
+				Type messageType = typeof(TInput).GetClosingArguments(typeof(Message<>)).Single();
 
 				if (typeof(T) == messageType)
 				{
@@ -68,7 +68,7 @@ namespace Stact.Internal.TypeConverters
 
 			UnaryExpression castValue = Expression.TypeAs(value, typeof(Message<T>));
 
-			PropertyInfo propertyInfo = ExtensionsToExpression.GetMemberPropertyInfo<Message<T>, T>(x => x.Body);
+			PropertyInfo propertyInfo = ExpressionExtensions.GetPropertyInfo<Message<T>, T>(x => x.Body);
 
 			MethodCallExpression getProperty = Expression.Call(castValue, propertyInfo.GetGetMethod(true));
 

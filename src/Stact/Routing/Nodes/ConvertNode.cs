@@ -27,7 +27,10 @@ namespace Stact.Routing.Nodes
         {
             get { return _output; }
         }
-
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.ConvertNode; }
+        }
         public bool Enabled
         {
             get { return _output.Enabled; }

@@ -1,0 +1,3 @@
+[submodule "src/Stact/Internals"]
+	path = src/Stact/Internals
+	url = https://github.com/phatboyg/Internals.git

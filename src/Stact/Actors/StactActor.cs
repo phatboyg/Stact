@@ -19,7 +19,7 @@ namespace Stact
     using Actors;
     using Actors.Behaviors;
     using Internal;
-    using Magnum.Extensions;
+    using Internals.Extensions;
     using Routing;
 
 
@@ -162,8 +162,8 @@ namespace Stact
 
         void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
         {
-            Debug.WriteLine(string.Format("Exception {0} occurred, exiting...\n{1}",
-                                          exception.GetType().ToShortTypeName(), exception));
+            Debug.WriteLine("Exception {0} occurred, exiting...\n{1}",
+                                          exception.GetType().GetTypeName(), exception);
 
             _self.Send<Exit>();
         }

@@ -10,17 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Specs.Actions
+namespace Stact.Specs.Fibers
 {
-	using System;
-	using System.Diagnostics;
-	
-	using Internal;
-	using Magnum.Extensions;
-	using NUnit.Framework;
-	using Magnum.TestFramework;
+    using System;
+    using System.Diagnostics;
+    using Magnum.Extensions;
+    using NUnit.Framework;
+    using Magnum.TestFramework;
 
-	[TestFixture]
+
+    [TestFixture]
 	public class Scheduling_an_action_for_now
 	{
 		[Test]

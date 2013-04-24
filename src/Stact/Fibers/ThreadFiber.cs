@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -16,9 +16,6 @@ namespace Stact
     using System.Collections.Generic;
     using System.Threading;
     using Executors;
-    using Internal;
-    using Magnum;
-    using Magnum.Extensions;
 
 
     public class ThreadFiber :
@@ -29,9 +26,9 @@ namespace Stact
         readonly Thread _thread;
 
         bool _isActive;
+        bool _killed;
         IList<Action> _operations = new List<Action>();
         bool _stopped;
-        bool _killed;
 
         public ThreadFiber()
             : this(new BasicOperationExecutor())
@@ -49,8 +46,8 @@ namespace Stact
         {
             if (_stopped)
                 return;
-                // seems to be causing more problems that it solves
-                // throw new FiberException("The fiber is no longer accepting actions");
+            // seems to be causing more problems that it solves
+            // throw new FiberException("The fiber is no longer accepting actions");
 
             lock (_lock)
             {
@@ -73,7 +70,7 @@ namespace Stact
                 return;
             }
 
-            DateTime waitUntil = SystemUtil.Now + timeout;
+            DateTime waitUntil = DateTime.Now + timeout;
 
             lock (_lock)
             {
@@ -83,9 +80,12 @@ namespace Stact
 
                 while (_operations.Count > 0 || _isActive)
                 {
-                    timeout = waitUntil - SystemUtil.Now;
+                    timeout = waitUntil - DateTime.Now;
                     if (timeout < TimeSpan.Zero)
-                        throw new FiberException("Timeout expired waiting for all pending actions to complete during shutdown");
+                    {
+                        throw new FiberException(
+                            "Timeout expired waiting for all pending actions to complete during shutdown");
+                    }
 
                     Monitor.Wait(_lock, timeout);
                 }
@@ -110,7 +110,8 @@ namespace Stact
 
         public override string ToString()
         {
-            return "{0} (Count: {1}, Id: {2})".FormatWith(typeof(ThreadFiber).Name, _operations.Count, _thread.ManagedThreadId);
+            return string.Format("{0} (Count: {1}, Id: {2})", typeof(ThreadFiber).Name, _operations.Count,
+                _thread.ManagedThreadId);
         }
 
         Thread CreateThread()
@@ -155,14 +156,14 @@ namespace Stact
                 return false;
 
             _executor.Execute(operations, remaining =>
-            {
-                lock (_lock)
                 {
-                    int i = 0;
-                    foreach (Action action in remaining)
-                        _operations.Insert(i++, action);
-                }
-            });
+                    lock (_lock)
+                    {
+                        int i = 0;
+                        foreach (Action action in remaining)
+                            _operations.Insert(i++, action);
+                    }
+                });
 
             lock (_lock)
             {

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,8 +14,8 @@ namespace Stact.Routing.Configuration
 {
     using System;
     using Internal;
-    using Magnum.Caching;
-    using Magnum.Extensions;
+    using Internals.Caching;
+    using Internals.Extensions;
     using Nodes;
 
 
@@ -31,7 +31,7 @@ namespace Stact.Routing.Configuration
         {
             _engine = engine;
             _agenda = agenda;
-            _joinNodes = new DictionaryCache<Type, object>();
+            _joinNodes = new ConcurrentCache<Type, object>();
         }
 
         public RoutingEngineAgenda Agenda
@@ -72,10 +72,10 @@ namespace Stact.Routing.Configuration
             JoinNode<T> result = null;
 
             new MatchAlphaNode<T>(_engine,
-                                  alphaNode => { new MatchJoinNode<T>(alphaNode, joinNode => { result = joinNode; }); });
+                alphaNode => { new MatchJoinNode<T>(alphaNode, joinNode => { result = joinNode; }); });
 
             if (result == null)
-                throw new InvalidOperationException("Failed to create join node: " + typeof(T).ToShortTypeName());
+                throw new InvalidOperationException("Failed to create join node: " + typeof(T).GetTypeName());
 
             return result.BetaMemory;
         }

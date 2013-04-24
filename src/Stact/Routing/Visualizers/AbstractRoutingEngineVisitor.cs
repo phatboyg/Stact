@@ -12,14 +12,11 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Visualizers
 {
-    using Magnum.Extensions;
-    using Magnum.Reflection;
+    using System.Linq;
     using Nodes;
 
 
-    public abstract class AbstractRoutingEngineVisitor<TVisitor> :
-        ReflectiveVisitorBase<TVisitor>
-        where TVisitor : AbstractRoutingEngineVisitor<TVisitor>
+    public abstract class AbstractRoutingEngineVisitor
     {
         protected virtual bool Visit(MessageRoutingEngine engine)
         {
@@ -27,36 +24,58 @@ namespace Stact.Routing.Visualizers
             return true;
         }
 
+        protected virtual bool Visit(RoutingEngine engine)
+        {
+            var routingEngine = engine as MessageRoutingEngine;
+            Visit(routingEngine.Root);
+            return true;
+        }
+
+        protected virtual bool Visit(Activation activation)
+        {
+            switch (activation.ActivationType)
+            {
+                case ActivationType.RootNode:
+                    return Visit((RootNode)activation);
+
+                default:
+                    return true;
+            }
+        }
+
+        protected virtual bool Visit<T>(Activation<T> activation)
+        {
+            return true;
+        }
+
+
         protected virtual bool Visit(RootNode node)
         {
-            node.Activations.Each(typeChannel => Visit(typeChannel));
-            return true;
+            return node.Activations.All(x => Visit(x));
         }
 
         protected virtual bool Visit<T>(AlphaNode<T> node)
         {
-            IncreaseDepth();
-            node.Successors.Each(activation => Visit(activation));
-            DecreaseDepth();
-            return true;
+            return node.Successors.All(x => Visit(x));
         }
 
         protected virtual bool Visit<TInput, TOutput>(ConvertNode<TInput, TOutput> node)
             where TInput : TOutput
         {
-            IncreaseDepth();
             Visit(node.Output);
-            DecreaseDepth();
             return true;
         }
 
         protected virtual bool Visit<T>(JoinNode<T> node)
         {
-            IncreaseDepth();
             if (node.RightActivation as ConstantNode<T> != null)
                 Visit(node.RightActivation);
-            node.Activations.Each(activation => Visit(activation));
-            DecreaseDepth();
+
+            return node.Activations.All(x => Visit(x));
+        }
+
+        bool Visit<T>(RightActivation<T> rightActivation)
+        {
             return true;
         }
 
@@ -77,9 +96,7 @@ namespace Stact.Routing.Visualizers
 
         protected virtual bool Visit<T>(MessageNode<T> node)
         {
-            IncreaseDepth();
             Visit(node.Output);
-            DecreaseDepth();
             return true;
         }
 

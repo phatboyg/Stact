@@ -13,7 +13,6 @@
 namespace Stact.Internal
 {
 	using System;
-	using Magnum;
 
 
 	/// <summary>
@@ -26,7 +25,8 @@ namespace Stact.Internal
 
 		public DisposeCallback(Action disposeCallback)
 		{
-			Guard.AgainstNull(disposeCallback);
+		    if (disposeCallback == null)
+		        throw new ArgumentNullException("disposeCallback");
 
 			_disposeCallback = disposeCallback;
 		}

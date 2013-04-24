@@ -14,9 +14,6 @@ namespace Stact.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
-	using Visitors;
 
 
 	public class ConnectChannelVisitor :
@@ -38,7 +35,7 @@ namespace Stact.Internal
 				throw new InvalidOperationException("The binding operation failed");
 		}
 
-		protected override UntypedChannel Visitor(BroadcastChannel channel)
+		protected override UntypedChannel Visit(BroadcastChannel channel)
 		{
 			var results = new List<UntypedChannel>();
 			bool changed = false;
@@ -70,7 +67,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor(ChannelAdapter channel)
+		protected override UntypedChannel Visit(ChannelAdapter channel)
 		{
 			bool wasAdded = _added;
 
@@ -114,7 +111,7 @@ namespace Stact.Internal
 
 			if (!_added)
 			{
-				throw new InvalidOperationException("The binding operation failed: {0} to {1}".FormatWith(typeof(T).Name,
+				throw new InvalidOperationException(string.Format("The binding operation failed: {0} to {1}",typeof(T).Name,
 				                                                                                          typeof(TChannel).Name));
 			}
 		}
@@ -124,15 +121,10 @@ namespace Stact.Internal
 			UntypedChannel result = Visit(channel);
 
 			if (!_added)
-				throw new InvalidOperationException("The binding operation failed: {0}".FormatWith(typeof(TChannel).Name));
+				throw new InvalidOperationException(string.Format("The binding operation failed: {0}",typeof(TChannel).Name));
 		}
 
-		public override Channel<T> Visit<T>(Channel<T> channel)
-		{
-			return this.FastInvoke<ConnectChannelVisitor<TChannel>, Channel<T>>("Visitor", channel);
-		}
-
-		protected override Channel<T> Visitor<T>(ChannelAdapter<T> channel)
+		protected override Channel<T> Visit<T>(ChannelAdapter<T> channel)
 		{
 			bool wasAdded = _added;
 
@@ -154,7 +146,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor<T>(TypedChannelAdapter<T> channel)
+		protected override UntypedChannel Visit<T>(TypedChannelAdapter<T> channel)
 		{
 			Channel<T> original = channel.Output;
 
@@ -172,7 +164,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor(BroadcastChannel channel)
+		protected override UntypedChannel Visit(BroadcastChannel channel)
 		{
 			var results = new List<UntypedChannel>();
 			bool changed = false;
@@ -204,7 +196,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override UntypedChannel Visitor(ChannelAdapter channel)
+		protected override UntypedChannel Visit(ChannelAdapter channel)
 		{
 			bool wasAdded = _added;
 
@@ -229,7 +221,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(ShuntChannel<T> channel)
+		protected override Channel<T> Visit<T>(ShuntChannel<T> channel)
 		{
 			if (typeof(T) == typeof(TChannel))
 			{
@@ -240,7 +232,7 @@ namespace Stact.Internal
 			return channel;
 		}
 
-		protected override Channel<T> Visitor<T>(BroadcastChannel<T> channel)
+		protected override Channel<T> Visit<T>(BroadcastChannel<T> channel)
 		{
 			// TODO changing this to be the same type, to avoid conversions in the chain
 			//if (typeof(T) == typeof(TChannel))

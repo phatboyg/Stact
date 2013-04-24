@@ -18,7 +18,7 @@ namespace Stact.Routing.Internal
 
 
     public class MatchAlphaNode<T> :
-        AbstractRoutingEngineVisitor<MatchAlphaNode<T>>
+        AbstractRoutingEngineVisitor
     {
         AlphaNode<T> _alpha;
         RootNode _root;

@@ -14,9 +14,7 @@ namespace Stact.Specs.Channels
 {
 	using System.Diagnostics;
 	
-	using Internal;
 	using Stact;
-	using Stact.Visitors;
 	using NUnit.Framework;
 	using Magnum.TestFramework;
 
@@ -66,14 +64,14 @@ namespace Stact.Specs.Channels
                         .HandleOnCallingThread();
 				}))
 			{
-				Trace.WriteLine("Complete network:");
-				new TraceChannelVisitor().Visit(input);
+				//Trace.WriteLine("Complete network:");
+				//new TraceChannelVisitor().Visit(input);
 
 				input.Send(new TestMessage());
 			}
 
-			Trace.WriteLine("Empty network:");
-			new TraceChannelVisitor().Visit(input);
+			//Trace.WriteLine("Empty network:");
+			//new TraceChannelVisitor().Visit(input);
 
 			futureA.IsCompleted.ShouldBeTrue();
 			futureB.IsCompleted.ShouldBeTrue();
@@ -98,7 +96,7 @@ namespace Stact.Specs.Channels
 					x.AddChannel(consumerB);
 				}))
 			{
-				new TraceChannelVisitor().Visit(input);
+				//new TraceChannelVisitor().Visit(input);
 
 				input.Send(new TestMessage());
 			}
@@ -119,7 +117,7 @@ namespace Stact.Specs.Channels
 			{
 			}
 
-			new TraceChannelVisitor().Visit(input);
+			//new TraceChannelVisitor().Visit(input);
 
 			input.Send(new TestMessage());
 

@@ -14,7 +14,6 @@ namespace Stact.Internal
 {
 	using System.Collections;
 	using System.Collections.Generic;
-	using Magnum.Extensions;
 
 
 	public class PendingReceiveList :
@@ -44,18 +43,12 @@ namespace Stact.Internal
 
 		public void CancelAll()
 		{
-			_receives.Each(receive =>
-				{
-					try
-					{
-						receive.Cancel();
-					}
-					catch
-					{
-					}
-				});
+		    foreach (var receive in _receives)
+		    {
+		        receive.Cancel();
+		    }
 
-			_receives.Clear();
+            _receives.Clear();
 		}
 	}
 }

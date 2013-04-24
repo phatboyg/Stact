@@ -56,7 +56,10 @@ namespace Stact.Routing.Nodes
         {
             get { return _betaMemory; }
         }
-
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.JoinNode; }
+        }
         public void Activate(RoutingContext<T> context)
         {
             _rightActivation.RightActivate(context, match => _betaMemory.Activate(match));

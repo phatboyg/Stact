@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,49 +12,50 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using Builders;
 
 
-	public class ChannelConfiguratorImpl<TChannel> :
-		ChannelConfigurator<TChannel>,
-		ConnectionBuilderConfigurator,
-		ConnectionBuilderConfigurator<TChannel>
-	{
-		readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
+    public class ChannelConfiguratorImpl<TChannel> :
+        ChannelConfigurator<TChannel>,
+        ConnectionBuilderConfigurator,
+        ConnectionBuilderConfigurator<TChannel>
+    {
+        readonly IList<ChannelBuilderConfigurator<TChannel>> _configurators;
 
-		public ChannelConfiguratorImpl()
-		{
-			_configurators = new List<ChannelBuilderConfigurator<TChannel>>();
-		}
+        public ChannelConfiguratorImpl()
+        {
+            _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
+        }
 
+        public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+        {
+            _configurators.Add(configurator);
+        }
 
-		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
-		{
-			_configurators.Add(configurator);
-		}
+        public void ValidateConfiguration()
+        {
+            if (_configurators.Count == 0)
+                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
 
-		public void ValidateConfiguration()
-		{
-			if (_configurators.Count == 0)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+            foreach (var configurator in _configurators)
+                configurator.ValidateConfiguration();
+        }
 
-			_configurators.Each(x => x.ValidateConfiguration());
-		}
+        public void Configure(ConnectionBuilder builder)
+        {
+            ChannelBuilder<TChannel> channelBuilder = new UntypedChannelBuilder<TChannel>(builder);
 
-		public void Configure(ConnectionBuilder builder)
-		{
-			ChannelBuilder<TChannel> channelBuilder = new UntypedChannelBuilder<TChannel>(builder);
+            foreach (var configurator in _configurators)
+                configurator.Configure(channelBuilder);
+        }
 
-			_configurators.Each(configurator => configurator.Configure(channelBuilder));
-		}
+        public void Configure(ConnectionBuilder<TChannel> builder)
+        {
+            ChannelBuilder<TChannel> channelBuilder = new TypedChannelBuilder<TChannel>(builder);
 
-		public void Configure(ConnectionBuilder<TChannel> builder)
-		{
-			ChannelBuilder<TChannel> channelBuilder = new TypedChannelBuilder<TChannel>(builder);
-
-			_configurators.Each(x => x.Configure(channelBuilder));
-		}
-	}
+            foreach (var configurator in _configurators)
+                configurator.Configure(channelBuilder);
+        }
+    }
 }

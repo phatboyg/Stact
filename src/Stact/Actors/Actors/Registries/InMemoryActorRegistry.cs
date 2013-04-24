@@ -17,9 +17,6 @@ namespace Stact.Actors.Registries
     using Configuration;
     using Events;
     using Events.Impl;
-    using Magnum;
-    using Magnum.Extensions;
-    using Remote;
 
 
     public class InMemoryActorRegistry :
@@ -31,7 +28,7 @@ namespace Stact.Actors.Registries
         readonly Fiber _fiber;
         readonly IDictionary<Guid, ActorRef> _keyIndex;
         readonly ActorChannel _channel;
-        IList<RegistryNode> _nodes;
+        //IList<RegistryNode> _nodes;
 
         public InMemoryActorRegistry(Fiber fiber)
         {
@@ -42,7 +39,7 @@ namespace Stact.Actors.Registries
 
             _events = new ChannelAdapter();
             _channel = new ActorRegistryChannel(this);
-            _nodes = new List<RegistryNode>();
+         //   _nodes = new List<RegistryNode>();
         }
 
         public void Register(Guid key, ActorRef actor)
@@ -78,7 +75,7 @@ namespace Stact.Actors.Registries
         {
             _fiber.Add(() =>
             {
-                Guid key = CombGuid.Generate();
+                Guid key = Guid.NewGuid();
                 Add(key, actor);
 
                 callback(key, actor);
@@ -112,13 +109,13 @@ namespace Stact.Actors.Registries
                 foreach (ActorRef actor in _actors.Keys)
                     actor.Send<Exit>();
 
-                foreach (RegistryNode node in _nodes)
-                {
-                    node.Dispose();
-                }
+//                foreach (RegistryNode node in _nodes)
+//                {
+//                    node.Dispose();
+//                }
             });
 
-            _fiber.Stop(3.Minutes());
+            _fiber.Stop(TimeSpan.FromMinutes(3));
         }
 
         public void Get(Guid key, Action<ActorRef> callback, Action notFoundCallback)
@@ -139,15 +136,15 @@ namespace Stact.Actors.Registries
             {
                 try
                 {
-                    foreach (RegistryNode node in _nodes)
-                    {
-                        ActorRef actor = node.Select(actorAddress);
-                        if (actor != null)
-                        {
-                            callback(actor);
-                            return;
-                        }
-                    }
+//                    foreach (RegistryNode node in _nodes)
+//                    {
+//                        ActorRef actor = node.Select(actorAddress);
+//                        if (actor != null)
+//                        {
+//                            callback(actor);
+//                            return;
+//                        }
+//                    }
                 }
                 catch {}
 
@@ -189,10 +186,10 @@ namespace Stact.Actors.Registries
             });
         }
 
-        public void AddNode(RegistryNode registryNode)
-        {
-            _nodes.Add(registryNode);
-        }
+//        public void AddNode(RegistryNode registryNode)
+//        {
+//            _nodes.Add(registryNode);
+//        }
 
         void Add(Guid key, ActorRef actor)
         {

@@ -16,7 +16,6 @@ namespace Stact.Specs.Channels
 	using Magnum.Extensions;
 	using Magnum.TestFramework;
 	using NUnit.Framework;
-	using Visitors;
 
 
 	[TestFixture]
@@ -43,7 +42,7 @@ namespace Stact.Specs.Channels
 
 			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(second)))
 			{
-				new TraceChannelVisitor().Visit(adapter);
+	//			new TraceChannelVisitor().Visit(adapter);
 
 				adapter.Send(new TestMessage());
 			}
@@ -66,7 +65,7 @@ namespace Stact.Specs.Channels
 				x.AddChannel(consumer);
 			}))
 			{
-				new TraceChannelVisitor().Visit(adapter);
+		//		new TraceChannelVisitor().Visit(adapter);
 
 				adapter.Send(new TestMessage());
 			}
@@ -88,7 +87,7 @@ namespace Stact.Specs.Channels
 
 			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(second)))
 			{
-				new TraceChannelVisitor().Visit(adapter);
+			//	new TraceChannelVisitor().Visit(adapter);
 
 				adapter.Send(new TestMessage());
 			}
@@ -113,7 +112,7 @@ namespace Stact.Specs.Channels
 
 			firstScope.Dispose();
 
-			new TraceChannelVisitor().Visit(adapter);
+			//new TraceChannelVisitor().Visit(adapter);
 
 			adapter.Send(new TestMessage());
 
@@ -131,7 +130,7 @@ namespace Stact.Specs.Channels
 			var consumer = new ConsumerChannel<TestMessage>(_fiber, future.Complete);
 			using (ChannelConnection scope = adapter.Connect(x => x.AddChannel(consumer))) {}
 
-			new TraceChannelVisitor().Visit(adapter);
+			//new TraceChannelVisitor().Visit(adapter);
 
 			adapter.Send(new TestMessage());
 

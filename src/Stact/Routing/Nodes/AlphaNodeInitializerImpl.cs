@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
-    using Magnum.Reflection;
+    using System;
 
 
     public class AlphaNodeInitializerImpl<T> :
@@ -24,7 +24,7 @@ namespace Stact.Routing.Nodes
 
             var adapter =
                 (Activation<TParent>)
-                FastActivator.Create(typeof(ConvertNode<,>), new[] {typeof(TParent), typeof(T)},
+                Activator.CreateInstance(typeof(ConvertNode<,>).MakeGenericType(typeof(TParent), typeof(T)),
                                      new object[] {alphaNode});
 
             activation.AddActivation(adapter);

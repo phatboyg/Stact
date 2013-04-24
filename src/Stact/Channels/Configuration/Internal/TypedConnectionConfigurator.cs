@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,38 +12,39 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System.Collections.Generic;
-	using Builders;
-	using Magnum.Extensions;
+    using System.Collections.Generic;
+    using Builders;
 
 
-	public class TypedConnectionConfigurator<T> :
-		ConnectionConfigurator<T>
-	{
-		readonly Channel<T> _channel;
-		readonly List<ConnectionBuilderConfigurator<T>> _configurators;
+    public class TypedConnectionConfigurator<T> :
+        ConnectionConfigurator<T>
+    {
+        readonly Channel<T> _channel;
+        readonly List<ConnectionBuilderConfigurator<T>> _configurators;
 
-		public TypedConnectionConfigurator(Channel<T> channel)
-		{
-			_channel = channel;
-			_configurators = new List<ConnectionBuilderConfigurator<T>>();
-		}
+        public TypedConnectionConfigurator(Channel<T> channel)
+        {
+            _channel = channel;
+            _configurators = new List<ConnectionBuilderConfigurator<T>>();
+        }
 
 
-		public void AddConfigurator(ConnectionBuilderConfigurator<T> configurator)
-		{
-			_configurators.Add(configurator);
-		}
+        public void AddConfigurator(ConnectionBuilderConfigurator<T> configurator)
+        {
+            _configurators.Add(configurator);
+        }
 
-		public ChannelConnection Complete()
-		{
-			_configurators.Each(x => x.ValidateConfiguration());
+        public ChannelConnection Complete()
+        {
+            foreach (var configurator in _configurators)
+                configurator.ValidateConfiguration();
 
-			var connection = new TypedChannelConnectionBuilder<T>(_channel);
+            var connection = new TypedChannelConnectionBuilder<T>(_channel);
 
-			_configurators.Each(x => x.Configure(connection));
+            foreach (var configurator in _configurators)
+                configurator.Configure(connection);
 
-			return connection.ChannelConnection;
-		}
-	}
+            return connection.ChannelConnection;
+        }
+    }
 }

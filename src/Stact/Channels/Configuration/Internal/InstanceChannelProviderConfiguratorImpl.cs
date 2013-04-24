@@ -14,7 +14,7 @@ namespace Stact.Configuration.Internal
 {
 	using System;
 	using Builders;
-	using Magnum.Extensions;
+	using Internals.Extensions;
 
 
 	public class InstanceChannelProviderConfiguratorImpl<TInstance, TChannel> :
@@ -43,7 +43,7 @@ namespace Stact.Configuration.Internal
 			{
 				throw new ChannelConfigurationException(typeof(TChannel),
 				                                        "No channel accessor was specified for instance: "
-				                                        + typeof(TInstance).ToShortTypeName());
+				                                        + typeof(TInstance).GetTypeName());
 			}
 
 			return new InstanceChannelProvider<TInstance, TChannel>(_instanceProvider(), _accessor);

@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	
-	using Magnum.Serialization;
-
 	public class DeserializeChannel<T> :
 		Channel<string>
 	{

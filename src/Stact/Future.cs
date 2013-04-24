@@ -14,8 +14,6 @@ namespace Stact
 {
     using System;
     using System.Threading;
-    using Magnum;
-    using Magnum.Extensions;
 
 
     /// <summary>
@@ -37,7 +35,8 @@ namespace Stact
 
         public Future(AsyncCallback callback, object state)
         {
-            Guard.AgainstNull(callback, "callback");
+            if (callback == null)
+                throw new ArgumentNullException("callback");
 
             _callback = callback;
             _state = state;
@@ -76,8 +75,8 @@ namespace Stact
         {
             if (_completed)
             {
-                throw new InvalidOperationException("A Future cannot be completed twice, value = {0}, passed = {1}"
-                                                        .FormatWith(Value, message));
+                throw new InvalidOperationException(string.Format("A Future cannot be completed twice, value = {0}, passed = {1}",
+                                                        Value, message));
             }
 
             Value = message;

@@ -16,8 +16,6 @@ namespace Stact.Remote
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using Magnum.Reflection;
-    using Magnum.Serialization;
     using MessageHeaders;
 
 

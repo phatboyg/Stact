@@ -77,22 +77,21 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\..\lib\Magnum\net-3.5\Magnum.dll</HintPath>
-    </Reference>
     <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Runtime.Serialization">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.ServiceModel">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Channels\Internal\ChannelVisitor.cs" />
+    <Compile Include="Channels\Internal\DynamicImplementationBuilder.cs" />
+    <Compile Include="Channels\Internal\DynamicProxyFactory.cs" />
+    <Compile Include="Channels\Internal\ImplementationBuilder.cs" />
+    <Compile Include="Channels\Internal\ProxyFactory.cs" />
+    <Compile Include="Channels\Internal\TypeProxyFactory.cs" />
+    <Compile Include="Internals\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SolutionVersion.cs">
@@ -149,7 +148,6 @@
     <Compile Include="Channels\UntypedFilterChannel.cs" />
     <Compile Include="Fibers\Executors\BasicOperationExecutor.cs" />
     <Compile Include="Fibers\Executors\TryCatchOperationExecutor.cs" />
-    <Compile Include="HeaderChannelSendExtensions.cs" />
     <Compile Include="Internal\LinkImpl.cs" />
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="LoopExtensions.cs" />
@@ -169,7 +167,6 @@
     <Compile Include="Messages\Unlink.cs" />
     <Compile Include="Messages\UnlinkAndStop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Remote\Configuration\RemoteActorRegistryBuilder.cs" />
     <Compile Include="Actors\Events\ActorRegistered.cs" />
     <Compile Include="Actors\Events\ActorRegistryEvent.cs" />
     <Compile Include="Actors\Events\Impl\ActorRegisteredImpl.cs" />
@@ -186,9 +183,6 @@
     <Compile Include="Actors\Actors\Behaviors\MessageOnlyMethodApplicator.cs" />
     <Compile Include="Actors\Configuration\RegistryConfigurators\RegistryBuilder.cs" />
     <Compile Include="Actors\Configuration\RegistryConfigurators\RegistryBuilderConfigurator.cs" />
-    <Compile Include="Remote\Configuration\RemoteActorRegistryConfigurator.cs" />
-    <Compile Include="Remote\Configuration\RemoteActorRegistryConfiguratorImpl.cs" />
-    <Compile Include="Remote\RemoteActorRegistryExtensions.cs" />
     <Compile Include="Actors\ExtensionsToActorInstance.cs" />
     <Compile Include="Actors\StatelessActor.cs" />
     <Compile Include="Actors\Internal\InboxReceiveBinder.cs" />
@@ -196,8 +190,6 @@
     <Compile Include="Actors\Internal\ReceiveLoopImpl.cs" />
     <Compile Include="Actors\ReceiveLoop.cs" />
     <Compile Include="Actors\ReceiveLoopExtensions.cs" />
-    <Compile Include="Channels\Internal\ConfigurationFreeChannelFactory.cs" />
-    <Compile Include="Channels\Internal\ConfigurationFreeServiceHost.cs" />
     <Compile Include="Channels\Configuration\Builders\ChannelBuilder.cs" />
     <Compile Include="Channels\Configuration\Builders\ConnectionBuilderConfigurator.cs" />
     <Compile Include="Channels\Configuration\Builders\IntervalChannelBuilder.cs" />
@@ -236,32 +228,7 @@
     <Compile Include="MessageHeaders\MessageHeaders\DictionaryHeaders.cs" />
     <Compile Include="MessageHeaders\Headers.cs" />
     <Compile Include="MessageUrn.cs" />
-    <Compile Include="Remote\Remote\ArraySegmentExtensions.cs" />
-    <Compile Include="Remote\Remote\BufferedChunkWriter.cs" />
-    <Compile Include="Remote\Remote\Chunk.cs" />
-    <Compile Include="Remote\Remote\DeserializeChunkChannel.cs" />
-    <Compile Include="Remote\Remote\ChunkWriterControl.cs" />
-    <Compile Include="Remote\Remote\Loopback\LoopbackReaderWriter.cs" />
-    <Compile Include="Remote\Remote\ChunkWriter.cs" />
-    <Compile Include="Remote\Remote\Node.cs" />
-    <Compile Include="Remote\Remote\RemoteRegistryNode.cs" />
-    <Compile Include="Remote\Remote\RemoteNode.cs" />
-    <Compile Include="Remote\Remote\SerializeChunkChannel.cs" />
     <Compile Include="Actors\ActorRegistryFactory.cs" />
-    <Compile Include="Remote\Remote\HeaderChannel.cs" />
-    <Compile Include="Remote\Remote\RemoteError.cs" />
-    <Compile Include="Remote\Remote\RemoteNodeCollection.cs" />
-    <Compile Include="Remote\Remote\MessageMethod.cs" />
-    <Compile Include="Remote\Remote\RegistryNode.cs" />
-    <Compile Include="Remote\Remote\ReliableMulticast\ReliableMulticastListener.cs" />
-    <Compile Include="Remote\Remote\ReliableMulticast\ReliableMulticastSocket.cs" />
-    <Compile Include="Remote\Remote\ReliableMulticast\ReliableMulticastSocketOptions.cs" />
-    <Compile Include="Remote\Remote\ReliableMulticast\ReliableMulticastWriter.cs" />
-    <Compile Include="Remote\Remote\RemoteActor.cs" />
-    <Compile Include="Remote\Remote\NodeCollection.cs" />
-    <Compile Include="Remote\Remote\SocketExtensions.cs" />
-    <Compile Include="Remote\Remote\SocketWriter.cs" />
-    <Compile Include="Remote\Remote\DelegateChunkWriter.cs" />
     <Compile Include="RequestExtensions.cs" />
     <Compile Include="RespondExtensions.cs" />
     <Compile Include="Routing\Activation.cs" />
@@ -294,10 +261,6 @@
     <Compile Include="Routing\Nodes\SelectiveConsumerNode.cs" />
     <Compile Include="Routing\RemoveActivation.cs" />
     <Compile Include="Routing\RoutingContext.cs" />
-    <Compile Include="Routing\Visualizers\ExtensionsForVisualizers.cs" />
-    <Compile Include="Routing\Visualizers\GraphRoutingEngineVisitor.cs" />
-    <Compile Include="Routing\Visualizers\RoutingEngineGraphData.cs" />
-    <Compile Include="Routing\Visualizers\StringRoutingEngineVisitor.cs" />
     <Compile Include="Schedulers\Schedulers\StopSchedulerOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
     <Compile Include="Schedulers\TimerScheduler.cs" />
@@ -316,7 +279,6 @@
     <Compile Include="Channels\Configuration\ExtensionsForDistributedChannels.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForPropertyChannel.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForSynchronizedChannels.cs" />
-    <Compile Include="Channels\Configuration\ExtensionsForWcfChannels.cs" />
     <Compile Include="Channels\Configuration\Builders\ConnectionBuilder.cs" />
     <Compile Include="Channels\Configuration\Builders\UntypedChannelConnectionBuilder.cs" />
     <Compile Include="Channels\Configuration\Internal\ChannelConfiguratorImpl.cs" />
@@ -334,8 +296,6 @@
     <Compile Include="Channels\Configuration\Internal\InstanceChannelProviderConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\SynchronizedChannelConfiguratorImpl.cs" />
-    <Compile Include="Channels\Configuration\Internal\WcfConnectionConfigurator.cs" />
-    <Compile Include="Channels\Configuration\Internal\WcfConnectionConfiguratorImpl.cs" />
     <Compile Include="Channels\DelegateInstanceProvider.cs" />
     <Compile Include="Channels\InstanceProvider.cs" />
     <Compile Include="Channels\Internal\AsyncResult.cs" />
@@ -368,11 +328,8 @@
     <Compile Include="Channels\FutureChannel.cs" />
     <Compile Include="Channels\InstanceChannelProvider.cs" />
     <Compile Include="Channels\SelectiveConsumerChannel.cs" />
-    <Compile Include="Channels\Visitors\ChannelGraphData.cs" />
-    <Compile Include="Channels\Visitors\ExtensionsForVisualizers.cs" />
-    <Compile Include="Channels\Visitors\GraphChannelVisitor.cs" />
-    <Compile Include="Channels\WcfChannelHost.cs" />
-    <Compile Include="Channels\WcfChannelProxy.cs" />
+    <None Include="Channels\Visitors\ExtensionsForVisualizers.cs" />
+    <None Include="Channels\Visitors\GraphChannelVisitor.cs" />
     <Compile Include="Channels\Internal\ConnectChannelVisitor.cs" />
     <Compile Include="Channels\Configuration\Internal\InstanceConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\IntervalConfiguratorImpl.cs" />
@@ -381,26 +338,19 @@
     <Compile Include="Channels\Configuration\Internal\UntypedConnectionConfigurator.cs" />
     <Compile Include="Channels\Internal\UntypedChannelConnection.cs" />
     <Compile Include="Channels\Configuration\Builders\ChannelBuilderConfigurator.cs" />
-    <Compile Include="Channels\DeserializeChannel.cs" />
-    <Compile Include="Channels\DeserializeMessageEnvelopeChannel.cs" />
-    <Compile Include="Channels\Visitors\FlattenChannelVisitor.cs" />
-    <Compile Include="Channels\Internal\WcfChannel.cs" />
-    <Compile Include="Channels\Internal\WcfChannelService.cs" />
+    <None Include="Channels\Visitors\FlattenChannelVisitor.cs" />
     <Compile Include="Channels\MessageEnvelope.cs" />
-    <Compile Include="Channels\SerializeChannel.cs" />
     <Compile Include="Channels\ExtensionsForChannels.cs" />
     <Compile Include="Channels\MessageConverter.cs" />
     <Compile Include="Channels\SelectiveConsumer.cs" />
     <Compile Include="Channels\ShuntChannel.cs" />
-    <Compile Include="Channels\Visitors\TraceChannelVisitor.cs" />
+    <None Include="Channels\Visitors\TraceChannelVisitor.cs" />
     <Compile Include="Routing\RoutingEngineConfigurator.cs" />
     <Compile Include="Routing\MessageRoutingEngine.cs" />
     <Compile Include="Routing\RoutingEngine.cs" />
     <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />
-    <Compile Include="Routing\Visualizers\TraceRoutingEngineVisualizer.cs" />
     <Compile Include="Schedulers\ExtensionsToScheduler.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
-    <Compile Include="Channels\Internal\WcfMessageEnvelope.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurationException.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfigurator.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfiguratorImpl.cs" />
@@ -423,7 +373,7 @@
     <Compile Include="Fibers\FiberFactory.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
-    <Compile Include="Channels\Visitors\ChannelVisitor.cs" />
+    <None Include="Channels\Visitors\ChannelVisitor.cs" />
     <Compile Include="Channels\ConsumerChannel.cs" />
     <Compile Include="Channels\Channel.cs" />
     <Compile Include="Channels\Consumer.cs" />

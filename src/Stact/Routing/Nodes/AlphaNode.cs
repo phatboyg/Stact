@@ -17,6 +17,11 @@ namespace Stact.Routing.Nodes
         Activation,
         Activation<TChannel>
     {
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.AlphaNode; }
+        }
+
         public void Activate<T>(RoutingContext<T> context)
         {
             var self = this as Activation<T>;

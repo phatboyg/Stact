@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,11 +13,9 @@
 namespace Stact.Specs.Behavior
 {
     using Magnum.TestFramework;
-    using NUnit.Framework;
     using Routing;
     using Routing.Internal;
     using Routing.Nodes;
-    using Routing.Visualizers;
 
 
     [Scenario]
@@ -34,14 +32,6 @@ namespace Stact.Specs.Behavior
         }
 
         [Then]
-        [Explicit]
-        public void Show_me_the_graph()
-        {
-            var visualizer = new TraceRoutingEngineVisualizer();
-            visualizer.Show(_engine);
-        }
-
-        [Then]
         public void Should_result_in_two_paths_through_the_routing_engine()
         {
             var foundA = new Future<AlphaNode<Message<A>>>();
@@ -52,9 +42,6 @@ namespace Stact.Specs.Behavior
 
             foundRequestA.IsCompleted.ShouldBeTrue("Could not find request alpha node");
             foundA.IsCompleted.ShouldBeTrue("Could not find body alpha node");
-
-            var visualizer = new TraceRoutingEngineVisualizer();
-            visualizer.Show(_engine);
         }
 
 

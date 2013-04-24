@@ -100,7 +100,7 @@ namespace Stact.Visualizers
 
 		static void EdgeStyler(object sender, GleeEdgeEventArgs<Vertex, Edge<Vertex>> e)
 		{
-			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType != null ? e.Edge.Source.TargetType.ToShortTypeName() : "";
+			e.GEdge.EdgeAttr.Label = e.Edge.Source.TargetType != null ? e.Edge.Source.TargetType.GetTypeName() : "";
 			e.GEdge.EdgeAttr.FontName = "Tahoma";
 			e.GEdge.EdgeAttr.Fontsize = 6;
 		}

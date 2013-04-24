@@ -37,7 +37,7 @@ namespace Stact.Specs
         [Explicit]
         public void Should_display_the_engine_routes()
         {
-            new TraceRoutingEngineVisualizer().Show(_engine);
+//            new TraceRoutingEngineVisualizer().Show(_engine);
         }
 
 

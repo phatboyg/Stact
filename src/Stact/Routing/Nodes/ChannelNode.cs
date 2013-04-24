@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -14,40 +14,44 @@ namespace Stact.Routing.Nodes
 {
     using System;
     using System.Collections.Generic;
-    using Contexts;
 
 
     public class ChannelNode<TChannel> :
-		Activation<TChannel>
-	{
-		readonly Channel<TChannel> _channel;
+        Activation<TChannel>
+    {
+        readonly Channel<TChannel> _channel;
 
-		public ChannelNode(Channel<TChannel> channel, IList<IDisposable> disposables)
-		{
-			_channel = channel;
-		}
+        public ChannelNode(Channel<TChannel> channel, IList<IDisposable> disposables)
+        {
+            _channel = channel;
+        }
 
-		public Channel<TChannel> Output
-		{
-			get { return _channel; }
-		}
+        public Channel<TChannel> Output
+        {
+            get { return _channel; }
+        }
 
-		public bool Enabled
-		{
-			get { return true; }
-		}
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.ChannelNode; }
+        }
 
-		public void Activate(RoutingContext<TChannel> context)
-		{
-			_channel.Send(context.Body);
-		}
+        public bool Enabled
+        {
+            get { return true; }
+        }
 
-		public void Match<T>(Action<T> callback)
-			where T : class
-		{
-			var match = this as T;
-			if (match != null)
-				callback(match);
-		}
-	}
+        public void Activate(RoutingContext<TChannel> context)
+        {
+            _channel.Send(context.Body);
+        }
+
+        public void Match<T>(Action<T> callback)
+            where T : class
+        {
+            var match = this as T;
+            if (match != null)
+                callback(match);
+        }
+    }
 }

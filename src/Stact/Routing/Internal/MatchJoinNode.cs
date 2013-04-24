@@ -18,7 +18,7 @@ namespace Stact.Routing.Internal
 
 
     public class MatchJoinNode<T> :
-        AbstractRoutingEngineVisitor<MatchJoinNode<T>>
+        AbstractRoutingEngineVisitor
     {
         AlphaNode<T> _alphaNode;
         JoinNode<T> _join;

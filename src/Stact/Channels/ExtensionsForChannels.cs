@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,19 +13,19 @@
 namespace Stact
 {
     using System;
-    using System.Collections.Generic;
     using Configuration;
     using Configuration.Internal;
-    using Magnum;
-    using Visitors;
 
 
     public static class ExtensionsForChannels
     {
         public static ChannelConnection Connect<T>(this Channel<T> channel,
-                                                   Action<ConnectionConfigurator<T>> subscriberActions)
+            Action<ConnectionConfigurator<T>> subscriberActions)
         {
-            Guard.AgainstNull(channel, "channel");
+            if (channel == null)
+                throw new ArgumentNullException("channel");
+            if (subscriberActions == null)
+                throw new ArgumentNullException("subscriberActions");
 
             var subscriber = new TypedConnectionConfigurator<T>(channel);
 
@@ -35,9 +35,12 @@ namespace Stact
         }
 
         public static ChannelConnection Connect(this UntypedChannel channel,
-                                                Action<ConnectionConfigurator> subscriberActions)
+            Action<ConnectionConfigurator> subscriberActions)
         {
-            Guard.AgainstNull(channel, "channel");
+            if (channel == null)
+                throw new ArgumentNullException("channel");
+            if (subscriberActions == null)
+                throw new ArgumentNullException("subscriberActions");
 
             var subscriber = new UntypedConnectionConfigurator(channel);
 
@@ -46,14 +49,14 @@ namespace Stact
             return subscriber.CreateConnection();
         }
 
-        public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
-        {
-            return new FlattenChannelVisitor().Flatten(channel);
-        }
-
-        public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
-        {
-            return new FlattenChannelVisitor().Flatten(channel);
-        }
+//        public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
+//        {
+//            return new FlattenChannelVisitor().Flatten(channel);
+//        }
+//
+//        public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
+//        {
+//            return new FlattenChannelVisitor().Flatten(channel);
+//        }
     }
 }

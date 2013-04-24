@@ -14,7 +14,6 @@ namespace Stact.Internal
 {
 	using System;
 	using System.Threading;
-	using Magnum;
 
 
 	/// <summary>
@@ -29,7 +28,8 @@ namespace Stact.Internal
 
 		public AsyncResult(AsyncCallback callback, object state)
 		{
-			Guard.AgainstNull(callback, "callback");
+		    if (callback == null)
+		        throw new ArgumentNullException("callback");
 
 			_callback = callback;
 			_state = state;

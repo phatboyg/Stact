@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,8 +13,8 @@
 namespace Stact
 {
     using System;
-    using Magnum.Extensions;
-    using Magnum.Reflection;
+    using Internal;
+    using Internals.Extensions;
     using MessageHeaders;
 
 
@@ -35,7 +35,7 @@ namespace Stact
         }
 
         public static Message<T> Send<T>(this ActorRef actor, T message,
-                                         Action<SetMessageHeader> messageCallback)
+            Action<SetMessageHeader> messageCallback)
         {
             var context = new MessageContext<T>(message);
             messageCallback(context);
@@ -64,11 +64,11 @@ namespace Stact
         }
 
         public static Message<T> Send<T>(this ActorRef actor, Message<T> message,
-                                         Action<SetMessageHeader> messageCallback)
+            Action<SetMessageHeader> messageCallback)
         {
             var context = message as MessageContext<T>;
             if (context == null)
-                throw new ArgumentException("Unexpected message context type: " + message.GetType().ToShortTypeName());
+                throw new ArgumentException("Unexpected message context type: " + message.GetType().GetTypeName());
 
             messageCallback(context);
 
@@ -108,8 +108,7 @@ namespace Stact
             if (!typeof(T).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type messageType = InterfaceImplementationBuilder.GetProxyFor(typeof(T));
-            var message = (T)FastActivator.Create(messageType);
+            var message = DynamicProxyFactory.Get<T>();
 
             var context = new MessageContext<T>(message);
 
@@ -123,8 +122,7 @@ namespace Stact
             if (!typeof(T).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type messageType = InterfaceImplementationBuilder.GetProxyFor(typeof(T));
-            var message = (T)FastActivator.Create(messageType);
+            var message = DynamicProxyFactory.Get<T>();
 
             var context = new MessageContext<T>(message, () => sender);
 
@@ -138,8 +136,7 @@ namespace Stact
             if (!typeof(T).IsInterface)
                 throw new ArgumentException("Default Implementations can only be created for interfaces");
 
-            Type messageType = InterfaceImplementationBuilder.GetProxyFor(typeof(T));
-            var message = (T)FastActivator.Create(messageType);
+            var message = DynamicProxyFactory.Get<T>();
 
             var context = new MessageContext<T>(message);
             messageCallback(context);

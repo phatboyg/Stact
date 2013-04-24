@@ -65,7 +65,7 @@ namespace Stact.Specs.Actors
         {
             // create the actor instance, passing the state and an initializer
             // in this case, applying the initial behavior of to the actor
-            ActorRef agent = Actor.New<AgentState>(x => x.Apply<DefaultAgentBehavior>());
+            ActorRef agent = Actor.New<AgentState>(x => x.ChangeTo<DefaultAgentBehavior>());
 
             // now messages can be sent to the actor to make it do things
             // we will use a stateless actor for that interaction
@@ -100,7 +100,7 @@ namespace Stact.Specs.Actors
             {
                 _actor.State.RequestCount++;
 
-                var requestActor = Actor.New<RequestState>(x => x.Apply<InitialRequestBehavior>());
+                var requestActor = Actor.New<RequestState>(x => x.ChangeTo<InitialRequestBehavior>());
 
                 requestActor.Request(message.Body, _actor)
                     .ReceiveResponse<StockQuote>(quoteResponse =>
@@ -113,7 +113,7 @@ namespace Stact.Specs.Actors
             // receiving a disable message will change the behavior of the actor
             public void Handle(Message<UseCache> message)
             {
-                _actor.Apply<CacheAgentBehavior>();
+                _actor.ChangeTo<CacheAgentBehavior>();
             }
         }
 
@@ -152,7 +152,7 @@ namespace Stact.Specs.Actors
             // behavior
             public void Handle(Message<UseLive> message)
             {
-                _actor.Apply<DefaultAgentBehavior>();
+                _actor.ChangeTo<DefaultAgentBehavior>();
             }
         }
 

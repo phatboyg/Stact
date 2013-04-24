@@ -27,7 +27,10 @@ namespace Stact.Routing.Nodes
         {
             _consumer = consumer;
         }
-
+        public ActivationType ActivationType
+        {
+            get { return ActivationType.ConsumerNode; }
+        }
         public void Activate(RoutingContext<T> context)
         {
             Accept(context, message => _consumer(message));

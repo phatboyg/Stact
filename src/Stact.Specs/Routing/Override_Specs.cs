@@ -45,13 +45,6 @@ namespace Stact.Specs
         }
 
         [Then]
-        [Explicit]
-        public void Should_display_the_engine_routes()
-        {
-            new TraceRoutingEngineVisualizer().Show(_engine);
-        }
-
-        [Then]
         public void Should_deliver_the_message_to_the_second_receive()
         {
             _second.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();

@@ -16,9 +16,6 @@ namespace Stact
     using System.Collections.Generic;
     using System.Threading;
     using Executors;
-    using Internal;
-    using Magnum;
-    using Magnum.Extensions;
 
 
     /// <summary>
@@ -71,7 +68,7 @@ namespace Stact
                 return;
             }
 
-            DateTime waitUntil = SystemUtil.Now + timeout;
+            DateTime waitUntil = DateTime.Now + timeout;
 
             lock (_lock)
             {
@@ -80,7 +77,7 @@ namespace Stact
 
                 while (_operations.Count > 0 || _executorQueued)
                 {
-                    timeout = waitUntil - SystemUtil.Now;
+                    timeout = waitUntil - DateTime.Now;
                     if (timeout < TimeSpan.Zero)
                         throw new FiberException(
                             "Timeout expired waiting for all pending actions to complete during shutdown");
@@ -99,7 +96,7 @@ namespace Stact
 
         public override string ToString()
         {
-            return "{0} (Count: {1})".FormatWith(typeof(ThreadFiber).Name, _operations.Count);
+            return string.Format("{0} (Count: {1})", typeof(ThreadFiber).Name, _operations.Count);
         }
 
         void QueueWorkItem()

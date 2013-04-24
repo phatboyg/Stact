@@ -14,7 +14,6 @@ namespace Stact
 {
 	using System;
 	using Internal;
-	using Magnum;
 
 
 	/// <summary>
@@ -28,7 +27,8 @@ namespace Stact
 		public AsyncResultChannel(UntypedChannel output, AsyncCallback callback, object state)
 			: base(callback, state)
 		{
-			Guard.AgainstNull(output, "output");
+		    if (output == null)
+		        throw new ArgumentNullException("output");
 
 			Output = output;
 		}
@@ -56,7 +56,8 @@ namespace Stact
 		public AsyncResultChannel(Channel<T> output, AsyncCallback callback, object state)
 			: base(callback, state)
 		{
-			Guard.AgainstNull(output, "output");
+		    if (output == null)
+		        throw new ArgumentNullException("output");
 
 			Output = output;
 		}

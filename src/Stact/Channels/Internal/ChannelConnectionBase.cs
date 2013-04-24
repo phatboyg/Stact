@@ -14,8 +14,6 @@ namespace Stact.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using Magnum;
-	using Magnum.Extensions;
 
 
 	public abstract class ChannelConnectionBase
@@ -27,7 +25,8 @@ namespace Stact.Internal
 
 		protected ChannelConnectionBase(Action<IEnumerable<Channel>> disconnect)
 		{
-			Guard.AgainstNull(disconnect);
+		    if (disconnect == null)
+		        throw new ArgumentNullException("disconnect");
 
 			_disconnect = disconnect;
 
@@ -77,16 +76,16 @@ namespace Stact.Internal
 
 		void DisposeOfDisposables()
 		{
-			_disposables.Each(x =>
-				{
-					try
-					{
-						x.Dispose();
-					}
-					catch
-					{
-					}
-				});
+		    foreach (var disposable in _disposables)
+		    {
+		        try
+		        {
+		            disposable.Dispose();
+		        }
+		        catch
+		        {
+		        }
+		    }
 
 			_disposables.Clear();
 		}

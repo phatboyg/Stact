@@ -14,7 +14,6 @@ namespace Stact.Visitors
 {
 	using System.Collections.Generic;
 	using System.Linq;
-	using Magnum.Extensions;
 
 
 	public class FlattenChannelVisitor :

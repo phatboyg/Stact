@@ -13,8 +13,6 @@
 namespace Stact.Visitors
 {
 	using System.Collections.Generic;
-	using Magnum.Extensions;
-	using Magnum.Reflection;
 
 
 	public class ChannelVisitor

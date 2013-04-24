@@ -120,7 +120,7 @@ namespace Stact.Visitors
 
 		protected override UntypedChannel Visitor<TFilter>(UntypedFilterChannel<TFilter> channel)
 		{
-			Trace.WriteLine("UntypedFilterChannel<{0}>:".FormatWith(typeof(TFilter).GetType().ToShortTypeName()));
+			Trace.WriteLine("UntypedFilterChannel<{0}>:".FormatWith(typeof(TFilter).GetType().GetTypeName()));
 
 			return base.Visitor(channel);
 		}

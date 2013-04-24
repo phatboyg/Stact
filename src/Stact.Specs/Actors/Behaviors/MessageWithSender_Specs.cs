@@ -36,7 +36,7 @@ namespace Stact.Specs.Actors.Behaviors
 
             var state = new MyState();
 
-            ActorRef agent = Actor.New(state, x => x.Apply<DefaultBehavior>());
+            ActorRef agent = Actor.New(state, x => x.ChangeTo<DefaultBehavior>());
 
             StatelessActor.New(actor =>
                 {
@@ -106,7 +106,7 @@ namespace Stact.Specs.Actors.Behaviors
 
             var state = new MyState();
 
-            ActorRef agent = Actor.New(state, x => x.Apply<DefaultBehavior>());
+            ActorRef agent = Actor.New(state, x => x.ChangeTo<DefaultBehavior>());
 
             StatelessActor.New(actor =>
                 {

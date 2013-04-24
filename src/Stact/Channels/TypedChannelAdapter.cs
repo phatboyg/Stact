@@ -28,10 +28,13 @@ namespace Stact
 
 		public TypedChannelAdapter(Channel<TOutput> output)
 		{
-			_output = output;
+		    if (output == null)
+		        throw new ArgumentNullException("output");
+
+		    _output = output;
 		}
 
-		public Channel<TOutput> Output
+	    public Channel<TOutput> Output
 		{
 			get { return _output; }
 		}

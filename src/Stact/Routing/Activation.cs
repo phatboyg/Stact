@@ -14,7 +14,24 @@ namespace Stact.Routing
 {
     public interface Activation
     {
+        ActivationType ActivationType { get; }
+
         void Activate<T>(RoutingContext<T> context);
+    }
+
+
+    public enum ActivationType
+    {
+        RootNode,
+        BetaMemory,
+        ChannelNode,
+        ConsumerNode,
+        ConvertNode,
+        JoinNode,
+        MessageNode,
+        SelectiveConsumerNode,
+        ConditionNode,
+        AlphaNode
     }
 
 
@@ -23,8 +40,10 @@ namespace Stact.Routing
     /// to the next node.
     /// </summary>
     /// <typeparam name="T">The message type</typeparam>
-    public interface Activation<T>
+    public interface Activation<in T>
     {
+        ActivationType ActivationType { get; }
+
         bool Enabled { get; }
 
         void Activate(RoutingContext<T> context);
