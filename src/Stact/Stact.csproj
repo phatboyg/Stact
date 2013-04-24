@@ -91,6 +91,13 @@
     <Compile Include="Channels\Internal\ImplementationBuilder.cs" />
     <Compile Include="Channels\Internal\ProxyFactory.cs" />
     <Compile Include="Channels\Internal\TypeProxyFactory.cs" />
+    <Compile Include="Configuration\Configurators\ConfigurationResult.cs" />
+    <Compile Include="Configuration\Configurators\Configurator.cs" />
+    <Compile Include="Configuration\Configurators\StactConfigurationResult.cs" />
+    <Compile Include="Configuration\Configurators\ValidateConfigurationResult.cs" />
+    <Compile Include="Configuration\Configurators\ValidateConfigurationResultImpl.cs" />
+    <Compile Include="Configuration\Configurators\ValidationConfigurationResultDisposition.cs" />
+    <Compile Include="Configuration\ValidationConfigurationResultExtensions.cs" />
     <Compile Include="Internals\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -305,7 +312,6 @@
     <Compile Include="Channels\Configuration\ChannelConfigurator.cs" />
     <Compile Include="Channels\Configuration\ExtensionsForLastChannels.cs" />
     <Compile Include="Channels\Configuration\Builders\UntypedChannelConfigurator.cs" />
-    <Compile Include="Channels\Configuration\Configurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConsumerConfigurator.cs" />
     <Compile Include="Channels\Configuration\Internal\ConsumerConfiguratorImpl.cs" />
     <Compile Include="Channels\Configuration\Internal\DistinctConfigurator.cs" />

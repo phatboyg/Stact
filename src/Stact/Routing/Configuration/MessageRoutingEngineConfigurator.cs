@@ -31,7 +31,7 @@ namespace Stact.Routing.Configuration
         {
             _engine = engine;
             _agenda = agenda;
-            _joinNodes = new ConcurrentCache<Type, object>();
+            _joinNodes = new DictionaryCache<Type, object>();
         }
 
         public RoutingEngineAgenda Agenda

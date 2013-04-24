@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,30 +10,25 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Specs.Example
+namespace Stact.Benchmarks
 {
     using System;
     using System.Diagnostics;
     using System.Linq;
-    using Magnum.Extensions;
-    using Magnum.TestFramework;
-    using NUnit.Framework;
 
 
-    [TestFixture]
-    public class Creating_a_ring_of_nodes_and_passing_token_around_them
+    public class TokenRingBenchmark
     {
-        static readonly int TokenCount = Environment.ProcessorCount +1;
+         static readonly int TokenCount = Environment.ProcessorCount * 2;
 
-        [Test]
-        public void Should_complete()
+        public void Run()
         {
-            int nodeCount = 200;
-            int roundCount = 1000;
+            int nodeCount = 50;
+            int roundCount = 20000;
 
             _timer = Stopwatch.StartNew();
 
-            _complete = new Future<int>();
+            _complete = new Future<long>();
             ActorRef first = Actor.New<NodeState>(x => x.ChangeBehavior<InitialNodeBehavior>());
             first.Request(new Init
                 {
@@ -41,19 +36,27 @@ namespace Stact.Specs.Example
                     RoundCount = roundCount,
                 }, first);
 
-            _complete.WaitUntilCompleted(30.Seconds()).ShouldBeTrue();
-            _complete.Value.ShouldEqual(nodeCount*roundCount);
+            bool completed = _complete.WaitUntilCompleted(TimeSpan.FromSeconds(60));
 
             _timer.Stop();
+
+            if (!completed)
+                Console.WriteLine("TEST DID NOT COMPLETE");
+
+            if (_complete.Value != nodeCount * roundCount)
+                Console.WriteLine("TEST DID NOT COMPLETE ALL NODES");
 
             Console.WriteLine("Using {0} processors", Environment.ProcessorCount);
             Console.WriteLine("Elapsed Time: {0}ms", _timer.ElapsedMilliseconds);
             Console.WriteLine("Create Time: {0}ms", _created);
             Console.WriteLine("Messages per second: {0,-4}",
-                              (TokenCount*nodeCount*roundCount + nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
+                              ((long)TokenCount*nodeCount*roundCount + nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
+
+            Console.WriteLine("Hit a key to exit");
+            Console.ReadKey();
         }
 
-        static Future<int> _complete;
+        static Future<long> _complete;
         static Stopwatch _timer;
         static long _created;
 
@@ -198,5 +201,5 @@ namespace Stact.Specs.Example
                 next(message);
             }
         }
-    }
+    } 
 }

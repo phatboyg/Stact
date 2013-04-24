@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,34 +12,37 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Builders;
+    using System.Collections.Generic;
+    using Builders;
+    using Configurators;
 
 
-	public class ConsumerConfiguratorImpl<TChannel> :
-		FiberFactoryConfiguratorImpl<ConsumerConfigurator<TChannel>>,
-		ConsumerConfigurator<TChannel>,
-		ChannelBuilderConfigurator<TChannel>
-	{
-		readonly Consumer<TChannel> _consumer;
+    public class ConsumerConfiguratorImpl<TChannel> :
+        FiberFactoryConfiguratorImpl<ConsumerConfigurator<TChannel>>,
+        ConsumerConfigurator<TChannel>,
+        ChannelBuilderConfigurator<TChannel>
+    {
+        readonly Consumer<TChannel> _consumer;
 
-		public ConsumerConfiguratorImpl(Consumer<TChannel> consumer)
-		{
-			_consumer = consumer;
-		}
+        public ConsumerConfiguratorImpl(Consumer<TChannel> consumer)
+        {
+            _consumer = consumer;
+        }
 
-		public void ValidateConfiguration()
-		{
-			if (_consumer == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "Consumer cannot be null");
+        public void Configure(ChannelBuilder<TChannel> builder)
+        {
+            Fiber fiber = GetConfiguredFiber(builder);
 
-			ValidateFiberFactoryConfiguration();
-		}
+            builder.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
+        }
 
-		public void Configure(ChannelBuilder<TChannel> builder)
-		{
-			Fiber fiber = GetConfiguredFiber(builder);
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_consumer == null)
+                yield return this.Failure("Consumer", "must be specified");
 
-			builder.AddChannel(fiber, x => new ConsumerChannel<TChannel>(x, _consumer));
-		}
-	}
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
+        }
+    }
 }

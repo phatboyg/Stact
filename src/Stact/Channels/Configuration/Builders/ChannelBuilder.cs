@@ -24,7 +24,7 @@ namespace Stact.Configuration.Builders
 	}
 
 
-	public interface ChannelBuilder<TChannel>
+	public interface ChannelBuilder<out TChannel>
 	{
 		void AddChannel(Fiber fiber, Func<Fiber, Channel<TChannel>> channelFactory);
 

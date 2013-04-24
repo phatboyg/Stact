@@ -22,7 +22,7 @@ namespace Stact.Actors.Behaviors
         ActorBehaviorApplicator<TState, TBehavior>
         where TBehavior : Behavior<TState>
     {
-        Action<TBehavior, Message<TMessage>> _consumer;
+        readonly Action<TBehavior, Message<TMessage>> _consumer;
 
         public MessageOnlyMethodApplicator(MethodInfo method)
         {

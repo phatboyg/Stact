@@ -15,6 +15,8 @@ namespace Stact.Configuration.Internal
     using System.Collections.Generic;
     using System.Threading;
     using Builders;
+    using Configurators;
+    using System.Linq;
 
 
     public class SynchronizedChannelConfiguratorImpl<TChannel> :
@@ -37,10 +39,9 @@ namespace Stact.Configuration.Internal
             _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
         }
 
-        public void ValidateConfiguration()
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
-            foreach (var configurator in _configurators)
-                configurator.ValidateConfiguration();
+            return _configurators.SelectMany(x => x.ValidateConfiguration());
         }
 
         public void Configure(ChannelBuilder<TChannel> builder)

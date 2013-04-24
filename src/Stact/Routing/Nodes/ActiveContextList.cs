@@ -36,7 +36,7 @@ namespace Stact.Routing.Nodes
 
         public int Count
         {
-            get { return _messages.Where(x => x.IsAlive).Count(); }
+            get { return _messages.Count(x => x.IsAlive); }
         }
 
         public void Add(RoutingContext<T> message)
@@ -44,6 +44,8 @@ namespace Stact.Routing.Nodes
             _messages.Add(message);
 
             CallbackPendingJoins(message);
+
+            RemoveDeadMessages();
         }
 
         void CallbackPendingJoins(RoutingContext<T> message)
@@ -52,6 +54,20 @@ namespace Stact.Routing.Nodes
             {
                 if (false == _joins[i](message))
                     _joins.RemoveAt(i);
+            }
+        }
+
+        void RemoveDeadMessages()
+        {
+            for (int i = 0; i < _messages.Count;)
+            {
+                if (_messages[i].IsAlive)
+                {
+                    i++;
+                    continue;
+                }
+
+                _messages.RemoveAt(i);
             }
         }
 

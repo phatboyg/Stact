@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,70 +12,74 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using Builders;
-	using Stact.Internal;
+    using System.Collections.Generic;
+    using Builders;
+    using Configurators;
 
 
-	public class SchedulerFactoryConfiguratorImpl<T> :
-		FiberFactoryConfiguratorImpl<T>,
-		SchedulerFactoryConfigurator<T>
-		where T : class
-	{
-		bool _owned;
-		SchedulerFactory _schedulerFactory;
+    public class SchedulerFactoryConfiguratorImpl<T> :
+        FiberFactoryConfiguratorImpl<T>,
+        SchedulerFactoryConfigurator<T>
+        where T : class
+    {
+        bool _owned;
+        SchedulerFactory _schedulerFactory;
 
-		public bool SchedulerIsOwned
-		{
-			get { return _owned; }
-		}
+        public bool SchedulerIsOwned
+        {
+            get { return _owned; }
+        }
 
-		public T UseTimerScheduler()
-		{
-			TimerScheduler scheduler = null;
+        public T UseTimerScheduler()
+        {
+            TimerScheduler scheduler = null;
 
-			_schedulerFactory = () => { return scheduler ?? (scheduler = new TimerScheduler(new PoolFiber())); };
-			_owned = true;
+            _schedulerFactory = () => { return scheduler ?? (scheduler = new TimerScheduler(new PoolFiber())); };
+            _owned = true;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T UseScheduler(Scheduler scheduler)
-		{
-			_schedulerFactory = () => scheduler;
-			_owned = false;
+        public T UseScheduler(Scheduler scheduler)
+        {
+            _schedulerFactory = () => scheduler;
+            _owned = false;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		public T UseSchedulerFactory(SchedulerFactory schedulerFactory)
-		{
-			_schedulerFactory = schedulerFactory;
-			_owned = false;
+        public T UseSchedulerFactory(SchedulerFactory schedulerFactory)
+        {
+            _schedulerFactory = schedulerFactory;
+            _owned = false;
 
-			return this as T;
-		}
+            return this as T;
+        }
 
-		protected void ValidateSchedulerFactoryConfiguration()
-		{
-			if (_schedulerFactory == null)
-				throw new SchedulerException("A SchedulerFactory was not configured");
-		}
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_schedulerFactory == null)
+                yield return this.Failure("SchedulerFactory", "must be specified");
 
-		protected Scheduler GetConfiguredScheduler<TChannel>(ChannelBuilder<TChannel> builder)
-		{
-			Scheduler scheduler = _schedulerFactory();
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
+        }
 
-			if (_owned)
-				builder.AddDisposable(scheduler.StopOnDispose(StopTimeout));
+        protected Scheduler GetConfiguredScheduler<TChannel>(ChannelBuilder<TChannel> builder)
+        {
+            Scheduler scheduler = _schedulerFactory();
 
-			return scheduler;
-		}
+            if (_owned)
+                builder.AddDisposable(scheduler.StopOnDispose(StopTimeout));
 
-		protected Scheduler GetConfiguredScheduler()
-		{
-			Scheduler scheduler = _schedulerFactory();
+            return scheduler;
+        }
 
-			return scheduler;
-		}
-	}
+        protected Scheduler GetConfiguredScheduler()
+        {
+            Scheduler scheduler = _schedulerFactory();
+
+            return scheduler;
+        }
+    }
 }

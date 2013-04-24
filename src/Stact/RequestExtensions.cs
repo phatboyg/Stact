@@ -28,7 +28,7 @@ namespace Stact
         /// <param name = "sender">The channel where responses should be sent</param>
         public static Message<TRequest> Request<TRequest>(this ActorRef actor, TRequest request, ActorRef sender)
         {
-            var context = new MessageContext<TRequest>(request, () => sender);
+            var context = new MessageContext<TRequest>(request, sender);
 
             return Send(actor, context);
         }
@@ -46,7 +46,7 @@ namespace Stact
 
             var request = DynamicProxyFactory.Get<TRequest>();
 
-            return Send(actor, new MessageContext<TRequest>(request, () => sender));
+            return Send(actor, new MessageContext<TRequest>(request, sender));
         }
 
         public static Message<TRequest> Request<TRequest>(this ActorRef actor, object values, ActorRef sender)
@@ -66,7 +66,7 @@ namespace Stact
 
             //var request = InterfaceImplementationExtensions.InitializeProxy<TRequest>(values);
 
-            var context = new MessageContext<TRequest>(request, () => sender);
+            var context = new MessageContext<TRequest>(request, sender);
             messageCallback(context);
 
             return Send(actor, context, context.RequestId ?? Guid.NewGuid().ToString("N"));

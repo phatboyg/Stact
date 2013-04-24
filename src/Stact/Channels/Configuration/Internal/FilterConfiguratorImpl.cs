@@ -13,7 +13,9 @@
 namespace Stact.Configuration.Internal
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Builders;
+    using Configurators;
 
 
     public class FilterConfiguratorImpl<TChannel> :
@@ -29,16 +31,16 @@ namespace Stact.Configuration.Internal
             _configurators = new List<ChannelBuilderConfigurator<TChannel>>();
         }
 
-        public void ValidateConfiguration()
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
             if (_filter == null)
-                throw new ChannelConfigurationException(typeof(TChannel), "Filter delegate was null");
+                yield return this.Failure("Filter", "must be specified");
 
             if (_configurators.Count == 0)
-                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+                yield return this.Failure("Channels", "must be configured");
 
-            foreach (var configurator in _configurators)
-                configurator.ValidateConfiguration();
+            foreach (var result in _configurators.SelectMany(x => x.ValidateConfiguration()))
+                yield return result;
         }
 
         public void Configure(ChannelBuilder<TChannel> builder)

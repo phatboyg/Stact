@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,79 +12,83 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
-	using Builders;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Builders;
+    using Configurators;
 
 
-	public class InstanceConfiguratorImpl<TChannel> :
-		InstanceConfigurator<TChannel>,
-		ChannelBuilderConfigurator<TChannel>
-	{
-		ChannelBuilderConfigurator<TChannel> _configurator;
+    public class InstanceConfiguratorImpl<TChannel> :
+        InstanceConfigurator<TChannel>,
+        ChannelBuilderConfigurator<TChannel>
+    {
+        ChannelBuilderConfigurator<TChannel> _configurator;
 
-		public void Configure(ChannelBuilder<TChannel> builder)
-		{
-			_configurator.Configure(builder);
-		}
+        public void Configure(ChannelBuilder<TChannel> builder)
+        {
+            _configurator.Configure(builder);
+        }
 
-		public void ValidateConfiguration()
-		{
-			if (_configurator == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No channel configurator was setup");
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_configurator == null)
+                return Enumerable.Repeat(this.Failure("Configurator", "must be specified"), 1);
 
-			_configurator.ValidateConfiguration();
-		}
+            return _configurator.ValidateConfiguration();
+        }
 
-		public InstanceConfigurator<TInstance, TChannel> Of<TInstance>()
-			where TInstance : class
-		{
-			var configurator = new InstanceConfiguratorImpl<TInstance, TChannel>();
+        public InstanceConfigurator<TInstance, TChannel> Of<TInstance>()
+            where TInstance : class
+        {
+            var configurator = new InstanceConfiguratorImpl<TInstance, TChannel>();
 
-			AddConfigurator(configurator);
+            AddConfigurator(configurator);
 
-			return configurator;
-		}
+            return configurator;
+        }
 
-		public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
-		{
-			_configurator = configurator;
-		}
-	}
+        public void AddConfigurator(ChannelBuilderConfigurator<TChannel> configurator)
+        {
+            _configurator = configurator;
+        }
+    }
 
 
-	public class InstanceConfiguratorImpl<TInstance, TChannel> :
-		FiberFactoryConfiguratorImpl<InstanceConfigurator<TInstance, TChannel>>,
-		InstanceConfigurator<TInstance, TChannel>,
-		ChannelBuilderConfigurator<TChannel>
-		where TInstance : class
-	{
-		Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> _providerFactory;
+    public class InstanceConfiguratorImpl<TInstance, TChannel> :
+        FiberFactoryConfiguratorImpl<InstanceConfigurator<TInstance, TChannel>>,
+        InstanceConfigurator<TInstance, TChannel>,
+        ChannelBuilderConfigurator<TChannel>
+        where TInstance : class
+    {
+        Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> _providerFactory;
 
-		public InstanceConfiguratorImpl()
-		{
-			HandleOnCallingThread();
-		}
+        public InstanceConfiguratorImpl()
+        {
+            HandleOnCallingThread();
+        }
 
-		public void Configure(ChannelBuilder<TChannel> builder)
-		{
-			ChannelProvider<TChannel> provider = _providerFactory(builder);
+        public void Configure(ChannelBuilder<TChannel> builder)
+        {
+            ChannelProvider<TChannel> provider = _providerFactory(builder);
 
-			Fiber fiber = GetConfiguredFiber(builder);
+            Fiber fiber = GetConfiguredFiber(builder);
 
-			builder.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
-		}
+            builder.AddChannel(fiber, x => new InstanceChannel<TChannel>(x, provider));
+        }
 
-		public void ValidateConfiguration()
-		{
-			if (_providerFactory == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "No instance provider was specified in the configuration");
+        public void SetProviderFactory(Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory)
+        {
+            _providerFactory = providerFactory;
+        }
 
-			ValidateFiberFactoryConfiguration();
-		}
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_providerFactory == null)
+                yield return this.Failure("ProviderFactory", "must be specified");
 
-		public void SetProviderFactory(Func<ChannelBuilder<TChannel>, ChannelProvider<TChannel>> providerFactory)
-		{
-			_providerFactory = providerFactory;
-		}
-	}
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
+        }
+    }
 }

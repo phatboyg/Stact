@@ -10,11 +10,26 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Configuration.Internal
+namespace Stact.Configuration.Configurators
 {
-    public interface PropertyChannelsConfigurator<in T>
-        where T : class
+    using System.Collections.Generic;
+
+
+    public interface ConfigurationResult
     {
-        PropertyChannelsConfigurator<T> UsingInstance(T instance);
+        /// <summary>
+        /// True if at least one configurator failed
+        /// </summary>
+        bool IsFailed { get; }
+
+        /// <summary>
+        /// The configuration message (combined result of all messages)
+        /// </summary>
+        string Message { get; }
+
+        /// <summary>
+        /// The results from the configuration (both success and failure)
+        /// </summary>
+        IEnumerable<ValidateConfigurationResult> Results { get; }
     }
 }

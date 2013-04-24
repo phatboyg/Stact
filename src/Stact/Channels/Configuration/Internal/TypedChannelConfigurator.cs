@@ -13,7 +13,9 @@
 namespace Stact.Configuration.Internal
 {
     using System;
+    using System.Collections.Generic;
     using Builders;
+    using Configurators;
     using Internals.Extensions;
 
 
@@ -31,10 +33,10 @@ namespace Stact.Configuration.Internal
 			_channel = channel;
 		}
 
-		public void ValidateConfiguration()
+		public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
 		{
-			if (_channel == null)
-				throw new ChannelConfigurationException(typeof(TChannel), "A null channel was specified");
+		    if (_channel == null)
+		        yield return this.Failure("Channel", "must be specified");
 		}
 
 		public void Configure(ConnectionBuilder builder)
@@ -67,17 +69,17 @@ namespace Stact.Configuration.Internal
 			builder.AddChannel<T>(new ConvertChannel<T, TChannel>(_channel));
 		}
 
-		public void ValidateConfiguration()
+		public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
 		{
-			if (_channel == null)
-				throw new ChannelConfigurationException("A null channel was specified");
+            if (_channel == null)
+                yield return this.Failure("Channel", "must be specified");
 
 			// probably need to use the header conversion thing for this to verify HeaderTypeAdapter.IsSupported() or something
-			if (!typeof(T).IsConcreteAndAssignableTo<TChannel>())
-			{
-				throw new ChannelConfigurationException(typeof(TChannel), string.Format("The type {0} is not implemented by the channel type"
-				                                                          	,typeof(T).GetTypeName()));
-			}
+		    //if (!typeof(T).IsConcreteAndAssignableTo<TChannel>())
+            if (!typeof(TChannel).IsAssignableFrom(typeof(T)))
+                yield return
+		            this.Failure("ChannelType",
+		                string.Format("{0} is not assignable to {1}", typeof(T).GetTypeName(), typeof(TChannel).GetTypeName()));
 		}
 	}
 }

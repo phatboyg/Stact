@@ -20,8 +20,7 @@ namespace Stact.Configuration.Internal
 
     public class ActorFactoryConfiguratorImpl<TState> :
         FiberFactoryConfiguratorImpl<ActorFactoryConfigurator<TState>>,
-        ActorFactoryConfigurator<TState>,
-        Configurator
+        ActorFactoryConfigurator<TState>
     {
         BehaviorConvention[] _conventions;
         SchedulerFactory _schedulerFactory;

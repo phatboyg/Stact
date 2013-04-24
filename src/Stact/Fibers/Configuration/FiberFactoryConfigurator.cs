@@ -13,13 +13,15 @@
 namespace Stact.Configuration
 {
 	using System;
+	using Configurators;
 
 
-	/// <summary>
+    /// <summary>
 	///   Configures the type of fiber to be used for handling messages
 	/// </summary>
 	/// <typeparam name = "T"></typeparam>
-	public interface FiberFactoryConfigurator<out T>
+	public interface FiberFactoryConfigurator<out T> :
+        Configurator
 		where T : class
 	{
 		/// <summary>

@@ -35,10 +35,16 @@ namespace Stact.MessageHeaders
             _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
         }
 
+        public MessageContext(T message, ActorRef sender)
+            : this(message)
+        {
+            _sender = new Lazy<ActorRef>(() => sender, LazyThreadSafetyMode.PublicationOnly);
+        }
+
         public MessageContext(T message, Func<ActorRef> sender)
             : this(message)
         {
-            _sender = new Lazy<ActorRef>(sender, true);
+            _sender = new Lazy<ActorRef>(sender, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         public MessageContext(T message, IDictionary<string, string> headers)

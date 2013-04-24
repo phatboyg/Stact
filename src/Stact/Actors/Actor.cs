@@ -163,7 +163,7 @@ namespace Stact
         /// active behavior.
         /// </summary>
         /// <typeparam name="TBehavior">The type of behavior to apply to the actor</typeparam>
-        void Apply<TBehavior>()
+        void ChangeBehavior<TBehavior>()
             where TBehavior : class, Behavior<TState>;
     }
 }

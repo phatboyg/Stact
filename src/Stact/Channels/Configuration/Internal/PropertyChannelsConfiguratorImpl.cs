@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,58 +12,62 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Reflection;
-	using Builders;
-	using Internals.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Builders;
+    using Configurators;
+    using Internals.Extensions;
 
 
-	public class PropertyChannelsConfiguratorImpl<T> :
-		PropertyChannelsConfigurator<T>,
-		ConnectionBuilderConfigurator
-		where T : class
-	{
-		T _instance;
-		List<PropertyChannelConfigurator<T>> _propertyBinders;
+    public class PropertyChannelsConfiguratorImpl<T> :
+        PropertyChannelsConfigurator<T>,
+        ConnectionBuilderConfigurator
+        where T : class
+    {
+        T _instance;
+        List<PropertyChannelConfigurator<T>> _propertyBinders;
 
-		public void ValidateConfiguration()
-		{
-			if (_instance == null)
-				throw new ChannelConfigurationException("No instance was provided for " + typeof(T).GetTypeName());
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_instance == null)
+                yield return this.Failure("Instance", "must be specified");
 
-			GetChannelBinders();
-		}
+            GetChannelBinders();
+        }
 
-		public void Configure(ConnectionBuilder builder)
-		{
-		    foreach (var binder in _propertyBinders)
-		    {
-		        binder.Configure(builder, _instance);
-		    }
-		}
+        public void Configure(ConnectionBuilder builder)
+        {
+            foreach (var binder in _propertyBinders)
+                binder.Configure(builder, _instance);
+        }
 
-		public PropertyChannelsConfigurator<T> UsingInstance(T instance)
-		{
-			_instance = instance;
+        public PropertyChannelsConfigurator<T> UsingInstance(T instance)
+        {
+            _instance = instance;
 
-			return this;
-		}
+            return this;
+        }
 
-		void GetChannelBinders()
-		{
-			_propertyBinders = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-				.Where(x => x.PropertyType.HasInterface<Channel>())
-				.Select(property =>
-					{
-						Type inputType = property.PropertyType.GetClosingArguments(typeof(Channel<>)).Single();
+        void GetChannelBinders()
+        {
+            _propertyBinders = typeof(T)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.PropertyType.HasInterface<Channel>())
+                .Select(property =>
+                    {
+                        Type inputType = property.PropertyType
+                                                 .GetClosingArguments(typeof(Channel<>))
+                                                 .Single();
 
-						Type configuratorType = typeof(PropertyChannelConfiguratorImpl<,>).MakeGenericType(typeof(T), inputType);
+                        Type configuratorType = typeof(PropertyChannelConfiguratorImpl<,>)
+                            .MakeGenericType(typeof(T), inputType);
 
-						return (PropertyChannelConfigurator<T>)Activator.CreateInstance(configuratorType, new object[] {property});
-					})
-				.ToList();
-		}
-	}
+                        return (PropertyChannelConfigurator<T>)Activator.CreateInstance(configuratorType,
+                            new object[] {property});
+                    })
+                .ToList();
+        }
+    }
 }

@@ -114,6 +114,7 @@
     <Compile Include="RingBenchmark.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />
+    <Compile Include="TokenRingBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stact.ServerFramework\Stact.ServerFramework.csproj">

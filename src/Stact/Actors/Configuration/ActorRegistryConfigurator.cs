@@ -18,8 +18,7 @@ namespace Stact.Configuration
 
 
 	public interface ActorRegistryConfigurator :
-		SchedulerFactoryConfigurator<ActorRegistryConfigurator>,
-		Configurator
+		SchedulerFactoryConfigurator<ActorRegistryConfigurator>
 	{
 		void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory);
 		

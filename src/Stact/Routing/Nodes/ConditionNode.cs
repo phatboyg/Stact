@@ -26,13 +26,13 @@ namespace Stact.Routing.Nodes
 	{
 		readonly Expression<Func<T, TProperty>> _keyAccessor;
 		readonly Cache<TProperty, ActivationList<T>> _successors;
-		Func<T, TProperty> _getKey;
+        readonly Func<T, TProperty> _getKey;
 
 		public ConditionNode(Expression<Func<T, TProperty>> keyAccessor)
 		{
 			_keyAccessor = keyAccessor;
 			_getKey = _keyAccessor.Compile();
-			_successors = new ConcurrentCache<TProperty, ActivationList<T>>(x => new ActivationList<T>());
+			_successors = new DictionaryCache<TProperty, ActivationList<T>>(x => new ActivationList<T>());
 		}
 
 		public IEnumerable<Activation<T>> Successors

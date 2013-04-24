@@ -28,7 +28,7 @@ namespace Stact.Actors.Behaviors
 
         public ActorBehaviorFactoryImpl(IEnumerable<BehaviorConvention> conventions)
         {
-            _applicators = new ConcurrentCache<Type, ActorBehavior<TState>>();
+            _applicators = new ReaderWriterLockedCache<Type, ActorBehavior<TState>>(new DictionaryCache<Type, ActorBehavior<TState>>());
             _conventions = conventions;
         }
 

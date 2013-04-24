@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,25 +12,29 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Builders
 {
-	public class UntypedChannelConfigurator :
-		ConnectionBuilderConfigurator
-	{
-		readonly UntypedChannel _channel;
+    using System.Collections.Generic;
+    using Configurators;
 
-		public UntypedChannelConfigurator(UntypedChannel channel)
-		{
-			_channel = channel;
-		}
 
-		public void ValidateConfiguration()
-		{
-			if (_channel == null)
-				throw new ChannelConfigurationException("A null channel was specified");
-		}
+    public class UntypedChannelConfigurator :
+        ConnectionBuilderConfigurator
+    {
+        readonly UntypedChannel _channel;
 
-		public void Configure(ConnectionBuilder builder)
-		{
-			builder.AddChannel(_channel);
-		}
-	}
+        public UntypedChannelConfigurator(UntypedChannel channel)
+        {
+            _channel = channel;
+        }
+
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_channel == null)
+                yield return this.Failure("Channel", "must be specified");
+        }
+
+        public void Configure(ConnectionBuilder builder)
+        {
+            builder.AddChannel(_channel);
+        }
+    }
 }

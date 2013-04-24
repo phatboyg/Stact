@@ -28,7 +28,7 @@ namespace Stact
     /// that accepts the Actor<typeparamref name="TState"/> should be found on the behavior
     /// </summary>
     /// <typeparam name="TState"></typeparam>
-    public interface Behavior<TState> :
+    public interface Behavior<in TState> :
         Behavior
     {
     }

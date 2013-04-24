@@ -90,11 +90,12 @@ namespace Stact
             get { return this; }
         }
 
-        public void Apply<TBehavior>()
+        public void ChangeBehavior<TBehavior>()
             where TBehavior : class, Behavior<TState>
         {
             if (_currentBehavior != null)
                 _currentBehavior.Remove();
+
             ActorBehavior<TState> applicator = _applicatorFactory.CreateActorBehavior<TBehavior>();
 
             _currentBehavior = applicator.ApplyTo(this);
@@ -126,9 +127,21 @@ namespace Stact
 
         public ReceiveHandle Receive<T>(SelectiveConsumer<Message<T>> consumer)
         {
-            var receive = new ActorReceiveHandle<TState, T>(consumer, x => _pending.Remove(x));
+            RemoveActivation removeActivation = null;
+            var receive = new ActorReceiveHandle<TState, T>(consumer, x =>
+                {
+                    _pending.Remove(x);
 
-            return Receive(receive);
+                    removeActivation();
+                });
+
+            _engine.Configure(x =>
+                {
+                    removeActivation = x.SelectiveReceive<T>(receive.Accept);
+                });
+
+            _pending.Add(receive);
+            return receive;
         }
 
         public Fiber Fiber
@@ -174,14 +187,6 @@ namespace Stact
                 _fiber.Add(() => message.Respond(message.Body));
 
             _engine.Shutdown();
-        }
-
-        ReceiveHandle Receive<T>(ActorReceiveHandle<TState, T> receiver)
-        {
-            _engine.Configure(x => { x.SelectiveReceive<T>(receiver.Accept); });
-
-            _pending.Add(receiver);
-            return receiver;
         }
 
         void HandleExit(Message<Exit> message)

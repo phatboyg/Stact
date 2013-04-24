@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	public interface SynchronizedChannelConfigurator<TChannel> :
+	public interface SynchronizedChannelConfigurator<out TChannel> :
 		ChannelConfigurator<TChannel>
 	{
 		SynchronizedChannelConfigurator<TChannel> WithState(object state);

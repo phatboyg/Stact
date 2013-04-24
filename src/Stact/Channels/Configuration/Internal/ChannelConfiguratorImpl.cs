@@ -13,7 +13,9 @@
 namespace Stact.Configuration.Internal
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Builders;
+    using Configurators;
 
 
     public class ChannelConfiguratorImpl<TChannel> :
@@ -33,13 +35,13 @@ namespace Stact.Configuration.Internal
             _configurators.Add(configurator);
         }
 
-        public void ValidateConfiguration()
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
             if (_configurators.Count == 0)
-                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+                yield return this.Failure("Channels", "at least one channel must be configured");
 
-            foreach (var configurator in _configurators)
-                configurator.ValidateConfiguration();
+            foreach (ValidateConfigurationResult result in _configurators.SelectMany(x => x.ValidateConfiguration()))
+                yield return result;
         }
 
         public void Configure(ConnectionBuilder builder)

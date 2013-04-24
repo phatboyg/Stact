@@ -14,7 +14,9 @@ namespace Stact.Configuration.Internal
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Builders;
+    using Configurators;
 
 
     public class IntervalConfiguratorImpl<TChannel> :
@@ -48,19 +50,19 @@ namespace Stact.Configuration.Internal
                 configurator.Configure(intervalBuilder);
         }
 
-        public void ValidateConfiguration()
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
             if (_interval <= TimeSpan.Zero)
-                throw new ChannelConfigurationException(typeof(TChannel), "Interval must be greater than zero");
+                yield return this.Failure("Interval", "must be > 0");
 
             if (_configurators.Count == 0)
-                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+                yield return this.Failure("Channels", "must be configured");
 
-            ValidateFiberFactoryConfiguration();
-            ValidateSchedulerFactoryConfiguration();
+            foreach (ValidateConfigurationResult result in _configurators.SelectMany(x => x.ValidateConfiguration()))
+                yield return result.WithParentKey("Interval");
 
-            foreach (var configurator in _configurators)
-                configurator.ValidateConfiguration();
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
         }
 
         public void AddConfigurator(ChannelBuilderConfigurator<ICollection<TChannel>> configurator)

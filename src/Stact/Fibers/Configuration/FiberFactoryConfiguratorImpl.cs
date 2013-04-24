@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,9 @@
 namespace Stact.Configuration
 {
     using System;
+    using System.Collections.Generic;
     using Builders;
+    using Configurators;
     using Executors;
 
 
@@ -22,8 +24,8 @@ namespace Stact.Configuration
         where T : class
     {
         readonly Func<OperationExecutor> _executorFactory;
-        FiberFactoryEx _fiberFactory;
         Lazy<IDisposable> _disposableFiber;
+        FiberFactoryEx _fiberFactory;
         TimeSpan _stopTimeout = TimeSpan.FromMinutes(1);
 
         protected FiberFactoryConfiguratorImpl()
@@ -88,10 +90,10 @@ namespace Stact.Configuration
             return this as T;
         }
 
-        protected void ValidateFiberFactoryConfiguration()
+        public virtual IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
             if (_fiberFactory == null)
-                throw new FiberException("No fiber configuration was specified");
+                yield return this.Failure("FiberFactory", "must be specified");
         }
 
         public FiberFactory GetConfiguredFiberFactory()

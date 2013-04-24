@@ -21,7 +21,7 @@ namespace Stact.Routing.Nodes
         readonly ActiveContextList<T> _contexts;
         readonly ActivationList<T> _successors;
 
-        public Memory()
+        protected Memory()
         {
             _contexts = new ActiveContextList<T>();
             _successors = new ActivationList<T>();

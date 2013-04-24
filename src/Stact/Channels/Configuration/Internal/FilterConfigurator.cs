@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Internal
 {
-	public interface FilterConfigurator<TChannel> :
+	public interface FilterConfigurator<out TChannel> :
 		ChannelConfigurator<TChannel>
 	{
 	}

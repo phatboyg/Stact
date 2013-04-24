@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,66 +12,66 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.RegistryConfigurators
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Internal;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Configurators;
+    using Internal;
 
 
-	public class ActorRegistryConfiguratorImpl :
-		SchedulerFactoryConfiguratorImpl<ActorRegistryConfigurator>,
-		ActorRegistryConfigurator
-	{
-		readonly IList<RegistryBuilderConfigurator> _configurators;
-		Func<Fiber, Scheduler, RegistryBuilder> _builderFactory;
+    public class ActorRegistryConfiguratorImpl :
+        SchedulerFactoryConfiguratorImpl<ActorRegistryConfigurator>,
+        ActorRegistryConfigurator
+    {
+        readonly IList<RegistryBuilderConfigurator> _configurators;
+        Func<Fiber, Scheduler, RegistryBuilder> _builderFactory;
 
-		public ActorRegistryConfiguratorImpl()
-		{
-			UseTimerScheduler();
+        public ActorRegistryConfiguratorImpl()
+        {
+            UseTimerScheduler();
 
-			_builderFactory = DefaultBuilderFactory;
-			_configurators = new List<RegistryBuilderConfigurator>();
-		}
+            _builderFactory = DefaultBuilderFactory;
+            _configurators = new List<RegistryBuilderConfigurator>();
+        }
 
-		public void ValidateConfiguration()
-		{
-			ValidateFiberFactoryConfiguration();
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
 
-		    foreach (var configurator in _configurators)
-		    {
-		        configurator.ValidateConfiguration();
-		    }
-		}
+            foreach (ValidateConfigurationResult result in _configurators.SelectMany(x => x.ValidateConfiguration()))
+                yield return result;
+        }
 
-		public void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory)
-		{
-			_builderFactory = builderFactory;
-		}
+        public void UseBuilder(Func<Fiber, Scheduler, RegistryBuilder> builderFactory)
+        {
+            _builderFactory = builderFactory;
+        }
 
-		public void AddConfigurator(RegistryBuilderConfigurator configurator)
-		{
-			_configurators.Add(configurator);
-		}
+        public void AddConfigurator(RegistryBuilderConfigurator configurator)
+        {
+            _configurators.Add(configurator);
+        }
 
-		static RegistryBuilder DefaultBuilderFactory(Fiber fiber, Scheduler scheduler)
-		{
-			return new InMemoryRegistryBuilder(fiber, scheduler);
-		}
+        static RegistryBuilder DefaultBuilderFactory(Fiber fiber, Scheduler scheduler)
+        {
+            return new InMemoryRegistryBuilder(fiber, scheduler);
+        }
 
-		public ActorRegistry CreateRegistry()
-		{
-			ValidateConfiguration();
+        public ActorRegistry CreateRegistry()
+        {
+            ValidateConfiguration();
 
-			FiberFactory fiberFactory = GetConfiguredFiberFactory();
-			Fiber fiber = fiberFactory();
+            FiberFactory fiberFactory = GetConfiguredFiberFactory();
+            Fiber fiber = fiberFactory();
 
-			Scheduler scheduler = GetConfiguredScheduler();
+            Scheduler scheduler = GetConfiguredScheduler();
 
-			RegistryBuilder builder = _builderFactory(fiber, scheduler);
+            RegistryBuilder builder = _builderFactory(fiber, scheduler);
 
-			return _configurators
-				.Aggregate(builder, (current, configurator) => configurator.Configure(current))
-				.Build();
-		}
-	}
+            return _configurators
+                .Aggregate(builder, (current, configurator) => configurator.Configure(current))
+                .Build();
+        }
+    }
 }

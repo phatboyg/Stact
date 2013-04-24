@@ -12,14 +12,17 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Builders
 {
-	public interface ChannelBuilderConfigurator :
+    using Configurators;
+
+
+    public interface ChannelBuilderConfigurator :
 		Configurator
 	{
 		void Configure(ChannelBuilder builder);
 	}
 
 
-	public interface ChannelBuilderConfigurator<TChannel> :
+	public interface ChannelBuilderConfigurator<in TChannel> :
 		Configurator
 	{
 		void Configure(ChannelBuilder<TChannel> builder);

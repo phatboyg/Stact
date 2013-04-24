@@ -17,7 +17,7 @@ namespace Stact.Configuration
 	/// </summary>
 	/// <typeparam name = "T"></typeparam>
 	/// <typeparam name = "TKey"></typeparam>
-	public interface FiberProviderConfigurator<T, TKey> :
+	public interface FiberProviderConfigurator<out T, out TKey> :
 		FiberFactoryConfigurator<T>
 		where T : class
 	{

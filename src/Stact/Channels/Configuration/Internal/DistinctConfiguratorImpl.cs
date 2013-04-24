@@ -13,7 +13,9 @@
 namespace Stact.Configuration.Internal
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Builders;
+    using Configurators;
 
 
     public class DistinctConfiguratorImpl<TChannel, TKey> :
@@ -37,13 +39,13 @@ namespace Stact.Configuration.Internal
                 configurator.Configure(channelBuilder);
         }
 
-        public void ValidateConfiguration()
+        public IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
             if (_configurators.Count == 0)
-                throw new ChannelConfigurationException(typeof(TChannel), "No channels were configured");
+                yield return this.Failure("Channels", "must be configured");
 
-            foreach (var configurator in _configurators)
-                configurator.ValidateConfiguration();
+            foreach (ValidateConfigurationResult result in _configurators.SelectMany(x => x.ValidateConfiguration()))
+                yield return result;
         }
 
         public void AddConfigurator(ChannelBuilderConfigurator<IDictionary<TKey, TChannel>> configurator)

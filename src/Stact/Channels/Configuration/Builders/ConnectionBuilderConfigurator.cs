@@ -12,7 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Configuration.Builders
 {
-	public interface ConnectionBuilderConfigurator :
+    using Configurators;
+
+
+    public interface ConnectionBuilderConfigurator :
 		Configurator
 	{
 		void Configure(ConnectionBuilder builder);

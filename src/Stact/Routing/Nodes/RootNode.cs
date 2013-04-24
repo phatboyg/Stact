@@ -29,7 +29,7 @@ namespace Stact.Routing.Nodes
 
         public RootNode()
         {
-            _types = new GenericTypeCache<Activation>(typeof(AlphaNode<>));
+            _types = new DictionaryCache<Type, Activation>();
         }
 
         public IEnumerable<Activation> Activations

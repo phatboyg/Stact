@@ -16,7 +16,7 @@ namespace Stact.Configuration.Internal
 	/// Used to configure the last channel 
 	/// </summary>
 	/// <typeparam name="TChannel"></typeparam>
-	public interface LastConfigurator<TChannel> :
+	public interface LastConfigurator<out TChannel> :
 		ChannelConfigurator<TChannel>
 	{
 	}

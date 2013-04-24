@@ -20,7 +20,7 @@ namespace Stact.Routing.Contexts
         RoutingContext<T>
     {
         static readonly Cache<Type, RoutingContextProxyFactory<T>> _factoryCache =
-            new ConcurrentCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
+            new DictionaryCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
 
         readonly Message<T> _message;
         readonly int _priority;

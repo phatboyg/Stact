@@ -21,7 +21,7 @@ namespace Stact.Routing.Nodes
     public class ActivationList<TChannel> :
         IEnumerable<Activation<TChannel>>
     {
-        IList<Activation<TChannel>> _activations;
+        readonly IList<Activation<TChannel>> _activations;
 
         public ActivationList(params Activation<TChannel>[] activations)
         {
