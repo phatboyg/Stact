@@ -18,9 +18,11 @@ namespace Stact.Configuration
     public interface ActorFactoryConfigurator<TState>
     {
         ActorFactoryConfigurator<TState> HandleOnCallingThread();
-        ActorFactoryConfigurator<TState> HandleOnPoolFiber();
-        ActorFactoryConfigurator<TState> HandleOnThreadFiber();
+        ActorFactoryConfigurator<TState> HandleOnThreadPool();
+        ActorFactoryConfigurator<TState> HandleOnThread();
+        ActorFactoryConfigurator<TState> HandleOnFiber(Fiber fiber);
         
+        ActorFactoryConfigurator<TState> UseFiberFactory(FiberFactory fiberFactory);
         ActorFactoryConfigurator<TState> UseFiberFactory(FiberFactoryEx fiberFactory);
 
         ActorFactoryConfigurator<TState> SetExitTimeout(TimeSpan timeout);

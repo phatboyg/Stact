@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,34 +12,33 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
-	using System;
-	using System.Diagnostics;
-	using Magnum.Extensions;
-	using Magnum.TestFramework;
+    using System;
+    using System.Diagnostics;
+    using Magnum.Extensions;
+    using Magnum.TestFramework;
 
 
-    [Scenario, NotYetImplemented]
-	public class When_an_actor_throws_an_exception
-	{
-		[Then]
-		public void Should_receive_a_fault_message()
-		{
-			var received = new Future<Fault>();
+    [Scenario]
+    public class When_an_actor_throws_an_exception
+    {
+        [Then]
+        public void Should_receive_a_fault_message()
+        {
+            var received = new Future<Fault>();
 
-			StatelessActor.New(inbox =>
-			{
-			    inbox.Receive<Fault>(fault =>
-			    {
-			        received.Complete(fault);
-			    });
+            StatelessActor.New(inbox =>
+                {
+                    inbox.SendExceptionsAsFaults();
 
-			    throw new NotImplementedException("A");
-			});
+                    inbox.Receive<Fault>(fault => received.Complete(fault));
 
-			received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
-			received.Value.Message.ShouldEqual("A");
+                    throw new NotImplementedException("A");
+                });
 
-			Trace.WriteLine(received.Value.StackTrace);
-		}
-	}
+            received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+            received.Value.Message.ShouldEqual("A");
+
+            Trace.WriteLine(received.Value.StackTrace);
+        }
+    }
 }

@@ -34,7 +34,7 @@ namespace Stact.Configuration.Internal
             _configurators = new List<ChannelBuilderConfigurator<ICollection<TChannel>>>();
 
             UseTimerScheduler();
-            HandleOnPoolFiber();
+            HandleOnThreadPool();
         }
 
         public void Configure(ChannelBuilder<TChannel> builder)

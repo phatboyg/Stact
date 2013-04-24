@@ -25,7 +25,7 @@ namespace Stact
         {
             Actor.Initialize<Stateless>(x =>
                 {
-                    x.HandleOnPoolFiber();
+                    x.HandleOnThreadPool();
                     x.UseSharedScheduler();
                 });
         }

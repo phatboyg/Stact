@@ -50,7 +50,6 @@
     <Compile Include="..\SolutionVersion.cs">
       <Link>SolutionVersion.cs</Link>
     </Compile>
-    <Compile Include="Behaviors\Behavior_Specs.cs" />
     <Compile Include="Data\Internal\CompElement.cs" />
     <Compile Include="Data\Internal\Element.cs" />
     <Compile Include="Data\Internal\EmptyFTree.cs" />

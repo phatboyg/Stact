@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -58,11 +58,13 @@ namespace Stact.Specs.Actors
             ActorRef bidder = StatelessActor.New(inbox =>
                 {
                     auction.Request(new BidImpl(13.5m), inbox)
-                        .ReceiveResponse<Status>(bidResponse =>
-                            {
-                                auction.Request<Ask>(inbox)
-                                    .ReceiveResponse((Message<Status> askResponse) => completed.Complete(askResponse.Body));
-                            });
+                           .ReceiveResponse<Status>(bidResponse =>
+                               {
+                                   auction.Request<Ask>(inbox)
+                                          .ReceiveResponse(
+                                                           (Message<Status> askResponse) =>
+                                                           completed.Complete(askResponse.Body));
+                               });
                 });
 
             completed.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();

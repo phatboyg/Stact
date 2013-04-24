@@ -20,7 +20,8 @@ namespace Stact.Configuration
 
 
     public abstract class FiberFactoryConfiguratorImpl<T> :
-        FiberFactoryConfigurator<T>
+        FiberFactoryConfigurator<T>,
+        Configurator
         where T : class
     {
         readonly Func<OperationExecutor> _executorFactory;
@@ -30,7 +31,7 @@ namespace Stact.Configuration
 
         protected FiberFactoryConfiguratorImpl()
         {
-            HandleOnPoolFiber();
+            HandleOnThreadPool();
             _executorFactory = () => new TryCatchOperationExecutor();
 
             _disposableFiber = new Lazy<IDisposable>();
@@ -48,7 +49,7 @@ namespace Stact.Configuration
             return this as T;
         }
 
-        public T HandleOnPoolFiber()
+        public T HandleOnThreadPool()
         {
             _fiberFactory = executor => new PoolFiber(executor);
 
@@ -62,7 +63,7 @@ namespace Stact.Configuration
             return this as T;
         }
 
-        public T HandleOnThreadFiber()
+        public T HandleOnThread()
         {
             _fiberFactory = executor => new ThreadFiber(executor);
 

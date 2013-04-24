@@ -37,7 +37,7 @@ namespace Stact.Configuration.Internal
 		{
 			_keyAccessor = keyAccessor;
 
-			HandleOnPoolFiber();
+			HandleOnThreadPool();
 		}
 
 		public void SetProviderFactory(

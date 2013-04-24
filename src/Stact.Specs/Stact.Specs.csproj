@@ -123,7 +123,6 @@
     <Compile Include="Actors\CleanUsing_Specs.cs" />
     <Compile Include="Actors\Fault_Specs.cs" />
     <Compile Include="Actors\InterceptExit_Specs.cs" />
-    <Compile Include="Actors\Linking_Specs.cs" />
     <Compile Include="Actors\OrderedReceive_Specs.cs" />
     <Compile Include="Actors\Behaviors\MessageOnly_Specs.cs" />
     <Compile Include="Actors\Redesign\Redesign_Specs.cs" />
@@ -135,7 +134,6 @@
     <Compile Include="Actors\PingPongDemo\PingPong_Demo.cs" />
     <Compile Include="Actors\PingPongDemo\Pong.cs" />
     <Compile Include="Actors\PingPongDemo\PongActor.cs" />
-    <Compile Include="Actors\PingPong_Example.cs" />
     <Compile Include="Channels\Convention_Specs.cs" />
     <Compile Include="Channels\TimerScheduler_Specs.cs" />
     <Compile Include="Channels\Aggregator_Specs.cs" />

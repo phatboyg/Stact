@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,49 +12,48 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System;
-	using Executors;
-	using Internal;
+    using System;
+    using Executors;
 
 
-	/// <summary>
-	///   A synchronous fiber will execute an action immediately on the calling thread
-	///   without any protection from an exception
-	/// </summary>
-	public class SynchronousFiber :
-		Fiber
-	{
-		readonly OperationExecutor _executor;
-		bool _stopping;
+    /// <summary>
+    ///   A synchronous fiber will execute an action immediately on the calling thread
+    ///   without any protection from an exception
+    /// </summary>
+    public class SynchronousFiber :
+        Fiber
+    {
+        readonly OperationExecutor _executor;
+        bool _stopping;
 
-		public SynchronousFiber()
-			: this(new BasicOperationExecutor())
-		{
-		}
+        public SynchronousFiber()
+            : this(new BasicOperationExecutor())
+        {
+        }
 
-		public SynchronousFiber(OperationExecutor executor)
-		{
-			_executor = executor;
-		}
+        public SynchronousFiber(OperationExecutor executor)
+        {
+            _executor = executor;
+        }
 
-		public void Add(Action operation)
-		{
-			if (_stopping)
-				return;
-				// seems to be causing more problems that it solves
-				// throw new FiberException("The fiber is no longer accepting actions");
+        public void Add(Action operation)
+        {
+            if (_stopping)
+                return;
+            // seems to be causing more problems that it solves
+            // throw new FiberException("The fiber is no longer accepting actions");
 
-			_executor.Execute(operation);
-		}
+            _executor.Execute(operation);
+        }
 
-		public void Kill()
-		{
-			_executor.Stop();
-		}
+        public void Kill()
+        {
+            _executor.Stop();
+        }
 
-		public void Stop(TimeSpan timeout)
-		{
-			_stopping = true;
-		}
-	}
+        public void Stop(TimeSpan timeout)
+        {
+            _stopping = true;
+        }
+    }
 }

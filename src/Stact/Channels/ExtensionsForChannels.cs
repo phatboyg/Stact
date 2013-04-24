@@ -13,8 +13,10 @@
 namespace Stact
 {
     using System;
+    using System.Collections.Generic;
     using Configuration;
     using Configuration.Internal;
+    using Visitors;
 
 
     public static class ExtensionsForChannels
@@ -49,14 +51,14 @@ namespace Stact
             return subscriber.CreateConnection();
         }
 
-//        public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
-//        {
-//            return new FlattenChannelVisitor().Flatten(channel);
-//        }
-//
-//        public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
-//        {
-//            return new FlattenChannelVisitor().Flatten(channel);
-//        }
+        public static IEnumerable<Channel> Flatten<T>(this Channel<T> channel)
+        {
+            return new FlattenChannelVisitor().Flatten(channel);
+        }
+
+        public static IEnumerable<Channel> Flatten(this UntypedChannel channel)
+        {
+            return new FlattenChannelVisitor().Flatten(channel);
+        }
     }
 }

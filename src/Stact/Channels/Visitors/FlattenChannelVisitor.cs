@@ -14,9 +14,10 @@ namespace Stact.Visitors
 {
 	using System.Collections.Generic;
 	using System.Linq;
+	using Internal;
 
 
-	public class FlattenChannelVisitor :
+    public class FlattenChannelVisitor :
 		ChannelVisitor
 	{
 		private readonly IList<Channel> _channels = new List<Channel>();
@@ -39,25 +40,18 @@ namespace Stact.Visitors
 			return _channels.ToArray();
 		}
 
-		public override Channel<T> Visit<T>(Channel<T> channel)
+        protected override Channel<T> Visit<T>(Channel<T> channel)
 		{
 			_channels.Add(channel);
 
 			return base.Visit(channel);
 		}
 
-		public override UntypedChannel Visit(UntypedChannel channel)
+        protected override UntypedChannel Visit(UntypedChannel channel)
 		{
 			_channels.Add(channel);
 
 			return base.Visit(channel);
-		}
-
-		protected override UntypedChannel Visitor(BroadcastChannel channel)
-		{
-			channel.Listeners.OrderBy(x => x.GetType().FullName).Each(subscriber => { Visit(subscriber); });
-
-			return channel;
 		}
 	}
 }

@@ -148,7 +148,7 @@ namespace Stact
     /// meant to be implemented by the library user.
     /// </summary>
     /// <typeparam name="TState">The type of state maintained for the actor</typeparam>
-    public interface Actor<TState> :
+    public interface Actor<out TState> :
         UntypedActor
     {
         TState State { get; }

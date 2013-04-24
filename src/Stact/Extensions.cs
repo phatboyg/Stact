@@ -27,9 +27,19 @@ namespace Stact
             actor.Send<Start>();
         }
 
+        public static void Start(this ActorRef actor, ActorRef sender)
+        {
+            actor.Send<Start>(sender);
+        }
+
         public static void Stop(this ActorRef actor)
         {
             actor.Send<Stop>();
+        }
+
+        public static void Stop(this ActorRef actor, ActorRef sender)
+        {
+            actor.Send<Stop>(sender);
         }
 
         /// <summary>
@@ -49,15 +59,6 @@ namespace Stact
         public static void Exit(this ActorRef actor, ActorRef sender)
         {
             actor.Send<Exit>(sender);
-        }
-
-        /// <summary>
-        ///   Sends an Exit message to an actor instance without waiting for a response
-        /// </summary>
-        /// <param name = "actor">The actor instance</param>
-        public static void Exit(this UntypedActor actor)
-        {
-            actor.Self.Send<Exit>();
         }
 
         /// <summary>

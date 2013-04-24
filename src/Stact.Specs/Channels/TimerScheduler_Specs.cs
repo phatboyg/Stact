@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,61 +12,56 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
-	using System;
-	using System.Threading;
-	
-	using Internal;
-	using NUnit.Framework;
+    using System;
+    using System.Threading;
+    using NUnit.Framework;
 
-	[TestFixture]
-	public class Timer_scheduler_should_work
-	{
-		[Test]
-		public void Schedule()
-		{
-			var fiber = new SynchronousFiber();
 
-			var count = 0;
-			var reset = new AutoResetEvent(false);
-			Action one = () => Assert.AreEqual(0, count++);
-			Action two = () => Assert.AreEqual(1, count++);
-			Action three = delegate
-				{
-					Assert.AreEqual(2, count++);
-					reset.Set();
-				};
+    [TestFixture]
+    public class Timer_scheduler_should_work
+    {
+        [Test]
+        public void Schedule()
+        {
+            var fiber = new SynchronousFiber();
 
-			var thread = new TimerScheduler(fiber);
-			thread.Schedule(50, fiber, three);
-			thread.Schedule(1, fiber, one);
-			thread.Schedule(1, fiber, two);
-			Assert.IsTrue(reset.WaitOne(10000, false));
-		}
+            int count = 0;
+            var reset = new AutoResetEvent(false);
+            Action one = () => Assert.AreEqual(0, count++);
+            Action two = () => Assert.AreEqual(1, count++);
+            Action three = delegate
+                {
+                    Assert.AreEqual(2, count++);
+                    reset.Set();
+                };
 
-		[Test]
-		public void Schedule1000In1ms()
-		{
-			var fiber = new SynchronousFiber();
+            var thread = new TimerScheduler(fiber);
+            thread.Schedule(500, fiber, three);
+            thread.Schedule(1, fiber, one);
+            thread.Schedule(1, fiber, two);
+            Assert.IsTrue(reset.WaitOne(10000, false));
+        }
 
-			var count = 0;
-			var reset = new AutoResetEvent(false);
-			Action one = delegate
-				{
-					count++;
-					if (count == 1000)
-					{
-						reset.Set();
-					}
-				};
+        [Test]
+        public void Schedule1000In1ms()
+        {
+            var fiber = new SynchronousFiber();
 
-			var thread = new TimerScheduler(fiber);
-			{
-				for (var i = 0; i < 1000; i++)
-				{
-					thread.Schedule(i, fiber,one);
-				}
-				Assert.IsTrue(reset.WaitOne(4000, false));
-			}
-		}
-	}
+            int count = 0;
+            var reset = new AutoResetEvent(false);
+            Action one = delegate
+                {
+                    count++;
+                    if (count == 1000)
+                        reset.Set();
+                };
+
+            var thread = new TimerScheduler(fiber);
+            {
+                for (int i = 0; i < 1000; i++)
+                    thread.Schedule(i, fiber, one);
+                Assert.IsTrue(reset.WaitOne(4000, false));
+            }
+        }
+    }
 }

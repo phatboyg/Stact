@@ -30,7 +30,7 @@ namespace Stact.Specs.Channels
 					x.AddConsumerOf<TestMessage>()
 						.OnCurrentSynchronizationContext()
 						.UsingConsumer(message => { })
-						.HandleOnPoolFiber();
+						.HandleOnThreadPool();
 				}))
 			{
 			}

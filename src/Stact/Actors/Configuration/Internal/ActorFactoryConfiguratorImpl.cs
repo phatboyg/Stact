@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,9 @@
 namespace Stact.Configuration.Internal
 {
     using System;
+    using System.Collections.Generic;
     using Actors.Behaviors;
+    using Configurators;
     using Conventions;
     using Stact.Internal;
 
@@ -22,7 +24,7 @@ namespace Stact.Configuration.Internal
         FiberFactoryConfiguratorImpl<ActorFactoryConfigurator<TState>>,
         ActorFactoryConfigurator<TState>
     {
-        BehaviorConvention[] _conventions;
+        readonly BehaviorConvention[] _conventions;
         SchedulerFactory _schedulerFactory;
 
         public ActorFactoryConfiguratorImpl()
@@ -66,8 +68,13 @@ namespace Stact.Configuration.Internal
             return this;
         }
 
-        public void ValidateConfiguration()
+        public override IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
         {
+            if (_schedulerFactory == null)
+                yield return this.Failure("SchedulerFactory", "must be specified");
+
+            foreach (ValidateConfigurationResult result in base.ValidateConfiguration())
+                yield return result;
         }
 
         public ActorFactory<TState> Configure()

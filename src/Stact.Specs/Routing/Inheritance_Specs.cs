@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,12 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs
 {
-    using Headers;
     using Magnum.TestFramework;
     using MessageHeaders;
     using NUnit.Framework;
     using Routing;
-    using Routing.Visualizers;
 
 
     [Scenario]
@@ -41,13 +39,13 @@ namespace Stact.Specs
         }
 
 
-        interface IBottom
+        class Bottom :
+            IBottom
         {
         }
 
 
-        class Bottom :
-            IBottom
+        interface IBottom
         {
         }
 
@@ -57,15 +55,15 @@ namespace Stact.Specs
         }
 
 
-        class Top :
-            Bottom, 
-            ITop
+        class OverTheTop :
+            Top
         {
         }
 
 
-        class OverTheTop :
-            Top
+        class Top :
+            Bottom,
+            ITop
         {
         }
     }

@@ -12,12 +12,8 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Specs.Actors
 {
-    using System.Threading;
     using Magnum.Extensions;
     using Magnum.TestFramework;
-    using MessageHeaders;
-    using NUnit.Framework;
-    using Routing.Visualizers;
 
 
     [Scenario]
@@ -35,7 +31,7 @@ namespace Stact.Specs.Actors
 
             _actor = StatelessActor.New(inbox =>
             {
-                inbox.Receive<Message<Exit>>(request =>
+                inbox.Receive<Exit>(request =>
                 {
                     _intercepted.Complete(request.Body);
                     request.Respond(request.Body);
@@ -48,14 +44,14 @@ namespace Stact.Specs.Actors
             });
         }
 
-        [Then, Explicit]
+        [Then]
         public void Should_prevent_the_actor_from_exiting()
         {
             StatelessActor.New(inbox =>
                 {
                     _actor.Request<Exit>(inbox)
                         .Within(5.Seconds())
-                        .Receive<Message<Exit>>(x => { });
+                        .Receive<Exit>(x => { });
                 });
             _intercepted.WaitUntilCompleted(5.Seconds()).ShouldBeTrue("Exit was not intercepted");
 

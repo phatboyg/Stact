@@ -61,6 +61,38 @@ namespace Stact.Internal
                 return visitor.Visit(_channel);
             }
         }
+
+        class LastChannelRedirector<T> :
+            TypedRedirector<ICollection<T>>
+        {
+            readonly LastChannel<T> _channel;
+
+            public LastChannelRedirector(Channel<ICollection<T>> channel)
+            {
+                _channel = channel as LastChannel<T>;
+            }
+
+            public Channel<ICollection<T>> Visit(ChannelVisitor visitor)
+            {
+                return visitor.Visit(_channel);
+            }
+        }
+
+        class DistinctChannelRedirector<T,TOutput> :
+            TypedRedirector<ICollection<T>>
+        {
+            readonly DistinctChannel<T,TOutput> _channel;
+
+            public DistinctChannelRedirector(Channel<ICollection<T>> channel)
+            {
+                _channel = channel as DistinctChannel<T, TOutput>;
+            }
+
+            public Channel<ICollection<T>> Visit(ChannelVisitor visitor)
+            {
+                return visitor.Visit(_channel);
+            }
+        }
         protected virtual Channel<T> Visit<T>(Channel<T> channel)
         {
             if (channel is ShuntChannel<T>)
@@ -85,10 +117,23 @@ namespace Stact.Internal
                 return Visit((AsyncResultChannel<T>)channel);
             if (channel is BroadcastChannel<T>)
                 return Visit((BroadcastChannel<T>)channel);
-            if (channel.GetType().ClosesType(typeof(ConvertChannel<,>)))
+            if (channel.GetType().ClosesType(typeof(LastChannel<>)))
+            {
+                var closingArguments = channel.GetType().GetClosingArguments(typeof(LastChannel<>));
+                var redirectorType = typeof(LastChannelRedirector<>).MakeGenericType(closingArguments.ToArray());
+                var redirector = (TypedRedirector<T>)Activator.CreateInstance(redirectorType, channel);
+                return redirector.Visit(this);
+            }            if (channel.GetType().ClosesType(typeof(ConvertChannel<,>)))
             {
                 var closingArguments = channel.GetType().GetClosingArguments(typeof(ConvertChannel<,>));
                 var redirectorType = typeof(ConvertChannelRedirector<,>).MakeGenericType(closingArguments.ToArray());
+                var redirector = (TypedRedirector<T>)Activator.CreateInstance(redirectorType, channel);
+                return redirector.Visit(this);
+            }
+            if (channel.GetType().ClosesType(typeof(DistinctChannel<,>)))
+            {
+                var closingArguments = channel.GetType().GetClosingArguments(typeof(DistinctChannel<,>));
+                var redirectorType = typeof(DistinctChannelRedirector<,>).MakeGenericType(closingArguments.ToArray());
                 var redirector = (TypedRedirector<T>)Activator.CreateInstance(redirectorType, channel);
                 return redirector.Visit(this);
             }
