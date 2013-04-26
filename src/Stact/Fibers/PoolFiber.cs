@@ -27,10 +27,10 @@ namespace Stact
     {
         readonly OperationExecutor _executor;
         readonly object _lock = new object();
-        readonly IList<Action> _empty = new List<Action>();
+        readonly IList<Executor> _empty = new List<Executor>();
 
         bool _executorQueued;
-        IList<Action> _operations = new List<Action>();
+        IList<Executor> _operations = new List<Executor>();
         bool _shuttingDown;
 
         public PoolFiber()
@@ -43,29 +43,28 @@ namespace Stact
             _executor = executor;
         }
 
-        public void Add(Action operation)
+        public void Add(Executor executor)
         {
             if (_shuttingDown)
                 return;
 
             lock (_lock)
             {
-                _operations.Add(operation);
+                _operations.Add(executor);
                 if (!_executorQueued)
                     QueueWorkItem();
             }
         }
 
-        public void Stop(TimeSpan timeout)
+        public bool Stop(TimeSpan timeout)
         {
             if (timeout == TimeSpan.Zero)
             {
                 lock (_lock)
                 {
                     _shuttingDown = true;
+                    return _operations.Count == 0 && _executorQueued == false;
                 }
-
-                return;
             }
 
             DateTime waitUntil = DateTime.Now + timeout;
@@ -85,6 +84,8 @@ namespace Stact
                     Monitor.Wait(_lock, timeout);
                 }
             }
+
+            return true;
         }
 
         public void Kill()
@@ -109,14 +110,14 @@ namespace Stact
 
         bool Execute()
         {
-            IList<Action> operations = RemoveAll();
+            IList<Executor> operations = RemoveAll();
 
             _executor.Execute(operations, remaining =>
                 {
                     lock (_lock)
                     {
                         int i = 0;
-                        foreach (Action action in remaining)
+                        foreach (Executor action in remaining)
                             _operations.Insert(i++, action);
                     }
                 });
@@ -136,16 +137,16 @@ namespace Stact
             return true;
         }
 
-        IList<Action> RemoveAll()
+        IList<Executor> RemoveAll()
         {
             lock (_lock)
             {
                 if (_operations.Count == 0)
                     return _empty;
 
-                IList<Action> operations = _operations;
+                IList<Executor> operations = _operations;
 
-                _operations = new List<Action>();
+                _operations = new List<Executor>();
 
                 return operations;
             }

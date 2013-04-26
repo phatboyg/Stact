@@ -27,7 +27,7 @@ namespace Stact
 
         bool _isActive;
         bool _killed;
-        IList<Action> _operations = new List<Action>();
+        IList<Executor> _operations = new List<Executor>();
         bool _stopped;
 
         public ThreadFiber()
@@ -42,7 +42,7 @@ namespace Stact
             _thread.Start();
         }
 
-        public void Add(Action operation)
+        public void Add(Executor executor)
         {
             if (_stopped)
                 return;
@@ -51,13 +51,13 @@ namespace Stact
 
             lock (_lock)
             {
-                _operations.Add(operation);
+                _operations.Add(executor);
 
                 Monitor.PulseAll(_lock);
             }
         }
 
-        public void Stop(TimeSpan timeout)
+        public bool Stop(TimeSpan timeout)
         {
             if (timeout == TimeSpan.Zero)
             {
@@ -65,9 +65,9 @@ namespace Stact
                 {
                     _stopped = true;
                     Monitor.PulseAll(_lock);
-                }
 
-                return;
+                    return _operations.Count == 0 && _isActive == false;
+                }
             }
 
             DateTime waitUntil = DateTime.Now + timeout;
@@ -92,6 +92,8 @@ namespace Stact
             }
 
             _thread.Join(timeout);
+
+            return true;
         }
 
         public void Kill()
@@ -151,7 +153,7 @@ namespace Stact
             if (!WaitForActions())
                 return false;
 
-            IList<Action> operations = RemoveAll();
+            IList<Executor> operations = RemoveAll();
             if (operations == null)
                 return false;
 
@@ -160,7 +162,7 @@ namespace Stact
                     lock (_lock)
                     {
                         int i = 0;
-                        foreach (Action action in remaining)
+                        foreach (Executor action in remaining)
                             _operations.Insert(i++, action);
                     }
                 });
@@ -191,13 +193,13 @@ namespace Stact
             return true;
         }
 
-        IList<Action> RemoveAll()
+        IList<Executor> RemoveAll()
         {
             lock (_lock)
             {
-                IList<Action> operations = _operations;
+                IList<Executor> operations = _operations;
 
-                _operations = new List<Action>();
+                _operations = new List<Executor>();
 
                 return operations;
             }

@@ -167,6 +167,9 @@
     <Compile Include="Diagnostics\TraceOperationMessage.cs" />
     <Compile Include="Diagnostics\TraceOperationMessageImpl.cs" />
     <Compile Include="Diagnostics\TraceOperationStartedImpl.cs" />
+    <Compile Include="Fibers\Queue_Specs.cs" />
+    <Compile Include="Fibers\TaskFiber_Specs.cs" />
+    <Compile Include="Fibers\TaskQueue_Specs.cs" />
     <Compile Include="Functional\Action_Specs.cs" />
     <Compile Include="Functional\Binder.cs" />
     <Compile Include="Functional\Identity_Specs.cs" />

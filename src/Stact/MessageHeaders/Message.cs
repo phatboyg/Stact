@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -19,6 +19,22 @@ namespace Stact
         MessageHeader
     {
         ActorRef Sender { get; }
+
+        /// <summary>
+        /// To support efficient dispatch of types to interfaces, a generic type dispatcher
+        /// is included on the message to make it possible to reuse type dispatching across
+        /// concerns
+        /// </summary>
+        /// <param name="dispatcher">The message dispatcher</param>
+        void Dispatch(MessageDispatcher dispatcher);
+
+        /// <summary>
+        /// To support efficient dispatch of types to interfaces, a generic type dispatcher
+        /// is included on the message to make it possible to reuse type dispatching across
+        /// concerns
+        /// </summary>
+        /// <param name="dispatcher">The message dispatcher</param>
+        TResult Dispatch<TResult>(MessageDispatcher<TResult> dispatcher);
     }
 
 

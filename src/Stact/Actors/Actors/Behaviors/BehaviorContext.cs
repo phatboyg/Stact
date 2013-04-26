@@ -12,7 +12,7 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Actors.Behaviors
 {
-    public interface BehaviorContext<TState, TBehavior>
+    public interface BehaviorContext<TState, out TBehavior>
         where TBehavior : Behavior<TState>
     {
         /// <summary>

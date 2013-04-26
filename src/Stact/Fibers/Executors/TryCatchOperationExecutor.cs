@@ -34,14 +34,14 @@ namespace Stact.Executors
         }
 
 
-        public void Execute(Action operation)
+        public void Execute(Executor operation)
         {
             try
             {
                 if (_stopping)
                     return;
 
-                operation();
+                operation.Execute().Wait();
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace Stact.Executors
             }
         }
 
-        public void Execute(IList<Action> operations, Action<IEnumerable<Action>> remaining)
+        public void Execute(IList<Executor> operations, Action<IEnumerable<Executor>> remaining)
         {
             int index = 0;
             try
@@ -59,14 +59,14 @@ namespace Stact.Executors
                     if (_stopping)
                         break;
 
-                    operations[index]();
+                    operations[index].Execute().Wait();
                 }
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
                 remaining(operations.Skip(index + 1));
 
-                _callback(ex);
+                _callback(ex.InnerException);
             }
         }
 

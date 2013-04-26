@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,16 +12,19 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    using System;
-    using System.Collections.Generic;
-
-
-    public interface OperationExecutor
+    /// <summary>
+    /// Supports the dispatch of a message, by type, into a target object without
+    /// the need to dynamically type the message using reflection or otherwise
+    /// (this eliminates a LOT of duplicate type mapping)
+    /// </summary>
+    public interface MessageDispatcher
     {
-        void Execute(Executor executor);
+        void DispatchMessage<T>(Message<T> message);
+    }
 
-        void Execute(IList<Executor> executors, Action<IEnumerable<Executor>> remaining);
 
-        void Stop();
+    public interface MessageDispatcher<out TResult>
+    {
+        TResult DispatchMessage<T>(Message<T> message);
     }
 }

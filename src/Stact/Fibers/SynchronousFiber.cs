@@ -36,14 +36,14 @@ namespace Stact
             _executor = executor;
         }
 
-        public void Add(Action operation)
+        public void Add(Executor executor)
         {
             if (_stopping)
                 return;
             // seems to be causing more problems that it solves
             // throw new FiberException("The fiber is no longer accepting actions");
 
-            _executor.Execute(operation);
+            _executor.Execute(executor);
         }
 
         public void Kill()
@@ -51,9 +51,11 @@ namespace Stact
             _executor.Stop();
         }
 
-        public void Stop(TimeSpan timeout)
+        public bool Stop(TimeSpan timeout)
         {
             _stopping = true;
+
+            return true;
         }
     }
 }

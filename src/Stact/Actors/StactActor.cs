@@ -154,7 +154,7 @@ namespace Stact
             get { return _scheduler; }
         }
 
-        public void OnError(Exception exception)
+        public void OnError(Exception exception, NextExceptionHandler next)
         {
             _exceptionHandlers.Enumerate(handlerEnumerator =>
                 {

@@ -14,7 +14,6 @@ namespace Stact.Internal
 {
     using System;
     using Actors.Behaviors;
-    using Executors;
     using Internals.Extensions;
 
 
@@ -44,7 +43,7 @@ namespace Stact.Internal
         {
             StactActor<TState> actor = null;
 
-            Fiber fiber = _fiberFactory(new TryCatchOperationExecutor(ex => { actor.OnError(ex); }));
+            Fiber fiber = _fiberFactory((ex,next) => actor.OnError(ex, next));
 
             Scheduler scheduler = _schedulerFactory();
 

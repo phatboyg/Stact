@@ -81,6 +81,16 @@ namespace Stact.Internal
             get { return _request.Sender; }
         }
 
+        public void Dispatch(MessageDispatcher dispatcher)
+        {
+            _request.Dispatch(dispatcher);
+        }
+
+        public TResult Dispatch<TResult>(MessageDispatcher<TResult> dispatcher)
+        {
+            return _request.Dispatch(dispatcher);
+        }
+
         public TRequest Body
         {
             get { return _request.Body; }

@@ -22,13 +22,13 @@ namespace Stact
             actor.SetExceptionHandler((exception, next) => ExceptionHandler(actor, exception));
         }
 
-        static Message<FaultImpl> ExceptionHandler<TState>(Actor<TState> actor, Exception exception)
+        static Message<Fault> ExceptionHandler<TState>(Actor<TState> actor, Exception exception)
         {
-            return actor.Self.Send(new FaultImpl(exception), actor.Self);
+            return actor.Self.Send<Fault>(new FaultImpl(exception), actor.Self);
         }
 
 
-        public class FaultImpl :
+        class FaultImpl :
             Fault
         {
             readonly Exception _exception;

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -21,22 +21,22 @@ namespace Stact.Executors
     {
         bool _stopping;
 
-        public void Execute(Action operation)
+        public void Execute(Executor operation)
         {
             if (_stopping)
                 return;
 
-            operation();
+            operation.Execute().Wait();
         }
 
-        public void Execute(IList<Action> operations, Action<IEnumerable<Action>> remaining)
+        public void Execute(IList<Executor> operations, Action<IEnumerable<Executor>> remaining)
         {
             for (int i = 0; i < operations.Count; i++)
             {
                 if (_stopping)
                     break;
 
-                operations[i]();
+                operations[i].Execute().Wait();
             }
         }
 

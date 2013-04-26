@@ -15,5 +15,5 @@ namespace Stact
     public delegate Fiber FiberFactory();
 
 
-    public delegate Fiber FiberFactoryEx(OperationExecutor executor);
+    public delegate Fiber FiberFactoryEx(FiberExceptionHandler exceptionHandler);
 }

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,16 +12,12 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    using System;
-    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
 
 
-    public interface OperationExecutor
+    public interface Executor
     {
-        void Execute(Executor executor);
-
-        void Execute(IList<Executor> executors, Action<IEnumerable<Executor>> remaining);
-
-        void Stop();
+        Task Execute(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

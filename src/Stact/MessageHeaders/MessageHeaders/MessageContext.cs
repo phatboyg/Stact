@@ -63,6 +63,16 @@ namespace Stact.MessageHeaders
             get { return _sender != null ? _sender.Value : null; }
         }
 
+        public void Dispatch(MessageDispatcher dispatcher)
+        {
+            dispatcher.DispatchMessage(this);
+        }
+
+        public TResult Dispatch<TResult>(MessageDispatcher<TResult> dispatcher)
+        {
+            return dispatcher.DispatchMessage(this);
+        }
+
         public Uri BodyType
         {
             get { return _headers.GetUri(HeaderKey.BodyType); }

@@ -25,7 +25,7 @@ namespace Stact.Configuration
         where T : class
     {
         readonly Func<OperationExecutor> _executorFactory;
-        Lazy<IDisposable> _disposableFiber;
+        FiberExceptionHandler _exceptionHandler = DefaultExceptionHandler;
         FiberFactoryEx _fiberFactory;
         TimeSpan _stopTimeout = TimeSpan.FromMinutes(1);
 
@@ -33,8 +33,6 @@ namespace Stact.Configuration
         {
             HandleOnThreadPool();
             _executorFactory = () => new TryCatchOperationExecutor();
-
-            _disposableFiber = new Lazy<IDisposable>();
         }
 
         public TimeSpan StopTimeout
@@ -42,16 +40,22 @@ namespace Stact.Configuration
             get { return _stopTimeout; }
         }
 
+        public virtual IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        {
+            if (_fiberFactory == null)
+                yield return this.Failure("FiberFactory", "must be specified");
+        }
+
         public T HandleOnCallingThread()
         {
-            _fiberFactory = executor => new SynchronousFiber(executor);
+            _fiberFactory = executor => new SynchronousFiber(_executorFactory());
 
             return this as T;
         }
 
         public T HandleOnThreadPool()
         {
-            _fiberFactory = executor => new PoolFiber(executor);
+            _fiberFactory = exceptionHandler => new TaskFiber(exceptionHandler);
 
             return this as T;
         }
@@ -65,7 +69,14 @@ namespace Stact.Configuration
 
         public T HandleOnThread()
         {
-            _fiberFactory = executor => new ThreadFiber(executor);
+            _fiberFactory = executor => new ThreadFiber(_executorFactory());
+
+            return this as T;
+        }
+
+        public T SetExceptionHandler(FiberExceptionHandler exceptionHandler)
+        {
+            _exceptionHandler = exceptionHandler;
 
             return this as T;
         }
@@ -91,15 +102,14 @@ namespace Stact.Configuration
             return this as T;
         }
 
-        public virtual IEnumerable<ValidateConfigurationResult> ValidateConfiguration()
+        static void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
         {
-            if (_fiberFactory == null)
-                yield return this.Failure("FiberFactory", "must be specified");
+            throw new FiberException("An exception occurred", exception);
         }
 
         public FiberFactory GetConfiguredFiberFactory()
         {
-            return () => _fiberFactory(_executorFactory());
+            return () => _fiberFactory(_exceptionHandler);
         }
 
         protected FiberFactoryEx GetConfiguredFiberFactoryEx()

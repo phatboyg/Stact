@@ -41,6 +41,16 @@ namespace Stact.Routing.Contexts
             get { return _message.Sender; }
         }
 
+        public void Dispatch(MessageDispatcher dispatcher)
+        {
+            _message.Dispatch(dispatcher);
+        }
+
+        public TResult Dispatch<TResult>(MessageDispatcher<TResult> dispatcher)
+        {
+            return _message.Dispatch(dispatcher);
+        }
+
         public Uri BodyType
         {
             get { return _message.BodyType; }

@@ -32,10 +32,12 @@ namespace Stact.Specs.Actors
 
                     inbox.Receive<Fault>(fault => received.Complete(fault));
 
+                    Console.WriteLine("Throwing exception");
+
                     throw new NotImplementedException("A");
                 });
 
-            received.WaitUntilCompleted(5.Seconds()).ShouldBeTrue();
+            received.WaitUntilCompleted(Debugger.IsAttached ? 120.Seconds() : 5.Seconds()).ShouldBeTrue();
             received.Value.Message.ShouldEqual("A");
 
             Trace.WriteLine(received.Value.StackTrace);
