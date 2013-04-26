@@ -22,7 +22,7 @@ namespace Stact
         {
             IList<Action> actions = new List<Action>(1);
             actions.Add(operation);
-            var executor = new ActionListExecutor(actions);
+            var executor = new ActionListExecution(actions);
 
             fiber.Add(executor);
         }
@@ -31,7 +31,7 @@ namespace Stact
         {
             IList<Action> actions = new List<Action>(1);
             actions.Add(operation);
-            var executor = new ActionListExecutor(actions);
+            var executor = new ActionListExecution(actions);
 
             fiber.Add(executor);
         }
@@ -41,7 +41,7 @@ namespace Stact
             var actions = new List<Action>(operations.Length + 1);
             actions.Add(operation);
             actions.AddRange(operations);
-            var executor = new ActionListExecutor(actions);
+            var executor = new ActionListExecution(actions);
 
             fiber.Add(executor);
         }

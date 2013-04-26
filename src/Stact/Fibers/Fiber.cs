@@ -13,33 +13,32 @@
 namespace Stact
 {
     using System;
-    using System.Collections.Generic;
 
-
+    /// <summary>
+    /// A Fiber is a concurrency unit in which operations are executed sequentially in order
+    /// while retaining control of the execution context.
+    /// </summary>
     public interface Fiber
     {
         /// <summary>
-        /// Adds an operation at the tail of the list of operations for the fiber
+        /// Schedules an executor to run on the fiber. The execution occurs after all
+        /// previous executions complete. If a previously scheduled execution faults, and the
+        /// fault is unhandled, the fiber is killed, discarding any pending executors.
         /// </summary>
-        /// <param name="executor">The operation to add</param>
-        void Add(Executor executor);
+        /// <param name="execution">The executor</param>
+        void Add(Execution execution);
 
         /// <summary>
-        /// Runs all remaining actions, waiting until all actions have been executed or until the
-        /// timeout expires. If the timeout expires, an exception is thrown.
+        /// Stops the fiber, preventing any additional executors from being added. All scheduled
+        /// executors are executed. If all executors do not complete before the timeout expires,
+        /// an exception is thrown.
         /// </summary>
-        /// <param name="timeout">The time to wait for all pending actions to be executed before throwing an exception</param>
+        /// <param name="timeout">The timeout before throwing an exception if executors have not all been executed</param>
         bool Stop(TimeSpan timeout);
 
         /// <summary>
-        /// Kills the fiber, discards any remaining actions, and prevents new actions from being added
-        /// May also abort the thread currently executing, forcing it to terminate any in-progress operations
+        /// Kills the fiber, discarding any remaining executors, and aborting any currently executing executors.
         /// </summary>
         void Kill();
-    }
-
-
-    public static class Fiberieoiuwer
-    {
     }
 }

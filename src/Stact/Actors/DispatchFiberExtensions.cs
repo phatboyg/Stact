@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,21 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing
+namespace Stact
 {
-	using System;
+    public static class DispatchFiberExtensions
+    {
+        public static void Dispatch(this Fiber fiber, MessageQueue queue, MessageDispatcher dispatcher)
+        {
+            var executor = new MessageQueueExecution(queue, dispatcher);
 
-
-    /// <summary>
-	/// A routing engine managed the distribution of messages to consumers using
-	/// a rules engine style to allow for highly complex routing rules without
-	/// custom application coding
-	/// </summary>
-	public interface RoutingEngine :
-        MessageDispatcher
-	{
-        void Shutdown();
-
-		void Configure(Action<RoutingEngineConfigurator> configurator);
-	}
+            fiber.Add(executor);
+        }
+    }
 }

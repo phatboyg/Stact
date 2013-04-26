@@ -38,7 +38,7 @@ namespace Stact.ServerFramework
 
 		public HttpServer(Uri uri, UntypedChannel eventChannel,
 		                  IEnumerable<PatternMatchConnectionHandler> connectionHandlers)
-			: this(uri, new PoolFiber(), eventChannel, connectionHandlers)
+			: this(uri, new TaskFiber(), eventChannel, connectionHandlers)
 		{
 		}
 

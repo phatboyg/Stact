@@ -73,5 +73,13 @@ namespace Stact.Routing
 
             _agenda.Run();
         }
+
+        public void DispatchMessage<T>(Message<T> message)
+        {
+            RoutingContext<T> context = new MessageRoutingContext<T>(message);
+            _root.Activate(context);
+
+            _agenda.Run();
+        }
     }
 }

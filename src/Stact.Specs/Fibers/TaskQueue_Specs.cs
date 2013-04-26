@@ -41,7 +41,7 @@ namespace Stact.Specs.Fibers
 
 
             var dispatcher = new TraceMessageDispatcher();
-            var executor = new MessageQueueExecutor(queue, dispatcher);
+            var executor = new MessageQueueExecution(queue, dispatcher);
 
             var fiber = new TaskFiber();
             fiber.Add(executor);
@@ -73,7 +73,7 @@ namespace Stact.Specs.Fibers
 
             _queue.Enqueue(message);
 
-            _fiber.Add(new MessageQueueExecutor(_queue, _dispatcher));
+            _fiber.Add(new MessageQueueExecution(_queue, _dispatcher));
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Stact
         Fiber
     {
         readonly HandlerStack<FiberExceptionHandler> _exceptionHandlers;
+        readonly ExecutionContext _executionContext;
         readonly CancellationTokenSource _kill;
         readonly object _lock;
         readonly CancellationTokenSource _shutdown;
@@ -34,7 +35,9 @@ namespace Stact
             _shutdown = new CancellationTokenSource();
             _kill = new CancellationTokenSource();
 
-            _exceptionHandlers = new HandlerStack<FiberExceptionHandler>(DefaultExceptionHandler);
+            _executionContext = new TaskFiberExecutionContext(_kill.Token);
+
+            _exceptionHandlers = new HandlerStack<FiberExceptionHandler>(KillFiberExceptionHandler);
         }
 
         public TaskFiber(FiberExceptionHandler exceptionHandler)
@@ -43,18 +46,16 @@ namespace Stact
             _exceptionHandlers.Push(exceptionHandler);
         }
 
-        public void Add(Executor executor)
+        public void Add(Execution execution)
         {
             if (_shutdown.IsCancellationRequested)
                 return;
 
-            TaskExecutor taskExecutor = new AsyncTaskExecutor(executor);
-
             lock (_lock)
             {
-                Task executeTask = taskExecutor.Execute(_task, _kill.Token);
+                Task executeTask = Execute(_task, execution);
 
-                Task faultTask = HandleFault(executeTask, _kill.Token);
+                Task faultTask = HandleFault(executeTask);
 
                 _task = faultTask;
             }
@@ -91,34 +92,73 @@ namespace Stact
             }
         }
 
-        Task HandleFault(Task task, CancellationToken cancellationToken)
+        Task Execute(Task task, Execution execution)
+        {
+            if (task.IsCompleted)
+            {
+                if (task.IsFaulted)
+                    return TaskUtil.Faulted(task.Exception.InnerExceptions);
+
+                if (task.IsCanceled || _kill.IsCancellationRequested)
+                    return TaskUtil.Canceled();
+            }
+
+            return ExecuteAsync(task, execution);
+        }
+
+
+        Task ExecuteAsync(Task task, Execution execution)
+        {
+            var completion = new TaskCompletionSource<Task>();
+            task.ContinueWith(innerTask =>
+                {
+                    if (innerTask.IsFaulted)
+                        completion.TrySetException(innerTask.Exception.InnerExceptions);
+                    else if (innerTask.IsCanceled || _kill.IsCancellationRequested)
+                        completion.TrySetCanceled();
+                    else
+                    {
+                        try
+                        {
+                            Task result = execution.Execute(_executionContext);
+
+                            completion.TrySetResult(result);
+                        }
+                        catch (Exception ex)
+                        {
+                            completion.TrySetException(ex);
+                        }
+                    }
+                });
+
+            return completion.Task.FastUnwrap();
+        }
+
+        Task HandleFault(Task task)
         {
             var source = new TaskCompletionSource<Task>();
 
             task.ContinueWith(innerTask =>
                 {
                     if (innerTask.IsCanceled)
-                        return source.TrySetCanceled();
-
-                    return source.TrySetResult(TaskUtil.Completed());
+                        source.TrySetCanceled();
+                    else
+                        source.TrySetResult(TaskUtil.Completed());
                 }, TaskContinuationOptions.NotOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
 
             task.ContinueWith(innerTask =>
                 {
                     Exception exception = innerTask.Exception.InnerException;
-                    Console.WriteLine("Handling faulted task {0}", exception);
                     try
                     {
                         innerTask.MarkObserved();
 
                         _exceptionHandlers.Enumerate(handlerEnumerator =>
                             {
-                                Console.WriteLine("Enumerating...");
-
                                 NextExceptionHandler toNextHandler = null;
                                 toNextHandler = ex =>
                                     {
-                                        if (cancellationToken.IsCancellationRequested)
+                                        if (_kill.IsCancellationRequested)
                                         {
                                             source.SetCanceled();
                                             return;
@@ -126,11 +166,8 @@ namespace Stact
 
                                         if (handlerEnumerator.MoveNext())
                                         {
-                                            Console.WriteLine("Moved next");
-
                                             FiberExceptionHandler nextHandler = handlerEnumerator.Current;
-                                            if (nextHandler != null)
-                                                nextHandler(ex, toNextHandler);
+                                            nextHandler(ex, toNextHandler);
 
                                             source.TrySetResult(TaskUtil.Completed());
                                         }
@@ -150,9 +187,8 @@ namespace Stact
             return source.Task.FastUnwrap();
         }
 
-        void DefaultExceptionHandler(Exception exception, NextExceptionHandler next)
+        void KillFiberExceptionHandler(Exception exception, NextExceptionHandler next)
         {
-            Console.WriteLine("Default exception handler: Kills Fiber");
             Kill();
         }
     }

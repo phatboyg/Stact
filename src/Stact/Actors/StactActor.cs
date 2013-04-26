@@ -16,6 +16,7 @@ namespace Stact
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Threading;
+    using System.Threading.Tasks;
     using Actors;
     using Actors.Behaviors;
     using Internal;
@@ -34,18 +35,21 @@ namespace Stact
         readonly Scheduler _scheduler;
         readonly ActorRef _self;
         readonly TState _state;
+        readonly MessageQueue _queue;
         BehaviorHandle _currentBehavior;
         HandlerStack<ActorExceptionHandler> _exceptionHandlers;
         HandlerStack<ActorExitHandler> _exitHandlers;
 
         public StactActor(Fiber fiber, Scheduler scheduler, ActorBehaviorFactory<TState> applicatorFactory,
-                          TState state)
+                          TState state, MessageQueue queue)
         {
             _fiber = fiber;
             _scheduler = scheduler;
             _applicatorFactory = applicatorFactory;
             _state = state;
 
+            _queue = queue;
+            
             _pending = new HashSet<ReceiveHandle>();
 
             _exceptionHandlers = new HandlerStack<ActorExceptionHandler>(DefaultExceptionHandler);
@@ -82,7 +86,8 @@ namespace Stact
                 return;
             }
 
-            _fiber.Add(() => _engine.Send(message));
+            _queue.Enqueue(message);
+            _fiber.Dispatch(_queue, _engine);
         }
 
         public ActorInternals Internals
@@ -164,8 +169,7 @@ namespace Stact
                             if (handlerEnumerator.MoveNext())
                             {
                                 ActorExceptionHandler nextHandler = handlerEnumerator.Current;
-                                if (nextHandler != null)
-                                    nextHandler(ex, toNextHandler);
+                                nextHandler(ex, toNextHandler);
                             }
                         };
 
@@ -199,8 +203,7 @@ namespace Stact
                             if (handlerEnumerator.MoveNext())
                             {
                                 ActorExitHandler nextHandler = handlerEnumerator.Current;
-                                if (nextHandler != null)
-                                    nextHandler(ex, toNextHandler);
+                                nextHandler(ex, toNextHandler);
                             }
                         };
 
@@ -210,7 +213,7 @@ namespace Stact
 
         void HandleKill(Message<Kill> message)
         {
-            ThreadPool.QueueUserWorkItem(x =>
+            Task.Factory.StartNew(() =>
                 {
                     try
                     {

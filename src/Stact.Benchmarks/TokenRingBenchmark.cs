@@ -19,12 +19,14 @@ namespace Stact.Benchmarks
 
     public class TokenRingBenchmark
     {
-         static readonly int TokenCount = Environment.ProcessorCount * 2;
+         static readonly int TokenCount = Environment.ProcessorCount * 3 / 2;
 
         public void Run()
         {
             int nodeCount = 200;
-            int roundCount = 3000;
+            int roundCount = 1000;
+
+            Console.WriteLine("Using {0} processors, {1} Tokens", Environment.ProcessorCount, TokenCount);
 
             _timer = Stopwatch.StartNew();
 
@@ -46,14 +48,10 @@ namespace Stact.Benchmarks
             if (_complete.Value != nodeCount * roundCount)
                 Console.WriteLine("TEST DID NOT COMPLETE ALL NODES");
 
-            Console.WriteLine("Using {0} processors", Environment.ProcessorCount);
             Console.WriteLine("Elapsed Time: {0}ms", _timer.ElapsedMilliseconds);
             Console.WriteLine("Create Time: {0}ms", _created);
             Console.WriteLine("Messages per second: {0,-4}",
                               ((long)TokenCount*nodeCount*roundCount + nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
-
-            Console.WriteLine("Hit a key to exit");
-            Console.ReadKey();
         }
 
         static Future<long> _complete;

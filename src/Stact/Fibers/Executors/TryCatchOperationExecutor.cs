@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,10 +15,12 @@ namespace Stact.Executors
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
 
 
     public class TryCatchOperationExecutor :
-        OperationExecutor
+        OperationExecutor,
+        Stact.ExecutionContext
     {
         readonly Action<Exception> _callback;
         bool _stopping;
@@ -33,15 +35,20 @@ namespace Stact.Executors
             _callback = callback;
         }
 
+        public CancellationToken CancellationToken
+        {
+            get { return CancellationToken.None; }
+        }
 
-        public void Execute(Executor operation)
+
+        public void Execute(Execution execution)
         {
             try
             {
                 if (_stopping)
                     return;
 
-                operation.Execute().Wait();
+                execution.Execute(this).Wait();
             }
             catch (Exception ex)
             {
@@ -49,7 +56,7 @@ namespace Stact.Executors
             }
         }
 
-        public void Execute(IList<Executor> operations, Action<IEnumerable<Executor>> remaining)
+        public void Execute(IList<Execution> operations, Action<IEnumerable<Execution>> remaining)
         {
             int index = 0;
             try
@@ -59,7 +66,7 @@ namespace Stact.Executors
                     if (_stopping)
                         break;
 
-                    operations[index].Execute().Wait();
+                    operations[index].Execute(this).Wait();
                 }
             }
             catch (AggregateException ex)

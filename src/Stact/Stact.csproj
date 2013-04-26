@@ -86,9 +86,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\ActorExceptionHandlerExtensions.cs" />
+    <Compile Include="Actors\DispatchFiberExtensions.cs" />
     <Compile Include="Actors\ListMessageQueue.cs" />
     <Compile Include="Actors\MessageQueue.cs" />
-    <Compile Include="Actors\MessageQueueExecutor.cs" />
+    <Compile Include="Actors\MessageQueueExecution.cs" />
     <Compile Include="Channels\Internal\ChannelVisitor.cs" />
     <Compile Include="Channels\Internal\DynamicImplementationBuilder.cs" />
     <Compile Include="Channels\Internal\DynamicProxyFactory.cs" />
@@ -102,14 +103,16 @@
     <Compile Include="Configuration\Configurators\ValidateConfigurationResultImpl.cs" />
     <Compile Include="Configuration\Configurators\ValidationConfigurationResultDisposition.cs" />
     <Compile Include="Configuration\ValidationConfigurationResultExtensions.cs" />
-    <Compile Include="Fibers\ActionListExecutor.cs" />
-    <Compile Include="Fibers\AsyncTaskExecutor.cs" />
-    <Compile Include="Fibers\Executor.cs" />
+    <Compile Include="Fibers\ActionListExecution.cs" />
+    <Compile Include="Fibers\Execution.cs" />
     <Compile Include="Fibers\ExecuteFiberExtensions.cs" />
+    <Compile Include="Fibers\ExecutionContext.cs" />
+    <Compile Include="Fibers\ExecutionContextExtensions.cs" />
     <Compile Include="Fibers\FiberExceptionHandler.cs" />
     <Compile Include="Fibers\NotifyActionsNotExecuted.cs" />
     <Compile Include="Fibers\TaskExecutor.cs" />
     <Compile Include="Fibers\TaskFiber.cs" />
+    <Compile Include="Fibers\TaskFiberExecutionContext.cs" />
     <Compile Include="Internals\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +167,6 @@
     <Compile Include="Actors\UntypedActor.cs" />
     <Compile Include="ActorUrn.cs" />
     <Compile Include="Channels\UntypedFilterChannel.cs" />
-    <Compile Include="Fibers\Executors\BasicOperationExecutor.cs" />
     <Compile Include="Fibers\Executors\TryCatchOperationExecutor.cs" />
     <Compile Include="Internal\LinkImpl.cs" />
     <Compile Include="Internal\ReSharperStaticAnalysis.cs" />

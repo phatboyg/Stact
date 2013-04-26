@@ -14,6 +14,9 @@ namespace Stact
 {
     using System;
 
-
+    /// <summary>
+    /// Called by an exception handler that did not handle the exception
+    /// </summary>
+    /// <param name="exception">The exception that was thrown</param>
     public delegate void NextExceptionHandler(Exception exception);
 }

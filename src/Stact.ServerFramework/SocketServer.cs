@@ -34,7 +34,7 @@ namespace Stact.ServerFramework
 		Socket _listener;
 
 		public SocketServer(Uri uri)
-			: this(uri, new PoolFiber())
+			: this(uri, new TaskFiber())
 		{
 		}
 
@@ -44,7 +44,7 @@ namespace Stact.ServerFramework
 		}
 
 		public SocketServer(Uri uri, UntypedChannel eventChannel)
-			: this(uri, new PoolFiber(), eventChannel)
+			: this(uri, new TaskFiber(), eventChannel)
 		{
 
 		}

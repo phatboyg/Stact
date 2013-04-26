@@ -42,8 +42,6 @@ namespace Stact.Benchmarks
 
 			   // new RingBenchmark().Run();
 
-			    Console.WriteLine("Hit a key to start");
-                Console.ReadKey();
                 new TokenRingBenchmark().Run();
 			}
 			catch (Exception ex)

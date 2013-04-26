@@ -27,10 +27,10 @@ namespace Stact
     {
         readonly OperationExecutor _executor;
         readonly object _lock = new object();
-        readonly IList<Executor> _empty = new List<Executor>();
+        readonly IList<Execution> _empty = new List<Execution>();
 
         bool _executorQueued;
-        IList<Executor> _operations = new List<Executor>();
+        IList<Execution> _operations = new List<Execution>();
         bool _shuttingDown;
 
         public PoolFiber()
@@ -43,14 +43,14 @@ namespace Stact
             _executor = executor;
         }
 
-        public void Add(Executor executor)
+        public void Add(Execution execution)
         {
             if (_shuttingDown)
                 return;
 
             lock (_lock)
             {
-                _operations.Add(executor);
+                _operations.Add(execution);
                 if (!_executorQueued)
                     QueueWorkItem();
             }
@@ -110,14 +110,14 @@ namespace Stact
 
         bool Execute()
         {
-            IList<Executor> operations = RemoveAll();
+            IList<Execution> operations = RemoveAll();
 
             _executor.Execute(operations, remaining =>
                 {
                     lock (_lock)
                     {
                         int i = 0;
-                        foreach (Executor action in remaining)
+                        foreach (Execution action in remaining)
                             _operations.Insert(i++, action);
                     }
                 });
@@ -137,16 +137,16 @@ namespace Stact
             return true;
         }
 
-        IList<Executor> RemoveAll()
+        IList<Execution> RemoveAll()
         {
             lock (_lock)
             {
                 if (_operations.Count == 0)
                     return _empty;
 
-                IList<Executor> operations = _operations;
+                IList<Execution> operations = _operations;
 
-                _operations = new List<Executor>();
+                _operations = new List<Execution>();
 
                 return operations;
             }

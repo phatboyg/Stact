@@ -114,7 +114,7 @@ namespace Stact.Web.Actors.Configuration
 
 		static Fiber ThreadPoolFiberProvider()
 		{
-			return new PoolFiber();
+			return new TaskFiber();
 		}
 	}
 }

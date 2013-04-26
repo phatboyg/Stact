@@ -22,31 +22,31 @@ namespace Stact
     /// <summary>
     /// Wraps the execution of a list of Action into a Task
     /// </summary>
-    public class ActionListExecutor :
-        Executor
+    public class ActionListExecution :
+        Execution
     {
         readonly IList<Action> _actions;
         readonly NotifyActionsNotExecuted _notify;
 
-        public ActionListExecutor(IList<Action> actions)
+        public ActionListExecution(IList<Action> actions)
             : this(actions, DefaultNotify)
         {
         }
 
-        public ActionListExecutor(IList<Action> actions, NotifyActionsNotExecuted notify)
+        public ActionListExecution(IList<Action> actions, NotifyActionsNotExecuted notify)
         {
             _notify = notify;
             _actions = actions;
         }
 
-        Task Executor.Execute(CancellationToken cancellationToken)
+        Task Execution.Execute(ExecutionContext executionContext)
         {
             int index = 0;
             try
             {
                 for (; index < _actions.Count; index++)
                 {
-                    if (cancellationToken.IsCancellationRequested)
+                    if (executionContext.CancellationToken.IsCancellationRequested)
                     {
                         _notify(_actions, index, _actions.Count - index);
                         return TaskUtil.Canceled();
@@ -55,14 +55,14 @@ namespace Stact
                     _actions[index]();
                 }
 
-                return TaskUtil.Completed();
+                return executionContext.Completed();
             }
             catch (Exception ex)
             {
                 int next = index + 1;
                 _notify(_actions, next, _actions.Count - next);
 
-                return TaskUtil.Faulted(ex);
+                return executionContext.Faulted(ex);
             }
         }
 

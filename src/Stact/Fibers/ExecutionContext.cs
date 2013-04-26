@@ -13,11 +13,14 @@
 namespace Stact
 {
     using System.Threading;
-    using System.Threading.Tasks;
 
 
-    public interface Executor
+    /// <summary>
+    /// The context of an Execution, which provides useful functions for implementing
+    /// an Execution in user code.
+    /// </summary>
+    public interface ExecutionContext
     {
-        Task Execute(CancellationToken cancellationToken = default(CancellationToken));
+        CancellationToken CancellationToken { get; }
     }
 }

@@ -1,4 +1,4 @@
-// Copyright 2010-2013 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,39 +10,29 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Executors
+namespace Stact
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Internals.Tasks;
 
 
-    public class BasicOperationExecutor :
-        OperationExecutor
+    public static class ExecutionContextExtensions
     {
-        bool _stopping;
-
-        public void Execute(Executor operation)
+        public static Task Completed(this ExecutionContext executionContext)
         {
-            if (_stopping)
-                return;
-
-            operation.Execute().Wait();
+            return TaskUtil.Completed();
         }
 
-        public void Execute(IList<Executor> operations, Action<IEnumerable<Executor>> remaining)
+        public static Task Faulted(this ExecutionContext executionContext, Exception exception)
         {
-            for (int i = 0; i < operations.Count; i++)
-            {
-                if (_stopping)
-                    break;
-
-                operations[i].Execute().Wait();
-            }
+            return TaskUtil.Faulted(exception);
         }
 
-        public void Stop()
+        public static Task Faulted(this ExecutionContext executionContext, IEnumerable<Exception> exceptions)
         {
-            _stopping = true;
+            return TaskUtil.Faulted(exceptions);
         }
     }
 }

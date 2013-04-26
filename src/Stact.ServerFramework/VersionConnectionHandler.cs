@@ -63,7 +63,7 @@ namespace Stact.ServerFramework
 
 			public VersionChannel()
 			{
-				_fiber = new PoolFiber();
+				_fiber = new TaskFiber();
 			}
 
 			public void Send(ConnectionContext context)

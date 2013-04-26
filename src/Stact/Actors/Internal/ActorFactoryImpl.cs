@@ -47,7 +47,7 @@ namespace Stact.Internal
 
             Scheduler scheduler = _schedulerFactory();
 
-            actor = new StactActor<TState>(fiber, scheduler, _actorBehaviorFactory, state);
+            actor = new StactActor<TState>(fiber, scheduler, _actorBehaviorFactory, state, new ListMessageQueue());
 
             return actor;
         }

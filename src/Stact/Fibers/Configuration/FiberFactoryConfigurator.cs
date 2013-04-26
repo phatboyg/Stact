@@ -23,49 +23,49 @@ namespace Stact.Configuration
         where T : class
     {
         /// <summary>
-        ///   Handle on the calling thread (synchronously)
+        /// Execute synchronously on the calling thread
         /// </summary>
-        /// <returns></returns>
         T HandleOnCallingThread();
 
         /// <summary>
-        ///   Handle on a dedicated fiber (uses the thread pool, lightweight)
+        /// Execute on the thread pool (using the TPL)
         /// </summary>
-        /// <returns></returns>
         T HandleOnThreadPool();
 
         /// <summary>
-        ///   Handle on a dedicated thread (operating system thread)
+        /// Execute on a dedicated thread
         /// </summary>
-        /// <returns></returns>
         T HandleOnThread();
 
         /// <summary>
-        ///   Handle on the specified fiber
+        /// Execute on an existing Fiber
         /// </summary>
-        /// <param name = "fiber">The fiber to use</param>
-        /// <returns></returns>
+        /// <param name = "fiber">The Fiber to schedule executions</param>
         T HandleOnFiber(Fiber fiber);
 
         /// <summary>
-        ///   Use the specified fiber factory
+        /// Specify the FiberExceptionHandler to call when an exception occurs
+        /// </summary>
+        /// <param name="exceptionHandler">The exception handler</param>
+        T SetExceptionHandler(FiberExceptionHandler exceptionHandler);
+
+        /// <summary>
+        /// Use a previously configured FiberFactory to create the Fiber
         /// </summary>
         /// <param name = "fiberFactory">The fiber factory to use</param>
-        /// <returns></returns>
         T UseFiberFactory(FiberFactory fiberFactory);
 
         /// <summary>
-        ///   Use the specified fiber factory
+        /// Use a previously configured FiberFactoryEx to create the Fiber, allowing the configured
+        /// exception handler to be passed to the factory.
         /// </summary>
-        /// <param name = "fiberFactory">The fiber factory to use</param>
-        /// <returns></returns>
+        /// <param name = "fiberFactory">The FiberFactoryEx to use</param>
         T UseFiberFactory(FiberFactoryEx fiberFactory);
 
         /// <summary>
-        ///   Configure the shutdown timeout for the fiber
+        /// Specify the Stop timeout for the Fiber
         /// </summary>
         /// <param name = "timeout"></param>
-        /// <returns></returns>
         T SetStopTimeout(TimeSpan timeout);
     }
 }

@@ -18,9 +18,9 @@ namespace Stact
 
     public interface OperationExecutor
     {
-        void Execute(Executor executor);
+        void Execute(Execution execution);
 
-        void Execute(IList<Executor> executors, Action<IEnumerable<Executor>> remaining);
+        void Execute(IList<Execution> executors, Action<IEnumerable<Execution>> remaining);
 
         void Stop();
     }

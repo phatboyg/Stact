@@ -12,14 +12,20 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-    using System;
+    using System.Threading.Tasks;
+
 
     /// <summary>
-    /// Presents an Exception to a Handler so that it can either be handled or passed to the next
-    /// handler in the sequence. If not handled, the exception is rethrown or handled by a default
-    /// handler (invoked by calling next).
+    /// An Execution is a unit of work that can be scheduled on a Fiber
     /// </summary>
-    /// <param name="exception">The exception that occurred</param>
-    /// <param name="next">Should be called if the exception is not handled</param>
-    public delegate void FiberExceptionHandler(Exception exception, NextExceptionHandler next);
+    public interface Execution
+    {
+        /// <summary>
+        /// Execute the behavior of the execution. Execute is called from the Fiber's execution
+        /// context, so synchronous operations can be performed
+        /// </summary>
+        /// <param name="executionContext">The context of the Execution provided by the Fiber</param>
+        /// <returns></returns>
+        Task Execute(ExecutionContext executionContext);
+    }
 }

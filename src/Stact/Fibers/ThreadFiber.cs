@@ -27,11 +27,11 @@ namespace Stact
 
         bool _isActive;
         bool _killed;
-        IList<Executor> _operations = new List<Executor>();
+        IList<Execution> _operations = new List<Execution>();
         bool _stopped;
 
         public ThreadFiber()
-            : this(new BasicOperationExecutor())
+            : this(new TryCatchOperationExecutor())
         {
         }
 
@@ -42,7 +42,7 @@ namespace Stact
             _thread.Start();
         }
 
-        public void Add(Executor executor)
+        public void Add(Execution execution)
         {
             if (_stopped)
                 return;
@@ -51,7 +51,7 @@ namespace Stact
 
             lock (_lock)
             {
-                _operations.Add(executor);
+                _operations.Add(execution);
 
                 Monitor.PulseAll(_lock);
             }
@@ -153,7 +153,7 @@ namespace Stact
             if (!WaitForActions())
                 return false;
 
-            IList<Executor> operations = RemoveAll();
+            IList<Execution> operations = RemoveAll();
             if (operations == null)
                 return false;
 
@@ -162,7 +162,7 @@ namespace Stact
                     lock (_lock)
                     {
                         int i = 0;
-                        foreach (Executor action in remaining)
+                        foreach (Execution action in remaining)
                             _operations.Insert(i++, action);
                     }
                 });
@@ -193,13 +193,13 @@ namespace Stact
             return true;
         }
 
-        IList<Executor> RemoveAll()
+        IList<Execution> RemoveAll()
         {
             lock (_lock)
             {
-                IList<Executor> operations = _operations;
+                IList<Execution> operations = _operations;
 
-                _operations = new List<Executor>();
+                _operations = new List<Execution>();
 
                 return operations;
             }

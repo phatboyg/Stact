@@ -49,10 +49,10 @@ namespace Stact.Specs
                     x.Receive<C>(_receivedMessageC.Complete);
                 });
 
-            _engine.Send(new MessageContext<B>(new B()));
-            _engine.Send(new MessageContext<C>(new C()));
-            _engine.Send(new MessageContext<B>(new B()));
-            _engine.Send(new MessageContext<C>(new C()));
+            _engine.DispatchMessage(new MessageContext<B>(new B()));
+            _engine.DispatchMessage(new MessageContext<C>(new C()));
+            _engine.DispatchMessage(new MessageContext<B>(new B()));
+            _engine.DispatchMessage(new MessageContext<C>(new C()));
         }
 
         [Then]

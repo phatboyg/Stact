@@ -27,7 +27,7 @@ namespace Stact
         bool _stopping;
 
         public SynchronousFiber()
-            : this(new BasicOperationExecutor())
+            : this(new TryCatchOperationExecutor())
         {
         }
 
@@ -36,14 +36,14 @@ namespace Stact
             _executor = executor;
         }
 
-        public void Add(Executor executor)
+        public void Add(Execution execution)
         {
             if (_stopping)
                 return;
             // seems to be causing more problems that it solves
             // throw new FiberException("The fiber is no longer accepting actions");
 
-            _executor.Execute(executor);
+            _executor.Execute(execution);
         }
 
         public void Kill()

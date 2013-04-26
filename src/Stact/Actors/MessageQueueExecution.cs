@@ -19,19 +19,19 @@ namespace Stact
     using Internals.Tasks;
 
 
-    public class MessageQueueExecutor :
-        Executor
+    public class MessageQueueExecution :
+        Execution
     {
         readonly MessageDispatcher _dispatcher;
         readonly MessageQueue _queue;
 
-        public MessageQueueExecutor(MessageQueue queue, MessageDispatcher dispatcher)
+        public MessageQueueExecution(MessageQueue queue, MessageDispatcher dispatcher)
         {
             _queue = queue;
             _dispatcher = dispatcher;
         }
 
-        Task Executor.Execute(CancellationToken cancellationToken)
+        Task Execution.Execute(ExecutionContext executionContext)
         {
             IList<Message> messages = null;
             int index = 0;
@@ -43,7 +43,7 @@ namespace Stact
 
                 for (; index < messages.Count; index++)
                 {
-                    if (cancellationToken.IsCancellationRequested)
+                    if (executionContext.CancellationToken.IsCancellationRequested)
                     {
                         RequeueUndispatchedMessages(messages, index);
                         return TaskUtil.Canceled();
