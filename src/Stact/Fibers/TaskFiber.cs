@@ -18,9 +18,6 @@ namespace Stact
     using Internals.Tasks;
 
 
-    public delegate void FiberExceptionHandler(Exception exception, NextExceptionHandler next);
-
-
     public class TaskFiber :
         Fiber
     {

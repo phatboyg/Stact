@@ -26,7 +26,7 @@ namespace Stact.Specs.Channels
 			{
 				Id = id;
 
-				Fiber = new PoolFiber();
+                Fiber = new TaskFiber();
 
 				BidChannel = new ConsumerChannel<Bid>(Fiber, ReceiveBid);
 			}

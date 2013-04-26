@@ -31,7 +31,7 @@ namespace Stact.Specs.Channels
 		{
 			Assert.IsNull(SynchronizationContext.Current);
 
-			var fiber = new PoolFiber();
+            var fiber = new TaskFiber();
 
 			var input = new ChannelAdapter();
 

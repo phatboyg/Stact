@@ -54,11 +54,11 @@ namespace Stact.Specs.Channels
 	public class SomeActorInstance
 	{
 		private readonly Future<MyMessage> _future;
-		private readonly PoolFiber _fiber;
+        private readonly TaskFiber _fiber;
 
 		public SomeActorInstance()
 		{
-			_fiber = new PoolFiber();
+            _fiber = new TaskFiber();
 			_future = new Future<MyMessage>();
 
 			MessageChannel = new ConsumerChannel<MyMessage>(_fiber, Consume);

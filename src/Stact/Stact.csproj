@@ -106,6 +106,7 @@
     <Compile Include="Fibers\AsyncTaskExecutor.cs" />
     <Compile Include="Fibers\Executor.cs" />
     <Compile Include="Fibers\ExecuteFiberExtensions.cs" />
+    <Compile Include="Fibers\FiberExceptionHandler.cs" />
     <Compile Include="Fibers\NotifyActionsNotExecuted.cs" />
     <Compile Include="Fibers\TaskExecutor.cs" />
     <Compile Include="Fibers\TaskFiber.cs" />

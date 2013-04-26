@@ -56,7 +56,7 @@ namespace Stact.Specs.Fibers
 				var writers = new List<Fiber>();
 				for (int i = 0; i < writerCount; i++)
 				{
-					Fiber fiber = new PoolFiber();
+                    Fiber fiber = new TaskFiber();
 					for (int j = 0; j < messageCount; j++)
 					{
 						fiber.Add(() =>

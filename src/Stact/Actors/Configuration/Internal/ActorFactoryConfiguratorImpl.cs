@@ -49,7 +49,7 @@ namespace Stact.Configuration.Internal
 
         public ActorFactoryConfigurator<TState> UseSharedScheduler()
         {
-            _schedulerFactory = () => new TimerScheduler(new PoolFiber());
+            _schedulerFactory = () => new TimerScheduler(new TaskFiber());
 
             return this;
         }

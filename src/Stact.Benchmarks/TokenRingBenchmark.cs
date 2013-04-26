@@ -23,8 +23,8 @@ namespace Stact.Benchmarks
 
         public void Run()
         {
-            int nodeCount = 50;
-            int roundCount = 20000;
+            int nodeCount = 200;
+            int roundCount = 3000;
 
             _timer = Stopwatch.StartNew();
 

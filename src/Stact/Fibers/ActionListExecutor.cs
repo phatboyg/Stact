@@ -19,14 +19,23 @@ namespace Stact
     using Internals.Tasks;
 
 
+    /// <summary>
+    /// Wraps the execution of a list of Action into a Task
+    /// </summary>
     public class ActionListExecutor :
         Executor
     {
         readonly IList<Action> _actions;
-        readonly NotifyActionsNotExecuted _notify = (a, b, c) => { };
+        readonly NotifyActionsNotExecuted _notify;
 
         public ActionListExecutor(IList<Action> actions)
+            : this(actions, DefaultNotify)
         {
+        }
+
+        public ActionListExecutor(IList<Action> actions, NotifyActionsNotExecuted notify)
+        {
+            _notify = notify;
             _actions = actions;
         }
 
@@ -38,7 +47,10 @@ namespace Stact
                 for (; index < _actions.Count; index++)
                 {
                     if (cancellationToken.IsCancellationRequested)
+                    {
+                        _notify(_actions, index, _actions.Count - index);
                         return TaskUtil.Canceled();
+                    }
 
                     _actions[index]();
                 }
@@ -47,13 +59,15 @@ namespace Stact
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Caught exception");
-
                 int next = index + 1;
                 _notify(_actions, next, _actions.Count - next);
 
                 return TaskUtil.Faulted(ex);
             }
+        }
+
+        static void DefaultNotify(IList<Action> actions, int index, int count)
+        {
         }
     }
 }

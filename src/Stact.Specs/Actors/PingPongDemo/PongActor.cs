@@ -24,7 +24,7 @@ namespace Stact.Specs.Actors.PingPongDemo
 
 		public PongActor()
 		{
-			_fiber = new PoolFiber();
+            _fiber = new TaskFiber();
 		}
 
 		public void Ping(Ping ping)

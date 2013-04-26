@@ -13,13 +13,7 @@
 namespace Stact
 {
     using System;
-    using System.Collections.Generic;
 
-    /// <summary>
-    /// Callback used to notify that a range of Actions were not executed
-    /// </summary>
-    /// <param name="actions">The complete Action list</param>
-    /// <param name="index">The index of the first Action not executed</param>
-    /// <param name="count">The number of actions not executed</param>
-    public delegate void NotifyActionsNotExecuted(IList<Action> actions, int index, int count);
+
+    public delegate void FiberExceptionHandler(Exception exception, NextExceptionHandler next);
 }

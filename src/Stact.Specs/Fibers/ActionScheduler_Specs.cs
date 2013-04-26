@@ -25,7 +25,7 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_run_the_action_immediately()
 		{
-			Fiber fiber = new PoolFiber();
+            Fiber fiber = new TaskFiber();
 			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
@@ -42,7 +42,7 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_wait_until_the_appropriate_time_for_the_action_to_execute()
 		{
-			Fiber fiber = new PoolFiber();
+            Fiber fiber = new TaskFiber();
 			Scheduler scheduler = new TimerScheduler(new SynchronousFiber());
 
 			var called = new Future<bool>();
@@ -62,8 +62,8 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_run_the_new_action_immediately()
 		{
-			Fiber fiber = new PoolFiber();
-			Scheduler scheduler = new TimerScheduler(new PoolFiber());
+			Fiber fiber = new TaskFiber();
+            Scheduler scheduler = new TimerScheduler(new TaskFiber());
 
 			var called = new Future<bool>();
 
@@ -80,8 +80,8 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_not_run_any_pending_actions()
 		{
-			Fiber fiber = new PoolFiber();
-			Scheduler scheduler = new TimerScheduler(new PoolFiber());
+			Fiber fiber = new TaskFiber();
+            Scheduler scheduler = new TimerScheduler(new TaskFiber());
 
 			var called = new Future<bool>();
 
@@ -99,11 +99,11 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_not_stall_the_scheduler()
 		{
-			Fiber stopped = new PoolFiber();
+			Fiber stopped = new TaskFiber();
 			stopped.Kill();
 
-			Fiber running = new PoolFiber();
-			Scheduler scheduler = new TimerScheduler(new PoolFiber());
+			Fiber running = new TaskFiber();
+            Scheduler scheduler = new TimerScheduler(new TaskFiber());
 
 			var called = new Future<bool>();
 
@@ -120,8 +120,8 @@ namespace Stact.Specs.Fibers
 		[Test]
 		public void Should_run_the_action_until_disabled()
 		{
-			Fiber fiber = new PoolFiber();
-			Scheduler scheduler = new TimerScheduler(new PoolFiber());
+			Fiber fiber = new TaskFiber();
+            Scheduler scheduler = new TimerScheduler(new TaskFiber());
 
 			Stopwatch elapsed = Stopwatch.StartNew();
 

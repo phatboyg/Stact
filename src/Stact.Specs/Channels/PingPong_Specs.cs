@@ -33,11 +33,11 @@ namespace Stact.Specs.Channels
 
 		private class Pinger
 		{
-			private readonly PoolFiber _fiber;
+            private readonly TaskFiber _fiber;
 
 			public Pinger()
 			{
-				_fiber = new PoolFiber();
+                _fiber = new TaskFiber();
 
 				Ponged = new Future<Pong>();
 
@@ -63,11 +63,11 @@ namespace Stact.Specs.Channels
 
 		private class Ponger
 		{
-			private readonly PoolFiber _fiber;
+            private readonly TaskFiber _fiber;
 
 			public Ponger()
 			{
-				_fiber = new PoolFiber();
+                _fiber = new TaskFiber();
 
 				Pinged = new Future<Ping>();
 

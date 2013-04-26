@@ -34,7 +34,7 @@ namespace Stact.Configuration.Internal
         {
             TimerScheduler scheduler = null;
 
-            _schedulerFactory = () => { return scheduler ?? (scheduler = new TimerScheduler(new PoolFiber())); };
+            _schedulerFactory = () => { return scheduler ?? (scheduler = new TimerScheduler(new TaskFiber())); };
             _owned = true;
 
             return this as T;

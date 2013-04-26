@@ -32,7 +32,7 @@ namespace Stact.ServerFramework.Internal
 		class BadRequestChannel :
 			Channel<ConnectionContext>
 		{
-			readonly Fiber _fiber = new PoolFiber();
+            readonly Fiber _fiber = new TaskFiber();
 
 			public void Send(ConnectionContext context)
 			{
