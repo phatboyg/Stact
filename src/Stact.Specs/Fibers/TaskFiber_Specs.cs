@@ -154,7 +154,7 @@ namespace Stact.Specs.Fibers
 
             fiber.Kill();
 
-            fiber.Add(() => called.Complete(true));
+            fiber.Execute(() => called.Complete(true));
 
             fiber.Stop(10.Seconds());
 
@@ -173,8 +173,8 @@ namespace Stact.Specs.Fibers
 
             var called = new Future<bool>();
 
-            10.Times(() => fiber.Add(() => Thread.Sleep(100)));
-            fiber.Add(() => called.Complete(true));
+            10.Times(() => fiber.Execute(() => Thread.Sleep(100)));
+            fiber.Execute(() => called.Complete(true));
 
             Stopwatch timer = Stopwatch.StartNew();
 

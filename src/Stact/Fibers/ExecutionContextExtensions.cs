@@ -25,6 +25,11 @@ namespace Stact
             return TaskUtil.Completed();
         }
 
+        public static Task Canceled(this ExecutionContext executionContext)
+        {
+            return TaskUtil.Canceled();
+        }
+
         public static Task Faulted(this ExecutionContext executionContext, Exception exception)
         {
             return TaskUtil.Faulted(exception);

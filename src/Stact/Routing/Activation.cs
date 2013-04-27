@@ -20,21 +20,6 @@ namespace Stact.Routing
     }
 
 
-    public enum ActivationType
-    {
-        RootNode,
-        BetaMemory,
-        ChannelNode,
-        ConsumerNode,
-        ConvertNode,
-        JoinNode,
-        MessageNode,
-        SelectiveConsumerNode,
-        ConditionNode,
-        AlphaNode
-    }
-
-
     /// <summary>
     /// An Activation moves a message from left to right in the graph, forward-chained
     /// to the next node.

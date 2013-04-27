@@ -52,32 +52,9 @@ namespace Stact
             }
         }
 
-        public ScheduledOperation Schedule(TimeSpan interval, Fiber fiber, Action operation)
+        public ScheduledExecutionHandle Schedule(TimeSpan interval, Fiber fiber, Execution execution)
         {
-            var scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, operation);
-            Schedule(scheduled);
-
-            return scheduled;
-        }
-
-        public ScheduledOperation Schedule(TimeSpan interval, TimeSpan periodicInterval, Fiber fiber, Action operation)
-        {
-            ScheduledOperationExecuterImpl scheduled = null;
-            scheduled = new ScheduledOperationExecuterImpl(GetScheduledTime(interval), fiber, () =>
-                {
-                    try
-                    {
-                        operation();
-                    }
-                    catch
-                    {
-                    }
-                    finally
-                    {
-                        scheduled.ScheduledAt = GetScheduledTime(periodicInterval);
-                        Schedule(scheduled);
-                    }
-                });
+            var scheduled = new OneTimeScheduledExecution(GetScheduledTime(interval), fiber, execution);
             Schedule(scheduled);
 
             return scheduled;
@@ -96,9 +73,9 @@ namespace Stact
             }
         }
 
-        void Schedule(ScheduledOperationExecuter action)
+        void Schedule(ScheduledExecution action)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
                 {
                     _operations.Add(action);
 
@@ -120,7 +97,7 @@ namespace Stact
                     if (_timer != null)
                         _timer.Change(dueTime, _noPeriod);
                     else
-                        _timer = new Timer(x => _fiber.Add(ExecuteExpiredActions), this, dueTime, _noPeriod);
+                        _timer = new Timer(x => _fiber.Execute(ExecuteExpiredActions), this, dueTime, _noPeriod);
                 }
             }
         }
@@ -130,7 +107,7 @@ namespace Stact
             if (_stopped)
                 return;
 
-            ScheduledOperationExecuter[] expiredActions;
+            ScheduledExecution[] expiredActions;
             while ((expiredActions = _operations.GetExpiredActions(Now)).Length > 0)
             {
                 for (int i = 0; i < expiredActions.Length; i++)

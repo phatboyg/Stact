@@ -55,7 +55,7 @@ namespace Stact
 
             Actor<TState> actor = actorFactory.New(state);
 
-            actor.Internals.Fiber.Add(() => initialCallback(actor));
+            actor.Internals.Fiber.Execute(() => initialCallback(actor));
 
             return actor.Self;
         }

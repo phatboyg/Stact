@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -13,7 +13,6 @@
 namespace Stact.MessageHeaders
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using Actors;
 
@@ -22,38 +21,70 @@ namespace Stact.MessageHeaders
         Message<T>,
         SetMessageHeader
     {
-        readonly DictionaryHeaders _headers;
-
+        readonly PropertyMessageHeader<T> _header;
         readonly Lazy<ActorRef> _sender;
 
         public MessageContext(T message)
+            : this(message, () => new NullActorReference())
         {
-            Body = message;
-            _headers = new DictionaryHeaders();
-            _sender = new Lazy<ActorRef>(() => new NullActorReference(), LazyThreadSafetyMode.PublicationOnly);
-
-            _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
         }
 
         public MessageContext(T message, ActorRef sender)
-            : this(message)
+            : this(message, () => sender)
         {
-            _sender = new Lazy<ActorRef>(() => sender, LazyThreadSafetyMode.PublicationOnly);
         }
 
         public MessageContext(T message, Func<ActorRef> sender)
-            : this(message)
         {
+            Body = message;
+
+            _header = new PropertyMessageHeader<T>();
             _sender = new Lazy<ActorRef>(sender, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-        public MessageContext(T message, IDictionary<string, string> headers)
+        public Uri BodyType
         {
-            Body = message;
-            _headers = new DictionaryHeaders(headers);
-            _sender = new Lazy<ActorRef>(() => new NullActorReference(), LazyThreadSafetyMode.PublicationOnly);
+            get { return _header.BodyType; }
+        }
 
-            _headers[HeaderKey.BodyType] = MessageUrn<T>.UrnString;
+        public string MessageId
+        {
+            get { return _header.MessageId; }
+        }
+
+        public string CorrelationId
+        {
+            get { return _header.CorrelationId; }
+        }
+
+        public string RequestId
+        {
+            get { return _header.RequestId; }
+        }
+
+        public Uri SourceAddress
+        {
+            get { return _header.SourceAddress; }
+        }
+
+        public Uri DestinationAddress
+        {
+            get { return _header.DestinationAddress; }
+        }
+
+        public Uri ResponseAddress
+        {
+            get { return _header.ResponseAddress; }
+        }
+
+        public Uri FaultAddress
+        {
+            get { return _header.FaultAddress; }
+        }
+
+        public Headers Headers
+        {
+            get { return _header.Headers; }
         }
 
         public T Body { get; private set; }
@@ -73,98 +104,39 @@ namespace Stact.MessageHeaders
             return dispatcher.DispatchMessage(this);
         }
 
-        public Uri BodyType
-        {
-            get { return _headers.GetUri(HeaderKey.BodyType); }
-        }
-
-        public string MessageId
-        {
-            get { return _headers[HeaderKey.MessageId]; }
-            private set { _headers[HeaderKey.MessageId] = value; }
-        }
-
-        public string CorrelationId
-        {
-            get { return _headers[HeaderKey.CorrelationId]; }
-            private set { _headers[HeaderKey.CorrelationId] = value; }
-        }
-
-        public string RequestId
-        {
-            get { return _headers[HeaderKey.RequestId]; }
-            private set { _headers[HeaderKey.RequestId] = value; }
-        }
-
-        public Uri SourceAddress
-        {
-            get { return _headers.GetUri(HeaderKey.SourceAddress); }
-            private set { _headers.SetUri(HeaderKey.SourceAddress, value); }
-        }
-
-        public Uri DestinationAddress
-        {
-            get { return _headers.GetUri(HeaderKey.DestinationAddress); }
-            private set { _headers.SetUri(HeaderKey.DestinationAddress, value); }
-        }
-
-        public Uri ResponseAddress
-        {
-            get { return _headers.GetUri(HeaderKey.ResponseAddress); }
-            private set { _headers.SetUri(HeaderKey.ResponseAddress, value); }
-        }
-
-        public Uri FaultAddress
-        {
-            get { return _headers.GetUri(HeaderKey.FaultAddress); }
-            private set { _headers.SetUri(HeaderKey.FaultAddress, value); }
-        }
-
-        public Headers Headers
-        {
-            get { return _headers; }
-        }
-
         public SetMessageHeader SetMessageId(string messageId)
         {
-            MessageId = messageId;
-            return this;
+            return _header.SetMessageId(messageId);
         }
 
         public SetMessageHeader SetRequestId(string requestId)
         {
-            RequestId = requestId;
-            return this;
+            return _header.SetRequestId(requestId);
         }
 
         public SetMessageHeader SetCorrelationId(string correlationId)
         {
-            CorrelationId = correlationId;
-            return this;
+            return _header.SetCorrelationId(correlationId);
         }
 
         public SetMessageHeader SetSourceAddress(Uri sourceAddress)
         {
-            SourceAddress = sourceAddress;
-            return this;
+            return _header.SetSourceAddress(sourceAddress);
         }
 
         public SetMessageHeader SetDestinationAddress(Uri destinationAddress)
         {
-            DestinationAddress = destinationAddress;
-            return this;
+            return _header.SetDestinationAddress(destinationAddress);
         }
 
         public SetMessageHeader SetResponseAddress(Uri responseAddress)
         {
-            ResponseAddress = responseAddress;
-            return this;
+            return _header.SetResponseAddress(responseAddress);
         }
 
         public SetMessageHeader SetFaultAddress(Uri faultAddress)
         {
-            FaultAddress = faultAddress;
-            return this;
+            return _header.SetFaultAddress(faultAddress);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Stact.Specs.Channels
 //						typeof(ConsumerChannel<TestMessage>),
 //					});
 
-				fiber.Add(() =>
+				fiber.Execute(() =>
 					{
 						Trace.WriteLine("Thread: " + Thread.CurrentThread.ManagedThreadId);
 						Assert.IsNull(SynchronizationContext.Current);

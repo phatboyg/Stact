@@ -7,7 +7,6 @@ namespace Stact.Specs
     using Magnum.TestFramework;
     using MessageHeaders;
     using Routing;
-    using Routing.Visualizers;
 
 
     [Scenario]

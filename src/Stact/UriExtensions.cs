@@ -25,16 +25,5 @@ namespace Stact
 
             return new Uri(value);
         }
-
-        public static void SetUri(this Headers headers, string key, Uri value)
-        {
-            if (value == null)
-            {
-                headers[key] = null;
-                return;
-            }
-
-            headers[key] = value.ToString();
-        }
     }
 }

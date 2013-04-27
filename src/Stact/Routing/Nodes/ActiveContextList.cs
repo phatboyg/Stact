@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -72,28 +72,6 @@ namespace Stact.Routing.Nodes
         }
 
         public void All(Func<RoutingContext<T>, bool> callback)
-        {
-            Join(callback);
-        }
-
-        public void Any(RoutingContext<T> match, Action<RoutingContext<T>> callback)
-        {
-            Join(message =>
-                {
-                    if (!match.IsAlive)
-                        return false;
-
-                    if (match.Equals(message))
-                    {
-                        callback(message);
-                        return false;
-                    }
-
-                    return true;
-                });
-        }
-
-        void Join(Func<RoutingContext<T>, bool> callback)
         {
             for (int i = 0; i < _messages.Count;)
             {

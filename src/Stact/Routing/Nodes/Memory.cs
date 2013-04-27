@@ -16,7 +16,14 @@ namespace Stact.Routing.Nodes
     using System.Collections.Generic;
 
 
-    public abstract class Memory<T>
+    public interface Memory
+    {
+        void AddActivation<T>(Activation<T> activation);
+        void RemoveActivation<T>(Activation<T> activation);
+    }
+
+    public abstract class Memory<T> :
+        Memory
     {
         readonly ActiveContextList<T> _contexts;
         readonly ActivationList<T> _successors;
@@ -43,16 +50,6 @@ namespace Stact.Routing.Nodes
             Add(context);
         }
 
-        public void RightActivate(Func<RoutingContext<T>, bool> callback)
-        {
-            All(callback);
-        }
-
-        public void RightActivate(RoutingContext<T> context, Action<RoutingContext<T>> callback)
-        {
-            Any(context, callback);
-        }
-
         public IEnumerable<Activation<T>> Successors
         {
             get { return _successors; }
@@ -61,16 +58,6 @@ namespace Stact.Routing.Nodes
         protected void Add(RoutingContext<T> message)
         {
             _contexts.Add(message);
-        }
-
-        protected void All(Func<RoutingContext<T>, bool> callback)
-        {
-            _contexts.All(callback);
-        }
-
-        protected void Any(RoutingContext<T> match, Action<RoutingContext<T>> callback)
-        {
-            _contexts.Any(match, callback);
         }
 
         public void AddActivation(Activation<T> activation)
@@ -92,6 +79,24 @@ namespace Stact.Routing.Nodes
         public void RemoveActivation(Activation<T> activation)
         {
             _successors.Remove(activation);
+        }
+
+        public void AddActivation<TContext>(Activation<TContext> activation)
+        {
+            var self = this as Memory<TContext>;
+            if (self == null)
+                throw new ArgumentException("The memory is not of the expected type");
+
+            self.AddActivation(activation);
+        }
+
+        public void RemoveActivation<TContext>(Activation<TContext> activation)
+        {
+            var self = this as Memory<TContext>;
+            if (self == null)
+                throw new ArgumentException("The memory is not of the expected type");
+
+            self.RemoveActivation(activation);
         }
     }
 }

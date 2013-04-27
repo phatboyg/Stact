@@ -59,11 +59,11 @@ namespace Stact.Specs.Fibers
                     Fiber fiber = new TaskFiber();
 					for (int j = 0; j < messageCount; j++)
 					{
-						fiber.Add(() =>
+						fiber.Execute(() =>
 							{
 								SuperSleeper.Wait(1);
 
-								reader.Add(() =>
+								reader.Execute(() =>
 									{
 										total++;
 										if (total == writerCount*messageCount)

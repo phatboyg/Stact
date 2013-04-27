@@ -14,7 +14,7 @@ namespace Stact.Specs.Behavior
 {
     using Magnum.TestFramework;
     using Routing;
-    using Routing.Internal;
+    using Routing.Configuration;
     using Routing.Nodes;
 
 

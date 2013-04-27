@@ -39,7 +39,7 @@ namespace Stact
 			if (messages.Count == 0)
 				return;
 
-			_fiber.Add(() => SendMessageToOutputChannel(messages.Last()));
+			_fiber.Execute(() => SendMessageToOutputChannel(messages.Last()));
 		}
 
 		void SendMessageToOutputChannel(T message)

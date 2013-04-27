@@ -44,7 +44,7 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => InterceptMessage(message));
+			_fiber.Execute(() => InterceptMessage(message));
 		}
 
 		private void InterceptMessage(T message)

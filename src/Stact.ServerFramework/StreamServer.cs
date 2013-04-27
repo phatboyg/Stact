@@ -73,7 +73,7 @@ namespace Stact.ServerFramework
 		{
 			Interlocked.Increment(ref _connectionCount);
 
-			Fiber.Add(handleConnectionAction);
+			Fiber.Execute(handleConnectionAction);
 		}
 
 		protected void ConnectionComplete()

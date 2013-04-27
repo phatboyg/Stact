@@ -26,7 +26,7 @@ namespace Stact
 		/// <summary>
 		/// Constructs a channel
 		/// </summary>
-		/// <param name="fiber">The queue where consumer actions should be enqueued</param>
+		/// <param name="fiber">The Fiber where consumer actions should be added</param>
 		/// <param name="consumer">The method to call when a message is sent to the channel</param>
 		public ConsumerChannel(Fiber fiber, Consumer<T> consumer)
 		{
@@ -36,7 +36,7 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => _consumer(message));
+			_fiber.Execute(() => _consumer(message));
 		}
 	}
 }

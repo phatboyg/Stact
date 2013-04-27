@@ -68,7 +68,7 @@ namespace Stact.ServerFramework
 
 			public void Send(ConnectionContext context)
 			{
-				_fiber.Add(() =>
+				_fiber.Execute(() =>
 					{
 						context.Response.WriteHtml(_message);
 						context.Complete();

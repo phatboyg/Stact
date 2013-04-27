@@ -20,11 +20,11 @@ namespace Stact.Schedulers
     public class ScheduledOperationList
     {
         readonly object _lock = new object();
-        readonly SortedList<DateTime, List<ScheduledOperationExecuter>> _operations;
+        readonly SortedList<DateTime, List<ScheduledExecution>> _operations;
 
         public ScheduledOperationList()
         {
-            _operations = new SortedList<DateTime, List<ScheduledOperationExecuter>>();
+            _operations = new SortedList<DateTime, List<ScheduledExecution>>();
         }
 
         public int Count
@@ -36,18 +36,18 @@ namespace Stact.Schedulers
             }
         }
 
-        public ScheduledOperationExecuter[] GetExpiredActions(DateTime now)
+        public ScheduledExecution[] GetExpiredActions(DateTime now)
         {
             // TODO refactor to incremental removeal 
             lock (_lock)
             {
-                ScheduledOperationExecuter[] expired = _operations
+                ScheduledExecution[] expired = _operations
                     .Where(x => x.Key <= now)
                     .OrderBy(x => x.Key)
                     .SelectMany(x => x.Value)
                     .ToArray();
 
-                foreach (ScheduledOperationExecuter executer in expired)
+                foreach (ScheduledExecution executer in expired)
                 {
                     if (_operations.ContainsKey(executer.ScheduledAt))
                         _operations.Remove(executer.ScheduledAt);
@@ -78,16 +78,16 @@ namespace Stact.Schedulers
             return false;
         }
 
-        public void Add(ScheduledOperationExecuter operation)
+        public void Add(ScheduledExecution operation)
         {
             lock (_lock)
             {
-                List<ScheduledOperationExecuter> list;
+                List<ScheduledExecution> list;
                 if (_operations.TryGetValue(operation.ScheduledAt, out list))
                     list.Add(operation);
                 else
                 {
-                    list = new List<ScheduledOperationExecuter>
+                    list = new List<ScheduledExecution>
                         {
                             operation
                         };

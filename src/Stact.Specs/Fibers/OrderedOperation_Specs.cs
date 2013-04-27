@@ -35,12 +35,12 @@ namespace Stact.Specs.Fibers
 
             var go = new Future<bool>();
 
-            fiber.Add(() => { go.WaitUntilCompleted(10.Seconds()); });
+            fiber.Execute(() => { go.WaitUntilCompleted(10.Seconds()); });
 
             for (int i = 0; i < _count; i++)
             {
                 int offset = i;
-                fiber.Add(() =>
+                fiber.Execute(() =>
                     {
                         _values[offset] = index++;
 

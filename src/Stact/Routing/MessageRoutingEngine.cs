@@ -69,8 +69,6 @@ namespace Stact.Routing
 
             callback(configurator);
 
-            //                   new TraceRoutingEngineVisualizer().Show(this);
-
             _agenda.Run();
         }
 

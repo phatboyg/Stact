@@ -22,7 +22,7 @@ namespace Stact.Internal
         readonly SelectiveConsumer<Message<TMessage>> _selectiveConsumer;
         readonly Action _timeoutCallback;
         bool _cancel;
-        ScheduledOperation _scheduledAction;
+        ScheduledExecutionHandle _scheduledAction;
 
         public ActorReceiveHandle(SelectiveConsumer<Message<TMessage>> selectiveConsumer,
                                   Action<ActorReceiveHandle<TState, TMessage>> onComplete)
@@ -40,7 +40,7 @@ namespace Stact.Internal
         }
 
 
-        public void ScheduleTimeout(Func<ActorReceiveHandle<TState, TMessage>, ScheduledOperation> scheduleAction)
+        public void ScheduleTimeout(Func<ActorReceiveHandle<TState, TMessage>, ScheduledExecutionHandle> scheduleAction)
         {
             _scheduledAction = scheduleAction(this);
         }

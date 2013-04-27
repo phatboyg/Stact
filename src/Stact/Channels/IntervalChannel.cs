@@ -30,7 +30,7 @@ namespace Stact
 		readonly MessageList<T> _messages;
 		readonly Scheduler _scheduler;
 		bool _disposed;
-		ScheduledOperation _scheduledAction;
+		ScheduledExecutionHandle _scheduledAction;
 
 		/// <summary>
 		/// Constructs a channel
@@ -57,7 +57,7 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => _messages.Add(message));
+			_fiber.Execute(() => _messages.Add(message));
 		}
 
 		public void Dispose()

@@ -46,7 +46,7 @@ namespace Stact
 
 		public void Send<T>(T message)
 		{
-			_fiber.Add(() => _synchronizationContext.Send(x => Output.Send(message), _state));
+			_fiber.Execute(() => _synchronizationContext.Send(x => Output.Send(message), _state));
 		}
 	}
 
@@ -81,7 +81,7 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() => _synchronizationContext.Send(x => Output.Send(message), _state));
+			_fiber.Execute(() => _synchronizationContext.Send(x => Output.Send(message), _state));
 		}
 	}
 }

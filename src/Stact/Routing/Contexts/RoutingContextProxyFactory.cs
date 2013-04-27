@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,18 +15,5 @@ namespace Stact.Routing.Contexts
     public interface RoutingContextProxyFactory<in T>
     {
         RoutingContext<TOutput> CreateProxy<TOutput>(RoutingContext<T> input, Message<T> message);
-    }
-
-
-    public class MessageRoutingContextProxyFactory<TInput, TOutput> :
-        RoutingContextProxyFactory<TInput>
-        where TInput : TOutput
-    {
-        public RoutingContext<TResult> CreateProxy<TResult>(RoutingContext<TInput> input, Message<TInput> message)
-        {
-            var proxy = new MessageRoutingContextProxy<TInput, TOutput>(input, message);
-
-            return proxy as RoutingContext<TResult>;
-        }
     }
 }

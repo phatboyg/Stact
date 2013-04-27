@@ -29,7 +29,7 @@ namespace Stact.Specs.Actors.PingPongDemo
 
 		public void Ping(Ping ping)
 		{
-			_fiber.Add(() => Consume(ping));
+			_fiber.Execute(() => Consume(ping));
 		}
 
 		private void Consume(Ping ping)

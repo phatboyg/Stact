@@ -18,15 +18,11 @@ namespace Stact
 
     public static class ExecuteFiberExtensions
     {
-        public static void Add(this Fiber fiber, Action operation)
-        {
-            IList<Action> actions = new List<Action>(1);
-            actions.Add(operation);
-            var executor = new ActionListExecution(actions);
-
-            fiber.Add(executor);
-        }
-
+        /// <summary>
+        /// Execute an Action on a Fiber
+        /// </summary>
+        /// <param name="fiber">The target Fiber</param>
+        /// <param name="operation">The operation to execute</param>
         public static void Execute(this Fiber fiber, Action operation)
         {
             IList<Action> actions = new List<Action>(1);
@@ -36,10 +32,14 @@ namespace Stact
             fiber.Add(executor);
         }
 
-        public static void Execute(this Fiber fiber, Action operation, params Action[] operations)
+        /// <summary>
+        /// Execute a series of Actions on a Fiber
+        /// </summary>
+        /// <param name="fiber">The target Fiber</param>
+        /// <param name="operations">The operations to execute</param>
+        public static void Execute(this Fiber fiber, params Action[] operations)
         {
-            var actions = new List<Action>(operations.Length + 1);
-            actions.Add(operation);
+            var actions = new List<Action>(operations.Length);
             actions.AddRange(operations);
             var executor = new ActionListExecution(actions);
 

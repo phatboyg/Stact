@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -20,7 +20,7 @@ namespace Stact.Routing.Contexts
         RoutingContext<T>
     {
         static readonly Cache<Type, RoutingContextProxyFactory<T>> _factoryCache =
-            new DictionaryCache<Type, RoutingContextProxyFactory<T>>(CreateMissingProxyFactory);
+            new ConcurrentCache<Type, RoutingContextProxyFactory<T>>();
 
         readonly Message<T> _message;
         readonly int _priority;
@@ -47,10 +47,13 @@ namespace Stact.Routing.Contexts
             get { return _priority; }
         }
 
-        public void Convert<TResult>(Action<RoutingContext<TResult>> callback)
+        public bool TryGetContext<TResult>(out RoutingContext<TResult> context)
         {
-            RoutingContext<TResult> proxy = _factoryCache[typeof(TResult)].CreateProxy<TResult>(this, _message);
-            callback(proxy);
+            RoutingContextProxyFactory<T> factory = _factoryCache.Get(typeof(TResult),
+                type => CreateMissingProxyFactory(type));
+
+            context = factory.CreateProxy<TResult>(this, _message);
+            return context != null;
         }
 
         public T Body
@@ -63,10 +66,11 @@ namespace Stact.Routing.Contexts
             get { return _message; }
         }
 
-        static RoutingContextProxyFactory<T> CreateMissingProxyFactory(Type key)
+        static RoutingContextProxyFactory<T> CreateMissingProxyFactory(Type proxyType)
         {
-            return (RoutingContextProxyFactory<T>)
-                   Activator.CreateInstance(typeof(MessageRoutingContextProxyFactory<,>).MakeGenericType(typeof(T), key));
+            Type proxyFactoryType = typeof(MessageRoutingContextProxyFactory<,>).MakeGenericType(typeof(T), proxyType);
+
+            return (RoutingContextProxyFactory<T>)Activator.CreateInstance(proxyFactoryType);
         }
     }
 }

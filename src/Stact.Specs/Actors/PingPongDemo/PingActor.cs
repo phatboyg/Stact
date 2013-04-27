@@ -33,7 +33,7 @@ namespace Stact.Specs.Actors.PingPongDemo
 
 		public void Pong(Pong pong)
 		{
-			_fiber.Add(() => Consume(pong));
+			_fiber.Execute(() => Consume(pong));
 		}
 
 		public void Start(int count, Pong pong)

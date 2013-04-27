@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,17 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using Internal;
-
-
-	/// <summary>
-	///   A conditional consumer is given a message to evaluate, after which it
-	///   can determine if it is interested in the message and return an action
-	///   to process the message or null
-	/// </summary>
-	/// <typeparam name = "T">The message type</typeparam>
-	/// <param name = "message">The message</param>
-	/// <returns>An action to consume the message, or null</returns>
-	[CanBeNull]
-	public delegate Consumer<T> SelectiveConsumer<in T>([NotNull] T message);
+    /// <summary>
+    ///   A conditional consumer is given a message to evaluate, after which it
+    ///   can determine if it is interested in the message and return an action
+    ///   to process the message or null
+    /// </summary>
+    /// <typeparam name = "T">The message type</typeparam>
+    /// <param name = "message">The message</param>
+    /// <returns>An action to consume the message, or null</returns>
+    public delegate Consumer<T> SelectiveConsumer<in T>(T message);
 }

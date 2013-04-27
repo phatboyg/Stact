@@ -13,7 +13,6 @@
 
 namespace Stact.Routing.Nodes
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -52,12 +51,6 @@ namespace Stact.Routing.Nodes
         public void Add(Activation<TChannel> activation)
         {
             _activations.Add(activation);
-        }
-
-        public void All(Action<Activation<TChannel>> callback)
-        {
-            foreach (var activation in this)
-                callback(activation);
         }
 
         public void Remove(Activation<TChannel> activation)

@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,9 +12,6 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing
 {
-    using System;
-
-
     public interface RoutingContext
     {
         bool IsAlive { get; }
@@ -28,10 +25,8 @@ namespace Stact.Routing
     {
         Message<T> Message { get; }
 
-        T Body { get; }
-
         int Priority { get; }
 
-        void Convert<TResult>(Action<RoutingContext<TResult>> callback);
+        bool TryGetContext<TResult>(out RoutingContext<TResult> context);
     }
 }

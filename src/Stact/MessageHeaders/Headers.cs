@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+﻿// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,14 +12,13 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 
-	public interface Headers :
-		IEnumerable<KeyValuePair<string, string>>
-	{
-		string this[string key] { get; set; }
-
-		IDictionary<string, string> GetDictionary();
-	}
+    public interface Headers :
+        IEnumerable<Tuple<string, string>>
+    {
+        string this[string key] { get; }
+    }
 }

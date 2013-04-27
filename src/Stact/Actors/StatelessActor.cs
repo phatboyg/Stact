@@ -32,7 +32,7 @@ namespace Stact
 
         public static ActorRef New(Action<Actor<Stateless>> initializer)
         {
-            return Actor.New(new Stateless(), x => x.Internals.Fiber.Add(() => initializer(x)));
+            return Actor.New(new Stateless(), x => x.Internals.Fiber.Execute(() => initializer(x)));
         }
 
 

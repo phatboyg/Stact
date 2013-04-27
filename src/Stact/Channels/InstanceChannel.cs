@@ -35,7 +35,7 @@ namespace Stact
 
 		public void Send(T message)
 		{
-			_fiber.Add(() =>
+			_fiber.Execute(() =>
 				{
 					Channel<T> channel = Provider.GetChannel(message);
 					if (channel == null)

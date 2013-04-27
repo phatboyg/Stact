@@ -14,9 +14,7 @@ namespace Stact
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
-    using Internals.Tasks;
 
 
     /// <summary>
@@ -49,7 +47,7 @@ namespace Stact
                     if (executionContext.CancellationToken.IsCancellationRequested)
                     {
                         _notify(_actions, index, _actions.Count - index);
-                        return TaskUtil.Canceled();
+                        return executionContext.Canceled();
                     }
 
                     _actions[index]();

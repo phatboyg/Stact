@@ -14,10 +14,6 @@ namespace Stact.Routing
 {
     public interface RoutingEngineConfigurator
     {
-        RoutingEngineAgenda Agenda { get; }
-
-        RemoveActivation AddActivation<T>(Activation<T> activation);
-
         RemoveActivation Receive<T>(Consumer<Message<T>> consumer);
 
         RemoveActivation SelectiveReceive<T>(SelectiveConsumer<Message<T>> consumer);

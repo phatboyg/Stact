@@ -1,4 +1,4 @@
-﻿// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,11 +10,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Internal
+namespace Stact.Routing.Configuration
 {
     using System;
     using Nodes;
-    using Visualizers;
 
 
     public class MatchAlphaNode<T> :
@@ -50,9 +49,9 @@ namespace Stact.Routing.Internal
             return base.Visit(node);
         }
 
-        protected override bool Visit<TChannel>(AlphaNode<TChannel> node)
+        protected override bool Visit<TContext>(AlphaNode<TContext> node)
         {
-            var self = this as MatchAlphaNode<TChannel>;
+            var self = this as MatchAlphaNode<TContext>;
             if(self != null)
             {
                 self._alpha = node;

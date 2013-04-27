@@ -10,15 +10,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace Stact.Routing.Visualizers
+namespace Stact.Schedulers
 {
-	public static class ExtensionsForVisualizers
+	public interface ScheduledExecution :
+		ScheduledExecutionHandle
 	{
-		public static RoutingEngineGraphData GetGraphData(this RoutingEngine engine)
-		{
-			var visitor = new GraphRoutingEngineVisitor(engine);
-
-			return visitor.GetGraphData();
-		}
+	    void Execute();
 	}
 }

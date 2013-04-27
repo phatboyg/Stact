@@ -13,7 +13,6 @@
 namespace Stact.Routing.Configuration
 {
     using System;
-    using Internal;
     using Internals.Caching;
     using Internals.Extensions;
     using Nodes;
@@ -25,13 +24,14 @@ namespace Stact.Routing.Configuration
         readonly RoutingEngineAgenda _agenda;
 
         readonly MessageRoutingEngine _engine;
-        readonly Cache<Type, object> _joinNodes;
+        readonly Cache<Type, Memory> _memories;
 
         public MessageRoutingEngineConfigurator(MessageRoutingEngine engine, RoutingEngineAgenda agenda)
         {
             _engine = engine;
             _agenda = agenda;
-            _joinNodes = new DictionaryCache<Type, object>();
+
+            _memories = new DictionaryCache<Type, Memory>();
         }
 
         public RoutingEngineAgenda Agenda
@@ -41,11 +41,11 @@ namespace Stact.Routing.Configuration
 
         public RemoveActivation AddActivation<T>(Activation<T> activation)
         {
-            BetaMemory<T> joinNode = GetJoinNode<T>();
+            Memory memory = GetAlphaNode<T>();
 
-            joinNode.AddActivation(activation);
+            memory.AddActivation(activation);
 
-            return () => { joinNode.RemoveActivation(activation); };
+            return () => memory.RemoveActivation(activation);
         }
 
         public RemoveActivation Receive<T>(Consumer<Message<T>> consumer)
@@ -62,22 +62,21 @@ namespace Stact.Routing.Configuration
             return AddActivation(consumerNode);
         }
 
-        BetaMemory<T> GetJoinNode<T>()
+        Memory<T> GetAlphaNode<T>()
         {
-            return (BetaMemory<T>)_joinNodes.Get(typeof(T), x => FindJoinNode<T>());
+            return (Memory<T>)_memories.Get(typeof(T), x => FindAlphaNode<T>());
         }
 
-        object FindJoinNode<T>()
+        Memory FindAlphaNode<T>()
         {
-            JoinNode<T> result = null;
+            AlphaNode<T> result = null;
 
-            new MatchAlphaNode<T>(_engine,
-                alphaNode => { new MatchJoinNode<T>(alphaNode, joinNode => { result = joinNode; }); });
+            var matchAlphaNode = new MatchAlphaNode<T>(_engine, alphaNode => { result = alphaNode; });
 
             if (result == null)
-                throw new InvalidOperationException("Failed to create join node: " + typeof(T).GetTypeName());
+                throw new InvalidOperationException("Failed to create alpha node: " + typeof(T).GetTypeName());
 
-            return result.BetaMemory;
+            return result;
         }
     }
 }

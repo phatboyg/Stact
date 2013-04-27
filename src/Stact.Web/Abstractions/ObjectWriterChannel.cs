@@ -42,7 +42,7 @@ namespace Stact.Web.Abstractions
 		/// <param name="message"></param>
 		public void Send(T message)
 		{
-			_fiber.Add(() =>
+			_fiber.Execute(() =>
 				{
 					_writer.Write(message);
 

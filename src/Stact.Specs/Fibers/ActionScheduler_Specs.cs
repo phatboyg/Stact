@@ -129,7 +129,7 @@ namespace Stact.Specs.Fibers
 			var called = new Future<int>();
 			var failed = new Future<bool>();
 
-			ScheduledOperation scheduledAction = null;
+			ScheduledExecutionHandle scheduledAction = null;
 			scheduledAction = scheduler.Schedule(TimeSpan.Zero, 100.Milliseconds(), fiber, () =>
 				{
 					count++;
@@ -151,6 +151,12 @@ namespace Stact.Specs.Fibers
 			failed.WaitUntilCompleted(200.Milliseconds()).ShouldBeFalse();
 
 			Trace.WriteLine("Time Period: " + elapsed.ElapsedMilliseconds);
+
+            var subsequentCalled = new Future<bool>();
+
+            scheduler.Schedule(10, fiber, () => subsequentCalled.Complete(true));
+
+            subsequentCalled.WaitUntilCompleted(1.Seconds()).ShouldBeTrue();
 		}
 	}
 }

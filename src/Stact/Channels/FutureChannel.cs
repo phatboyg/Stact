@@ -25,7 +25,7 @@ namespace Stact
 		}
 
 		public FutureChannel(Fiber fiber, Action callback)
-			: base(x => fiber.Add(callback), 0)
+			: base(x => fiber.Execute(callback), 0)
 		{
 		}
 

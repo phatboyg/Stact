@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -16,7 +16,7 @@ namespace Stact.Routing.Nodes
         Activation<TInput>
         where TInput : TOutput
     {
-        Activation<TOutput> _output;
+        readonly Activation<TOutput> _output;
 
         public ConvertNode(Activation<TOutput> output)
         {
@@ -27,10 +27,12 @@ namespace Stact.Routing.Nodes
         {
             get { return _output; }
         }
+
         public ActivationType ActivationType
         {
             get { return ActivationType.ConvertNode; }
         }
+
         public bool Enabled
         {
             get { return _output.Enabled; }
@@ -38,7 +40,9 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<TInput> context)
         {
-            context.Convert<TOutput>(proxy => _output.Activate(proxy));
+            RoutingContext<TOutput> outputContext;
+            if (context.TryGetContext(out outputContext))
+                _output.Activate(outputContext);
         }
     }
 }

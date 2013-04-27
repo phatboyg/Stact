@@ -77,9 +77,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
     </Reference>
@@ -96,6 +93,7 @@
     <Compile Include="Channels\Internal\ImplementationBuilder.cs" />
     <Compile Include="Channels\Internal\ProxyFactory.cs" />
     <Compile Include="Channels\Internal\TypeProxyFactory.cs" />
+    <Compile Include="Channels\MessageConsumer.cs" />
     <Compile Include="Configuration\Configurators\ConfigurationResult.cs" />
     <Compile Include="Configuration\Configurators\Configurator.cs" />
     <Compile Include="Configuration\Configurators\StactConfigurationResult.cs" />
@@ -168,11 +166,11 @@
     <Compile Include="ActorUrn.cs" />
     <Compile Include="Channels\UntypedFilterChannel.cs" />
     <Compile Include="Fibers\Executors\TryCatchOperationExecutor.cs" />
-    <Compile Include="Internal\LinkImpl.cs" />
-    <Compile Include="Internal\ReSharperStaticAnalysis.cs" />
     <Compile Include="LoopExtensions.cs" />
     <Compile Include="MessageHeaders\MessageDispatcher.cs" />
     <Compile Include="MessageHeaders\MessageHeaderExtensions.cs" />
+    <Compile Include="MessageHeaders\MessageHeaders\EmptyHeaders.cs" />
+    <Compile Include="MessageHeaders\MessageHeaders\PropertyMessageHeader.cs" />
     <Compile Include="MessageHeaders\SetMessageHeader.cs" />
     <Compile Include="Messages\ActorRestartLimitReached.cs" />
     <Compile Include="Messages\Death.cs" />
@@ -246,49 +244,42 @@
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
     <Compile Include="MessageHeaders\MessageHeader.cs" />
     <Compile Include="MessageHeaders\HeaderKey.cs" />
-    <Compile Include="MessageHeaders\MessageHeaders\DictionaryHeaders.cs" />
     <Compile Include="MessageHeaders\Headers.cs" />
     <Compile Include="MessageUrn.cs" />
     <Compile Include="Actors\ActorRegistryFactory.cs" />
     <Compile Include="RequestExtensions.cs" />
     <Compile Include="RespondExtensions.cs" />
     <Compile Include="Routing\Activation.cs" />
+    <Compile Include="Routing\ActivationType.cs" />
+    <Compile Include="Routing\Configuration\AbstractRoutingEngineVisitor.cs" />
+    <Compile Include="Routing\Configuration\MatchAlphaNode.cs" />
     <Compile Include="Routing\Configuration\MessageRoutingEngineConfigurator.cs" />
+    <Compile Include="Routing\Contexts\MessageRoutingContextProxyFactory.cs" />
     <Compile Include="Routing\RoutingEngineAgenda.cs" />
-    <Compile Include="Routing\RoutingEngineConfiguratorExtensions.cs" />
     <Compile Include="Routing\Contexts\MessageProxy.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContext.cs" />
     <Compile Include="Routing\Contexts\MessageRoutingContextProxy.cs" />
     <Compile Include="Routing\Contexts\RoutingContextProxyFactory.cs" />
-    <Compile Include="Routing\Internal\MatchAlphaNode.cs" />
-    <Compile Include="Routing\Internal\MatchJoinNode.cs" />
     <Compile Include="Routing\Nodes\ActiveContextList.cs" />
     <Compile Include="Routing\Nodes\ActivationList.cs" />
     <Compile Include="Routing\Nodes\Memory.cs" />
     <Compile Include="Routing\Nodes\AlphaNode.cs" />
     <Compile Include="Routing\Nodes\AlphaNodeInitializer.cs" />
     <Compile Include="Routing\Nodes\AlphaNodeInitializerImpl.cs" />
-    <Compile Include="Routing\Nodes\BetaMemory.cs" />
-    <Compile Include="Routing\Nodes\ChannelNode.cs" />
-    <Compile Include="Routing\Nodes\ConditionNode.cs" />
-    <Compile Include="Routing\Nodes\ConstantNode.cs" />
     <Compile Include="Routing\Nodes\ConsumerNode.cs" />
     <Compile Include="Routing\Nodes\ConvertNode.cs" />
-    <Compile Include="Routing\Nodes\JoinNode.cs" />
-    <Compile Include="Routing\Nodes\MessageNode.cs" />
     <Compile Include="Routing\Nodes\ProductionNode.cs" />
-    <Compile Include="Routing\Nodes\RightActivation.cs" />
     <Compile Include="Routing\Nodes\RootNode.cs" />
     <Compile Include="Routing\Nodes\SelectiveConsumerNode.cs" />
     <Compile Include="Routing\RemoveActivation.cs" />
     <Compile Include="Routing\RoutingContext.cs" />
+    <Compile Include="Schedulers\Schedulers\PeriodicScheduledExecution.cs" />
     <Compile Include="Schedulers\Schedulers\StopSchedulerOnDispose.cs" />
     <Compile Include="Schedulers\SchedulerException.cs" />
     <Compile Include="Schedulers\TimerScheduler.cs" />
     <Compile Include="ActorSendExtensions.cs" />
     <Compile Include="SentRequestExtensions.cs" />
     <Compile Include="StactException.cs" />
-    <Compile Include="Internal\ThreadSingleton.cs" />
     <Compile Include="Actors\Internal\ActorReceiveHandle.cs" />
     <Compile Include="Actors\WithinSentRequest.cs" />
     <Compile Include="Actors\Internal\WithinSentRequestImpl.cs" />
@@ -366,8 +357,7 @@
     <Compile Include="Routing\RoutingEngineConfigurator.cs" />
     <Compile Include="Routing\MessageRoutingEngine.cs" />
     <Compile Include="Routing\RoutingEngine.cs" />
-    <Compile Include="Routing\Visualizers\AbstractRoutingEngineVisitor.cs" />
-    <Compile Include="Schedulers\ExtensionsToScheduler.cs" />
+    <Compile Include="Schedulers\SchedulerExtensions.cs" />
     <Compile Include="Channels\UntypedChannel.cs" />
     <Compile Include="Fibers\Configuration\FiberConfigurationException.cs" />
     <Compile Include="Fibers\Configuration\FiberProviderConfigurator.cs" />
@@ -379,10 +369,10 @@
     <Compile Include="Fibers\FiberException.cs" />
     <Compile Include="Fibers\FiberProvider.cs" />
     <Compile Include="Schedulers\Scheduler.cs" />
-    <Compile Include="Schedulers\ScheduledOperation.cs" />
-    <Compile Include="Schedulers\Schedulers\ScheduledOperationExecuter.cs" />
+    <Compile Include="Schedulers\ScheduledExecutionHandle.cs" />
+    <Compile Include="Schedulers\Schedulers\ScheduledExecution.cs" />
     <Compile Include="Schedulers\Schedulers\ScheduledOperationList.cs" />
-    <Compile Include="Schedulers\Schedulers\ScheduledOperationExecuterImpl.cs" />
+    <Compile Include="Schedulers\Schedulers\OneTimeScheduledExecution.cs" />
     <Compile Include="Schedulers\SchedulerFactory.cs" />
     <Compile Include="Fibers\SynchronousFiber.cs" />
     <Compile Include="Fibers\Internal\SingleFiberProvider.cs" />

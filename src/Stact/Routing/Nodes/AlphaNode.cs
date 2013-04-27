@@ -1,4 +1,4 @@
-// Copyright 2010 Chris Patterson
+// Copyright 2010-2013 Chris Patterson
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 namespace Stact.Routing.Nodes
 {
-    public class AlphaNode<TChannel> :
-        Memory<TChannel>,
+    public class AlphaNode<T> :
+        Memory<T>,
         Activation,
-        Activation<TChannel>
+        Activation<T>
     {
         public ActivationType ActivationType
         {

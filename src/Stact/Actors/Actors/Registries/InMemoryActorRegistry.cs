@@ -44,7 +44,7 @@ namespace Stact.Actors.Registries
 
         public void Register(Guid key, ActorRef actor)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 ActorRef existingActor;
                 if (_keyIndex.TryGetValue(key, out existingActor))
@@ -73,7 +73,7 @@ namespace Stact.Actors.Registries
 
         public void Register(ActorRef actor, Action<Guid, ActorRef> callback)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 Guid key = Guid.NewGuid();
                 Add(key, actor);
@@ -84,7 +84,7 @@ namespace Stact.Actors.Registries
 
         public void Unregister(ActorRef actor)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 Guid key;
                 if (_actors.TryGetValue(actor, out key))
@@ -94,7 +94,7 @@ namespace Stact.Actors.Registries
 
         public void Unregister(Guid key)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 ActorRef actor;
                 if (_keyIndex.TryGetValue(key, out actor))
@@ -104,7 +104,7 @@ namespace Stact.Actors.Registries
 
         public void Shutdown()
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 foreach (ActorRef actor in _actors.Keys)
                     actor.Send<Exit>();
@@ -120,7 +120,7 @@ namespace Stact.Actors.Registries
 
         public void Get(Guid key, Action<ActorRef> callback, Action notFoundCallback)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 ActorRef actor;
                 if (_keyIndex.TryGetValue(key, out actor))
@@ -132,7 +132,7 @@ namespace Stact.Actors.Registries
 
         public void Select(Uri actorAddress, Action<ActorRef> callback, Action notFoundCallback)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 try
                 {
@@ -154,7 +154,7 @@ namespace Stact.Actors.Registries
 
         public void Each(Action<Guid, ActorRef> callback)
         {
-            _fiber.Add(() =>
+            _fiber.Execute(() =>
             {
                 foreach (var pair in _keyIndex)
                     callback(pair.Key, pair.Value);

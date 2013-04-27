@@ -108,7 +108,7 @@ namespace Stact
 
         public TimeoutHandle SetTimeout(TimeSpan timeout, Action timeoutCallback)
         {
-            ScheduledOperation handle = _scheduler.Schedule(timeout, _fiber, timeoutCallback);
+            ScheduledExecutionHandle handle = _scheduler.Schedule(timeout, _fiber, timeoutCallback);
 
             return new TimeoutHandleImpl(handle);
         }
@@ -188,7 +188,7 @@ namespace Stact
         void DefaultExitHandler(Message<Exit> message, NextExitHandler next)
         {
             if (message.Sender != null)
-                _fiber.Add(() => message.Respond(message.Body));
+                _fiber.Execute(() => message.Respond(message.Body));
 
             _engine.Shutdown();
         }
@@ -230,9 +230,9 @@ namespace Stact
         class TimeoutHandleImpl :
             TimeoutHandle
         {
-            readonly ScheduledOperation _scheduledOperation;
+            readonly ScheduledExecutionHandle _scheduledOperation;
 
-            public TimeoutHandleImpl(ScheduledOperation scheduledOperation)
+            public TimeoutHandleImpl(ScheduledExecutionHandle scheduledOperation)
             {
                 _scheduledOperation = scheduledOperation;
             }

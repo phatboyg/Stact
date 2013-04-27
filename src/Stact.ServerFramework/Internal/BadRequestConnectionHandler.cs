@@ -42,7 +42,7 @@ namespace Stact.ServerFramework.Internal
 	<p>The URI specified was not recognized by any registered handler.</p>
 </body>";
 
-				_fiber.Add(() =>
+				_fiber.Execute(() =>
 					{
 						context.SetStatusToBadRequest();
 						context.Response.WriteHtml(message);

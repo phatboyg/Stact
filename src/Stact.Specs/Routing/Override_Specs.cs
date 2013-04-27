@@ -18,7 +18,6 @@ namespace Stact.Specs
     using MessageHeaders;
     using NUnit.Framework;
     using Routing;
-    using Routing.Visualizers;
 
 
     [Scenario]

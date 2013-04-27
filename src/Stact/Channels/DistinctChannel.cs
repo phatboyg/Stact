@@ -45,7 +45,7 @@ namespace Stact
 
         public void Send(ICollection<T> message)
         {
-            _fiber.Add(() => SendMessagesToOutputChannel(message));
+            _fiber.Execute(() => SendMessagesToOutputChannel(message));
         }
 
         void SendMessagesToOutputChannel(IEnumerable<T> messages)
