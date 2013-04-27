@@ -165,7 +165,6 @@
     <Compile Include="Actors\UntypedActor.cs" />
     <Compile Include="ActorUrn.cs" />
     <Compile Include="Channels\UntypedFilterChannel.cs" />
-    <Compile Include="Fibers\Executors\TryCatchOperationExecutor.cs" />
     <Compile Include="LoopExtensions.cs" />
     <Compile Include="MessageHeaders\MessageDispatcher.cs" />
     <Compile Include="MessageHeaders\MessageHeaderExtensions.cs" />
@@ -377,7 +376,6 @@
     <Compile Include="Fibers\SynchronousFiber.cs" />
     <Compile Include="Fibers\Internal\SingleFiberProvider.cs" />
     <Compile Include="Fibers\ThreadFiber.cs" />
-    <Compile Include="Fibers\PoolFiber.cs" />
     <Compile Include="Fibers\FiberFactory.cs" />
     <Compile Include="Channels\AsyncResultChannel.cs" />
     <Compile Include="Channels\ChannelAccessor.cs" />
@@ -414,7 +412,9 @@
     <Compile Include="UriExtensions.cs" />
     <Compile Include="WithinExtensions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Fibers\Executors\" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>

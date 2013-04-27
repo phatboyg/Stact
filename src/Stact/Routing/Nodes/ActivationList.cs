@@ -17,17 +17,17 @@ namespace Stact.Routing.Nodes
     using System.Collections.Generic;
 
 
-    public class ActivationList<TChannel> :
-        IEnumerable<Activation<TChannel>>
+    public class ActivationList<T> :
+        IEnumerable<Activation<T>>
     {
-        readonly IList<Activation<TChannel>> _activations;
+        readonly IList<Activation<T>> _activations;
 
-        public ActivationList(params Activation<TChannel>[] activations)
+        public ActivationList(params Activation<T>[] activations)
         {
-            _activations = new List<Activation<TChannel>>(activations);
+            _activations = new List<Activation<T>>(activations);
         }
 
-        public IEnumerator<Activation<TChannel>> GetEnumerator()
+        public IEnumerator<Activation<T>> GetEnumerator()
         {
             for (int i = 0; i < _activations.Count;)
             {
@@ -48,12 +48,12 @@ namespace Stact.Routing.Nodes
             return GetEnumerator();
         }
 
-        public void Add(Activation<TChannel> activation)
+        public void Add(Activation<T> activation)
         {
             _activations.Add(activation);
         }
 
-        public void Remove(Activation<TChannel> activation)
+        public void Remove(Activation<T> activation)
         {
             _activations.Remove(activation);
         }

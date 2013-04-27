@@ -47,17 +47,12 @@ namespace Stact.Routing.Nodes
 
         public void Activate(RoutingContext<T> context)
         {
-            Add(context);
+            _contexts.Add(context);
         }
 
         public IEnumerable<Activation<T>> Successors
         {
             get { return _successors; }
-        }
-
-        protected void Add(RoutingContext<T> message)
-        {
-            _contexts.Add(message);
         }
 
         public void AddActivation(Activation<T> activation)
@@ -76,7 +71,7 @@ namespace Stact.Routing.Nodes
                 });
         }
 
-        public void RemoveActivation(Activation<T> activation)
+        void RemoveActivation(Activation<T> activation)
         {
             _successors.Remove(activation);
         }

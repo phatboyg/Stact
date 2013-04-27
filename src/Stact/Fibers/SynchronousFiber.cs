@@ -13,7 +13,7 @@
 namespace Stact
 {
     using System;
-    using Executors;
+    using System.Threading;
 
 
     /// <summary>
@@ -21,34 +21,31 @@ namespace Stact
     ///   without any protection from an exception
     /// </summary>
     public class SynchronousFiber :
-        Fiber
+        Fiber,
+        ExecutionContext
     {
-        readonly OperationExecutor _executor;
+        static readonly CancellationToken _none = CancellationToken.None;
+
         bool _stopping;
 
-        public SynchronousFiber()
-            : this(new TryCatchOperationExecutor())
+        public CancellationToken CancellationToken
         {
-        }
-
-        public SynchronousFiber(OperationExecutor executor)
-        {
-            _executor = executor;
+            get { return _none; }
         }
 
         public void Add(Execution execution)
         {
             if (_stopping)
                 return;
-            // seems to be causing more problems that it solves
-            // throw new FiberException("The fiber is no longer accepting actions");
 
-            _executor.Execute(execution);
+            if (_stopping)
+                return;
+
+            execution.Execute(this).Wait();
         }
 
         public void Kill()
         {
-            _executor.Stop();
         }
 
         public bool Stop(TimeSpan timeout)

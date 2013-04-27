@@ -25,16 +25,32 @@ namespace Stact.Routing.Nodes
         static readonly Cache<Type, AlphaNodeInitializer> _initializers =
             new GenericTypeCache<AlphaNodeInitializer>(typeof(AlphaNodeInitializerImpl<>));
 
-        readonly Cache<Type, Activation> _types;
+//        readonly Cache<Type, Activation> _types;
+
+        readonly List<AlphaNodeEntry> _alphaNodes;
+
+            class AlphaNodeEntry
+            {
+                public AlphaNodeEntry(Type type, Activation activation)
+                {
+                    Type = type;
+                    Activation = activation;
+                }
+
+     public           readonly Type Type;
+           public      readonly Activation Activation;
+            }
 
         public RootNode()
         {
-            _types = new DictionaryCache<Type, Activation>();
+            _alphaNodes = new List<AlphaNodeEntry>();
+//            _types = new DictionaryCache<Type, Activation>();
         }
 
         public IEnumerable<Activation> Activations
         {
-            get { return _types; }
+//            get { return _types; }
+            get { return _alphaNodes.Select(x => x.Activation); }
         }
 
         public ActivationType ActivationType
@@ -44,10 +60,13 @@ namespace Stact.Routing.Nodes
 
         public void Activate<T>(RoutingContext<T> context)
         {
-            _types.Get(typeof(T), CreateMissingAlphaNode<T>).Activate(context);
+            Activation alphaNode = GetAlphaNode<T>();
+
+            alphaNode.Activate(context);
+//            _types.Get(typeof(T), CreateMissingAlphaNode<T>).Activate(context);
         }
 
-        Activation CreateMissingAlphaNode<T>(Type type)
+        AlphaNode<T> CreateMissingAlphaNode<T>(Type type)
         {
             var alphaNode = new AlphaNode<T>();
 
@@ -59,12 +78,23 @@ namespace Stact.Routing.Nodes
 
         public AlphaNode<T> GetAlphaNode<T>()
         {
-            var value = _types.Get(typeof(T), CreateMissingAlphaNode<T>) as AlphaNode<T>;
-            if (value != null)
-                return value;
+            for (int index = 0; index < _alphaNodes.Count; index++)
+            {
+                if (_alphaNodes[index].Type == typeof(T))
+                {
+                    return _alphaNodes[index].Activation as AlphaNode<T>;
+                }
+            }
 
-            throw new InvalidOperationException(
-                string.Format("The activation for {0} is not an Alpha node", typeof(T).GetTypeName()));
+            var alphaNode = CreateMissingAlphaNode<T>(typeof(T));
+            _alphaNodes.Add(new AlphaNodeEntry(typeof(T), alphaNode));
+            return alphaNode;
+//            var value = _types.Get(typeof(T), CreateMissingAlphaNode<T>) as AlphaNode<T>;
+//            if (value != null)
+//                return value;
+//
+//            throw new InvalidOperationException(
+//                string.Format("The activation for {0} is not an Alpha node", typeof(T).GetTypeName()));
         }
 
         public static IEnumerable<Type> GetNestedMessageTypes(Type type)

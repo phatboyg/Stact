@@ -28,7 +28,7 @@ namespace Stact.Specs.Fibers
         {
             _count = 10000;
             _values = new int[_count];
-            Fiber fiber = new PoolFiber();
+            Fiber fiber = new TaskFiber();
 
             int index = 0;
             var completed = new Future<int>();

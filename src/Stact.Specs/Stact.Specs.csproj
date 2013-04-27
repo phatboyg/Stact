@@ -153,7 +153,6 @@
     <Compile Include="Channels\SynchronizationContext_Specs.cs" />
     <Compile Include="Channels\ThreadPoolChannel_Specs.cs" />
     <Compile Include="Channels\UntypedChannelSubscription_Specs.cs" />
-    <Compile Include="Data\OrderedSequence_Specs.cs" />
     <Compile Include="Diagnostics\ShuntTraceChannel.cs" />
     <Compile Include="Diagnostics\TraceChannelExtensions.cs" />
     <Compile Include="Diagnostics\TraceOperationComplete.cs" />

@@ -14,44 +14,42 @@ namespace Stact
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
-    using Executors;
 
 
     public class ThreadFiber :
-        Fiber
+        Fiber,
+        ExecutionContext
     {
-        readonly OperationExecutor _executor;
         readonly object _lock = new object();
         readonly Thread _thread;
+        readonly CancellationTokenSource _kill = new CancellationTokenSource();
+        IList<Execution> _executions = new List<Execution>();
 
         bool _isActive;
         bool _killed;
-        IList<Execution> _operations = new List<Execution>();
         bool _stopped;
 
         public ThreadFiber()
-            : this(new TryCatchOperationExecutor())
         {
-        }
-
-        public ThreadFiber(OperationExecutor executor)
-        {
-            _executor = executor;
             _thread = CreateThread();
             _thread.Start();
+        }
+
+        public CancellationToken CancellationToken
+        {
+            get { return _kill.Token; }
         }
 
         public void Add(Execution execution)
         {
             if (_stopped)
                 return;
-            // seems to be causing more problems that it solves
-            // throw new FiberException("The fiber is no longer accepting actions");
 
             lock (_lock)
             {
-                _operations.Add(execution);
+                _executions.Add(execution);
 
                 Monitor.PulseAll(_lock);
             }
@@ -66,7 +64,7 @@ namespace Stact
                     _stopped = true;
                     Monitor.PulseAll(_lock);
 
-                    return _operations.Count == 0 && _isActive == false;
+                    return _executions.Count == 0 && _isActive == false;
                 }
             }
 
@@ -78,7 +76,7 @@ namespace Stact
 
                 Monitor.PulseAll(_lock);
 
-                while (_operations.Count > 0 || _isActive)
+                while (_executions.Count > 0 || _isActive)
                 {
                     timeout = waitUntil - DateTime.Now;
                     if (timeout < TimeSpan.Zero)
@@ -103,16 +101,15 @@ namespace Stact
                 _stopped = true;
                 _killed = true;
 
-                _executor.Stop();
-                Monitor.PulseAll(_lock);
+                _kill.Cancel();
 
-                // TODO trigger thread abort if necessary
+                Monitor.PulseAll(_lock);
             }
         }
 
         public override string ToString()
         {
-            return string.Format("{0} (Count: {1}, Id: {2})", typeof(ThreadFiber).Name, _operations.Count,
+            return string.Format("{0} (Count: {1}, Id: {2})", typeof(ThreadFiber).Name, _executions.Count,
                 _thread.ManagedThreadId);
         }
 
@@ -153,41 +150,62 @@ namespace Stact
             if (!WaitForActions())
                 return false;
 
-            IList<Execution> operations = RemoveAll();
-            if (operations == null)
+            IList<Execution> executions = RemoveAll();
+            if (executions == null)
                 return false;
 
-            _executor.Execute(operations, remaining =>
-                {
-                    lock (_lock)
-                    {
-                        int i = 0;
-                        foreach (Execution action in remaining)
-                            _operations.Insert(i++, action);
-                    }
-                });
+            Execute(executions);
 
             lock (_lock)
             {
-                if (_operations.Count == 0)
+                if (_executions.Count == 0)
                     Monitor.PulseAll(_lock);
             }
 
             return true;
         }
 
+        void Execute(IList<Execution> executions)
+        {
+            int index = 0;
+            try
+            {
+                for (index = 0; index < executions.Count; index++)
+                {
+                    if (_killed)
+                        break;
+
+                    executions[index].Execute(this).Wait();
+                }
+            }
+            catch (AggregateException ex)
+            {
+                lock (_lock)
+                {
+                    index++; // skip the failed operation
+                    if (index < executions.Count)
+                    {
+                        var newExecutions = new List<Execution>(executions.Count - index + _executions.Count);
+                        newExecutions.AddRange(executions.Skip(index));
+                        newExecutions.AddRange(_executions);
+                        _executions = newExecutions;
+                    }
+                }
+            }
+        }
+
         bool WaitForActions()
         {
             lock (_lock)
             {
-                while (_operations.Count == 0 && !_killed && !_stopped)
+                while (_executions.Count == 0 && !_killed && !_stopped)
                     Monitor.Wait(_lock);
 
                 if (_killed)
                     return false;
 
                 if (_stopped)
-                    return _operations.Count > 0;
+                    return _executions.Count > 0;
             }
 
             return true;
@@ -197,9 +215,9 @@ namespace Stact
         {
             lock (_lock)
             {
-                IList<Execution> operations = _operations;
+                IList<Execution> operations = _executions;
 
-                _operations = new List<Execution>();
+                _executions = new List<Execution>();
 
                 return operations;
             }

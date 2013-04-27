@@ -24,7 +24,7 @@ namespace Stact.Benchmarks
         public void Run()
         {
             int nodeCount = 200;
-            int roundCount = 1000;
+            int roundCount = 2000;
 
             Console.WriteLine("Using {0} processors, {1} Tokens", Environment.ProcessorCount, TokenCount);
 

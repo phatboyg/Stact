@@ -16,7 +16,6 @@ namespace Stact.Configuration
     using System.Collections.Generic;
     using Builders;
     using Configurators;
-    using Executors;
 
 
     public abstract class FiberFactoryConfiguratorImpl<T> :
@@ -24,7 +23,6 @@ namespace Stact.Configuration
         Configurator
         where T : class
     {
-        readonly Func<OperationExecutor> _executorFactory;
         FiberExceptionHandler _exceptionHandler = DefaultExceptionHandler;
         FiberFactoryEx _fiberFactory;
         TimeSpan _stopTimeout = TimeSpan.FromMinutes(1);
@@ -32,7 +30,6 @@ namespace Stact.Configuration
         protected FiberFactoryConfiguratorImpl()
         {
             HandleOnThreadPool();
-            _executorFactory = () => new TryCatchOperationExecutor();
         }
 
         public TimeSpan StopTimeout
@@ -48,7 +45,7 @@ namespace Stact.Configuration
 
         public T HandleOnCallingThread()
         {
-            _fiberFactory = executor => new SynchronousFiber(_executorFactory());
+            _fiberFactory = executor => new SynchronousFiber();
 
             return this as T;
         }
@@ -69,7 +66,7 @@ namespace Stact.Configuration
 
         public T HandleOnThread()
         {
-            _fiberFactory = executor => new ThreadFiber(_executorFactory());
+            _fiberFactory = executor => new ThreadFiber();
 
             return this as T;
         }

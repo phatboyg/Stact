@@ -41,20 +41,18 @@ namespace Stact.Routing.Nodes
 
         public void Add(RoutingContext<T> message)
         {
-            _messages.Add(message);
-
-            CallbackPendingJoins(message);
-
-            RemoveDeadMessages();
-        }
-
-        void CallbackPendingJoins(RoutingContext<T> message)
-        {
             for (int i = _joins.Count - 1; i >= 0 && message.IsAlive; i--)
             {
                 if (false == _joins[i](message))
                     _joins.RemoveAt(i);
             }
+
+            if (!message.IsAlive)
+                return;
+
+            RemoveDeadMessages();
+
+            _messages.Add(message);
         }
 
         void RemoveDeadMessages()
@@ -75,17 +73,16 @@ namespace Stact.Routing.Nodes
         {
             for (int i = 0; i < _messages.Count;)
             {
-                if (!_messages[i].IsAlive)
+                if (_messages[i].IsAlive)
                 {
-                    _messages.RemoveAt(i);
-                    continue;
+                    bool result = callback(_messages[i]);
+                    if (result == false)
+                        return;
+
+                    i++;
                 }
-
-                bool result = callback(_messages[i]);
-                if (result == false)
-                    return;
-
-                i++;
+                else
+                    _messages.RemoveAt(i);
             }
 
             _joins.Add(callback);
