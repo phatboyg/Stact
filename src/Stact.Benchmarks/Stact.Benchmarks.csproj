@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{28B956AA-E6BB-4B8D-9B04-8BE2F45F6666}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stact.Benchmarks</RootNamespace>
     <AssemblyName>Stact.Benchmarks</AssemblyName>
@@ -94,14 +94,15 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Magnum" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\..\lib\Magnum\net-4.0\Magnum.dll</HintPath>
+    <Reference Include="Benchmarque">
+      <HintPath>..\packages\Benchmarque.0.2.0\lib\net40\Benchmarque.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SolutionVersion.cs">
@@ -110,17 +111,12 @@
     <Compile Include="ChannelAdapterBenchmark.cs" />
     <Compile Include="MessagePassingBenchmark.cs" />
     <Compile Include="PingPongBenchmark.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="RingBenchmark.cs" />
     <Compile Include="RoutingEngineBenchmark.cs" />
     <Compile Include="SimpleRoutingEngineBenchmark.cs" />
     <Compile Include="TokenRingBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Stact.ServerFramework\Stact.ServerFramework.csproj">
-      <Project>{16EDA05C-FF95-4FA2-AED8-F14C40C6E96C}</Project>
-      <Name>Stact.ServerFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Stact\Stact.csproj">
       <Project>{C3650C32-0850-48B4-BE71-ECE9FACBD356}</Project>
       <Name>Stact</Name>
@@ -130,7 +126,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

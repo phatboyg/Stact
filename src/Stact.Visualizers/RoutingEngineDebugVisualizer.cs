@@ -17,7 +17,6 @@ namespace Stact.Visualizers
 	using Microsoft.Glee.Drawing;
 	using Microsoft.VisualStudio.DebuggerVisualizers;
 	using Routing;
-	using Routing.Visualizers;
 
 
 	[Serializable]

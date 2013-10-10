@@ -169,6 +169,7 @@
     <Compile Include="MessageHeaders\MessageDispatcher.cs" />
     <Compile Include="MessageHeaders\MessageHeaderExtensions.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\EmptyHeaders.cs" />
+    <Compile Include="MessageHeaders\MessageHeaders\HeaderKey.cs" />
     <Compile Include="MessageHeaders\MessageHeaders\PropertyMessageHeader.cs" />
     <Compile Include="MessageHeaders\SetMessageHeader.cs" />
     <Compile Include="Messages\ActorRestartLimitReached.cs" />
@@ -184,7 +185,6 @@
     <Compile Include="Messages\Suspend.cs" />
     <Compile Include="Messages\Unlink.cs" />
     <Compile Include="Messages\UnlinkAndStop.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Actors\Events\ActorRegistered.cs" />
     <Compile Include="Actors\Events\ActorRegistryEvent.cs" />
     <Compile Include="Actors\Events\Impl\ActorRegisteredImpl.cs" />
@@ -242,7 +242,6 @@
     <Compile Include="Fibers\Internal\MessageRoutingEngineAgenda.cs" />
     <Compile Include="Fibers\Internal\StopFiberOnDispose.cs" />
     <Compile Include="MessageHeaders\MessageHeader.cs" />
-    <Compile Include="MessageHeaders\HeaderKey.cs" />
     <Compile Include="MessageHeaders\Headers.cs" />
     <Compile Include="MessageUrn.cs" />
     <Compile Include="Actors\ActorRegistryFactory.cs" />
@@ -414,6 +413,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Fibers\Executors\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -1,12 +1,15 @@
-build_output/*
 build_artifacts/*
+build_output/*
 
 **/*.suo
 **/**/*.suo
 **/*.user
+**/**/*.user
+
 bin
 obj
 _ReSharper*
+*.dotCover
 
 *.csproj.user
 *.resharper.user
@@ -16,6 +19,9 @@ _ReSharper*
 *.swp
 *.bak
 *.orig
+*.user
+
+packages
 
 TestResult.xml
 submit.xml
@@ -23,4 +29,4 @@ src/tests/*
 tests/*
 doc/*
 SolutionVersion.cs
-gems/lib/**/*
+AppPackages/

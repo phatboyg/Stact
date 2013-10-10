@@ -13,29 +13,93 @@
 namespace Stact.Benchmarks
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
+    using Benchmarque;
 
-
-    public class TokenRingBenchmark
+    public interface TokenRing
     {
-         static readonly int TokenCount = Environment.ProcessorCount * 3 / 2;
+        void CreateRing();
 
-        public void Run()
+    }
+
+
+    class OneHundredNodeTokenRing :
+        TokenRing
+    {
+        ActorTokenRing _ring;
+
+        public OneHundredNodeTokenRing()
         {
-            int nodeCount = 200;
-            int roundCount = 2000;
+            _ring = new ActorTokenRing(200);
+        }
 
-            Console.WriteLine("Using {0} processors, {1} Tokens", Environment.ProcessorCount, TokenCount);
+        public void CreateRing()
+        {
+            _ring.Create();
+        }
+    }
 
-            _timer = Stopwatch.StartNew();
 
+    public class TokenRingBenchmark :
+        Benchmark<TokenRing>
+    {
+        public void WarmUp(TokenRing instance)
+        {
+        }
+
+        public void Shutdown(TokenRing instance)
+        {
+        }
+
+        public void Run(TokenRing instance, int iterationCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<int> Iterations { get; private set; }
+    }
+
+
+
+
+    public class ActorTokenRing
+    {
+        readonly int _tokenCount;
+
+        public ActorTokenRing(int nodeCount)
+        {
+            _tokenCount = Environment.ProcessorCount * 3 / 2;
+            _nodeCount = nodeCount;
+
+
+        }
+
+
+        public void Create()
+        {
+            _initial = new Future<long>();
+            ActorRef first = Actor.New<NodeState>(x => x.ChangeBehavior<InitialNodeBehavior>());
+            first.Request(new Init
+                {
+                    NodeCount = _nodeCount - 1
+                }, first);
+
+            var completed = _initial.WaitUntilCompleted(TimeSpan.FromSeconds(30));
+            if (!completed)
+                throw new InvalidOperationException("Timeout waiting for ring to setup");
+        }
+
+        public void Run(int roundCount)
+        {
             _complete = new Future<long>();
             ActorRef first = Actor.New<NodeState>(x => x.ChangeBehavior<InitialNodeBehavior>());
             first.Request(new Init
                 {
-                    NodeCount = nodeCount - 1,
-                    RoundCount = roundCount,
+                    NodeCount = _nodeCount - 1,
+                    RoundCount = _roundCount,
                 }, first);
 
             bool completed = _complete.WaitUntilCompleted(TimeSpan.FromSeconds(60));
@@ -45,18 +109,24 @@ namespace Stact.Benchmarks
             if (!completed)
                 Console.WriteLine("TEST DID NOT COMPLETE");
 
-            if (_complete.Value != nodeCount * roundCount)
+            if (_complete.Value != _nodeCount * _roundCount)
                 Console.WriteLine("TEST DID NOT COMPLETE ALL NODES");
 
             Console.WriteLine("Elapsed Time: {0}ms", _timer.ElapsedMilliseconds);
             Console.WriteLine("Create Time: {0}ms", _created);
             Console.WriteLine("Messages per second: {0,-4}",
-                              ((long)TokenCount*nodeCount*roundCount + nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
+                              ((long)_tokenCount*_nodeCount*_roundCount + _nodeCount)*1000/(_timer.ElapsedMilliseconds - _created));
         }
 
         static Future<long> _complete;
+
         static Stopwatch _timer;
+
         static long _created;
+        int _nodeCount;
+        int _roundCount;
+        static Future<long> _initial;
+
 
         class Init
         {
@@ -77,7 +147,7 @@ namespace Stact.Benchmarks
         {
             public NodeState()
             {
-                RemainingRounds = new int[TokenCount];
+                RemainingRounds = new int[100];
             }
 
             public ActorRef Next;
@@ -115,16 +185,18 @@ namespace Stact.Benchmarks
                 {
                     _actor.State.Next = message.Sender;
 
-                    _created = _timer.ElapsedMilliseconds;
-                    for (int i = 0; i < TokenCount; i++)
-                    {
-                        message.Sender.Send(new Token
-                        {
-                            TokenId = i,
-                            Counter = 0,
-                            RemainingRounds = message.Body.RoundCount
-                        }, _actor.State.Next);
-                    }
+                    _initial.Complete(0);
+
+//                    _created = _timer.ElapsedMilliseconds;
+//                    for (int i = 0; i < _tokenCount; i++)
+//                    {
+//                        message.Sender.Send(new Token
+//                        {
+//                            TokenId = i,
+//                            Counter = 0,
+//                            RemainingRounds = message.Body.RoundCount
+//                        }, _actor.State.Next);
+//                    }
 
                     _actor.ChangeBehavior<LastNodeBehavior>();
                 }
