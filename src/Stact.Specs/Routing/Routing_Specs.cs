@@ -14,9 +14,7 @@ namespace Stact.Specs
 {
     using Magnum.Extensions;
     using Magnum.TestFramework;
-    using NUnit.Framework;
     using Routing;
-    using Visualizers;
 
 
     [Scenario]
@@ -56,13 +54,6 @@ namespace Stact.Specs
             _engine.Send(new C());
 
             fiber.Shutdown(5.Minutes());
-        }
-
-        [Then]
-        [Explicit]
-        public void Display_graph()
-        {
-            RoutingEngineDebugVisualizer.Show(_engine);
         }
 
         [Then]

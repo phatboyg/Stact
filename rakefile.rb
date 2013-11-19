@@ -7,7 +7,7 @@ require 'albacore'
 require File.dirname(__FILE__) + "/build_support/ilmergeconfig.rb"
 require File.dirname(__FILE__) + "/build_support/ilmerge.rb"
 
-BUILD_NUMBER_BASE = '1.1.0'
+BUILD_NUMBER_BASE = '1.1.1'
 PRODUCT = 'Stact'
 CLR_TOOLS_VERSION = 'v4.0.30319'
 
@@ -24,7 +24,7 @@ props = {
   :stage => File.expand_path("build_output"),
   :output => File.join( File.expand_path("build_output"), OUTPUT_PATH ),
   :artifacts => File.expand_path("build_artifacts"),
-  :projects => ["Stact", "Stact.ServerFramework"],
+  :projects => ["Stact"],
   :keyfile => File.expand_path("Stact.snk"),
   :nuspecfile => File.expand_path("Stact.nuspec"),
   :zipfile => "Stact-#{BUILD_NUMBER_BASE}.zip"
@@ -37,7 +37,7 @@ desc "**Default**, compiles and runs tests"
 task :default => [:clean, :compile, :ilmerge, :tests]
 
 desc "**DOOES NOT CLEAR OUTPUT FOLDER**, compiles and runs tests"
-task :unclean => [:compile, :ilmerge, :tests]
+task :unclean => [:compile, :tests]
 
 desc "Update the common version information for the build. You can call this task without building."
 assemblyinfo :global_version do |asm|
@@ -82,27 +82,11 @@ task :compile => [:global_version, :build] do
 
 	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "Stact.{dll,pdb,xml}", props[:output]
 	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "Magnum.{dll,pdb,xml}", props[:output]
-	copyOutputFiles File.join(props[:src], "Stact/bin/#{BUILD_CONFIG}"), "log4net.{dll,pdb,xml}", props[:output]
 
 end
 
-task :ilmerge => [:ilmerge_server] do
+task :ilmerge => [:ilmerge_stact] do
 end
-
-
-ilmerge :ilmerge_server do |ilm|
-	out = File.join(props[:output], 'Stact.ServerFramework.dll')
-	ilm.output = out
-	ilm.internalize = File.join(props[:build_support], 'internalize.txt')
-	ilm.working_directory = File.join(props[:src], "Stact.ServerFramework/bin/#{BUILD_CONFIG}")
-	ilm.target = :library
-    ilm.use MSB_USE
-	ilm.log = File.join( props[:src], "Stact.ServerFramework","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
-	ilm.allow_dupes = true
-	ilm.references = [ 'Stact.ServerFramework.dll', 'Newtonsoft.Json.dll']
-    ilm.keyfile = props[:keyfile]
-end
-
 
 ilmerge :ilmerge_stact do |ilm|
 	out = File.join(props[:output], 'Stact.dll')
@@ -113,7 +97,8 @@ ilmerge :ilmerge_stact do |ilm|
     ilm.use MSB_USE
 	ilm.log = File.join( props[:src], "Stact","bin","#{BUILD_CONFIG}", 'ilmerge.log' )
 	ilm.allow_dupes = false
-	ilm.references = [ 'Stact.dll', 'Magnum.dll']
+	ilm.references = [ 'Stact.dll']
+	ilm.references.push 'System.Threading.dll' unless BUILD_CONFIG_KEY == 'NET40'
     ilm.keyfile = props[:keyfile]
 end
 
@@ -139,18 +124,12 @@ def copyOutputFiles(fromDir, filePattern, outDir)
 	}
 end
 
-task :tests => [:unit_tests]
+desc "Runs unit tests"
+nunit :tests => [:compile] do |nunit|
 
-desc "Runs unit tests (integration tests?, acceptance-tests?) etc."
-task :unit_tests => [:compile] do
-	Dir.mkdir props[:artifacts] unless exists?(props[:artifacts])
-
-	runner = NUnitRunner.new(File.join('lib', 'nunit', 'net-2.0',  "nunit-console#{(BUILD_PLATFORM.empty? ? '' : "-#{BUILD_PLATFORM}")}.exe"),
-		'tests',
-		TARGET_FRAMEWORK_VERSION,
-		['/nothread', '/nologo', '/labels', "\"/xml=#{File.join(props[:artifacts], 'nunit-test-results.xml')}\""])
-
-	runner.run ['Stact.Specs'].map{ |assem| "#{assem}.dll" }
+          nunit.command = File.join('src', 'packages','NUnit.Runners.2.6.3', 'tools', 'nunit-console.exe')
+          nunit.options = "/framework=#{CLR_TOOLS_VERSION}", '/nothread', '/nologo', '/labels', "\"/xml=#{File.join(props[:artifacts], 'nunit-test-results.xml')}\""
+          nunit.assemblies = FileList[File.join("tests", "Stact.Specs.dll")]
 end
 
 desc "Target used for the CI server. It both builds, tests and packages."
@@ -176,7 +155,7 @@ end
 
 desc "Builds the nuget package"
 task :nuget do
-	sh "lib/nuget pack stact.nuspec /OutputDirectory build_artifacts"
+	sh "src/.nuget/nuget pack stact.nuspec /OutputDirectory build_artifacts"
 end
 
 def project_outputs(props)

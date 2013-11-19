@@ -17,6 +17,10 @@ _ReSharper*
 *.bak
 *.orig
 
+packages
+NuGet.exe
+
+
 TestResult.xml
 submit.xml
 src/tests/*

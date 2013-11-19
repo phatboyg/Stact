@@ -1,2 +1,1 @@
 Stact.*
-log4net.dll
