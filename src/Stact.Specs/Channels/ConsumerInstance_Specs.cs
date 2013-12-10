@@ -19,6 +19,7 @@ namespace Stact.Specs.Channels
 	using NUnit.Framework;
 	using Rhino.Mocks;
 	using Magnum.TestFramework;
+    using System.Threading.Tasks;
 
 
 	[TestFixture]
@@ -109,7 +110,7 @@ namespace Stact.Specs.Channels
 			var second = new Future<bool>();
 			var started = new Future<bool>();
 
-			ThreadPool.QueueUserWorkItem(x =>
+			Task.Factory.StartNew(() =>
 				{
 					channel.Send(message);
 					started.Complete(true);
@@ -120,7 +121,7 @@ namespace Stact.Specs.Channels
 
 			started.WaitUntilCompleted(5.Seconds());
 
-			ThreadPool.QueueUserWorkItem(x =>
+            Task.Factory.StartNew(() =>
 				{
 					channel.Send(message);
 					second.Complete(true);
