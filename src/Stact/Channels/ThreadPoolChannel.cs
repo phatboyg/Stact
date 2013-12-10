@@ -14,6 +14,7 @@ namespace Stact
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
 
 
     /// <summary>
@@ -51,7 +52,7 @@ namespace Stact
 
                 _channelCount++;
 
-                ThreadPool.QueueUserWorkItem(x => SendMessageToChannel(message));
+                Task.Factory.StartNew(() => SendMessageToChannel(message));
             }
         }
 

@@ -88,7 +88,7 @@ namespace Stact.Specs.Channels
 
 			Trace.WriteLine("Sending extra message to try and break it");
 
-			ThreadPool.QueueUserWorkItem(x =>
+            Task.Factory.StartNew(() =>
 			                             channel.Send(new TestMessage(() =>
 			                             	{
 			                             		lock (locker)
