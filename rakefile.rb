@@ -113,7 +113,7 @@ msbuild :build do |msb|
 	msb.use :net4 #MSB_USE
     msb.properties[:SignAssembly] = 'true'
     msb.properties[:AssemblyOriginatorKeyFile] = props[:keyfile]
-	msb.targets :Clean, :Build
+	msb.targets :Rebuild
 	msb.solution = 'src/Stact.sln'
 end
 
@@ -128,7 +128,7 @@ desc "Runs unit tests"
 nunit :tests => [:compile] do |nunit|
 
           nunit.command = File.join('src', 'packages','NUnit.Runners.2.6.3', 'tools', 'nunit-console.exe')
-          nunit.options = "/framework=#{CLR_TOOLS_VERSION}", '/nothread', '/nologo', '/labels', "\"/xml=#{File.join(props[:artifacts], 'nunit-test-results.xml')}\""
+          nunit.parameters = "/framework=#{CLR_TOOLS_VERSION}", '/nothread', '/nologo', '/labels', "\"/xml=#{File.join(props[:artifacts], 'nunit-test-results.xml')}\""
           nunit.assemblies = FileList[File.join("tests", "Stact.Specs.dll")]
 end
 
