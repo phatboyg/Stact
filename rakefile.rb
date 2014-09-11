@@ -139,9 +139,8 @@ task :package => [:zip_output, :nuget]
 
 desc "ZIPs up the build results and runs the MoMA analyzer."
 zip :zip_output do |zip|
-	zip.directories_to_zip = [props[:stage]]
-	zip.output_file = "Stact-#{BUILD_NUMBER_BASE}.zip"
-	zip.output_path = [props[:artifacts]]
+	zip.dirs = [props[:stage]]
+	zip.output_path = File.join(props[:artifacts], props[:zipfile])
 end
 
 desc "Runs the MoMA mono analyzer on the project files. Start the executable manually without --nogui to update the profiles once in a while though, or you'll always get the same report from the analyzer."
